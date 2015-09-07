@@ -21,89 +21,89 @@ function capitaliseFirstLetter(string) {
 };
 
 google.setOnLoadCallback( function() {
-    // set div height accordingly 
+  // set div height accordingly 
+  $('#chart_div').height($(window).height()-45);
+  $('#chart_div').width ($(window).width()*0.9);
+  // set resize callback
+  $(window).resize(function() {
     $('#chart_div').height($(window).height()-45);
     $('#chart_div').width ($(window).width()*0.9);
-    // set resize callback
-    $(window).resize(function() {
-        $('#chart_div').height($(window).height()-45);
-        $('#chart_div').width ($(window).width()*0.9);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    var newsCol,peopleCol,topicsCol;
+  var newsCol,peopleCol,topicsCol;
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "News stories",
-        categoryTextWidth:150,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdE5hLTNCdWNHVUpFVmxuU0hXNGVzTVE',
-            sheets: ["News" ,"People", {name:"Topics", id:"Code"}]
-        },
-        loadedCb: function(){
-            newsCol = kshf.dt_ColNames.News;
-            peopleCol = kshf.dt_ColNames.People;
-            topicsCol = kshf.dt_ColNames.Topics;
-            kshf.Util.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
-        },
-        summaries: [
-            {   title: "Category",
-                value: function(){
-                    var topics = this[newsCol.Topic];
-                    var cats= {};
-                    for(var i=0; i<topics.length; i++){
-                        var t=topics[i];
-                        var tDt=kshf.dt_id.Topics[t];
-                        if(tDt) cats[tDt.data[1]] = true;
-                    }
-                    var toRet=[]
-                    for(c in cats){
-                        toRet.push(c);
-                    }
-                    return toRet;
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "News stories",
+    categoryTextWidth:150,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdE5hLTNCdWNHVUpFVmxuU0hXNGVzTVE',
+      tables: ["News" ,"People", {name:"Topics", id:"Code"}]
+    },
+    loadedCb: function(){
+      newsCol = kshf.dt_ColNames.News;
+      peopleCol = kshf.dt_ColNames.People;
+      topicsCol = kshf.dt_ColNames.Topics;
+      kshf.Util.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
+    },
+    summaries: [
+        {   title: "Category",
+            value: function(){
+                var topics = this[newsCol.Topic];
+                var cats= {};
+                for(var i=0; i<topics.length; i++){
+                    var t=topics[i];
+                    var tDt=kshf.dt_id.Topics[t];
+                    if(tDt) cats[tDt.data[1]] = true;
                 }
-            },{ title: "Topic",
-            },{ title: "Country", catLabel: function(){ return capitaliseFirstLetter(this.id); }
-            },{ title: "People",
-                catLabel: function(){ return kshf.dt_id.People[this.id].data[peopleCol.Name]; },
-                catTooltip: function(){ 
-                    var p = kshf.dt_id.People[this.id];
-                    return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
+                var toRet=[]
+                for(c in cats){
+                    toRet.push(c);
                 }
-            },{ title: "Publish Time", layout: 'middle'
+                return toRet;
             }
-        ],
-        itemDisplay: {
-            sortColWidth: 70,
-            sortingOpts: {
-                title: 'Publish Time',
-                label: function(){ 
-                    var date=this[newsCol['Publish Time']];
-                    return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
-                }
-            },
-            textSearch: 'title',
-            recordView: function(){
-                var j;
-                var str=this[newsCol.title].replace("<","&lt;").replace(">","&gt;");
-                var cats = this[newsCol.Topic];
-                if(cats.length>0){
-                    str+="<div class=\"iteminfo iteminfo_1\"> Topics: " + cats + "</div>";
-                }
-                var ctrs = this[newsCol.Country];
-                if(ctrs.length>0){
-                    str+="<div class=\"iteminfo iteminfo_1\"> Countries: ";
-                    for(j=0; j<ctrs.length; j++){
-                        str+=capitaliseFirstLetter(ctrs[j]);
-                        if(j!==ctrs.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
-                }
-                return str;
+        },{ title: "Topic",
+        },{ title: "Country", catLabel: function(){ return capitaliseFirstLetter(this.id); }
+        },{ title: "People",
+            catLabel: function(){ return kshf.dt_id.People[this.id].data[peopleCol.Name]; },
+            catTooltip: function(){ 
+                var p = kshf.dt_id.People[this.id];
+                return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
             }
+        },{ title: "Publish Time", layout: 'middle'
         }
-    });
+    ],
+    itemDisplay: {
+      sortColWidth: 70,
+      sortingOpts: {
+          title: 'Publish Time',
+          label: function(){ 
+              var date=this[newsCol['Publish Time']];
+              return (date.getUTCMonth()+1)+"-"+date.getUTCDate()+"-"+date.getUTCFullYear(); 
+          }
+      },
+      textSearch: 'title',
+      recordView: function(){
+        var j;
+        var str=this[newsCol.title].replace("<","&lt;").replace(">","&gt;");
+        var cats = this[newsCol.Topic];
+        if(cats.length>0){
+            str+="<div class=\"iteminfo iteminfo_1\"> Topics: " + cats + "</div>";
+        }
+        var ctrs = this[newsCol.Country];
+        if(ctrs.length>0){
+            str+="<div class=\"iteminfo iteminfo_1\"> Countries: ";
+            for(j=0; j<ctrs.length; j++){
+                str+=capitaliseFirstLetter(ctrs[j]);
+                if(j!==ctrs.length-1) { str+=', '; }
+            }
+            str+="</div>";
+        }
+        return str;
+      }
+    }
+  });
 });
         </script>
 	</head>

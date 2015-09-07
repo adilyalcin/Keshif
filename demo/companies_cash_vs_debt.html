@@ -1,112 +1,112 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Top 50 US Companies - Cash &amp; Debt</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Top 50 US Companies - Cash &amp; Debt</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 var getIcon = function(str){
-    switch(str){
-        case 'Financials': return ''+"<span class='industryIcon fa fa-money'></span>"
-        case 'Tech/Communication': return ''+"<span class='industryIcon fa fa-cog'></span>"
-        case 'Industrial': return ''+"<span class='industryIcon fa fa-building'></span>"
-        case 'Consumer Prod/Retail': return ''+"<span class='industryIcon fa fa-shopping-cart'></span>"
-        case 'Healthcare/Pharm.': return ''+"<span class='industryIcon fa fa-medkit'></span>"
-        case 'Energy': return ''+"<span class='industryIcon fa fa-lightbulb-o'></span>"
-        case '': return ''+"<span class='industryIcon fa fa-'></span>"
-        case '': return ''+"<span class='industryIcon fa fa-'></span>"
-    }
-    return "?";
+  switch(str){
+    case 'Financials': return ''+"<span class='industryIcon fa fa-money'></span>"
+    case 'Tech/Communication': return ''+"<span class='industryIcon fa fa-cog'></span>"
+    case 'Industrial': return ''+"<span class='industryIcon fa fa-building'></span>"
+    case 'Consumer Prod/Retail': return ''+"<span class='industryIcon fa fa-shopping-cart'></span>"
+    case 'Healthcare/Pharm.': return ''+"<span class='industryIcon fa fa-medkit'></span>"
+    case 'Energy': return ''+"<span class='industryIcon fa fa-lightbulb-o'></span>"
+    case '': return ''+"<span class='industryIcon fa fa-'></span>"
+    case '': return ''+"<span class='industryIcon fa fa-'></span>"
+  }
+  return "?";
 };
 
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 50,
-        leftPanelLabelWidth: 170,
-        rightPanelLabelWidth: 90,
-        source: {
-            gdocId: '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
-            sheets: [ {name:"Companies", id:'Stock'} ]
-        },
-        summaries: [
-            {   title: "Industry", value: function(){ return this.Industry+" "+getIcon(this.Industry); }
-            },{ title: "Cash vs. Debt", layout: 'left',
-                value: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); }
-            },{ title: "Cash", value: 'Cash ($B)', unitName: 'B$', intervalScale: 'log'
-            },{ title: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 50,
+    leftPanelLabelWidth: 170,
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
+      tables: {name:"Companies", id:'Stock'}
+    },
+    summaries: [
+      { title: "Industry", value: function(){ return this.Industry+" "+getIcon(this.Industry); } },
+      { title: "Cash vs. Debt", layout: 'left',
+        value: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); } },
+      { title: "Cash", value: 'Cash ($B)', unitName: 'B$', intervalScale: 'log' },
+      { title: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
 //          },{ title: "Market Capitalization", layout: 'right'
 //          },{ title: "Profit Margin", layout: 'right'
-            }
-        ],
-        itemDisplay: {
-            detailsToggle: "none",
-            sortingOpts: [ 
-                {name: 'Value', value:function(){ return (this['Cash ($B)']-this['Debt ($B)']); }},
-                {name: 'Debt ($B)'},
-                {name: 'Cash ($B)'},
-                {name: 'Profit Margin'},
-                {name: 'Market Cap.'}
-            ],
-            displayType: 'grid',
-            textSearch: 'Stock',
-            recordView: function(){
-                var str=getIcon(this.Industry)+" "+this.Stock;
-                var cash = this['Cash ($B)']-this['Debt ($B)'];
-                if(cash>0){
-                    str+="<div class='cashdebt positive'>+"+cash.toFixed(2)+"B$</div>";
-                } else {
-                    str+="<div class='cashdebt negative'>"+cash.toFixed(2)+"B$</div>";
-                }
-                return str;
-            }
+      }
+    ],
+    itemDisplay: {
+      detailsToggle: "none",
+      sortingOpts: [ 
+        {name: 'Value', value:function(){ return (this['Cash ($B)']-this['Debt ($B)']); }},
+        'Debt ($B)',
+        'Cash ($B)',
+        'Profit Margin',
+        'Market Cap.'
+      ],
+      displayType: 'grid',
+      textSearch: 'Stock',
+      recordView: function(){
+        var str=getIcon(this.Industry)+" "+this.Stock;
+        var cash = this['Cash ($B)']-this['Debt ($B)'];
+        if(cash>0){
+          str+="<div class='cashdebt positive'>+"+cash.toFixed(2)+"B$</div>";
+        } else {
+          str+="<div class='cashdebt negative'>"+cash.toFixed(2)+"B$</div>";
         }
-    });
+        return str;
+      }
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 700px;
-                height: 550px;
-            }
-            .content{
-                width: 130px;
-                text-align: center;
-                margin-top: 6px;
-            }
-            .industryIcon{ 
-                width: 14px; 
-                display: inline-block; 
-                text-align: center;
-            }
-            .content .industryIcon{
-                font-size: 0.8em;
-                color:gray;
-            }
-            .cashdebt{
-                font-size: 0.7em;
-            }
-            .cashdebt.negative{
-                color: red;
-            }
-            .cashdebt.positive{
-                color: green;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">Top 50 US Companies - Cash &amp; Debt</div>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 700px;
+  height: 550px;
+}
+.content{
+  width: 130px;
+  text-align: center;
+  margin-top: 6px;
+}
+.industryIcon{ 
+  width: 14px; 
+  display: inline-block; 
+  text-align: center;
+}
+.content .industryIcon{
+  font-size: 0.8em;
+  color:gray;
+}
+.cashdebt{
+  font-size: 0.7em;
+}
+.cashdebt.negative{
+  color: red;
+}
+.cashdebt.positive{
+  color: green;
+}
+      </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Top 50 US Companies - Cash &amp; Debt</div>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

@@ -1,20 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-		<link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Accidents - Road Safety 2012 - UK (reports by Police Force 4 only)</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 var QueryString = function () {
   // This function is anonymous, is executed immediately and 
   // the return value is assigned to QueryString!
@@ -39,53 +39,49 @@ var QueryString = function () {
 } ();
 
 google.setOnLoadCallback( function(){
-    
+  
+  resizeBrowser(240,50);
+  $(window).resize(function() {
     resizeBrowser(240,50);
-    $(window).resize(function() {
-        resizeBrowser(240,50);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    var query = 'select *';
-    var sheetInfo = {name:"Accidents"};
-    if(QueryString.set==="small") {
-        sheetInfo.range = "A1:S100";
-    }
+  var query = 'select *';
+  var sheetInfo = {name:"Accidents"};
+  if(QueryString.set==="small") {
+    sheetInfo.range = "A1:S100";
+  }
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth:170,
-        barChartWidth: 120,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
-            sheets: [ sheetInfo, "RoadType", "RoadSurface", "JuncDet", "JuncCont", "SpecCond",
-                "Severity", "LightCond", "WeatherCond"
-            ]
-        },
-        summaries: [
-            {   title: "Road Type", catTableName: "RoadType", catLabel: "name"
-            },{ title: "Severity", catTableName: "Severity", catLabel: "name"
-            },{ title: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; }
-            },{ title: "Time of Day", value: function(){ return this['Time of Day'].getHours(); },
-                layout: "middle", unitName: ":00"
-            },{ title: "# of Vehicles", layout: 'middle'
-            },{ title: "Speed Limit", layout: 'middle', 
-                catSortBy: "id",
-                catLabel: function(){ return this.id+"mph"}//, unitName: "mph"
-            },{ title: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", layout: 'right'
-            },{ title: "Light Condition", catTableName: "LightCond", catLabel: "name"
-            },{ title: "Weather Condition", catTableName: "WeatherCond", catLabel: "name"
-            },{ title: "Special Condition", catTableName: "SpecCond", catLabel: "name", layout: 'right',
-            },{ title: "Junction Detail", catTableName: "JuncDet", catLabel: "name", layout: 'right',
-            },{ title: "Junction Control", catTableName: "JuncCont",  catLabel: "name", layout: 'right'
-            },{ title: "Date", layout: 'bottom'
-            }
-        ]
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth:170,
+    barChartWidth: 120,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
+      tables: [ sheetInfo, "RoadType", "RoadSurface", "JuncDet", "JuncCont", "SpecCond", "Severity", "LightCond", "WeatherCond" ]
+    },
+    summaries: [
+      { title: "Road Type", catTableName: "RoadType", catLabel: "name" },
+      { title: "Severity", catTableName: "Severity", catLabel: "name" },
+      { title: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; } },
+      { title: "Time of Day", layout: "middle", unitName: ":00" ,
+        value: function(){ return this['Time of Day'].getHours(); }, },
+      { title: "# of Vehicles", layout: 'middle' },
+      { title: "Speed Limit", layout: 'middle',  catSortBy: "id",
+        catLabel: function(){ return this.id+"mph"}//, unitName: "mph" },
+      { title: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", layout: 'right' },
+      { title: "Light Condition", catTableName: "LightCond", catLabel: "name" },
+      { title: "Weather Condition", catTableName: "WeatherCond", catLabel: "name" },
+      { title: "Special Condition", catTableName: "SpecCond", catLabel: "name", layout: 'right', },
+      { title: "Junction Detail", catTableName: "JuncDet", catLabel: "name", layout: 'right', },
+      { title: "Junction Control", catTableName: "JuncCont",  catLabel: "name", layout: 'right' },
+      { title: "Date", layout: 'bottom' }
+    ]
+  });
 });
 </script>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

@@ -1,23 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Homicides in the District</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Homicides in the District</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function dataLoad(browser){
     $.ajax({
         //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
@@ -37,67 +37,66 @@ function dataLoad(browser){
 };
 
 $(document).ready( function(){
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 150,
-        source: {
-            url: "http://apps.washingtonpost.com/investigative/homicides/",
-            callback: dataLoad
-        },
-        summaries: [
-            {   title: "Age", value: "age"
-            },{ title: "Race", value: "race"
-            },{ title: "Sex", value: "sex",
-                catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id); }
-            },{ title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', value: "quadrant",
-                catLabel: function(){
-                    switch(this.id){
-                        case "SE": return "South-East";
-                        case "SW": return "South-West";
-                        case "NE": return "North-East";
-                        case "NW": return "North-West";
-                    }
-                }
-            },{ title: "Neighborhood", layout: 'right',
-                value: function(){ if(this.nbhd) return this.nbhd.subhood; }
-            },{ title: "Status", layout: 'right',
-                value: function(){
-                    var r=[];
-                    r.push("Police Status: "+this.police_status.name);
-                    if(this.jury_trial) r.push("Had jury trial");
-                    return r;
-                }
-            },{ title: "Cases with +2 victims", layout: 'right', value: "ccn", minAggrValue:2, collapsed: true
-            },{ title: "Manner", value: function(){ return this.manner.name; }
-            },{ title: "Motive", value: function(){ return this.motive.name; }
-            },{ title: "Incident Date", value: "incident_date", layout: "bottom",
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: [
-                { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
-                { title: 'Age', value: "age" }
-            ],
-            recordView: function(){ return this.last_name +", "+this.first_name; }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    source: {
+      url: "http://apps.washingtonpost.com/investigative/homicides/",
+      callback: dataLoad
+    },
+    summaries: [
+      { title: "Age", value: "age" },
+      { title: "Race", value: "race" },
+      { title: "Sex", value: "sex",
+        catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id); } },
+      { title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', value: "quadrant",
+        catLabel: function(){
+          switch(this.id){
+            case "SE": return "South-East";
+            case "SW": return "South-West";
+            case "NE": return "North-East";
+            case "NW": return "North-West";
+          }
+        } },
+      { title: "Neighborhood", layout: 'right',
+        value: function(){ if(this.nbhd) return this.nbhd.subhood; } },
+      { title: "Status", layout: 'right',
+        value: function(){
+          var r=[];
+          r.push("Police Status: "+this.police_status.name);
+          if(this.jury_trial) r.push("Had jury trial");
+          return r;
+        } },
+      { title: "Cases with +2 victims", layout: 'right', value: "ccn", minAggrValue:2, collapsed: true },
+      { title: "Manner", value: function(){ return this.manner.name; } },
+      { title: "Motive", value: function(){ return this.motive.name; } },
+      { title: "Incident Date", value: "incident_date", layout: "bottom", }
+    ],
+    itemDisplay: {
+      sortingOpts: [
+        { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
+        { title: 'Age', value: "age" }
+      ],
+      recordView: function(){ return this.last_name +", "+this.first_name; }
+    }
+  });
 });
 </script>
     <style>
-        #chart_div {
-            width:800px;
-            height:700px;
-        }
+#chart_div {
+  width:800px;
+  height:700px;
+}
     </style>
 	</head>
-    <body>
-        <div class="pageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="pageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the <b>Washington Post</b>. <a href="http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json" target='_blank'>Raw source</a>.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+        <span class="fa fa-info-circle"></span>
+        <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the <b>Washington Post</b>. <a href="http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json" target='_blank'>Raw source</a>.
+        <span class="fa fa-info-circle"></span>
+        </div>
+  </body>
 </html>

@@ -1,57 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Best-selling singles of 2008</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Best-selling singles of 2008</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 100,
-        rightPanelLabelWidth: 90,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
-            sheets: [ {name:"Singles", id:"Position"} ]
-        },
-        summaries: [
-            {   title: "Genre"
-            },{ title: "Country", layout: 'right', description: "Country of origin"
-            },{ title: "Sex", layout: 'right'
-            },{ title: "Age", layout: 'right'
-            },{ title: "Type", layout: 'right'
-            },{ title: "Race", layout: 'right'
-            },{ title: "Label"
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts: {title: "Position", inverse:true},
-            textSearch: { title: "Artist & Track", value: function(){return this["Artist(s)"]+" "+this.Track; } },
-            recordView: function(){ return this["Artist(s)"]+" - "+this.Track; }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 100,
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdHBaN1lKYW5qUWthUDA0RDJXY1BLUFE',
+      tables: {name:"Singles", id:"Position"}
+    },
+    summaries: [
+      { title: "Genre" },
+      { title: "Country", layout: 'right', description: "Country of origin" },
+      { title: "Sex", layout: 'right' },
+      { title: "Age", layout: 'right' },
+      { title: "Type", layout: 'right' },
+      { title: "Race", layout: 'right' },
+      { title: "Label" }
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      sortingOpts: {title: "Position", inverse:true},
+      textSearch: { title: "Artist & Track", value: function(){return this["Artist(s)"]+" "+this.Track; } },
+      recordView: function(){ return this["Artist(s)"]+" - "+this.Track; }
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 890px;
-                height: 450px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 890px;
+  height: 450px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

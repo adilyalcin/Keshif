@@ -1,81 +1,81 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Columbia University CNMTL - Project Portfolio</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Columbia University CNMTL - Project Portfolio</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready( function(){
-    var dateFormat = d3.time.format("%Y-%m-%d");
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 160,
-        itemName: "CNMTL Projects",
-        source: {
-            url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
-            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
-            fileType: 'json',
-            sheets: "cnmtl_portfolio"
-        },
-        summaries: [
-            {   title: "Disciplines"
-            },{ title: "Types",
-            },{ title: "Group", collapsed: true
-            },{ title: "Access", collapsed: true
-            },{ title: "Status"
-            },{ title: "Released Year", layout: "middle", collapsed: true, 
-                value: function(){ return dateFormat.parse(this.released); }
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {title:'Released', inverse: true},
-            textSearch: 'title',
-            displayType: 'grid',
-            detailsToggle: 'zoom',
-            recordView: function(d){
-                return "<a target='_blank' href='"+this.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
-                    "<span class='title'>"+this.label+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",this.thumb_URL).attr("title",this.description);
-            }
-        }
-    });
+  var dateFormat = d3.time.format("%Y-%m-%d");
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 160,
+    itemName: "CNMTL Projects",
+    source: {
+      url: "http://ccnmtl.columbia.edu/portfolio/exhibit_view.html",
+      //dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      dirPath: 'https://dl.dropboxusercontent.com/u/1951639/',
+      fileType: 'json',
+      tables: "cnmtl_portfolio"
+    },
+    summaries: [
+      { title: "Disciplines"},
+      { title: "Types"},
+      { title: "Group", collapsed: true },
+      { title: "Access", collapsed: true },
+      { title: "Status" },
+      { title: "Released Year", layout: "middle", collapsed: true, 
+        value: function(){ return dateFormat.parse(this.released); } },
+    ],
+    itemDisplay: {
+      sortingOpts: {title:'Released', inverse: true},
+      textSearch: 'title',
+      displayType: 'grid',
+      detailsToggle: 'zoom',
+      recordView: function(d){
+        return "<a target='_blank' href='"+this.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
+        "<span class='title'>"+this.label+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",this.thumb_URL).attr("title",this.description);
+      }
+    }
+  });
 });
-        </script>
-<style>
-    #chart_div{
-        width: 820px;
-        height: 630px;
-    }
-    .listItem{
-        width: 130px;
-    }
-    .thumbImg{
-        border-radius: 9px;
-    }
-</style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">
-            <img src="http://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/1481/original/logo_withtag_big.gif" style="height:45px"> Project Portfolio</div>
+    </script>
+    <style>
+#chart_div{
+  width: 820px;
+  height: 630px;
+}
+.listItem{
+  width: 130px;
+}
+.thumbImg{
+  border-radius: 9px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">
+        <img src="http://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/1481/original/logo_withtag_big.gif" style="height:45px"> Project Portfolio</div>
 
-        <div class="pageSubtitle">This page demonstrates the projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. The unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
-        </div>
+    <div class="pageSubtitle">This page demonstrates the projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. The unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
+    </div>
 
-        <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-    </body>
+  </body>
 </html>

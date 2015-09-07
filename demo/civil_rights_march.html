@@ -1,130 +1,130 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Civil Rights March on Washington Photos</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Civil Rights March on Washington Photos</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 $(document).ready( function(){
+  resizeBrowser(100,80);
+  $(window).resize(function() {
     resizeBrowser(100,80);
-    $(window).resize(function() {
-        resizeBrowser(100,80);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Civil Rights March on Washington Photos",
-        categoryTextWidth: 200,
-        source: { 
-            url: "https://catalog.archives.gov/id/541992",
-            dirPath: "./data/",
-            fileType: 'json',
-            sheets: [{name:"civil_rights_march", id:"arcIdentifier"}]
-        },
-        summaries: [
-            {   title: "Tags",
-                value: function(){
-                    var contribs = this.publicContributions;
-                    if(contribs===undefined) return;
-                    var tags = contribs.tags;
-                    if(tags===undefined) return;
-                    var r=[];
-                    if(tags.tag.length===undefined){
-                        r.push(tags.tag['$']);
-                    } else {
-                        tags.tag.forEach(function(tag){
-                            r.push(tag['$']);
-                        });
-                    }
-                    return r;
-                }
-            },{ title: "Tag Contributors",
-                value: function(){
-                    var contribs = this.publicContributions;
-                    if(contribs===undefined) return;
-                    var tags = contribs.tags;
-                    if(tags===undefined) return;
-                    var r=[];
-                    if(tags.tag.length===undefined){
-                        r.push(tags.tag['@user']);
-                    } else {
-                        tags.tag.forEach(function(tag){
-                            r.push(tag['@user']);
-                        });
-                    }
-                    return r;
-                }
-            },{ title: "contributors",
-            },{ title: "Types", value: "typesOfArchivalMaterials"
-            },{ title: "levelOfDescription", collapsed: true
-            },{ title: "Use Restrictions", value: "useRestrictions", collapsed: true,
-            },{ title: "Access Restrictions", value: "accessRestrictions", collapsed: true,
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Civil Rights March on Washington Photos",
+    categoryTextWidth: 200,
+    source: { 
+      url: "https://catalog.archives.gov/id/541992",
+      dirPath: "./data/",
+      fileType: 'json',
+      tables: {name:"civil_rights_march", id:"arcIdentifier"}
+    },
+    summaries: [
+      { title: "Tags",
+        value: function(){
+          var contribs = this.publicContributions;
+          if(contribs===undefined) return;
+          var tags = contribs.tags;
+          if(tags===undefined) return;
+          var r=[];
+          if(tags.tag.length===undefined){
+            r.push(tags.tag['$']);
+          } else {
+            tags.tag.forEach(function(tag){
+              r.push(tag['$']);
+            });
+          }
+          return r;
+        } },
+      { title: "Tag Contributors",
+        value: function(){
+          var contribs = this.publicContributions;
+          if(contribs===undefined) return;
+          var tags = contribs.tags;
+          if(tags===undefined) return;
+          var r=[];
+          if(tags.tag.length===undefined){
+            r.push(tags.tag['@user']);
+          } else {
+            tags.tag.forEach(function(tag){
+              r.push(tag['@user']);
+            });
+          }
+          return r;
+        } },
+      { title: "contributors", },
+      { title: "Types", value: "typesOfArchivalMaterials" },
+      { title: "levelOfDescription", collapsed: true },
+      { title: "Use Restrictions", value: "useRestrictions", collapsed: true, },
+      { title: "Access Restrictions", value: "accessRestrictions", collapsed: true,
 /*            },{ title: "Date", layout: "bottom",
-                value: function(){
-                    var pDate=this.productionDates;
-                    if(pDate===undefined ||pDate.length!==1) return;
-                    var m=moment(pDate[0],["M/DD/YYYY"]);
-                    var r=new Date(m);
-                    return r;
-                }*/
-            }
-        ],
-        itemDisplay: {
-            autoExpandMore: false,
-            displayType: 'grid',
-            textSearch: "title",
-            recordView: function(){
-                return "<a target='_blank' href='"+this.url.replace("govid","gov/id")+"' class='thumbnail'>"+
-                    "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
-            },
-            visibleCb: function(d){
-                if(this.objects===undefined) return;
-                var url;
-                if(this.objects.object.length){
-                    url = this.objects.object[0].thumbnail['@url'];
-                } else {
-                    url = this.objects.object.thumbnail['@url'];
-                }
-                // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
-                // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif
-                url = url.replace("govOpaAPI","gov/OpaAPI");
-                d3.select(d.DOM.record).select("img").attr("src",url);
-            }
+          value: function(){
+              var pDate=this.productionDates;
+              if(pDate===undefined ||pDate.length!==1) return;
+              var m=moment(pDate[0],["M/DD/YYYY"]);
+              var r=new Date(m);
+              return r;
+          }*/
+      }
+    ],
+    itemDisplay: {
+      autoExpandMore: false,
+      displayType: 'grid',
+      textSearch: "title",
+      recordView: function(){
+        return "<a target='_blank' href='"+this.url.replace("govid","gov/id")+"' class='thumbnail'>"+
+            "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
+      },
+      visibleCb: function(d){
+        if(this.objects===undefined) return;
+        var url;
+        if(this.objects.object.length){
+          url = this.objects.object[0].thumbnail['@url'];
+        } else {
+          url = this.objects.object.thumbnail['@url'];
         }
-    });
+        // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
+        // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif
+        url = url.replace("govOpaAPI","gov/OpaAPI");
+        d3.select(d.DOM.record).select("img").attr("src",url);
+      }
+    }
+  });
 });
 
 </script>
     <style>
 .listItem{
-    width: 150px;
-    overflow: visible !important;
+  width: 150px;
+  overflow: visible !important;
 }
 .listItem > .itemRow{
-    overflow: visible !important;
+  overflow: visible !important;
 }
 .content{
-    padding: 3px;
+  padding: 3px;
 }
 .thumbnail{
-    overflow: visible !important;
+  overflow: visible !important;
 }
 .listItem:hover{
   z-index: 200 !important;
@@ -143,18 +143,16 @@ $(document).ready( function(){
   -o-transition: all 150ms ease-in;
   -moz-transition: all 150ms ease-in;
 }
-
     </style>
 	</head>
-    <body>
-        <div class="pageTitle" align="center">Civil Rights March on Washington 2 Photos - National Archives</div>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="pageTitle" align="center">Civil Rights March on Washington 2 Photos - National Archives</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            <a href="https://catalog.archives.gov/search?q=*:*&rows=20&offset=0&tabType=all&facet=true&facet.fields=oldScope,level,materialsType,fileFormat,locationIds,dateRangeFacet&highlight=true&f.parentNaId=513498&sort=naIdSort%20asc" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
-            <span class="fa fa-info-circle"></span>
-            </div>
-
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      <a href="https://catalog.archives.gov/search?q=*:*&rows=20&offset=0&tabType=all&facet=true&facet.fields=oldScope,level,materialsType,fileFormat,locationIds,dateRangeFacet&highlight=true&f.parentNaId=513498&sort=naIdSort%20asc" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

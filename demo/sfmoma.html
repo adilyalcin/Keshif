@@ -1,106 +1,105 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>SFMOMA Art Collection</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>SFMOMA Art Collection</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    $.ajax( {
-        // Cannot load remote resouce because it is in another domain
-        // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",
-        url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/Pivot_SFMOMACollection.xml',
-        dataType:"xml",
-        async: false,
-        success: function(collection){
-            browser.primaryTableName = "Artworks";
-            kshf.dt.Artworks = [];
+  $.ajax( {
+    // Cannot load remote resouce because it is in another domain
+    // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",
+    url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/Pivot_SFMOMACollection.xml',
+    dataType:"xml",
+    async: false,
+    success: function(collection){
+      browser.primaryTableName = "Artworks";
+      kshf.dt.Artworks = [];
 
-            $(collection).find("> Collection > Items > Item").each(function(){
-                var $this = $(this);
-                var cData = {};
-                cData.url = $this.attr("Href");
-                cData.id = parseInt($this.attr("Id"));
-                cData.Name = $this.attr("Name");
-                cData.Description = $this.find("Description").text();
+      $(collection).find("> Collection > Items > Item").each(function(){
+        var $this = $(this);
+        var cData = {};
+        cData.url = $this.attr("Href");
+        cData.id = parseInt($this.attr("Id"));
+        cData.Name = $this.attr("Name");
+        cData.Description = $this.find("Description").text();
 
-                $this.find(">Facets>Facet").each(function(d){
-                    var columnName = this.getAttribute("Name");
-                    var $item = $(this);
-                    cData[columnName] = [];
-                    if($item.find(">String").length>0) {
-                        $item.find(">String").each(function(){
-                            cData[columnName].push(this.getAttribute("Value"));
-                        })
-                    } else if($item.find(">Number").length>0) {
-                        cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-                    } else {
-                        cData[columnName] = undefined;
-                    }
-                });
+        $this.find(">Facets>Facet").each(function(d){
+          var columnName = this.getAttribute("Name");
+          var $item = $(this);
+          cData[columnName] = [];
+          if($item.find(">String").length>0) {
+            $item.find(">String").each(function(){
+              cData[columnName].push(this.getAttribute("Value"));
+            })
+          } else if($item.find(">Number").length>0) {
+            cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+          } else {
+            cData[columnName] = undefined;
+          }
+        });
 
-                cData.Time = new Date(cData['Creation Date'], 0);
-                cData['Year Born'] = new Date(cData['Year Born'], 0);
+        cData.Time = new Date(cData['Creation Date'], 0);
+        cData['Year Born'] = new Date(cData['Year Born'], 0);
 
-                kshf.dt.Artworks.push(new kshf.Item(cData,"id"));
-            });
+        kshf.dt.Artworks.push(new kshf.Item(cData,"id"));
+      });
 
-            browser.loadCharts();   
-        }
-    });
+      browser.loadCharts();   
+    }
+  });
 };
 
 $(document).ready( function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Artworks in SFMOMA",
-        categoryTextWidth: 180,
-        rightPanelLabelWidth: 280,
-        barChartWidth: 70,
-        source: {
-            url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Artist", minAggrValue: 3, layout: 'right', collapsed: true
-            },{ title: "Nationality", layout: 'right'
-            },{ title: "Gender", layout: 'right'
-            },{ title: "Living", layout: 'right'
-            },{ title: "Year Born", layout: 'right'
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Artworks in SFMOMA",
+    categoryTextWidth: 180,
+    rightPanelLabelWidth: 280,
+    barChartWidth: 70,
+    source: {
+      url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
+      callback: loadData
+    },
+    summaries: [
+      {   title: "Artist", minAggrValue: 3, layout: 'right', collapsed: true },
+      { title: "Nationality", layout: 'right' },
+      { title: "Gender", layout: 'right' },
+      { title: "Living", layout: 'right' },
+      { title: "Year Born", layout: 'right' },
 
-            },{ title: "Collection", collapsed: true,
-            },{ title: "Object Type",
-//            },{ title: "Medium",
-            },{ title: "Creation Date", value: "Time", layout: 'bottom'
-            },{ title: "Department",
-            },{ title: "On Display",
+      { title: "Collection", collapsed: true },
+      { title: "Object Type" },
+//    { title: "Medium", },
+      { title: "Creation Date", value: "Time", layout: 'bottom' },
+      { title: "Department" },
+      { title: "On Display" }
 //            },{ title: "Key Words", collapsed: true
-            }
-        ],
-        itemDisplay: {
-            textSearch: "Name",
-            recordView: "Name"
-        }
-    });
+    ],
+    itemDisplay: {
+      textSearch: "Name",
+      recordView: "Name"
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                height: 700px;
-                width: 1150px;
-            }
-        </style>
+    </script>
+    <style>
+#chart_div {
+  height: 700px;
+  width: 1150px;
+}
+    </style>
     </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

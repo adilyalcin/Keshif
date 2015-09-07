@@ -1,57 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Titanic Passengers</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Titanic Passengers</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 150,
-        itemName: "Titanic Passengers",
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
-            sheets: "Passengers"
-        },
-        summaries: [
-            {   title: "Survived", value: "survived", catLabel: function(){ return (this.id)?'Yes':'No'; }
-            },{ title: "Class", value: "pclass",
-                /* 1st-2nd-3rd => 1-2-3 */
-                catSortBy: function(){ return 1*this.id.substr(0,1); }
-            },{ title: "Sex", value: "sex", catLabel: function(){ return this.id+" "+getIcon(this.id); },
-            },{ title: "Age", value: "age", layout:'bottom', showPercentile: true
-            },{ title: "Embarked", value: "embarked"
-            },{ title: "Room", value: "room", collapsed: true
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 30,
-            sortingOpts: {title: 'Age', value: "age"},
-            textSearch: "name",
-            recordView: "name"
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    itemName: "Titanic Passengers",
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
+      tables: "Passengers"
+    },
+    summaries: [
+      { title: "Survived", value: "survived", catLabel: function(){ return (this.id)?'Yes':'No'; } },
+      { title: "Class", value: "pclass",
+        /* 1st-2nd-3rd => 1-2-3 */
+        catSortBy: function(){ return 1*this.id.substr(0,1); } },
+      { title: "Sex", value: "sex", catLabel: function(){ return this.id+" "+getIcon(this.id); }, },
+      { title: "Age", value: "age", layout:'bottom', showPercentile: true },
+      { title: "Embarked", value: "embarked" },
+      { title: "Room", value: "room", collapsed: true }
+    ],
+    itemDisplay: {
+      sortColWidth: 30,
+      sortingOpts: {title: 'Age', value: "age"},
+      textSearch: "name",
+      recordView: "name"
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 750px;
-                height: 700px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 750px;
+  height: 700px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

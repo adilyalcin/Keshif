@@ -1,172 +1,164 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Smartphones</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css" type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Smartphones</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css" type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <link rel="stylesheet" href="./css/style.css" type="text/css">
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript">
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
 function loadData(browser){
-    browser.primaryTableName = "Smartphones";
-    kshf.dt.Smartphones = [];
-    $.ajax({
-        url: "./data/smartphones.json",
-        success: function(data){
-            data.forEach(function(phone){
-                // convert string to int...
-                phone.id = 1*phone.id;
-                phone['Has Dual SIM'] = 1*phone.att_dual_sim;
-                phone.att_pixels_x = 1*phone.att_pixels_x;
-                phone.att_pixels_y = 1*phone.att_pixels_y;
-                phone.RAM = 1*phone.att_ram;
-                phone['Screen Size'] = 1*phone.att_screen_size;
-                phone.SDCard = 1*phone.att_sd_card;
-                phone.Storage = 1*phone.att_storage;
-                phone.Weight = 1*phone.att_weight;
-                phone.Price = 1*phone.price;
-                phone.Brand = phone.att_brand;
-                phone.Model = phone.att_base_name;
-                phone.URL = phone.url.split("%")[0];
+  browser.primaryTableName = "Smartphones";
+  kshf.dt.Smartphones = [];
+  $.ajax({
+    url: "./data/smartphones.json",
+    success: function(data){
+      data.forEach(function(phone){
+        // convert string to int...
+        phone.id = 1*phone.id;
+        phone['Has Dual SIM'] = 1*phone.att_dual_sim;
+        phone.att_pixels_x = 1*phone.att_pixels_x;
+        phone.att_pixels_y = 1*phone.att_pixels_y;
+        phone.RAM = 1*phone.att_ram;
+        phone['Screen Size'] = 1*phone.att_screen_size;
+        phone.SDCard = 1*phone.att_sd_card;
+        phone.Storage = 1*phone.att_storage;
+        phone.Weight = 1*phone.att_weight;
+        phone.Price = 1*phone.price;
+        phone.Brand = phone.att_brand;
+        phone.Model = phone.att_base_name;
+        phone.URL = phone.url.split("%")[0];
 
-                phone.last_update = moment(phone.last_update).toDate();
-                phone.SaveDate = moment(phone.att_manually_saved).toDate();
+        phone.last_update = moment(phone.last_update).toDate();
+        phone.SaveDate = moment(phone.att_manually_saved).toDate();
 
-                // unused properties
-                delete phone.att_dual_sim;
-                delete phone.att_ram;
-                delete phone.att_screen_size;
-                delete phone.att_sd_card;
-                delete phone.att_storage;
-                delete phone.att_weight;
-                delete phone.price;
-                delete phone.att_brand;
-                delete phone.att_base_name;
+        // unused properties
+        delete phone.att_dual_sim;
+        delete phone.att_ram;
+        delete phone.att_screen_size;
+        delete phone.att_sd_card;
+        delete phone.att_storage;
+        delete phone.att_weight;
+        delete phone.price;
+        delete phone.att_brand;
+        delete phone.att_base_name;
 
-                delete phone.att_base_name;
-                delete phone.last_update;
-                delete phone.needs_update;
-                delete phone.att_base_name;
-                delete phone.att_manually_saved;
-                delete phone.last_update;
+        delete phone.att_base_name;
+        delete phone.last_update;
+        delete phone.needs_update;
+        delete phone.att_base_name;
+        delete phone.att_manually_saved;
+        delete phone.last_update;
 
-                delete phone.status;
-                delete phone.SaveDate;
+        delete phone.status;
+        delete phone.SaveDate;
 
-                kshf.dt.Smartphones.push(new kshf.Item(phone,"id"));
-            });
+        kshf.dt.Smartphones.push(new kshf.Item(phone,"id"));
+      });
 
-            browser.loadCharts();
-        }
-    });
+      browser.loadCharts();
+    }
+  });
 };
 
 $(document).ready( function() {
+  resizeBrowser(300,80);
+  $(window).resize(function() {
     resizeBrowser(300,80);
-    $(window).resize(function() {
-        resizeBrowser(300,80);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 110,
-        barChartWidth: 140,
-        source: {
-            url: "http://www.productchart.com/smartphones/",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Brand"
-            },{ title: "Model", collapsed: true
-            },{ title: "Price", unitName: "$"
-            },{ title: "Screen Size", unitName: "″"
-            },{ title: "Weight", unitName: "oz."
-            },{ title: "Storage", layout: 'right', unitName: "GB"
-            },{ title: "SDCard", layout: 'right', unitName: "GB"
-            },{ title: "RAM", layout: 'right', unitName: "GB"
-            },{ title: "Pixels - Width", value: "att_pixels_x", layout: 'right'
-            },{ title: "Pixels - Height", value: "att_pixels_y", layout: 'right'
-            },{ title: "Has Dual SIM", type: 'categorical', collapsed: true
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: ["Price", "Storage", "Weight", "Screen Size"],
-            displayType: "grid",
-            textSearch: "name",
-            recordView : function(){
-                return "<a target='_blank' href='"+this.URL+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Model+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",this.image);
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 110,
+    barChartWidth: 140,
+    source: {
+      url: "http://www.productchart.com/smartphones/",
+      callback: loadData
+    },
+    summaries: [
+      { title: "Brand" },
+      { title: "Model", collapsed: true },
+      { title: "Price", unitName: "$" },
+      { title: "Screen Size", unitName: "″" },
+      { title: "Weight", unitName: "oz." },
+      { title: "Storage", layout: 'right', unitName: "GB" },
+      { title: "SDCard", layout: 'right', unitName: "GB" },
+      { title: "RAM", layout: 'right', unitName: "GB" },
+      { title: "Pixels - Width", value: "att_pixels_x", layout: 'right' },
+      { title: "Pixels - Height", value: "att_pixels_y", layout: 'right' },
+      { title: "Has Dual SIM", type: 'categorical', collapsed: true }
+    ],
+    itemDisplay: {
+      sortingOpts: ["Price", "Storage", "Weight", "Screen Size"],
+      displayType: "grid",
+      textSearch: "name",
+      recordView : function(){
+        return "<a target='_blank' href='"+this.URL+
+            "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Model+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",this.image);
+      }
+    }
+  });
 });
-        </script>
-        <style>
-        .iteminfo a{
-            color:#606060;
-            font-style:italic;
-        }
-        #chart_div { width: 90%; }
-        .listItem{
-            width: 90px;
-            box-shadow: none !important;
-            overflow: visible !important;
-        }
-        .listItem .thumbImg{
-            width: auto !important;
-            max-height: 55px;
-        }
-        .subTitle{
-            font-size: 0.7em !important;
-        }
+    </script>
+    <style>
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+.listItem{
+  width: 90px;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.listItem .thumbImg{
+  width: auto !important;
+  max-height: 55px;
+}
+.subTitle{
+  font-size: 0.7em !important;
+}
 
-        .listItem .content img:hover{
-          transform: scale(1.5);
-        }
-        .thumbnail{
-            overflow: visible !important;
-        }
+.listItem .content img:hover{
+  transform: scale(1.5);
+}
+.thumbnail{
+  overflow: visible !important;
+}
 
-        .listItem:hover{
-          z-index: 200 !important;
-          overflow: visible !important;
-        }
-        .itemRow{
-          width: 100% !important;
-        }
-        .listItem > .itemRow{
-          overflow: visible !important;
-        }
-        .listItem{
-        }
-        .content img.thumbImg{
-          transition: all 200ms linear;
-          -webkit-transition: all 200ms linear;
-          -o-transition: all 200ms linear;
-          -moz-transition: all 200ms linear;
-        }
-        #chart_div {
-            width: 890px;
-            height: 600px;
-        }
-        </style>
+.listItem:hover{
+  z-index: 200 !important;
+  overflow: visible !important;
+}
+.itemRow{
+  width: 100% !important;
+}
+.listItem > .itemRow{
+  overflow: visible !important;
+}
+.content img.thumbImg{
+  transition: all 200ms linear;
+  -webkit-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

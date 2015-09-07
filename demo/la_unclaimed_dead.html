@@ -1,146 +1,136 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>L.A. County’s unclaimed remains of 2011</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>L.A. County’s unclaimed remains of 2011</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
-
+    <script type="text/javascript">
 $(document).ready( function(){
 
-    var dateFormat=d3.time.format("%m/%d/%Y");
+  var dateFormat=d3.time.format("%m/%d/%Y");
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 250,
-        barChartWidth: 200,
-        itemName: "Unclaimed Deads",
-        source: {
-            url: "http://spreadsheets.latimes.com/unclaimed-dead/",
-
-            // Link to folder "Public Datasets":
-                // Share: **With public** (not anyone who has link)
-            // https://drive.google.com/open?id=0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0
-                // https://googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0
-                    // Redirects to : USE THIS REDIRECTED LINK
-                        // https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/
-
-            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
-
-            fileType: 'csv',
-            sheets: [ {name:"la-unclaimed-dead-new", id:"cr_no"} ]
-        },
-        summaries: [
-            {   title: "WHO?",
-                value: function(){
-                    var r=[];
-                    switch(this.Sex){
-                        case 'M': r.push("Men "+getIcon("M")); break;
-                        case 'F': r.push("Women "+getIcon("F")); break;
-                    }
-                    // if(this.Birth_==='unknown') r.push("Unknown");
-                    // Nope, above doesn't really work. We need to parse the last name
-                    if(this.Last.substr(0,3)==='Doe') r.push("Unknown <span class='fa gender-icon fa-question'></span>");
-//                    if(this.Note!=="") r.push("Has note <span class='fa fa-file-text'></span>");
-                    if(this.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
-                    return r;
-                }
-            },{ title: "Age at Death", value: "Age"
-            },{ title: "Death Date", value: function(){ 
-                var x=dateFormat.parse(this.Death);
-                if(x!==null) return new Date(x);
-            }
-            },{ title: "After Story is Published...",
-                value: function(){ if(this.claimed) return "Claimed"; }
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: { title: 'Age at Death', value: "Age", inverse:false },
-            textSearch: { title: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
-            recordView: function(){
-                var str="";
-                switch(this.Sex){
-                    case 'M': str+="<span class='fa gender-icon fa-male'></span> ";    break;
-                    case 'F': str+="<span class='fa gender-icon fa-female'></span> ";  break;
-                    default:  str+="<span class='fa gender-icon fa-question'></span>"; break;
-                }
-                if(this.isBaby){
-                    str+="<span class='fa gender-icon fa-child'></span> ";
-                }
-                str+=this.Last+", "+this.First;
-                if(this.Note){
-                    str+="<span class='note'>"+this.Note+" <span class='fa fa-file-text'></span></span>";
-                }
-                return str;
-            },
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 250,
+    barChartWidth: 200,
+    itemName: "Unclaimed Deads",
+    source: {
+      url: "http://spreadsheets.latimes.com/unclaimed-dead/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: {name:"la-unclaimed-dead-new", id:"cr_no"}
+    },
+    summaries: [
+      { title: "WHO?",
+        value: function(){
+          var r=[];
+          switch(this.Sex){
+            case 'M': r.push("Men "+getIcon("M")); break;
+            case 'F': r.push("Women "+getIcon("F")); break;
+          }
+          // if(this.Birth_==='unknown') r.push("Unknown");
+          // Nope, above doesn't really work. We need to parse the last name
+          if(this.Last.substr(0,3)==='Doe') r.push("Unknown <span class='fa gender-icon fa-question'></span>");
+          //                    if(this.Note!=="") r.push("Has note <span class='fa fa-file-text'></span>");
+          if(this.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
+          return r;
+        } },
+      { title: "Age at Death", value: "Age" },
+      { title: "Death Date", 
+        value: function(){ 
+          var x=dateFormat.parse(this.Death);
+          if(x!==null) return new Date(x);
+        } },
+      { title: "After Story is Published...",
+        value: function(){ if(this.claimed) return "Claimed"; } }
+    ],
+    itemDisplay: {
+      sortingOpts: { title: 'Age at Death', value: "Age", inverse:false },
+      textSearch: { title: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
+      recordView: function(){
+        var str="";
+        switch(this.Sex){
+          case 'M': str+="<span class='fa gender-icon fa-male'></span> ";    break;
+          case 'F': str+="<span class='fa gender-icon fa-female'></span> ";  break;
+          default:  str+="<span class='fa gender-icon fa-question'></span>"; break;
         }
-    });
+        if(this.isBaby){
+          str+="<span class='fa gender-icon fa-child'></span> ";
+        }
+        str+=this.Last+", "+this.First;
+        if(this.Note){
+          str+="<span class='note'>"+this.Note+" <span class='fa fa-file-text'></span></span>";
+        }
+        return str;
+      },
+    }
+  });
 });
         </script>
 <style>
 #chart_div{
-    width: 950px;
-    height: 500px;
+  width: 950px;
+  height: 500px;
 }
 .listItem{
-    width: 20%;
+  width: 20%;
 }
 .content{
-    padding: 3px;
+  padding: 3px;
 }
 .thumbnail{
-    height: 45px;
+  height: 45px;
 }
 .fa-male{
-    color: rgb(73, 155, 202);
+  color: rgb(73, 155, 202);
 }
 .fa-female{
-    color: rgb(255, 148, 167);
+  color: rgb(255, 148, 167);
 }
 .fa-child{
-    color: rgb(103, 215, 119);
+  color: rgb(103, 215, 119);
 }
 .note{
-    float: right;
-    color: gray;
-    font-size: 0.8em;
+  float: right;
+  color: gray;
+  font-size: 0.8em;
 }
 .mainTextSearch input{
-    width: 73px;
+  width: 73px;
 }
 #chart_div .gender-icon{
-    width: 10px;
-    text-align: center;
+  width: 10px;
+  text-align: center;
 }
 .kshfChart[chart_id='4'] .barChartPreviewAxis{
-    display: none;
+  display: none;
 }
 </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">L.A. County’s unclaimed remains of 2011</div>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">L.A. County’s unclaimed remains of 2011</div>
 
-        <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Orignally reported by L.A. Times - <a href="http://spreadsheets.latimes.com/unclaimed-dead/" target='_blank'>
-                L.A. County’s unclaimed remains of 2011</a>. <span class='fa fa-arrow-circle-right'></span>
-            <a href="http://www.latimes.com/local/great-reads/la-me-c1-unclaimed-dead-20141109-story.html" 
-                target="_blank">Story</a> <span class='fa fa-arrow-circle-right'></span> <a href="http://www.latimes.com/local/lanow/la-me-c1-unclaimed-dead-reporting-20141108-story.html" target="_blank">Reporting</a>
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Orignally reported by L.A. Times - <a href="http://spreadsheets.latimes.com/unclaimed-dead/" target='_blank'>
+          L.A. County’s unclaimed remains of 2011</a>. <span class='fa fa-arrow-circle-right'></span>
+      <a href="http://www.latimes.com/local/great-reads/la-me-c1-unclaimed-dead-20141109-story.html" 
+          target="_blank">Story</a> <span class='fa fa-arrow-circle-right'></span> <a href="http://www.latimes.com/local/lanow/la-me-c1-unclaimed-dead-reporting-20141108-story.html" target="_blank">Reporting</a>
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

@@ -1,101 +1,99 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Mass Shootings in the U.S.</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Mass Shootings in the U.S.</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 110,
-        leftPanelLabelWidth: 220,
-        middlePanelLabelWidth: 200,
-        rightPanelLabelWidth: 120,
-        source: {
-            gdocId: '1yvkEwRmxHH_1fjIMGQQd2Tq2ygA0CaTmAKi3muToXBw',
-            sheets: "Mass Shootings in 12 Months"
-        },
-        summaries: [
-            {   title: "State", layout: 'right'
-            },{ title: "# Killed", 
-                value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; },
-                catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "left"
-            },{ title: "# Injured", catLabel: printPeopleIcons, sortingOpts: [{value: 'id'}], layout: "left"
-            },{ title: "Date", layout: "bottom"
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts: ['# Killed', '# Injured', 'Date'],
-            recordView: function(){ 
-                // Date State   City Or County  Address # Killed    # Injured
-            return "<b>"+this.State + ", " + this['City Or County'] +", "+this.Address+"</b>"+
-                "<div class='time'>"+this.Date.getUTCMonth()+"-"+this.Date.getUTCDay()+"-"+this.Date.getUTCFullYear()+"</div>"+
-                "<div class='killed'><span class='fwidth'>Killed</span>: "+printPeopleIcons.call({id:this['# Killed']})+"</div>"+
-                "<div class='injured'><span class='fwidth'>Injured</span>: "+printPeopleIcons.call({id:this['# Injured']})+"</div>"
-                ;
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 110,
+    leftPanelLabelWidth: 220,
+    middlePanelLabelWidth: 200,
+    rightPanelLabelWidth: 120,
+    source: {
+      gdocId: '1yvkEwRmxHH_1fjIMGQQd2Tq2ygA0CaTmAKi3muToXBw',
+      tables: "Mass Shootings in 12 Months"
+    },
+    summaries: [
+      { title: "State", layout: 'right' },
+      { title: "# Killed", layout: "left", catSortBy: 'id', 
+        value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; },
+        catLabel: printPeopleIcons,  },
+      { title: "# Injured", layout: "left", catLabel: printPeopleIcons, catSortBy: 'id' },
+      { title: "Date", layout: "bottom" }
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      sortingOpts: ['# Killed', '# Injured', 'Date'],
+      recordView: function(){ 
+        // Date State   City Or County  Address # Killed    # Injured
+      return "<b>"+this.State + ", " + this['City Or County'] +", "+this.Address+"</b>"+
+        "<div class='time'>"+this.Date.getUTCMonth()+"-"+this.Date.getUTCDay()+"-"+this.Date.getUTCFullYear()+"</div>"+
+        "<div class='killed'><span class='fwidth'>Killed</span>: "+printPeopleIcons.call({id:this['# Killed']})+"</div>"+
+        "<div class='injured'><span class='fwidth'>Injured</span>: "+printPeopleIcons.call({id:this['# Injured']})+"</div>"
+        ;
+      }
+    }
+  });
 });
         </script>
         <style>
 #chart_div {
-    width: 1100px;
-    height: 750px;
+  width: 1100px;
+  height: 750px;
 }
 .listItem{
-    margin-top: 3px;
+  margin-top: 3px;
 }
 .kshfChart[chart_id="9"] .theLabel .fa{
-    font-size: 1.4em;
-    color: red;
-    margin: 0px 2px;
+  font-size: 1.4em;
+  color: red;
+  margin: 0px 2px;
 }
 .kshfChart[chart_id="10"] .theLabel .fa{
-    margin: 0px 2px;
+  margin: 0px 2px;
 }
 .fwidth{
-    font-weight: 300;
-    display: inline-block;
-    width: 62px;
-    text-align: right;
+  font-weight: 300;
+  display: inline-block;
+  width: 62px;
+  text-align: right;
 }
 .killed .fa{
-    color: red;
-    margin: 0px 2px;
+  color: red;
+  margin: 0px 2px;
 }
 .injured .fa{
-    margin: 0px 2px;
+  margin: 0px 2px;
 }
 .time{
-    font-weight: 300;
+  font-weight: 300;
 }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+      </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Mass shootings reported by 
-            <a href="http://www.gunviolencearchive.org/mass-shooting" target="_blank">
-                Gun Violance Archive</a>
-            <span class="fa fa-info-circle"></span>
-            </div>
-
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Mass shootings reported by 
+      <a href="http://www.gunviolencearchive.org/mass-shooting" target="_blank">
+          Gun Violance Archive</a>
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

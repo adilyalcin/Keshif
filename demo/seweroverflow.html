@@ -1,111 +1,110 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Sewer overflows in Maryland, USA</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Sewer overflows in Maryland, USA</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    $.ajax( {
+  $.ajax( {
 //      To use dynamic data loaded from maryland.gov, use the following link instead
 //        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
-        url: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/seweroverflows.json",
-        dataType: "json",
-        success: function(data){
-            browser.primaryTableName = "Overflow";
-            kshf.dt.Overflow = [];
-            // Note: data.meta includes meta information (column names, types, etc)
-            data.data.forEach(function(overflow){
-                kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
-            });
-            browser.loadCharts();
-        }
-    });
+    url: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/seweroverflows.json",
+    dataType: "json",
+    success: function(data){
+      browser.primaryTableName = "Overflow";
+      kshf.dt.Overflow = [];
+      // Note: data.meta includes meta information (column names, types, etc)
+      data.data.forEach(function(overflow){
+          kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
+      });
+      browser.loadCharts();
+    }
+  });
 };
 
 $(document).ready(function(){
-    // after web page is loaded, you can inspect browser object (on browser developer tools)
-    // to see the data / functions it includes
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Sewer Overflows in Maryland, 2004-2016",
-        categoryTextWidth: 200,
-        showDataSource: true,
-        source: { 
-            callback: loadData,
-            url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
-        },
-        summaries: [
-            {   title: "Overflow Type", value: function(){ return this[8]; }
-            },{ title: "Cause", value: function(){ return this[21]; }
-            },{ title: "Date",  value: function(){ return new Date(moment(this[11])); }
-            },{ title: "Duration", value: getDuration_Human
-            },{ title: "Zip Code", value: function(){ return this[17]; }, layout: 'right',
-            },{ title: "County", value: function(){ return this[23]; }, layout: 'right',
-            },{ title: "Municipality/Facility", value: function(){ return this[9]; }, layout: 'right',
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 110,
-            sortingOpts: [
-                { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
-                "Date",
-                { title: 'id', value: function(){ return this[0]; } }
-            ],
-            recordView: function(){
-                return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes";
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Sewer Overflows in Maryland, 2004-2016",
+    categoryTextWidth: 200,
+    showDataSource: true,
+    source: { 
+      callback: loadData,
+      url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
+    },
+    summaries: [
+      { title: "Overflow Type", value: function(){ return this[8]; } },
+      { title: "Cause", value: function(){ return this[21]; } },
+      { title: "Date",  value: function(){ return new Date(moment(this[11])); } },
+      { title: "Duration", value: getDuration_Human },
+      { title: "Zip Code", value: function(){ return this[17]; }, layout: 'right', },
+      { title: "County", value: function(){ return this[23]; }, layout: 'right', },
+      { title: "Municipality/Facility", value: function(){ return this[9]; }, layout: 'right',
+      }
+    ],
+    itemDisplay: {
+      sortColWidth: 110,
+      sortingOpts: [
+        { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
+        "Date",
+        { title: 'id', value: function(){ return this[0]; } }
+      ],
+      recordView: function(){
+        return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes";
+      }
+    }
+  });
 });
 
 var getDuration_TotalMinutes = function(){ 
-    var days = parseInt(this[13]);
-    var hours = parseInt(this[14]);
-    var minutes = parseInt(this[15]);
-    if(isNaN(days)) days=0;
-    if(isNaN(minutes)) minutes=0;
-    if(isNaN(hours)) hours=0;
-    var total_minutes = minutes + 60*hours + 60*24*days;
-    return total_minutes; 
+  var days = parseInt(this[13]);
+  var hours = parseInt(this[14]);
+  var minutes = parseInt(this[15]);
+  if(isNaN(days)) days=0;
+  if(isNaN(minutes)) minutes=0;
+  if(isNaN(hours)) hours=0;
+  var total_minutes = minutes + 60*hours + 60*24*days;
+  return total_minutes; 
 };
 
 var getDuration_Human = function(){
-    var days = parseInt(this[13]);
-    var hours = parseInt(this[14]);
-    var minutes = parseInt(this[15]);
-    if(isNaN(days)) days=0;
-    if(isNaN(minutes)) minutes=0;
-    if(isNaN(hours)) hours=0;
-    var total_hours = hours + 24*days;
-    var total_minutes = minutes + 60*hours + 60*24*days;
-    if(total_minutes===0) return "N/A";
-    if(total_minutes>=60*24) return "1 or more days";
-    if(total_minutes>=60*5 ) return "5-24 hours";
-    if(total_minutes> 60 ) return "1-5 hours";
-    if(minutes>30) return "30-60 minutes";
-    if(minutes>15) return "15-30 minutes";
-    return "< 15 minutes";
+  var days = parseInt(this[13]);
+  var hours = parseInt(this[14]);
+  var minutes = parseInt(this[15]);
+  if(isNaN(days)) days=0;
+  if(isNaN(minutes)) minutes=0;
+  if(isNaN(hours)) hours=0;
+  var total_hours = hours + 24*days;
+  var total_minutes = minutes + 60*hours + 60*24*days;
+  if(total_minutes===0) return "N/A";
+  if(total_minutes>=60*24) return "1 or more days";
+  if(total_minutes>=60*5 ) return "5-24 hours";
+  if(total_minutes> 60 ) return "1-5 hours";
+  if(minutes>30) return "30-60 minutes";
+  if(minutes>15) return "15-30 minutes";
+  return "< 15 minutes";
 };
-        </script>
-        <style>
-            #chart_div {
-                width:1200px;
-                height:700px;
-            }
-        </style>
+    </script>
+    <style>
+#chart_div {
+  width:1200px;
+  height:700px;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body></html>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
+</html>

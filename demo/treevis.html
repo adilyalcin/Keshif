@@ -1,69 +1,69 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Tree Visualization Techniques</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Tree Visualization Techniques</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 function loadData(browser){
-    $.ajax({
-        url: "./data/treevis.xml",
-        contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-        async: false,
-        success: function(doc){
-            browser.primaryTableName = "Visualizations";
-            kshf.dt.Visualizations = [];
+  $.ajax({
+    url: "./data/treevis.xml",
+    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    async: false,
+    success: function(doc){
+      browser.primaryTableName = "Visualizations";
+      kshf.dt.Visualizations = [];
 
-            $(doc).find("list > item").each(function(i){
-                var $this = $(this);
-                var d={};
-                d.id = this.getAttribute("id");
-                d.Dimension = this.getAttribute("dim");
-                switch(d.Dimension){
-                    case "2": d.Dimension = "2-D"; break;
-                    case "3": d.Dimension = "3-D"; break;
-                    case "H": d.Dimension = "Hybrid"; break;
-                }
-                d.Representation = this.getAttribute("rep");
-                switch(d.Representation){
-                    case "I": d.Representation = "Implicit"; break;
-                    case "E": d.Representation = "Explicit"; break;
-                    case "H": d.Representation = "Hybrid"; break;
-                }
-                d.Alignment = this.getAttribute("pos");
-                switch(d.Alignment){
-                    case "A": d.Alignment = "Axis-Parallel"; break;
-                    case "R": d.Alignment = "Radial"; break;
-                    case "F": d.Alignment = "Free"; break;
-                }
-                d.Name = $this.find("name")[0].textContent.trim();
-                d.Year = parseInt($this.find("year")[0].textContent.trim());
-                if(d.Year<1970) d.Year = undefined;// remove those earlier than 1970
-                d.Authors = $this.find("authors")[0].textContent.trim();
-                d.Authors = d.Authors.replace(" and ",", ");
-                d.Authors = d.Authors.split(", ");
-                d.URL = $this.find("url")[0].textContent.trim();
-                d.Title = $this.find("title")[0].textContent.trim();
-                d.Venue = $this.find("publication")[0].textContent.trim();
-                kshf.dt.Visualizations.push(new kshf.Item(d,'id'));
-            });
-
-            browser.loadCharts();
+      $(doc).find("list > item").each(function(i){
+        var $this = $(this);
+        var d={};
+        d.id = this.getAttribute("id");
+        d.Dimension = this.getAttribute("dim");
+        switch(d.Dimension){
+          case "2": d.Dimension = "2-D"; break;
+          case "3": d.Dimension = "3-D"; break;
+          case "H": d.Dimension = "Hybrid"; break;
         }
-    });
+        d.Representation = this.getAttribute("rep");
+        switch(d.Representation){
+          case "I": d.Representation = "Implicit"; break;
+          case "E": d.Representation = "Explicit"; break;
+          case "H": d.Representation = "Hybrid"; break;
+        }
+        d.Alignment = this.getAttribute("pos");
+        switch(d.Alignment){
+          case "A": d.Alignment = "Axis-Parallel"; break;
+          case "R": d.Alignment = "Radial"; break;
+          case "F": d.Alignment = "Free"; break;
+        }
+        d.Name = $this.find("name")[0].textContent.trim();
+        d.Year = parseInt($this.find("year")[0].textContent.trim());
+        if(d.Year<1970) d.Year = undefined;// remove those earlier than 1970
+        d.Authors = $this.find("authors")[0].textContent.trim();
+        d.Authors = d.Authors.replace(" and ",", ");
+        d.Authors = d.Authors.split(", ");
+        d.URL = $this.find("url")[0].textContent.trim();
+        d.Title = $this.find("title")[0].textContent.trim();
+        d.Venue = $this.find("publication")[0].textContent.trim();
+        kshf.dt.Visualizations.push(new kshf.Item(d,'id'));
+      });
+
+      browser.loadCharts();
+    }
+  });
 }
 
 $(document).ready( function(){
@@ -73,63 +73,61 @@ $(document).ready( function(){
     browser.updateLayout();
   });
 
-		browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 140,
-        itemName: "Tree Visualization Techniques",
-        source: {
-            url: "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Dimension",
-            },{ title: "Representation",
-            },{ title: "Alignment",
-            },{ title: "Authors", collapsed: false
-            },{ title: "Year", value: function(){ return new Date(this.Year,1,1); }, layout: "bottom",
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: "Year",
-            textSearch: "Title",
-            displayType: 'grid',
-            recordView: function(){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",
-                    "http://www.cs.umd.edu/~yalcin/keshif_res/treevis/"+
-                    this.id+".png");
-            }
-        }
-    });
+	browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 140,
+    itemName: "Tree Visualization Techniques",
+    source: {
+      url: "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html",
+      callback: loadData
+    },
+    summaries: [
+      { title: "Dimension" },
+      { title: "Representation" },
+      { title: "Alignment" },
+      { title: "Authors", collapsed: false },
+      { title: "Year", value: function(){ return new Date(this.Year,1,1); }, layout: "bottom" }
+    ],
+    itemDisplay: {
+      sortingOpts: "Year",
+      textSearch: "Title",
+      displayType: 'grid',
+      recordView: function(){
+        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+            "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",
+          "http://www.cs.umd.edu/~yalcin/keshif_res/treevis/"+this.id+".png");
+      }
+    }
+  });
 });
-        </script>
-<style>
-    .listItem{
-        width: 140px;
-    }
-    .content{
-        padding: 3px;
-    }
-    .thumbnail{
-        border-radius: 10px;
-        border: solid 1px lightgray;
-    }
-</style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+    </script>
+    <style>
+.listItem{
+  width: 140px;
+}
+.content{
+  padding: 3px;
+}
+.thumbnail{
+  border-radius: 10px;
+  border: solid 1px lightgray;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
 
-            Data: <a href="http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html"
-                target='_blank'>treevis.net</a> A Visual Bibliography of Tree Visualization 2.0 by 
-                <a href="http://vcg.informatik.uni-rostock.de/~hs162/" target='_blank'>Hans-Jörg Schulz</a><br>
-            All rights for the technique images belong to their respective owners.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+      Data: <a href="http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html"
+          target='_blank'>treevis.net</a> A Visual Bibliography of Tree Visualization 2.0 by 
+          <a href="http://vcg.informatik.uni-rostock.de/~hs162/" target='_blank'>Hans-Jörg Schulz</a><br>
+      All rights for the technique images belong to their respective owners.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

@@ -1,69 +1,68 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>A Multi-Level Typology of Abstract Visualization Tasks</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>A Multi-Level Typology of Abstract Visualization Tasks</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 google.setOnLoadCallback(function(){
+  resizeBrowser(160,110);
+  $(window).resize(function() {
     resizeBrowser(160,110);
-    $(window).resize(function() {
-        resizeBrowser(160,110);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 200,
-        rightPanelLabelWidth: 200,
-        source: {
-            gdocId: '16zQtOlLLugoSvDw_87IiGVJK6FW2vyUtfVfxfMTkoQ0',
-            sheets: [ "Papers", {name:"Keywords",id:"Task"}, {name:"Levels",id:"Category"} ]
-        },
-        loadedCb: function(){
-            // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Papers, ['Authors'],", ",false);
-            kshf.Util.cellToArray(kshf.dt.Papers, ['Tasks'],"*",false);
-        },
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 200,
+    rightPanelLabelWidth: 200,
+    source: {
+      gdocId: '16zQtOlLLugoSvDw_87IiGVJK6FW2vyUtfVfxfMTkoQ0',
+      tables: [ "Papers", {name:"Keywords",id:"Task"}, {name:"Levels",id:"Category"} ]
+    },
+    loadedCb: function(){
+      // convert authors and keywords columns in publication table ( space separated IDs) to array
+      kshf.Util.cellToArray(kshf.dt.Papers, ['Authors'],", ",false);
+      kshf.Util.cellToArray(kshf.dt.Papers, ['Tasks'],"*",false);
+    },
+    summaries: [
+      { title: "Tasks",
+        catTableName: "Keywords",
+        catLabel: "Task",
         summaries: [
-            {   title: "Tasks",
-                catTableName: "Keywords",
-                catLabel: "Task",
-                summaries: [
-                    {   title: "Categories", value: "Category"
-                    },{ title: "Levels", value: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
-                    }
-                ]
-            },{ title: "Authors", layout: 'right', 
-            },{ title: "Features", layout: 'right', 
-                value: function(){
-                    var r=[];
-                    if(this.H==="*") r.push("Highlighted");
-                    if(this.Tasks && this.Tasks.length>0) r.push("Presents Taxonomy");
-                    return r;
-                }
-            },{ title: "Venue", layout: 'right', 
-            },{ title: "Date", layout: 'bottom', value: function(){return new Date(this.Year,1,1);}
+            {   title: "Categories", value: "Category"
+            },{ title: "Levels", value: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
             }
-        ],
-        itemDisplay: {
-            sortingOpts: ['Year', {title: 'id', inverse:true} ],
-            textSearch: "Title",
-            recordView: "Title"
-        }
-    });
+        ] },
+      { title: "Authors", layout: 'right',  },
+      { title: "Features", layout: 'right', 
+        value: function(){
+          var r=[];
+          if(this.H==="*") r.push("Highlighted");
+          if(this.Tasks && this.Tasks.length>0) r.push("Presents Taxonomy");
+          return r;
+        } },
+      { title: "Venue", layout: 'right',  },
+      { title: "Date", layout: 'bottom', value: function(){return new Date(this.Year,1,1);} }
+    ],
+    itemDisplay: {
+      sortingOpts: ['Year', {title: 'id', inverse:true} ],
+      textSearch: "Title",
+      recordView: "Title"
+    }
+  });
 });
         </script>
     </head>

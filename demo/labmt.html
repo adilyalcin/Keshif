@@ -1,128 +1,121 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Word Happiness - labMT 1.0 = language assessment by Mechanical Turk 1.0.</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Word Happiness - labMT 1.0 = language assessment by Mechanical Turk 1.0.</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 100,
-        rightPanelLabelWidth: 90,
-        source: {
-            gdocId: '1sS7M8HkLWbvmGHarPrIN8T-f2zujPDvioIGUPjAN4z4',
-            sheets: "Words"
-        },
-        summaries: [
-            {   title: "Happiness Avg.", layout: "middle"
-            },{ title: "Rank: Twitter", layout: "right",
-                description: "The ranking of a word by frequency of occurrence in the top 5000 words in Twitter"
-            },{ title: "Rank: Google", layout: "right",
-                description: "The ranking of a word by frequency of occurrence in the top 5000 words in Google"
-            },{ title: "Rank: NYTimes", layout: "right",
-                description: "The ranking of a word by frequency of occurrence in the top 5000 words in NYTimes"
-            },{ title: "Rank: Lyrics", layout: "right",
-                description: "The ranking of a word by frequency of occurrence in the top 5000 words in Lyrics"
-            }
-        ],
-        itemDisplay: {
-            maxVisibleItems_Default: 250,
-            showRank: true,
-            sortingOpts: [ 
-                'Happiness Avg.',
-                'Rank: Twitter',
-                'Rank: Google',
-                'Rank: NYTimes',
-                'Rank: Lyrics'
-            ],
-            detailsToggle: "off",
-            textSearch: "Word",
-            recordView: function(){
-                var str=this.Word;
-                var v=this['Happiness Avg.'];
-                var smile = "<i class='fa fa-smile-o'></i>";
-                var frown = "<i class='fa fa-frown-o'></i>";
-                if(v>8) {
-                    str+=smile+smile+smile;
-                } else if(v>7) {
-                    str+=smile+smile;
-                } else if(v>6) {
-                    str+=smile+smile;
-                } else if(v>4) {
-                    // str+=;//smile+smile;
-                } else if(v>3) {
-                    str+=frown;
-                } else if(v>2) {
-                    str+=frown+frown;
-                } else if(v>1) {
-                    str+=frown+frown+frown;
-                } else if(v>0) {
-                    str+=frown+frown+frown+frown;
-                }
-                return str;
-            }
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 100,
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '1sS7M8HkLWbvmGHarPrIN8T-f2zujPDvioIGUPjAN4z4',
+      tables: "Words"
+    },
+    summaries: [
+      { title: "Happiness Avg.", layout: "middle" },
+      { title: "Rank: Twitter", layout: "right",
+        description: "The ranking of a word by frequency of occurrence in the top 5000 words in Twitter" },
+      { title: "Rank: Google", layout: "right",
+        description: "The ranking of a word by frequency of occurrence in the top 5000 words in Google" },
+      { title: "Rank: NYTimes", layout: "right",
+        description: "The ranking of a word by frequency of occurrence in the top 5000 words in NYTimes" },
+      { title: "Rank: Lyrics", layout: "right",
+        description: "The ranking of a word by frequency of occurrence in the top 5000 words in Lyrics" }
+    ],
+    itemDisplay: {
+      maxVisibleItems_Default: 250,
+      showRank: true,
+      sortingOpts: [ 'Happiness Avg.', 'Rank: Twitter', 'Rank: Google', 'Rank: NYTimes', 'Rank: Lyrics' ],
+      detailsToggle: "off",
+      textSearch: "Word",
+      recordView: function(){
+        var str=this.Word;
+        var v=this['Happiness Avg.'];
+        var smile = "<i class='fa fa-smile-o'></i>";
+        var frown = "<i class='fa fa-frown-o'></i>";
+        if(v>8) {
+            str+=smile+smile+smile;
+        } else if(v>7) {
+            str+=smile+smile;
+        } else if(v>6) {
+            str+=smile+smile;
+        } else if(v>4) {
+            // str+=;//smile+smile;
+        } else if(v>3) {
+            str+=frown;
+        } else if(v>2) {
+            str+=frown+frown;
+        } else if(v>1) {
+            str+=frown+frown+frown;
+        } else if(v>0) {
+            str+=frown+frown+frown+frown;
         }
-    });
+        return str;
+      }
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 890px;
-                height: 700px;
-            }
-            .listItem{
-                padding: 4px 2px 0px 2px !important;
-                border: solid 1px lightgray  !important;
-                border-radius: 4px;
-                margin: 2px;
-            }
+    </script>
+    <style>
+#chart_div {
+  width: 890px;
+  height: 700px;
+}
+.listItem{
+  padding: 4px 2px 0px 2px !important;
+  border: solid 1px lightgray  !important;
+  border-radius: 4px;
+  margin: 2px;
+}
 
-            .listItem .fa{
-                font-size: 0.8em;
-                color: gray;
-                vertical-align: top;
-                margin-left: 2px;
-            }
+.listItem .fa{
+  font-size: 0.8em;
+  color: gray;
+  vertical-align: top;
+  margin-left: 2px;
+}
 
-            .kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"]{
-                box-shadow: none !important;
-                color: orangered;
-            }
-            .kshf .listDiv > .listItemGroup > .listItem[highlight=true]{
-                box-shadow: none !important;
-                background-color: #F8F8F8;
-                color: orangered;
-            }
-            .content{margin-left: 20px;}
+.kshf .listDiv > .listItemGroup > .listItem[highlight^="selected"]{
+  box-shadow: none !important;
+  color: orangered;
+}
+.kshf .listDiv > .listItemGroup > .listItem[highlight=true]{
+  box-shadow: none !important;
+  background-color: #F8F8F8;
+  color: orangered;
+}
+.content{margin-left: 20px;}
 
-            .itemRank{
-                position: absolute;
-                left: 2px;
-                top: 2px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+.itemRank{
+  position: absolute;
+  left: 2px;
+  top: 2px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Word happiness data from labMT 1.0 = language assessment by Mechanical Turk 1.0.<br>
-            <a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0026752" target='_blank'>Temporal Patterns of Happiness and Information in a Global Social Network: Hedonometrics and Twitter</a>.<br>
-            The average word happiness was evaluated according to users on Mechanical Turk, and other information. 
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Word happiness data from labMT 1.0 = language assessment by Mechanical Turk 1.0.<br>
+      <a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0026752" target='_blank'>Temporal Patterns of Happiness and Information in a Global Social Network: Hedonometrics and Twitter</a>.<br>
+      The average word happiness was evaluated according to users on Mechanical Turk, and other information. 
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

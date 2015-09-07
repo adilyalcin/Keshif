@@ -1,139 +1,133 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>The Best Commencement Speeches, Ever (Compiled by NPR)</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>The Best Commencement Speeches, Ever (Compiled by NPR)</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready( function() {
+  resizeBrowser(null,160);
+  $(window).resize(function() {
     resizeBrowser(null,160);
-    $(window).resize(function() {
-        resizeBrowser(null,160);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 80,
-        leftPanelLabelWidth: 200,
-        rightPanelLabelWidth: 110,
-        itemName: "Commencement Speeches",
-        source: {
-            url: "http://apps.npr.org/commencement/",
-            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
-            fileType: 'json',
-            sheets: "commencement-speeches"
-        },
-        summaries: [
-            {title: "Featured", value: function(){ return this.featured!==""?"Featured":null}, layout: "right"},
-            {title: "University", value: "school"},
-            //{title: "img_source", collapsed: true},
-            {title: "Field", value: "field", layout: "right"},
-            {title: "Tags", value: "tags", layout: "right"},
-            {title: "Year", value: "year", layout: "bottom", intervalScale: "linear", collapsed: true},
-        ],
-        itemDisplay: {
-            sortColWidth: 70,
-            sortingOpts: 'year',
-            detailsToggle: "off",
-            textSearch: "name",
-            recordView: function(d){
-                //d.DOM.record.setAttribute("title",this.money_quote);
-                return ""+
-                    "<span class='speaker_name'>"+this.name+"</span>"+
-                    "<span class='speaker_school'>"+this.school+"</span>"+
-                    ((this.video_url!=="")?
-                        "<a class='video_url fa fa-youtube-play' target='_blank' href='"+this.video_url+"''></a>":
-                        "")+
-                    ((this.audio_url!=="")?
-                        "<a class='audio_url fa fa-volume-up' target='_blank' href='"+this.audio_url+"''></a>":
-                        "")+
-                    (this.featured!==""?"<span class='fa fa-star'></span>":"")+
-                        //"<span class='item_details'>"+
-                            "<span class='money_quote'>"+this.money_quote+
-                                "<a class='full_text fa fa-file-text' target='_blank' href='"+this.full_text+"''></a>"+
-                                "</span>"+
-                            
-                        //"</span>"
-                        ""
-                    ;
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 80,
+    leftPanelLabelWidth: 200,
+    rightPanelLabelWidth: 110,
+    itemName: "Commencement Speeches",
+    source: {
+      url: "http://apps.npr.org/commencement/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'json',
+      tables: "commencement-speeches"
+    },
+    summaries: [
+      {title: "Featured", value: function(){ return this.featured!==""?"Featured":null}, layout: "right"},
+      {title: "University", value: "school"},
+      //{title: "img_source", collapsed: true},
+      {title: "Field", value: "field", layout: "right"},
+      {title: "Tags", value: "tags", layout: "right"},
+      {title: "Year", value: "year", layout: "bottom", intervalScale: "linear", collapsed: true},
+    ],
+    itemDisplay: {
+      sortColWidth: 70,
+      sortingOpts: 'year',
+      detailsToggle: "off",
+      textSearch: "name",
+      recordView: function(d){
+        //d.DOM.record.setAttribute("title",this.money_quote);
+        return ""+
+          "<span class='speaker_name'>"+this.name+"</span>"+
+          "<span class='speaker_school'>"+this.school+"</span>"+
+          ((this.video_url!=="")?
+              "<a class='video_url fa fa-youtube-play' target='_blank' href='"+this.video_url+"''></a>":"")+
+          ((this.audio_url!=="")?
+              "<a class='audio_url fa fa-volume-up' target='_blank' href='"+this.audio_url+"''></a>": "")+
+          (this.featured!==""?"<span class='fa fa-star'></span>":"")+
+          "<span class='money_quote'>"+this.money_quote+
+              "<a class='full_text fa fa-file-text' target='_blank' href='"+this.full_text+"''></a>"+
+              "</span>"
+          ;
+      }
+    }
+  });
 });
-        </script>
-        <style>
+    </script>
+    <style>
 #chart_div{
-    width: 1200px;
+  width: 1200px;
 }
 .speaker_name{
-    font-size: 1.2em;
-    font-weight: 700;
+  font-size: 1.2em;
+  font-weight: 700;
 }
 .speaker_school{
-    display: inline-block;
-    margin: 0px 5px;
+  display: inline-block;
+  margin: 0px 5px;
 }
 .speaker_school:before{
-    content: "at";
-    margin-right: 5px;
-    font-weight: 300;
-    font-style: 0.9em;
+  content: "at";
+  margin-right: 5px;
+  font-weight: 300;
+  font-style: 0.9em;
 }
 .full_text{
-    display: inline-block;
-    margin-left: 5px;
-    font-size: 1em;
-    color: gray;
+  display: inline-block;
+  margin-left: 5px;
+  font-size: 1em;
+  color: gray;
 }
 .money_quote{
-    display: block;
-    font-weight: 300;
-    font-size: 0.9em;
-    font-style: italic;
+  display: block;
+  font-weight: 300;
+  font-size: 0.9em;
+  font-style: italic;
 }
 .content a:hover{
-    text-decoration: underline;
+  text-decoration: underline;
 }
 .money_quote:before{
-    content: "\"";
-    font-weight: 700;
-    font-size: 1.1em;
+  content: "\"";
+  font-weight: 700;
+  font-size: 1.1em;
 }
 .video_url{
-    display: inline-block;
-    margin: 0px 3px;
-    font-size: 1.1em;
-    color: orangered;
-    text-decoration: none;
+  display: inline-block;
+  margin: 0px 3px;
+  font-size: 1.1em;
+  color: orangered;
+  text-decoration: none;
 }
 .audio_url{
-    display: inline-block;
-    margin: 0px 3px;
-    font-size: 1.1em;
-    color: orangered;
-    text-decoration: none;   
+  display: inline-block;
+  margin: 0px 3px;
+  font-size: 1.1em;
+  color: orangered;
+  text-decoration: none;   
 }
 .listItem{
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">The Best Commencement Speeches, Ever</div>
+      </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">The Best Commencement Speeches, Ever</div>
 
-        <div class="pageSubtitle">Compiled by <a href="http://apps.npr.org/commencement/">NPR</a></div>
+    <div class="pageSubtitle">Compiled by <a href="http://apps.npr.org/commencement/">NPR</a></div>
 
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

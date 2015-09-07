@@ -1,67 +1,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>Time Magazine Covers</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Time Magazine Covers</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
-        <script type="text/javascript">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript">
 
 var timeFormat = d3.time.format("%B %d, %Y");
 
 google.setOnLoadCallback(function(){
+  resizeBrowser(100,100);
+  $(window).resize(function() {
     resizeBrowser(100,100);
-    $(window).resize(function() {
-        resizeBrowser(100,100);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 160,
-        rightPanelLabelWidth: 120,
-        source: {
-            gdocId: '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
-            sheets: "Covers"
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
-        },
-        summaries: [
-            {   title: "Categories"
-            },{ title: "Credits", layout: 'right',
-            },{ title: "Month", layout: 'right',
-                value: function(){ if(this.Date) return this.Date.getMonth(); },
-                catLabel: function(){ return getMonthNameFromNumber(this.id); },
-                catSortBy: "id",
-            },{ title: "Date",  layout: 'bottom', 
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 120,
-            displayType: 'grid',
-            sortingOpts: { title: 'Date', label: function(){ return timeFormat(this.Date);} },
-            textSearch: "Info",
-            recordView: function(){ 
-                return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'><img class='thumbImg'></a>"+
-                  "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+
-                  "<span class='title'>"+this.MagazineTitle+"</span>";
-            },
-            visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail_2); }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 120,
+    source: {
+      gdocId: '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
+      tables: "Covers"
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
+    },
+    summaries: [
+      { title: "Categories" },
+      { title: "Credits", layout: 'right' },
+      { title: "Month", layout: 'right',
+        value: function(){ if(this.Date) return this.Date.getMonth(); },
+        catLabel: function(){ return getMonthNameFromNumber(this.id); },
+        catSortBy: "id", },
+      { title: "Date",  layout: 'bottom' }
+    ],
+    itemDisplay: {
+      sortColWidth: 120,
+      displayType: 'grid',
+      sortingOpts: { title: 'Date', label: function(){ return timeFormat(this.Date);} },
+      textSearch: "Info",
+      recordView: function(){ 
+        return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'><img class='thumbImg'></a>"+
+          "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+
+          "<span class='title'>"+this.MagazineTitle+"</span>";
+      },
+      visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail_2); }
+    }
+  });
 });
-        </script>
-        <style>
+    </script>
+    <style>
 #chart_div {
   width: calc(100% - 100px);
   height: 650px;
@@ -104,18 +103,18 @@ google.setOnLoadCallback(function(){
   -o-transition: all 200ms linear;
   -moz-transition: all 200ms linear;
 }
-        </style>
-    </head>
-    <body>
-      <div class="pageTitle" align="center">Cover Pages of the Time Magazine (1923 - 2006)</div>
-      
-      <div class="contents"><div id="chart_div"></div></div>
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Cover Pages of the Time Magazine (1923 - 2006)</div>
+    
+    <div class="contents"><div id="chart_div"></div></div>
 
-      <div id="infobox" align="center">
-          <span class="fa fa-info-circle"></span>
-          Data from <a href="http://content.time.com/time/coversearch/" target='_blank'>Time Magazine Cover search</a> and
-          <a href="http://www.coverbrowser.com/covers/time/" target='_blank'>Cover Browser</a>.
-          <span class="fa fa-info-circle"></span>
-          </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data from <a href="http://content.time.com/time/coversearch/" target='_blank'>Time Magazine Cover search</a> and
+      <a href="http://www.coverbrowser.com/covers/time/" target='_blank'>Cover Browser</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

@@ -1,133 +1,132 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Wedding Venues in UK (by Witched.co.uk)</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Wedding Venues in UK (by Witched.co.uk)</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    $.ajax( {
-        // Cannot load remote resouce because it is in another domain
-        // url:"http://www.hitched.co.uk/pivot/venues/pivot.cxml",
-        url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/Pivot_WeddingVenues.xml',
-        dataType:"xml",
-        async: false,
-        success: function(collection){
-            var $collection = $(collection);
-            browser.primaryTableName = "Venues";
-            kshf.dt["Venues"] = [];
-            var arr = kshf.dt["Venues"];
+  $.ajax( {
+    // Cannot load remote resouce because it is in another domain
+    // url:"http://www.hitched.co.uk/pivot/venues/pivot.cxml",
+    url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/Pivot_WeddingVenues.xml',
+    dataType:"xml",
+    async: false,
+    success: function(collection){
+      var $collection = $(collection);
+      browser.primaryTableName = "Venues";
+      kshf.dt["Venues"] = [];
+      var arr = kshf.dt["Venues"];
 
-            $collection.find("> Collection > Items > Item").each(function(){
-                var $this = $(this);
-                var cData = {};
-                cData.url = $this.attr("Href");
-                cData.id = $this.attr("Id");
-                cData.Name = $this.attr("Name");
-                cData.Description = $this.find("Description").text();
+      $collection.find("> Collection > Items > Item").each(function(){
+        var $this = $(this);
+        var cData = {};
+        cData.url = $this.attr("Href");
+        cData.id = $this.attr("Id");
+        cData.Name = $this.attr("Name");
+        cData.Description = $this.find("Description").text();
 
-                $this.find(">Facets>Facet").each(function(d){
-                    var columnName = this.getAttribute("Name");
-                    var $item = $(this);
-                    cData[columnName] = [];
-                    if($item.find(">String").length>0){
-                        $item.find(">String").each(function(){
-                            cData[columnName].push(this.getAttribute("Value"));
-                        })
-                    } else if($item.find(">Number").length>0){
-                        cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-                    } else{
-                        cData[columnName] = undefined;
-                    }
-                })
+        $this.find(">Facets>Facet").each(function(d){
+          var columnName = this.getAttribute("Name");
+          var $item = $(this);
+          cData[columnName] = [];
+          if($item.find(">String").length>0){
+            $item.find(">String").each(function(){
+                cData[columnName].push(this.getAttribute("Value"));
+            })
+          } else if($item.find(">Number").length>0){
+            cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+          } else{
+            cData[columnName] = undefined;
+          }
+        })
 
-                // customizations
+        // customizations
 
-                cData.id = parseInt(cData.id);
+        cData.id = parseInt(cData.id);
 
-                cData['Overnight Accommodation'] = [];
-                $this.find(">Facets>Facet[Name=\"Overnight Accommodation\"]>String").each(function(){
-                    cData['Overnight Accommodation'].push("... "+this.getAttribute("Value").substring(28));
-                });
+        cData['Overnight Accommodation'] = [];
+        $this.find(">Facets>Facet[Name=\"Overnight Accommodation\"]>String").each(function(){
+          cData['Overnight Accommodation'].push("... "+this.getAttribute("Value").substring(28));
+        });
 
-                if(cData['Average Facility Rating']){
-                    var stars = parseInt(cData['Average Facility Rating']);
-                    cData['Average Facility Rating'] = "";
-                    for(var i=0; i<stars; i++)
-                        cData['Average Facility Rating'] +="<span class='fa fa-star'></span>"
-                }
-                if(cData['Average Service Rating']){
-                    var stars = parseInt(cData['Average Service Rating']);
-                    cData['Average Service Rating'] = "";
-                    for(var i=0; i<stars; i++)
-                        cData['Average Service Rating'] +="<span class='fa fa-star'></span>"
-                }
-
-                arr.push(new kshf.Item(cData,"id"));
-            });
-
-            browser.loadCharts();   
+        if(cData['Average Facility Rating']){
+          var stars = parseInt(cData['Average Facility Rating']);
+          cData['Average Facility Rating'] = "";
+          for(var i=0; i<stars; i++)
+              cData['Average Facility Rating'] +="<span class='fa fa-star'></span>"
         }
-    });
+        if(cData['Average Service Rating']){
+          var stars = parseInt(cData['Average Service Rating']);
+          cData['Average Service Rating'] = "";
+          for(var i=0; i<stars; i++)
+              cData['Average Service Rating'] +="<span class='fa fa-star'></span>"
+        }
+
+        arr.push(new kshf.Item(cData,"id"));
+      });
+
+      browser.loadCharts();   
+    }
+  });
 };
 
 $(document).ready( function(){
+  resizeBrowser(240,80);
+  $(window).resize(function() {
     resizeBrowser(240,80);
-    $(window).resize(function() {
-        resizeBrowser(240,80);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Wedding Venues",
-        categoryTextWidth: 220,
-        rightPanelLabelWidth: 180,
-        source: {
-            url: 'http://www.hitched.co.uk/wedding-venues/visual-search.htm',
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Region Name"
-            },{ title: "County Name", collapsed: true 
-            },{ title: "Venue Type", layout: 'right',
-            },{ title: "Dining Options"
-            },{ title: "Overnight Accommodation"
-            },{ title: "Venue Leisure Facilities"
-            },{ title: "Other Features"
-            },{ title: "Venue Staff Assistance", layout: 'right'
-            },{ title: "Average Facility Rating", layout: 'right'
-            },{ title: "Average Service Rating", layout: 'right'
-            },{ title: "Number Of Reviews", value: 'Total Number Of Reviews', layout: 'right', collapsed: true
-            },{ title: "Maximum Capacity", layout: 'right', unitName: "ppl"
-            },{ title: "Minimum Capacity", layout: 'right', unitName: "ppl"
-            }
-        ],
-        itemDisplay: {
-            textSearch: "Name",
-            recordView: function(){
-                return "<a href='http://www.hitched.co.uk"+this.url+"' target='_blank'>"+this.Name+"</a>";
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Wedding Venues",
+    categoryTextWidth: 220,
+    rightPanelLabelWidth: 180,
+    source: {
+      url: 'http://www.hitched.co.uk/wedding-venues/visual-search.htm',
+      callback: loadData
+    },
+    summaries: [
+      { title: "Region Name" },
+      { title: "County Name", collapsed: true  },
+      { title: "Venue Type", layout: 'right', },
+      { title: "Dining Options" },
+      { title: "Overnight Accommodation" },
+      { title: "Venue Leisure Facilities" },
+      { title: "Other Features" },
+      { title: "Venue Staff Assistance", layout: 'right' },
+      { title: "Average Facility Rating", layout: 'right' },
+      { title: "Average Service Rating", layout: 'right' },
+      { title: "Number Of Reviews", value: 'Total Number Of Reviews', layout: 'right', collapsed: true },
+      { title: "Maximum Capacity", layout: 'right', unitName: "ppl" },
+      { title: "Minimum Capacity", layout: 'right', unitName: "ppl" }
+    ],
+    itemDisplay: {
+      textSearch: "Name",
+      recordView: function(){
+        return "<a href='http://www.hitched.co.uk"+this.url+"' target='_blank'>"+this.Name+"</a>";
+      }
+    }
+  });
 });
-        </script>
-        <style type="text/css" media="screen">
-            .content a{
-                color: black !important;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style type="text/css" media="screen">
+.content a{
+  color: black !important;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

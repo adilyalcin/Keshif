@@ -1,74 +1,73 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Start-ups in L.A. and Orange counties</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Start-ups in L.A. and Orange counties</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 $(document).ready( function(){
 
-    var dateFormat=d3.time.format("%m/%d/%Y");
+  var dateFormat=d3.time.format("%m/%d/%Y");
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 210,
-        rightPanelLabelWidth: 140,
-        source: {
-            url: "http://spreadsheets.latimes.com/film-set-accidents/",
-            gdocId: '1ZqZhF545lD11qG_p2IvBqlLecjzgTdmGbH1NmdSr-n8',
-            sheets: "Startups"
-        },
-        summaries: [ // Company Name    Founding Year   Capital raised to date (millions)   Industry    City
-            {   title: "Founding Year", layout: "bottom"
-            },{ title: "Capital Raised", unitName: "M$", layout: "bottom"
-            },{ title: "Industry", layout: "left"
-            },{ title: "City", layout: "right"
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 82,
-            sortingOpts: [
-                { title:'Capital Raised', inverse:false,  unitName: "M$"},
-                { title:'Founding Year', inverse:false },
-            ],
-            textSearch: "Company Name",
-            recordView: "Company Name",
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 210,
+    rightPanelLabelWidth: 140,
+    source: {
+      url: "http://spreadsheets.latimes.com/film-set-accidents/",
+      gdocId: '1ZqZhF545lD11qG_p2IvBqlLecjzgTdmGbH1NmdSr-n8',
+      tables: "Startups"
+    },
+    summaries: [ // Company Name    Founding Year   Capital raised to date (millions)   Industry    City
+      { title: "Founding Year", layout: "bottom" },
+      { title: "Capital Raised", unitName: "M$", layout: "bottom" },
+      { title: "Industry", layout: "left" },
+      { title: "City", layout: "right" }
+    ],
+    itemDisplay: {
+      sortColWidth: 82,
+      sortingOpts: [
+        { title:'Capital Raised', inverse:false,  unitName: "M$"},
+        { title:'Founding Year', inverse:false },
+      ],
+      textSearch: "Company Name",
+      recordView: "Company Name",
+    }
+  });
 });
-        </script>
-<style>
+    </script>
+    <style>
 #chart_div{
-    width: 1000px;
-    height: 650px;
+  width: 1000px;
+  height: 650px;
 }
-</style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">Start-ups in L.A. and Orange counties</div>
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Start-ups in L.A. and Orange counties</div>
 
-        <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data from <a href="http://spreadsheets.latimes.com/start-ups-l-and-orange-counties/" target='_blank'> L.A. Times </a> - 
-            News Story: <a href="http://www.latimes.com/business/la-fi-la-tech-startups-20141123-story.html" target="_blank">
-                Hollywood is giving tech start-ups the star treatment</a>.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data from <a href="http://spreadsheets.latimes.com/start-ups-l-and-orange-counties/" target='_blank'> L.A. Times </a> - 
+      News Story: <a href="http://www.latimes.com/business/la-fi-la-tech-startups-20141123-story.html" target="_blank">
+          Hollywood is giving tech start-ups the star treatment</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

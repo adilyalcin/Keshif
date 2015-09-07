@@ -16,156 +16,154 @@
 
         <script type="text/javascript">
 function pad(num, size) {
-    var s = num+"";
-    while (s.length < size) s = "0" + s;
-    return s;
+  var s = num+"";
+  while (s.length < size) s = "0" + s;
+  return s;
 };
 
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 230,
-        source: {
-            gdocId: '1nqZTWMr2xsYawyQlT6zjwV4pW5ZKRiQPd24jOkNJVYM',
-            sheets: "Book Chapters"
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 230,
+    source: {
+      gdocId: '1nqZTWMr2xsYawyQlT6zjwV4pW5ZKRiQPd24jOkNJVYM',
+      tables: "Book Chapters"
+    },
+    summaries: [
+      { title: "Domain Properties",
+        value: function(){
+          var r=[];
+          if(this['Number & Quantity']===1) r.push('Number & Quantity = 1.0');
+          if(this['Shape & Space']===1) r.push('Shape & Space = 1.0');
+          if(this['Shape & Space']===0.5) r.push('Shape & Space = 0.5');
+          if(this['Function']===1) r.push('Function = 1.0');
+          if(this['Function']===0.5) r.push('Function = 0.5');
+          if(this['Chance & Data']===1) r.push('Chance & Data = 1.0');
+          if(this['Arrangement']===1) r.push('Arrangement = 1.0');
+          return r;
         },
-        summaries: [
-            {   title: "Domain Properties",
-                value: function(){
-                    var r=[];
-                    if(this['Number & Quantity']===1) r.push('Number & Quantity = 1.0');
-                    if(this['Shape & Space']===1) r.push('Shape & Space = 1.0');
-                    if(this['Shape & Space']===0.5) r.push('Shape & Space = 0.5');
-                    if(this['Function']===1) r.push('Function = 1.0');
-                    if(this['Function']===0.5) r.push('Function = 0.5');
-                    if(this['Chance & Data']===1) r.push('Chance & Data = 1.0');
-                    if(this['Arrangement']===1) r.push('Arrangement = 1.0');
-                    return r;
-                },
-                catSortBy: function(){ 
-                    switch(this.id){
-                        case 'Number & Quantity = 1.0': return 1;
-                        case 'Shape & Space = 0.5': return 2;
-                        case 'Shape & Space = 1.0': return 3;
-                        case 'Function = 0.5': return 4;
-                        case 'Function = 1.0': return 5;
-                        case 'Chance & Data = 1.0': return 6;
-                        case 'Arrangement = 1.0': return 7;
-                    }
-                }
-            },{ title: "Modeling / Formulating"
-            },{ title: "Manipulating / Transforming"
-            },{ title: "Inferring / Drawing Conclusions"
-            },{ title: "Communicating"
-            },
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            detailsToggle: "zoom",
-            sortingOpts: { title: 'id', label: function(){ return this.Code+pad(this.id,3); }, inverse: true },
-            textSearch: "Name",
-            recordView: function(){
-                var str="";
-                str+="<div class='chapterTitle'>"+this.Name+"</div>";
-                str+="<span class='numTable'>";
-                    str+="<span class='act_mf act_"+this["Modeling / Formulating"]+"'>M/F</span>"
-                    str+="<span class='act_tf act_"+this["Manipulating / Transforming"]+"'>M/T</span>"
-                    str+="<span class='act_id act_"+this["Inferring / Drawing Conclusions"]+"'>I/D</span>"
-                    str+="<span class='act_c  act_"+this["Communicating"]+"'>C</span>"
-                str+="</span>";
-                str+="<span class='attrGroup'>Domains:</span> <span class='attrList'>";
-                if(this['Number & Quantity']){
-                    str+="Number & Quantity ["+this['Number & Quantity']+"], ";
-                }
-                if(this['Shape & Space']){
-                    str+="Shape & Space ["+this['Shape & Space']+"], ";
-                }
-                if(this['Function']){
-                    str+="Function ["+this['Function']+"], ";
-                }
-                if(this['Arrangement']){
-                    str+="Arrangement ["+this['Arrangement']+"], ";
-                }
-                if(this['Chance & Data']){
-                    str+="Chance & Data ["+this['Chance & Data']+"], ";
-                }
-                str+="</span>";
-                return str;
-            }
+        catSortBy: function(){ 
+          switch(this.id){
+            case 'Number & Quantity = 1.0': return 1;
+            case 'Shape & Space = 0.5': return 2;
+            case 'Shape & Space = 1.0': return 3;
+            case 'Function = 0.5': return 4;
+            case 'Function = 1.0': return 5;
+            case 'Chance & Data = 1.0': return 6;
+            case 'Arrangement = 1.0': return 7;
+          }
+        } },
+      { title: "Modeling / Formulating" },
+      { title: "Manipulating / Transforming" },
+      { title: "Inferring / Drawing Conclusions" },
+      { title: "Communicating" },
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      detailsToggle: "zoom",
+      sortingOpts: { title: 'id', label: function(){ return this.Code+pad(this.id,3); }, inverse: true },
+      textSearch: "Name",
+      recordView: function(){
+        var str="";
+        str+="<div class='chapterTitle'>"+this.Name+"</div>";
+        str+="<span class='numTable'>";
+            str+="<span class='act_mf act_"+this["Modeling / Formulating"]+"'>M/F</span>"
+            str+="<span class='act_tf act_"+this["Manipulating / Transforming"]+"'>M/T</span>"
+            str+="<span class='act_id act_"+this["Inferring / Drawing Conclusions"]+"'>I/D</span>"
+            str+="<span class='act_c  act_"+this["Communicating"]+"'>C</span>"
+        str+="</span>";
+        str+="<span class='attrGroup'>Domains:</span> <span class='attrList'>";
+        if(this['Number & Quantity']){
+            str+="Number & Quantity ["+this['Number & Quantity']+"], ";
         }
-    });
+        if(this['Shape & Space']){
+            str+="Shape & Space ["+this['Shape & Space']+"], ";
+        }
+        if(this['Function']){
+            str+="Function ["+this['Function']+"], ";
+        }
+        if(this['Arrangement']){
+            str+="Arrangement ["+this['Arrangement']+"], ";
+        }
+        if(this['Chance & Data']){
+            str+="Chance & Data ["+this['Chance & Data']+"], ";
+        }
+        str+="</span>";
+        return str;
+      }
+    }
+  });
 });
         </script>
-        <style>
-            #chart_div {
-                width: 1000px;
-                height: 690px;
-            }
-            .chapterTitle{
-                font-weight: 700;
-                text-decoration: underline;
-                font-size: 1.1em;
-            }
-            .attrGroup{
-                font-weight: 300;
-                font-size: 0.9em;
-            }
-            .attrList{
-                font-size: 0.9em;
-                font-weight: 300;
-                color: gray;
-            }
-            .listItem{
-                border-top: solid 1px lightgray;
-            }
-            .numTable{
-                float: right;
-            }
-            .numTable span{
-                display: inline-block;
-                width: 45px;
-                border-left: solid 1px gray;
-                border-right: solid 1px gray;
-                padding: 0px 3px;
-                text-align: center;
-                font-size: 0.8em;
-                color: gray;
-            }
-            .act_0:after{
-                content: ":0"; color:;
-            }
-            .act_1:after{
-                content: ":1";
-            }
-            .act_2:after{
-                content: ":2";
-            }
-            .act_3:after{
-                content: ":3";
-            }
-            .act_4:after{
-                content: ":4";
-            }
-            .act_0{
-                background-color: rgba(255, 204, 204,0.1);
-            }
-            .act_1{
-                background-color: rgba(255, 204, 204,0.4);
-            }
-            .act_2{
-                background-color: rgba(255, 204, 204,0.6);
-            }
-            .act_3{
-                background-color: rgba(255, 204, 204,0.8);
-            }
-            .act_4{
-                background-color: rgba(255, 204, 204,1);
-            }
-
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+      <style>
+#chart_div {
+  width: 1000px;
+  height: 690px;
+}
+.chapterTitle{
+  font-weight: 700;
+  text-decoration: underline;
+  font-size: 1.1em;
+}
+.attrGroup{
+  font-weight: 300;
+  font-size: 0.9em;
+}
+.attrList{
+  font-size: 0.9em;
+  font-weight: 300;
+  color: gray;
+}
+.listItem{
+  border-top: solid 1px lightgray;
+}
+.numTable{
+  float: right;
+}
+.numTable span{
+  display: inline-block;
+  width: 45px;
+  border-left: solid 1px gray;
+  border-right: solid 1px gray;
+  padding: 0px 3px;
+  text-align: center;
+  font-size: 0.8em;
+  color: gray;
+}
+.act_0:after{
+  content: ":0"; color:;
+}
+.act_1:after{
+  content: ":1";
+}
+.act_2:after{
+  content: ":2";
+}
+.act_3:after{
+  content: ":3";
+}
+.act_4:after{
+  content: ":4";
+}
+.act_0{
+  background-color: rgba(255, 204, 204,0.1);
+}
+.act_1{
+  background-color: rgba(255, 204, 204,0.4);
+}
+.act_2{
+  background-color: rgba(255, 204, 204,0.6);
+}
+.act_3{
+  background-color: rgba(255, 204, 204,0.8);
+}
+.act_4{
+  background-color: rgba(255, 204, 204,1);
+}
+      </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

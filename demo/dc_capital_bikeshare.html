@@ -1,79 +1,73 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Bike Trips in New York City</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Bike Trips in New York City</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 110,
-        leftPanelLabelWidth: 250,
-        rightPanelLabelWidth: 250,
-        itemName: "Bike Trips in Washington D.C., March 2015",
-        source: {
-            gdocId: '18p2AnNPea-wWDDcNSnl_nr-SPDIfrJuSu1JLlkVFhC4',
-            sheets: "Trips"
-        },
-        readyCb: function(){
-            browser.summaries_by_name["Day of Month"].height_hist_max = 80; // total dur
-            browser.summaries_by_name["Total Duration"].height_hist_max = 80;
-            browser.summaries_by_name["Trip Start Hour"].height_hist_max = 80;
-            browser.updateLayout();
-        },
-        summaries: [
-            {   title: "Subscription Type", layout: 'middle'
-            },{ title: "Start Station", layout: 'left'
-            },{ title: "End Station", layout: 'right'
-            },{ title: "Total Duration", layout: 'bottom',
-                value: function(){
-                    return Math.round(this["Total duration (ms)"]/60000);// ms to seconds
-                }, unitName: "min"
-            },{ title: "Day of Month", layout: "bottom",
-                value: function(){ return this["Start Time"].getDate(); },
-            },{ title: "Day of Week", layout: "middle",
-                value: function(){ return this["Start Time"].getDay(); },
-                catSortBy: "id",
-                catLabel: function(){ return getDayNameFromNumber(this.id); }
-            },{ title: "Trip Start Hour", layout: "bottom", collapsed: false,
-                value: function(){ 
-                    return this["Start Time"].getHours();
-                }, unitName: ":00"
-            }
-        ]
-    });
-});
-        </script>
-        <style>
-            #chart_div {
-                width: 1100px;
-                height: 700px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 110,
+    leftPanelLabelWidth: 250,
+    rightPanelLabelWidth: 250,
+    itemName: "Bike Trips in Washington D.C., March 2015",
+    source: {
+      gdocId: '18p2AnNPea-wWDDcNSnl_nr-SPDIfrJuSu1JLlkVFhC4',
+      tables: "Trips"
+    },
+    readyCb: function(){
+      browser.summaries_by_name["Day of Month"].height_hist_max = 80; // total dur
+      browser.summaries_by_name["Total Duration"].height_hist_max = 80;
+      browser.summaries_by_name["Trip Start Hour"].height_hist_max = 80;
+      browser.updateLayout();
+    },
+    summaries: [
+      { title: "Subscription Type", layout: 'middle' },
+      { title: "Start Station", layout: 'left' },
+      { title: "End Station", layout: 'right' },
+      { title: "Total Duration", layout: 'bottom', unitName: "min",
+        value: function(){ return Math.round(this["Total duration (ms)"]/60000); } },
+      { title: "Day of Month", layout: "bottom",
+        value: function(){ return this["Start Time"].getDate(); }, },
+      { title: "Day of Week", layout: "middle",
+        value: function(){ return this["Start Time"].getDay(); },
+        catSortBy: "id",
+        catLabel: function(){ return getDayNameFromNumber(this.id); } },
+      { title: "Trip Start Hour", layout: "bottom", unitName: ":00", collapsed: false,
+        value: function(){ return this["Start Time"].getHours(); } }
+    ]
+  });
+  });
+    </script>
+    <style>
+#chart_div {
+  width: 1100px;
+  height: 700px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data shows Capital Bikeshare bike trips in Washington DC area, on March 2015.<br>
-            <a href="https://www.capitalbikeshare.com/trip-history-data" target="_blank">
-                https://www.capitalbikeshare.com/trip-history-data</a>
-            <span class="fa fa-info-circle"></span>
-            </div>
-
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data shows Capital Bikeshare bike trips in Washington DC area, on March 2015.<br>
+      <a href="https://www.capitalbikeshare.com/trip-history-data" target="_blank">
+          https://www.capitalbikeshare.com/trip-history-data</a>
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

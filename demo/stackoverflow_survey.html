@@ -1,152 +1,151 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Stack Overflow Developer Survey - 2015</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Stack Overflow Developer Survey - 2015</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 190,
-        rightPanelLabelWidth: 180,
-        middlePanelLabelWidth: 270,
-        source: {
-            gdocId: '1ZVabBN65bCtUDURAjiZBeFddXzJT2gjN3HQNZa2adLk',
-            sheets: "Responses"
-        },
-        loadedCb: function(){
-            // split some strings using | character
-            kshf.Util.cellToArray(kshf.dt.Responses, [
-                'Training & Education', 
-                'Current Language', 
-                'Future Language', 
-                'Source control used',
-                'Why use Stack Overflow',
-                'Why answer?'
-            ], "|", false);
-        },
-        readyCb: function(){
-            this.setPercentMode(true);
-        },
-        summaries: [
-            {   title: "Country",
-            },{ title: "Age",
-                catSortBy: function(){
-                    switch(this.id){
-                        case '< 20' : return 0;
-                        case '20-24': return 1;
-                        case '25-29': return 2;
-                        case '30-34': return 3;
-                        case '35-39': return 4;
-                        case '40-50': return 5;
-                        case '51-60': return 6;
-                        case '> 60' : return 7;
-                        case 'Prefer not to disclose': return 8;
-                        default: return 9;
-                    }
-                }
-            },{ title: "Gender",
-            },{ title: "Occupation"
-            },{ title: "Years IT / Programming Experience",
-                catSortBy: function(){
-                    switch(this.id){
-                        case 'Less than 1 year': return 0;
-                        case '1 - 2 years'     : return 1;
-                        case '2 - 5 years'     : return 2;
-                        case '6 - 10 years'    : return 3;
-                        case '11+ years'       : return 4;
-                        default                : return 5;
-                    }
-                }
-//          },{ title: "Desktop Operating System"
-            },{ title: "Training & Education",
-            },{ title: "Current Language", layout:'middle', minAggrValue: 2
-            },{ title: "Future Language", layout:'middle'
-            },{ title: "Desktop Operating System", layout:'right'
-            },{ title: "Preferred text editor", layout:'middle', collapsed: true
-            },{ title: "Prefered IDE theme", layout:'middle', collapsed: true
-            },{ title: "Source control used", layout:'middle', collapsed: true,
-            },{ title: "Prefered Source Control", layout:'middle', collapsed: true
-            },{ title: "Why use Stack Overflow", layout:'middle', collapsed: true
-            },{ title: "How often are Stack Overflow's answers helpful", layout:'middle', collapsed: true,
-                catSortBy: function(){
-                    switch(this.id){
-                        case 'Always'   : return 0;
-                        case 'Usually'  : return 1;
-                        case 'Sometimes': return 2;
-                        case 'Rarely'   : return 3;
-                        case 'Never'    : return 4;
-                        default         : return 5;
-                    }
-                }
-            },{ title: "Why answer?", layout:'middle'
-            },{ title: "Employment Status", layout:'right'
-            },{ title: "Compensation", layout:'right',
-                catSortBy: function(){
-                    switch(this.id){
-                        case 'Less than $20,000'  : return 0;
-                        case '$20,000 - $40,000'  : return 1;
-                        case '$40,000 - $60,000'  : return 2;
-                        case '$60,000 - $80,000'  : return 3;
-                        case '$80,000 - $100,000' : return 4;
-                        case '$100,000 - $120,000': return 5;
-                        case '$120,000 - $140,000': return 6;
-                        case '$140,000 - $160,000': return 7;
-                        case 'More than $160,000' : return 8;
-                        case 'Rather not say'     : return 9;
-                        case "Unemployed"         : return 10;
-                        default                   : return 11;
-                    }
-                }
-            },{ title: "Industry", layout:'right'
-            },{ title: "Job Satisfaction", layout:'right'
-            },{ title: "Remote Status", layout:'right', collapsed: true,
-                catSortBy: function(){
-                    switch(this.id){
-                        case 'Full-time Remote'    : return 0;
-                        case 'Part-time Remote'    : return 1;
-                        case 'I rarely work remote': return 2;
-                        case "Never"               : return 3;
-                        default                    : return 4;
-                    }
-                }
-//          },{ title: "Open to new job opportunities"
-//          },{ title: "Most important aspect of new job opportunity"
-            },{ title: "How many caffeinated beverages per day?", layout:'middle'
-            },{ title: "How many hours programming as hobby per week?", layout:'middle'
-            }
-        ]
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 190,
+    rightPanelLabelWidth: 180,
+    middlePanelLabelWidth: 270,
+    source: {
+      gdocId: '1ZVabBN65bCtUDURAjiZBeFddXzJT2gjN3HQNZa2adLk',
+      tables: "Responses"
+    },
+    loadedCb: function(){
+      // split some strings using | character
+      kshf.Util.cellToArray(kshf.dt.Responses, [
+        'Training & Education', 
+        'Current Language', 
+        'Future Language', 
+        'Source control used',
+        'Why use Stack Overflow',
+        'Why answer?'
+      ], "|", false);
+    },
+    readyCb: function(){
+      this.setPercentMode(true);
+    },
+    summaries: [
+      { title: "Country" },
+      { title: "Age",
+        catSortBy: function(){
+          switch(this.id){
+            case '< 20' : return 0;
+            case '20-24': return 1;
+            case '25-29': return 2;
+            case '30-34': return 3;
+            case '35-39': return 4;
+            case '40-50': return 5;
+            case '51-60': return 6;
+            case '> 60' : return 7;
+            case 'Prefer not to disclose': return 8;
+            default: return 9;
+          }
+        } },
+      { title: "Gender", },
+      { title: "Occupation" },
+      { title: "Years IT / Programming Experience", 
+        catSortBy: function(){
+          switch(this.id){
+            case 'Less than 1 year': return 0;
+            case '1 - 2 years'     : return 1;
+            case '2 - 5 years'     : return 2;
+            case '6 - 10 years'    : return 3;
+            case '11+ years'       : return 4;
+            default                : return 5;
+          }
+        } },
+//          { title: "Desktop Operating System" },
+      { title: "Training & Education" },
+      { title: "Current Language", layout:'middle', minAggrValue: 2 },
+      { title: "Future Language", layout:'middle' },
+      { title: "Desktop Operating System", layout:'right' },
+      { title: "Preferred text editor", layout:'middle', collapsed: true },
+      { title: "Prefered IDE theme", layout:'middle', collapsed: true },
+      { title: "Source control used", layout:'middle', collapsed: true, },
+      { title: "Prefered Source Control", layout:'middle', collapsed: true },
+      { title: "Why use Stack Overflow", layout:'middle', collapsed: true },
+      { title: "How often are Stack Overflow's answers helpful", layout:'middle', collapsed: true, 
+        catSortBy: function(){
+          switch(this.id){
+            case 'Always'   : return 0;
+            case 'Usually'  : return 1;
+            case 'Sometimes': return 2;
+            case 'Rarely'   : return 3;
+            case 'Never'    : return 4;
+            default         : return 5;
+          }
+        } },
+      { title: "Why answer?", layout:'middle' },
+      { title: "Employment Status", layout:'right' },
+      { title: "Compensation", layout:'right', 
+        catSortBy: function(){
+          switch(this.id){
+            case 'Less than $20,000'  : return 0;
+            case '$20,000 - $40,000'  : return 1;
+            case '$40,000 - $60,000'  : return 2;
+            case '$60,000 - $80,000'  : return 3;
+            case '$80,000 - $100,000' : return 4;
+            case '$100,000 - $120,000': return 5;
+            case '$120,000 - $140,000': return 6;
+            case '$140,000 - $160,000': return 7;
+            case 'More than $160,000' : return 8;
+            case 'Rather not say'     : return 9;
+            case "Unemployed"         : return 10;
+            default                   : return 11;
+          }
+        } },
+      { title: "Industry", layout:'right' },
+      { title: "Job Satisfaction", layout:'right' },
+      { title: "Remote Status", layout:'right', collapsed: true,
+        catSortBy: function(){
+          switch(this.id){
+            case 'Full-time Remote'    : return 0;
+            case 'Part-time Remote'    : return 1;
+            case 'I rarely work remote': return 2;
+            case "Never"               : return 3;
+            default                    : return 4;
+          }
+        } },
+//          { title: "Open to new job opportunities" },
+//          { title: "Most important aspect of new job opportunity" },
+      { title: "How many caffeinated beverages per day?", layout:'middle' },
+      { title: "How many hours programming as hobby per week?", layout:'middle' }, }
+    ]
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 1100px;
-                height: 720px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">Stack Overflow Developer Survey - 2015</div>
-        <div class="contents"><div id="chart_div"></div></div>
+    </script>
+    <style>
+#chart_div {
+  width: 1100px;
+  height: 720px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Stack Overflow Developer Survey - 2015</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data made available by StackOverflow.
-            <a href="http://stackoverflow.com/research/developer-survey-2015/" target='_blank'>For details...</a>.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data made available by StackOverflow.
+      <a href="http://stackoverflow.com/research/developer-survey-2015/" target='_blank'>For details...</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

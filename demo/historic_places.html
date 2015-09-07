@@ -1,54 +1,53 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>National Registry of Historic Places</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>National Registry of Historic Places</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 120,
-        leftPanelLabelWidth: 120,
-        rightPanelLabelWidth: 190,
-        itemName: "Historic Places",
-        source: {
-            gdocId: '15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ',
-            sheets: "Places"
-        },
-        summaries: [
-            {   title: "State", catLabel: function(){ return getStateName(this.id) }
-            },{ title: "County", layout: 'middle', minAggrValue: 50,
-                value: function(){ return this.County+", "+this.State; }
-            },{ title: "Listed Time", layout: 'bottom',
-                value: function(){ return moment(this.Listed,"YYYYMMDD")._d; }
-            },{ title: "City", layout: 'right', minAggrValue: 50,
-                value: function(){ return this.City+", "+this.State; }
-            }
-        ],
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 120,
+    leftPanelLabelWidth: 120,
+    rightPanelLabelWidth: 190,
+    itemName: "Historic Places",
+    source: {
+      gdocId: '15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ',
+      tables: "Places"
+    },
+    summaries: [
+      { title: "State", catLabel: function(){ return getStateName(this.id) } },
+      { title: "County", layout: 'middle', minAggrValue: 50,
+        value: function(){ return this.County+", "+this.State; } },
+      { title: "Listed Time", layout: 'bottom',
+        value: function(){ return moment(this.Listed,"YYYYMMDD")._d; } },
+      { title: "City", layout: 'right', minAggrValue: 50,
+        value: function(){ return this.City+", "+this.State; } }
+    ]
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 990px;
-                height: 650px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">National Historic Landmarks on the National Register, U.S.</div>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 990px;
+  height: 650px;
+}
+  </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">National Historic Landmarks on the National Register, U.S.</div>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

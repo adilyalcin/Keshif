@@ -1,140 +1,140 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>News from Global Voices</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>News from Global Voices</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    $.ajax( {
+  $.ajax( {
 // http://mariandoerk.de/visgets/demo/feeds/getAll/q:/c:0/d:2005,1,;2014,12,/l:-90,-180;90,180/t:/o:0;1;48;0//log:-1,-1
-        url: "./data_private/globalvoices.json",
-        dataType: "json",
-        async: false,
-        success: function(data){
-            browser.primaryTableName = "Articles";
+    url: "./data_private/globalvoices.json",
+    dataType: "json",
+    async: false,
+    success: function(data){
+      browser.primaryTableName = "Articles";
 
-            kshf.dt.Articles = [];
-            kshf.dt_id.Articles = {};
+      kshf.dt.Articles = [];
+      kshf.dt_id.Articles = {};
 
-            kshf.dt.Types = [];
-            kshf.dt_id.Types = {};
+      kshf.dt.Types = [];
+      kshf.dt_id.Types = {};
 
-            // create the categories list
-            data.counts.t.forEach(function(cat,i){
-                var kshfItem = new kshf.Item([i,cat[1]],0);
-                kshf.dt.Types.push(kshfItem);
-                kshf.dt_id.Types[kshfItem.id()] = kshfItem;
-            });
+      // create the categories list
+      data.counts.t.forEach(function(cat,i){
+          var kshfItem = new kshf.Item([i,cat[1]],0);
+          kshf.dt.Types.push(kshfItem);
+          kshf.dt_id.Types[kshfItem.id()] = kshfItem;
+      });
 
-            // create the articles list
-            data.results.forEach(function(article,i){
-                if(i<5000) return;
-                // convert string timestamp to integer
-                article[7] = parseInt(article[7])*1000;
-                var kshfItem = new kshf.Item(article,0);
-                kshf.dt.Articles.push(kshfItem);
-                kshf.dt_id.Articles[kshfItem.id()] = kshfItem;
-            });
+      // create the articles list
+      data.results.forEach(function(article,i){
+          if(i<5000) return;
+          // convert string timestamp to integer
+          article[7] = parseInt(article[7])*1000;
+          var kshfItem = new kshf.Item(article,0);
+          kshf.dt.Articles.push(kshfItem);
+          kshf.dt_id.Articles[kshfItem.id()] = kshfItem;
+      });
 
-            browser.loadCharts();
-        }
-    });
-}
+      browser.loadCharts();
+    }
+  });
+};
+
 $(document).ready( function(){
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 130,
-        source: {
-            url: "http://globalvoicesonline.org/",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Tag", value: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1
-            },{ title: "Author", value: function(){ return this[6]; }, collapsed: true,
-            },{ title: "Time", value: function(){ return new Date(this[7]); }, layout: "bottom",
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 92,
-            sortingOpts: {
-                title:'Recent first', value: function(){ return this[7]}, inverse: false, 
-                label: function(){ return moment(this[7]).fromNow(); }
-            },
-            showRank: false,
-            detailsToggle: "one",
-            textSearch: { title: "Title and text", value: function(){return this[4]+" "+this[5];} },
-            recordView: function(){
-                var str="";
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 130,
+    source: {
+        url: "http://globalvoicesonline.org/",
+        callback: loadData
+    },
+    summaries: [
+      { title: "Tag", value: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1 },
+      { title: "Author", value: function(){ return this[6]; }, collapsed: true, },
+      { title: "Time", value: function(){ return new Date(this[7]); }, layout: "bottom", }
+    ],
+    itemDisplay: {
+      sortColWidth: 92,
+      sortingOpts: {
+        title:'Recent first', value: function(){ return this[7]}, inverse: false, 
+        label: function(){ return moment(this[7]).fromNow(); }
+      },
+      showRank: false,
+      detailsToggle: "one",
+      textSearch: { title: "Title and text", value: function(){return this[4]+" "+this[5];} },
+      recordView: function(){
+        var str="";
 
-                str +="<span class='typeImg'></span> <span class='postTitle'>"+this[4] +"</span> <a target='_blank' href='"+this[3]+"' class='fa fa-external-link'></a></div>";;
+        str +="<span class='typeImg'></span> <span class='postTitle'>"+this[4] +"</span> <a target='_blank' href='"+this[3]+"' class='fa fa-external-link'></a></div>";;
 
-                // add text / image
-                str+="<span class=\"item_details\">";
-                    str+="<img class='postImg' src=''>";
-                    str+="<span class='postDetail'></span>";
-                str+="</span>";
-                
-                return str;
-            },
-            detailCb: function(d){
-                var x=d3.select(d.DOM.record);
-                x.select(".postImg").attr("src",this[9]);
-                x.select(".postDetail").html(this[5]);
-            }
-        }
-    });
+        // add text / image
+        str+="<span class=\"item_details\">";
+            str+="<img class='postImg' src=''>";
+            str+="<span class='postDetail'></span>";
+        str+="</span>";
+        
+        return str;
+      },
+      detailCb: function(d){
+        var x=d3.select(d.DOM.record);
+        x.select(".postImg").attr("src",this[9]);
+        x.select(".postDetail").html(this[5]);
+      }
+    }
+  });
 });
         </script>
 <style>
 #chart_div{
-    height: 700px;
-    width: 1000px;
+  height: 700px;
+  width: 1000px;
 }
 .postImg{
-    max-width: 150px;
-    float: right;
-    display: block;
-    padding: 3px;
-    border: solid;
-    border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-    border-width: 1px 2px 2px 1px;
-    background-color: white;
+  max-width: 150px;
+  float: right;
+  display: block;
+  padding: 3px;
+  border: solid;
+  border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+  border-width: 1px 2px 2px 1px;
+  background-color: white;
 }
 .postDetail{
-    font-size: 0.9em;
-    font-weight: 300;
+  font-size: 0.9em;
+  font-weight: 300;
 }
 .postTitle{
-    font-weight: 300;
+  font-weight: 300;
 }
 .listItem a{
-    color:gray;
-    text-decoration: none;
+  color:gray;
+  text-decoration: none;
 }
 .listItem a:hover{
-    color:orangered;
-    font-weight: 700;
-    text-decoration: none;
+  color:orangered;
+  font-weight: 700;
+  text-decoration: none;
 }
 .kshf div.listItem[details=true] .item_details{
-    border-top: dotted 1px gray;
-    padding-top: 2px;
+  border-top: dotted 1px gray;
+  padding-top: 2px;
 }
 </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

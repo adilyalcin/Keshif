@@ -1,110 +1,109 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Architecture Work of Mies van der Rohe</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Architecture Work of Mies van der Rohe</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    function resizeBrowser(){
-        $('#chart_div').height($(window).height()-100);
-    };
+  function resizeBrowser(){
+    $('#chart_div').height($(window).height()-100);
+  };
+  resizeBrowser();
+  $(window).resize(function() {
     resizeBrowser();
-    $(window).resize(function() {
-        resizeBrowser();
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 30,
-        leftPanelLabelWidth: 150,
-        rightPanelLabelWidth: 180,
-        source: {
-            gdocId: '1hHNh0p0dt1b8ucEnxL_TspCE8V7Mi6e3WkpF3RAa27k',
-            sheets: "Projects"
-        },
-        summaries: [
-            {   title: "Continent"
-            },{ title: "City / Location",
-                value: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; }
-            },{ title: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }
-            },{ title: "Type", layout: 'right'
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: 'Year',
-            textSearch: "Name",
-            recordView: function(){
-                var str="<span class='workTitle'>"+this.Name+"</span>";
-                if(this.Image) str+="<img class='workPhoto' src='"+this.Image+"'>";
-                return str;
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 30,
+    leftPanelLabelWidth: 150,
+    rightPanelLabelWidth: 180,
+    source: {
+      gdocId: '1hHNh0p0dt1b8ucEnxL_TspCE8V7Mi6e3WkpF3RAa27k',
+      tables: "Projects"
+    },
+    summaries: [
+      { title: "Continent" },
+      { title: "City / Location",
+          value: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; } },
+      { title: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); } },
+      { title: "Type", layout: 'right' }
+    ],
+    itemDisplay: {
+      sortingOpts: 'Year',
+      textSearch: "Name",
+      recordView: function(){
+        var str="<span class='workTitle'>"+this.Name+"</span>";
+        if(this.Image) str+="<img class='workPhoto' src='"+this.Image+"'>";
+        return str;
+      }
+    }
+  });
 });
-        </script>
-<style type="text/css" media="screen">
-    #chart_div{
-        width: 1100px;
-    }
-    .workTitle{
-        display: block;
-        text-align: center;
-        font-size: 1.2em;
-    }
-    .workPhoto{
-        display: block;
-        width: 70%;
-        margin: 0 auto;
-        -webkit-transition: all 1s ease;
-           -moz-transition: all 1s ease;
-             -o-transition: all 1s ease;
-            -ms-transition: all 1s ease;
-                transition: all 1s ease;
-        -webkit-filter: grayscale(100%);
-           -moz-filter: grayscale(100%);
-             -o-filter: grayscale(100%);
-            -ms-filter: grayscale(100%);
-                filter: grayscale(100%);
-        box-shadow: 0px 0px 0px black;
-    }
-    .listItem:hover .workPhoto {
-        box-shadow: 0px 0px 5px black;
-        -webkit-filter: grayscale(0%);
-           -moz-filter: grayscale(0%);
-             -o-filter: grayscale(0%);
-            -ms-filter: grayscale(0%);
-                filter: grayscale(0%);
-    }
-    .listItem{
-        max-height: initial !important;
-    }
-    .content{
-        padding-bottom: 10px;
-    }
-</style>
+    </script>
+    <style type="text/css" media="screen">
+#chart_div{
+  width: 1100px;
+}
+.workTitle{
+  display: block;
+  text-align: center;
+  font-size: 1.2em;
+}
+.workPhoto{
+  display: block;
+  width: 70%;
+  margin: 0 auto;
+  -webkit-transition: all 1s ease;
+     -moz-transition: all 1s ease;
+       -o-transition: all 1s ease;
+      -ms-transition: all 1s ease;
+          transition: all 1s ease;
+  -webkit-filter: grayscale(100%);
+     -moz-filter: grayscale(100%);
+       -o-filter: grayscale(100%);
+      -ms-filter: grayscale(100%);
+          filter: grayscale(100%);
+  box-shadow: 0px 0px 0px black;
+}
+.listItem:hover .workPhoto {
+  box-shadow: 0px 0px 5px black;
+  -webkit-filter: grayscale(0%);
+     -moz-filter: grayscale(0%);
+       -o-filter: grayscale(0%);
+      -ms-filter: grayscale(0%);
+          filter: grayscale(0%);
+}
+.listItem{
+  max-height: initial !important;
+}
+.content{
+  padding-bottom: 10px;
+}
+    </style>
     </head>
-    <body>
-    <div class="pageTitle" align="center">Architecture Work of Mies van der Rohe</div>
-    <div class="contents"><div id="chart_div"></div></div>
+  <body>
+  <div class="pageTitle" align="center">Architecture Work of Mies van der Rohe</div>
+  <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        Data Credits:
-        <a href="http://www.miessociety.org/legacy/projects/">Mies Society</a>
-        <a href="http://library.iit.edu/grc/mies/mies_work_geo.html">IIT Library</a>
-        <span class="fa fa-info-circle"></span>
-        </div>
-    </body>
+  <div id="infobox" align="center">
+    <span class="fa fa-info-circle"></span>
+    Data Credits:
+    <a href="http://www.miessociety.org/legacy/projects/">Mies Society</a>
+    <a href="http://library.iit.edu/grc/mies/mies_work_geo.html">IIT Library</a>
+    <span class="fa fa-info-circle"></span>
+    </div>
+  </body>
 </html>

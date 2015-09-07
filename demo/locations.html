@@ -1,44 +1,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Locations</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Locations</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 function loadData(browser){
-    $.ajax( {
-        url: "./data_private/locations.json",
-        dataType: "json",
-        async: false,
-        success: function(data){
-            browser.primaryTableName = "Locations";
-            kshf.dt.Locations = [];
+  $.ajax( {
+    url: "./data_private/locations.json",
+    dataType: "json",
+    async: false,
+    success: function(data){
+      browser.primaryTableName = "Locations";
+      kshf.dt.Locations = [];
 
-            // create the categories list
-            data.locations.forEach(function(location,i){
-                if(location.l_type==="city") return;
-                location.id = location.path.substring(location.path.lastIndexOf("/")+1);
-                location.pos = i;
-                kshf.dt.Locations.push(new kshf.Item(location,"id"));
-            });
+      // create the categories list
+      data.locations.forEach(function(location,i){
+        if(location.l_type==="city") return;
+        location.id = location.path.substring(location.path.lastIndexOf("/")+1);
+        location.pos = i;
+        kshf.dt.Locations.push(new kshf.Item(location,"id"));
+      });
 
-            if(browser){
-                browser.loadCharts();
-            }
-        }
-    });
+      browser.loadCharts();
+    }
+  });
 })
 
 function resetSize(){
@@ -47,61 +45,30 @@ function resetSize(){
 };
 
 $(document).ready( function(){
-    resetSize();
+  resetSize();
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 300,
-        itemName: "Locations",
-        source: { callback: loadData },
-        summaries: [
-            {   title: "Type", value: "l_type"
-            },{ title: "Part of", value: "parent_location_uuid", catTableName: "Locations", catLabel: "name",
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 80,
-            sortingOpts: 'pos',
-            linkText: "Part of",
-            recordView: "name"
-        }
+    domID: "#chart_div",
+    categoryTextWidth: 300,
+    itemName: "Locations",
+    source: { callback: loadData },
+    summaries: [
+      { title: "Type", value: "l_type" },
+      { title: "Part of", value: "parent_location_uuid", catTableName: "Locations", catLabel: "name", }
+    ],
+    itemDisplay: {
+      sortColWidth: 80,
+      sortingOpts: 'pos',
+      linkText: "Part of",
+      recordView: "name"
+    }
     });
 });
-        </script>
-        <style>
-        .postImg{
-            max-width: 150px;
-            float: right;
-            display: block;
-            padding: 3px;
-            border: solid;
-            border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-            border-width: 1px 2px 2px 1px;
-            background-color: white;
-        }
-        .postDetail{
-            font-size: 0.9em;
-            font-weight: 300;
-        }
-        .postTitle{
-            font-weight: 300;
-        }
-        .listItem a{
-            color:gray;
-            text-decoration: none;
-        }
-        .listItem a:hover{
-            color:orangered;
-            font-weight: 700;
-            text-decoration: none;
-        }
-        .kshf div.listItem[details=true] .item_details{
-            border-top: dotted 1px gray;
-            padding-top: 2px;
-        }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

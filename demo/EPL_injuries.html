@@ -16,74 +16,73 @@
 
         <script type="text/javascript">
 google.setOnLoadCallback(function(){
+  resizeBrowser(130,80);
+  $(window).resize(function() {
     resizeBrowser(130,80);
-    $(window).resize(function() {
-        resizeBrowser(130,80);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 130,
-        rightPanelLabelWidth: 120,
-        source: {
-            url: 'http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html',
-            gdocId: '1sdEtJ5oVQPzUx_wpxQNSIQ_SPUp-NcFXq3TUNeMgeX0',
-            sheets: "Injuries"
-        },
-        summaries: [
-            {   title: "Team"
-            },{ title: "Player"
-            },{ title: "Injury",layout: 'right'
-            },{ title: "Season", layout: 'right',
-                catSortBy: function(){ return parseInt(this.id.substr(0,4)); },
-            },{ title: "Month", layout: 'right', collapsed: true,
-                value: function(){ return this.Date.getMonth(); },
-                catSortBy: "id",
-                catLabel: function(){ return getMonthNameFromNumber(this.id); },
-            },{ title: "Date", layout: 'bottom'
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: "Date",
-            displayType: 'grid',
-            recordView: function(){
-                var img = "<img class='thumbImg' src='img/EPL/"+this.Team.replace(" ","_")+".svg'>";
-                return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+this.Player+"</span>";
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 130,
+    rightPanelLabelWidth: 120,
+    source: {
+      url: 'http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html',
+      gdocId: '1sdEtJ5oVQPzUx_wpxQNSIQ_SPUp-NcFXq3TUNeMgeX0',
+      tables: "Injuries"
+    },
+    summaries: [
+      { title: "Team" },
+      { title: "Player" },
+      { title: "Injury",layout: 'right' },
+      { title: "Season", layout: 'right',
+        catSortBy: function(){ return parseInt(this.id.substr(0,4)); }, },
+      { title: "Month", layout: 'right', collapsed: true,
+        value: function(){ return this.Date.getMonth(); },
+        catSortBy: "id",
+        catLabel: function(){ return getMonthNameFromNumber(this.id); }, },
+      { title: "Date", layout: 'bottom' }
+    ],
+    itemDisplay: {
+      sortingOpts: "Date",
+      displayType: 'grid',
+      recordView: function(){
+        var img = "<img class='thumbImg' src='img/EPL/"+this.Team.replace(" ","_")+".svg'>";
+        return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+this.Player+"</span>";
+      }
+    }
+  });
 });
         </script>
         <style>
 .listItem{
-    width: 70px;
+  width: 70px;
 }
 .listItem > .content{
-    text-align: center;
+  text-align: center;
 }
 .thumbnail{
-    min-height: 90px;
+  min-height: 90px;
 }
 .thumbImg{
-    position: absolute;
-    bottom: 0px;
-    left: 5%;
+  position: absolute;
+  bottom: 0px;
+  left: 5%;
 }
 .subTitle{
-    text-align: center;
+  text-align: center;
 }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">English Premier League Injury Table</div>
-        <div class="contents"><div id="chart_div"></div></div>
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">English Premier League Injury Table</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            <a href="http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html" target='_blank'>Data</a> was curated by the <b>Andy Kriebel</b>. <a href="http://www.physioroom.com/news/english_premier_league/epl_injury_table.php" target='_blank'>Original source</a>.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      <a href="http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html" target='_blank'>Data</a> was curated by the <b>Andy Kriebel</b>. <a href="http://www.physioroom.com/news/english_premier_league/epl_injury_table.php" target='_blank'>Original source</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

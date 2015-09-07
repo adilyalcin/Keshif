@@ -1,53 +1,50 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>FDA Citations</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>FDA Citations</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        leftPanelLabelWidth: 250,
-        middlePanelLabelWidth: 150,
-        barChartWidth: 120,
-        source: {
-            gdocId: '1-dV08DFxBOZYh3yGQcrnIT3WAoLDiPAKpEiHGA_2IcI',
-            sheets: "FDA Citations"
-        },
-        summaries: [
-            {   title: "Firm", minAggrValue: 20,
-                description: "Firms with less than 20 violations are not listed here."
-            },{ title: "Center"
-            },{ title: "Country", layout: 'right'
-            },{ title: "State", layout: 'right'
-            },{ title: "City", layout: 'right', minAggrValue: 20,
-                description: "Cities with less than 20 violations are not listed here."
-            },{ title: "CFR", layout: 'middle'
-            },{ title: "Inspection End Date", layout: 'bottom'
-            }
-        ]
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    leftPanelLabelWidth: 250,
+    middlePanelLabelWidth: 150,
+    barChartWidth: 120,
+    source: {
+      gdocId: '1-dV08DFxBOZYh3yGQcrnIT3WAoLDiPAKpEiHGA_2IcI',
+      tables: "FDA Citations"
+    },
+    summaries: [
+      { title: "Firm", minAggrValue: 20, description: "Firms with less than 20 violations are not listed here." },
+      { title: "Center" },
+      { title: "Country", layout: 'right' },
+      { title: "State", layout: 'right' },
+      { title: "City", layout: 'right', minAggrValue: 20, description: "Cities with less than 20 violations are not listed here." },
+      { title: "CFR", layout: 'middle' },
+      { title: "Inspection End Date", layout: 'bottom' }
+    ]
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 1150px;
-                height: 750px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 1150px;
+  height: 750px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

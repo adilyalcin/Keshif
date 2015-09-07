@@ -1,20 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Mushrooms</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Mushrooms</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 var getName = {
     Class: function(){
@@ -149,96 +149,63 @@ var getName = {
 };
 
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Mushroom Species",
-        barChartWidth: 110,
-        leftPanelLabelWidth: 148,
-        rightPanelLabelWidth: 148,
-        middlePanelLabelWidth: 148,
-        source: {
-            gdocId: '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
-            sheets: "Mushrooms"
-        },
-        summaries: [
-            {   title: "Class", catLabel: getName.Class
-            },{ title: "Habitat", catLabel: getName.Habitat
-            },{ title: "Odor", catLabel: getName.Odor
-            },{ title: "Bruises", collapsed: true,
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Mushroom Species",
+    barChartWidth: 110,
+    leftPanelLabelWidth: 148,
+    rightPanelLabelWidth: 148,
+    middlePanelLabelWidth: 148,
+    source: {
+      gdocId: '1G_itMKOz-mxZNZNT_71JaCBghX9RbudADiFz4X1pc7I',
+      tables: "Mushrooms"
+    },
+    summaries: [
+      {   title: "Class", catLabel: getName.Class },
+      { title: "Habitat", catLabel: getName.Habitat },
+      { title: "Odor", catLabel: getName.Odor },
+      { title: "Bruises", collapsed: true, },
 
-            },{ title: "Gill - Attachment",
-                value: "Gill Attachment",
-                catLabel: getName.GillAttachment
-            },{ title: "Gill - Spacing",
-                value: "Gill Spacing",
-                catLabel: getName.GillSpacing
-            },{ title: "Gill - Size",
-                value: "Gill Size",
-                catLabel: getName.GillSize
-            },{ title: "Gill - Color",
-                value: "Gill Color",
-                catLabel: getName.Color
+      { title: "Gill - Attachment", value: "Gill Attachment", catLabel: getName.GillAttachment },
+      { title: "Gill - Spacing", value: "Gill Spacing", catLabel: getName.GillSpacing },
+      { title: "Gill - Size", value: "Gill Size", catLabel: getName.GillSize },
+      { title: "Gill - Color", value: "Gill Color", catLabel: getName.Color },
 
-            },{ title: "Population", layout: "middle",
-                catLabel: getName.Population
-            },{ title: "Cap - Shape", layout: "middle",
-                value: "Cap Shape",
-                catLabel: getName.Shape
-            },{ title: "Cap - Surface", layout: "middle",
-                value: "Cap Surface",
-                catLabel: getName.Surface
-            },{ title: "Cap - Color", layout: "middle",
-                value: "Cap Color",
-                catLabel: getName.Color
-            
-            },{ title: "Ring - Number", layout: "middle",
-                value: "Ring Number",
-                catLabel: getName.RingNumber
-            },{ title: "Ring - Type", layout: "middle",
-                value: "Ring Type",
-                catLabel: getName.RingType
-            
-            },{ title: "Spore Print Color", layout: 'right',
-                catLabel: getName.Color
-            
-            },{ title: "Stalk - Shape", layout: 'right',
-                value: "Stalk Shape",
-                catLabel: getName.Shape
-            },{ title: "Stalk - Root", layout: 'right',
-                value: "Stalk Root",
-                catLabel: getName.Root
-            },{ title: "Stalk - Surface Above Ring", layout: 'right',
-                value: "Stalk Surface Above Ring",
-                catLabel: getName.Surface
-            },{ title: "Stalk - Surface Below Ring", layout: 'right',
-                value: "Stalk Surface Below Ring",
-                catLabel: getName.Surface
-            },{ title: "Stalk - Color Above Ring", layout: 'right',
-                value: "Stalk Color Above Ring",
-                catLabel: getName.Color
-            },{ title: "Stalk - Color Below Ring", layout: 'right',
-                value: "Stalk Color Below Ring",
-                catLabel: getName.Color
-            }
-        ]
-    });
+      { title: "Population", layout: "middle", catLabel: getName.Population },
+      { title: "Cap - Shape", layout: "middle", value: "Cap Shape", catLabel: getName.Shape },
+      { title: "Cap - Surface", layout: "middle", value: "Cap Surface", catLabel: getName.Surface },
+      { title: "Cap - Color", layout: "middle", value: "Cap Color", catLabel: getName.Color },
+       
+      { title: "Ring - Number", layout: "middle", value: "Ring Number", catLabel: getName.RingNumber },
+      { title: "Ring - Type", layout: "middle", value: "Ring Type", catLabel: getName.RingType },
+       
+      { title: "Spore Print Color", layout: 'right', catLabel: getName.Color },
+       
+      { title: "Stalk - Shape", layout: 'right', value: "Stalk Shape", catLabel: getName.Shape },
+      { title: "Stalk - Root", layout: 'right', value: "Stalk Root", catLabel: getName.Root },
+      { title: "Stalk - Surface Above Ring", layout: 'right', value: "Stalk Surface Above Ring", catLabel: getName.Surface },
+      { title: "Stalk - Surface Below Ring", layout: 'right', value: "Stalk Surface Below Ring", catLabel: getName.Surface },
+      { title: "Stalk - Color Above Ring", layout: 'right', value: "Stalk Color Above Ring", catLabel: getName.Color },
+      { title: "Stalk - Color Below Ring", layout: 'right', value: "Stalk Color Below Ring", catLabel: getName.Color }
+    ]
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 1020px;
-                height: 700px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            <a href="http://archive.ics.uci.edu/ml/datasets/Mushroom" target='_blank'>Mushroom Data Set</a> from
-            UC Irvine Machine Learning Repository<br>
-            This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family (pp. 500-525).<br> The Guide clearly states that there is no simple rule for determining the edibility of a mushroom; no rule like ``leaflets three, let it be'' for Poisonous Oak and Ivy.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 1020px;
+  height: 700px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      <a href="http://archive.ics.uci.edu/ml/datasets/Mushroom" target='_blank'>Mushroom Data Set</a> from
+      UC Irvine Machine Learning Repository<br>
+      This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family (pp. 500-525).<br> The Guide clearly states that there is no simple rule for determining the edibility of a mushroom; no rule like ``leaflets three, let it be'' for Poisonous Oak and Ivy.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

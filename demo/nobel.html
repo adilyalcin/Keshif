@@ -1,156 +1,117 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Nobel Prize Winners</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Nobel Prize Winners</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 function getGender(genderValue){
-    switch(genderValue){
-        case 1: return "Male";
-        case 2: return "Female";
-        case 3: return "Organization";
-    }
+  switch(genderValue){
+    case 1: return "Male";
+    case 2: return "Female";
+    case 3: return "Organization";
+  }
 };
 
 $(document).ready( function(){
-    logIf.Check = logIf.All();
+  logIf.Check = logIf.All();
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Laureates",
-        categoryTextWidth: 190,
-        leftPanelLabelWidth: 120,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
-            sheets: ["Prizes", "Laureates"]
-        },
-        summaries: [
-            {   title: "Category", catLabel: function(){ return this.id+" "+getIcon(this.id); }
-            },{ title: "Born Country",
-                value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.bornCountry; },
-            },{ title: "Affiliation", layout: 'right',
-                value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.name; },
-                summaries: [{ title: "# of Winners", value: function(d){ return d.items.length; } }]
-            },{ title: "Joint Awards", catLabel: function() { return this.id+" awardee"+(this.id===1?"":"s"); }
-            },{ title: "Gender",
-                value: function(){ return getGender(kshf.dt_id.Laureates[this.laureate_id].data.gender); },
-                catLabel: function(){ return this.id+" "+getIcon(this.id); }
-            },{ title: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); },
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {title: "Year", inverse: true},
-            textSearch: { title: "name", value: function () {
-                var laureate = kshf.dt_id.Laureates[this.laureate_id];
-                return laureate.data.firstname + " " + (laureate.data.surname || "");
-            } },
-            displayType: 'grid',
-            recordView: function(){
-                var laureate = kshf.dt_id.Laureates[this.laureate_id];
-                var surname_short = (laureate.data.surname||"").toLowerCase().replace(/ /g,"_");
-                surname_short = surname_short.replace("von_","").replace("la_","");
-                var fullname = laureate.data.firstname + " " + (laureate.data.surname||"");
+    domID: "#chart_div",
+    itemName: "Laureates",
+    categoryTextWidth: 190,
+    leftPanelLabelWidth: 120,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdDNVcXlscjl4RzRZNl9ZSkNJLU1DWVE',
+      tables: ["Prizes", "Laureates"]
+    },
+    summaries: [
+      { title: "Category", catLabel: function(){ return this.id+" "+getIcon(this.id); } },
+      { title: "Born Country",
+        value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.bornCountry; }, },
+      { title: "Affiliation", layout: 'right',
+        value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.name; },
+        summaries: [{ title: "# of Winners", value: function(d){ return d.items.length; } }] },
+      { title: "Joint Awards", catLabel: function() { return this.id+" awardee"+(this.id===1?"":"s"); } },
+      { title: "Gender",
+        value: function(){ return getGender(kshf.dt_id.Laureates[this.laureate_id].data.gender); },
+        catLabel: function(){ return this.id+" "+getIcon(this.id); } },
+      { title: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }, }
+    ],
+    itemDisplay: {
+      sortingOpts: {title: "Year", inverse: true},
+      textSearch: { title: "name", value: function () {
+        var laureate = kshf.dt_id.Laureates[this.laureate_id];
+        return laureate.data.firstname + " " + (laureate.data.surname || "");
+      } },
+      displayType: 'grid',
+      recordView: function(){
+        var laureate = kshf.dt_id.Laureates[this.laureate_id];
+        var surname_short = (laureate.data.surname||"").toLowerCase().replace(/ /g,"_");
+        surname_short = surname_short.replace("von_","").replace("la_","");
+        var fullname = laureate.data.firstname + " " + (laureate.data.surname||"");
 
-                return "<span class='thumbnail'><img class='thumbImg'></span>"+
-                    "<span class='laureateName'>"+fullname+"</span>"+
-                    "<div style='text-align: center;'>"+
-                    "<span class='prizeCategory'>"+getIcon(this.Category)+" "+this.Category+"</span> "+
-                    //getIcon(getGender(laureate.data.gender))+
-                    "</div>";
-            },
-            /*
-            recordView: function(d) {
-                var str="";
-
-                if(laureate.data.gender!==3){
-                    str+="<img class='item_details' style='float:right;'>";
-                }
-                str+="<div style='float:left; width:calc(80%);'>";
-
-                str+="<span class='item_details'>";
-
-                str+="<div class='iteminfo iteminfo_3'>";
-                if(laureate.data.gender!=='org'){
-                    var born=laureate.data.born;
-                    var died=laureate.data.died;
-                    str+="Born: "+laureate.data.bornCountry+", "+laureate.data.bornCity+
-                        (born!==null?(", "+moment(born).format("MMM. DD YYYY")):"")+
-                        (died!==null?(", Died in "+moment(died).format("MMM. DD YYYY")):"")
-                        ;
-                }
-                str+="</div>";
-
-                str+="<div class='iteminfo iteminfo_1'>Nobel Prize In: "+this.Category+"</div>";
-                str+="<div class='iteminfo iteminfo_2'>Motivation: "+d.data.Motivation+"</div>";
-
-                var mot = d.data['Overall Motivation'];
-                if(mot!=="" && mot!== null){
-                    str+="<div class='iteminfo iteminfo_3'>Overall motivation: ";
-                    str+=mot;
-                    str+="</div>";
-                }
-                str+="</div>"
-
-                str+="</span>";
-
-                return str;
-            },*/
-            visibleCb: function(d){
-                var laureate = kshf.dt_id.Laureates[this.laureate_id];
-                if(laureate.data.gender!==3){
-                    // insert the image url
-                    var surname_short = laureate.data.surname.toLowerCase().replace(/ /g,"_");
-                    surname_short = surname_short.replace("von_","").replace("la_","");
-                    var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
-                    d3.select(d.DOM.record).select("img").attr("src",imgUrl);
-                }
-            }
+        return "<span class='thumbnail'><img class='thumbImg'></span>"+
+            "<span class='laureateName'>"+fullname+"</span>"+
+            "<div style='text-align: center;'>"+
+            "<span class='prizeCategory'>"+getIcon(this.Category)+" "+this.Category+"</span> "+
+            //getIcon(getGender(laureate.data.gender))+
+            "</div>";
+      },
+      visibleCb: function(d){
+        var laureate = kshf.dt_id.Laureates[this.laureate_id];
+        if(laureate.data.gender!==3){
+          // insert the image url
+          var surname_short = laureate.data.surname.toLowerCase().replace(/ /g,"_");
+          surname_short = surname_short.replace("von_","").replace("la_","");
+          var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
+          d3.select(d.DOM.record).select("img").attr("src",imgUrl);
         }
-    });
+      }
+    }
+  });
 });
 var demoID = 14;
 
-        </script>
-        <style>
+    </script>
+    <style>
 #chart_div {
-    height: 700px;
-    width:1150px;
+  height: 700px;
+  width:1150px;
 }
 .attrib .fa{
-    width: 15px;
-    text-align: center;
+  width: 15px;
+  text-align: center;
 }
 .listItem{
-    width: 130px;
+  width: 130px;
 }
 .content{
-    padding: 3px;
-    text-align: center;
+  padding: 3px;
+  text-align: center;
 }
 .prizeCategory{
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
 .laureateName{
-    font-weight: 700;
+  font-weight: 700;
 }
-
         </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

@@ -17,77 +17,76 @@
         <script type="text/javascript">
 
 google.setOnLoadCallback(function(){
-    resizeBrowser(100,120);
-    $(window).resize(function() {
-        resizeBrowser(100,120);
-        browser.updateLayout();
-    });
+  resizeBrowser(100,120);
+  $(window).resize(function() {
+      resizeBrowser(100,120);
+      browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 130,
-        rightPanelLabelWidth: 90,
-        source: {
-            url: "http://www.informationisbeautifulawards.com/",
-            gdocId: '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
-            sheets: "Showcases"
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Showcases, ['Categories'], /\*/, false);
-            kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
-            kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
-            kshf.dt.Showcases.forEach(function(d){
-                var i=d.data.Title.indexOf(" by ");
-                if(i>0) d.data.Title = d.data.Title.substr(0,i);
-            });
-        },
-        summaries: [
-            {   title: "Categories"
-            },{ title: "Year", value: "Award"
-            },{ title: "Credits", collapsed: true
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts: {title: 'id', inverse:false},
-            textSearch: 'Title',
-            displayType: 'grid',
-            recordView: function(){ 
-                return "<a target='_blank' href='http://www.informationisbeautifulawards.com"+this.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>"+
-                    "<span class='subTitle'>"+this.Credits+"</span>"+
-                    "<span class='title'>"+this.Title+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail);
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 130,
+    rightPanelLabelWidth: 90,
+    source: {
+      url: "http://www.informationisbeautifulawards.com/",
+      gdocId: '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
+      tables: "Showcases"
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Showcases, ['Categories'], /\*/, false);
+      kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
+      kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
+      kshf.dt.Showcases.forEach(function(d){
+          var i=d.data.Title.indexOf(" by ");
+          if(i>0) d.data.Title = d.data.Title.substr(0,i);
+      });
+    },
+    summaries: [
+      { title: "Categories" },
+      { title: "Year", value: "Award" },
+      { title: "Credits", collapsed: true }
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      sortingOpts: {title: 'id', inverse:false},
+      textSearch: 'Title',
+      displayType: 'grid',
+      recordView: function(){ 
+        return "<a target='_blank' href='http://www.informationisbeautifulawards.com"+this.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>"+
+            "<span class='subTitle'>"+this.Credits+"</span>"+
+            "<span class='title'>"+this.Title+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail);
+      }
+    }
+  });
 });
-        </script>
-        <style>
+    </script>
+    <style>
 .listItem{
-    width: 150px;
+  width: 150px;
 }
 .content{
-    padding: 3px;
+  padding: 3px;
 }
 .content .thumbnail{
-    height: 95px;
+  height: 95px;
 }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">kantar Information Is Beautiful Awards</div>
-        
-        <div class="contents"><div id="chart_div"></div></div>
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">kantar Information Is Beautiful Awards</div>
+    
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data shows the list of 
-            publicly available showcases, submitted between 2012-2014, to 
-            <a href="http://www.informationisbeautifulawards.com/" target='_blank'>Kantar Information is Beautiful Awards</a>.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data shows the list of 
+      publicly available showcases, submitted between 2012-2014, to 
+      <a href="http://www.informationisbeautifulawards.com/" target='_blank'>Kantar Information is Beautiful Awards</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

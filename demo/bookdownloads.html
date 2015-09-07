@@ -1,98 +1,96 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Download Times of the book D3 Tips and Tricks</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Download Times of the book D3 Tips and Tricks</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function dataLoad(browser){
-    $.ajax({
-        url: "./data/bookdownloads.json",
-        success: function(data){
-            browser.primaryTableName = "Downloads";
-            kshf.dt.Downloads = [];
-            data.forEach(function(download,i){
-                kshf.dt.Downloads.push(new kshf.Item({
-                    id:i,
-                    downloadTime: moment(download, "YYYY-MM-DD HH:mm:ss")
-                },"id"));
-            });
-            browser.loadCharts();
-        }
-    });
+  $.ajax({
+    url: "./data/bookdownloads.json",
+    success: function(data){
+      browser.primaryTableName = "Downloads";
+      kshf.dt.Downloads = [];
+      data.forEach(function(download,i){
+        kshf.dt.Downloads.push(new kshf.Item({
+          id:i,
+          downloadTime: moment(download, "YYYY-MM-DD HH:mm:ss")
+        },"id"));
+      });
+      browser.loadCharts();
+    }
+  });
 };
 
 $(document).ready( function(){
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 250,
-        barChartWidth: 100,
-        source: {
-            url: "http://bl.ocks.org/d3noob/a0cbcddc6bf0eb9569fe",
-            callback: dataLoad
-        },
-        summaries: [
-            {   title: "Hour", unitName: ": 00", layout: 'bottom',
-                value: function(){ return this.downloadTime.hour(); },
-            },{ title: "Time", layout: 'bottom',
-                value: function(){ return new Date(this.downloadTime);}
-            },{ title: "Day", layout: 'right',
-                value: function(){ return this.downloadTime.day(); },
-                catSortBy: "id",
-                catLabel: function(){
-                    switch(this.id){
-                        case 0: return "Sunday";
-                        case 1: return "Monday";
-                        case 2: return "Tuesday";
-                        case 3: return "Wednesday";
-                        case 4: return "Thursday";
-                        case 5: return "Friday";
-                        case 6: return "Saturday";
-                    }
-                }
-            },{ title: "Month", layout: 'middle',
-                value: function(){ return this.downloadTime.month(); },
-                catSortBy: "id",
-                catLabel: function(){ return getMonthNameFromNumber(this.id); },
-            },{ title: "Year", layout: 'right',
-                value: function(){ return this.downloadTime.year(); },
-                catSortBy: "id"
-            }
-        ]
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 250,
+    barChartWidth: 100,
+    source: {
+      url: "http://bl.ocks.org/d3noob/a0cbcddc6bf0eb9569fe",
+      callback: dataLoad
+    },
+    summaries: [
+      { title: "Hour", unitName: ": 00", layout: 'bottom',
+        value: function(){ return this.downloadTime.hour(); }, },
+      { title: "Time", layout: 'bottom',
+        value: function(){ return new Date(this.downloadTime);} },
+      { title: "Day", layout: 'right',
+        value: function(){ return this.downloadTime.day(); },
+        catSortBy: "id",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "Sunday";
+            case 1: return "Monday";
+            case 2: return "Tuesday";
+            case 3: return "Wednesday";
+            case 4: return "Thursday";
+            case 5: return "Friday";
+            case 6: return "Saturday";
+          }
+        } },
+      { title: "Month", layout: 'middle',
+        value: function(){ return this.downloadTime.month(); },
+        catSortBy: "id",
+        catLabel: function(){ return getMonthNameFromNumber(this.id); }, },
+      { title: "Year", layout: 'right',
+        value: function(){ return this.downloadTime.year(); },
+        catSortBy: "id" }
+    ]
+  });
 });
-
-</script>
+    </script>
     <style>
-        #chart_div {
-            width:850px;
-            height:600px;
-        }
+#chart_div {
+  width:850px;
+  height:600px;
+}
     </style>
 	</head>
-    <body>
-        <div class="pageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="pageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            <a href="http://www.d3noob.org/2015/04/exploring-event-data-by-combination.html" target='_blank'>Original Blogpost</a> <a href="https://gist.github.com/d3noob/a0cbcddc6bf0eb9569fe" target='_blank'>Raw source</a>.
-            <a href="http://bl.ocks.org/d3noob/raw/a0cbcddc6bf0eb9569fe/" target='_blank'>Original d3 visualization</a>.
-            <span class="fa fa-info-circle"></span>
-            </div>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      <a href="http://www.d3noob.org/2015/04/exploring-event-data-by-combination.html" target='_blank'>Original Blogpost</a> <a href="https://gist.github.com/d3noob/a0cbcddc6bf0eb9569fe" target='_blank'>Raw source</a>.
+      <a href="http://bl.ocks.org/d3noob/raw/a0cbcddc6bf0eb9569fe/" target='_blank'>Original d3 visualization</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
 
-    </body>
+  </body>
 </html>

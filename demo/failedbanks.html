@@ -1,62 +1,61 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Failed Bank List - FDIC, US</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Failed Bank List - FDIC, US</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <!-- Demos - shared -->
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <!-- Demos - shared -->
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 200,
-        rightPanelLabelWidth: 110,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdDJ2ZS11RE10SnBoX09PUC12TjhhR0E',
-            sheets: ["Banks","States"]
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Banks, ['Loss Share Type'], /\//, false);
-        },
-        summaries: [
-            {   title: "Loss Share Type"
-            },{ title: "State", value: "ST", catTableName: "States", catLabel: "name", layout: 'right',
-            },{ title: "City", layout: 'right',
-            },{ title: "Acquiring Institution"
-            },{ title: "Closing Date", layout: 'bottom'
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 90,
-            sortingOpts: {
-                title: 'Closing Date', inverse: true, label: function(){ return moment(this['Closing Date']).fromNow(); },
-            },
-            textSearch: "Bank Name",
-            recordView: "Bank Name"
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 200,
+    rightPanelLabelWidth: 110,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdDJ2ZS11RE10SnBoX09PUC12TjhhR0E',
+      tables: ["Banks","States"]
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Banks, ['Loss Share Type'], /\//, false);
+    },
+    summaries: [
+      { title: "Loss Share Type" },
+      { title: "State", value: "ST", catTableName: "States", catLabel: "name", layout: 'right', },
+      { title: "City", layout: 'right', },
+      { title: "Acquiring Institution" },
+      { title: "Closing Date", layout: 'bottom' }
+    ],
+    itemDisplay: {
+      sortColWidth: 90,
+      sortingOpts: {
+        title: 'Closing Date', inverse: true, label: function(){ return moment(this['Closing Date']).fromNow(); },
+      },
+      textSearch: "Bank Name",
+      recordView: "Bank Name"
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 920px;
-                height: 650px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 920px;
+  height: 650px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

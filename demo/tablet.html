@@ -1,80 +1,79 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Tablet Computers</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css" type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Tablet Computers</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css" type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <link rel="stylesheet" href="./css/style.css" type="text/css">
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 $(document).ready( function() {
-    resizeBrowser(160,40);
-    $(window).resize(function() {
-        resizeBrowser(160,40);
-        browser.updateLayout();
-    });
+  resizeBrowser(160,40);
+  $(window).resize(function() {
+      resizeBrowser(160,40);
+      browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 200,
-        source: {
-            dirPath: 'data/',
-            fileType: 'csv',
-            sheets: [ {name:"tablets", id:"ASIN"} ]
-        },
-        summaries: [
-            {   title: "Brand Name",
-            },{ title: "Operating System",
-            },{ title: "Flash Memory Size", layout: 'right', unitName: "GB",
-                value: function(){
-                    var n= parseFloat(this['Flash Memory Size']);
-                    if(n>=1) return n;
-                },
-                intervalScale: 'log',
-            },{ title: "Screen Size (inches)", unitName: "″",
-                value: function(){
-                    var x= parseFloat(this['Screen Size']);
-                    if(!isNaN(x)) return x;
-                }
-            },{ title: "Weight", layout: 'right', unitName: 'oz'
-            },{ title: "Battery Life", layout: 'right', unitName: 'hr'
-            },{ title: "Rating", layout: 'right', value: "Customer Reviews", showPercentile: true
-            },{ title: "Release Date", layout: 'bottom',
-                value: function(){ 
-                    var dt = this['Date First Available'];
-                    if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));
-                }
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: "Customer Reviews",
-            textSearch: 'name',
-            recordView: function(){
-                return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+this.url+"'>"+this.name+"</a></div>";
-            }
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 200,
+    source: {
+      dirPath: 'data/',
+      fileType: 'csv',
+      tables: {name:"tablets", id:"ASIN"}
+    },
+    summaries: [
+      { title: "Brand Name" },
+      { title: "Operating System" },
+      { title: "Flash Memory Size", layout: 'right', unitName: "GB", intervalScale: 'log',
+        value: function(){
+          var n= parseFloat(this['Flash Memory Size']);
+          if(n>=1) return n;
+        } },
+      { title: "Screen Size (inches)", unitName: "″",
+        value: function(){
+          var x= parseFloat(this['Screen Size']);
+          if(!isNaN(x)) return x;
+        } },
+      { title: "Weight", layout: 'right', unitName: 'oz' },
+      { title: "Battery Life", layout: 'right', unitName: 'hr' },
+      { title: "Rating", layout: 'right', value: "Customer Reviews", showPercentile: true },
+      { title: "Release Date", layout: 'bottom',
+        value: function(){ 
+          var dt = this['Date First Available'];
+          if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));
         }
-    });
+      }
+    ],
+    itemDisplay: {
+      sortingOpts: "Customer Reviews",
+      textSearch: 'name',
+      recordView: function(){
+        return "<div class='iteminfo iteminfo_0'><a target='_blank' href='"+this.url+"'>"+this.name+"</a></div>";
+      }
+    }
+  });
 });
-        </script>
-        <style>
-        .iteminfo a{
-            color:#606060;
-            font-style:italic;
-        }
-        </style>
+    </script>
+    <style>
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+    </style>
 	</head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+      <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

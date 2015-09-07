@@ -1,107 +1,115 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Military’s Surplus Gear - US</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css" type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Military’s Surplus Gear - US</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css" type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css" type="text/css">
-        
-        <script type="text/javascript">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
+
+    <script type="text/javascript">
 $(document).ready( function() {
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Counties",
-        categoryTextWidth: 200,
-        leftPanelLabelWidth: 160,
-        source: {
-            fileType: 'tsv',
-            sheets: [ {name:"counties-gear", id:"CombinedName"} ],
-            dirPath: 'data/',
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Counties",
+    categoryTextWidth: 200,
+    leftPanelLabelWidth: 160,
+    source: {
+      url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
+      dirPath: 'data/',
+      fileType: 'tsv',
+      tables: {name:"counties-gear", id:"CombinedName"},
 //  http://graphics8.nytimes.com/newsgraphics/2014/08/14/police-gear/a53e059e707a5f429107eee6c2e9f77f3f5f0c2f/'
-            url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
-        },
-        summaries: [
-            {   title: "state", catLabel: function(d){ return getStateName(this.id); }
-            },{ title: "Gear Category",
-                value: function(){
-                    var r=[];
-                    if(this['Armored Vehicle']>0) r.push('Received Armored Vehicles');
-                    if(this['Casspir Armored Vehicle']>0) r.push('Received Armored Vehicles');
-                    if(this['Other armored vehicle']>0) r.push('Received Armored Vehicles');
-                    if(this['MRAP']>0) r.push('Received Armored Vehicles');
+    },
+    summaries: [
+      { title: "state", catLabel: function(d){ return getStateName(this.id); } },
+      { title: "Gear Category",
+        value: function(){
+          var r=[];
+          if(this['Armored Vehicle']>0) r.push('Received Armored Vehicles');
+          if(this['Casspir Armored Vehicle']>0) r.push('Received Armored Vehicles');
+          if(this['Other armored vehicle']>0) r.push('Received Armored Vehicles');
+          if(this['MRAP']>0) r.push('Received Armored Vehicles');
 
-                    if(this['Helicopter']>0) r.push('Received Aircraft(s)');
-                    if(this['Plane']>0) r.push('Received Aircraft(s)');
+          if(this['Helicopter']>0) r.push('Received Aircraft(s)');
+          if(this['Plane']>0) r.push('Received Aircraft(s)');
 
-                    if(this['Grenade Launcher']>0) r.push('Received Grenade Launcher(s)');
-                    if(this['Machine Gun']>0) r.push('Received Guns');
-                    if(this['Pistol']>0) r.push('Received Guns');
-                    if(this['Shotgun']>0) r.push('Received Guns');
-                    return r;
-                }
-            },{ title: "Gear",
-                value: function(){
-                    var r=[];
-                    if(this['Armored Vehicle']>0) r.push('Armored Vehicle');
-                    if(this['Bayonet/Knife']>0) r.push('Bayonet/Knife');
-                    if(this['Camo']>0) r.push('Camo');
-                    if(this['Casspir Armored Vehicle']>0) r.push('Casspir Armored Vehicle');
-                    if(this['Grenade Launcher']>0) r.push('Grenade Launcher');
-                    if(this['Helicopter']>0) r.push('Helicopter');
-                    if(this['Machine Gun']>0) r.push('Machine Gun');
-                    if(this['Magazine']>0) r.push('Magazine');
-                    if(this['Mine Detection']>0) r.push('Mine Detection');
-                    if(this['MRAP']>0) r.push('MRAP');
-                    if(this['Night Vision']>0) r.push('Night Vision');
-                    if(this['Personal Armor']>0) r.push('Personal Armor');
-                    if(this['phon']>0) r.push('phon');
-                    if(this['Pistol']>0) r.push('Pistol');
-                    if(this['Plane']>0) r.push('Plane');
-                    if(this['Robot']>0) r.push('Robot');
-                    if(this['Shotgun']>0) r.push('Shotgun');
-                    if(this['Silence']>0) r.push('Silence');
-                    if(this['Other armored vehicle']>0) r.push('Other armored vehicle');
-                    return r;
-                }
-            },{ title: "Machine Gun", layout: 'right'
-            },{ title: "Pistol", layout: 'right'
-            },{ title: "Magazine", layout: 'right'
-            },{ title: "Shotgun", layout: 'right'
-            },{ title: "Armored Vehicle", layout: 'right', collapsed: true
-            },{ title: "Personal Armor", layout: 'right', collapsed: true
-            },{ title: "Night Vision", layout: 'right', collapsed: true
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {title: 'ZipCode', value: "fips"},
-            textSearch: 'county',
-            recordView: "CombinedName"
-        }
-    });
+          if(this['Grenade Launcher']>0) r.push('Received Grenade Launcher(s)');
+          if(this['Machine Gun']>0) r.push('Received Guns');
+          if(this['Pistol']>0) r.push('Received Guns');
+          if(this['Shotgun']>0) r.push('Received Guns');
+          return r;
+        } },
+      { title: "Gear",
+        value: function(){
+          var r=[];
+          if(this['Armored Vehicle']>0) r.push('Armored Vehicle');
+          if(this['Bayonet/Knife']>0) r.push('Bayonet/Knife');
+          if(this['Camo']>0) r.push('Camo');
+          if(this['Casspir Armored Vehicle']>0) r.push('Casspir Armored Vehicle');
+          if(this['Grenade Launcher']>0) r.push('Grenade Launcher');
+          if(this['Helicopter']>0) r.push('Helicopter');
+          if(this['Machine Gun']>0) r.push('Machine Gun');
+          if(this['Magazine']>0) r.push('Magazine');
+          if(this['Mine Detection']>0) r.push('Mine Detection');
+          if(this['MRAP']>0) r.push('MRAP');
+          if(this['Night Vision']>0) r.push('Night Vision');
+          if(this['Personal Armor']>0) r.push('Personal Armor');
+          if(this['phon']>0) r.push('phon');
+          if(this['Pistol']>0) r.push('Pistol');
+          if(this['Plane']>0) r.push('Plane');
+          if(this['Robot']>0) r.push('Robot');
+          if(this['Shotgun']>0) r.push('Shotgun');
+          if(this['Silence']>0) r.push('Silence');
+          if(this['Other armored vehicle']>0) r.push('Other armored vehicle');
+          return r;
+        } },
+      { title: "Machine Gun", layout: 'right' },
+      { title: "Pistol", layout: 'right' },
+      { title: "Magazine", layout: 'right' },
+      { title: "Shotgun", layout: 'right' },
+      { title: "Armored Vehicle", layout: 'right', collapsed: true },
+      { title: "Personal Armor", layout: 'right', collapsed: true },
+      { title: "Night Vision", layout: 'right', collapsed: true }
+    ],
+    itemDisplay: {
+      sortingOpts: [
+        {title: 'ZipCode', value: "fips"}, 
+        "Machine Gun",
+        "Pistol",
+        "Magazine",
+        "Shotgun",
+        "Armored Vehicle",
+        "Personal Armor",
+        "Night Vision"
+      ],
+      textSearch: 'county',
+      recordView: "CombinedName"
+    }
+  });
 });
-        </script>
-        <style>
-        #chart_div {
-            width: 1000px;
-            height: 700px;
-        }
-        </style>
+    </script>
+    <style>
+#chart_div {
+  width: 1000px;
+  height: 700px;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span> This page uses data from
-            <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">Mapping the Spread of the Military’s Surplus Gear</a>, by Tom Giratikanon, Alicia Parlapiano and Jeremy White<br> Published at New York Times, 15 August 2014. Original source: Department of Defense <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span> This page uses data from
+      <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">Mapping the Spread of the Military’s Surplus Gear</a>, by Tom Giratikanon, Alicia Parlapiano and Jeremy White<br> Published at New York Times, 15 August 2014. Original source: Department of Defense <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

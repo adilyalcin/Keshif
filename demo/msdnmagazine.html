@@ -1,136 +1,134 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>MSDN Magazine Posts</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>MSDN Magazine Posts</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 var loadData = function(browser){
-    $.ajax( {
-        // Cannot load remote resource because it is in another domain
-        // url:"http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazine.cxml",
-        url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/Pivot_MSDNMagazine.xml',
-        dataType:"xml",
-        async: false,
-        success: function(collection){
-            var $collection = $(collection);
-            browser.primaryTableName = "Articles";
-            kshf.dt.Articles = [];
-            var arr = kshf.dt.Articles;
-            var timeFormat = d3.time.format("%B %Y");
+  $.ajax( {
+    // Cannot load remote resource because it is in another domain
+    // url:"http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazine.cxml",
+    url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/Pivot_MSDNMagazine.xml',
+    dataType:"xml",
+    async: false,
+    success: function(collection){
+      var $collection = $(collection);
+      browser.primaryTableName = "Articles";
+      kshf.dt.Articles = [];
+      var arr = kshf.dt.Articles;
+      var timeFormat = d3.time.format("%B %Y");
 
-            $collection.find("> Collection > Items > Item").each(function(){
-                var $this = $(this);
-                var cData = {};
-                cData.url = $this.attr("Href");
-                cData.id = parseInt($this.attr("Id"));
-                cData.Name = $this.attr("Name");
-                cData.Description = $this.find("Description").text();
+      $collection.find("> Collection > Items > Item").each(function(){
+        var $this = $(this);
+        var cData = {};
+        cData.url = $this.attr("Href");
+        cData.id = parseInt($this.attr("Id"));
+        cData.Name = $this.attr("Name");
+        cData.Description = $this.find("Description").text();
 
-                $this.find(">Facets>Facet").each(function(d){
-                    var columnName = this.getAttribute("Name");
-                    var $item = $(this);
-                    cData[columnName] = [];
-                    if($item.find(">String").length>0) {
-                        $item.find(">String").each(function(){
-                            cData[columnName].push(this.getAttribute("Value"));
-                        })
-                    } else if($item.find(">Number").length>0) {
-                        cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-                    } else {
-                        cData[columnName] = undefined;
-                    }
-                });
+        $this.find(">Facets>Facet").each(function(d){
+          var columnName = this.getAttribute("Name");
+          var $item = $(this);
+          cData[columnName] = [];
+          if($item.find(">String").length>0) {
+            $item.find(">String").each(function(){
+              cData[columnName].push(this.getAttribute("Value"));
+            })
+          } else if($item.find(">Number").length>0) {
+            cData[columnName] = parseInt($item.find(">Number").attr("Value"));
+          } else {
+            cData[columnName] = undefined;
+          }
+        });
 
-                // convert page views from string to number
-                cData['Page Views'] = cData['Page Views']*1;
+        // convert page views from string to number
+        cData['Page Views'] = cData['Page Views']*1;
 
-                cData['Issue Date'] = timeFormat.parse(cData['Issue'][0]);
+        cData['Issue Date'] = timeFormat.parse(cData['Issue'][0]);
 
-                if(cData['Column Name'][0]==="Feature Article or Unknown Column")
-                    cData['Column Name'] = null;
+        if(cData['Column Name'][0]==="Feature Article or Unknown Column")
+          cData['Column Name'] = null;
 
-                var p=0;
-                if(cData['Popularity'][0]==='Viewed Infrequently') p=1;
-                else if(cData['Popularity'][0]==='Viewed Occasionally') p=2;
-                else if(cData['Popularity'][0]==='Viewed Often') p=3;
-                cData['Popularity'] = p;
+        var p=0;
+        if(cData['Popularity'][0]==='Viewed Infrequently') p=1;
+        else if(cData['Popularity'][0]==='Viewed Occasionally') p=2;
+        else if(cData['Popularity'][0]==='Viewed Often') p=3;
+        cData['Popularity'] = p;
 
-                arr.push(new kshf.Item(cData,"id"));
-            });
+        arr.push(new kshf.Item(cData,"id"));
+      });
 
-            browser.loadCharts();   
-        }
-    });
+      browser.loadCharts();   
+    }
+  });
 };
 
 $(document).ready( function(){
-    new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Articles on MSDN Magazine",
-        categoryTextWidth: 180,
-        leftPanelLabelWidth: 130,
-        barChartWidth: 70,
-        source: {
-            url: 'http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazinepivot.htm',
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Topic",
-            },{ title: "Has Code",
-            },{ title: "Column / Feature",
-            },{ title: "Column Name",
-            },{ title: "Issue Date", layout:'middle'
-            },{ title: "Popularity", layout: 'right',
-                sortingOpts: [{ value: "id", inverse: true }],
-                catLabel: function(){
-                    var str='';
-                    for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";
-                    return str;
-                }
-            },{ title: "Page Views", layout: 'right'
-            },{ title: "Authors", layout: 'right'
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: [ 'Page Views', {title:'id', inverse:true} ],
-            textSearch: "Name",
-            recordView: function(){
-                return "<a target='_blank' class='articleLink' href='"+
-                    this.url+"'>"+this.Name+" <i class='fa fa-external-link'></i></a>";
-            }
-        }
-    });
+  new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Articles on MSDN Magazine",
+    categoryTextWidth: 180,
+    leftPanelLabelWidth: 130,
+    barChartWidth: 70,
+    source: {
+      url: 'http://pivot.blob.core.windows.net/msdn-magazine/msdnmagazinepivot.htm',
+      callback: loadData
+    },
+    summaries: [
+      { title: "Topic", },
+      { title: "Has Code", },
+      { title: "Column / Feature", },
+      { title: "Column Name", },
+      { title: "Issue Date", layout:'middle' },
+      { title: "Popularity", layout: 'right', catSortBy: { value: "id", inverse: true },
+        catLabel: function(){
+          var str='';
+          for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";
+          return str;
+        } },
+      { title: "Page Views", layout: 'right' },
+      { title: "Authors", layout: 'right' }
+    ],
+    itemDisplay: {
+      sortingOpts: [ 'Page Views', {title:'id', inverse:true} ],
+      textSearch: "Name",
+      recordView: function(){
+        return "<a target='_blank' class='articleLink' href='"+
+            this.url+"'>"+this.Name+" <i class='fa fa-external-link'></i></a>";
+      }
+    }
+  });
 });
-        </script>
-<style>
+    </script>
+    <style>
 #chart_div {
-    height: 700px;
-    width: 1100px;
+  height: 700px;
+  width: 1100px;
 }
 a.articleLink{
-    color:black;
-    text-decoration: none;
+  color:black;
+  text-decoration: none;
 }
 a.articleLink:hover{
-    color:orangered;
-    text-decoration: underline;
+  color:orangered;
+  text-decoration: underline;
 }
 .fa-external-link{
-    font-size: 0.8em;
+  font-size: 0.8em;
 }
-</style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

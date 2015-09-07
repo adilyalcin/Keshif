@@ -1,64 +1,63 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Jobs</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Jobs</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    $.ajax({
-        url: "./data/lyra_jobs.json",
-        success: function(data){
-            browser.primaryTableName = "Jobs";
-            kshf.dt.Jobs = [];
-            data.forEach(function(job,i){
-                job.id = i;
-                var job_item = new kshf.Item(job,"id");
-                job_item.aggregate_Self = job.count;
-                kshf.dt.Jobs.push(job_item);
-            });
-            browser.loadCharts();
-        }
-    });
+  $.ajax({
+    url: "./data/lyra_jobs.json",
+    success: function(data){
+      browser.primaryTableName = "Jobs";
+      kshf.dt.Jobs = [];
+      data.forEach(function(job,i){
+        job.id = i;
+        var job_item = new kshf.Item(job,"id");
+        job_item.aggregate_Self = job.count;
+        kshf.dt.Jobs.push(job_item);
+      });
+      browser.loadCharts();
+    }
+  });
 };
 
 $(document).ready( function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        categoryTextWidth: 180,
-        rightPanelLabelWidth: 510,
-        source:{
-            url: "http://idl.cs.washington.edu/projects/lyra/app/data/jobs.json",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "job",
-            },{ title: "sex", layout: 'middle'
-            },{ title: "year", layout: 'middle'
-            }
-        ]
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    categoryTextWidth: 180,
+    rightPanelLabelWidth: 510,
+    source:{
+      url: "http://idl.cs.washington.edu/projects/lyra/app/data/jobs.json",
+      callback: loadData
+    },
+    summaries: [
+      { title: "job", },
+      { title: "sex", layout: 'middle' },
+      { title: "year", layout: 'middle' }
+    ]
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 1000px;
-                height: 450px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">Job Trends, 1850-2000</div>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 1000px;
+  height: 450px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Job Trends, 1850-2000</div>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

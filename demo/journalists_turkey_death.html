@@ -1,59 +1,58 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Journalists Assassinated in Turkey after 1970</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Journalists Assassinated in Turkey after 1970</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-    new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 130,
-        rightPanelLabelWidth: 100,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
-            sheets: "Journalists"
-        },
-        summaries: [
-            {   title: "Organization"
-            },{ title: "Location", layout: 'right'
-            },{ title: "Date", layout: 'bottom'
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 50,
-            sortingOpts: {title: 'Year',value: function(){ return this.Date.getFullYear(); } },
-            textSearch: "Journalist",
-            recordView: 'Journalist'
-        }
-    });
+new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 130,
+    rightPanelLabelWidth: 100,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdFA0YVYxdGZ4MUkycm1sMlREaHNhSlE',
+      tables: "Journalists"
+    },
+    summaries: [
+      { title: "Organization" },
+      { title: "Location", layout: 'right' },
+      { title: "Date", layout: 'bottom' }
+    ],
+    itemDisplay: {
+      sortColWidth: 50,
+      sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear(); } },
+      textSearch: "Journalist",
+      recordView: 'Journalist'
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 750px;
-                height: 550px;
-            }
-            div.kshf.layout_header span.title{
-                font-size: 1em;
-                letter-spacing: 0em;
-            }
-            .bigTextSearch {
-                width: 120px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+    <style>
+#chart_div {
+  width: 750px;
+  height: 550px;
+}
+div.kshf.layout_header span.title{
+  font-size: 1em;
+  letter-spacing: 0em;
+}
+.bigTextSearch {
+  width: 120px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

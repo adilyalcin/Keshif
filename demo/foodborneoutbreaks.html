@@ -1,94 +1,93 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Foodborne Outbreaks</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Foodborne Outbreaks</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    $.ajax( {
-        url:"https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/foodborneoutbreaks.xml",
-        dataType:"xml",
-        async: false,
-        success: function(collection){
-            browser.primaryTableName = "Outbreaks";
-            kshf.dt.Outbreaks = [];
-            $(collection).find("record").each(function(i){
-                var $this = $(this);
-                var cData = {};
-                cData.id = i;
-                cData.Year = parseInt($this.find("Year").text());
-                if(cData.Year){
-                    cData.Year = new Date(cData.Year,1,1,1,1,1,1);
-                }
-                cData.Month = $this.find("Month").text();
-                cData.State = $this.find("State").text();
-                cData.Genus_Species = $this.find("Genus_Species").text().split("; ");
-                cData.Status = $this.find("Status").text().split("; ");
-                cData.LocationOfConsumption = $this.find("LocationOfConsumption").text().split("; ");
-                cData.TotalIll = parseInt($this.find("TotalIll").text());
-                cData.TotalHospitalizations = parseInt($this.find("TotalHospitalizations").text());
-                cData.TotalDeaths = parseInt($this.find("TotalDeaths").text());
-                cData.FoodVehicle = $this.find("FoodVehicle").text().split("; ");
-                cData.Contaminated_Ingredient = $this.find("Contaminated_Ingredient").text().split("; ");
-                
-                kshf.dt.Outbreaks.push(new kshf.Item(cData,"id"));
-            });
-            browser.loadCharts();   
+  $.ajax( {
+    url:"https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/foodborneoutbreaks.xml",
+    dataType:"xml",
+    async: false,
+    success: function(collection){
+      browser.primaryTableName = "Outbreaks";
+      kshf.dt.Outbreaks = [];
+      $(collection).find("record").each(function(i){
+        var $this = $(this);
+        var cData = {};
+        cData.id = i;
+        cData.Year = parseInt($this.find("Year").text());
+        if(cData.Year){
+            cData.Year = new Date(cData.Year,1,1,1,1,1,1);
         }
-    });
+        cData.Month = $this.find("Month").text();
+        cData.State = $this.find("State").text();
+        cData.Genus_Species = $this.find("Genus_Species").text().split("; ");
+        cData.Status = $this.find("Status").text().split("; ");
+        cData.LocationOfConsumption = $this.find("LocationOfConsumption").text().split("; ");
+        cData.TotalIll = parseInt($this.find("TotalIll").text());
+        cData.TotalHospitalizations = parseInt($this.find("TotalHospitalizations").text());
+        cData.TotalDeaths = parseInt($this.find("TotalDeaths").text());
+        cData.FoodVehicle = $this.find("FoodVehicle").text().split("; ");
+        cData.Contaminated_Ingredient = $this.find("Contaminated_Ingredient").text().split("; ");
+        
+        kshf.dt.Outbreaks.push(new kshf.Item(cData,"id"));
+      });
+      browser.loadCharts();   
+    }
+  });
 };
 
 $(document).ready( function(){
+  resizeBrowser(300,70);
+  $(window).resize(function() {
     resizeBrowser(300,70);
-    $(window).resize(function() {
-        resizeBrowser(300,70);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        leftPanelLabelWidth: 170,
-        barChartWidth: 125,
-        categoryTextWidth: 200,
-        source: {
-            url: 'http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx',
-            callback: loadData
-        },
-        readyCb: function(browser){
-            browser.panels.left.setWidthCatChart(120);
-        },
-        summaries: [
-            {   title: "Year"
-            },{ title: "Month",
-                catSortBy: function(){ return getMonthNumberFromName(this.id); },
-            },{ title: "Contaminated Ingredient", value: "Contaminated_Ingredient", layout: 'middle'
-            },{ title: "State"
-            },{ title: "Location Of Consumption", value: "LocationOfConsumption", layout: 'middle'
-            },{ title: "Food Vehicle", value: "FoodVehicle", layout: 'middle', minAggrValue: 5
-            },{ title: "Total Ill", value: "TotalIll", layout: 'right', intervalScale: 'log'
-            },{ title: "TotalHospitalizations", layout: 'right', intervalScale: 'log'
-            },{ title: "Total Deaths", value: "TotalDeaths", layout: 'right', intervalScale: 'log'
-            },{ title: "Genus Species", value: "Genus_Species", layout: 'right'
-            },{ title: "Status", layout: 'right'
-            }
-        ]
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    leftPanelLabelWidth: 170,
+    barChartWidth: 125,
+    categoryTextWidth: 200,
+    source: {
+      url: 'http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx',
+      callback: loadData
+    },
+    readyCb: function(browser){
+      browser.panels.left.setWidthCatChart(120);
+    },
+    summaries: [
+      { title: "Year" },
+      { title: "Month",
+        catSortBy: function(){ return getMonthNumberFromName(this.id); }, },
+      { title: "Contaminated Ingredient", value: "Contaminated_Ingredient", layout: 'middle' },
+      { title: "State" },
+      { title: "Location Of Consumption", value: "LocationOfConsumption", layout: 'middle' },
+      { title: "Food Vehicle", value: "FoodVehicle", layout: 'middle', minAggrValue: 5 },
+      { title: "Total Ill", value: "TotalIll", layout: 'right', intervalScale: 'log' },
+      { title: "TotalHospitalizations", layout: 'right', intervalScale: 'log' },
+      { title: "Total Deaths", value: "TotalDeaths", layout: 'right', intervalScale: 'log' },
+      { title: "Genus Species", value: "Genus_Species", layout: 'right' },
+      { title: "Status", layout: 'right' }
+    ]
+  });
 });
-        </script>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">
-            <a href="http://www.cdc.gov/" target='_blank'>CDC</a> Foodborne Outbreak Online Database</div>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+    </script>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">
+      <a href="http://www.cdc.gov/" target='_blank'>CDC</a> Foodborne Outbreak Online Database</div>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

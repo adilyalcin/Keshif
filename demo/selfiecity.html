@@ -1,143 +1,142 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Selfiecity Portraits</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Selfiecity Portraits</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready( function(){
+  resizeBrowser(100,130);
+  $(window).resize(function(){
     resizeBrowser(100,130);
-    $(window).resize(function(){
-        resizeBrowser(100,130);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 150,
-        itemName: "Selfies",
-        source: {
-            url: 'http://selfiecity.net/selfiexploratory/',
-            dirPath: 'data/',
-            fileType: 'csv',
-            sheets: "selfiecity"
-            // http://s3.amazonaws.com/selfiecity/data/selfies_rekognized_full.csv
-        },
-        summaries: [
-            {   title: "City", value: "city",
-                catLabel: function(){
-                    switch(this.id){
-                        case 'ny': return "New York";
-                        case 'bangkok': return "Bangkok";
-                        case 'sao_paulo': return "Sao Paulo";
-                        case 'moscow': return "Moscow";
-                        case 'berlin': return "Berlin";
-                    }
-                }
-            },{ title: "Sex", value: "sex"
-            },{ title: "Age", value: "age", showPercentile: true
-            },{ title: "Photo: Eyes Closed", value: "eye_closed"
-            },{ title: "Photo: Mouth Open", value: "mouth_open_wide", collapsed: true
-            },{ title: "Photo: Has Glasses", value: "glasses"
-            
-            },{ title: "Happyness", value: "emotion_happy", layout: 'right', showPercentile: true
-            },{ title: "Calmness", value: "emotion_calm", layout: 'right', type: 'interval', // TODO: Why need to define type?
-            },{ title: "Confusion", value: "emotion_confused", layout: 'right', type: 'interval', // TODO: Why need to define type?
-            },{ title: "Sadness", value: "emotion_sad", layout: 'right',
-            },{ title: "Anger", value: "emotion_angry", collapsed: true, layout: 'right',
-            },{ title: "Disgust", value: "emotion_disgust", collapsed: true, layout: 'right', type: 'interval'
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {title:"Happyness", value: "emotion_happy"},
-            displayType: "grid",
-            detailsToggle: "off",
-            maxVisibleItems_Default: 104,
-            recordView: function(){ return "<img>"; },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",
-                    'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/'+this.city+'/'+this.id);
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    itemName: "Selfies",
+    source: {
+      url: 'http://selfiecity.net/selfiexploratory/',
+      dirPath: 'data/',
+      fileType: 'csv',
+      tables: "selfiecity"
+      // http://s3.amazonaws.com/selfiecity/data/selfies_rekognized_full.csv
+    },
+    summaries: [
+      { title: "City", value: "city",
+        catLabel: function(){
+          switch(this.id){
+            case 'ny': return "New York";
+            case 'bangkok': return "Bangkok";
+            case 'sao_paulo': return "Sao Paulo";
+            case 'moscow': return "Moscow";
+            case 'berlin': return "Berlin";
+          }
+        } },
+      { title: "Sex", value: "sex" },
+      { title: "Age", value: "age", showPercentile: true },
+      { title: "Photo: Eyes Closed", value: "eye_closed" },
+      { title: "Photo: Mouth Open", value: "mouth_open_wide", collapsed: true },
+      { title: "Photo: Has Glasses", value: "glasses" },
+       
+      { title: "Happyness", value: "emotion_happy", layout: 'right', showPercentile: true },
+      { title: "Calmness", value: "emotion_calm", layout: 'right', type: 'interval', // TODO: Why need to define type? },
+      { title: "Confusion", value: "emotion_confused", layout: 'right', type: 'interval', // TODO: Why need to define type? },
+      { title: "Sadness", value: "emotion_sad", layout: 'right', },
+      { title: "Anger", value: "emotion_angry", collapsed: true, layout: 'right', },
+      { title: "Disgust", value: "emotion_disgust", collapsed: true, layout: 'right', type: 'interval' }
+    ],
+    itemDisplay: {
+      sortingOpts: {title:"Happyness", value: "emotion_happy"},
+      displayType: "grid",
+      detailsToggle: "off",
+      maxVisibleItems_Default: 104,
+      recordView: function(){ return "<img>"; },
+      visibleCb: function(d){
+          d3.select(d.DOM.record).select("img").attr("src",
+              'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/'+this.city+'/'+this.id);
+      }
+    }
+  });
 });
-        </script>
-<style>
-    .listItemGroup{
-        background-color: black !important;
-    }
-    .listItem{
-        width: 70px;
-        padding-top: 0px !important;
-        background-color: black !important;
-        overflow: visible !important;
-    }
-    .listItem[highlight=true]{
-        background-color: orangered !important;
-    }
-    .listItem[highlight=true] .content img{
-        border-color: orangered;
-        border-width: 3px;
-    }
-    .listItem:hover{
-        z-index: 200 !important;
-    }
-    .listItem:hover .content img{
-        transform: scale(2);
-    }
-    .listItem > .itemRow{
-        display: block !important;
-        overflow: visible !important;
-    }
-    .content img{
-        display: block;
-        border: solid;
-        border-color: black;
-        border-width: 1px;
-        border-radius: 0px;
-        background-color: white;
-        width: 100%;
-        transition: all 200ms linear;
-        -webkit-transition: all 200ms linear;
-        -o-transition: all 200ms linear;
-        -moz-transition: all 200ms linear;
-    }
-    .listItem[highlight=true] .content img{
-        background-color: orangered;
-    }
-    .content span.title{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2px;
-        text-align: center;
-        font-size: 0.8em;
-    }
+      </script>
+    <style>
+.listItemGroup{
+  background-color: black !important;
+}
+.listItem{
+  width: 70px;
+  padding-top: 0px !important;
+  background-color: black !important;
+  overflow: visible !important;
+}
+.listItem[highlight=true]{
+  background-color: orangered !important;
+}
+.listItem[highlight=true] .content img{
+  border-color: orangered;
+  border-width: 3px;
+}
+.listItem:hover{
+  z-index: 200 !important;
+}
+.listItem:hover .content img{
+  transform: scale(2);
+}
+.listItem > .itemRow{
+  display: block !important;
+  overflow: visible !important;
+}
+.content img{
+  display: block;
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 0px;
+  background-color: white;
+  width: 100%;
+  transition: all 200ms linear;
+  -webkit-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+}
+.listItem[highlight=true] .content img{
+  background-color: orangered;
+}
+.content span.title{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: center;
+  font-size: 0.8em;
+}
 
-</style>
-    </head>
-    <body>
-    <div class="pageTitle" align="center">Selfiecity - Self-portraits (selfies) in five cities across the world</div>
-    
-    <div class="contents"><div id="chart_div"></div></div>
+    </style>
+  </head>
+  <body>
+  <div class="pageTitle" align="center">Selfiecity - Self-portraits (selfies) in five cities across the world</div>
+  
+  <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        <a href="http://selfiecity.net/" target='_blank'>Selfiecity</a> is a project by Dr. Lev Manovich, Moritz Stefaner, Mehrdad Yazdani, Dr. Dominikus Baur, Daniel Goddmeyer, Alise Tifentale, Nadov Hochman, Jay Chow.<br>
-        You can also see their interactive visual <a href="http://selfiecity.net/selfiexploratory/" target='_blank'>selfie browser</a>.
-        <span class="fa fa-info-circle"></span>
-        </div>
-    </body>
+  <div id="infobox" align="center">
+    <span class="fa fa-info-circle"></span>
+    <a href="http://selfiecity.net/" target='_blank'>Selfiecity</a> is a project by Dr. Lev Manovich, Moritz Stefaner, Mehrdad Yazdani, Dr. Dominikus Baur, Daniel Goddmeyer, Alise Tifentale, Nadov Hochman, Jay Chow.<br>
+    You can also see their interactive visual <a href="http://selfiecity.net/selfiexploratory/" target='_blank'>selfie browser</a>.
+    <span class="fa fa-info-circle"></span>
+    </div>
+  </body>
 </html>

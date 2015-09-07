@@ -1,20 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Hidden Hunger Vizathon</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Hidden Hunger Vizathon</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
     browser_eth_anth = new kshf.Browser({
         domID: "#browser_eth_anth",
@@ -25,7 +25,7 @@ google.setOnLoadCallback(function(){
         itemName: "Ethiopian Anth. (Per-Child)",
         source: {
             gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-            sheets: [{name:"eth_anth", id:"individual_id"}]
+            tables: {name:"eth_anth", id:"individual_id"}
         },
         summaries: [
             {   title:"Indicators", layout: "middle",
@@ -85,7 +85,7 @@ function showBrowsers(v){
             itemName: "Ethiopian Nutrition (Per-Household)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                sheets: "eth_nutrition"
+                tables: "eth_nutrition"
             },
             summaries: [
                 {title:"Region", value:"cq11"},
@@ -127,7 +127,7 @@ function showBrowsers(v){
             itemName: "Malawi Anthropometrics (Per-Child)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                sheets: "mwi_anth"
+                tables: "mwi_anth"
             },
             summaries: [
                 {title:"Sex",value:"sex"},
@@ -161,7 +161,7 @@ function showBrowsers(v){
             itemName: "Malawi Nutrition (Per-Household)",
             source: {
                 gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                sheets: "mwi_nutrition"
+                tables: "mwi_nutrition"
             },
             summaries: [
                 { title: "District", value: "a1" },

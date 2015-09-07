@@ -105,20 +105,13 @@ $(document).ready(function() {
         rightPanelLabelWidth: 270,
         source: {
             gdocId: '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
-            sheets: [ {name:"Participants", id:'Participants'}]
+            tables: [ {name:"Participants", id:'Participants'}]
         },
         readyCb: function(browser){
             $(".listItem .content").click(function(){
                 browser.listDisplay.showListItemDetails(this.parentNode.__data__);
             });
         },
-/*        source: {
-            dirPath: './',
-            fileType: 'csv',
-            sheets: [
-                {name:"NPG_survey", header: false, id:0},
-            ]
-        },*/
         summaries: [
             {   title: "Capture Link Source", collapsed: true, value: columns[7]
             },{ title: "Area of Interest",

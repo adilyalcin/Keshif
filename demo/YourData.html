@@ -1,50 +1,83 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Keshif Your Data</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+  <head>
+    <title>Keshif Your Data</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 socialShare = false;
 noRibbon = true;
 
-google.setOnLoadCallback( function(){
+google.setOnLoadCallback(function(){
 
+	resizeBrowser(280,50);
+	$(window).resize(function() {
 		resizeBrowser(280,50);
-		$(window).resize(function() {
-				resizeBrowser(280,50);
-				browser.updateLayout();
-		});
+		browser.updateLayout();
+	});
 
     browser = new kshf.Browser({
         domID: "#chart_div",
         showResizeCorner: true,
-        categoryTextWidth: 160
+        categoryTextWidth: 160,
+		readyCb: function(browser){
+			browser.summaries.forEach(function(summary){
+				if(summary.type==="interval") browser.listDisplay.addSortingOption(summary);
+			});
+			/*
+			// URL.createObjectURL
+			window.URL = window.URL || window.webkitURL;
+
+			// "Server response", used in all examples
+			var responseFunc = function(e){
+				console.log(e.data);
+			};
+			var response = "self.onmessage="+responseFunc.toString();
+
+			var blob;
+			try {
+			    blob = new Blob([response], {type: 'application/javascript'});
+			} catch (e) { // Backwards-compatibility
+			    window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
+			    blob = new BlobBuilder();
+			    blob.append(response);
+			    blob = blob.getBlob();
+			}
+			var worker = new Worker(URL.createObjectURL(blob));
+			// Test, used in all examples:
+			worker.onmessage = function(e) {
+			    //alert('Response: ' + e.data);
+
+			};
+
+			worker.postMessage(browser.summaries[0].summaryTitle);
+			*/
+		}
     });
 });
-        </script>
-        <style>
+    </script>
+    <style>
 #chart_div {
-    width: 900px;
-    height: 700px;
+  width: 900px;
+  height: 700px;
 }
-        </style>
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

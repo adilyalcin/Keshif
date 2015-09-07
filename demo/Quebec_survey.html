@@ -1,37 +1,37 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Survey on &quot;Online collaboration: Scientists and the social network&quot;</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Survey on &quot;Online collaboration: Scientists and the social network&quot;</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <!-- Demos - shared -->
-        <script type="text/javascript" src="../demo/js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../demo/css/style.css"/ type="text/css">
+    <!-- Demos - shared -->
+    <script type="text/javascript" src="../demo/js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../demo/css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="../demo/js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../demo/js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 var demoID = 899;
 
 var ageSort = function(){
-    switch(this.id){
-        case "17-34": return 0;
-        case "25-34": return 1;
-        case "35-44": return 2;
-        case "45-54": return 3;
-        case "55-64": return 4;
-        case "65-74": return 5;
-        case "75-84": return 5;
-        case "85+": return 6;
-    }
+  switch(this.id){
+    case "17-34": return 0;
+    case "25-34": return 1;
+    case "35-44": return 2;
+    case "45-54": return 3;
+    case "55-64": return 4;
+    case "65-74": return 5;
+    case "75-84": return 5;
+    case "85+": return 6;
+  }
 };
 
 $(document).ready(function() {
@@ -54,7 +54,7 @@ $(document).ready(function() {
         rightPanelLabelWidth: 270,
         source: {
             gdocId: '1XxWOlo_YwXV8kyMEF1cO4oSFIQI5mw9ldpksK2EVHWQ',
-            sheets: "Participants"
+            tables: "Participants"
         },
         readyCb: function(browser){
             $(".listItem .content").click(function(){

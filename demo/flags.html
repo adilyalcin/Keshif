@@ -1,199 +1,197 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>World Country Flags</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>World Country Flags</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 $(document).ready( function(){
+  resizeBrowser(210,30);
+  $(window).resize(function() {
     resizeBrowser(210,30);
-    $(window).resize(function() {
-        resizeBrowser(210,30);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    logIf.Check = logIf.All();
+  logIf.Check = logIf.All();
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Flags",
-        categoryTextWidth: 135,
-        source: {
-            dirPath: 'data/',
-            fileType: 'csv',
-            sheets: [ {name:"flags", id:'Country'} ]
-//            gdocId: '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
-//            sheets: [ {name:"Flags"} ]
-        },
-        summaries: [
-            {   title: "Continent",
-                catLabel: function(){
-                    switch(this.id){
-                        case 1: return "North America";
-                        case 2: return "South America";
-                        case 3: return "Europe";
-                        case 4: return "Africa";
-                        case 5: return "Asia";
-                        case 6: return "Oceania";
-                        default: return "-";
-                    }
-                }
-            },{ title: "Zone", collapsed: true,
-                catLabel: function(){
-                    switch(this.id){
-                        case 1: return "North East";
-                        case 2: return "South East";
-                        case 3: return "South West";
-                        case 4: return "North West";
-                        default: return "-";
-                    }
-                }
-            },{ title: "Language",
-                value: function(){ return (this.Language===9)?10:this.Language; },
-                catLabel: function(){
-                    switch(this.id){
-                        case 1: return "English";
-                        case 2: return "Spanish";
-                        case 3: return "French";
-                        case 4: return "German";
-                        case 5: return "Slavic";
-                        case 6: return "Other Indo-European";
-                        case 7: return "Chinese";
-                        case 8: return "Arabic";
-                        case 9: return "Others";
-                        case 10: return "Others";
-                        case 11: return "Portuguese"
-                        default: return "-";
-                    }
-                }
-            },{ title: "Religion",
-                catLabel: function(){
-                    switch(this.id){
-                        case 0: return "Catholic";
-                        case 1: return "Other Christian";
-                        case 2: return "Muslim";
-                        case 3: return "Buddhist";
-                        case 4: return "Hindu";
-                        case 5: return "Ethnic";
-                        case 6: return "Diverse";
-                        case 7: return "Others";
-                        default: return "-";
-                    }
-                }
-            },{ title: "Flag Date", layout: 'left',
-                value: function(){
-                    if(this.Independence==="") return;
-                    if(this.Independence===null) return;
-                    if(this.Independence===undefined) return;
-                    return new Date(moment(this.Independence,"MM/DD/YYYY"));
-                }
-            },{ title: "Flag Color",  layout: 'right',
-                value: function(){
-                    var toRet = [];
-                    if(this.Red) toRet.push("Red");
-                    if(this.Green) toRet.push("Green");
-                    if(this.Blue) toRet.push("Blue");
-                    if(this.Gold) toRet.push("Gold / Yellow");
-                    if(this.White) toRet.push("White");
-                    if(this.Black) toRet.push("Black");
-                    if(this.Orange) toRet.push("Orange / Brown");
-                    return toRet;
-                },
-            },{ title: "Flag Shape", layout: 'right',
-                value: function(){
-                    var toRet = [];
-                    if(this.Circles) toRet.push("Circle");
-                    if(this.Crosses) toRet.push("Crosses");
-                    if(this.Saltires) toRet.push("Saltire");
-                    if(this.Quarters) toRet.push("Quarter");
-                    if(this.Sunstars) toRet.push("Sun / star");
-                    if(this.Crescent) toRet.push("Crescent");
-                    if(this.Triangle) toRet.push("Triangle");
-                    return toRet;
-                },
-            },{ title: "Number of Bars", value: "Bars", layout: 'right'
-            },{ title: "Number of Stripes", layout: 'right', unitName: "strp",
-                value: function(){ if(this.Stripes!==0) return this.Stripes; }
-            },{ title: "Other", collapsed: true, layout: 'right',
-                value: function(){
-                    var toRet = [];
-                    if(this.Text!==0) toRet.push("Text");
-                    if(this.Icon!==0) toRet.push("Icon");
-                    if(this.Animate!==0) toRet.push("Animate");
-                    return toRet;
-                }
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: 'Country',
-            displayType: 'grid',
-            maxVisibleItems_Default: 200,
-            textSearch: "Country",
-            recordView: function(){
-                return "<img><span class='title'>"+this.Country+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",
-                    "http://www.cs.umd.edu/~yalcin/keshif_res/"+this.Flag);
-            }
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Flags",
+    categoryTextWidth: 135,
+    source: {
+      dirPath: 'data/',
+      fileType: 'csv',
+      tables: {name:"flags", id:'Country'}
+//      gdocId: '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
+    },
+    summaries: [
+      { title: "Continent",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "North America";
+            case 2: return "South America";
+            case 3: return "Europe";
+            case 4: return "Africa";
+            case 5: return "Asia";
+            case 6: return "Oceania";
+            default: return "-";
+          }
+        } },
+      { title: "Zone", collapsed: true,
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "North East";
+            case 2: return "South East";
+            case 3: return "South West";
+            case 4: return "North West";
+            default: return "-";
+          }
+        } },
+      { title: "Language",
+        value: function(){ return (this.Language===9)?10:this.Language; },
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "English";
+            case 2: return "Spanish";
+            case 3: return "French";
+            case 4: return "German";
+            case 5: return "Slavic";
+            case 6: return "Other Indo-European";
+            case 7: return "Chinese";
+            case 8: return "Arabic";
+            case 9: return "Others";
+            case 10: return "Others";
+            case 11: return "Portuguese"
+            default: return "-";
+          }
+        } },
+      { title: "Religion",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "Catholic";
+            case 1: return "Other Christian";
+            case 2: return "Muslim";
+            case 3: return "Buddhist";
+            case 4: return "Hindu";
+            case 5: return "Ethnic";
+            case 6: return "Diverse";
+            case 7: return "Others";
+            default: return "-";
+          }
+        } },
+      { title: "Flag Date", layout: 'left',
+        value: function(){
+          if(this.Independence==="") return;
+          if(this.Independence===null) return;
+          if(this.Independence===undefined) return;
+          return new Date(moment(this.Independence,"MM/DD/YYYY"));
+        } },
+      { title: "Flag Color",  layout: 'right',
+        value: function(){
+          var toRet = [];
+          if(this.Red) toRet.push("Red");
+          if(this.Green) toRet.push("Green");
+          if(this.Blue) toRet.push("Blue");
+          if(this.Gold) toRet.push("Gold / Yellow");
+          if(this.White) toRet.push("White");
+          if(this.Black) toRet.push("Black");
+          if(this.Orange) toRet.push("Orange / Brown");
+          return toRet;
+        }, },
+      { title: "Flag Shape", layout: 'right',
+        value: function(){
+          var toRet = [];
+          if(this.Circles) toRet.push("Circle");
+          if(this.Crosses) toRet.push("Crosses");
+          if(this.Saltires) toRet.push("Saltire");
+          if(this.Quarters) toRet.push("Quarter");
+          if(this.Sunstars) toRet.push("Sun / star");
+          if(this.Crescent) toRet.push("Crescent");
+          if(this.Triangle) toRet.push("Triangle");
+          return toRet;
+        }, },
+      { title: "Number of Bars", value: "Bars", layout: 'right' },
+      { title: "Number of Stripes", layout: 'right', unitName: "strp",
+        value: function(){ if(this.Stripes!==0) return this.Stripes; } },
+      { title: "Other", collapsed: true, layout: 'right',
+        value: function(){
+          var toRet = [];
+          if(this.Text!==0) toRet.push("Text");
+          if(this.Icon!==0) toRet.push("Icon");
+          if(this.Animate!==0) toRet.push("Animate");
+          return toRet;
         }
-    });
+      }
+    ],
+    itemDisplay: {
+      sortingOpts: 'Country',
+      displayType: 'grid',
+      maxVisibleItems_Default: 200,
+      textSearch: "Country",
+      recordView: function(){
+        return "<img><span class='title'>"+this.Country+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",
+            "http://www.cs.umd.edu/~yalcin/keshif_res/"+this.Flag);
+      }
+    }
+  });
 });
         </script>
-        <style>
-            .listItem{
-                width: 120px;
-                padding: 3px;
-            }
-            .iteminfo a{
-                color:#606060;
-                font-style:italic;
-            }
-            .content img{
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                padding: 3px;
-                border: solid;
-                border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-                border-width: 1px 2px 2px 1px;
-                border-radius: 10px;
-                background-color: white;
-                max-width: 100%;
-                transition: background-color 300ms linear;
-                -webkit-transition: background-color 300ms linear;
-                -o-transition: background-color 300ms linear;
-                -moz-transition: background-color 300ms linear;
-            }
-            .listItem[highlight=true] .content img{
-                background-color: orangered;
-            }
-            .content span.title{
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: 2px;
-                text-align: center;
-                font-size: 0.8em;
-            }
-
-        </style>
+    <style>
+.listItem{
+  width: 120px;
+  padding: 3px;
+}
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+.content img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 3px;
+  border: solid;
+  border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+  border-width: 1px 2px 2px 1px;
+  border-radius: 10px;
+  background-color: white;
+  max-width: 100%;
+  transition: background-color 300ms linear;
+  -webkit-transition: background-color 300ms linear;
+  -o-transition: background-color 300ms linear;
+  -moz-transition: background-color 300ms linear;
+}
+.listItem[highlight=true] .content img{
+  background-color: orangered;
+}
+.content span.title{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: center;
+  font-size: 0.8em;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

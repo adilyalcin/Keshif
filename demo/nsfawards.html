@@ -1,88 +1,86 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>NSF Awards, with ElementCode(s): 7364,7367,7495</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>NSF Awards, with ElementCode(s): 7364,7367,7495</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 $(document).ready(function(){
-    var frmt = d3.format(".2s");
+  var frmt = d3.format(".2s");
     
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "NSF Awards in 2014",
-        categoryTextWidth: 200,
-        source: {
-            url: 'http://www.nsf.gov/awardsearch/advancedSearchResult?ProgEleCode=7364,7367,7495&BooleanElement=ANY&BooleanRef=ANY&ActiveAwards=true',
-            dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
-            fileType: 'csv',
-            sheets: [ 
-                {name:"nsfawards", id:"AwardNumber", preview: 0},
-                {name:"states", id:"id"},
-                {name:"nsf_orgs", id:"code"},
-            ],
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "NSF Awards in 2014",
+    categoryTextWidth: 200,
+    source: {
+      url: 'http://www.nsf.gov/awardsearch/advancedSearchResult?ProgEleCode=7364,7367,7495&BooleanElement=ANY&BooleanRef=ANY&ActiveAwards=true',
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: [ 
+        {name:"nsfawards", id:"AwardNumber", preview: 0},
+        {name:"states", id:"id"},
+        {name:"nsf_orgs", id:"code"},
+      ],
+    },
+    loadedCb: function(){
+      // If you downloaded using csv file, convert award amount field
+      kshf.dt.nsfawards.forEach(function(d){
+        var v = d.data.AwardedAmountToDate.replace(/[^0-9]+/g,"");
+        d.data.AwardedAmountToDate = parseInt(v)/100;
+      });
+      kshf.Util.cellToArray(kshf.dt.nsfawards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
+    },
+    summaries: [
+      { title: "Program", value: "Program(s)" },
+      { title: "Name", value: "Organization" },
+      { title: "AwardInstrument", },
+      { title: "Start Date", layout: 'bottom',
+        value: function(){
+          var dt = this.StartDate;
+          if(dt===""){ return null; }
+          var m = moment(dt,"MM/DD/YYYY");
+          return new Date(m);
+        }, },
+      { title: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
+      { title: "NSFDirectorate", collapsed: true },
+      { title: "ProgramManager", collapsed: true },
+      { title: "Awarded Amount", value: "AwardedAmountToDate", unitName: "$", },
+      { title: "Name", value: "Organization", layout: 'right', },
+      { title: "State", value: "OrganizationState", layout: 'right', collapsed: true,
+        catLabel: function(){ return getStateName(this.id); } }
+    ],
+    itemDisplay: {
+      sortColWidth: 70,
+      sortingOpts:
+        { title: 'Amount', value: "AwardedAmountToDate",
+          label: function(){
+            var v=this.AwardedAmountToDate;
+            if(v===undefined) return "-";
+            return frmt(v) + " $";
+          }
         },
-        loadedCb: function(){
-            // If you downloaded using csv file, convert award amount field
-            kshf.dt.nsfawards.forEach(function(d){
-                var v = d.data.AwardedAmountToDate.replace(/[^0-9]+/g,"");
-                d.data.AwardedAmountToDate = parseInt(v)/100;
-            });
-            kshf.Util.cellToArray(kshf.dt.nsfawards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
-        },
-        summaries: [
-            {   title: "Program", value: "Program(s)"
-            },{ title: "Name", value: "Organization"
-            },{ title: "AwardInstrument",
-            },{ title: "Start Date", layout: 'bottom',
-                value: function(){
-                    var dt = this.StartDate;
-                    if(dt===""){ return null; }
-                    var m = moment(dt,"MM/DD/YYYY");
-                    return new Date(m);
-                },
-            },{ title: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true,
-            },{ title: "NSFDirectorate", collapsed: true
-            },{ title: "ProgramManager", collapsed: true
-            },{ title: "Awarded Amount", value: "AwardedAmountToDate", unitName: "$",
-            },{ title: "Name", value: "Organization", layout: 'right',
-            },{ title: "State", value: "OrganizationState", layout: 'right', collapsed: true,
-                catLabel: function(){ return getStateName(this.id); }
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 70,
-            sortingOpts: [
-                {   title: 'Amount', value: "AwardedAmountToDate",
-                    label: function(){
-                        var v=this.AwardedAmountToDate;
-                        if(v===undefined) return "-";
-                        return frmt(v) + " $";
-                    }
-                },
-            ],
-            textSearch: 'Title',
-            showRank: true,
-            recordView: function(){
-                return " <a href='http://www.nsf.gov/awardsearch/showAward?AWD_ID="+this.AwardNumber
-                    +"' style='font-size: 1em' target='_blank'>"+this.Title
-                    +" <span class='fa fa-external-link'></span></a>";
-            }
-        }
-    });
+      textSearch: 'Title',
+      showRank: true,
+      recordView: function(){
+        return " <a href='http://www.nsf.gov/awardsearch/showAward?AWD_ID="+this.AwardNumber
+            +"' style='font-size: 1em' target='_blank'>"+this.Title
+            +" <span class='fa fa-external-link'></span></a>";
+      }
+    }
+  });
 });
         </script>
 <style> 

@@ -1,124 +1,123 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Chrome Feature Status</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Chrome Feature Status</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function mileSort(v){
-    switch(v){
-        case "In development": return 99;
-        case "Proposed": return 98;
-        case "No active development": return 97;
-        default: return v;
-    }
+  switch(v){
+    case "In development": return 99;
+    case "Proposed": return 98;
+    case "No active development": return 97;
+    default: return v;
+  }
 };
 
 $(document).ready( function(){
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 180,
-        barChartWidth: 80,
-        itemName: "Chromium Features",
-        source: {
-            url: "http://www.chromestatus.com/features",
-            dirPath: "./data/",
-            fileType: 'json',
-            sheets: "chromefeatures"
-        },
-        summaries: [
-            {   title: "Milestone", value: function(){ return this.meta["milestone_str"]; },
-                catSortBy: { value: function(){ return mileSort(this.id); }, inverse: true}
-            },{ title: "Category", value: "category"
-            },{ title: "Implementation Status", value: "impl_status_chrome"
-            },{ title: "Standardization", value: function(){ return this.standardization.text; }
-            },{ title: "Visibility", value: "visibility", layout: 'right'
-            },{ title: "Prefixed", value: "prefixed", layout: 'right', collapsed: true,
-            },{ title: "Owner", value: "owner", layout: 'right', collapsed: true,
-            },{ title: "Updated By", value: "updated_by", layout: 'right', collapsed: true,
-            },{ title: "Firefox Status", value: function(){ return this.ff_views.text;     }, layout: 'right'
-            },{ title: "IE Status"     , value: function(){ return this.ie_views.text;     }, layout: 'right'
-            },{ title: "Safari Status" , value: function(){ return this.safari_views.text; }, layout: 'right'
-            },{ title: "Update Date", layout: 'bottom', collapsed: true,
-                value: function(){ return new Date(moment(this.updated)); },
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 90,
-            sortingOpts: {
-                title:'Milestone-', 
-                value: function(){ return mileSort(this.meta["milestone_str"]); },
-                label: function(){ return this.meta["milestone_str"]; }
-            },
-            textSearch: 'title',
-            displayType: 'list',
-            recordView: function(){
-                var name = this.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                return "<span class='title'>"+name+"</span>"+
-                    " <a target='_blank' href='http://www.chromestatus.com/feature/"+this.id+"' class='fa fa-external-link-square'></a>"+
-                    "<span class='summary'>"+this.summary+"</span>";
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 180,
+    barChartWidth: 80,
+    itemName: "Chromium Features",
+    source: {
+      url: "http://www.chromestatus.com/features",
+      dirPath: "./data/",
+      fileType: 'json',
+      tables: "chromefeatures"
+    },
+    summaries: [
+      { title: "Milestone", 
+        value: function(){ return this.meta["milestone_str"]; },
+        catSortBy: { value: function(){ return mileSort(this.id); }, inverse: true} },
+      { title: "Category", value: "category"},
+      { title: "Implementation Status", value: "impl_status_chrome"},
+      { title: "Standardization", value: function(){ return this.standardization.text; } },
+      { title: "Visibility", value: "visibility", layout: 'right' },
+      { title: "Prefixed", value: "prefixed", layout: 'right', collapsed: true, },
+      { title: "Owner", value: "owner", layout: 'right', collapsed: true, },
+      { title: "Updated By", value: "updated_by", layout: 'right', collapsed: true, },
+      { title: "Firefox Status", value: function(){ return this.ff_views.text;     }, layout: 'right' },
+      { title: "IE Status"     , value: function(){ return this.ie_views.text;     }, layout: 'right' },
+      { title: "Safari Status" , value: function(){ return this.safari_views.text; }, layout: 'right' },
+      { title: "Update Date", layout: 'bottom', collapsed: true,
+        value: function(){ return new Date(moment(this.updated)); }, },
+    ],
+    itemDisplay: {
+      sortColWidth: 90,
+      sortingOpts: 
+        { title:'Milestone-', 
+          value: function(){ return mileSort(this.meta["milestone_str"]); },
+          label: function(){ return this.meta["milestone_str"]; } },
+      textSearch: 'title',
+      displayType: 'list',
+      recordView: function(){
+        var name = this.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        return "<span class='title'>"+name+"</span>"+
+        " <a target='_blank' href='http://www.chromestatus.com/feature/"+this.id+"' class='fa fa-external-link-square'></a>"+
+        "<span class='summary'>"+this.summary+"</span>";
+      }
+    }
+  });
 });
         </script>
 <style>
-    #chart_div{
-        width: 1150px;
-        height: 700px;
-    }
-    .content a{
-        color: #496B86;
-        font-size: 0.8em;
-        text-decoration: none;
-    }
-    .content a:hover{
-        color: orangered;
-    }
-    .content .title{
-        display: inline;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2px;
-        text-align: left;
-        font-size: 1em;
-        font-weight: 700;
-    }
-    canvas{
-        display: none;
-    }
-    iframe{
-        display: none;
-    }
-    .summary{
-        display: block;
-        font-size: 0.8em;
-        color: gray;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-    .summary:hover{
-        white-space: initial;
-    }
-</style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span> This page uses data from
-            <a href="http://www.chromestatus.com" target="_blank">ChromeStatus</a>, data licensed under a Creative Commons Attribution 2.5 license <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+#chart_div{
+  width: 1150px;
+  height: 700px;
+}
+.content a{
+  color: #496B86;
+  font-size: 0.8em;
+  text-decoration: none;
+}
+.content a:hover{
+  color: orangered;
+}
+.content .title{
+  display: inline;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: left;
+  font-size: 1em;
+  font-weight: 700;
+}
+canvas{
+  display: none;
+}
+iframe{
+  display: none;
+}
+.summary{
+  display: block;
+  font-size: 0.8em;
+  color: gray;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.summary:hover{
+  white-space: initial;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span> This page uses data from
+      <a href="http://www.chromestatus.com" target="_blank">ChromeStatus</a>, data licensed under a Creative Commons Attribution 2.5 license <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

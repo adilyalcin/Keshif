@@ -1,65 +1,65 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Doctor Who villains &amp; monsters since 1963</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Doctor Who villains &amp; monsters since 1963</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback( function () {
-    logIf.Check = logIf.All();
-	browser = new kshf.Browser({
-        itemName: "Villains",
-        domID: "#chart_div",
-        categoryTextWidth: 200,
-        source: {
-            gdocId: '0AonYZs4MzlZbdHJNSVh6clE4MVR4OHhqZWs4WGpSZlE',
-            sheets: "TELEVIZED VILLAINS"
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt['TELEVIZED VILLAINS'], 
-                ['Doctor actor','Motivation (invasion earth, kill humans, etc)','Story titles'], /\b,\s+/, false);
-        },
-        summaries:[
-            {   title: "Doctor actor"
-            },{ title: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)'
-            },{ title: "Story titles",
-            },{ title: "Total Stories", value: function(){ return this['Story titles'].length; },
-            },{ title: "1st Appearance", layout: 'bottom',
-                value: function(){ 
-                    var y=this['Year first'];
-                    if(y) return new Date(y,1,1);
-                }
-            }
-        ],
-        itemDisplay:{
-            sortColWidth: 40,
-            sortingOpts: {title: '1st Year', value: 'Year first' },
-            textSearch: 'Villain',
-            recordView: 'Villain'
+  logIf.Check = logIf.All();
+  browser = new kshf.Browser({
+    itemName: "Villains",
+    domID: "#chart_div",
+    categoryTextWidth: 200,
+    source: {
+      gdocId: '0AonYZs4MzlZbdHJNSVh6clE4MVR4OHhqZWs4WGpSZlE',
+      sheets: "TELEVIZED VILLAINS"
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt['TELEVIZED VILLAINS'], 
+        ['Doctor actor','Motivation (invasion earth, kill humans, etc)','Story titles'], /\b,\s+/, false);
+    },
+    summaries:[
+      { title: "Doctor actor" },
+      { title: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)' },
+      { title: "Story titles", },
+      { title: "Total Stories", value: function(){ return this['Story titles'].length; } },
+      { title: "1st Appearance", layout: 'bottom',
+        value: function(){ 
+          var y=this['Year first'];
+          if(y) return new Date(y,1,1);
         }
-    });
+      }
+    ],
+    itemDisplay:{
+      sortColWidth: 40,
+      sortingOpts: {title: '1st Year', value: 'Year first' },
+      textSearch: 'Villain',
+      recordView: 'Villain'
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                height: 700px;
-                width: 770px;
-            }
-        </style>
+    </script>
+    <style>
+#chart_div {
+  height: 700px;
+  width: 770px;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

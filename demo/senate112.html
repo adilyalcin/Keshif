@@ -1,82 +1,81 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>U.S. Senate 112th Roll Data Browser</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>U.S. Senate 112th Roll Data Browser</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback( function(){
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Roll calls in the U.S. Senate",
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
-            sheets: "Senate112"
-        },
-        summaries: [
-            {   title: "Result"
-            },{ title: "Session", catSortBy: "id", catLabel: function(){return ((this.id===1)?"1st":"2nd")+" Session";}
-            },{ title: "Yea's",
-            },{ title: "Nay's",
-            },{ title: "Bill",
-            },{ title: "Vote Date", layout: 'middle'
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 80,
-            sortingOpts: { title:'Vote Date', inverse: true, 
-                label: function(){return moment(this['Vote Date']).format('MMM YYYY');},
-            },
-            textSearch: "Description",
-            recordView: function(){
-                var j;
-                var str="";
-                // description
-                    str+="<div class=\"iteminfo iteminfo_1\">"+
-                        "<a target=\"_blank\" href=\"http://www.senate.gov/legislative/LIS/roll_call_lists/roll_call_vote_cfm.cfm?"+
-                        "congress=112&session="+this.Session+"&vote=00"+this.Number+"\">"+this.Description+"<a/></div>";
-                // bill
-                    str+="<div class=\"iteminfo iteminfo_2\">";
-                // question
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Roll calls in the U.S. Senate",
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
+      tables: "Senate112"
+    },
+    summaries: [
+      { title: "Result" },
+      { title: "Session", catSortBy: "id", catLabel: function(){return ((this.id===1)?"1st":"2nd")+" Session";} },
+      { title: "Yea's", },
+      { title: "Nay's", },
+      { title: "Bill", },
+      { title: "Vote Date", layout: 'middle' }
+    ],
+    itemDisplay: {
+      sortColWidth: 80,
+      sortingOpts: { title:'Vote Date', inverse: true, 
+          label: function(){return moment(this['Vote Date']).format('MMM YYYY');},
+      },
+      textSearch: "Description",
+      recordView: function(){
+        var j;
+        var str="";
+        // description
+            str+="<div class=\"iteminfo iteminfo_1\">"+
+                "<a target=\"_blank\" href=\"http://www.senate.gov/legislative/LIS/roll_call_lists/roll_call_vote_cfm.cfm?"+
+                "congress=112&session="+this.Session+"&vote=00"+this.Number+"\">"+this.Description+"<a/></div>";
+        // bill
+            str+="<div class=\"iteminfo iteminfo_2\">";
+        // question
 //                    str+="Question:"+this[5]+"</div>";
-                // yay/nay
-                    str+="<div class=\"iteminfo iteminfo_2\">";
-                    var r=this['Yea\'s']/this['Nay\'s'];
-                    str+="<span style=\"color:"+((r>1)?"green":"red")+"\">";
-                    str+="Yays:"+this['Yea\'s'];
-                    str+=" Nays:"+this['Nay\'s'];
-                    str+="</span>";
-                    str+="</div>";
-                return str;
-            }
-        }
-    });
+        // yay/nay
+            str+="<div class=\"iteminfo iteminfo_2\">";
+            var r=this['Yea\'s']/this['Nay\'s'];
+            str+="<span style=\"color:"+((r>1)?"green":"red")+"\">";
+            str+="Yays:"+this['Yea\'s'];
+            str+=" Nays:"+this['Nay\'s'];
+            str+="</span>";
+            str+="</div>";
+        return str;
+      }
+    }
+  });
 });
-        </script>
-        <style>
-            .iteminfo a{
-                color:#606060;
-                font-style:italic;
-            }
-            #chart_div{
-                height: 750px;
-                width: 1282.5px;
-            }
-        </style>
+    </script>
+    <style>
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+#chart_div{
+  height: 750px;
+  width: 1282.5px;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

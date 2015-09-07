@@ -1,202 +1,198 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Visualization Publication Data Collection</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Visualization Publication Data Collection</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600,700' rel='stylesheet' type='text/css'>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
-// Add citations
+// TODO: Add citations
 
 google.setOnLoadCallback(function(){
+  resizeBrowser(200,110);
+  $(window).resize(function() {
     resizeBrowser(200,110);
-    $(window).resize(function() {
-        resizeBrowser(200,110);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 210,
-        rightPanelLabelWidth: 150,
-        source: {
-            gdocId: '1Qd1TDAsqtIEE2fiIKlSJ0KSsCg6L2kKn_brCIMsqWyU',
-            sheets: [ {name:"Papers", id:"IEEE XPLORE Number"} ] // IEEE XPLORE Number is unique per paper
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Papers, ['Deduped author names'], ";", false);
-            kshf.Util.cellToArray(kshf.dt.Papers, ['Citations'], ",", false);
-            kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";", false);
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 210,
+    rightPanelLabelWidth: 150,
+    source: {
+      gdocId: '1Qd1TDAsqtIEE2fiIKlSJ0KSsCg6L2kKn_brCIMsqWyU',
+      tables: {name:"Papers", id:"IEEE XPLORE Number"} // IEEE XPLORE Number is unique per paper
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Papers, ['Deduped author names'], ";", false);
+      kshf.Util.cellToArray(kshf.dt.Papers, ['Citations'], ",", false);
+      kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";", false);
 
-            // Remove whitespaces from author affiliation
-            kshf.dt.Papers.forEach(function(paper){
-                var affList=paper.data['First Author Affiliation'];
-                if(affList===null) return;
-                affList.forEach(function(aff,i){
-                    affList[i] = aff.trim().replace("|c|","");
-                });
-            });
+      // Remove whitespaces from author affiliation
+      kshf.dt.Papers.forEach(function(paper){
+        var affList=paper.data['First Author Affiliation'];
+        if(affList===null) return;
+        affList.forEach(function(aff,i){
+          affList[i] = aff.trim().replace("|c|","");
+        });
+      });
 
-            var papersIndexed = kshf.dt_id.Papers;
+      var papersIndexed = kshf.dt_id.Papers;
 
-            // Also index papers by their filename.
-            // Why did the source defines "Citations" inconsistently to point to either IEEE explore number
-            //   or the file_name, I dunno
+      // Also index papers by their filename.
+      // Why did the source defines "Citations" inconsistently to point to either IEEE explore number
+      //   or the file_name, I dunno
 
-            // Process citations
-            kshf.dt.Papers.forEach(function(paper){
-                paper.data.CitationsFrom = [];
-                papersIndexed[paper.data.filename] = paper;
-            });
-            kshf.dt.Papers.forEach(function(paper){
-                if(paper.data.Citations===null) return;
-                paper.data.Citations.forEach(function(citation){
-                    var citesTo=papersIndexed[citation];
-                    if(citesTo){ citesTo.data.CitationsFrom.push(paper);}
-                });
-            });
-        },
-        summaries: [
-            {   title: "Venue"
-            },{ title: "Type", 
-                description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ..."
-            },{ title: "# Citations To...",
-                value: function(){
-                    if(this.CitationsFrom.length===0) return;
-                    return this.CitationsFrom.length;
-                }
-            },{ title: "First Author Affiliation", collapsed: false,
-                description: "Only affiliations with at least two papers are shown",
-                minAggrValue: 2,
-            },{ title: "Year", layout: 'bottom', // value: function(){ return new Date(this.Year,0,0);}
-            },{ title: "Authors", value: function(){ return this['Deduped author names']; }, layout: 'right',
-                description: "Only authors with at least two papers are shown",
-                minAggrValue: 2,
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts: ['Year', "# Citations To..."],
-            detailsToggle: "one",
-            recordView: function(){ 
-                var str="";
-                str+="<span class='paperTitle'>"+this['Paper Title']+"</span>";
+      // Process citations
+      kshf.dt.Papers.forEach(function(paper){
+        paper.data.CitationsFrom = [];
+        papersIndexed[paper.data.filename] = paper;
+      });
+      kshf.dt.Papers.forEach(function(paper){
+        if(paper.data.Citations===null) return;
+        paper.data.Citations.forEach(function(citation){
+          var citesTo=papersIndexed[citation];
+          if(citesTo){ citesTo.data.CitationsFrom.push(paper);}
+        });
+      });
+    },
+    summaries: [
+      { title: "Venue" },
+      { title: "Type", 
+        description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ..." },
+      { title: "# Citations To...",
+        value: function(){
+          if(this.CitationsFrom.length===0) return;
+          return this.CitationsFrom.length;
+        } },
+      { title: "First Author Affiliation", collapsed: false,
+        description: "Only affiliations with at least two papers are shown",
+        minAggrValue: 2, },
+      { title: "Year", layout: 'bottom', // value: function(){ return new Date(this.Year,0,0);} },
+      { title: "Authors", value: function(){ return this['Deduped author names']; }, layout: 'right',
+        description: "Only authors with at least two papers are shown",
+        minAggrValue: 2,
+      }
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      sortingOpts: ['Year', "# Citations To..."],
+      detailsToggle: "one",
+      recordView: function(){ 
+        var str="";
+        str+="<span class='paperTitle'>"+this['Paper Title']+"</span>";
 
-                str+="<div class='papertype-venue-year'>";
-                str+="<span class='paperType paperType_"+this.Type+"'>"+this.Type+"</span>"+
-                    "<span class='paperVenue'>"+this.Venue+"</span>,"+
-                    "<span class='paperYear'>"+this.Year+"</span>";
-                if(this.DOI!==""){
-                    str+=" <a class='paperDOI' target='_blank' href='http://dx.doi.org/"+this.DOI+
-                        "'title='"+this.DOI+"'><i class='fa fa-external-link'></i> doi</i></a>";
-                }
-                str+="</div>";
-
-                str+="<span class='paperAuthors'>"+this['Deduped author names']+"</span>";
-
-                str+="<span class='item_details'><span class='paperAbstract'>"+this.Abstract+"</span></span>";
-
-                // Display: Paper Type
-                // Display: Abstract (on demand)
-                return str;
-            }
+        str+="<div class='papertype-venue-year'>";
+        str+="<span class='paperType paperType_"+this.Type+"'>"+this.Type+"</span>"+
+            "<span class='paperVenue'>"+this.Venue+"</span>,"+
+            "<span class='paperYear'>"+this.Year+"</span>";
+        if(this.DOI!==""){
+            str+=" <a class='paperDOI' target='_blank' href='http://dx.doi.org/"+this.DOI+
+                "'title='"+this.DOI+"'><i class='fa fa-external-link'></i> doi</i></a>";
         }
-    });
+        str+="</div>";
+
+        str+="<span class='paperAuthors'>"+this['Deduped author names']+"</span>";
+
+        str+="<span class='item_details'><span class='paperAbstract'>"+this.Abstract+"</span></span>";
+
+        // Display: Paper Type
+        // Display: Abstract (on demand)
+        return str;
+      }
+    }
+  });
 });
-        </script>
-        <style>
+    </script>
+    <style>
 .content{
-    font-family: 'Open Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 .paperTitle{
-    font-weight: 600;
-    display: block;
-    border-top: solid 1px gray;
+  font-weight: 600;
+  display: block;
+  border-top: solid 1px gray;
 }
 .paperDOI{
-    font-size: 0.8em;
-    vertical-align: top;
-    color: rgb(157, 163, 165);
-    text-decoration: none;
+  font-size: 0.8em;
+  vertical-align: top;
+  color: rgb(157, 163, 165);
+  text-decoration: none;
 }
 .paperDOI:hover{
-    color: rgb(157, 163, 165);
-    text-decoration: underline;
+  color: rgb(157, 163, 165);
+  text-decoration: underline;
 }
 .papertype-venue-year{
-    font-size: 0.8em;
-    border-top: dotted 1px lightgray;
-    border-bottom: dotted 1px lightgray;
+  font-size: 0.8em;
+  border-top: dotted 1px lightgray;
+  border-bottom: dotted 1px lightgray;
 }
 .paperVenue{
-    display: inline-block;
-    margin: 0px 2px 0px 5px;
+  display: inline-block;
+  margin: 0px 2px 0px 5px;
 }
 .paperYear{
-    display: inline-block;
-    margin-left: 2px;
-    margin-right: 2px;
-    font-weight: 300;
+  display: inline-block;
+  margin-left: 2px;
+  margin-right: 2px;
+  font-weight: 300;
 }
 .paperType{
-    border-radius: 5px;
-    padding: 1px 4px;
-    font-size: 0.8em;
-    font-weight: 300;
-    position: relative;
-    top: -1px;
+  border-radius: 5px;
+  padding: 1px 4px;
+  font-size: 0.8em;
+  font-weight: 300;
+  position: relative;
+  top: -1px;
 }
 .paperType_Conference{
-    background-color: rgb(220, 220, 238)
+  background-color: rgb(220, 220, 238)
 }
 .paperType_Journal{
-    background-color: rgb(240, 200, 200); 
+  background-color: rgb(240, 200, 200); 
 }
 .paperType_Miscellaneous{
-    background-color: rgb(201, 237, 201); 
+  background-color: rgb(201, 237, 201); 
 }
 .paperAbstract{
-    font-size: 0.7em;
-    font-style: italic;
+  font-size: 0.7em;
+  font-style: italic;
 }
 .paperAuthors{
-    display: block;
-    font-size: 0.9em;
+  display: block;
+  font-size: 0.9em;
 }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">Visualization Publication Data Collection</div>
-        <div class="contents"><div id="chart_div"></div></div>
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Visualization Publication Data Collection</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            
-            Data source: Visualization Publication Dataset, 
-            <a href="http://www.vispubdata.org/site/vispubdata/" target="_blank">
-                http://www.vispubdata.org/site/vispubdata/
-                </a><br>
-            P. Isenberg, F. Heimerl, S. Koch, T. Isenberg, P. Xu, C. Stolper, M. Sedlmair, 
-            J. Chen, T. Möller, J. Stasko,
-            Published 2015, June
-
-
-            <span class="fa fa-info-circle"></span>
-            </div>
-        
-    </body>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      
+      Data source: Visualization Publication Dataset, 
+      <a href="http://www.vispubdata.org/site/vispubdata/" target="_blank">
+          http://www.vispubdata.org/site/vispubdata/
+          </a><br>
+      P. Isenberg, F. Heimerl, S. Koch, T. Isenberg, P. Xu, C. Stolper, M. Sedlmair, 
+      J. Chen, T. Möller, J. Stasko,
+      Published 2015, June
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

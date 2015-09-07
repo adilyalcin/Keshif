@@ -21,90 +21,90 @@
 var postCols;
 
 $(document).ready( function(){
+  resizeBrowser(150,50);
+  $(window).resize(function() {
     resizeBrowser(150,50);
-    $(window).resize(function() {
-        resizeBrowser(150,50);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 100,
-        rightPanelLabelWidth: 90,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
-            sheets: ["Posts", "Authors"]
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
-        },
-        summaries: [
-            {   title: "Category"
-            },{ title: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true
-            },{ title: "# Comments",  value: '# of Comments'
-            },{ title: "Date", layout: 'bottom'
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: [
-                { title: 'Date', label: function(){ return moment(this.Date).format("MMM Do, YY"); }, inverse: true },
-                '# of Comments'
-            ],
-            textSearch: "Title",
-            displayType: 'grid',
-            maxVisibleItems_Default: 50,
-            recordView: function(){
-                return "<a target='_blank' href='"+this.URL+
-                    "'><img><span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",this.Img);
-            },
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 100,
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
+      tables: ["Posts", "Authors"]
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
+    },
+    summaries: [
+      { title: "Category" },
+      { title: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true },
+      { title: "# Comments",  value: '# of Comments' },
+      { title: "Date", layout: 'bottom'
+      }
+    ],
+    itemDisplay: {
+      sortingOpts: [
+        { title: 'Date', label: function(){ return moment(this.Date).format("MMM Do, YY"); }, inverse: true },
+        '# of Comments'
+      ],
+      textSearch: "Title",
+      displayType: 'grid',
+      maxVisibleItems_Default: 50,
+      recordView: function(){
+          return "<a target='_blank' href='"+this.URL+
+              "'><img><span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",this.Img);
+      },
+    }
+  });
 });
         </script>
         <style>
 #chart_div{
-    width: 900px;
-    height: 600px;
+  width: 900px;
+  height: 600px;
 }
 .listItem{
-    width: 20%;
+  width: 20%;
 }
 .content{
-    padding: 3px;
+  padding: 3px;
 }
 div.content a{
-    vertical-align: top;
-    color: #496B86;
+  vertical-align: top;
+  color: #496B86;
 }
 div.content img{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 3px;
-    border: solid;
-    border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
-    border-width: 1px 2px 2px 1px;
-    border-radius: 10px;
-    background-color: white;
-    width: 90%;
-    transition: background-color 300ms linear;
-    -webkit-transition: background-color 300ms linear;
-    -o-transition: background-color 300ms linear;
-    -moz-transition: background-color 300ms linear;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 3px;
+  border: solid;
+  border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+  border-width: 1px 2px 2px 1px;
+  border-radius: 10px;
+  background-color: white;
+  width: 90%;
+  transition: background-color 300ms linear;
+  -webkit-transition: background-color 300ms linear;
+  -o-transition: background-color 300ms linear;
+  -moz-transition: background-color 300ms linear;
 }
 div.listItem[highlight=true] div.content img{
-    background-color: orangered;
+  background-color: orangered;
 }
 div.content span.title{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 2px;
-    text-align: center;
-    font-size: 0.8em;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: center;
+  font-size: 0.8em;
 }
         </style>
     </head>
