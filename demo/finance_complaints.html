@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Consumer Complaint Database - 2015</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+
+function submitted_via(){
+  switch(this.id){
+    case "W": return "Web";
+    case "P": return "Phone";
+    case "R": return "Referral";
+    case "M": return "Postal mail";
+    case "F": return "Fax";
+  }
+  return this.id;
+};
+
+function company_response(){
+  switch(this.id){
+    case "I": return "In Progress";
+    case "C": return "Closed";
+    case "E": return "Closed with explanation";
+    case "N": return "Closed with non-monetary relief";
+    case "M": return "Closed with monetary relief";
+    case "U": return "Untimely response";
+    case "C": return "Closed";
+  }
+  return this.id;
+};
+
+function product(){
+  switch(this.id){
+    case "D":  return "Debt collection";
+    case "M":  return "Mortgage";
+    case "B":  return "Bank account or service";
+    case "P":  return "Payday loan";
+    case "S":  return "Student loan";
+    case "CR": return "Credit reporting";
+    case "CC": return "Credit card";
+    case "CL": return "Consumer loan";
+    case "PC": return "Prepaid card";
+    case "MT": return "Money transfers";
+    case "O":  return "Other financial service";
+  }
+  return this.id;
+};
+
+function issue(){
+  switch(this.id){
+    case "IIOCR": return "Incorrect information on credit report";
+    case "CACDNO": return "Cont'd attempts collect debt not owed";
+    case "LMCF": return "Loan modification,collection,foreclosure";
+    case "LSPEA": return "Loan servicing, payments, escrow account";
+    case "AOCM": return "Account opening, closing, or management";
+    case "CRCI": return "Credit reporting company's investigation";
+    case "DVD": return "Disclosure verification of debt";
+    case "MLL": return "Managing the loan or lease";
+    case "TTIA": return "Taking/threatening an illegal action";
+    case "PWUP": return "Problems when you are unable to pay";
+    case "AOMB": return "Application, originator, mortgage broker";
+    case "DW": return "Deposits and withdrawals";
+    case "DLS": return "Dealing with my lender or servicer";
+    case "CT": return "Communication tactics";
+    case "FSR": return "False statements or representation";
+    case "ITFE": return "Identity theft / Fraud / Embezzlement";
+    case "ICSI": return "Improper contact or sharing of info";
+    case "CCA": return "Closing/Cancelling account";
+    case "BD": return "Billing disputes";
+    case "PCFL": return "Problems caused by my funds being low";
+    case "UGCR": return "Unable to get credit report/credit score";
+    case "IUCR": return "Improper use of my credit report";
+    case "CDU": return "Credit decision / Underwriting";
+    case "CRL": return "Can't repay my loan";
+    case "DA": return "Delinquent account";
+    case "MRPSM": return "Making/receiving payments, sending money";
+    case "SPC": return "Settlement process and costs";
+    case "AM": return "Advertising and marketing";
+    case "UDAC": return "Using a debit or ATM card";
+    case "CMIP": return "Credit monitoring or identity protection";
+    case "CFIE": return "Charged fees or interest I didn't expect";
+    case "CSCR": return "Customer service / Customer relations";
+    case "SFLL": return "Shopping for a loan or lease";
+    case "UTTI": return "Unauthorized transactions/trans. issues";
+    case "UICC": return "Unsolicited issuance of credit card";
+    case "TOLL": return "Taking out the loan or lease";
+    case "MNA": return "Money was not available when promised";
+    case "CCPDP": return "Credit card protection / Debt protection";
+    case "CD": return "Credit determination";
+    case "FS": return "Fraud or scam";
+    case "MOCA": return "Managing, opening, or closing account";
+    case "R": return "Rewards";
+    case "BT": return "Balance transfer";
+    case "RLDAF": return "Received a loan I didn't apply for";
+    case "OTI": return "Other transaction issues";
+    case "CLID": return "Credit line increase/decrease";
+    case "PNC": return "Payment to acct not credited";
+  }
+  return this.id;
+};
+
+function response(){
+  switch(this.id){
+    case "NR": return "Company chooses not to provide a public response";
+    case "TP": return "Company believes complaint caused principally by actions of third party outside the control or direction of the company";
+    case "APR": return "Company believes it acted appropriately as authorized by contract or law";
+    case "OP": return "Company believes complaint represents an opportunity for improvement to better serve consumers";
+    case "MIS": return "Company believes the complaint is the result of a misunderstanding";
+    case "CVD": return "Company can't verify or dispute the facts in the complaint";
+    case "DIS": return "Company disputes the facts presented in the complaint";
+    case "ERR": return "Company believes complaint is the result of an isolated error";
+    case "PAS": return "Company believes complaint relates to a discontinued policy or procedure";
+  };
+  return this.id;
+}
+
+$(document).ready( function(){
+  resizeBrowser(300,70);
+  $(window).resize(function() {
+    resizeBrowser(300,70);
+    browser.updateLayout();
+  });
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    leftPanelLabelWidth: 170,
+    barChartWidth: 125,
+    itemName: "Complaints to Financial Institutions",
+    categoryTextWidth: 200,
+    source: {
+      url: 'http://www.consumerfinance.gov/complaintdatabase',
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: "Consumer_Complaints_2015"
+    },
+    summaries: [
+      {title:"Product", catLabel: product},
+      {title:"Sub-product"},
+      {title:"Submitted via", catLabel: submitted_via},
+      {title:"Company response to consumer", catLabel: company_response},
+      {title:"Timely response?"},
+      {title:"Consumer disputed?"},
+      {title:"Company", layout: "middle", minAggrValue: 100},
+      {title:"State", catLabel: function(){return getStateName(this.id);}, collapsed: true},
+      {title:"Issue", layout:"right", catLabel: issue},
+      {title:"Sub-issue", layout: "right"}
+    ]
+  });
+});
+    </script>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">
+      <a href="http://www.consumerfinance.gov/complaintdatabase" target='_blank'>Consumer Complaint Database</a>
+       Data covering 01/01/2015 to 27/08/2015</div>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
+</html>
