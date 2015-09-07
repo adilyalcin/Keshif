@@ -2751,7 +2751,6 @@ kshf.Browser.prototype = {
             x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
-                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
                         gravity: 's', title: function(){
                             var v;
                             if(source_type==="GoogleSheet")
@@ -2785,7 +2784,6 @@ kshf.Browser.prototype = {
             x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
-                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
                         gravity: 's', title: function(){ return "The column that uniquely identifies each item.<br><br>If no such column, skip."; }
                     });
                 })
@@ -2798,7 +2796,6 @@ kshf.Browser.prototype = {
             x.append("span").attr("class","fa fa-info-circle")
                 .each(function(summary){
                     this.tipsy = new Tipsy(this, {
-                        //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
                         gravity: 's', title: function(){
                             return "If column has multi-values<br>(ex: action+drama),<br>split values using seperator";
                         }
@@ -2815,7 +2812,6 @@ kshf.Browser.prototype = {
                 sheetColumn_sep_wrapper.append("span").attr("class","fa fa-info-circle")
                     .each(function(summary){
                         this.tipsy = new Tipsy(this, {
-                            //gravity: 's', title: function(){ return "Your document may have multiple sheets.<br>Provide the name of the main sheet"; }
                             gravity: 's', title: function(){
                                 return "Seperator";
                             }
@@ -2853,28 +2849,28 @@ kshf.Browser.prototype = {
                 if(source_type==="GoogleSheet"){
                     me.loadSource({
                         gdocId: sourceURL,
-                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                        tables: [ {name:sourceSheet, id:sheetID} ]
                     });
                 }
                 if(source_type==="GoogleDrive"){
                     me.loadSource({
                         dirPath: sourceURL,
                         fileType: DOMfileType[0][0].value,
-                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                        tables: [ {name:sourceSheet, id:sheetID} ]
                     });
                 }
                 if(source_type==="Dropbox"){
                     me.loadSource({
                         dirPath: sourceURL,
                         fileType: DOMfileType[0][0].value,
-                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                        tables: [ {name:sourceSheet, id:sheetID} ]
                     });
                 }
                 if(source_type==="LocalFile"){
                     me.loadSource({
                         dirPath: sourceURL,
                         fileType: DOMfileType[0][0].value,
-                        sheets: [ {name:sourceSheet, id:sheetID} ]
+                        tables: [ {name:sourceSheet, id:sheetID} ]
                     });
                 }
             });
@@ -2941,41 +2937,42 @@ kshf.Browser.prototype = {
     loadSource: function(v){
         this.source = v;
         this.panel_infobox.attr("show","loading");
-        if(this.source.sheets){
-            if(!Array.isArray(this.source.sheets)){
-                this.source.sheets = [this.source.sheets];
-            }
-            this.source.sheets.forEach(function(sheet, i){
-                if(typeof sheet === "string"){
-                    this.source.sheets[i] = {name: sheet};
-                }
+        if(this.source.sheets) this.source.tables = this.source.sheets;
+        if(this.source.tables){
+            // If not array, make it an array with a single item
+            if(!Array.isArray(this.source.tables)) this.source.tables = [this.source.tables];
+            // If table definition a string, match name to string
+            this.source.tables.forEach(function(tableDescr, i){
+                if(typeof tableDescr === "string") this.source.tables[i] = {name: tableDescr};
             }, this);
+            // Reset loadedTableCount
             this.source.loadedTableCount=0;
 
             this.DOM.status_text_sub_dynamic
-                .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
+                .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
 
-            this.source.sheets[0].primary = true;
-            this.primaryTableName = this.source.sheets[0].name;
+            this.source.tables[0].primary = true;
+            this.primaryTableName = this.source.tables[0].name;
             if(this.source.gdocId){
                 if(this.source.url===undefined)
                     this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
             }
-            this.source.sheets.forEach(function(sheet){
-                if(sheet.id===undefined) sheet.id="id"; // set id column
-                if(sheet.tableName===undefined) sheet.tableName = sheet.name; // set table name
+            this.source.tables.forEach(function(tableDescr){
+                if(tableDescr.id===undefined) tableDescr.id = "id"; // set id column
                 // if this table name has been loaded, skip this one
-                if(kshf.dt[sheet.tableName]!==undefined){
+                if(kshf.dt[tableDescr.name]!==undefined){
                     this.incrementLoadedSheetCount();
                     return;
                 }
                 if(this.source.gdocId){
-                    this.loadSheet_Google(sheet);
+                    this.loadTable_Google(tableDescr);
                 } else if(this.source.dirPath){
-                    if(this.source.fileType==="json"){
-                        this.loadSheet_JSON(sheet);
-                    } else if(this.source.fileType==="csv" || this.source.fileType==="tsv"){
-                        this.loadSheet_CSV(sheet);
+                    switch(this.source.fileType){
+                        case "json": 
+                            this.loadTable_JSON(tableDescr); break;
+                        case "csv":
+                        case "tsv":  
+                            this.loadTable_CSV(tableDescr); break;
                     }
                 }
             },this);
@@ -2985,7 +2982,7 @@ kshf.Browser.prototype = {
             }
         }
     },
-    loadSheet_Google: function(sheet){
+    loadTable_Google: function(sheet){
         var me=this;
         var headers=1;
         if(sheet.headers){
@@ -3005,7 +3002,7 @@ kshf.Browser.prototype = {
         if(sheet.query) googleQuery.setQuery(sheet.query);
 
         googleQuery.send( function(response){
-            if(kshf.dt[sheet.tableName]!==undefined){
+            if(kshf.dt[sheet.name]!==undefined){
                 me.incrementLoadedSheetCount();
                 return;
             }
@@ -3054,7 +3051,7 @@ kshf.Browser.prototype = {
         });
     },
     /** -- */
-    loadSheet_CSV: function(sheet){
+    loadTable_CSV: function(sheet){
         var me=this;
         var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
         $.ajax({
@@ -3064,7 +3061,7 @@ kshf.Browser.prototype = {
             contentType: "text/csv",
             success: function(data) {
                 // if data is already loaded, nothing else to do...
-                if(kshf.dt[sheet.tableName]!==undefined){
+                if(kshf.dt[sheet.name]!==undefined){
                     me.incrementLoadedSheetCount();
                     return;
                 }
@@ -3091,7 +3088,7 @@ kshf.Browser.prototype = {
         });
     },
     /** Note: Requires json root to be an array, and each object will be passed to keshif item. */
-    loadSheet_JSON: function(sheet){
+    loadTable_JSON: function(sheet){
         var me=this;
         var fileName=this.source.dirPath+sheet.name+".json";
         $.ajax({
@@ -3101,7 +3098,7 @@ kshf.Browser.prototype = {
             dataType: "json",
             success: function(data) {
                 // if data is already loaded, nothing else to do...
-                if(kshf.dt[sheet.tableName]!==undefined){
+                if(kshf.dt[sheet.name]!==undefined){
                     me.incrementLoadedSheetCount();
                     return;
                 }
@@ -3165,7 +3162,7 @@ kshf.Browser.prototype = {
         kshf.dt[sheet.name] = arr;
         var id_table = {};
         arr.forEach(function(r){id_table[r.id()] = r;});
-        kshf.dt_id[sheet.tableName] = id_table;
+        kshf.dt_id[sheet.name] = id_table;
         this.incrementLoadedSheetCount();
     },
     /** -- */
@@ -3173,9 +3170,9 @@ kshf.Browser.prototype = {
         var me=this;
         this.source.loadedTableCount++;
         this.panel_infobox.select("div.status_text .dynamic")
-            .text("("+this.source.loadedTableCount+"/"+this.source.sheets.length+")");
+            .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
             // finish loading
-        if(this.source.loadedTableCount===this.source.sheets.length) {
+        if(this.source.loadedTableCount===this.source.tables.length) {
             if(this.source.callback===undefined){
                 this.loadCharts();
             } else {
