@@ -41,7 +41,7 @@ browser = new kshf.Browser({
     //catBarScale: "scale_frequency",
     source: {
         gdocId: '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
-        sheets: "Demos"
+        tables: "Demos"
     },
     summaries: [
         {   title: "Keywords", layout: 'left',
@@ -79,7 +79,7 @@ browser = new kshf.Browser({
                 if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
                 return r;
             }*/
-        },{ title: "Result Display", layout: "right",
+        },{ title: "Record Display", layout: "right",
             value: function(){
                 var r = [];
                 if(this['Result Display']==="Grid")
