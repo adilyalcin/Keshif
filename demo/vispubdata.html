@@ -81,7 +81,7 @@ google.setOnLoadCallback(function(){
       { title: "First Author Affiliation", collapsed: false,
         description: "Only affiliations with at least two papers are shown",
         minAggrValue: 2, },
-      { title: "Year", layout: 'bottom', // value: function(){ return new Date(this.Year,0,0);} },
+      { title: "Year", layout: 'bottom' }, // value: function(){ return new Date(this.Year,0,0);}
       { title: "Authors", value: function(){ return this['Deduped author names']; }, layout: 'right',
         description: "Only authors with at least two papers are shown",
         minAggrValue: 2,
