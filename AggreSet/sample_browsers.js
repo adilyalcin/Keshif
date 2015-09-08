@@ -847,7 +847,7 @@ var browser_configs = {
             ],
             itemDisplay: {
                 sortColWidth: 45,
-                sortingOpts: {title: 'Year', value: "Date", label: function(){ return this.Date.getFullYear();}, inverse:true },
+                sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
                 textSearch: 'title',
                 detailsToggle: "One",
                 recordView: "title"
