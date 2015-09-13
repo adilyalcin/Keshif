@@ -983,12 +983,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
     this.config = config;
 
-    this.scrollTop_cache=0;
-
-    this.linkColumnWidth = 85;
-    this.linkColumnWidth_ItemCount = 25;
-    this.linkColumnWidth_BarMax = this.linkColumnWidth-this.linkColumnWidth_ItemCount-3;
-    this.selectColumnWidth = 17;
+    this.scrollTop_cache = 0;
 
     this.items = this.browser.items;
 
