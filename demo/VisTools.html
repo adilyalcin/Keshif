@@ -282,23 +282,39 @@ $(document).ready( function(){
         kshf.Util.cellToArray(kshf.dt["Visualization Books"], ['Authors','Tags'], /\s*\+\s*/,false);
       },
       summaries: [
-        { title: "Highlights", value:"★"},
+        { title: "Highlights", value:"★", catSortBy: function(){ return 2-this.id.length;   }},
         { title: "Authors"},
         { title: "Publisher", collapsed: true},
         { title: "Year" },
       ],
       itemDisplay: {
-        sortingOpts: ["Year", "id"],
+        sortingOpts: [ { title: "★'s, then Year", 
+          value: function(){ 
+            if(this['★']===null) return this.Year;
+            return this.Year+ this['★'].length*3000;
+            return 
+          },
+          label: function(){
+            if(this['★']===null) return this.Year;
+            return "<span class='book_stars'>"+this['★'] + "</span>" + this.Year;
+          }
+        }
+        ],
+        sortColWidth: 80,
         textSearch: "Title",
         displayType: 'list',
         recordView: function(){
           var str="";
-          str+="<span class='book_title'>"+this.Title+"</span>";
-          if(this["★"]) str+="<span class='book_stars'>"+this["★"]+"</span>";
+          str+="<span class='book_title'>"+this.Title;
+          if(this.URL) str+="<a href='"+this.URL+"' target='_blank' class='book_url fa fa-external-link'></a>";
+          str+="</span>"; // book_title
+          // if(this["★"]) str+="<span class='book_stars'>"+this["★"]+"</span>";
           str+="<br>";
           str+="<span class='book_year'> ["+this.Year+"] </span>";
           str+="<span class='book_authors'>"+this.Authors.join(" <span style='color:gray; font-size:0.9em'>&amp;</span> ")+"</span>";
           if(this.Publisher) str+="<span class='book_publisher'> - © "+this.Publisher+"</span>";
+          if(this.GoodReads!=="N/A") str+=" - <a class='book_goodreads' target='_blank' href='"+this.GoodReads+"'> "+
+              "goodreads <span class='fa fa-caret-right'></span></a>";
           return str;
         }
       }
@@ -342,8 +358,11 @@ $(document).ready( function(){
   #vistools_div .listItem{
     width: 150px;
   }
-  .content{
+  #vistools_div .content{
     padding: 3px;
+  }
+  #visbooks_div .content{
+    padding-bottom: 5px;
   }
   .theLabel > .chart-icon{
   	width: 14px;
@@ -434,6 +453,22 @@ $(document).ready( function(){
     font-size: 0.8em;
     font-weight: 100;
   }
+  .book_goodreads{
+    font-size: 0.8em;
+    font-weight: 300;
+    text-decoration: none;
+    color: #B0A79D;
+  }
+  .book_goodreads:hover{
+    text-decoration: underline;
+  }
+  .book_url{
+    font-size: 0.8em;
+    text-decoration: none;
+    margin-left: 5px;
+    color: orangered;
+    vertical-align: top;
+  }
 
   .browser_select{
     border: solid 1px lightgray;
@@ -492,7 +527,7 @@ $(document).ready( function(){
       <span style="color: orangered; font-weight: 700">Contribute to this open resource!</span> For info, contact 
       	<a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a><br>
       All rights for the images belong to their respective owners.
-      <span class="attributions">Attributions</span>
+      <span class="attributions">Resources used</span>
       <span class="fa fa-info-circle"></span>
       </div>
   </body>
