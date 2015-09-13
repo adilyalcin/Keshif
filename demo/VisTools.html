@@ -173,22 +173,20 @@ $(document).ready( function(){
     		}
     	},
     	{ title: "Cost",
-    		description: "Free tools may be available only for non-commercial, educational or limited use.<br>Check each tool for details",
+    		description: "Free tools may be available only for non-commercial, educational or limited use.<br><br>"+
+          "Some tools may offer both free and paid versions.<br><br>"+
+          "Check each tool for details.",
     		value: function(){
     			var r=[];
-    			switch(this.OpenSource){
-    				case null: break;
-    				case undefined: break;
-    				case "": break;
-    				case "-": break;
-    				case "N": break;
-    				default: r.push("Open-Sourced"); break;
-    			}
     			if(this.Cost) {
+            // Remove N, - and ?
     				var v=this.Cost.filter(function(v){
 	    				return v!=="N" && v!=="-" && v!=="?";
 	    			});
-	    			r = r.concat(v);
+            for(var i=0; i<v.length ; i++){
+              if(v[i]==="Free Trial") v[i] = "Paid";
+            }
+            r = r.concat(v);
     			}
           // If "Free trial", or "Paid Hosting", also add "Paid"
     			return r;
@@ -199,6 +197,14 @@ $(document).ready( function(){
           var r=[];
     			if(this["Active?"]==="Y") r.push("Active");
           if(this["★"]!==null && this["★"]!==undefined ) r.push("Categorized");
+          switch(this.OpenSource){
+            case null: break;
+            case undefined: break;
+            case "": break;
+            case "-": break;
+            case "N": break;
+            default: r.push("Open-Source"); break;
+          }
           return r;
     		}
     	},
@@ -246,6 +252,8 @@ $(document).ready( function(){
 	        str+="</div>";
           switch(this['★']){
             case "N": 
+            case null:
+            case undefined:
             case "-": break;
             default: str+="<span class='tool_highlight'>"+this['★']+"</span>";
           }
