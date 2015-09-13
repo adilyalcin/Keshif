@@ -190,13 +190,16 @@ $(document).ready( function(){
 	    			});
 	    			r = r.concat(v);
     			}
+          // If "Free trial", or "Paid Hosting", also add "Paid"
     			return r;
     		}
     	},
-    	{ title: "Active?", layout: "right",
-        description: "Is the tool active?",
+    	{ title: "Main", layout: "right",
     		value: function(){
-    			if(this["Active?"]==="Y") return "Active";
+          var r=[];
+    			if(this["Active?"]==="Y") r.push("Active");
+          if(this["★"]!==null && this["★"]!==undefined ) r.push("Categorized");
+          return r;
     		}
     	},
     	//{ title: "Design", collapsed: true, layout: "right" },
@@ -302,14 +305,17 @@ $(document).ready( function(){
     });
   }
 
-  $(".browser_select").click(function(){
-    var _show=this.getAttribute("show");
-    $("body").attr("show",_show);
-    if(_show==="books"){
+  function showBrowser(name){
+    $("body").attr("show",name);
+    if(name==="books"){
       createBookBrowser();
     }
     tool_browser.updateLayout();
     book_browser.updateLayout();
+  };
+
+  $(".browser_select").click(function(){
+    showBrowser(this.getAttribute("show"));
   });
 
   d3.select(".attributions")
@@ -326,6 +332,10 @@ $(document).ready( function(){
     })
     .on("mouseenter",function(){ this.tipsy.show(); })
     .on("mouseleave",function(){ this.tipsy.hide(); })
+
+    if(location.search==="?Show=Books"){
+      showBrowser("books");
+    }
 });
 </script>
 <style>
