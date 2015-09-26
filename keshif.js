@@ -1560,7 +1560,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     showMore: function(){
-        this.maxVisibleItems *= 2;
+        this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
         this.updateItemVisibility(true);
         this.DOM.showMore.attr("showMoreVisible",false);
         if(sendLog) sendLog(kshf.LOG.LIST_SHOWMORE,{info: this.maxVisibleItems});
@@ -3145,7 +3145,7 @@ kshf.Browser.prototype = {
             }
         });
 
-        // If any of the table values are string, convert all to string
+        // Make sure all id's are strings...
         if(hasString){
             dstTable.forEach(function(item){
                 item.data.id = ""+item.data.id;
