@@ -344,15 +344,17 @@ div.row span.value
         background-color: rgba(255,255,255,0.7);
         display:block;
         font-size: 3em;
-        border: 2px black solid;
     }
-    #demobox #clicktoLoad span{ 
+    #demobox #clicktoLoad > span{ 
+      font-family: 'Roboto', Helvetica, Arial, sans-serif;
         cursor: pointer;
-        line-height: 410px; 
-        vertical-align:middle; 
-        margin-left:auto;
-        margin-right:auto;
-        display:block;
+        vertical-align: middle;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        margin-top: 200px;
+        text-shadow: 0px 0px 5px white;
+        font-weight: 300 !important;
     }
     #livedemo {
         margin: 0 auto;
@@ -538,7 +540,8 @@ Data Made Explorable</span>
 <div id="demobox" loaded="false" style="margin:8px" onclick="loadDemoBrowser()">
 	<img id="demoimg" src="./demo/demo_img/demo.png" width="1100">
 	<div id="clicktoLoad">
-		<span align="center"> Click to interactively browse the collection!</span>
+		<span align="center"> Click to use <span style="font-size: 1.2em; font-weight:400">keshif</span><br> 
+      to<br> <span style="font-size: 1.0em; font-weight:400">explore</span> its demo browsers!</span>
 	</div>
 	<div id="livedemo"></div>
 </div>
@@ -558,13 +561,13 @@ Summaries-->
 
 <div class="titleee"><i><b>Keshif</b></i> lets you explore and understand your data collections, visually &amp; easily.</div>
 <ul class="fa-ul featureList">
-    <li><i class="fa-li fa fa-check-square"></i><b>Create summaries for the data properties you would like to explore.</b> Keshif will present your data in its simple, effective visual language.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> across your summaries using the rapid interaction design. <b>Preview results </b> by quick mouse over. <b>Compare</b> across distributions. Keshif automatically <b>synronizes</b> all that is connected so that you can make observations swiftly.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability through design</b>. Many visualization techniques have not been designed to scale gracefully. Keshif is designed to scale. It lets you explore large data collections, as far as data can be loaded to your web browser.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs with a single design. Our visual and interactive approach is cohesive, so it's easy to start exploring.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Don't worry about picking the right visualization.</b> Keshif does it for you. You will focus on your data and your goals. You will define dimensions that you'd like to explore. Keshif will visualize the characteristics.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Create summaries for the data properties you would like to explore.</b> Keshif will present your data in its effective visual design.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> across your summaries using its rapid interactive design. <b>Preview results </b> by quick mouse over. <b>Compare</b> across distributions by locking your selection. Keshif automatically <b>synronizes</b> all within your view so that you can make observations swiftly.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability through design</b>. Many visualization techniques have not been designed to scale gracefully. Keshif is designed to scale. It lets you explore large data collections, as far as the data can be loaded to your web browser.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs for a wide range of data with a single design. Our visual and interactive approach is cohesiv so that it's easy to start your exploration.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Don't worry about picking the right visualization.</b> Keshif does it for you. You focus on your data and your questions. Keshif will do the number crunching and visually present patterns.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>See the overview and the most relevant first.</b> After each step of exploration, the most relevant results and data properties are shown first, as they are dynamically and smoothly re-ordered.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Load your data in a flexible pipeline.</b> Keshif is ready to load your structured data, whether it be digital collections, books that you have read, contact lists, public data sources, movies, etc. It can automatically import data from Google SpreadSheets and CSV/TEXT files. You can write your own importers in Javascript for JSON, XML, even HTML or BibTeX for publication databases. Check the demo list to find demos using various data resource types.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Load your data in a flexible web-based pipeline.</b> Keshif is ready to load your structured data, whether it be digital collections, books that you have read, contact lists, public data sources, movies, etc. It can automatically import data from Google SpreadSheets and CSV/TEXT files. You can write your own importers in Javascript for JSON, XML, even HTML or BibTeX for publication databases. Check the demo list to find demos using various data resource types.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>Define your browser using its simple <a href="https://github.com/adilyalcin/Keshif/wiki#wiki-api-documentation" target="_blank">API</a>.</b> The API is based on a single function which takes configuration parameters, such as data source, and the descriptions of your data summaries.</li>
 </ul>
 
@@ -578,7 +581,7 @@ Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank"
 
 </br></br>
 <h2 id="participants">Publications</h2>
-<b><a href="./Aggreset/" target='_blank'>AggreSet</a>: Rich and Scalable Set Exploration using Visualizations of Element Aggregations</b>, M. Adil Yalçın &amp; Niklas Elmqvist &amp; Ben Bederson, INFOVIS 2015
+<b><a href="./AggreSet/" target='_blank'>AggreSet</a>: Rich and Scalable Set Exploration using Visualizations of Element Aggregations</b>, M. Adil Yalçın &amp; Niklas Elmqvist &amp; Ben Bederson, INFOVIS 2015
 
 </br></br>
 <h2 id="participants">Media Coverage</h2>
@@ -586,7 +589,19 @@ Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank"
 
 <a href="http://datadrivenjournalism.net/resources/overview_328_analysis_and_visualization_tools_and_counting" target='_blank'>Overview: 328 Analysis and Visualization Tools (and counting)</a> - DataDrivenJournalism.net, Sept. 2015<br><br>
 
-<a href="http://www.informationisbeautifulawards.com/showcase?ccategory=interactive&challenge=2&page=1&pcategory=short-list&type=challenges" target="_blank">Safety First: A Story on Restaurant Food Poisonings</a>, Shortlisted, Information is Beautiful Awards, Food Poisoning Challenge, 2015.
+<a href="http://www.informationisbeautifulawards.com/showcase?ccategory=interactive&challenge=2&page=1&pcategory=short-list&type=challenges" target="_blank">Safety First: A Story on Restaurant Food Poisonings</a>, Shortlisted, Information is Beautiful Awards, Food Poisoning Challenge, 2015.<br><br>
+
+<a href="" target="_blank">Visual and Interactive Data via Keshif</a>, Tools for the Web, June 2015
+
+<!--
+
+Citatins to Keshif:
+Web-based Information Visualization Using JavaScript - Selin Guldamlasioglu - University of Tampere - M.Sc. Thesis
+
+Visual Analysis and Dissemination of Scientific Literature Collections with SurVis -  Fabian Beck et al. VAST2015
+http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/vast15-survis.pdf
+
+-->
 
 </br></br>
 <h2 id="participants">Developed By</h2>
@@ -608,7 +623,7 @@ Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license
 </br></br>
 <h2 id="participants">Contact</h2>
 <ul>
-<li>You are invited to contact <my-email data-user="yalcin" data-domain="umd.edu"></my-email> for feedback and questions.</li>
+<li>Please contact <my-email data-user="yalcin" data-domain="umd.edu"></my-email> for feedback and questions.</li>
 </ul>
 
 <h2 id="sponsors">History</h2>

@@ -1,11 +1,11 @@
 Keshif
 ======
 
-**Keshif** is a visual data browser that makes it easier to browse and understand your data.
+**Keshif** is a web-based tool that lets you browse and understand datasets easily.
 
-To start using Keshif
-* Get the source code from github.
-* Explore the existing datasets and their source codes.
+To start using Keshif:
+* Get the source code from github,
+* Explore the existing datasets and their source codes, and
 * Check out the [wiki](https://github.com/adilyalcin/Keshif/wiki).
 
 [![Demo](https://github.com/adilyalcin/Keshif/blob/master/demo/demo_img/demo.png)](http://keshif.me)
