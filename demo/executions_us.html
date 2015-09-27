@@ -32,7 +32,7 @@ google.setOnLoadCallback(function(){
       { title: "Race", layout: 'right' },
       { title: "Sex", layout: 'right',
         catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); } },
-      { title: "Age", layout: 'right', type: 'interval' },
+      { title: "Age", layout: 'right' },
       { title: "Execution Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }
       }
     ],

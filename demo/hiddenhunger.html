@@ -50,21 +50,14 @@ google.setOnLoadCallback(function(){
             {title:"Rural", value: "rural", layout: "middle"},
             {title:"Gender", value: "gender"},
             {title:"Household Head Gender", value: "head_sex"},
-            {title:"Literate", value: "literate", type: "categorical",description:"Completed education?"},
-            {title:"Highest Grade", value: "highest_grade", type: "categorical",
-                description: "Highest grade completed",
-                catSortBy: "id", collapsed: true},
+            {title:"Literate", value: "literate", type: "categorical", description:"Completed education?"},
+            {title:"Highest Grade", value: "highest_grade", description: "Highest grade completed",
+              catSortBy: "id", collapsed: true},
             {title:"Age (Months)", value: "agem", layout: "bottom"},
-            {title:"Weight", 
-                value: function(){
-                    return Math.max(Math.min(this.weight,30),0);
-                },
-                layout: "middle", intervalScale: "linear", unitName: "kg"},
-            {title:"Height", unitName: "cm",
-                value: function(){
-                    return Math.max(Math.min(this.height,120),50);
-                },
-                layout: "middle"},
+            {title:"Weight", layout: "middle", intervalScale: "linear", unitName: "kg",
+              value: function(){ return Math.max(Math.min(this.weight,30),0); }},
+            {title:"Height", unitName: "cm", layout: "middle",
+              value: function(){ return Math.max(Math.min(this.height,120),50); }},
             {value: "haz", title:"Length / height for age", layout:"right"},
             {value: "waz", title:"Weight for age", layout:"right"},
             {value: "whz", title:"Weight for length/height", layout:"right"}

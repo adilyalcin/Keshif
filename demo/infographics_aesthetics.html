@@ -145,7 +145,7 @@ function showBrowsers(v){
       summaries: [
         { title: "Phase-1 Responses", value: 'Phase_1', layout: "middle"},
         { title: "Phase-2 Responses", value: 'Phase_2', layout: "middle"},
-        { title: "Participant - Gender", layout: "middle", type: "categorical", catLabel: genderLabel,
+        { title: "Participant - Gender", layout: "middle", catLabel: genderLabel,
           value: function(){ return this.participant.data.Gender; } },
         { title: "Participant - Education Level", layout: "middle", type: "categorical",
           value: function(){ return this.participant.data['Education Level']; } },
