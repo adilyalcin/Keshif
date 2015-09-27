@@ -1,147 +1,147 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
+  <head>
+    <title>Keshif: Data Made Explorable</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="Content-Language" content="en-us" />
-	
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-	<script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="./js/d3.3.5.5.min.js" charset="utf-8"></script>
-	<script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
-	<link rel="stylesheet" href="./keshif.css"/ type="text/css">
-	<link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Content-Language" content="en-us" />
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="./js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
     <link rel="icon" href="./demo/img/favicon.png" type="image/png" >
 
     <script type="text/javascript" src="./demo/js/demo.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./AggreSet/jquery.colorbox-min.js" charset="utf-8"></script>
 
-	<title>Keshif: Data Made Explorable</title>
+    <script type="text/javascript">
 
-	<script type="text/javascript">
-	var loaded=false;
+var loaded=false;
+var demoID = 76;
+noRibbon = true;
+showLogo = false;
 
-    var demoID = 76;
+$(document).ready(function(){
+  $(".youtube").colorbox({iframe:true, width:920, height:600, scalePhotos: true});
+});
 
-    noRibbon = true;
+var loadDemoBrowser = function(){
+  if(loaded) return;
+  loaded=true;
+  d3.select('#demobox').attr("loaded",true);
 
-    showLogo = false;
-
-	var loadDemoBrowser = function(){
-		if(loaded) return;
-		loaded=true;
-		d3.select('#demobox').attr("loaded",true);
-
-browser = new kshf.Browser({
+  browser = new kshf.Browser({
     domID: "#livedemo",
     categoryTextWidth: 150,
     rightPanelLabelWidth: 140,
     barChartWidth: 70,
     itemName: "Datasets Keshif-ized",
-    //catBarScale: "scale_frequency",
     source: {
-        gdocId: '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
-        tables: "Demos"
+      gdocId: '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
+      tables: "Demos"
     },
     summaries: [
-        {   title: "Keywords", layout: 'left',
-            value: function(){ return this.Keywords.split(" + "); }
-        },{ title: "# of Records", value: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"
-        },{ title: "Data Source", layout: 'left', collapsed: true,
-            value: function(){ return this.Source.split(" + "); }
-        },{ title: "Code Complexity", layout: 'right',
-            description: "Relative code complexity of demo source",
-            catSortBy: "id",
-            catLabel: function(){
-                switch(this.id){
-                    case 1: return "A breeze *";
-                    case 2: return "Simple **"; 
-                    case 3: return "Intermediate ***";
-                    case 4: return "Detailed ****";
-                    case 5: return "Fully featured *****";
-                }
-            }
-        },{ title: "Summary Types", layout: 'right',
-            value: function(){
-                var r = [];
-                if(this['Facets - Histogram']>0)
-                    r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
-                if(this['Facets - Hierarchical'])
-                    r.push("Hierarchical <span class='fa fa-outdent'></span>");
-                if(this['Has Time'])
-                    r.push("Time <span class='fa fa-clock-o'></span>");
-                return r;
-            }
+      { title: "Keywords", layout: 'left',
+        value: function(){ return this.Keywords.split(" + "); } },
+      { title: "# of Records", value: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"},
+      { title: "Data Source", layout: 'left', collapsed: true,
+        value: function(){ return this.Source.split(" + "); }},
+      { title: "Code Complexity", layout: 'right',
+        description: "Relative code complexity of demo source",
+        catSortBy: "id",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "A breeze *";
+            case 2: return "Simple **"; 
+            case 3: return "Intermediate ***";
+            case 4: return "Detailed ****";
+            case 5: return "Fully featured *****";
+          }
+        }},
+      { title: "Summary Types", layout: 'right',
+        value: function(){
+          var r = [];
+          if(this['Facets - Histogram']>0)
+            r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
+          if(this['Facets - Hierarchical'])
+            r.push("Hierarchical <span class='fa fa-outdent'></span>");
+          if(this['Has Time'])
+            r.push("Time <span class='fa fa-clock-o'></span>");
+          return r;
+        } },
 /*        },{ title: "Data Structure",
-            value: function(){
-                var r = [];
-                if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
-                if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
-                return r;
-            }*/
-        },{ title: "Record Display", layout: "right",
-            value: function(){
-                var r = [];
-                if(this['Result Display']==="Grid")
-                    r.push("Grid <span class='fa fa-th'></span>");
-                if(this['Result Display']==="List")
-                    r.push("List <span class='fa fa-list'></span>");
-                return r;
-            }
+          value: function(){
+              var r = [];
+              if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
+              if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
+              return r;
+          }*/
+      { title: "Record Display", layout: "right",
+        value: function(){
+          var r = [];
+          if(this['Result Display']==="Grid")
+            r.push("Grid <span class='fa fa-th'></span>");
+          if(this['Result Display']==="List")
+            r.push("List <span class='fa fa-list'></span>");
+          return r;
+        }},
 /*        },{ title: "Other", layout: "right",
-            value: function(){
-                var r = [];
-                if(this['Main Text Search'])
-                    r.push("Main Text search <span class='fa fa-search'></span>");
-                if(this['Dynamic Sizing']>0)
-                    r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
-                return r;
-            }*/
-        },{ title: "Created At", layout: "right", collapsed: false,
-            value: function(){ return this.Authored.getFullYear(); }
-        }
+          value: function(){
+              var r = [];
+              if(this['Main Text Search'])
+                  r.push("Main Text search <span class='fa fa-search'></span>");
+              if(this['Dynamic Sizing']>0)
+                  r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
+              return r;
+          }*/
+      { title: "Created At", layout: "right", collapsed: false,
+        value: function(){ return this.Authored.getFullYear(); } }
     ],
     itemDisplay: {
-        sortingOpts: [ 
-            {title: 'Highlighted', value: "id", inverse: true},
-            "# Items",
-            {title: 'Date', value: "Authored", inverse: true},
-        ],
-        displayType: 'grid',
-        maxVisibleItems_Default: 100,
-        textSearch: 'Name',
-        recordView: function(){
-            var str='';
-            str+="<span class='thumbnail'><a target='_blank' href='./demo/"
-                +this["Link"]+"'><img class='theImage'></a></span>";
+      sortingOpts: [ 
+          {title: 'Highlighted', value: "id", inverse: true},
+          "# Items",
+          {title: 'Date', value: "Authored", inverse: true},
+      ],
+      displayType: 'grid',
+      maxVisibleItems_Default: 100,
+      textSearch: 'Name',
+      recordView: function(){
+          var str='';
+          str+="<span class='thumbnail'><a target='_blank' href='./demo/"
+              +this["Link"]+"'><img class='theImage'></a></span>";
 //          str+="<div class=\"iteminfo iteminfo_0\">";
-            str+="<span class='title'>"+this["Name"]+"</span>";
-            str+="<span class='icons'>";
-                if(this['Linked']) str+="<span class='fa fa-chain'></span>";
-                if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
-                if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
-                //if(this['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
-                if(this['Has Time']) str+="<span class='fa fa-clock-o'></span>";
-                //if(this['Multi-Sort']) str+="<span class='fa fa-sort-amount-desc'></span>";
-                if(this['Results-Details']) str+="<span class='fa fa-bullseye'></span>";
-                if(this['Result Display']==="Grid") str+="<span class='fa fa-th'></span>";
-                if(this['Result Display']==="List") str+="<span class='fa fa-list'></span>";
-                if(this['Highlighted']) str+="<span class='fa fa-star'></span>";
-                if(this['Main Text Search']) str+="<span class='fa fa-search'></span>";
-                if(this['Dynamic Sizing']) str+="<span class='fa fa-arrows-alt'></span>";
-            str+="</span>";
-            str+="<span class='codeLink' style='right: 2px'><a target='_blank' href='https://github.com/adilyalcin/Keshif/blob/master/demo/"
-                    +this["Link"]+".html' class='fa fa-code'></a></span>";
-            return str;
-        },
-        visibleCb: function(d){
-            var link=this["Link"];
-            if(link==="../index") link = "index";
-            d3.select(d.DOM.record).select("img").attr("src","demo/demo_img/"+link+".jpg");
-        }
+          str+="<span class='title'>"+this["Name"]+"</span>";
+          str+="<span class='icons'>";
+              if(this['Linked']) str+="<span class='fa fa-chain'></span>";
+              if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
+              if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
+              //if(this['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
+              if(this['Has Time']) str+="<span class='fa fa-clock-o'></span>";
+              //if(this['Multi-Sort']) str+="<span class='fa fa-sort-amount-desc'></span>";
+              if(this['Results-Details']) str+="<span class='fa fa-bullseye'></span>";
+              if(this['Result Display']==="Grid") str+="<span class='fa fa-th'></span>";
+              if(this['Result Display']==="List") str+="<span class='fa fa-list'></span>";
+              if(this['Highlighted']) str+="<span class='fa fa-star'></span>";
+              if(this['Main Text Search']) str+="<span class='fa fa-search'></span>";
+              if(this['Dynamic Sizing']) str+="<span class='fa fa-arrows-alt'></span>";
+          str+="</span>";
+          str+="<span class='codeLink' style='right: 2px'><a target='_blank' href='https://github.com/adilyalcin/Keshif/blob/master/demo/"
+                  +this["Link"]+".html' class='fa fa-code'></a></span>";
+          return str;
+      },
+      visibleCb: function(d){
+          var link=this["Link"];
+          if(link==="../index") link = "index";
+          d3.select(d.DOM.record).select("img").attr("src","demo/demo_img/"+link+".jpg");
+      }
     }
-});
-	};
+  });
+};
 	</script>
 	<style>
 
@@ -296,221 +296,288 @@ div.row span.value
     font-size: 1.3em;
 }
       
-    my-email::after {
-        content: attr(data-domain);
-    }
-    my-email::before {
-        content: attr(data-user) "\0040";
-    }
-    h1, .h1 {
-          font-size: 1.7em;
-          font-weight: normal;
-          color: #727365;
-          letter-spacing: .12em;
-    }
-
-    #mypage {
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 15px;
-        font-size: 1.3em;
-        /* max-width: 800px; */
-        width: 1100px;
-    }
-    #demobox{
-        width: 1100px;
-        height: 500px;
-        position:relative;
-    }
-    #demoimg {
-        cursor: pointer;
-    }
-    #demobox[loaded=true] #demoimg{
-        display: none;
-    }
-    #demobox[loaded=true] #clicktoLoad{
-        display: none;
-    }
-    #demobox #clicktoLoad {
-        cursor: pointer;
-        position: absolute;
-        top: 0px;
-        background-color: rgba(255,255,255,0);
-        width: 1100px;
-        height: 500px;
-        display:none;
-    }
-    #demobox:hover[loaded=false] #clicktoLoad {
-        background-color: rgba(255,255,255,0.7);
-        display:block;
-        font-size: 3em;
-    }
-    #demobox #clicktoLoad > span{ 
-      font-family: 'Roboto', Helvetica, Arial, sans-serif;
-        cursor: pointer;
-        vertical-align: middle;
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        margin-top: 200px;
-        text-shadow: 0px 0px 5px white;
-        font-weight: 300 !important;
-    }
-    #livedemo {
-        margin: 0 auto;
-        height: 500px;
-        font-size: 12pt;
-    }
-    #demobox[loaded=false] #livedemo{
-        display:none;
-    }
-
-    .iteminfo a{
-        color:#606060;
-        font-style:italic;
-    }
-    .iteminfo_0 span{
-        font-size: 0.7em;
-    }
-
-    .content{
-        width: 131px;
-        padding: 3px;
-        margin-bottom: 2px;
-    }
-    .content img.theImage{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        background-color: white;
-        width: calc(100% - 10px);
-    }
-    .content img.theImage:hover{
-        box-shadow: 0px 0px 2px black;
-    }
-    .listItem[highlight=true] div.content .thumbnail a{
-        background-color: orangered;
-    }
-    .content .title{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-top: 2px;
-        text-align: center;
-        font-size: 0.8em;
-    }
-    .content .thumbnail{
-        display: block;
-        height: 120px;
-        overflow-y: hidden;
-        overflow-x: hidden;
-        position: relative;
-        transition: background-color 300ms linear;
-        -webkit-transition: background-color 300ms linear;
-        -o-transition: background-color 300ms linear;
-        -moz-transition: background-color 300ms linear;
-    }
-    .content .thumbnail a{
-        display: block;
-        bottom: 2px;
-        display: block;
-        position: absolute;
-        width: 100%;
-    }
-    .content .icons{
-        display: block;
-        text-align: center;
-        color: lightgray;
-        width: 100%;
-        font-size: 0.9em;
-        border-top: solid 1px lightgray;
-        padding-top: 2px;
-    }
-
-    .content .icons .fa{
-        padding: 0px 2px;
-    }
-    .content .icons .fa:hover{
-        padding: 0px 2px;
-        color: gray;
-    }
-    .content .codeLink{
-        position: absolute;
-        top: 2px;
-        background-color: rgb(228, 228, 228);
-        border-radius: 13px;
-        padding: 2px;
-        font-size: 0.75em;
-        font-weight: 700;
-        border: solid 1px gray;
-        display: block;
-        height: 18px;
-        width: 18px;
-        text-align: center;
-        opacity: 0.5;
-    }
-    .content .codeLink:hover{
-        opacity: 1;
-    }
-    .content a{
-        text-decoration: none;
-    }
-    .listItemGroup{
-        text-align: center;
-    }
-
-    #forkongithub a{
-        background:#000;
-        color:#fff;
-        text-decoration:none;
-        font-family:arial,sans-serif;
-        text-align:center;
-        font-weight:bold;
-        padding:5px 40px;
-        font-size:0.8rem;
-        line-height:1.5rem;
-        position:relative;
-        transition:0.5s;
-    }
-    #forkongithub a:hover{background:orangered;color:#fff;}
-    #forkongithub a::before,#forkongithub a::after{
-        content:"";
-        width:100%;
-        display:block;
-        position:absolute;
-        top:1px;
-        left:0;
-        height:1px;
-        background:#fff;
-    }
-    #forkongithub a::after{
-        bottom:1px;
-        top:auto;
-    }
-    @media screen and (min-width:800px){
-        #forkongithub{
-            position:fixed;
-            display:block;
-            bottom:0;
-            right:0;
-            width:200px;
-            overflow:hidden;
-            height:200px;
-            z-index:9999;
-        }
-        #forkongithub a{
-            width:200px;
-            position:absolute;
-            top:120px;
-            right:-80px;
-            transform:rotate(-45deg);
-            -webkit-transform:rotate(-45deg);
-            -ms-transform:rotate(-45deg);
-            -moz-transform:rotate(-45deg);
-            -o-transform:rotate(-45deg);
-            box-shadow:4px 4px 10px rgba(0,0,0,0.8);
-        }
+my-email::after {
+  content: attr(data-domain);
 }
+my-email::before {
+  content: attr(data-user) "\0040";
+}
+h1, .h1 {
+    font-size: 1.7em;
+    font-weight: normal;
+    color: #727365;
+    letter-spacing: .12em;
+}
+
+#mypage {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 15px;
+  font-size: 1.3em;
+  /* max-width: 800px; */
+  width: 1100px;
+  position: relative;
+}
+#demobox{
+  width: 1100px;
+  height: 500px;
+  position:relative;
+}
+#demoimg {
+  cursor: pointer;
+}
+#demobox[loaded=true] #demoimg{
+  display: none;
+}
+#demobox[loaded=true] #clicktoLoad{
+  display: none;
+}
+#demobox #clicktoLoad {
+  cursor: pointer;
+  position: absolute;
+  top: 0px;
+  background-color: rgba(255,255,255,0);
+  width: 1100px;
+  height: 500px;
+  display:none;
+}
+#demobox:hover[loaded=false] #clicktoLoad {
+  background-color: rgba(255,255,255,0.7);
+  display:block;
+  font-size: 3em;
+}
+#demobox #clicktoLoad > span{ 
+font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  cursor: pointer;
+  vertical-align: middle;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  margin-top: 200px;
+  text-shadow: 0px 0px 5px white;
+  font-weight: 300 !important;
+}
+#livedemo {
+  margin: 0 auto;
+  height: 500px;
+  font-size: 12pt;
+}
+#demobox[loaded=false] #livedemo{
+  display:none;
+}
+
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+.iteminfo_0 span{
+  font-size: 0.7em;
+}
+
+.content{
+  width: 131px;
+  padding: 3px;
+  margin-bottom: 2px;
+}
+.content img.theImage{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  width: calc(100% - 10px);
+}
+.content img.theImage:hover{
+  box-shadow: 0px 0px 2px black;
+}
+.listItem[highlight=true] div.content .thumbnail a{
+  background-color: orangered;
+}
+.content .title{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 2px;
+  text-align: center;
+  font-size: 0.8em;
+}
+.content .thumbnail{
+  display: block;
+  height: 120px;
+  overflow-y: hidden;
+  overflow-x: hidden;
+  position: relative;
+  transition: background-color 300ms linear;
+  -webkit-transition: background-color 300ms linear;
+  -o-transition: background-color 300ms linear;
+  -moz-transition: background-color 300ms linear;
+}
+.content .thumbnail a{
+  display: block;
+  bottom: 2px;
+  display: block;
+  position: absolute;
+  width: 100%;
+}
+.content .icons{
+  display: block;
+  text-align: center;
+  color: lightgray;
+  width: 100%;
+  font-size: 0.9em;
+  border-top: solid 1px lightgray;
+  padding-top: 2px;
+}
+
+.content .icons .fa{
+  padding: 0px 2px;
+}
+.content .icons .fa:hover{
+  padding: 0px 2px;
+  color: gray;
+}
+.content .codeLink{
+  position: absolute;
+  top: 2px;
+  background-color: rgb(228, 228, 228);
+  border-radius: 13px;
+  padding: 2px;
+  font-size: 0.75em;
+  font-weight: 700;
+  border: solid 1px gray;
+  display: block;
+  height: 18px;
+  width: 18px;
+  text-align: center;
+  opacity: 0.5;
+}
+.content .codeLink:hover{
+  opacity: 1;
+}
+.content a{
+  text-decoration: none;
+}
+.listItemGroup{
+  text-align: center;
+}
+
+.IntroVideoWrapper{
+  text-align: right;
+  position: absolute;
+  right: 0px;
+  top: 25px;
+}
+
+#forkongithub a{
+  background:#000;
+  color:#fff;
+  text-decoration:none;
+  font-family:arial,sans-serif;
+  text-align:center;
+  font-weight:bold;
+  padding:5px 40px;
+  font-size:0.8rem;
+  line-height:1.5rem;
+  position:relative;
+  transition:0.5s;
+}
+#forkongithub a:hover{background:orangered;color:#fff;}
+#forkongithub a::before,#forkongithub a::after{
+  content:"";
+  width:100%;
+  display:block;
+  position:absolute;
+  top:1px;
+  left:0;
+  height:1px;
+  background:#fff;
+}
+#forkongithub a::after{
+  bottom:1px;
+  top:auto;
+}
+@media screen and (min-width:800px){
+  #forkongithub{
+      position:fixed;
+      display:block;
+      bottom:0;
+      right:0;
+      width:200px;
+      overflow:hidden;
+      height:200px;
+      z-index:9999;
+  }
+  #forkongithub a{
+      width:200px;
+      position:absolute;
+      top:120px;
+      right:-80px;
+      transform:rotate(-45deg);
+      -webkit-transform:rotate(-45deg);
+      -ms-transform:rotate(-45deg);
+      -moz-transform:rotate(-45deg);
+      -o-transform:rotate(-45deg);
+      box-shadow:4px 4px 10px rgba(0,0,0,0.8);
+  }
+}
+
+/*
+    Colorbox Core Style:
+    The following CSS is consistent between example themes and should not be altered.
+*/
+#colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:9999; overflow:hidden;}
+#cboxWrapper {max-width:none;}
+#cboxOverlay{position:fixed; width:100%; height:100%;}
+#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
+#cboxContent{position:relative;}
+#cboxLoadedContent{overflow:auto; -webkit-overflow-scrolling: touch;}
+#cboxTitle{margin:0;}
+#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
+#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
+.cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none; -ms-interpolation-mode:bicubic;}
+.cboxIframe{width:100%; height:100%; display:block; border:0; padding:0; margin:0;}
+#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box; -moz-box-sizing:content-box; -webkit-box-sizing:content-box;}
+
+/* 
+    User Style:
+    Change the following styles to modify the appearance of Colorbox.  They are
+    ordered & tabbed in a way that represents the nesting of the generated HTML.
+*/
+#cboxOverlay{background:#000; opacity: 0.9; filter: alpha(opacity = 90);}
+#colorbox{outline:0;}
+    #cboxTopLeft{width:14px; height:14px; background:url(images/controls.png) no-repeat 0 0;}
+    #cboxTopCenter{height:14px; background:url(images/border.png) repeat-x top left;}
+    #cboxTopRight{width:14px; height:14px; background:url(images/controls.png) no-repeat -36px 0;}
+    #cboxBottomLeft{width:14px; height:43px; background:url(images/controls.png) no-repeat 0 -32px;}
+    #cboxBottomCenter{height:43px; background:url(images/border.png) repeat-x bottom left;}
+    #cboxBottomRight{width:14px; height:43px; background:url(images/controls.png) no-repeat -36px -32px;}
+    #cboxMiddleLeft{width:14px; background:url(images/controls.png) repeat-y -175px 0;}
+    #cboxMiddleRight{width:14px; background:url(images/controls.png) repeat-y -211px 0;}
+    #cboxContent{background:#fff; overflow:visible;}
+        .cboxIframe{background:#fff;}
+        #cboxError{padding:50px; border:1px solid #ccc;}
+        #cboxLoadedContent{margin-bottom:5px;}
+        #cboxLoadingOverlay{background:url(images/loading_background.png) no-repeat center center;}
+        #cboxLoadingGraphic{background:url(images/loading.gif) no-repeat center center;}
+        #cboxTitle{position:absolute; bottom:-25px; left:0; text-align:center; width:100%; font-weight:bold; color:#7C7C7C;}
+        #cboxCurrent{position:absolute; bottom:-25px; left:58px; font-weight:bold; color:#7C7C7C;}
+
+        /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
+        #cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(images/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;}
+        
+        /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
+        #cboxPrevious:active, #cboxNext:active, #cboxSlideshow:active, #cboxClose:active {outline:0;}
+
+        #cboxPrevious{left:0px; background-position: -51px -25px;}
+        #cboxPrevious:hover{background-position:-51px 0px;}
+        #cboxNext{left:27px; background-position:-75px -25px;}
+        #cboxNext:hover{background-position:-75px 0px;}
+        #cboxClose{right:0; background-position:-100px -25px;}
+        #cboxClose:hover{background-position:-100px 0px;}
+
+        .cboxSlideshow_on #cboxSlideshow{background-position:-125px 0px; right:27px;}
+        .cboxSlideshow_on #cboxSlideshow:hover{background-position:-150px 0px;}
+        .cboxSlideshow_off #cboxSlideshow{background-position:-150px -25px; right:27px;}
+        .cboxSlideshow_off #cboxSlideshow:hover{background-position:-125px 0px;}
 
     </style>
 	 
@@ -533,9 +600,16 @@ div.row span.value
 <span class='h1'><strong>Keshif</strong></br>
 Data Made Explorable</span>
 
+<div class="IntroVideoWrapper">
+  <span class='fa fa-video-camera'></span> 
+  <a class='youtube author_link' href="https://www.youtube.com/embed/3Hmvms-1grU">Data exploration with Keshif - in 5 minutes</a> 
+  <span class='fa fa-youtube-play'></span> 
+  </div>
+
 <div align="right">
-	<i>Click on the image to load the interactive <b>Keshif</b> browser</i>
+	Click on the image to load the interactive <b>Keshif</b> browser
 </div>
+
 
 <div id="demobox" loaded="false" style="margin:8px" onclick="loadDemoBrowser()">
 	<img id="demoimg" src="./demo/demo_img/demo.png" width="1100">
@@ -577,6 +651,7 @@ Summaries-->
 Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank" class='fa fa-github fa-2x'></a> - 
 
 <iframe src="http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true&size=small" allowtransparency="true" frameborder="0" scrolling="0" width="80px" height="20px"></iframe>
+
 </div>
 
 </br></br>
@@ -591,7 +666,7 @@ Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank"
 
 <a href="http://www.informationisbeautifulawards.com/showcase?ccategory=interactive&challenge=2&page=1&pcategory=short-list&type=challenges" target="_blank">Safety First: A Story on Restaurant Food Poisonings</a>, Shortlisted, Information is Beautiful Awards, Food Poisoning Challenge, 2015.<br><br>
 
-<a href="" target="_blank">Visual and Interactive Data via Keshif</a>, Tools for the Web, June 2015
+<a href="http://toolsfortheweb.net/javascript/visual-and-interactive-data-via-keshif/" target="_blank">Visual and Interactive Data via Keshif</a>, Tools for the Web, June 2015
 
 <!--
 
