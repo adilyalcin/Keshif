@@ -54,13 +54,16 @@ var loadDemoBrowser = function(){
         description: "Relative code complexity of demo source",
         catSortBy: "id",
         catLabel: function(){
+          var r="";
           switch(this.id){
-            case 1: return "A breeze *";
-            case 2: return "Simple **"; 
-            case 3: return "Intermediate ***";
-            case 4: return "Detailed ****";
-            case 5: return "Fully featured *****";
+            case 1: r="A breeze "; break;
+            case 2: r="Simple "; break; 
+            case 3: r="Intermediate "; break;
+            case 4: r="Detailed "; break;
+            case 5: r="Fully featured "; break;
           }
+          r+=Array(this.id+1).join("<span class='fa fa-star' style='font-size: 0.7em;'></span>")
+          return r;
         }},
       { title: "Summary Types", layout: 'right',
         value: function(){
@@ -104,7 +107,7 @@ var loadDemoBrowser = function(){
     itemDisplay: {
       sortingOpts: [ 
           {title: 'Highlighted', value: "id", inverse: true},
-          "# Items",
+          "# of Records",
           {title: 'Date', value: "Authored", inverse: true},
       ],
       displayType: 'grid',
