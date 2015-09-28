@@ -6578,7 +6578,8 @@ var Summary_Interval_functions = {
             filterView_Detail: function(summary){
                 var minValue = this.active.min;
                 var maxValue = this.active.max;
-                var unitNameStr = "<span class='unitName'>"+me.unitName+"</span>";
+                var unitNameStr = "";
+                if(me.unitName) unitNameStr = "<span class='unitName'>"+me.unitName+"</span>";
                 if(summary.scaleType==='step'){
                     if(minValue===maxValue) return "<b>"+minValue+unitNameStr+"</b>";
                 }
