@@ -6578,8 +6578,9 @@ var Summary_Interval_functions = {
             filterView_Detail: function(summary){
                 var minValue = this.active.min;
                 var maxValue = this.active.max;
+                var unitNameStr = "<span class='unitName'>"+me.unitName+"</span>";
                 if(summary.scaleType==='step'){
-                    if(minValue===maxValue) return "<b>"+minValue+"</b>";
+                    if(minValue===maxValue) return "<b>"+minValue+unitNameStr+"</b>";
                 }
                 if(summary.scaleType==='time'){
                     return "<b>"+summary.intervalTickFormat(minValue)+
@@ -6590,11 +6591,11 @@ var Summary_Interval_functions = {
                     maxValue = maxValue.toFixed(2);
                 }
                 if(summary.isFiltered_min() && summary.isFiltered_max()){
-                    return "<b>"+minValue+"</b> to <b>"+maxValue+"</b>";
+                    return "<b>"+minValue+unitNameStr+"</b> to <b>"+maxValue+unitNameStr+"</b>";
                 } else if(summary.isFiltered_min()){
-                    return "<b>at least "+minValue+"</b>";
+                    return "<b>at least "+minValue+unitNameStr+"</b>";
                 } else {
-                    return "<b>at most "+maxValue+"</b>";
+                    return "<b>at most "+maxValue+unitNameStr+"</b>";
                 }
             },
         });

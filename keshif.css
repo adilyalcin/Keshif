@@ -267,10 +267,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span[compare="true"] .compareButton:hover:after {
   content: "\f13e";
 }
-.kshf .unitName {
-  opacity: 0.6;
-  margin-left: 1px;
-}
 .kshf .sortButton {
   cursor: pointer;
 }
@@ -716,6 +712,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 1px 0px 1px 0px;
   display: inline;
   margin-right: 15px;
+}
+.kshf .panel_Basic > .filtercrumbs > .filter-block > .sdsdsds > .filterDetails .unitName {
+  margin-left: 1px;
+  font-weight: 300;
 }
 .kshf .panel_Basic > .filtercrumbs > .filter-block > .chartClearFilterButton.summary {
   pointer-events: none;
@@ -2669,6 +2669,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   text-align: center;
   white-space: nowrap;
+}
+.kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
+  opacity: 0.6;
+  margin-left: 1px;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;

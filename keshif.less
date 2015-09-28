@@ -277,11 +277,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    .unitName{
-        opacity: 0.6;
-        margin-left: 1px;
-    }
-
     .sortButton{
         cursor: pointer;
         &:hover{
@@ -626,6 +621,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         padding:1px 0px 1px 0px;
                         display: inline;
                         margin-right: 15px;
+                        .unitName{
+                            margin-left: 1px;
+                            font-weight: 300;
+                        }
                     }
                 }
                 > .chartClearFilterButton.summary{
@@ -2473,6 +2472,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 display: block;
                                 text-align: center;
                                 white-space: nowrap;
+                                > .unitName{
+                                    opacity: 0.6;
+                                    margin-left: 1px;
+                                }
                             }
                             > .line{
                                 position: absolute;
