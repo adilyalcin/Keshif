@@ -334,14 +334,14 @@ google.setOnLoadCallback(function(){
       url: "http://grantland.com/features/the-hbo-recycling-program/",
       callback: loadData
     },
-    summaries: [{ title: "HBO_Shows" }],
+    summaries: ["HBO_Shows"],
     itemDisplay: {
       sortColWidth: 65,
       sortingOpts: { title: '# of Shows', value: function(){ return this.HBO_Shows.length; } },
       textSearch: "Name",
       recordView: function(d){
         // resize d based on # of shows!
-        d.DOM.record.style.fontSize = (0.8+(this.HBO_Shows.length*0.1))+"em";
+        if(d.DOM.record) d.DOM.record.style.fontSize = (0.8+(this.HBO_Shows.length*0.1))+"em";
         return this.Name;
       }
     }
