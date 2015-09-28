@@ -3661,9 +3661,10 @@ kshf.Browser.prototype = {
     /** -- */
     refreshActiveItemCount: function(){
         var noneSelected = (this.itemsWanted_Aggregrate_Total===0);
+        var numStr = this.itemsWanted_Aggregrate_Total.toLocaleString();
         this.DOM.activeRecordCount
-            .text(!noneSelected?this.itemsWanted_Aggregrate_Total:"No")
-            .style("width",(noneSelected?"30":(this.itemsTotal_Aggregrate_Total.toString().length*11+5))+"px")
+            .text(noneSelected?"No":numStr)
+            .style("width",(noneSelected?"30":(numStr.length*11+5))+"px")
             ;
     },
     /** -- */
