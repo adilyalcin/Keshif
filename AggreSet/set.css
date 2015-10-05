@@ -1,7 +1,9 @@
-.kshf .kshfChart.cliqueChart {
+.kshf .kshfChart.setPairSummary {
   display: none;
+  position: absolute;
+  top: 0px;
 }
-.kshf .kshfChart[show_cliques=true] > .kshfChart.cliqueChart {
+.kshf .kshfChart[show_set_matrix=true] > .kshfChart.setPairSummary {
   display: block;
 }
 .kshf .Summary_Set {
@@ -131,7 +133,7 @@
 .kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendLabel {
   font-size: 0.7em;
   alignment-baseline: central;
-  fill: #969da3;
+  fill: gray;
 }
 .kshf .Summary_Set > .widthAdjust {
   display: block;
@@ -150,6 +152,10 @@
 .kshf .Summary_Set > .widthAdjust:hover {
   border-style: solid;
   border-color: gray;
+}
+.kshf .Summary_Set > svg.setMatrix {
+  display: block;
+  border-right: dotted 1px lightgray;
 }
 .kshf .Summary_Set .rows {
   position: relative;
@@ -195,25 +201,17 @@
   stroke: #ff6a33;
   stroke-width: 2px;
 }
-.kshf .Summary_Set .rows > .row[crossingcount="0"] > .line {
-  display: none;
-}
-.kshf .Summary_Set .cliqueGroup[animate_position="true"] > .clique {
+.kshf .Summary_Set .setPairGroup[animate_position="true"] > .setPairMark {
   -webkit-transition: all 500ms ease-in-out;
   -moz-transition: all 500ms ease-in-out;
   -o-transition: all 500ms ease-in-out;
   transition: all 500ms ease-in-out;
 }
-.kshf .Summary_Set .cliqueGroup > .clique {
+.kshf .Summary_Set .setPairGroup > .setPairMark {
   position: absolute;
   display: block;
 }
-.kshf .Summary_Set .cliqueGroup > .clique > .crossing-center {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.kshf .Summary_Set .cliqueGroup > .clique > .cliqueBackground {
+.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairBackground {
   opacity: 0;
   fill: rgba(234, 234, 234, 0.5);
   -webkit-transition: opacity 500ms linear;
@@ -221,21 +219,20 @@
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
-.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark {
+.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark {
+  display: block;
+  position: absolute;
+  fill: #b8c7d2;
+  cursor: pointer;
   -webkit-transition: all 500ms ease-in-out;
   -moz-transition: all 500ms ease-in-out;
   -o-transition: all 500ms ease-in-out;
   transition: all 500ms ease-in-out;
-  display: block;
-  position: absolute;
-  fill: #b8c7d2;
-  box-sizing: border-box;
-  cursor: pointer;
 }
-.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark.preview {
+.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark.preview {
   fill: #ff6a33;
 }
-.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark-preview-compare {
+.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark_Compare {
   fill: none;
   stroke: #2f4f4f;
   stroke-width: 1px;
@@ -245,33 +242,14 @@
   transition: opacity 500ms linear;
   opacity: 1;
 }
-.kshf .Summary_Set .cliqueGroup > .clique > .cliqueMark-preview-compare[hidden='true'] {
+.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark_Compare[hidden='true'] {
   opacity: 0;
 }
-.kshf .Summary_Set .cliqueGroup > .clique > .cliqueText {
-  font-size: 0.7em;
-  text-align: center;
-  opacity: 0;
-  text-anchor: middle;
-  fill: gray;
-  text-shadow: 0px 0px 2px white;
-  transform: translate(0px, 21px);
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
-  -webkit-transition-delay: 1000ms;
-  -moz-transition-delay: 1000ms;
-  -o-transition-delay: 1000ms;
-  transition-delay: 1000ms;
-  pointer-events: none;
-}
-.kshf .Summary_Set .cliqueGroup > .clique[empty=true] > .cliqueMark {
-  background-color: none;
-  border: solid 1px gray;
-}
-.kshf .Summary_Set .cliqueGroup > .clique[activesize="0"] {
+.kshf .Summary_Set .setPairGroup > .setPairMark[activesize="0"] {
   display: none;
+}
+.kshf .Summary_Set .setPairGroup > .setPairMark:not([activesize="0"]) > .setPairBackground {
+  opacity: 1;
 }
 .kshf .Summary_Set[showStrength='true'] .facetControls > .strengthControl {
   background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
@@ -295,7 +273,7 @@
 .kshf .Summary_Set[showStrength='true'] .facetControls > .strengthControl > .strengthLabel {
   display: inline-block;
 }
-.kshf .Summary_Set[showStrength='true'] .cliqueMark[subset=true] {
+.kshf .Summary_Set[showStrength='true'] .setPairMark[subset=true] {
   stroke-width: 2px;
   stroke: #4000ff;
 }
@@ -304,12 +282,6 @@
 }
 .kshf .Summary_Set[show_gridlines='true'] .configGridLine > .configOpt_icon {
   background-color: #E5E5E5;
-}
-.kshf .Summary_Set[highlight_cliques="true"] .configEmpty > .configOpt_icon {
-  background-color: rgba(234, 234, 234, 0.5);
-}
-.kshf .Summary_Set[highlight_cliques="true"] .cliqueGroup > .clique:not([activesize="0"]) > .cliqueBackground {
-  opacity: 1;
 }
 .kshf .Summary_Set > .belowMatrix {
   position: relative;
@@ -336,4 +308,7 @@
   border-top: solid 2px #4000ff;
   border-right: solid 2px #4000ff;
   border-bottom: solid 2px #4000ff;
+}
+.kshf .Summary_Set > .belowMatrix > .matrixInfo.subsetCount > .subsetCount_Text:after {
+  content: " Subsets ⊆";
 }

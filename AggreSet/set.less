@@ -5,42 +5,25 @@
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear';
 
 @color_bars: #B8C7D2; //#B0BFCA; //#98ABB9; //#8699A8;
-@color_filtered: #30B8C4;
-@color_bars_selected: darken(orangered, 10%); //#CC2320;
-@color_bars_background: #DEE2E6;
 @color_preview: lighten(orangered, 10%); //#B2B227;
-@color_related: lighten(orangered, 10%); //#B2B227;
-@color_facet_arrow: rgb(231, 215, 97);
-@color_facet_group: #E9E5CB;
-@color_bar_preview: lighten(orangered, 10%);
 @color_preview_compare: darkslategray; //#222222;
-@color_axis_line: rgb(182, 179, 179);
-@color_item_count: #969DA3;;
 @color_chart_background_highlight: rgba(211, 217, 197, 1);
-
-@color_query_and: #1D4870;
-@color_query_or:  #1C737A;
-@color_query_not: gray;
-
-@color_listHeader_background: rgb(239, 234, 223);
 
 // END - FROM KESHIF.LESS ******************************
 
 @reorder_animation: ~'all 500ms ease-in-out';
 
 @color_set_containment: rgb(64, 0, 255);
-@color_clique_background: rgba(234, 234, 234, 0.5);
+@color_setPair_background: rgba(234, 234, 234, 0.5);
 
 .kshf{
 	.kshfChart{
-		// Hide clique summary by default
-		&.cliqueChart{ display: none; }
-		&[show_cliques=true] > .kshfChart.cliqueChart{
-			display: block;
-			> .headerGroup > .header_display_control > .fa.fa-collapse:before{
-//				content: '\f00d'; // times / cross
-			}
-		}
+		&.setPairSummary{ 
+      display: none;
+      position: absolute;
+      top: 0px;
+    }
+		&[show_set_matrix=true] > .kshfChart.setPairSummary{ display: block; }
 	}
 
 	.Summary_Set{
@@ -170,7 +153,7 @@
 					> .legendLabel{
 						font-size: 0.7em;
 						alignment-baseline: central;
-						fill: @color_item_count;
+						fill: gray;
 					}
 				}
 			}
@@ -194,6 +177,10 @@
 				border-color: gray;
 			}
 		}
+    > svg.setMatrix{
+      display: block;
+      border-right: dotted 1px lightgray;
+    }
 		.rows{
 			position: relative;
 			display: block;
@@ -236,72 +223,44 @@
 						stroke-width: 2px;
 					}
 				}
-				&[crossingcount="0"]{
-					> .line{ display: none; }
-				}
 			}
 		}
-		.cliqueGroup{
-			&[animate_position="true"]> .clique {
+		.setPairGroup{
+			&[animate_position="true"]> .setPairMark {
 				.transition(@reorder_animation);
 			}
-			> .clique{
+			> .setPairMark{
 				position: absolute;
 				display: block;
-				// position (transform) is set dynamically
-				
-				> .crossing-center{
-					display: block;
-					width: 100%;
-					height: 100%;
-				}
-				> .cliqueBackground{
+				> .setPairBackground{
 					opacity: 0;
-					fill: @color_clique_background;
+					fill: @color_setPair_background;
 					.transition(~'opacity 500ms linear');
 				}
-				> .cliqueMark{
-					.transition(@reorder_animation);
+				> .setPairMark{
 					display: block;
 					position: absolute;
 					fill: @color_bars;
-					box-sizing: border-box;
 					cursor: pointer;
-					&.preview{
-						fill: @color_preview;
-					}
+          .transition(@reorder_animation);
+					&.preview{ fill: @color_preview; }
 				}
-				> .cliqueMark-preview-compare{
+				> .setPairMark_Compare{
 					fill: none;
 					stroke: @color_preview_compare;
 					stroke-width: 1px;
 					.transition(~'opacity 500ms linear');
 					opacity: 1;
-					&[hidden='true']{
-						opacity: 0;
-					}
+					&[hidden='true']{ opacity: 0; }
 				}
-				> .cliqueText{
-					font-size: 0.7em;
-					text-align: center;
-					opacity: 0;
-					text-anchor: middle;
-					fill: gray;
-					text-shadow: 0px 0px 2px white;
-					transform: translate(0px,21px);
-					.transition(~'all 500ms ease-in-out');
-					.transition-delay(1000);
-					pointer-events: none;
-				}
-				&[empty=true] > .cliqueMark{
-					background-color: none;
-					border: solid 1px gray;
-				}
-				&[activesize="0"]{
-					display: none;
-				}
+				&[activesize="0"]{ 
+          display: none;
+        }
+        &:not([activesize="0"]) > .setPairBackground{
+          opacity: 1;
+        }
 			}
-		} //.cliqueGroup
+		} //.setPairGroup
 
 		&[showStrength='true']{
 			.facetControls > .strengthControl {
@@ -319,7 +278,7 @@
 					display: inline-block;
 				}
 			}
-			.cliqueMark[subset=true]{
+			.setPairMark[subset=true]{
 				stroke-width: 2px;
 				stroke: @color_set_containment;
 			}
@@ -332,16 +291,6 @@
 		&[show_gridlines='true']{
 			.configGridLine >.configOpt_icon{
 				background-color: #E5E5E5;
-			}
-		}
-		&[highlight_cliques="true"] {
-			.configEmpty >.configOpt_icon{
-				background-color: @color_clique_background;
-			}
-			.cliqueGroup > .clique:not([activesize="0"]){
-				> .cliqueBackground{
-					opacity: 1;
-				}
 			}
 		}
 
@@ -369,6 +318,9 @@
 						border-bottom: solid 2px @color_set_containment;
 					}
 				}
+        &.subsetCount > .subsetCount_Text:after{
+          content: " Subsets ⊆";
+        }
 			}
 		}
 	} // Summary_Set

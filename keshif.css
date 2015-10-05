@@ -1242,13 +1242,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px lightgray;
   border-radius: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper > .offpoofff {
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper > .sourceOptions {
   margin-bottom: 3px;
 }
 .kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink {
   width: 350px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .source_from {
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .fileLink {
+  width: 350px;
+  display: none;
+}
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .sourceOption {
   display: inline-block;
   border: solid 1px lightgray;
   padding: 2px 4px;
@@ -1259,7 +1263,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   color: #a0a0a0;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .source_from:hover {
+.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .sourceOption:hover {
   color: black;
   box-shadow: 0px 0px 1px gray;
 }
@@ -1278,7 +1282,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "\f058";
   color: green;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleSheet"] .source_from[source_type="GoogleSheet"] {
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleSheet"] .sourceOption[source_type="GoogleSheet"] {
   background-color: #EEE;
   color: black;
   cursor: default;
@@ -1286,27 +1290,50 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleSheet"] .tableHeader:before {
   content: "Sheet";
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] .source_from[source_type="Dropbox"] {
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] .sourceOption[source_type="Dropbox"] {
   background-color: #EEE;
   color: black;
   cursor: default;
 }
 .kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] .tableHeader:before {
-  content: "File";
+  content: "Cloud-File";
 }
 .kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] > .sheetInfo .fileType_wrapper {
   display: inline-block;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] .source_from[source_type="GoogleDrive"] {
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] .sourceOption[source_type="GoogleDrive"] {
   background-color: #EEE;
   color: black;
   cursor: default;
 }
 .kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] .tableHeader:before {
-  content: "File";
+  content: "Cloud-File";
 }
 .kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] > .sheetInfo .fileType_wrapper {
   display: inline-block;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .sourceOption[source_type="LocalFile"] {
+  background-color: #EEE;
+  color: black;
+  cursor: default;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .gdocLink {
+  display: none;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .fileLink {
+  display: inline-block;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .tableHeader:before {
+  content: "File";
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] > .sheetInfo .fileType_wrapper {
+  display: inline-block;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] > .sheetInfo > .sheet_wrapper > .tableHeader {
+  display: none;
+}
+.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] > .sheetInfo > .sheetName_wrapper {
+  display: none;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo {
   border: solid 1px lightgray;

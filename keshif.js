@@ -721,7 +721,7 @@ kshf.Item.prototype = {
     highlightAll: function(recurse){
         if(this.DOM.record) this.DOM.record.setAttribute("highlight",recurse?"selected":true);
         if(this.DOM.facet)  this.DOM.facet.setAttribute("highlight",recurse?"selected":true);
-        if(this.cliqueRow)  this.cliqueRow.setAttribute("highlight","selected");
+        if(this.setRow)  this.setRow.setAttribute("highlight","selected");
 
         if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d){
@@ -742,7 +742,7 @@ kshf.Item.prototype = {
     nohighlightAll: function(recurse){
         if(this.DOM.record) this.DOM.record.setAttribute("highlight",false);
         if(this.DOM.facet)  this.DOM.facet .setAttribute("highlight",false);
-        if(this.cliqueRow)   this.cliqueRow.setAttribute("highlight",false);
+        if(this.setRow)   this.setRow.setAttribute("highlight",false);
 
         if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d,i){
@@ -2625,12 +2625,13 @@ kshf.Browser.prototype = {
     },
     /** -- */
     insertSourceBox: function(){
-        var me=this;
+        var me = this;
         var x,y,z;
-        var source_type="GoogleSheet";
-        var sourceURL=null, sourceSheet="";
+        var source_type = "GoogleSheet";
+        var sourceURL = null, sourceSheet = "", localFile = undefined;
 
         var readyToLoad=function(){
+            if(localFile) return true;
             return sourceURL!==null && sourceSheet!=="";
         };
 
@@ -2641,14 +2642,14 @@ kshf.Browser.prototype = {
 
         var source_wrapper = this.DOM.infobox_source.append("div").attr("class","source_wrapper");
 
-        x = source_wrapper.append("div").attr("class","offpoofff");
+        x = source_wrapper.append("div").attr("class","sourceOptions");
 
-        x.append("span").attr("class","source_from").text("Google Sheet").attr("source_type","GoogleSheet");
-        x.append("span").attr("class","source_from").text("Google Drive Folder").attr("source_type","GoogleDrive");
-        x.append("span").attr("class","source_from").text("Dropbox Folder").attr("source_type","Dropbox");
-        x.append("span").attr("class","source_from").text("Local File").attr("source_type","LocalFile");
+        x.append("span").attr("class","sourceOption").text("Google Sheet").attr("source_type","GoogleSheet");
+        x.append("span").attr("class","sourceOption").text("Google Drive Folder").attr("source_type","GoogleDrive");
+        x.append("span").attr("class","sourceOption").text("Dropbox Folder").attr("source_type","Dropbox");
+        x.append("span").attr("class","sourceOption").text("Local File").attr("source_type","LocalFile");
 
-        x.selectAll(".source_from").on("click",function(){
+        x.selectAll(".sourceOption").on("click",function(){
             source_type=this.getAttribute("source_type");
             me.DOM.infobox_source.attr("selected_source_type",source_type);
             var placeholder;
@@ -2709,10 +2710,53 @@ kshf.Browser.prototype = {
                         gdocLink_ready.attr("ready",false);
                     }
                 }
-                if(source_type==="LocalFile"){
-                    // TODO
-                }
                 actionButton.attr("disabled",!readyToLoad());
+            });
+
+        var fileLink = x.append("input")
+            .attr("type","file")
+            .attr("class","fileLink")
+            .on("change",function(){
+                gdocLink_ready.style("opacity",0);
+                var files = d3.event.target.files; // FileList object
+                if(files.length>1){
+                    alert("Please select only one file.");
+                    return;
+                }
+                if(files.length===0){
+                    alert("Please select a file.");
+                    return;
+                }
+                localFile = files[0];
+                switch(localFile.type){
+                    case "application/json": // json
+                        localFile.fileType = "json";
+                        break;
+                    case "text/csv": // csv
+                        localFile.fileType = "csv";
+                        break;
+                    case "text/tab-separated-values":  // tsv
+                        localFile.fileType = "tsv";
+                        break;
+                    default:
+                        localFile = undefined;
+                        actionButton.attr("disabled",true);
+                        alert("The selected file type is not supported (csv, tsv, json)");
+                        return;
+                }
+                gdocLink_ready.style("opacity",1);
+                gdocLink_ready.attr("ready",true);
+                actionButton.attr("disabled",false);
+/*                // files is a FileList of File objects. List some properties.
+                var output = [];
+                for (var i = 0, f; f = files[i]; i++) {
+                  output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                              f.size, ' bytes, last modified: ',
+                              f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                              '</li>');
+                }
+                console.log(output);
+                */
             });
 
         x.append("span").attr("class","fa fa-info-circle")
@@ -2726,7 +2770,7 @@ kshf.Browser.prototype = {
                             if(source_type==="Dropbox")
                                 return "The link to your *Public* Dropbox folder";
                             if(source_type==="LocalFile")
-                                return "Select your file or drag & drop into the field";
+                                return "Select your CSV/TSV/JSON file or drag-and-drop here.";
                         }
                     });
                 })
@@ -2825,7 +2869,7 @@ kshf.Browser.prototype = {
                     alert("Please input your data source link and sheet name.");
                     return;
                 }
-                var sheetID   = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
+                var sheetID = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
                 if(sheetID==="") sheetID = "id";
                 var loadedCb_pre = me.loadedCb;
                 me.loadedCb = function(){
@@ -2841,32 +2885,34 @@ kshf.Browser.prototype = {
                     me.showAttributes();
                     if(readyCb_pre) readyCb_pre.call(this,this);
                 }
-                if(source_type==="GoogleSheet"){
-                    me.loadSource({
-                        gdocId: sourceURL,
-                        tables: [ {name:sourceSheet, id:sheetID} ]
-                    });
-                }
-                if(source_type==="GoogleDrive"){
-                    me.loadSource({
-                        dirPath: sourceURL,
-                        fileType: DOMfileType[0][0].value,
-                        tables: [ {name:sourceSheet, id:sheetID} ]
-                    });
-                }
-                if(source_type==="Dropbox"){
-                    me.loadSource({
-                        dirPath: sourceURL,
-                        fileType: DOMfileType[0][0].value,
-                        tables: [ {name:sourceSheet, id:sheetID} ]
-                    });
-                }
-                if(source_type==="LocalFile"){
-                    me.loadSource({
-                        dirPath: sourceURL,
-                        fileType: DOMfileType[0][0].value,
-                        tables: [ {name:sourceSheet, id:sheetID} ]
-                    });
+                switch(source_type){
+                    case "GoogleSheet":
+                        me.loadSource({
+                            gdocId: sourceURL,
+                            tables: {name:sourceSheet, id:sheetID}
+                        });
+                        break;
+                    case "GoogleDrive":
+                        me.loadSource({
+                            dirPath: sourceURL,
+                            fileType: DOMfileType[0][0].value,
+                            tables: {name:sourceSheet, id:sheetID}
+                        });
+                        break;
+                    case "Dropbox":
+                        me.loadSource({
+                            dirPath: sourceURL,
+                            fileType: DOMfileType[0][0].value,
+                            tables: {name:sourceSheet, id:sheetID}
+                        });
+                        break;
+                    case "LocalFile":
+                        localFile.id = sheetID;
+                        me.loadSource({
+                            dirPath: "", // TODO: temporary
+                            tables: localFile
+                        });
+                        break;
                 }
             });
     },
@@ -2932,13 +2978,23 @@ kshf.Browser.prototype = {
     loadSource: function(v){
         this.source = v;
         this.panel_infobox.attr("show","loading");
-        if(this.source.sheets) this.source.tables = this.source.sheets;
+        // Compability with older versions.. Used to specify "sheets" instead of "tables"
+        if(this.source.sheets){
+            this.source.tables = this.source.sheets;
+        }
         if(this.source.tables){
             // If not array, make it an array with a single item
-            if(!Array.isArray(this.source.tables)) this.source.tables = [this.source.tables];
+            if(!Array.isArray(this.source.tables)) {
+                this.source.tables = [this.source.tables];
+            }
             // If table definition a string, match name to string
             this.source.tables.forEach(function(tableDescr, i){
-                if(typeof tableDescr === "string") this.source.tables[i] = {name: tableDescr};
+                if(typeof tableDescr === "string") {
+                    this.source.tables[i] = {name: tableDescr};
+                }
+                if(tableDescr instanceof File){ // File handle
+                    // Get file type
+                }
             }, this);
             // Reset loadedTableCount
             this.source.loadedTableCount=0;
@@ -2949,11 +3005,12 @@ kshf.Browser.prototype = {
             this.source.tables[0].primary = true;
             this.primaryTableName = this.source.tables[0].name;
             if(this.source.gdocId){
-                if(this.source.url===undefined)
-                    this.source.url = "https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId;
+                this.source.url = this.source.url || ("https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId);
             }
             this.source.tables.forEach(function(tableDescr){
-                if(tableDescr.id===undefined) tableDescr.id = "id"; // set id column
+                if(tableDescr.id===undefined){ // set id column
+                    tableDescr.id = "id";
+                }
                 // if this table name has been loaded, skip this one
                 if(kshf.dt[tableDescr.name]!==undefined){
                     this.incrementLoadedSheetCount();
@@ -2961,8 +3018,8 @@ kshf.Browser.prototype = {
                 }
                 if(this.source.gdocId){
                     this.loadTable_Google(tableDescr);
-                } else if(this.source.dirPath){
-                    switch(this.source.fileType){
+                } else {
+                    switch(this.source.fileType || tableDescr.fileType){
                         case "json": 
                             this.loadTable_JSON(tableDescr); break;
                         case "csv":
@@ -3046,68 +3103,87 @@ kshf.Browser.prototype = {
         });
     },
     /** -- */
-    loadTable_CSV: function(sheet){
+    loadTable_CSV: function(tableDescr){
         var me=this;
-        var fileName=this.source.dirPath+sheet.name+"."+this.source.fileType;
-        $.ajax({
-            url: fileName,
-            type: "GET",
-            async: (this.source.callback===undefined)?true:false,
-            contentType: "text/csv",
-            success: function(data) {
-                // if data is already loaded, nothing else to do...
-                if(kshf.dt[sheet.name]!==undefined){
-                    me.incrementLoadedSheetCount();
-                    return;
-                }
-                var arr = [];
-                var idColumn = sheet.id;
 
-                var config = {};
-                config.dynamicTyping = true;
-                config.header = true; // header setting can be turned off
-                if(sheet.header===false) config.header = false;
-                if(sheet.preview!==undefined) config.preview = sheet.preview;
-                if(sheet.fastMode!==undefined) config.fastMode = sheet.fastMode;
-                if(sheet.dynamicTyping!==undefined) config.dynamicTyping = sheet.dynamicTyping;
-
-                var parsedData = Papa.parse(data, config);
-
-                parsedData.data.forEach(function(row,i){
-                    if(row[idColumn]===undefined) row[idColumn] = i;
-                    arr.push(new kshf.Item(row,idColumn));
-                })
-
-                me.finishDataLoad(sheet, arr);
+        function processCSVText(data){
+            // if data is already loaded, nothing else to do...
+            if(kshf.dt[tableDescr.name]!==undefined){
+                me.incrementLoadedSheetCount();
+                return;
             }
-        });
+            var arr = [];
+            var idColumn = tableDescr.id;
+
+            var config = {};
+            config.dynamicTyping = true;
+            config.header = true; // header setting can be turned off
+            if(tableDescr.header===false) config.header = false;
+            if(tableDescr.preview!==undefined) config.preview = tableDescr.preview;
+            if(tableDescr.fastMode!==undefined) config.fastMode = tableDescr.fastMode;
+            if(tableDescr.dynamicTyping!==undefined) config.dynamicTyping = tableDescr.dynamicTyping;
+
+            var parsedData = Papa.parse(data, config);
+
+            parsedData.data.forEach(function(row,i){
+                if(row[idColumn]===undefined) row[idColumn] = i;
+                arr.push(new kshf.Item(row,idColumn));
+            })
+
+            me.finishDataLoad(tableDescr, arr);
+        }
+
+        if(tableDescr instanceof File){
+            // Load using FileReader
+            var reader = new FileReader();
+            reader.onload = function(e) { processCSVText(e.target.result); };
+            reader.readAsText(tableDescr);
+        } else {
+            // Load using URL
+            var fileName=this.source.dirPath+tableDescr.name+"."+this.source.fileType;
+            $.ajax({
+                url: fileName,
+                type: "GET",
+                async: (this.source.callback===undefined)?true:false,
+                contentType: "text/csv",
+                success: processCSVText
+            });
+        }
     },
     /** Note: Requires json root to be an array, and each object will be passed to keshif item. */
-    loadTable_JSON: function(sheet){
-        var me=this;
-        var fileName=this.source.dirPath+sheet.name+".json";
-        $.ajax({
-            url: fileName+"?dl=0",
-            type: "GET",
-            async: (this.source.callback===undefined)?true:false,
-            dataType: "json",
-            success: function(data) {
-                // if data is already loaded, nothing else to do...
-                if(kshf.dt[sheet.name]!==undefined){
-                    me.incrementLoadedSheetCount();
-                    return;
-                }
-                var arr = [];
-                var idColumn = sheet.id;
-
-                data.forEach(function(dataItem,i){
-                    if(dataItem[idColumn]===undefined) dataItem[idColumn] = i;
-                    arr.push(new kshf.Item(dataItem, idColumn));
-                });
-
-                me.finishDataLoad(sheet, arr);
+    loadTable_JSON: function(tableDescr){
+        var me = this;
+        function processJSONText(data){
+            // if data is already loaded, nothing else to do...
+            if(kshf.dt[tableDescr.name]!==undefined){
+                me.incrementLoadedSheetCount();
+                return;
             }
-        });
+            var arr = [];
+            var idColumn = tableDescr.id;
+
+            data.forEach(function(dataItem,i){
+                if(dataItem[idColumn]===undefined) dataItem[idColumn] = i;
+                arr.push(new kshf.Item(dataItem, idColumn));
+            });
+
+            me.finishDataLoad(tableDescr, arr);
+        };
+        if(tableDescr instanceof File){
+            // Load using FileReader
+            var reader = new FileReader();
+            reader.onload = function(e) { processJSONText(e.target.result); };
+            reader.readAsText(tableDescr);
+        } else {
+            var fileName = this.source.dirPath+tableDescr.name+".json";
+            $.ajax({
+                url: fileName+"?dl=0",
+                type: "GET",
+                async: (this.source.callback===undefined)?true:false,
+                dataType: "json",
+                success: processJSONText
+            });
+        }
     },
     /** -- */
     createTableFromTable: function(srcItems, dstTableName, summaryFunc){
@@ -4063,6 +4139,11 @@ kshf.Summary_Base.prototype = {
         }
     },
     /** -- */
+    setShowSetMatrix: function(v){
+        this.show_set_matrix = v;
+        this.DOM.root.attr("show_set_matrix",this.show_set_matrix);
+    },
+    /** -- */
     getDataType: function(){
         if(this.type==='categorical') {
             var str="categorical";
@@ -4302,8 +4383,7 @@ kshf.Summary_Base.prototype = {
             .on("click",function(){
                 // Clique control
                 if(false){
-                    me.parentFacet.show_cliques = !me.parentFacet.show_cliques;
-                    me.parentFacet.DOM.root.attr("show_cliques",me.parentFacet.show_cliques);
+                    me.parentFacet.setShowSetMatrix(!me.parentFacet.show_set_matrix);
                 } else {
                     me.removeFromPanel();
                     me.clearDOM();
@@ -4418,8 +4498,7 @@ kshf.Summary_Base.prototype = {
                 this.tipsy.hide();
             })
             .on("click",function(d){
-                me.show_cliques = !me.show_cliques;
-                me.DOM.root.attr("show_cliques",me.show_cliques);
+                me.setShowSetMatrix(!me.show_set_matrix);
             })
             ;
 //        this.DOM.headerGroup.append("div").attr("class","border_line border_line_bottom");
@@ -4520,7 +4599,7 @@ var Summary_Categorical_functions = {
 
         this.heightRow_category = 18;
 
-        this.show_cliques = false;
+        this.show_set_matrix = false;
 
         this.scrollTop_cache=0;
         this.cat_InDisplay_First = 0;
@@ -4650,8 +4729,8 @@ var Summary_Categorical_functions = {
         opt.inverse = opt.inverse || false; // Default is false
         if(opt.value){
             if(typeof(opt.value)==="string"){
-                opt.name = x;
                 var x = opt.value;
+                opt.name = opt.name || x;
                 opt.value = function(){ return this[x]; }
             } else if(typeof(opt.value)==="function"){
                 if(opt.name===undefined) opt.name = "custom"
@@ -5422,7 +5501,7 @@ var Summary_Categorical_functions = {
         this.refreshMeasureLabel();
         this.updateBarPreviewScale2Active();
 
-        if(this.show_cliques) {
+        if(this.show_set_matrix) {
             this.dirtySort = true;
             this.DOM.root.attr("refreshSorting",true);
         }
@@ -5887,8 +5966,8 @@ var Summary_Categorical_functions = {
 
         var me=this;
 
-        if(attrib.cliqueRow)
-            attrib.cliqueRow.setAttribute("highlight","selected");
+        if(attrib.setRow)
+            attrib.setRow.setAttribute("highlight","selected");
 
         if(this.isAttribSelectable(attrib)) {
             attrib.DOM.facet.setAttribute("selecttype","and");
@@ -5929,8 +6008,8 @@ var Summary_Categorical_functions = {
             return;
         }
 
-        if(attrib.cliqueRow)
-            attrib.cliqueRow.setAttribute("highlight",false);
+        if(attrib.setRow)
+            attrib.setRow.setAttribute("highlight",false);
 
         if(!this.isAttribSelectable(attrib)) return;
         attrib.nohighlightAll(true);

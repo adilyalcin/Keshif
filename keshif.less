@@ -41,10 +41,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_filtered: #30B8C4;
 @color_bars_selected: darken(orangered, 10%); //#CC2320;
 @color_bars_background: #DEE2E6;
-@color_preview: lighten(orangered, 10%); //#B2B227;
 @color_related: lighten(orangered, 10%); //#B2B227;
-@color_facet_arrow: rgb(231, 215, 97);
-@color_facet_group: #E9E5CB;
 @color_bar_preview: lighten(orangered, 10%);
 @color_preview_compare: darkslategray; //#222222;
 @color_axis_line: rgb(182, 179, 179);
@@ -1080,13 +1077,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     padding: 5px;
                     border: solid 1px lightgray;
                     border-radius: 5px;
-                    > .offpoofff{
+                    > .sourceOptions{
                         margin-bottom: 3px;
                     }
                     .gdocLink{
                         width: 350px;
                     }
-                    .source_from{
+                    .fileLink{
+                        width: 350px;
+                        display: none;
+                    }
+                    .sourceOption{
                         display: inline-block;
                         border: solid 1px lightgray;
                         padding: 2px 4px;
@@ -1118,7 +1119,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
                 &[selected_source_type="GoogleSheet"] {
-                    .source_from[source_type="GoogleSheet"]{
+                    .sourceOption[source_type="GoogleSheet"]{
                         background-color: #EEE;
                         color: black;
                         cursor: default;
@@ -1128,29 +1129,56 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
                 &[selected_source_type="Dropbox"] {
-                    .source_from[source_type="Dropbox"]{
+                    .sourceOption[source_type="Dropbox"]{
                         background-color: #EEE;
                         color: black;
                         cursor: default;
                     }
                     .tableHeader:before{
-                        content: "File";
+                        content: "Cloud-File";
                     }
                     > .sheetInfo .fileType_wrapper{
                         display: inline-block;
                     }
                 }
                 &[selected_source_type="GoogleDrive"] {
-                    .source_from[source_type="GoogleDrive"]{
+                    .sourceOption[source_type="GoogleDrive"]{
                         background-color: #EEE;
                         color: black;
                         cursor: default;
                     }
                     .tableHeader:before{
-                        content: "File";
+                        content: "Cloud-File";
                     }
                     > .sheetInfo .fileType_wrapper{
                         display: inline-block;
+                    }
+                }
+                &[selected_source_type="LocalFile"] {
+                    .sourceOption[source_type="LocalFile"]{
+                        background-color: #EEE;
+                        color: black;
+                        cursor: default;
+                    }
+                    .gdocLink{
+                        display: none;
+                    }
+                    .fileLink{
+                        display: inline-block;
+                    }
+                    .tableHeader:before{
+                        content: "File";
+                    }
+                    > .sheetInfo {
+                        .fileType_wrapper{
+                            display: inline-block;
+                        }
+                        > .sheet_wrapper > .tableHeader{
+                            display: none;
+                        }
+                        > .sheetName_wrapper{
+                            display: none;
+                        }
                     }
                 }
 
@@ -2503,7 +2531,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 100%;
             width: 17px;
             border-right: solid 2px rgb(204,195,195);
-            //background-color: @color_facet_group;
             .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
             > .facetGroupBarSub{
                 height: 100%;
