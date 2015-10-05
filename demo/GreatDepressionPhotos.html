@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Photos from the Great Depression, United States, California , 1936-1944</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+$(document).ready( function(){
+
+  var dateFormat=d3.time.format("%Y-%m");
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 170,
+    barChartWidth: 110,
+    rightPanelLabelWidth: 100,
+    itemName: "Photograhs",
+    source: {
+      url: "http://photogrammar.yale.edu/labs/crossfilter/california/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: "photogrammar_yale_california"
+    },
+    summaries: [
+      { title: "Photographer", value: "pname"},
+      { title: "Category", value: "van0" },
+      { title: "County", value: "county", layout: "middle"},
+      { title: "Year", value: "year", layout: "right"},
+      { title: "Month", value: "month", layout: "right"},
+      { title: "Date", layout: "bottom",
+        value: function(){ 
+          if(this.date===undefined) return;
+          var x=dateFormat.parse(this.date);
+          if(x!==null) return new Date(x);
+        } },
+    ],
+  });
+});
+        </script>
+<style>
+#chart_div{
+  width: 950px;
+  height: 600px;
+}
+</style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Photos from the Great Depression Era (1936-1945), California, United States</div>
+    <div class="pageSubtitle" align="center">Curated by the United States Farm Security Administration and Office of War Information (FSA-OWI).</div>
+
+    <div class="contents"><div id="chart_div"></div></div>
+
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Orignally visualized by the <a href="http://photogrammar.yale.edu/labs/crossfilter/california/" target='_blank'>
+        Photogrammar</a> project at Yale University.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
+</html>
