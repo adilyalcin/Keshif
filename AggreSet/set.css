@@ -168,6 +168,7 @@
   display: block;
   stroke: #DADADA;
   stroke-width: 1px;
+  stroke-linecap: round;
   pointer-events: none;
 }
 .kshf .Summary_Set .rows > .row > .label {
