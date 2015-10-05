@@ -29,7 +29,7 @@ google.setOnLoadCallback( function() {
         categoryTextWidth: 200,
         source: {
             gdocId: '0Ai6LdDWgaqgNdDN4Qm5aQTVwQW1fSnE1RTl1LXhzbGc',
-            sheets: "Publications"
+            tables: "Publications"
         },
         loadedCb: function(){
             kshf.Util.cellToArray(kshf.dt.Publications, ['Co-Author','Topic'], /\b,/, false );

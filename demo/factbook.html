@@ -19,6 +19,7 @@
         <script type="text/javascript">
 
 var demoID = 253;
+var factsXML;
 
 var factBrowser;
 
@@ -32,9 +33,27 @@ function loadData(browser){
         type:"GET",
         dataType:"xml",
         async: true,
-        success: function(facts){ return loadFactbook(facts); }
+        success: loadFactbook
     });
 };
+
+
+/*
+var r= [];
+kshf.dt.Countries.forEach(function(country){
+  country = country.data;
+  r.push({
+    Name: country.Name,
+    "Education Expenditures": country["Education Expenditures"],
+    "Health expenditures": country["Health expenditures"],
+    "Life Expectancy": country["Life Expectancy"],
+    "Median Age": country["Median Age"],
+    "Military expenditures": country["Military expenditures"],
+    "Population": country["Population"],
+    "Urbanization": country["Urbanization"]
+  })
+});
+*/
 
 function cleanUpText(n){
     n = n.replace(/( \d*\.*\d*\%)/g, ''); // Remove LANG 2.232% - percentage
@@ -45,13 +64,14 @@ function cleanUpText(n){
 };
 
 function loadFactbook(facts){
+    factsXML = $(facts);
     factBrowser.primaryTableName = "Countries";
     kshf.dt.Countries = [];
     kshf.dt.Category = [];
     var arr_cat = kshf.dt.Category;
     var arr_cat_id = {};
 
-    $(facts).find("> factbook > category").each(function(){
+    factsXML.find("> factbook > category").each(function(){
         var catName = this.getAttribute("name");
         $(this).find("> field").each(function(){
             var catData = {};
@@ -68,7 +88,7 @@ function loadFactbook(facts){
         });
     });
 
-    $(facts).find('> factbook > region').each(function(){
+    factsXML.find('> factbook > region').each(function(){
         var region = this;
         var regionName = region.getAttribute("name");
         var regionID = region.getAttribute("id");
@@ -93,11 +113,31 @@ function loadFactbook(facts){
             cData.RegionID = regionID; // using it to lookup image
             cData.Flag = this.getAttribute("flag"); // if "1", country has a flag in the database
             $(this).find("> field").each(function(){
-                var field = this;
                 var ref = this.getAttribute("ref");
                 info = arr_cat_id[ref].data;
                 var columnName = info.Name;
                 switch(ref){
+                  case 'f2177':
+                    cData["Median Age"] = parseFloat(this.childNodes[1].textContent.replace(" years",""));
+                    break;
+                  case "f2212":
+                    cData["Urbanization"] = parseFloat(this.childNodes[1].textContent);
+                    break;
+                  case "f2102":
+                    cData["Life Expectancy"] = parseFloat(this.childNodes[1].textContent);
+                    break;
+                  case "f2225":
+                    cData["Health expenditures"] = parseFloat(this.textContent);
+                    break;
+//                  case "f2206":
+//                    cData["Education Expenditures-2"] = parseFloat(this.textContent);
+//                    break;
+                  case "f2232":
+                    cData["Electricity - production"] = this.textContent;
+                    break;
+                  case "f2034":
+                    cData["Military expenditures"] = parseFloat(this.textContent);
+                    break;
                     case 'f2111': // Natural resources
                         cData[columnName] = [];
                         this.textContent.split(", ").forEach(function(n){
