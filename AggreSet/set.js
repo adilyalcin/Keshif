@@ -469,7 +469,8 @@ var Summary_Clique_functions = {
 			.data(this._cliques,function(d,i){ return i; })
 		.enter().append("g").attr("class","clique")
 			.each(function(d){
-				d.items.forEach(function(item){ item.mappedDataCache[me.mappingID].push(d); });
+        d.DOM.clique = this;
+        d.items.forEach(function(item){ item.mappedDataCache[me.mappingID].push(d); });
 			})
 			.on("mouseenter",function(d){
 				var set_1 = d.set_1;
@@ -804,6 +805,7 @@ var Summary_Clique_functions = {
 	},
 	/** -- */
 	refreshViz_All: function(){
+    this.updateMaxAggr_Active();
 		this.refreshViz_Active();
 		this.refreshViz_Preview();
 		this.refreshViz_Compare();
