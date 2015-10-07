@@ -45,13 +45,9 @@ $(document).ready( function(){
       callback: dataLoad
     },
     summaries: [
-      { title: "Hour", unitName: ": 00", layout: 'bottom',
-        value: function(){ return this.downloadTime.hour(); }, },
-      { title: "Time", layout: 'bottom',
-        value: function(){ return new Date(this.downloadTime);} },
-      { title: "Day", layout: 'right',
-        value: function(){ return this.downloadTime.day(); },
-        catSortBy: "id",
+      { name: "Hour", unitName: ": 00", panel: 'bottom', value: function(){ return this.downloadTime.hour(); }, },
+      { name: "Time", panel: 'bottom', value: function(){ return new Date(this.downloadTime);} },
+      { name: "Day", panel: 'right', value: function(){ return this.downloadTime.day(); }, catSortBy: "id",        
         catLabel: function(){
           switch(this.id){
             case 0: return "Sunday";
@@ -63,13 +59,9 @@ $(document).ready( function(){
             case 6: return "Saturday";
           }
         } },
-      { title: "Month", layout: 'middle',
-        value: function(){ return this.downloadTime.month(); },
-        catSortBy: "id",
+      { name: "Month", value: function(){ return this.downloadTime.month(); }, panel: 'middle', catSortBy: "id",
         catLabel: function(){ return getMonthNameFromNumber(this.id); }, },
-      { title: "Year", layout: 'right',
-        value: function(){ return this.downloadTime.year(); },
-        catSortBy: "id" }
+      { name: "Year", value: function(){ return this.downloadTime.year(); }, panel: 'right', catSortBy: "id" }
     ]
   });
 });

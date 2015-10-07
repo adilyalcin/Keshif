@@ -35,22 +35,22 @@ google.setOnLoadCallback(function(){
       browser.updateLayout();
     },
     summaries: [
-      { title: "Subscription Type", layout: 'middle' },
-      { title: "Start Station", layout: 'left' },
-      { title: "End Station", layout: 'right' },
-      { title: "Total Duration", layout: 'bottom', unitName: "min",
+      { name: "Subscription Type", panel: 'middle' },
+      { name: "Start Station", panel: 'left' },
+      { name: "End Station", panel: 'right' },
+      { name: "Total Duration", panel: 'bottom', unitName: "min",
         value: function(){ return Math.round(this["Total duration (ms)"]/60000); } },
-      { title: "Day of Month", layout: "bottom",
-        value: function(){ return this["Start Time"].getDate(); }, },
-      { title: "Day of Week", layout: "middle",
+      { name: "Day of Month", panel: "bottom",
+        value: function(){ return this["Start Time"].getDate(); } },
+      { name: "Day of Week", panel: "middle",
         value: function(){ return this["Start Time"].getDay(); },
         catSortBy: "id",
         catLabel: function(){ return getDayNameFromNumber(this.id); } },
-      { title: "Trip Start Hour", layout: "bottom", unitName: ":00", collapsed: false,
+      { name: "Trip Start Hour", panel: "bottom", unitName: ":00", collapsed: false,
         value: function(){ return this["Start Time"].getHours(); } }
     ]
   });
-  });
+});
     </script>
     <style>
 #chart_div {

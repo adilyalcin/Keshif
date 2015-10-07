@@ -25,9 +25,9 @@ google.setOnLoadCallback(function(){
         tables: "Cereals"
     },
     summaries: [
-      { title: "Brand", catSortBy: "id" },
-      { title: "Type" },
-      { title: "Shelf Level",
+      { name: "Brand", catSortBy: "id" },
+      { name: "Type" },
+      { name: "Shelf Level",
         catLabel: function(){
           switch(this.id){
             case 1: return "Bottom";
@@ -35,16 +35,16 @@ google.setOnLoadCallback(function(){
             case 3: return "Top";
           }
         }},
-      { title: "Rating", layout: 'middle', showPercentile: true, description: "Reported by Consumer Reports" },
-      { title: "Calories", layout: 'right', showPercentile: true },
-      { title: "Protein", value: "Protein (gr)", layout: 'right', unitName: "gr", showPercentile: true },
-      { title: "Fat", value: "Fat (gr)", layout: 'right', unitName: "gr", showPercentile: true },
-      { title: "Carb", value: "Carbo (gr)", layout: 'right', unitName: "gr", showPercentile: true },
-      { title: "Sugar", value: "Sugar (gr)", layout: 'right', unitName: "gr", showPercentile: true },
-      { title: "Sodium", value: "Sodium (mg)", unitName: "gr", showPercentile: true },
-      { title: "Fiber", value: "Fiber (gr)", unitName: "gr", showPercentile: true },
-      { title: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true },
-      { title: "Vitamins", layout: 'middle', showPercentile: true,  collapsed: true, }
+      { name: "Rating", panel: 'middle', showPercentile: true, description: "Reported by Consumer Reports" },
+      { name: "Calories", panel: 'right', showPercentile: true },
+      { name: "Protein", value: "Protein (gr)", panel: 'right', unitName: "gr", showPercentile: true },
+      { name: "Fat", value: "Fat (gr)", panel: 'right', unitName: "gr", showPercentile: true },
+      { name: "Carb", value: "Carbo (gr)", panel: 'right', unitName: "gr", showPercentile: true },
+      { name: "Sugar", value: "Sugar (gr)", panel: 'right', unitName: "gr", showPercentile: true },
+      { name: "Sodium", value: "Sodium (mg)", unitName: "gr", showPercentile: true },
+      { name: "Fiber", value: "Fiber (gr)", unitName: "gr", showPercentile: true },
+      { name: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true },
+      { name: "Vitamins", panel: 'middle', showPercentile: true,  collapsed: true, }
     ],
       itemDisplay: {
       sortingOpts: [

@@ -62,19 +62,19 @@ $(document).ready( function(){
         callback: loadData
     },
     summaries: [
-      { title: "Tag", value: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1 },
-      { title: "Author", value: function(){ return this[6]; }, collapsed: true, },
-      { title: "Time", value: function(){ return new Date(this[7]); }, layout: "bottom", }
+      { name: "Tag", value: function(){ return this[2].t; }, catTableName: "Types", catLabel: 1 },
+      { name: "Author", value: function(){ return this[6]; }, collapsed: true, },
+      { name: "Time", value: function(){ return new Date(this[7]); }, panel: "bottom", }
     ],
     itemDisplay: {
       sortColWidth: 92,
       sortingOpts: {
-        title:'Recent first', value: function(){ return this[7]}, inverse: false, 
+        name:'Recent first', value: function(){ return this[7]}, inverse: false, 
         label: function(){ return moment(this[7]).fromNow(); }
       },
       showRank: false,
       detailsToggle: "one",
-      textSearch: { title: "Title and text", value: function(){return this[4]+" "+this[5];} },
+      textSearch: { name: "Title and text", value: function(){return this[4]+" "+this[5];} },
       recordView: function(){
         var str="";
 

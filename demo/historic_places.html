@@ -28,12 +28,12 @@ google.setOnLoadCallback(function(){
       tables: "Places"
     },
     summaries: [
-      { title: "State", catLabel: function(){ return getStateName(this.id) } },
-      { title: "County", layout: 'middle', minAggrValue: 50,
+      { name: "State", catLabel: function(){ return getStateName(this.id) } },
+      { name: "County", panel: 'middle', minAggrValue: 50,
         value: function(){ return this.County+", "+this.State; } },
-      { title: "Listed Time", layout: 'bottom',
+      { name: "Listed Time", panel: 'bottom',
         value: function(){ return moment(this.Listed,"YYYYMMDD")._d; } },
-      { title: "City", layout: 'right', minAggrValue: 50,
+      { name: "City", panel: 'right', minAggrValue: 50,
         value: function(){ return this.City+", "+this.State; } }
     ]
   });

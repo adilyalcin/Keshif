@@ -148,7 +148,7 @@ $(document).ready( function(){
       });
 		},
     summaries: [
-    	{ title: "Highlights", 
+    	{ name: "Highlights", 
         description: "Hand-picked best & popular tools",
     		value: function(){
     			switch(this['★']){
@@ -161,9 +161,9 @@ $(document).ready( function(){
     		},
     		catSortBy: function(){ return 2-this.id.length; 	}
     	},
-    	{	title: "Features" },
-    	{ title: "Data Types" },
-    	{ title: "Data Processing", 
+    	{	name: "Features" },
+    	{ name: "Data Types" },
+    	{ name: "Data Processing", 
         description: "What kind of data-transformations can the tool perform?",
     		value: function(){
     			if(this["Data-Procs."]) 
@@ -172,7 +172,7 @@ $(document).ready( function(){
 	    			});
     		}
     	},
-    	{ title: "Cost",
+    	{ name: "Cost",
     		description: "Free tools may be available only for non-commercial, educational or limited use.<br><br>"+
           "Some tools may offer both free and paid versions.<br><br>"+
           "Check each tool for details.",
@@ -192,7 +192,7 @@ $(document).ready( function(){
     			return r;
     		}
     	},
-    	{ title: "Main", layout: "right",
+    	{ name: "Main", panel: "right",
     		value: function(){
           var r=[];
     			if(this["Active?"]==="Y") r.push("Active");
@@ -208,12 +208,12 @@ $(document).ready( function(){
           return r;
     		}
     	},
-    	//{ title: "Design", collapsed: true, layout: "right" },
-    	{ title: "Tags", layout: "right" },
-    	{ title: "Programming", layout: "right",
+    	//{ name: "Design", collapsed: true, panel: "right" },
+    	{ name: "Tags", panel: "right" },
+    	{ name: "Programming", panel: "right",
         description: "To create visualizations / process data, what programming language(s) does the tool support, if any?",
     	},
-      { title: "Author", layout: "right", collapsed: true },
+      { name: "Author", panel: "right", collapsed: true },
     ],
     itemDisplay: {
       sortingOpts: {
@@ -290,13 +290,14 @@ $(document).ready( function(){
         kshf.Util.cellToArray(kshf.dt["Visualization Books"], ['Authors','Tags'], /\s*\+\s*/,false);
       },
       summaries: [
-        { title: "Highlights", value:"★", catSortBy: function(){ return 2-this.id.length;   }},
-        { title: "Authors"},
-        { title: "Publisher", collapsed: true},
-        { title: "Year" },
+        { name: "Highlights", value:"★", catSortBy: function(){ return 2-this.id.length;   }},
+        { name: "Authors"},
+        { name: "Publisher", collapsed: true},
+        { name: "Year" },
       ],
       itemDisplay: {
-        sortingOpts: [ { title: "★'s, then Year", 
+        sortingOpts: { 
+          name: "★'s, then Year", 
           value: function(){ 
             if(this['★']===null) return this.Year;
             return this.Year+ this['★'].length*3000;
@@ -305,9 +306,7 @@ $(document).ready( function(){
           label: function(){
             if(this['★']===null) return this.Year;
             return "<span class='book_stars'>"+this['★'] + "</span>" + this.Year;
-          }
-        }
-        ],
+          } },
         sortColWidth: 80,
         textSearch: "Title",
         displayType: 'list',

@@ -31,12 +31,12 @@ $(document).ready( function(){
       tables: "cnmtl_portfolio"
     },
     summaries: [
-      { title: "Disciplines"},
-      { title: "Types"},
-      { title: "Group", collapsed: true },
-      { title: "Access", collapsed: true },
-      { title: "Status" },
-      { title: "Released Year", layout: "middle", collapsed: true, 
+      { name: "Disciplines"},
+      { name: "Types"},
+      { name: "Group", collapsed: true },
+      { name: "Access", collapsed: true },
+      { name: "Status" },
+      { name: "Released Year", panel: "middle", collapsed: true, 
         value: function(){ return dateFormat.parse(this.released); } },
     ],
     itemDisplay: {

@@ -27,12 +27,12 @@ google.setOnLoadCallback(function(){
       tables: {name: "Awards", id:"application_id"}
     },
     summaries: [
-      {	title: "Status", value: "project_status"},
-      {	title: "Sponsor Institution", value: "sponsor_institution"},
-      {	title: "Start Date", value: "start_date", layout: "bottom"},
-      {	title: "End Date", value: "end_date", layout: "bottom", collapsed: true},
-      {	title: "Funding Source", value: "funding_source"},
-      {	title: "Features", 
+      {	name: "Status", value: "project_status"},
+      {	name: "Sponsor Institution", value: "sponsor_institution"},
+      {	name: "Start Date", value: "start_date", panel: "bottom"},
+      {	name: "End Date", value: "end_date", panel: "bottom", collapsed: true},
+      {	name: "Funding Source", value: "funding_source"},
+      {	name: "Features", 
         value: function(){
       		var r=[];
       		if(this.dementia) r.push("Dementia");
@@ -40,16 +40,16 @@ google.setOnLoadCallback(function(){
       		if(this.nano) r.push("Nano");
       		return r;
       	} },
-      { title: "Ratio of Applied", value: function(){ return this.applied*100}, unitName: "%", layout: "right" },
-      { title: "Duration", unitName: "Years", layout: "right", 
+      { name: "Ratio of Applied", value: function(){ return this.applied*100}, unitName: "%", panel: "right" },
+      { name: "Duration", unitName: "Years", panel: "right", 
       	value: function(){
       		var m_end = moment(this.end_date);
       		var m_start = moment(this.start_date);
       		return m_end.diff(m_start,'years');
       	} },
-      { title: "Organization", layout: "right", 
+      { name: "Organization", panel: "right", 
       	value: function(){ return kshf.Util.toProperCase(this.organization);}},
-      { title: "Performing Department", layout: "right", collapsed: true,
+      { name: "Performing Department", panel: "right", collapsed: true,
       	value: function(){ return kshf.Util.toProperCase(this.performing_dept);}},
     ],
     itemDisplay: {

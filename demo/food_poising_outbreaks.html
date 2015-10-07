@@ -81,55 +81,52 @@ function loaded(browser){
 };
 
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        leftPanelLabelWidth: 230,
-        rightPanelLabelWidth: 250,
-        barChartWidth: 150,
-        source: {
-            gdocId: '1RsaL3mPunz_DDHv2Gc7DBxa8O6VLoa4LxlOuvoGi_KA',
-            tables: ["Outbreaks", "Contributing Factors", "Pathogens/Toxins"]
-        },
-        loadedCb: loaded,
-        readyCb: function(browser){
-            browser.panels.left.summaries[0].setHeightRow_attrib(20);
-        },
-        summaries: [
-            {   title: "<i class='fa fa-globe'></i> National Cuisine", layout: "middle",
-                description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine).",
-                value: 'National Cuisine'
-            },{ title: "<i class='fa fa-spoon'></i> Food Types", value: 'Food Types', layout: "middle"
-            },{ title: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins", layout: 'right',
-                description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
-                value: function(){
-                    var r=this['Pathogens / Toxins'];
-                    var a=[r];
-                    if(r==undefined || r===null) return r;
-                    if(r.indexOf("Salmonella")!==-1) a.push("Salmonella");
-                    return a;
-                }
-            },{ title: "<i class='fa fa-exclamation-circle'></i> Contributing Factors",  layout: 'right',
-                value: 'Contributing Factors'
-            },{ title: "<i class='fa fa-coffee'></i> Setting",  layout:'right',
-                description: "Dataset only includes details about outbreaks in restaurant settings",
-                value: 'Setting'
-            }
-        ],
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    leftPanelLabelWidth: 230,
+    rightPanelLabelWidth: 250,
+    barChartWidth: 150,
+    source: {
+      gdocId: '1RsaL3mPunz_DDHv2Gc7DBxa8O6VLoa4LxlOuvoGi_KA',
+      tables: ["Outbreaks", "Contributing Factors", "Pathogens/Toxins"]
+    },
+    loadedCb: loaded,
+    readyCb: function(browser){
+      browser.panels.left.summaries[0].setHeightRow_attrib(20);
+    },
+    summaries: [
+      { name: "<i class='fa fa-globe'></i> National Cuisine", value: 'National Cuisine', panel: "middle",
+        description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine)." },
+      { name: "<i class='fa fa-spoon'></i> Food Types", value: 'Food Types', panel: "middle" },
+      { name: "<i class='fa fa-exclamation-triangle'></i> Pathogens / Toxins", panel: 'right',
+        description: "Other pathogen/toxin, includes Giardia lamblia, Shigella spp., Staphylococcus aureus and shellfish toxins.<br>VTEC O157, verocytotoxin-producing Escherichia coli.",
+        value: function(){
+          var r=this['Pathogens / Toxins'];
+          var a=[r];
+          if(r==undefined || r===null) return r;
+          if(r.indexOf("Salmonella")!==-1) a.push("Salmonella");
+          return a;
+        } },
+      { name: "<i class='fa fa-exclamation-circle'></i> Contributing Factors",  panel: 'right',
+        value: 'Contributing Factors' },
+      { name: "<i class='fa fa-coffee'></i> Setting", value: 'Setting', panel:'right',
+        description: "Dataset only includes details about outbreaks in restaurant settings" }
+    ],
+  });
 });
         </script>
         <style>
-            #chart_div {
-                width: 890px;
-                height: 560px;
-            }
-            .kshfChart[chart_id="1"] .attribGroup > .attrib > .attribLabel > .theLabel{
-                font-size: 1.3em;
-            }
-            .exImg{
-                opacity: 0.5;
-                height: 50px;
-            }
+#chart_div {
+  width: 890px;
+  height: 560px;
+}
+.kshfChart[chart_id="1"] .attribGroup > .attrib > .attribLabel > .theLabel{
+  font-size: 1.3em;
+}
+.exImg{
+  opacity: 0.5;
+  height: 50px;
+}
         </style>
     </head>
     <body>

@@ -33,7 +33,7 @@ $(document).ready( function(){
       tables: {name:"la-unclaimed-dead-new", id:"cr_no"}
     },
     summaries: [
-      { title: "WHO?",
+      { name: "WHO?",
         value: function(){
           var r=[];
           switch(this.Sex){
@@ -47,18 +47,18 @@ $(document).ready( function(){
           if(this.baby) r.push("Babies <span class='fa gender-icon fa-child'></span>");
           return r;
         } },
-      { title: "Age at Death", value: "Age" },
-      { title: "Death Date", 
+      { name: "Age at Death", value: "Age" },
+      { name: "Death Date", 
         value: function(){ 
           var x=dateFormat.parse(this.Death);
           if(x!==null) return new Date(x);
         } },
-      { title: "After Story is Published...",
+      { name: "After Story is Published...",
         value: function(){ if(this.claimed) return "Claimed"; } }
     ],
     itemDisplay: {
-      sortingOpts: { title: 'Age at Death', value: "Age", inverse:false },
-      textSearch: { title: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
+      sortingOpts: { name: 'Age at Death', value: "Age", inverse:false },
+      textSearch: { name: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
       recordView: function(){
         var str="";
         switch(this.Sex){

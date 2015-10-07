@@ -123,32 +123,32 @@ $(document).ready(function(){
             callback: dataLoad
         },
         summaries: [
-            {   title: "Episode", layout: 'middle',
+            {   name: "Episode", panel: 'middle',
                 catSortBy: "ep_id",
                 catTableName: "Episodes", catTooltip: "Synopsis",
                 catLabel: function(){ return this.Name+" <i>[Ep."+this.ep_id+"]</i>"; },
                 facets:[
-                    {   title: "Dead Count (Total)", collapsed: true,
+                    {   name: "Dead Count (Total)", collapsed: true,
                         value: function(){ return this.bodycount.total; }
-                    },{ title: "Dead Count (Humans)", collapsed: true,
+                    },{ name: "Dead Count (Humans)", collapsed: true,
                         value: function(){ return this.bodycount.humans; }
-                    },{ title: "Dead Count (Vampires)", collapsed: true,
+                    },{ name: "Dead Count (Vampires)", collapsed: true,
                         value: function(){ return this.bodycount.vampires; }
-                    },{ title: "Dead Count (Demons)", collapsed: true,
+                    },{ name: "Dead Count (Demons)", collapsed: true,
                         value: function(){ return this.bodycount.demons; }, 
-                    },{ title: "Dead Count (Animals)", collapsed: true,
+                    },{ name: "Dead Count (Animals)", collapsed: true,
                         value: function(){ return this.bodycount.animals; },
                     }
                 ]
-            },{ title: "Location", layout: 'middle'
-            },{ title: "Characters",
+            },{ name: "Location", panel: 'middle'
+            },{ name: "Characters",
                 value: "Appears",
                 catTableName: "Characters",
                 catLabel: function(){ 
                     return this.Name+"<img src='./img/buffy/"+this.char_id+".jpg' class='charImg'>";
                 },
                 facets: [
-                    {   title: "Episodic Appearance", collapsed: true,
+                    {   name: "Episodic Appearance", collapsed: true,
                         catSortBy: "id",
                         value: function(){
                             if(this.episode===undefined) return 0; // --> Many 
@@ -158,11 +158,11 @@ $(document).ready(function(){
                             if(this.id===0) return "Many Episodes";
                             return "Episode "+this.id+" Only";
                         }
-                    },{ title: "Team",
-                    },{ title: "Type", collapsed: true
+                    },{ name: "Team",
+                    },{ name: "Type", collapsed: true
                     }
                 ]
-            },{ title: "Time (Minutes into the episode)", unitName: "min", layout: "bottom",
+            },{ name: "Time (Minutes into the episode)", unitName: "min", panel: "bottom",
                 value: function(){ return this.second/60; },
             }
         ]

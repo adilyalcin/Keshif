@@ -35,12 +35,12 @@ $(document).ready( function() {
       tables: "commencement-speeches"
     },
     summaries: [
-      {title: "Featured", value: function(){ return this.featured!==""?"Featured":null}, layout: "right"},
-      {title: "University", value: "school"},
-      //{title: "img_source", collapsed: true},
-      {title: "Field", value: "field", layout: "right"},
-      {title: "Tags", value: "tags", layout: "right"},
-      {title: "Year", value: "year", layout: "bottom", intervalScale: "linear", collapsed: true},
+      {name: "Featured", value: function(){ return this.featured!==""?"Featured":null}, panel: "right"},
+      {name: "University", value: "school"},
+      //{name: "img_source", collapsed: true},
+      {name: "Field", value: "field", panel: "right"},
+      {name: "Tags", value: "tags", panel: "right"},
+      {name: "Year", value: "year", panel: "bottom", intervalScale: "linear", collapsed: true},
     ],
     itemDisplay: {
       sortColWidth: 70,

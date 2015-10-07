@@ -40,20 +40,20 @@ google.setOnLoadCallback(function(){
       //tables: "Data"
     },
     summaries: [
-      { title: "<i class='fa fa-university'></i> University", value: "University",
+      { name: "<i class='fa fa-university'></i> University", value: "University",
         description: "The name of the university they teach" },
-      { title: "<i class='fa fa-sitemap'></i> Subfield", value: "Subfield",
+      { name: "<i class='fa fa-sitemap'></i> Subfield", value: "Subfield",
         description: "Main field of research. One of the 20 fields reported by Microsoft Academic", },
-      { title: "<i class='fa fa-th-large'></i> Rank", value: "Rank" },
-      { title: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", value: "Bachelors", 
-        description: "University they acquired their BSc degree from", layout: 'right' },
-      { title: "<i class='fa fa-graduation-cap'></i> Received Masters from", layout: 'right',
+      { name: "<i class='fa fa-th-large'></i> Rank", value: "Rank" },
+      { name: "<i class='fa fa-graduation-cap'></i> Received Bachelors from", value: "Bachelors", 
+        description: "University they acquired their BSc degree from", panel: 'right' },
+      { name: "<i class='fa fa-graduation-cap'></i> Received Masters from", panel: 'right',
         description: "University they acquired their Masters degree from", value: "Masters" },
-      { title: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", layout: 'right',
+      { name: "<i class='fa fa-graduation-cap'></i> Received Doctorate from", panel: 'right',
         description: "University they acquired their Doctorate degree from", value: "Doctorate" },
-      { title: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", layout: 'right', collapsed: true,
+      { name: "<i class='fa fa-suitcase'></i> Worked Post-Doc at", panel: 'right', collapsed: true,
         description: "University or Company they did their post-doctoral training", value: "PostDoc" },
-      { title: "<i class='fa fa-globe'></i> Former Countries", layout: 'right',  
+      { name: "<i class='fa fa-globe'></i> Former Countries", panel: 'right',  
         description: "For each CS faculty, lists the countries that s/he received her degrees from",
         value: function(){
           var r=[];
@@ -67,7 +67,7 @@ google.setOnLoadCallback(function(){
           r.push(a[a.length-1].trim());
           return r;
         } },
-      { title: "<span class='fa fa-calendar'></span> Joined Year", layout: "bottom",
+      { name: "<span class='fa fa-calendar'></span> Joined Year", panel: "bottom",
         description: "When they joined that department of Computer Science as faculty",
         value: function(){ if(this.JoinYear) return new Date(this.JoinYear,1,1); }
       }
@@ -128,7 +128,6 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="pageTitle" align="center">Faculty Members in top 50 US Computer Science Programs</div>
-    
     <div class="contents"><div id="chart_div"></div></div>
 
     <div id="infobox" align="center">

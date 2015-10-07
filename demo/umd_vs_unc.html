@@ -27,20 +27,17 @@ google.setOnLoadCallback(function(){
       tables: ["Game Events", "Players"]
     },
     summaries: [
-      { title: "Half", catLabel: function(){ return this.id===1?"First":"Second"}, catSortBy: "id"},
-      { title: "Flow",
-        catLabel: function(){ return this.id==="D2O"?"Defense-2-Offense":"Offense-2-Defense";}
-        },
-      { title: "Player", layout: "middle"},
-      { title: "Team", value: function(){ if(this.Player) return kshf.dt_id.Players[this.Player].data.Team; },
-        layout: "middle"},
-      { title: "Shot Type", layout: "right"},
-      { title: "Assisted By", layout: "right"},
-      { title: "Type"},
-      //{ title: "Round", layout: "bottom", collapsed: true},
-      { title: "Minute in Game", value: function(){ return 1*this.Event.split(":")[0]+(this.Half===2?20:0);}, layout:"bottom"},
-      { title: "UMD Score", layout: "bottom"},
-      { title: "UNC Score", layout: "bottom", collapsed: true}
+      { name: "Half", catLabel: function(){ return this.id===1?"First":"Second"}, catSortBy: "id" },
+      { name: "Flow", catLabel: function(){ return this.id==="D2O"?"Defense-2-Offense":"Offense-2-Defense";} },
+      { name: "Player", panel: "middle" },
+      { name: "Team", panel: "middle", value: function(){ if(this.Player) return kshf.dt_id.Players[this.Player].data.Team; } },
+      { name: "Shot Type", panel: "right" },
+      { name: "Assisted By", panel: "right" },
+      { name: "Type"},
+      //{ name: "Round", panel: "bottom", collapsed: true},
+      { name: "Minute in Game", value: function(){ return 1*this.Event.split(":")[0]+(this.Half===2?20:0);}, panel:"bottom" },
+      { name: "UMD Score", panel: "bottom" },
+      { name: "UNC Score", panel: "bottom", collapsed: true }
     ]
   });
 });

@@ -39,7 +39,7 @@ $(document).ready( function(){
 //      gdocId: '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
     },
     summaries: [
-      { title: "Continent",
+      { name: "Continent",
         catLabel: function(){
           switch(this.id){
             case 1: return "North America";
@@ -51,7 +51,7 @@ $(document).ready( function(){
             default: return "-";
           }
         } },
-      { title: "Zone", collapsed: true,
+      { name: "Zone", collapsed: true,
         catLabel: function(){
           switch(this.id){
             case 1: return "North East";
@@ -61,7 +61,7 @@ $(document).ready( function(){
             default: return "-";
           }
         } },
-      { title: "Language",
+      { name: "Language",
         value: function(){ return (this.Language===9)?10:this.Language; },
         catLabel: function(){
           switch(this.id){
@@ -79,7 +79,7 @@ $(document).ready( function(){
             default: return "-";
           }
         } },
-      { title: "Religion",
+      { name: "Religion",
         catLabel: function(){
           switch(this.id){
             case 0: return "Catholic";
@@ -93,14 +93,14 @@ $(document).ready( function(){
             default: return "-";
           }
         } },
-      { title: "Flag Date", layout: 'left',
+      { name: "Flag Date", panel: 'left',
         value: function(){
           if(this.Independence==="") return;
           if(this.Independence===null) return;
           if(this.Independence===undefined) return;
           return new Date(moment(this.Independence,"MM/DD/YYYY"));
         } },
-      { title: "Flag Color",  layout: 'right',
+      { name: "Flag Color",  panel: 'right',
         value: function(){
           var toRet = [];
           if(this.Red) toRet.push("Red");
@@ -112,7 +112,7 @@ $(document).ready( function(){
           if(this.Orange) toRet.push("Orange / Brown");
           return toRet;
         }, },
-      { title: "Flag Shape", layout: 'right',
+      { name: "Flag Shape", panel: 'right',
         value: function(){
           var toRet = [];
           if(this.Circles) toRet.push("Circle");
@@ -124,10 +124,10 @@ $(document).ready( function(){
           if(this.Triangle) toRet.push("Triangle");
           return toRet;
         }, },
-      { title: "Number of Bars", value: "Bars", layout: 'right' },
-      { title: "Number of Stripes", layout: 'right', unitName: "strp",
+      { name: "Number of Bars", value: "Bars", panel: 'right' },
+      { name: "Number of Stripes", panel: 'right', unitName: "strp",
         value: function(){ if(this.Stripes!==0) return this.Stripes; } },
-      { title: "Other", collapsed: true, layout: 'right',
+      { name: "Other", collapsed: true, panel: 'right',
         value: function(){
           var toRet = [];
           if(this.Text!==0) toRet.push("Text");

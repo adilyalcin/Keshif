@@ -22,140 +22,138 @@ var showLogo = false;
 var BEDERSON_ID = 3;
 
 google.setOnLoadCallback(function() {
-    function resizeChart(){
-        var h=$(window).height()-90;
-        h = 700; // temp
-        var w=$(window).width()-29;
-        h = Math.max(h,500);
-        w = Math.max(w,700);
-        w-=50;
-        if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
-        $('#chart_div').height(h);
-        $('#chart_div').width (w);
-        return true;
+  function resizeChart(){
+      var h=$(window).height()-90;
+      h = 700; // temp
+      var w=$(window).width()-29;
+      h = Math.max(h,500);
+      w = Math.max(w,700);
+      w-=50;
+      if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
+      $('#chart_div').height(h);
+      $('#chart_div').width (w);
+      return true;
+  }
+
+  resizeChart();
+  $(window).resize(function() {
+      if(resizeChart()) browser.updateLayout();
+  });
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth:185,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
+      tables: [ "Publications", "Venues", "Authors", "Keywords", "VenueTypes", "AuthorTypes" ]
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors', 'Topics']);
+    },
+    readyCb: function(){
+      $(".paperName").click(function(d){
+        browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+      });
+      browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
+    },
+    summaries: [
+      { name: "Topics", catTableName: "Keywords", catLabel: "keyword" },
+      { name: "Couthors",
+        value: function(){
+          return this.Coauthors.filter(function(coAuth){
+            return coAuth!=="3" && coAuth!==3;
+          });
+        },
+        catTableName: "Authors",
+        catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
+        catTooltip: function(){ return this.first_names+" "+this.last_name; } },
+      { name: "Coauthor Types",
+        value: function(){
+          var types = [];
+          this.Coauthors.filter(function(coAuth){
+            return coAuth!=="3" && coAuth!==3;
+          }).forEach(function(coAuth){
+            var a=kshf.dt_id.Authors[coAuth];
+            if(a) types.push(a.data.author_type);
+          });
+          return types;
+        },
+        catTableName: "AuthorTypes",
+        catLabel: "keyword" },
+      { name: "Publication Type", value: "type",
+        catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; } },
+      { name: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true },
+      { name: "Date", panel: 'middle' }
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
+      textSearch: 'title',
+      detailsToggle: "one",
+      recordView: function(){
+          var j;
+          var str="";
+
+          if(this.img!==""&&this.img!==null){
+              str+="<img class='pdfImage' src='"+this.img+"'>";
+          }
+
+          // paper name
+              str+="<div class=''> <span>";
+              str+="<span class='paperName'>"+this.title+"</span>";
+              if(this.pdf!==""&&this.pdf!==null){
+                  str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+this.pdf+"' target='_blank'></a>";
+              }
+              if(this.doi!==""&&this.doi!==null){
+                  str+="<a class='pubLink doilink' href='http://dx.doi.org/"+this.doi+"' target='_blank'>[doi]</a>";
+              }
+              if(this.url.trim()!==""){
+                  str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+this.url+"' "+
+                          ">external</a>";
+              }
+              str+="</div>";
+
+          str+="<span class='item_details'>";
+
+          // author names
+          var authors = this.Coauthors;
+              str+="<div class=\"authorNames\"><span class='header'></span> ";
+              for(j=0; j<authors.length; j++){
+                  var authData=kshf.dt_id.Authors[authors[j]].data;
+                  if(authData.id===BEDERSON_ID) { str+="<span class='benb'>"; }
+                  str+=authData.first_names+" "+authData.last_name;
+                  if(authData.id===BEDERSON_ID) { str+="</span>"; }
+                  if(j!==authors.length-1) { str+=', '; }
+              }
+              str+="</div>";
+          // Venue + details
+              str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Date.getFullYear()+"</span>";
+              if(this.Venue) {
+                  str+=" " + kshf.dt_id.Venues[this.Venue].data[2];
+              }
+              if(this.details.trim()!=="") {
+                  str+=" - " + this.details;
+              }
+              str+="</div>";
+          // keywords
+              var cats = this.Topics;
+              if(cats.length>0){
+                  str+="<div class=\"topics\"> <span class='header'>Topics</span>: ";
+                  for(j=0; j<cats.length; j++){
+                      str+=kshf.dt_id.Keywords[cats[j]].data.keyword;
+                      if(j!==cats.length-1) { str+=', '; }
+                  }
+                  str+="</div>";
+              }
+          // award
+              if(this.award!==""&this.award!==null){
+                  str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+this.award+"</div>";
+              }
+
+          return str;
+      }
     }
-
-    resizeChart();
-    $(window).resize(function() {
-        if(resizeChart()) browser.updateLayout();
-    });
-
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth:185,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
-            tables: [ "Publications", "Venues", "Authors", "Keywords", "VenueTypes", "AuthorTypes" ]
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors', 'Topics']);
-        },
-        readyCb: function(){
-            $(".paperName").click(function(d){
-                browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
-            });
-            browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
-        },
-        summaries: [
-            {   title: "Topics", catTableName: "Keywords", catLabel: "keyword"
-            },{ title: "Couthors",
-                value: function(){
-                    return this.Coauthors.filter(function(coAuth){
-                        return coAuth!=="3" && coAuth!==3;
-                    });
-                },
-                catTableName: "Authors",
-                catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
-                catTooltip: function(){ return this.first_names+" "+this.last_name; },
-            },{ title: "Coauthor Types",
-                value: function(){
-                    var types = [];
-                    this.Coauthors.filter(function(coAuth){
-                        return coAuth!=="3" && coAuth!==3;
-                    }).forEach(function(coAuth){
-                        var a=kshf.dt_id.Authors[coAuth];
-                        if(a) types.push(a.data.author_type);
-                    });
-
-                    return types;
-                },
-                catTableName: "AuthorTypes",
-                catLabel: "keyword"
-            },{ title: "Publication Type", value: "type",
-                catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; }
-            },{ title: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true,
-            },{ title: "Date", layout: 'middle'
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
-            textSearch: 'title',
-            detailsToggle: "one",
-            recordView: function(){
-                var j;
-                var str="";
-
-                if(this.img!==""&&this.img!==null){
-                    str+="<img class='pdfImage' src='"+this.img+"'>";
-                }
-
-                // paper name
-                    str+="<div class=''> <span>";
-                    str+="<span class='paperName'>"+this.title+"</span>";
-                    if(this.pdf!==""&&this.pdf!==null){
-                        str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+this.pdf+"' target='_blank'></a>";
-                    }
-                    if(this.doi!==""&&this.doi!==null){
-                        str+="<a class='pubLink doilink' href='http://dx.doi.org/"+this.doi+"' target='_blank'>[doi]</a>";
-                    }
-                    if(this.url.trim()!==""){
-                        str+=" <a class='pubLink fa fa-external-link externallink' target='_blank' href='"+this.url+"' "+
-                                ">external</a>";
-                    }
-                    str+="</div>";
-
-                str+="<span class='item_details'>";
-
-                // author names
-                var authors = this.Coauthors;
-                    str+="<div class=\"authorNames\"><span class='header'></span> ";
-                    for(j=0; j<authors.length; j++){
-                        var authData=kshf.dt_id.Authors[authors[j]].data;
-                        if(authData.id===BEDERSON_ID) { str+="<span class='benb'>"; }
-                        str+=authData.first_names+" "+authData.last_name;
-                        if(authData.id===BEDERSON_ID) { str+="</span>"; }
-                        if(j!==authors.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
-                // Venue + details
-                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Date.getFullYear()+"</span>";
-                    if(this.Venue) {
-                        str+=" " + kshf.dt_id.Venues[this.Venue].data[2];
-                    }
-                    if(this.details.trim()!=="") {
-                        str+=" - " + this.details;
-                    }
-                    str+="</div>";
-                // keywords
-                    var cats = this.Topics;
-                    if(cats.length>0){
-                        str+="<div class=\"topics\"> <span class='header'>Topics</span>: ";
-                        for(j=0; j<cats.length; j++){
-                            str+=kshf.dt_id.Keywords[cats[j]].data.keyword;
-                            if(j!==cats.length-1) { str+=', '; }
-                        }
-                        str+="</div>";
-                    }
-                // award
-                    if(this.award!==""&this.award!==null){
-                        str+="<div class=\"iteminfo iteminfo_3\">&#9733; "+this.award+"</div>";
-                    }
-
-                return str;
-            }
-        }
-    });
+  });
 });
 
 </script>

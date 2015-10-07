@@ -38,24 +38,24 @@ google.setOnLoadCallback(function(){
       kshf.Util.cellToArray(kshf.dt.Papers, ['Tasks'],"*",false);
     },
     summaries: [
-      { title: "Tasks",
+      { name: "Tasks",
         catTableName: "Keywords",
         catLabel: "Task",
         summaries: [
-            {   title: "Categories", value: "Category"
-            },{ title: "Levels", value: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
+            {   name: "Categories", value: "Category"
+            },{ name: "Levels", value: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
             }
         ] },
-      { title: "Authors", layout: 'right',  },
-      { title: "Features", layout: 'right', 
+      { name: "Authors", panel: 'right',  },
+      { name: "Features", panel: 'right', 
         value: function(){
           var r=[];
           if(this.H==="*") r.push("Highlighted");
           if(this.Tasks && this.Tasks.length>0) r.push("Presents Taxonomy");
           return r;
         } },
-      { title: "Venue", layout: 'right',  },
-      { title: "Date", layout: 'bottom', value: function(){return new Date(this.Year,1,1);} }
+      { name: "Venue", panel: 'right',  },
+      { name: "Date", panel: 'bottom', value: function(){return new Date(this.Year,1,1);} }
     ],
     itemDisplay: {
       sortingOpts: ['Year', {title: 'id', inverse:true} ],

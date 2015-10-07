@@ -36,12 +36,11 @@ google.setOnLoadCallback(function(){
       tables: {name:"Oldurulen kadin", id:"ASIN"}
     },
     summaries: [
-      { title: "Yıl", catSortBy: { value:"id", inverse: true } },
-      { title: "Kim tarafından", },
-      { title: "Neden" },
-      { title: "Nasıl", layout: 'right', },
-      { title: "Korunma talebi", layout: 'right',
-      }
+      { name: "Yıl", catSortBy: { value:"id", inverse: true } },
+      { name: "Kim tarafından" },
+      { name: "Neden" },
+      { name: "Nasıl", panel: 'right' },
+      { name: "Korunma talebi", panel: 'right' }
     ],
     itemDisplay: {
       sortColWidth: 60,

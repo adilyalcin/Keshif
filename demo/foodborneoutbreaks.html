@@ -68,18 +68,17 @@ $(document).ready( function(){
       browser.panels.left.setWidthCatChart(120);
     },
     summaries: [
-      { title: "Year" },
-      { title: "Month",
-        catSortBy: function(){ return getMonthNumberFromName(this.id); }, },
-      { title: "Contaminated Ingredient", value: "Contaminated_Ingredient", layout: 'middle' },
-      { title: "State" },
-      { title: "Location Of Consumption", value: "LocationOfConsumption", layout: 'middle' },
-      { title: "Food Vehicle", value: "FoodVehicle", layout: 'middle', minAggrValue: 5 },
-      { title: "Total Ill", value: "TotalIll", layout: 'right', intervalScale: 'log' },
-      { title: "TotalHospitalizations", layout: 'right', intervalScale: 'log' },
-      { title: "Total Deaths", value: "TotalDeaths", layout: 'right', intervalScale: 'log' },
-      { title: "Genus Species", value: "Genus_Species", layout: 'right' },
-      { title: "Status", layout: 'right' }
+      { name: "Year" },
+      { name: "Month", catSortBy: function(){ return getMonthNumberFromName(this.id); }, },
+      { name: "Contaminated Ingredient", value: "Contaminated_Ingredient", panel: 'middle' },
+      { name: "State" },
+      { name: "Location Of Consumption", value: "LocationOfConsumption", panel: 'middle' },
+      { name: "Food Vehicle", value: "FoodVehicle", panel: 'middle', minAggrValue: 5 },
+      { name: "Total Ill", value: "TotalIll", panel: 'right', intervalScale: 'log' },
+      { name: "TotalHospitalizations", panel: 'right', intervalScale: 'log' },
+      { name: "Total Deaths", value: "TotalDeaths", panel: 'right', intervalScale: 'log' },
+      { name: "Genus Species", value: "Genus_Species", panel: 'right' },
+      { name: "Status", panel: 'right' }
     ]
   });
 });

@@ -26,7 +26,7 @@ google.setOnLoadCallback(function(){
       tables: "Cars"
     },
     summaries: [
-      { title: "Origin",
+      { name: "Origin",
         catLabel: function(){
           switch(this.id){
             case 1: return "American";
@@ -34,19 +34,16 @@ google.setOnLoadCallback(function(){
             case 3: return "Japanese";
           }
         } },
-      { title: "Cyclinders", catSortBy: "id" },
-      { title: "MPG" },
-      { title: "Engine Displacement", unitName: "cu.\"", layout: 'right' },
-      { title: "Horsepower", layout: 'right' },
-      { title: "Weight", unitName: "lbs", layout: 'right' },
-      { title: "Acceleration", description: "0 to 60 mph", unitName: "sec" },
-      { title: "Year", layout: "bottom", value: function(){ return new Date(this.Year,1,1);} },
-      { title: "RecordView", layout: "none", 
-        value: function(){
-          // Adding the last ID part to make it unique per car
-          return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>";
-        }
-      }
+      { name: "Cyclinders", catSortBy: "id" },
+      { name: "MPG" },
+      { name: "Engine Displacement", unitName: "cu.\"", panel: 'right' },
+      { name: "Horsepower", panel: 'right' },
+      { name: "Weight", unitName: "lbs", panel: 'right' },
+      { name: "Acceleration", description: "0 to 60 mph", unitName: "sec" },
+      { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,1,1);} },
+      { name: "RecordView", panel: "none", 
+        // Adding the last ID part to make it unique per car
+        value: function(){ return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>"; } }
     ],
     itemDisplay: {
       sortingOpts: ["MPG", "Weight", "Year"],

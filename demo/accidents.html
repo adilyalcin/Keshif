@@ -61,21 +61,19 @@ google.setOnLoadCallback( function(){
       tables: [ sheetInfo, "RoadType", "RoadSurface", "JuncDet", "JuncCont", "SpecCond", "Severity", "LightCond", "WeatherCond" ]
     },
     summaries: [
-      { title: "Road Type", catTableName: "RoadType", catLabel: "name" },
-      { title: "Severity", catTableName: "Severity", catLabel: "name" },
-      { title: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; } },
-      { title: "Time of Day", layout: "middle", unitName: ":00" ,
-        value: function(){ return this['Time of Day'].getHours(); }, },
-      { title: "# of Vehicles", layout: 'middle' },
-      { title: "Speed Limit", layout: 'middle',  catSortBy: "id",
-        catLabel: function(){ return this.id+"mph"}//, unitName: "mph" },
-      { title: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", layout: 'right' },
-      { title: "Light Condition", catTableName: "LightCond", catLabel: "name" },
-      { title: "Weather Condition", catTableName: "WeatherCond", catLabel: "name" },
-      { title: "Special Condition", catTableName: "SpecCond", catLabel: "name", layout: 'right', },
-      { title: "Junction Detail", catTableName: "JuncDet", catLabel: "name", layout: 'right', },
-      { title: "Junction Control", catTableName: "JuncCont",  catLabel: "name", layout: 'right' },
-      { title: "Date", layout: 'bottom' }
+      { name: "Road Type", catTableName: "RoadType", catLabel: "name" },
+      { name: "Severity", catTableName: "Severity", catLabel: "name" },
+      { name: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; } },
+      { name: "Time of Day", panel: "middle", unitName: ":00", value: function(){return this['Time of Day'].getHours();} },
+      { name: "# of Vehicles", panel: 'middle' },
+      { name: "Speed Limit", panel: 'middle', catSortBy: "id", catLabel: function(){return this.id+"mph";} },
+      { name: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", panel: 'right' },
+      { name: "Light Condition", catTableName: "LightCond", catLabel: "name" },
+      { name: "Weather Condition", catTableName: "WeatherCond", catLabel: "name" },
+      { name: "Special Condition", catTableName: "SpecCond", catLabel: "name", panel: 'right' },
+      { name: "Junction Detail", catTableName: "JuncDet", catLabel: "name", panel: 'right' },
+      { name: "Junction Control", catTableName: "JuncCont",  catLabel: "name", panel: 'right' },
+      { name: "Date", panel: 'bottom' }
     ]
   });
 });

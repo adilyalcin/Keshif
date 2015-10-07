@@ -45,12 +45,12 @@ var loadDemoBrowser = function(){
       tables: "Demos"
     },
     summaries: [
-      { title: "Keywords", layout: 'left',
+      { name: "Keywords", panel: 'left',
         value: function(){ return this.Keywords.split(" + "); } },
-      { title: "# of Records", value: "# of Items", showPercentile: true, layout: 'left', intervalScale: "log"},
-      { title: "Data Source", layout: 'left', collapsed: true,
+      { name: "# of Records", value: "# of Items", showPercentile: true, panel: 'left', intervalScale: "log"},
+      { name: "Data Source", panel: 'left', collapsed: true,
         value: function(){ return this.Source.split(" + "); }},
-      { title: "Code Complexity", layout: 'right',
+      { name: "Code Complexity", panel: 'right',
         description: "Relative code complexity of demo source",
         catSortBy: "id",
         catLabel: function(){
@@ -65,7 +65,7 @@ var loadDemoBrowser = function(){
           r+=Array(this.id+1).join("<span class='fa fa-star' style='font-size: 0.7em;'></span>")
           return r;
         }},
-      { title: "Summary Types", layout: 'right',
+      { name: "Summary Types", panel: 'right',
         value: function(){
           var r = [];
           if(this['Facets - Histogram']>0)
@@ -76,14 +76,14 @@ var loadDemoBrowser = function(){
             r.push("Time <span class='fa fa-clock-o'></span>");
           return r;
         } },
-/*        },{ title: "Data Structure",
+/*        },{ name: "Data Structure",
           value: function(){
               var r = [];
               if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
               if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
               return r;
           }*/
-      { title: "Record Display", layout: "right",
+      { name: "Record Display", panel: "right",
         value: function(){
           var r = [];
           if(this['Result Display']==="Grid")
@@ -92,7 +92,7 @@ var loadDemoBrowser = function(){
             r.push("List <span class='fa fa-list'></span>");
           return r;
         }},
-/*        },{ title: "Other", layout: "right",
+/*        },{ name: "Other", panel: "right",
           value: function(){
               var r = [];
               if(this['Main Text Search'])
@@ -101,14 +101,14 @@ var loadDemoBrowser = function(){
                   r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
               return r;
           }*/
-      { title: "Created At", layout: "right", collapsed: false,
+      { name: "Created At", panel: "right", collapsed: false,
         value: function(){ return this.Authored.getFullYear(); } }
     ],
     itemDisplay: {
       sortingOpts: [ 
-          {title: 'Highlighted', value: "id", inverse: true},
+          {name: 'Highlighted', value: "id", inverse: true},
           "# of Records",
-          {title: 'Date', value: "Authored", inverse: true},
+          {name: 'Date', value: "Authored", inverse: true},
       ],
       displayType: 'grid',
       maxVisibleItems_Default: 100,

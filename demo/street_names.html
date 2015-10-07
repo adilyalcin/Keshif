@@ -54,9 +54,9 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { title: "<span class='fa fa-home'></span> # of Homes", value: "homes" },
-      { title: "<span class='fa fa-money'></span> Average Value", value: "value" },
-      { title: "Name Features",
+      { name: "<span class='fa fa-home'></span> # of Homes", value: "homes" },
+      { name: "<span class='fa fa-money'></span> Average Value", value: "value" },
+      { name: "Name Features",
         value: function(){
           var r=[];
           if(this.president) r.push("President Name <span class='fa fa-flag-checkered featIcon'></span>");
@@ -66,7 +66,7 @@ $(document).ready( function(){
           if(parseInt(this.text)) r.push("Numbered");
           return r;
         } },
-      { title: "In # Counties", value: "in_counties", collapsed: true }
+      { name: "In # Counties", value: "in_counties", collapsed: true }
     ],
     itemDisplay: {
       sortingOpts: ['value', {title: '# Homes', value: "homes"} ],

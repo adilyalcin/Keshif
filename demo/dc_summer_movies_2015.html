@@ -109,83 +109,82 @@ $(document).ready( function(){
             browser.updateLayout();
         },
         summaries: [
-            {   title: "Movie", value: "Movie", collapsed: true
-            },{ title: "Genres",
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return movie.Genre;
+          { name: "Movie", value: "Movie", collapsed: true },
+          { name: "Genres",
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return movie.Genre;
+            } },
+          { name: "Year",
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return 1*movie.Year;
+            } },
+          { name: "Actors", collapsed: true,
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return movie.Actors.split(/\b,\s+/);
+            } },
+          { name: "Directors", collapsed: true,
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return movie.Director.split(/\b,\s+/);
+            } },
+          { name: "IMDb Rating",
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return 1*movie.imdbRating;
+            } },
+          { name: "MetaScore", collapsed: true,
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return 1*movie.Metascore;
+            } },
+          { name: "Rated", collapsed: true,
+            value: function(){
+                var movie = moviesByTitle[this.Movie];
+                if(movie) return movie.Rated;
+            } },
+          { name: "Location - State", panel: "right",
+            value: function(){
+                var series = kshf.dt_id.Series[this.Series];
+                if(series===undefined) return;
+                switch(series.data.State){
+                    case "MD": return "Maryland";
+                    case "DC": return "District of Columbia";
+                    case "VA": return "Virginia";
                 }
-            },{ title: "Year",
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return 1*movie.Year;
-                }
-            },{ title: "Actors", collapsed: true,
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return movie.Actors.split(/\b,\s+/);
-                }
-            },{ title: "Directors", collapsed: true,
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return movie.Director.split(/\b,\s+/);
-                }
-            },{ title: "IMDb Rating",
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return 1*movie.imdbRating;
-                }
-            },{ title: "MetaScore", collapsed: true,
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return 1*movie.Metascore;
-                }
-            },{ title: "Rated", collapsed: true,
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return movie.Rated;
-                }
-            },{ title: "Location - State", layout: "right",
-                value: function(){
-                    var series = kshf.dt_id.Series[this.Series];
-                    if(series===undefined) return;
-                    switch(series.data.State){
-                        case "MD": return "Maryland";
-                        case "DC": return "District of Columbia";
-                        case "VA": return "Virginia";
+            } },
+          { name: "Location", value: "Series", panel: "right",
+            catTableName: "Series", catLabel: "Name",
+            catSortBy: [
+                { name: "# of Screenings" },
+                {   name: "Close to me",  
+                    value: function(){
+                        return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
                     }
                 }
-            },{ title: "Location", value: "Series", layout: "right",
-                catTableName: "Series", catLabel: "Name",
-                catSortBy: [
-                    { name: "# of Screenings" },
-                    {   name: "Close to me",  
-                        value: function(){
-                            return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
-                        }
-                    }
-                ],
-            },{ title: "Time: Day Of Week", layout: "right",
-                value: function(){ return moment(this.Date).day();  },
-                catSortBy: "id",
-                catLabel: function(){
-                    switch(this.id){
-                        case 0: return "Sunday";
-                        case 1: return "Monday";
-                        case 2: return "Tuesday";
-                        case 3: return "Wednesday";
-                        case 4: return "Thursday";
-                        case 5: return "Friday";
-                        case 6: return "Saturday";
-                    }
+            ] },
+          { name: "Time: Day Of Week", panel: "right",
+            value: function(){ return moment(this.Date).day();  },
+            catSortBy: "id",
+            catLabel: function(){
+                switch(this.id){
+                    case 0: return "Sunday";
+                    case 1: return "Monday";
+                    case 2: return "Tuesday";
+                    case 3: return "Wednesday";
+                    case 4: return "Thursday";
+                    case 5: return "Friday";
+                    case 6: return "Saturday";
                 }
-            },{ title: "Date", layout: "bottom",
-            }
+            } },
+          { name: "Date", panel: "bottom" }
         ],
         itemDisplay: {
             sortColWidth: 90,
             sortingOpts: [{
-                title: 'Coming Up',
+                name: 'Coming Up',
                 value: function(){ return this.Date; },
                 sortFunc: function(a,b){
                     // a and b are date objects
@@ -199,12 +198,12 @@ $(document).ready( function(){
                 },
                 inverse: true,
                 label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
-            },{ title: "IMDb Rating",
+            },{ name: "IMDb Rating",
                 value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.imdbRating;
                 }
-            },{ title: "Year",
+            },{ name: "Year",
                 value: function(){
                     var movie = moviesByTitle[this.Movie];
                     if(movie) return 1*movie.Year;

@@ -1,77 +1,75 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Hot posts on reddit</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Hot posts on reddit</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function loadData(browser){
-    var subreddit = "hot";
-    if(window.location.hash!==""){
-        subreddit = window.location.hash.substring(1);
+  var subreddit = "hot";
+  if(window.location.hash!==""){
+    subreddit = window.location.hash.substring(1);
+  }
+  $.ajax( {
+    url: "http://api.reddit.com/"+subreddit+".json?limit=100",
+    dataType: "json",
+    success: function(data){
+      browser.primaryTableName = "Posts";
+      kshf.dt.Posts = [];
+      data.data.children.forEach(function(p){
+        kshf.dt.Posts.push(new kshf.Item(p.data,'id'));
+      });
+      browser.loadCharts();
     }
-    $.ajax( {
-        url: "http://api.reddit.com/"+subreddit+".json?limit=100",
-        dataType: "json",
-        success: function(data){
-            browser.primaryTableName = "Posts";
-            kshf.dt.Posts = [];
-            data.data.children.forEach(function(p){
-                kshf.dt.Posts.push(new kshf.Item(p.data,'id'));
-            });
-            browser.loadCharts();
-        }
-    });
+  });
 };
 
 $(document).ready( function(){
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Reddit Hot Posts",
-        categoryTextWidth: 150,
-        showDataSource: false,
-        source: { callback: loadData },
-        summaries: [
-            {   title: "subreddit"
-            },{ title: "num_comments", intervalScale: 'log'
-            },{ title: "score"
-            },{ title: "gilded", type: "categorical"
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 60,
-            sortingOpts: 'score',
-            textSearch: "title",
-            recordView: function(){
-                var str="";
-                if(this.thumbnail!=="") { 
-                    str+="<div style='float:right'><img src='"+this.thumbnail+"'/></div>";
-                }
-                str+=this.title+" <a class='fa fa-external-link' target='_blank' href='"+this.url+"'></a>";
-                return str;
-            }
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "Reddit Hot Posts",
+    categoryTextWidth: 150,
+    showDataSource: false,
+    source: { callback: loadData },
+    summaries: [
+      { name: "subreddit" },
+      { name: "num_comments", intervalScale: 'log' },
+      { name: "score" },
+      { name: "gilded", catSortBy: "id" }
+    ],
+    itemDisplay: {
+      sortColWidth: 60,
+      sortingOpts: 'score',
+      textSearch: "title",
+      recordView: function(){
+        var str="";
+        if(this.thumbnail!=="") { 
+          str+="<div style='float:right'><img src='"+this.thumbnail+"'/></div>";
         }
-    });
+        str+=this.title+" <a class='fa fa-external-link' target='_blank' href='"+this.url+"'></a>";
+        return str;
+      }
+    }
+  });
 });
-
-</script>
+    </script>
     <style>
-        #chart_div {
-            width:800px;
-            height:700px;
-        }
+#chart_div {
+  width:800px;
+  height:700px;
+}
     </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

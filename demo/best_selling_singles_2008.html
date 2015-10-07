@@ -26,18 +26,18 @@ google.setOnLoadCallback(function(){
       tables: {name:"Singles", id:"Position"}
     },
     summaries: [
-      { title: "Genre" },
-      { title: "Country", layout: 'right', description: "Country of origin" },
-      { title: "Sex", layout: 'right' },
-      { title: "Age", layout: 'right' },
-      { title: "Type", layout: 'right' },
-      { title: "Race", layout: 'right' },
-      { title: "Label" }
+      { name: "Genre" },
+      { name: "Country", panel: 'right', description: "Country of origin" },
+      { name: "Sex", panel: 'right' },
+      { name: "Age", panel: 'right' },
+      { name: "Type", panel: 'right' },
+      { name: "Race", panel: 'right' },
+      { name: "Label" }
     ],
     itemDisplay: {
       sortColWidth: 45,
-      sortingOpts: {title: "Position", inverse:true},
-      textSearch: { title: "Artist & Track", value: function(){return this["Artist(s)"]+" "+this.Track; } },
+      sortingOpts: { name: "Position", inverse:true},
+      textSearch: { name: "Artist & Track", value: function(){return this["Artist(s)"]+" "+this.Track; } },
       recordView: function(){ return this["Artist(s)"]+" - "+this.Track; }
     }
   });

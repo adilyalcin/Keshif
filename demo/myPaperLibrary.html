@@ -56,8 +56,8 @@ function readBasic(c,item, $item){
 function loadData(browser){
     $.ajax({
         url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/myPaperLibrary.xml',
-        type:"GET",
-        dataType:"xml",
+        type: "GET",
+        dataType: "xml",
         async: false,
         success: function(zotero){ return loadZotero(zotero,browser); }
     });
@@ -144,44 +144,43 @@ function loadZotero(zoteroRDF, browser) {
 }
 
 $(document).ready( function(){
-    new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 190,
-        source: {
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Collection", 
-            },{ title: "Item Type", collapsed: true
-            },{ title: "Subject", 
-//            },{ title: "Author", 
-            },{ title: "Date", layout: 'middle', 
-                value: function(){
-                    if(this.Date===null) return;
-                    var y= this.Date.getFullYear();
-                    if(y<1990) return;
-                    return this.Date;
-                }
-            },{ title: 'Series Title', 
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 60,
-            sortingOpts: {title: 'Date', value: function(){ if(this.Date) return this.Date.getFullYear(); }},
-            textSearch: "title",
-            recordView: "title"
-        }
-    });
+  new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 190,
+    source: {
+      callback: loadData
+    },
+    summaries: [
+      { name: "Collection" },
+      { name: "Item Type", collapsed: true },
+      { name: "Subject" },
+//            { name: "Author",  },
+      { name: "Date", panel: 'middle', 
+        value: function(){
+          if(this.Date===null) return;
+          var y= this.Date.getFullYear();
+          if(y<1990) return;
+          return this.Date;
+        } },
+      { name: 'Series Title' }
+    ],
+    itemDisplay: {
+      sortColWidth: 60,
+      sortingOpts: {title: 'Date', value: function(){ if(this.Date) return this.Date.getFullYear(); }},
+      textSearch: "title",
+      recordView: "title"
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 1090px;
-                height: 750px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+    </script>
+    <style>
+#chart_div {
+  width: 1090px;
+  height: 750px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

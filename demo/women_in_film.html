@@ -38,8 +38,8 @@ $(document).ready( function(){
           ['Rating','Genre','Main Actors','Language','Production Company','Plot Keywords (top 10)'],', ', false);
     },
     summaries: [
-      { title: "Movie Passes Bechdel Test ?", value: "Passes Bechdel Test?" },
-      { title: "Bechdel Criterias",
+      { name: "Movie Passes Bechdel Test ?", value: "Passes Bechdel Test?" },
+      { name: "Bechdel Criterias",
         value: function(){
           var r=[];
           if(this["Has at least two [named] women in it"]==="Pass")
@@ -50,16 +50,16 @@ $(document).ready( function(){
               r.push("The women talk about something besides a man");
           return r;
         } },
-      { title: "Clarity of Pass", collapsed: true },
-      { title: "Plot Keywords (top 10)", minAggrValue: 5 },
-      { title: "IMDb Popularity Score", layout: 'middle', },
-      { title: "Award Popularity", layout: 'left', collapsed: true },
-      { title: "Rating" },
-      { title: "Genre", layout: 'right' },
-      { title: "Main Actors", minAggrValue: 3, layout: 'right' },
-      { title: "Language", layout: 'right' },
-      { title: "Runtime (min)", layout: 'right', collapsed: true },
-      { title: "Year", layout: "middle", collapsed: true }
+      { name: "Clarity of Pass", collapsed: true },
+      { name: "Plot Keywords (top 10)", minAggrValue: 5 },
+      { name: "IMDb Popularity Score", panel: 'middle', },
+      { name: "Award Popularity", panel: 'left', collapsed: true },
+      { name: "Rating" },
+      { name: "Genre", panel: 'right' },
+      { name: "Main Actors", minAggrValue: 3, panel: 'right' },
+      { name: "Language", panel: 'right' },
+      { name: "Runtime (min)", panel: 'right', collapsed: true },
+      { name: "Year", panel: "middle", collapsed: true }
     ],
     itemDisplay: {
       displayType: 'grid',

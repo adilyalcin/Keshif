@@ -25,44 +25,44 @@ $(document).ready( function(){
     resetSize();
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 300,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
-            tables: ["Posts", "Categories"]
-        },
-        summaries: [ 
-            {   title: "Category", catTableName: "Categories", catLabel: "Category", layout: "middle"
-            },{ title: "Date", layout:'middle',
-                value: function(){
-                    var r =new Date(Date.now());
-                    r.setDate(r.getDate()-this.id*4);
-                    return r;
-                } 
-            }
-        ],
-        itemDisplay: {
-            textSearch: "Title",
-            detailsToggle: "one",
-            recordView: function(){
-                var str="";
-                // title
-                str+="<div class=\"iteminfo iteminfo_0\">";
-                str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+this.id+"\" target=\"_blanl\">"+this.Title+"<a/>";
-                str+="</div>";
+    domID: "#chart_div",
+    categoryTextWidth: 300,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
+      tables: ["Posts", "Categories"]
+    },
+    summaries: [ 
+      { name: "Category", catTableName: "Categories", catLabel: "Category", panel: "middle" },
+      { name: "Date", panel:'middle',
+        value: function(){
+          var r =new Date(Date.now());
+          r.setDate(r.getDate()-this.id*4);
+          return r;
+        } 
+      }
+    ],
+    itemDisplay: {
+        textSearch: "Title",
+        detailsToggle: "one",
+        recordView: function(){
+            var str="";
+            // title
+            str+="<div class=\"iteminfo iteminfo_0\">";
+            str+="<a href=\"http://cgi.stanford.edu/~dept-ctl/cgi-bin/tomprof/posting.php?ID="+this.id+"\" target=\"_blanl\">"+this.Title+"<a/>";
+            str+="</div>";
 
-                str+="<span class=\"item_details\">";
-                // categories
-                str+="<div class=\"iteminfo iteminfo_1\">In: "+
-                    kshf.dt_id.Categories[this.Category].data.Category+
-                    "</div>";
-                str+="</span>";
+            str+="<span class=\"item_details\">";
+            // categories
+            str+="<div class=\"iteminfo iteminfo_1\">In: "+
+                kshf.dt_id.Categories[this.Category].data.Category+
+                "</div>";
+            str+="</span>";
 
-                str+="</div>";
-                return str;
-            }
+            str+="</div>";
+            return str;
         }
-    });
+    }
+  });
 });
 
 function getNumComments(v){

@@ -81,7 +81,7 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Data: Frame of Reference",
+            {   name: "Data: Frame of Reference",
                 value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
@@ -89,7 +89,7 @@ $(document).ready( function(){
                     });
                     return r;
                 }
-            },{ title: "Data: Number of Variables",
+            },{ name: "Data: Number of Variables",
                 value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
@@ -97,7 +97,7 @@ $(document).ready( function(){
                     });
                     return r;
                 }
-            },{ title: "Time: Arrangement",
+            },{ name: "Time: Arrangement",
                 value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
@@ -105,7 +105,7 @@ $(document).ready( function(){
                     });
                     return r;
                 }
-            },{ title: "Time: Primitives",
+            },{ name: "Time: Primitives",
                 value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
@@ -114,7 +114,7 @@ $(document).ready( function(){
                     });
                     return r;
                 }
-            },{ title: "Vis: Mapping",
+            },{ name: "Vis: Mapping",
                 value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){
@@ -123,7 +123,7 @@ $(document).ready( function(){
                     });
                     return r;
                 }
-            },{ title: "Vis: Dimensionality",
+            },{ name: "Vis: Dimensionality",
                 value: function(){
                     var r=[];
                     this.categories.forEach(function(cat){

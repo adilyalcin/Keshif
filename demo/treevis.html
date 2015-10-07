@@ -82,11 +82,11 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { title: "Dimension" },
-      { title: "Representation" },
-      { title: "Alignment" },
-      { title: "Authors", collapsed: false },
-      { title: "Year", value: function(){ return new Date(this.Year,1,1); }, layout: "bottom" }
+      { name: "Dimension" },
+      { name: "Representation" },
+      { name: "Alignment" },
+      { name: "Authors", collapsed: false },
+      { name: "Year", value: function(){ return new Date(this.Year,1,1); }, panel: "bottom" }
     ],
     itemDisplay: {
       sortingOpts: "Year",

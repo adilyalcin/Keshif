@@ -35,18 +35,18 @@ $(document).ready( function() {
       tables: "bart_employees"
     },
     summaries: [
-      { title:"Job Family" },
-      { title:"Union" },
-      { title:"Title" },
-      { title:"Total Salary", value:"TCOE", unitName:'$', layout:'right' },
-      { title:"Base Salary", value:"Base", unitName:'$', layout:'right' },
-      { title:"Overtime Salary", value:"OT", unitName:'$', layout:'right' },
-      { title:"Other Salary", unitName:'$', layout:'right' },
-      { title:"Medical + Dental + Vision", value:"MDV", unitName:'$', layout:'right' },
-      { title:"ER (Salary)", value:'ER', unitName:'$', collapsed:true, layout:'right' },
-      { title:"EE (Salary)", value:'EE', unitName:'$', collapsed:true, layout:'right' },
-      { title:"DC (Salary)", value:'DC', unitName:'$', intervalScale:'log', collapsed:true, layout:'right' },
-      { title:"Source", layout: 'right' }
+      { name: "Job Family" },
+      { name: "Union" },
+      { name: "Title" },
+      { name: "Total Salary", value:"TCOE", unitName:'$', panel:'right' },
+      { name: "Base Salary", value:"Base", unitName:'$', panel:'right' },
+      { name: "Overtime Salary", value:"OT", unitName:'$', panel:'right' },
+      { name: "Other Salary", unitName:'$', panel:'right' },
+      { name: "Medical + Dental + Vision", value:"MDV", unitName:'$', panel:'right' },
+      { name: "ER (Salary)", value:'ER', unitName:'$', collapsed:true, panel:'right' },
+      { name: "EE (Salary)", value:'EE', unitName:'$', collapsed:true, panel:'right' },
+      { name: "DC (Salary)", value:'DC', unitName:'$', intervalScale:'log', collapsed:true, panel:'right' },
+      { name: "Source", panel: 'right' }
     ],
     itemDisplay: {
       sortColWidth: 70,

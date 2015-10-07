@@ -29,12 +29,12 @@ $(document).ready( function(){
       tables: "Drone Crashes"
     },
     summaries: [
-      { title: "Date", layout: "bottom" },
-      { title: "Country" },
-      { title: "Estimated Damage", unitName: "$", layout: "right", intervalScale: "log" },
-      { title: "Drone Type", layout: "right" },
-      { title: "Drone Name", layout: "right" },
-      { title: "Owner" }
+      { name: "Date", panel: "bottom" },
+      { name: "Country" },
+      { name: "Estimated Damage", unitName: "$", panel: "right", intervalScale: "log" },
+      { name: "Drone Type", panel: "right" },
+      { name: "Drone Name", panel: "right" },
+      { name: "Owner" }
     ],
     itemDisplay: {
       sortingOpts: ['Estimated Damage', 'Date'],

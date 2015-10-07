@@ -17,44 +17,43 @@
         <script type="text/javascript">
 google.setOnLoadCallback(function () {
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 140,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdEgtRFNsNU9LNTNPanFSUjVyTHlOU2c',
-            tables: ["Assistants", "Instructors"]
-        },
-        summaries: [
-            {   title: "Instructor", catLabel: function(){ return kshf.dt_id.Instructors[this.id].data.Name; }
-            },{ title: "Performance", catLabel: function(){ return performanceText(this.id); }
-            },{ title: "Native Speaker", catLabel: function(){ return (this.id===1)?"Yes":"No"; }
-            },{ title: "Course"
-            },{ title: "Semester", catLabel: function(){ return (this.id===1)?"Summer":"Regular"; }
-            },{ title: "Class Size",
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {title: 'Performance', label: function(){ return performanceText(this.Performance); } },
-            textSearch: 'Name',
-            recordView: 'Name'
-        }
-    });
+    domID: "#chart_div",
+    categoryTextWidth: 140,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdEgtRFNsNU9LNTNPanFSUjVyTHlOU2c',
+      tables: ["Assistants", "Instructors"]
+    },
+    summaries: [
+      { name: "Instructor", catLabel: function(){ return kshf.dt_id.Instructors[this.id].data.Name; } },
+      { name: "Performance", catLabel: function(){ return performanceText(this.id); } },
+      { name: "Native Speaker", catLabel: function(){ return (this.id===1)?"Yes":"No"; } },
+      { name: "Course" },
+      { name: "Semester", catLabel: function(){ return (this.id===1)?"Summer":"Regular"; } },
+      { name: "Class Size" }
+    ],
+    itemDisplay: {
+      sortingOpts: { name: 'Performance', label: function(){ return performanceText(this.Performance); } },
+      textSearch: 'Name',
+      recordView: 'Name'
+    }
+  });
 });
 
 function performanceText(d){
-    switch(d){
-        case 1: return "High";
-        case 2: return "Medium";
-        case 3: return "Low";
-        default: return "-";
-    }
+  switch(d){
+    case 1: return "High";
+    case 2: return "Medium";
+    case 3: return "Low";
+    default: return "-";
+  }
 }
-        </script>
-        <style>
-            #chart_div{
-                width: 700px;
-                height: 550px;
-            }
-        </style>
+    </script>
+    <style>
+#chart_div{
+  width: 700px;
+  height: 550px;
+}
+    </style>
 	</head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>

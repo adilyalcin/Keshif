@@ -127,9 +127,9 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { title: "Date-Holiday", layout: "middle" },
-      { title: "Day In Week", value: "Date-Service Type", layout: "middle" },
-      { title: "Entry Time Period", value: "Ent Time Period", layout: "middle",
+      { name: "Date-Holiday", panel: "middle" },
+      { name: "Day In Week", value: "Date-Service Type", panel: "middle" },
+      { name: "Entry Time Period", value: "Ent Time Period", panel: "middle",
         catSortBy: function(){
           switch(this.id){
             case 'AM Peak': return 0;
@@ -139,15 +139,15 @@ google.setOnLoadCallback(function(){
             case 'Late Night Peak': return 4;
           }
         } },
-      { title: "Station - From", layout: "left" },
-      { title: "Line - From", layout: "middle",
+      { name: "Station - From", panel: "left" },
+      { name: "Line - From", panel: "middle",
         description: "The line information of the station-from. A station can be on multiple lines.",
         value: function(){ return stations[this["Station - From"]].line; } },
-      { title: "Station - To", layout: "right" },
-      { title: "Line - To", layout: "middle",
+      { name: "Station - To", panel: "right" },
+      { name: "Line - To", panel: "middle",
         description: "The line information of the station-to. A station can be on multiple lines.",
         value: function(){ return stations[this["Station - To"]].line; } },
-      { title: "Average Travel Minutes", layout: "bottom",
+      { name: "Average Travel Minutes", panel: "bottom",
         value: function(){ return this['Total Travel Minutes']/this['# Riders'];}
       }
     ]

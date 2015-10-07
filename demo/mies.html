@@ -35,11 +35,10 @@ google.setOnLoadCallback(function(){
       tables: "Projects"
     },
     summaries: [
-      { title: "Continent" },
-      { title: "City / Location",
-          value: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; } },
-      { title: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); } },
-      { title: "Type", layout: 'right' }
+      { name: "Continent" },
+      { name: "City / Location", value: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; } },
+      { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,1,1); } },
+      { name: "Type", panel: 'right' }
     ],
     itemDisplay: {
       sortingOpts: 'Year',

@@ -82,72 +82,71 @@ function loadData(browser){
 $(document).ready( function(){
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 200,
-        itemName: "Publications of Ben Shneiderman",
-        source: {
-            url: "https://www.cs.umd.edu/users/ben/publications.html",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "EntryType",
-            },{ title: "Authors",
-            },{ title: "Journal", value: function(){ return this.Fields.journal; }
-            },{ title: "Year", layout: "bottom"
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: { title:'Year', label: function(){ return this.Year.getFullYear(); }, inverse: true },
-            textSearch: { title: "title", value: function(){ return this.Fields.title;} },
-            displayType: 'list',
-            detailsToggle: "one",
-            recordView: function(){
-                var str="";
-                str+=this.Fields.title;
+    domID: "#chart_div",
+    categoryTextWidth: 200,
+    itemName: "Publications of Ben Shneiderman",
+    source: {
+      url: "https://www.cs.umd.edu/users/ben/publications.html",
+      callback: loadData
+    },
+    summaries: [
+      { name: "EntryType" },
+      { name: "Authors" },
+      { name: "Journal", value: function(){ return this.Fields.journal; } },
+      { name: "Year", panel: "bottom" }
+    ],
+    itemDisplay: {
+      sortingOpts: { name: "Year", label: function(){ return this.Year.getFullYear(); }, inverse: true },
+      textSearch: { name: "title", value: function(){ return this.Fields.title;} },
+      displayType: 'list',
+      detailsToggle: "one",
+      recordView: function(){
+        var str="";
+        str+=this.Fields.title;
 
-                if(this.PDF){
-                    str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+this.PDF.value+"' target='_blank'></a>";
-                }
-                if(this.Fields.doi){
-                    str+="<a class='pubLink doilink' href='http://dx.doi.org/"+this.Fields.doi+"' target='_blank'>[doi]</a>";
-                }
-
-                str+="<span class='item_details'>";
-
-                // author names
-                var authors = this.Authors;
-                if(authors){
-                    str+="<div class=\"authorNames\">";
-                    for(j=0; j<authors.length; j++){
-                        str+=authors[j];
-                        if(j!==authors.length-1) { str+=' & '; }
-                    }
-                    str+="</div>";
-                }
-                // Venue + details
-                    str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Year.getFullYear()+"</span> ";
-                    if(this.Fields.journal) {
-                        str+=this.Fields.journal+" ";
-                    }
-                    if(this.Fields.booktitle) {
-                        str+=this.Fields.booktitle+" ";
-                    }
-                    if(this.Fields.publisher) {
-                        str+="<b>Publisher:</b> "+this.Fields.publisher;
-                    }
-                    str+="</div>";
-
-                // Abstract
-                if(this.Abstract){
-                   str+="<div class='venueInfo'><span style='font-weight:bolder;'>Abstract:</span> "+this.Abstract.substr(11); 
-                }
-
-                str+="</span>";
-
-                return str;
-            }
+        if(this.PDF){
+          str+="<a class='pubLink pdflink fa fa-file-pdf-o' href='"+this.PDF.value+"' target='_blank'></a>";
         }
-    });
+        if(this.Fields.doi){
+          str+="<a class='pubLink doilink' href='http://dx.doi.org/"+this.Fields.doi+"' target='_blank'>[doi]</a>";
+        }
+
+        str+="<span class='item_details'>";
+
+        // author names
+        var authors = this.Authors;
+        if(authors){
+          str+="<div class=\"authorNames\">";
+          for(j=0; j<authors.length; j++){
+              str+=authors[j];
+              if(j!==authors.length-1) { str+=' & '; }
+          }
+          str+="</div>";
+      }
+      // Venue + details
+          str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Year.getFullYear()+"</span> ";
+          if(this.Fields.journal) {
+              str+=this.Fields.journal+" ";
+          }
+          if(this.Fields.booktitle) {
+              str+=this.Fields.booktitle+" ";
+          }
+          if(this.Fields.publisher) {
+              str+="<b>Publisher:</b> "+this.Fields.publisher;
+          }
+          str+="</div>";
+
+        // Abstract
+        if(this.Abstract){
+          str+="<div class='venueInfo'><span style='font-weight:bolder;'>Abstract:</span> "+this.Abstract.substr(11); 
+        }
+
+        str+="</span>";
+
+        return str;
+      }
+    }
+  });
 });
         </script>
 <style>

@@ -122,84 +122,83 @@ var getStars = function(n){
 // Google metadata at
 // https://docs.google.com/spreadsheets/d/1Qfgq9AM_Af54pkPKxMWSbiPj5xY8k-JybaJBE8Yt5pw/edit#gid=566794414
 $(document).ready( function(){
-    resizeBrowser(200,60);
-    $(window).resize(function() {
-        resizeBrowser(100,80);
-        browser.updateLayout();
-    });
+  resizeBrowser(200,60);
+  $(window).resize(function() {
+      resizeBrowser(100,80);
+      browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 150,
-        itemName: "Books Read by Ben Bederson",
-        source: {
-            url: "https://www.goodreads.com/review/list/14553051.xml?key=KAt49yfYt3zkkSmtCW0cLg&v=2&shelf=read&per_page=200",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Genres"
-            },{ title: "Bederson's Rating", value: "Rating", catLabel: function(){ return getStars(this.id); }
-            },{ title: "Author", 
-            },{ title: "Reviewed", description: "Mouse-over the book image to see my review",
-                value: function(){ return (this.Review!=="")?"Yes":"No"; }
-            },{ title: "# of Pages", value: "NumPages", collapsed: true,
-            },{ title: "Year: Book Read", value: "ReadYear", layout: "middle", collapsed: true
-            },{ title: "Year: Publication (Excl. Books Pre-1990)", value: "PubYear", layout: "middle"
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: [
-                "Rating",
-                { title: "Date read", value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
-            ],
-            textSearch: "Title",
-            displayType: "grid",
-            recordView: function(){
-                return "<a target='_blank' href="+this.URL+" class='thumbnail'>"+
-                    "<img class='thumbImg'></a><span class='subTitle'>"+this.Author+"</span>"+
-                    "<span class='title'>"+this.Title+"</span>"+getStars(this.Rating);
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",this.Thumb).attr("title", this.Review);
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    itemName: "Books Read by Ben Bederson",
+    source: {
+      url: "https://www.goodreads.com/review/list/14553051.xml?key=KAt49yfYt3zkkSmtCW0cLg&v=2&shelf=read&per_page=200",
+      callback: loadData
+    },
+    summaries: [
+      { name: "Genres" },
+      { name: "Bederson's Rating", value: "Rating", catLabel: function(){ return getStars(this.id); } },
+      { name: "Author" },
+      { name: "Reviewed", description: "Mouse-over the book image to see my review",
+        value: function(){ return (this.Review!=="")?"Yes":"No"; } },
+      { name: "# of Pages", value: "NumPages", collapsed: true },
+      { name: "Year: Book Read", value: "ReadYear", panel: "middle", collapsed: true },
+      { name: "Year: Publication (Excl. Books Pre-1990)", value: "PubYear", panel: "middle" }
+    ],
+    itemDisplay: {
+      sortingOpts: [
+        "Rating",
+        { name: "Date read", value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
+      ],
+      textSearch: "Title",
+      displayType: "grid",
+      recordView: function(){
+        return "<a target='_blank' href="+this.URL+" class='thumbnail'>"+
+            "<img class='thumbImg'></a><span class='subTitle'>"+this.Author+"</span>"+
+            "<span class='title'>"+this.Title+"</span>"+getStars(this.Rating);
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",this.Thumb).attr("title", this.Review);
+      }
+    }
+  });
 });
-        </script>
-<style>
-    .listItem{
-        width: 150px;
-    }
-    .content{
-        padding: 3px;
-    }
-    .thumbnail{
-        overflow: visible !important;
-    }
-    .listItem .subTitle{
-        text-align: center !important;
-    }
-    .listItem .title{
-        text-align: center !important;
-    }
-    .listItem .ratings{
-        margin-top: 2px;
-        display: block;
-        text-align: center;
-    }
-    .attrib .fa-star-o{
-        display: none;
-    }
-    .ratingStar.fa-star{
-        text-shadow: 0px 0px 1px black;
-    }
-    .ratingStar.fa-star-o{
-        color: rgb(228, 228, 228);
-    }
-    .ratingStar.fa-star{
-        color: rgb(234, 234, 124);
-    }
-</style>
+    </script>
+    <style>
+.listItem{
+  width: 150px;
+}
+.content{
+  padding: 3px;
+}
+.thumbnail{
+  overflow: visible !important;
+}
+.listItem .subTitle{
+  text-align: center !important;
+}
+.listItem .title{
+  text-align: center !important;
+}
+.listItem .ratings{
+  margin-top: 2px;
+  display: block;
+  text-align: center;
+}
+.attrib .fa-star-o{
+  display: none;
+}
+.ratingStar.fa-star{
+  text-shadow: 0px 0px 1px black;
+}
+.ratingStar.fa-star-o{
+  color: rgb(228, 228, 228);
+}
+.ratingStar.fa-star{
+  color: rgb(234, 234, 124);
+}
+    </style>
     </head>
 
     <body>

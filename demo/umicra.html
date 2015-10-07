@@ -19,97 +19,96 @@
 var noRibbon = true;
 
 google.setOnLoadCallback(function(){
+  resizeBrowser(120,80);
+  $(window).resize(function() {
     resizeBrowser(120,80);
-    $(window).resize(function() {
-        resizeBrowser(120,80);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 200,
-        barChartWidth: 120,
-        rightPanelLabelWidth: 90,
-        source: {
-            gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
-            tables: [ "Publications", "Regulatory Domains", "Authors"]
-        },
-        loadedCb: function(browser){
-			kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
-            kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
-        },
-        readyCb: function(browser){
-            $(".paperName").click(function(d){
-                browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
-            });
-        },
-        summaries: [
-            {   title: "Regulatory Domains", catTableName: "Regulatory Domains", catTooltip: "Description"
-            },{ title: "Research Topics"
-            },{ title: "Study Design",
-                description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental"
-            },{ title: "Study Type", description: "Venue where study was published"
-            },{ title: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; }
-            },{ title: "Summarized by MCEP", collapsed: true
-            },{ title: "Year", layout: 'middle', value: function(){ return this.Date.getFullYear(); }
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 45,
-            sortingOpts: 'Year',
-            textSearch: 'Title',
-            detailsToggle: "one",
-            recordView: function(){
-                var j;
-                var str="";
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 200,
+    barChartWidth: 120,
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
+      tables: [ "Publications", "Regulatory Domains", "Authors"]
+    },
+    loadedCb: function(browser){
+  		kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
+        kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
+      },
+    readyCb: function(browser){
+      $(".paperName").click(function(d){
+          browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+      });
+    },
+    summaries: [
+      { name: "Regulatory Domains", catTableName: "Regulatory Domains", catTooltip: "Description" },
+      { name: "Research Topics" },
+      { name: "Study Design",
+          description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental" },
+      { name: "Study Type", description: "Venue where study was published" },
+      { name: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; } },
+      { name: "Summarized by MCEP", collapsed: true },
+      { name: "Year", panel: 'middle', value: function(){ return this.Date.getFullYear(); } }
+    ],
+    itemDisplay: {
+      sortColWidth: 45,
+      sortingOpts: 'Year',
+      textSearch: 'Title',
+      detailsToggle: "one",
+      recordView: function(){
+          var j;
+          var str="";
 
-                // paper name
-                str+="<div class=''> <span>";
-                str+="<span class='paperName'>"+this.Title+"</span>";
-                if(this.url.trim()!==""){
-                    str+=" <a class='pubLink fa fa-external-link  externallink' target='_blank' href='"+this.url+"'>link</a>";
-                }
-                str+="</div>";
+          // paper name
+          str+="<div class=''> <span>";
+          str+="<span class='paperName'>"+this.Title+"</span>";
+          if(this.url.trim()!==""){
+              str+=" <a class='pubLink fa fa-external-link  externallink' target='_blank' href='"+this.url+"'>link</a>";
+          }
+          str+="</div>";
 
-                str+="<span class='item_details'>";
+          str+="<span class='item_details'>";
 
-                // author names
-                var authors = this.Authors;
-                str+="<div class=\"authorNames\"><span class='header'></span> ";
-                for(j=0; j<authors.length; j++){
-                    var authData=kshf.dt_id.Authors[authors[j]].data;
-                    str+=authData['First Names']+" "+authData['Last Name'];
-                    if(j!==authors.length-1) { str+=', '; }
-                }
-                str+="</div>";
-                // keywords for sujects
-                var cats = this['Regulatory Domains'];
-                if(cats.length>0){
-					str+="<div class=\"subjects\"> <span class='header'>Regulatory Domain</span>: "+cats.join(", ")+"</div>";
-                }
-                // keywords for aspects
-                var cats = this['Research Topics'];
-                if(cats.length>0){
-                    str+="<div class=\"aspects\"> <span class='header'>Research Topic</span>: "+cats.join(", ")+"</div>";
-                }
-                // keywords for peer reviewed
-				str+="<div class=\"peer\"> <span class='header'>Study Type</span>: "+this['Study Type']+"</div>";
-                // keywords for study type
-                var cats = this['Study Design'];
-                if(cats.length>0){
-					str+="<div class=\"study\"> <span class='header'>Study Design</span>: "+cats.join(", ")+"</div>";
-                }
-                // keywords for summarized
-                var cats = this['Summarized by MCEP'];
-                if(cats.length>0){
-                    str+="<div class=\"summar\"> <span class='header'>Summarized</span>: "+cats+"</div>";
-                }
+          // author names
+          var authors = this.Authors;
+          str+="<div class=\"authorNames\"><span class='header'></span> ";
+          for(j=0; j<authors.length; j++){
+              var authData=kshf.dt_id.Authors[authors[j]].data;
+              str+=authData['First Names']+" "+authData['Last Name'];
+              if(j!==authors.length-1) { str+=', '; }
+          }
+          str+="</div>";
+          // keywords for sujects
+          var cats = this['Regulatory Domains'];
+          if(cats.length>0){
+            str+="<div class=\"subjects\"> <span class='header'>Regulatory Domain</span>: "+cats.join(", ")+"</div>";
+          }
+          // keywords for aspects
+          var cats = this['Research Topics'];
+          if(cats.length>0){
+              str+="<div class=\"aspects\"> <span class='header'>Research Topic</span>: "+cats.join(", ")+"</div>";
+          }
+          // keywords for peer reviewed
+          str+="<div class=\"peer\"> <span class='header'>Study Type</span>: "+this['Study Type']+"</div>";
+          // keywords for study type
+          var cats = this['Study Design'];
+          if(cats.length>0){
+          str+="<div class=\"study\"> <span class='header'>Study Design</span>: "+cats.join(", ")+"</div>";
+          }
+          // keywords for summarized
+          var cats = this['Summarized by MCEP'];
+          if(cats.length>0){
+              str+="<div class=\"summar\"> <span class='header'>Summarized</span>: "+cats+"</div>";
+          }
 
-                return str;
-            }
-        }
-    });
+          return str;
+      }
+    }
+  });
 });
         </script>
 <style>

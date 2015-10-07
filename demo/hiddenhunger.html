@@ -28,39 +28,39 @@ google.setOnLoadCallback(function(){
             tables: {name:"eth_anth", id:"individual_id"}
         },
         summaries: [
-            {   title:"Indicators", layout: "middle",
-                description: "",
-                value:function(){
-                    var r=[];
-                    if(this.gender==="Male") {
-                        if(this.underweight_m===1) r.push("Under-Weight");
-                        if(this.stunted_m    ===1) r.push("Stunted (Low Height for Age)");
-                        if(this.wasted_m     ===1) r.push("Wasted (Low Weight for Height)");
-                    }
-                    if(this.gender==="Female"){
-                        if(this.underweight_f===1) r.push("Under-Weight");
-                        if(this.stunted_f    ===1) r.push("Stunted (Low Height for Age)");
-                        if(this.wasted_f     ===1) r.push("Wasted (Low Weight for Height)");
-                    }
-                    return r;
-                }
+            { name:"Indicators", panel: "middle",
+              description: "",
+              value:function(){
+                  var r=[];
+                  if(this.gender==="Male") {
+                      if(this.underweight_m===1) r.push("Under-Weight");
+                      if(this.stunted_m    ===1) r.push("Stunted (Low Height for Age)");
+                      if(this.wasted_m     ===1) r.push("Wasted (Low Weight for Height)");
+                  }
+                  if(this.gender==="Female"){
+                      if(this.underweight_f===1) r.push("Under-Weight");
+                      if(this.stunted_f    ===1) r.push("Stunted (Low Height for Age)");
+                      if(this.wasted_f     ===1) r.push("Wasted (Low Weight for Height)");
+                  }
+                  return r;
+              }
             },
-            {title:"Region", value: "region", layout: "left"},
-            {title:"Zone", value: "zone", layout: "left", type: "categorical", collapsed: true},
-            {title:"Rural", value: "rural", layout: "middle"},
-            {title:"Gender", value: "gender"},
-            {title:"Household Head Gender", value: "head_sex"},
-            {title:"Literate", value: "literate", type: "categorical", description:"Completed education?"},
-            {title:"Highest Grade", value: "highest_grade", description: "Highest grade completed",
-              catSortBy: "id", collapsed: true},
-            {title:"Age (Months)", value: "agem", layout: "bottom"},
-            {title:"Weight", layout: "middle", intervalScale: "linear", unitName: "kg",
-              value: function(){ return Math.max(Math.min(this.weight,30),0); }},
-            {title:"Height", unitName: "cm", layout: "middle",
-              value: function(){ return Math.max(Math.min(this.height,120),50); }},
-            {value: "haz", title:"Length / height for age", layout:"right"},
-            {value: "waz", title:"Weight for age", layout:"right"},
-            {value: "whz", title:"Weight for length/height", layout:"right"}
+            { name:"Region", value: "region", panel: "left" },
+            { name:"Zone", value: "zone", panel: "left", catSortBy: "id", collapsed: true },
+            { name:"Rural", value: "rural", panel: "middle" },
+            { name:"Gender", value: "gender" },
+            { name:"Household Head Gender", value: "head_sex" },
+            { name:"Literate", value: "literate", catSortBy: "id", description:"Completed education?" },
+            { name:"Highest Grade", value: "highest_grade", description: "Highest grade completed",
+              catSortBy: "id", collapsed: true },
+            { name:"Age (Months)", value: "agem", panel: "bottom" },
+            { name:"Weight", panel: "middle", intervalScale: "linear", unitName: "kg",
+              value: function(){ return Math.max(Math.min(this.weight,30),0);} },
+            { name:"Height", unitName: "cm", panel: "middle",
+              value: function(){ return Math.max(Math.min(this.height,120),50);} },
+            { name:"Length / height for age", value: "haz", panel:"right" },
+            { name:"Weight for age", value: "waz", panel:"right" },
+            { name:"Weight for length/height", value: "whz", panel:"right" }
         ]
     });
 });
@@ -71,151 +71,146 @@ var browser_mwi_nutr=null;
 function showBrowsers(v){
     d3.select('body').attr('show',v);
     if(v==='eth_nutr' && browser_eth_nutr===null){
-        browser_eth_nutr = new kshf.Browser({
-            domID: "#browser_eth_nutr",
-            barChartWidth: 120,
-            categoryTextWidth: 170,
-            itemName: "Ethiopian Nutrition (Per-Household)",
-            source: {
-                gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                tables: "eth_nutrition"
-            },
-            summaries: [
-                {title:"Region", value:"cq11"},
-                {title:"Is Rural?", value: "ur",
-                    catLabel: function(){
-                        if(this.id===1) return "Not-Rural";
-                        if(this.id===2) return "Rural";
-                    }
-                },
-                {
-                    title: "Diversity (Using Shannon Index)",
-                    description: 
-                        "The higher the Simpson index reported in the dataset, the more diverse is the diet of the individual",
-                    value: "simpson",
-                    layout: "middle"
-                },
+      browser_eth_nutr = new kshf.Browser({
+        domID: "#browser_eth_nutr",
+        barChartWidth: 120,
+        categoryTextWidth: 170,
+        itemName: "Ethiopian Nutrition (Per-Household)",
+        source: {
+          gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+          tables: "eth_nutrition"
+        },
+        summaries: [
+          { name:"Region", value:"cq11"},
+          { name:"Is Rural?", value: "ur",
+            catLabel: function(){
+              if(this.id===1) return "Not-Rural";
+              if(this.id===2) return "Rural";
+            } },
+          { name: "Diversity (Using Shannon Index)", value: "simpson", panel: "middle", 
+            description: 
+                "The higher the Simpson index reported in the dataset, the more diverse is the diet of the individual" },
 
-                {title: "Dietary Diversity Index ", value:"ddi", layout: "middle"},
-                {title: "Household Dietary Diversity Score", value:"hdds", layout: "middle",
-                    description:"It categorizes every food item into 12 food groups and computes how many food groups were consumed by the household over the week preceding the interview."},
-                //{title: "Minimum Dietary Energy Requirement for HH (2005 standards)", value:"mder", layout: "middle"},
-                {title: "Revealed Optimal Diversity index", value:"rodi", layout: "middle"},
+          { name: "Dietary Diversity Index ", value:"ddi", panel: "middle" },
+          { name: "Household Dietary Diversity Score", value:"hdds", panel: "middle",
+              description:"It categorizes every food item into 12 food groups and computes how many food groups were consumed by the household over the week preceding the interview."},
+          //{ name: "Minimum Dietary Energy Requirement for HH (2005 standards)", value:"mder", panel: "middle"},
+          { name: "Revealed Optimal Diversity index", value:"rodi", panel: "middle" },
 
-                {title:"calcium_ae", layout: "right", unitName:"kcal"},
-                {title:"protein_ae", layout: "right", unitName:"g"},
-                {title:"iron_ae", layout: "right", unitName: "mg"},
-                {title:"calories_ae", layout: "left"},
-                {title:"vitamina_ae", layout: "right",unitName: "µg RE"},
-                {title:"zinc_ae", layout: "right", unitName:"mg"},
-                {title:"calcium_ae", layout: "left", unitName:"mg"},
-            ]
-        });
+          { name:"calcium_ae", panel: "right", unitName:"kcal" },
+          { name:"protein_ae", panel: "right", unitName:"g" },
+          { name:"iron_ae", panel: "right", unitName: "mg" },
+          { name:"calories_ae", panel: "left" },
+          { name:"vitamina_ae", panel: "right",unitName: "µg RE" },
+          { name:"zinc_ae", panel: "right", unitName:"mg" },
+          { name:"calcium_ae", panel: "left", unitName:"mg" },
+        ]
+      });
     }
     if(v==='mwi_anth' && browser_mwi_anth===null){
         browser_mwi_anth = new kshf.Browser({
-            domID: "#browser_mwi_anth",
-            barChartWidth: 100,
-            leftPanelLabelWidth: 200,
-            itemName: "Malawi Anthropometrics (Per-Child)",
-            source: {
-                gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                tables: "mwi_anth"
-            },
-            summaries: [
-                {title:"Sex",value:"sex"},
-                
-                {value:"haz06", title:"Length/height-for-age Z-score", layout:"middle"},
-                {value:"waz06", title:"Weight-for-age Z-score", layout:"middle"},
-                {value:"whz06", title:"Weight-for-length/height Z-score", layout:"middle"},
-                {value:"bmiz06", title:"BMI-for-age Z-score", layout:"middle"},
+          domID: "#browser_mwi_anth",
+          barChartWidth: 100,
+          leftPanelLabelWidth: 200,
+          itemName: "Malawi Anthropometrics (Per-Child)",
+          source: {
+            gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+            tables: "mwi_anth"
+          },
+          summaries: [
+            { name:"Sex", value:"sex"},
+            
+            { name:"Length/height-for-age Z-score", value:"haz06", panel:"middle"},
+            { name:"Weight-for-age Z-score", value:"waz06", panel:"middle"},
+            { name:"Weight-for-length/height Z-score", value:"whz06", panel:"middle"},
+            { name:"BMI-for-age Z-score", value:"bmiz06", panel:"middle"},
 
-                {title: "Under-Weight", value: function(){
-                    if(this.wa_s) return "Severely";
-                    if(this.wa_m) return "Moderately";
-                }},
-                {title: "Stunted (Low Height for Age)", value: function(){
-                    if(this.ha_s) return "Severely";
-                    if(this.ha_m) return "Moderately";
-                }},
-                {title: "Wasted (Low Weight for Height)", value: function(){
-                    if(this.wh_s) return "Severely";
-                    if(this.wh_m) return "Moderately";
-                }}
-            ]
+            { name: "Under-Weight", 
+              value: function(){
+                if(this.wa_s) return "Severely";
+                if(this.wa_m) return "Moderately";
+              }},
+            { name: "Stunted (Low Height for Age)", 
+              value: function(){
+                if(this.ha_s) return "Severely";
+                if(this.ha_m) return "Moderately";
+              }},
+            { name: "Wasted (Low Weight for Height)", 
+              value: function(){
+                if(this.wh_s) return "Severely";
+                if(this.wh_m) return "Moderately";
+              }}
+          ]
         });
     }
     if(v==='mwi_nutr' && browser_mwi_nutr===null){
-        browser_mwi_nutr = new kshf.Browser({
-            domID: "#browser_mwi_nutr",
-            barChartWidth: 100,
-            leftPanelLabelWidth: 200,
-            rightPanelLabelWidth: 160,
-            itemName: "Malawi Nutrition (Per-Household)",
-            source: {
-                gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
-                tables: "mwi_nutrition"
-            },
-            summaries: [
-                { title: "District", value: "a1" },
-                { title: "EPA", value: "a2" },
-                { title: "Section", value: "a3" },
-                { title: "Village", value: "a4", collapsed:true },
-                { title: "Household Size", value: "hhsize", collapsed:true, layout:"bottom" },
-                { title: "Household Head - Average Age", value: "hh_age", collapsed:true, layout:"bottom" },
-                { title: "Total wealth index", value: "wealth", collapsed:true, layout:"bottom" },
-                
-                { title: "Can read and write?", value: "b7", layout:"right"},
-                { title: "Primary activity", value: "b8", layout:"right"},
-                { title: "Marital status", value: "b10", layout:"right"},
-                { title: "Indiv. Highest Education Lvl", value: "edu", layout:"right"},
+      browser_mwi_nutr = new kshf.Browser({
+        domID: "#browser_mwi_nutr",
+        barChartWidth: 100,
+        leftPanelLabelWidth: 200,
+        rightPanelLabelWidth: 160,
+        itemName: "Malawi Nutrition (Per-Household)",
+        source: {
+          gdocId: '1tHiDm1y8Cks2R773WSUY0hczS4AHd4nlLA5mGW82UUE',
+          tables: "mwi_nutrition"
+        },
+        summaries: [
+          { name: "District", value: "a1" },
+          { name: "EPA", value: "a2" },
+          { name: "Section", value: "a3" },
+          { name: "Village", value: "a4", collapsed:true },
+          { name: "Household Size", value: "hhsize", collapsed:true, panel:"bottom" },
+          { name: "Household Head - Average Age", value: "hh_age", collapsed:true, panel:"bottom" },
+          { name: "Total wealth index", value: "wealth", collapsed:true, panel:"bottom" },
+          
+          { name: "Can read and write?", value: "b7", panel:"right"},
+          { name: "Primary activity", value: "b8", panel:"right"},
+          { name: "Marital status", value: "b10", panel:"right"},
+          { name: "Indiv. Highest Education Lvl", value: "edu", panel:"right"},
 
-                {   title: "Below Recommended", description: "Consumes less than the reccommended amount of ...",
-                    layout: "middle",
-                    value: function(){
-                        var r=[];
-                        if(this.def_kcal_rec_hh==="No") r.push("Calories");
-                        if(this.def_prot_rec_hh==="No") r.push("Protein");
-                        if(this.def_iron_rec_hh==="No") r.push("Iron");
-                        if(this.def_zinc_rec_hh==="No") r.push("Zinc");
-                        if(this.def_vita_A_rec_hh==="No") r.push("Vitamin A");
-                        if(this.def_vita_E_rec_hh==="No") r.push("Vitamin E");
-                        if(this.def_vita_C_rec_hh==="No") r.push("Vitamin C");
-                        if(this.def_ribof_rec_hh==="No") r.push("Riboflavin");
-                        if(this.def_thia_rec_hh==="No") r.push("Thiamin");
-                        if(this.def_nia_rec_hh==="No") r.push("Niacin");
-                        if(this.def_vita_B6_rec_hh==="No") r.push("Vitamin B6");
-                        if(this.def_fol_rec_hh==="No") r.push("Folate");
-                        if(this.def_calcium_rec_hh==="No") r.push("Calcium");
-                        if(this.def_vita_B12_rec_hh==="No") r.push("Vitamin B12");
-                        return r;
-                    }
-                },
-                {   title: "Below Required", description: "Consumes less than the required amount of ...",
-                    layout: "middle",
-                    value: function(){
-                        var r=[];
-                        if(this.def_kcal_req_hh==="No") r.push("Calories");
-                        if(this.def_prot_req_hh==="No") r.push("Protein");
-                        if(this.def_iron_req_hh==="No") r.push("Iron");
-                        if(this.def_zinc_req_hh==="No") r.push("Zinc");
-                        if(this.def_vita_A_req_hh==="No") r.push("Vitamin A");
-                        if(this.def_vita_E_req_hh==="No") r.push("Vitamin E");
-                        if(this.def_vita_C_req_hh==="No") r.push("Vitamin C");
-                        if(this.def_ribof_req_hh==="No") r.push("Riboflavin");
-                        if(this.def_thia_req_hh==="No") r.push("Thiamin");
-                        if(this.def_nia_req_hh==="No") r.push("Niacin");
-                        if(this.def_vita_B6_req_hh==="No") r.push("Vitamin B6");
-                        if(this.def_fol_req_hh==="No") r.push("Folate");
-                        if(this.def_calcium_req_hh==="No") r.push("Calcium");
-                        if(this.def_vita_B12_req_hh==="No") r.push("Vitamin B12");
-                        return r;
-                    }
-                },{
-                    value:"depend_ratio",title: "Dependency ratio", unitName: "%"
-                }
-            ]
-        });
+          { name: "Below Recommended", description: "Consumes less than the reccommended amount of ...",
+            panel: "middle",
+            value: function(){
+              var r=[];
+              if(this.def_kcal_rec_hh==="No") r.push("Calories");
+              if(this.def_prot_rec_hh==="No") r.push("Protein");
+              if(this.def_iron_rec_hh==="No") r.push("Iron");
+              if(this.def_zinc_rec_hh==="No") r.push("Zinc");
+              if(this.def_vita_A_rec_hh==="No") r.push("Vitamin A");
+              if(this.def_vita_E_rec_hh==="No") r.push("Vitamin E");
+              if(this.def_vita_C_rec_hh==="No") r.push("Vitamin C");
+              if(this.def_ribof_rec_hh==="No") r.push("Riboflavin");
+              if(this.def_thia_rec_hh==="No") r.push("Thiamin");
+              if(this.def_nia_rec_hh==="No") r.push("Niacin");
+              if(this.def_vita_B6_rec_hh==="No") r.push("Vitamin B6");
+              if(this.def_fol_rec_hh==="No") r.push("Folate");
+              if(this.def_calcium_rec_hh==="No") r.push("Calcium");
+              if(this.def_vita_B12_rec_hh==="No") r.push("Vitamin B12");
+              return r;
+            } },
+          { name: "Below Required", description: "Consumes less than the required amount of ...",
+            panel: "middle",
+            value: function(){
+              var r=[];
+              if(this.def_kcal_req_hh==="No") r.push("Calories");
+              if(this.def_prot_req_hh==="No") r.push("Protein");
+              if(this.def_iron_req_hh==="No") r.push("Iron");
+              if(this.def_zinc_req_hh==="No") r.push("Zinc");
+              if(this.def_vita_A_req_hh==="No") r.push("Vitamin A");
+              if(this.def_vita_E_req_hh==="No") r.push("Vitamin E");
+              if(this.def_vita_C_req_hh==="No") r.push("Vitamin C");
+              if(this.def_ribof_req_hh==="No") r.push("Riboflavin");
+              if(this.def_thia_req_hh==="No") r.push("Thiamin");
+              if(this.def_nia_req_hh==="No") r.push("Niacin");
+              if(this.def_vita_B6_req_hh==="No") r.push("Vitamin B6");
+              if(this.def_fol_req_hh==="No") r.push("Folate");
+              if(this.def_calcium_req_hh==="No") r.push("Calcium");
+              if(this.def_vita_B12_req_hh==="No") r.push("Vitamin B12");
+              return r;
+            }},
+          { value:"depend_ratio",name: "Dependency ratio", unitName: "%" }
+        ]
+      });
     }
 };
 

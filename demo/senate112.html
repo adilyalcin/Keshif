@@ -26,12 +26,12 @@ google.setOnLoadCallback( function(){
       tables: "Senate112"
     },
     summaries: [
-      { title: "Result" },
-      { title: "Session", catSortBy: "id", catLabel: function(){return ((this.id===1)?"1st":"2nd")+" Session";} },
-      { title: "Yea's", },
-      { title: "Nay's", },
-      { title: "Bill", },
-      { title: "Vote Date", layout: 'middle' }
+      { name: "Result" },
+      { name: "Session", catSortBy: "id", catLabel: function(){return ((this.id===1)?"1st":"2nd")+" Session";} },
+      { name: "Yea's" },
+      { name: "Nay's" },
+      { name: "Bill" },
+      { name: "Vote Date", panel: 'middle' }
     ],
     itemDisplay: {
       sortColWidth: 80,

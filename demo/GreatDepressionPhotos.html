@@ -34,12 +34,12 @@ $(document).ready( function(){
       tables: "photogrammar_yale_california"
     },
     summaries: [
-      { title: "Photographer", value: "pname"},
-      { title: "Category", value: "van0" },
-      { title: "County", value: "county", layout: "middle"},
-      { title: "Year", value: "year", layout: "right"},
-      { title: "Month", value: "month", layout: "right"},
-      { title: "Date", layout: "bottom",
+      { name: "Photographer", value: "pname"},
+      { name: "Category", value: "van0" },
+      { name: "County", value: "county", panel: "middle"},
+      { name: "Year", value: "year", panel: "right"},
+      { name: "Month", value: "month", panel: "right"},
+      { name: "Date", panel: "bottom",
         value: function(){ 
           if(this.date===undefined) return;
           var x=dateFormat.parse(this.date);

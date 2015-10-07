@@ -26,14 +26,14 @@ google.setOnLoadCallback( function(){
       tables: "Presidents"
     },
     summaries: [
-      { title: "Party" },
-      { title: "State of Birth" },
-      { title: "Occupation" },
-      { title: "College", layout: 'right' },
-      { title: "Religion", layout: 'right' },
-      { title: "Notes", layout: 'right' },
-      { title: "Age at inaguration", layout: 'right' },
-      { title: "Term Start", layout: 'bottom' }
+      "Party",
+      "State of Birth",
+      "Occupation",
+      { name: "College", panel: 'right' },
+      { name: "Religion", panel: 'right' },
+      { name: "Notes", panel: 'right' },
+      { name: "Age at inaguration", panel: 'right' },
+      { name: "Term Start", panel: 'bottom' }
     ],
     itemDisplay: {
       displayType: 'grid',

@@ -41,13 +41,13 @@ google.setOnLoadCallback(function(){
       tables: {name:"Companies", id:'Stock'}
     },
     summaries: [
-      { title: "Industry", value: function(){ return this.Industry+" "+getIcon(this.Industry); } },
-      { title: "Cash vs. Debt", layout: 'left',
+      { name: "Industry", value: function(){ return this.Industry+" "+getIcon(this.Industry); } },
+      { name: "Cash vs. Debt", panel: 'left',
         value: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); } },
-      { title: "Cash", value: 'Cash ($B)', unitName: 'B$', intervalScale: 'log' },
-      { title: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
-//          },{ title: "Market Capitalization", layout: 'right'
-//          },{ title: "Profit Margin", layout: 'right'
+      { name: "Cash", value: 'Cash ($B)', unitName: 'B$', intervalScale: 'log' },
+      { name: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
+//          },{ name: "Market Capitalization", panel: 'right'
+//          },{ name: "Profit Margin", panel: 'right'
       }
     ],
     itemDisplay: {

@@ -4,7 +4,7 @@ var googleDriveDir = "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledri
 
 var browser_configs = {
   lesMiserables: {
-    title: "Les Miserables",
+    name: "Les Miserables",
     sets: "80 characters",
     items: "356 chapters",
     attribs: "Book Volume",
@@ -23,10 +23,10 @@ var browser_configs = {
         kshf.Util.cellToArray(kshf.dt.Chapters, ['Characters'], /,|;/g, false);
       },
       summaries: [
-        { title: "Characters",
+        { name: "Characters",
           catSortBy: {name: "# of Occurances"},
           catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
-        { title: "Volume", collapsed: true,
+        { name: "Volume", collapsed: true,
           catSortBy: "id",
           catLabel: function(){ return "Volume "+this.id; } }
       ],
@@ -51,7 +51,7 @@ var browser_configs = {
     }
   },
   movies: {
-    title: "Movies",
+    name: "Movies",
     sets: "17 genres",
     items: "3883 movies",
     attribs: "",
@@ -65,7 +65,7 @@ var browser_configs = {
       itemName: "Movies",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies_radialset" },
       summaries: [
-        { title: "Genres",
+        { name: "Genres",
           value: function(){
             var genres=[];
             for(var x in this){
@@ -79,9 +79,9 @@ var browser_configs = {
             return genres;
           },
           enableSetVis: true },
-        { title: "Rating", value: "AvgRating", layout: 'right' },
-        { title: "Watched", value: "Watches", layout: 'right', intervalScale: 'log' },
-        { title: "Release Year", layout: 'bottom', 
+        { name: "Rating", value: "AvgRating", panel: 'right' },
+        { name: "Watched", value: "Watches", panel: 'right', intervalScale: 'log' },
+        { name: "Release Year", panel: 'bottom', 
           value: function(){ return this.ReleaseDate; } }
       ],
       itemDisplay: {
@@ -105,7 +105,7 @@ var browser_configs = {
     }
   },
   simpsons: {
-    title: "Simpsons",
+    name: "Simpsons",
     sets: "6 features",
     items: "24 characters",
     attribs: "Age",
@@ -118,7 +118,7 @@ var browser_configs = {
       itemName: "Characters in the Simpsons",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "simpsons" },
       summaries: [
-        { title: "Features",
+        { name: "Features",
           value: function(){
               var r=[];
               if(this.School===1) r.push("Goes to school");
@@ -143,7 +143,7 @@ var browser_configs = {
     }
   },
   foodFlavorNetwork: {
-    title: "Food Flavor Network",
+    name: "Food Flavor Network",
     sets: "82 Ingredients",
     items: "5000 Recipes",
     attribs: "Region",
@@ -161,13 +161,13 @@ var browser_configs = {
         kshf.Util.cellToArray(kshf.dt.Recipes,['Ingredients'],"*",false);
       },
       summaries: [
-        { title: "Ingredients", minAggrValue: 100, layout: "middle" },
-        { title: "Region", layout: "middle" }
+        { name: "Ingredients", minAggrValue: 100, panel: "middle" },
+        { name: "Region", panel: "middle" }
       ]
     }
   },
   hboShows: {
-    title: "HBO Actors",
+    name: "HBO Actors",
     sets: "24 Shows",
     items: "67 Actors",
     attribs: "",
@@ -265,7 +265,7 @@ var browser_configs = {
           browser.loadCharts();
         }
       },
-      summaries: [{ title: "HBO Shows", layout: "left" }],
+      summaries: [{ name: "HBO Shows", panel: "left" }],
       itemDisplay: {
         sortColWidth: 65,
         sortingOpts: [{ title: '# of Shows', value: function(){ return this['HBO Shows'].length; } }],
@@ -278,7 +278,7 @@ var browser_configs = {
     }
   },
   dataBreaches: {
-    title: "Data Breaches",
+    name: "Data Breaches",
     sets: "18 RecordTypes",
     items: "284 breaches",
     attribs: "Industry, Date...",
@@ -298,11 +298,11 @@ var browser_configs = {
         kshf.Util.cellToArray(kshf.dt.Breaches, ['Record Types'], ",", false);
       },
       summaries:[
-        { title: "Record Types", catLabel: getRecordTypeLabel },
-        { title: "Type", layout: 'right' },
-        { title: "Industry", layout: 'right' },
-        { title: "Source", layout: 'right' },
-        { title: "Date", layout: "bottom" }
+        { name: "Record Types", catLabel: getRecordTypeLabel },
+        { name: "Type", panel: 'right' },
+        { name: "Industry", panel: 'right' },
+        { name: "Source", panel: 'right' },
+        { name: "Date", panel: "bottom" }
       ],
       itemDisplay: {
         sortColWidth: 65,
@@ -312,7 +312,7 @@ var browser_configs = {
     }
   },
   tedTalks: {
-    title: "TED Talks",
+    name: "TED Talks",
     sets: "9 Feelings",
     items: "1759 TED Talks",
     attribs: "#ofViews",
@@ -340,8 +340,8 @@ var browser_configs = {
         })
       },
       summaries: [
-        { title: "Feelings" },
-        { title: "Views", layout: "bottom" }
+        { name: "Feelings" },
+        { name: "Views", panel: "bottom" }
       ],
       itemDisplay: {
         sortColWidth: 80,
@@ -351,7 +351,7 @@ var browser_configs = {
     }
   },
   acmPapers_terms: {
-    title: "ACM Papers - Terms",
+    name: "ACM Papers - Terms",
     sets: "135 Terms",
     items: "70k papers",
     attribs: "Year",
@@ -370,7 +370,7 @@ var browser_configs = {
         tables: ["papers", "keywords", "ccs98"]
       },
       summaries: [
-        { title: "Terms", layout: "middle",
+        { name: "Terms", panel: "middle",
           value: function(){
               if(this.terms===undefined) return;
               if(this.terms==="") return;
@@ -385,12 +385,12 @@ var browser_configs = {
           },
           catLabel: function(){ return kshf.dt_id.ccs98[this.id].data.label; },
           minAggrValue: 200},
-        { title: "Year", layout: "bottom" }
+        { name: "Year", panel: "bottom" }
       ]
     }
   },
   acmPapers_keywords: {
-    title: "ACM Papers - Keywords",
+    name: "ACM Papers - Keywords",
     sets: "60 Keywords",
     items: "70k papers",
     attribs: "Year",
@@ -409,7 +409,7 @@ var browser_configs = {
         tables: ["papers", "keywords", "ccs98"]
       },
       summaries: [
-        { title: "Keywords", layout: "middle",
+        { name: "Keywords", panel: "middle",
           value: function(){
             if(this.keywords===undefined) return;
             if(this.keywords==="") return;
@@ -424,12 +424,12 @@ var browser_configs = {
             return kshf.dt_id.keywords[this.id].data.label;
           },
           minAggrValue: 80 },
-        { title: "Year", layout: "middle" }
+        { name: "Year", panel: "middle" }
       ],
     }
   },
   sharks: {
-    title: "Shark Blood Tests",
+    name: "Shark Blood Tests",
     sets: "53 samples",
     items: "1817 compounds",
     attribs: "",
@@ -471,8 +471,8 @@ var browser_configs = {
         }
       },
       summaries:[
-        { title: "Samples", value: function(){ return this[0]; } },
-        { title: "Sharks",
+        { name: "Samples", value: function(){ return this[0]; } },
+        { name: "Sharks",
           description: "The compount appears with the shark if any sample taken from that shark includes that compound",
           value: function(){
             var r=[];
@@ -491,7 +491,7 @@ var browser_configs = {
     }
   },
   socialgraph: {
-    title: "Social Graph",
+    name: "Social Graph",
     sets: "7 Social Networks",
     items: "618 People",
     attribs: "",
@@ -503,7 +503,7 @@ var browser_configs = {
       itemName: "People",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: {name:"socialgraph", id:"Name"} },
       summaries:[
-        { title: "Sets", layout: "middle",
+        { name: "Sets", panel: "middle",
           value: function(){
               var r=[];
               if(this['Facebook']===1) r.push('Facebook');
@@ -520,7 +520,7 @@ var browser_configs = {
     }
   },
   faculty_country: {
-    title: "CS Faculty x Countries",
+    name: "CS Faculty x Countries",
     sets: "76 countries",
     items: "2100 faculty",
     attribs: "",
@@ -538,7 +538,7 @@ var browser_configs = {
         tables: "cs_faculty"
       },
       summaries: [
-        { title: "<i class='fa fa-globe'></i> Former Countries",
+        { name: "<i class='fa fa-globe'></i> Former Countries",
           description: "For each CS faculty, lists the countries that s/he received her degrees from",
           value: function(){
             var r=[];
@@ -562,7 +562,7 @@ var browser_configs = {
     }
   },
   faculty_univ: {
-    title: "CS Faculty x Universities",
+    name: "CS Faculty x Universities",
     sets: "637 Universities",
     items: "2100 Faculty",
     attribs: "",
@@ -579,7 +579,7 @@ var browser_configs = {
         tables: "cs_faculty"
       },
       summaries: [
-        { title: "<i class='fa fa-globe'></i> Universities Attanded",
+        { name: "<i class='fa fa-globe'></i> Universities Attanded",
           description: "For each CS faculty, lists the countries that s/he received her degrees from",
           value: function(){
             var r=[];
@@ -599,7 +599,7 @@ var browser_configs = {
     }
   },
   factbook_borders: {
-    title: "Neighbor Countries",
+    name: "Neighbor Countries",
     sets: ", As items & sets",
     items: "191 Countries",
     attribs: "",
@@ -615,16 +615,16 @@ var browser_configs = {
           factBrowser = browser;
           $.ajax( {
             url: googleDriveDir+'/factbook.xml',
-            type:"GET",
-            dataType:"xml",
+            type: "GET",
+            dataType: "xml",
             async: true,
             success: function(facts){ return loadFactbook(facts, browser); }
           });
         }
       },
       summaries: [
-        { title: "Border countries" },
-        { title: "RegionID", layout: "left", collapsed: true }
+        { name: "Border countries" },
+        { name: "RegionID", panel: "left", collapsed: true }
       ],
       itemDisplay: {
         sortColWidth: 40,
@@ -634,7 +634,7 @@ var browser_configs = {
     }
   },
     senate: {
-        title: "Senate Votings",
+        name: "Senate Votings",
         items: "100 Senators",
         sets: "110 votings",
         attribs: "Party",
@@ -677,8 +677,8 @@ var browser_configs = {
                 }
             },
             summaries: [
-                {   title: "Votes",
-                },{ title: "Party",
+                {   name: "Votes",
+                },{ name: "Party",
                     value: function(){
                         switch(this.Name.split(" ")[1].substr(1,1)){
                             case "D": return "Democrat";
@@ -695,7 +695,7 @@ var browser_configs = {
         }
     },
   mutations: {
-    title: "Mutations in Glioblastoma",
+    name: "Mutations in Glioblastoma",
     sets: "100 genes",
     items: "284 mutations",
     attribs: "",
@@ -707,7 +707,7 @@ var browser_configs = {
       itemName: "Mutations",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "gbm_mutated_top100" },
       summaries: [
-        { title: "Genes",
+        { name: "Genes",
           value: function(d){
             var r=[];
             for(x in this){
@@ -727,7 +727,7 @@ var browser_configs = {
     }
   },
   CpdsVsProteinFam: {
-    title: "Compound - Protein Interaction",
+    name: "Compound - Protein Interaction",
     sets: "10 sets",
     items: "1500 items",
     attribs: "",
@@ -743,7 +743,7 @@ var browser_configs = {
         tables: {name:"CpdsVsProteinFam", id:'cpd'}
       },
       summaries: [
-        { title: "Sets", layout: "middle",
+        { name: "Sets", panel: "middle",
           value: function(){
               var r=[];
               if(this['']===1) r.push('');
@@ -764,7 +764,7 @@ var browser_configs = {
     }
   },
   CpdsVsProteinTable: {
-    title: "Compound - Protein Interaction",
+    name: "Compound - Protein Interaction",
     sets: "100 sets",
     items: "15k items",
     attribs: "",
@@ -779,7 +779,7 @@ var browser_configs = {
         tables: {name:"CpdsVsProteinTable", id:''}
       },
       summaries: [
-        { title: "Sets", layout: "middle",
+        { name: "Sets", panel: "middle",
           value: function(){
             var r=[];
             for(x in this){
@@ -794,7 +794,7 @@ var browser_configs = {
     }
   },
     bederson: {
-        title: "Ben Bederson's Coauthors",
+        name: "Ben Bederson's Coauthors",
         sets: "169 Co-Authors",
         items: "146 Papers",
         attribs: "",
@@ -809,7 +809,7 @@ var browser_configs = {
                 kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors']);
             },
             summaries: [
-                {   title: "Coauthors",
+                {   name: "Coauthors",
                     value: function(){
                         var BEDERSON_ID = 3;
                         var authors = this.Coauthors;
@@ -835,7 +835,7 @@ var browser_configs = {
         }
     },
     teaser: {
-        title: "Paper Teaser",
+        name: "Paper Teaser",
         sets: "XX",
         items: "XX",
         attribs: "XX",
@@ -846,7 +846,7 @@ var browser_configs = {
             barChartWidth: 80,
             source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies" },
             summaries: [
-                {   title: "Genres",
+                {   name: "Genres",
                     value: function(){
                         var r=[];
                         for(var x in this){
@@ -860,9 +860,9 @@ var browser_configs = {
                         return r;
                     },
                     enableSetVis: true
-                },{ title: "Rating", value: "AvgRating", layout: 'right'
-                //},{ title: "Watched", value: "Watches", layout: 'right', intervalScale: 'log', collapsed: true
-                //},{ title: "Release Year", value: function(){ return new Date(this.ReleaseDate,1,1); }, layout: 'bottom'
+                },{ name: "Rating", value: "AvgRating", panel: 'right'
+                //},{ name: "Watched", value: "Watches", panel: 'right', intervalScale: 'log', collapsed: true
+                //},{ name: "Release Year", value: function(){ return new Date(this.ReleaseDate,1,1); }, panel: 'bottom'
                 }
             ],
             itemDisplay: {

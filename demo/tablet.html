@@ -34,22 +34,22 @@ $(document).ready( function() {
       tables: {name:"tablets", id:"ASIN"}
     },
     summaries: [
-      { title: "Brand Name" },
-      { title: "Operating System" },
-      { title: "Flash Memory Size", layout: 'right', unitName: "GB", intervalScale: 'log',
+      { name: "Brand Name" },
+      { name: "Operating System" },
+      { name: "Flash Memory Size", panel: 'right', unitName: "GB", intervalScale: 'log',
         value: function(){
           var n= parseFloat(this['Flash Memory Size']);
           if(n>=1) return n;
         } },
-      { title: "Screen Size (inches)", unitName: "″",
+      { name: "Screen Size (inches)", unitName: "″",
         value: function(){
           var x= parseFloat(this['Screen Size']);
           if(!isNaN(x)) return x;
         } },
-      { title: "Weight", layout: 'right', unitName: 'oz' },
-      { title: "Battery Life", layout: 'right', unitName: 'hr' },
-      { title: "Rating", layout: 'right', value: "Customer Reviews", showPercentile: true },
-      { title: "Release Date", layout: 'bottom',
+      { name: "Weight", panel: 'right', unitName: 'oz' },
+      { name: "Battery Life", panel: 'right', unitName: 'hr' },
+      { name: "Rating", panel: 'right', value: "Customer Reviews", showPercentile: true },
+      { name: "Release Date", panel: 'bottom',
         value: function(){ 
           var dt = this['Date First Available'];
           if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));

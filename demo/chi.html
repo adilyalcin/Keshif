@@ -147,48 +147,48 @@ function loadProceeding(xmlData) {
 };
 
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 230,
-        source: { callback: loadData },
-        summaries: [
-            {   title: "Term"
-            },{ title: "Category"
-            },{ title: "Year", value: function(){ return this.Proceeding.data.year; }, layout: 'middle'
-            },{ title: "Authors",
-                catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
-                summaries: [{ title: "Affiliaton" }]
-            },{
-            /*,{ title: "# of References", collapsed: true,
-                value: "ReferenceTotal"}
-            },{ title: "# of Citations", value: "CitedByTotal"
-            },{*/
-                title: "Citations to",
-                // these are how the items are related.
-                // X is related to Y (set) => Each Y stores the items it has been mapped to.
-                // That number is shown on display
-                value: "References",
-                // Using the main table name, this will enable linking through items
-                catTableName: "Articles"
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {title: 'Citations', value: "CitedByTotal"},
-            textSearch: "Title",
-            linkText: 'Citations to',
-            recordView: "Title"
-        }
-    });
-});
-</script>
-<style>
-    #chart_div {
-        width: 1090px;
-        height: 750px;
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 230,
+    source: { callback: loadData },
+    summaries: [
+      { name: "Term" },
+      { name: "Category" },
+      { name: "Year", value: function(){ return this.Proceeding.data.year; }, panel: 'middle' },
+      { name: "Authors",
+        catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
+        summaries: [{ name: "Affiliaton" }] },
+      {
+      /*,{ name: "# of References", collapsed: true,
+          value: "ReferenceTotal"}
+      },{ name: "# of Citations", value: "CitedByTotal"
+      },{*/
+        name: "Citations to",
+        // these are how the items are related.
+        // X is related to Y (set) => Each Y stores the items it has been mapped to.
+        // That number is shown on display
+        value: "References",
+        // Using the main table name, this will enable linking through items
+        catTableName: "Articles"
+      }
+    ],
+    itemDisplay: {
+      sortingOpts: {title: 'Citations', value: "CitedByTotal"},
+      textSearch: "Title",
+      linkText: 'Citations to',
+      recordView: "Title"
     }
-</style>
-</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+  });
+});
+    </script>
+    <style>
+#chart_div {
+  width: 1090px;
+  height: 750px;
+}
+  </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

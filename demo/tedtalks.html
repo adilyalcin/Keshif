@@ -46,11 +46,11 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { title: "Feelings", },
-      { title: "Talk Duration", value: function(){ return this.Duration[0]; } },
-      { title: "Views" },
-      { title: "Speaker", layout: 'right' },
-      { title: "Date", layout: 'bottom' }
+      { name: "Feelings", },
+      { name: "Talk Duration", value: function(){ return this.Duration[0]; } },
+      { name: "Views" },
+      { name: "Speaker", layout: 'right' },
+      { name: "Date", layout: 'bottom' }
     ],
     itemDisplay: {
       sortingOpts: [ 'Views', {title:'Date', inverse:true} ],

@@ -44,28 +44,28 @@ $(document).ready(function(){
       kshf.Util.cellToArray(kshf.dt.nsfawards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
     },
     summaries: [
-      { title: "Program", value: "Program(s)" },
-      { title: "Name", value: "Organization" },
-      { title: "AwardInstrument", },
-      { title: "Start Date", layout: 'bottom',
+      { name: "Program", value: "Program(s)" },
+      { name: "Name", value: "Organization" },
+      { name: "AwardInstrument", },
+      { name: "Start Date", panel: 'bottom',
         value: function(){
           var dt = this.StartDate;
           if(dt===""){ return null; }
           var m = moment(dt,"MM/DD/YYYY");
           return new Date(m);
         }, },
-      { title: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
-      { title: "NSFDirectorate", collapsed: true },
-      { title: "ProgramManager", collapsed: true },
-      { title: "Awarded Amount", value: "AwardedAmountToDate", unitName: "$", },
-      { title: "Name", value: "Organization", layout: 'right', },
-      { title: "State", value: "OrganizationState", layout: 'right', collapsed: true,
+      { name: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
+      { name: "NSFDirectorate", collapsed: true },
+      { name: "ProgramManager", collapsed: true },
+      { name: "Awarded Amount", value: "AwardedAmountToDate", unitName: "$", },
+      { name: "Name", value: "Organization", panel: 'right', },
+      { name: "State", value: "OrganizationState", panel: 'right', collapsed: true,
         catLabel: function(){ return getStateName(this.id); } }
     ],
     itemDisplay: {
       sortColWidth: 70,
       sortingOpts:
-        { title: 'Amount', value: "AwardedAmountToDate",
+        { name: 'Amount', value: "AwardedAmountToDate",
           label: function(){
             var v=this.AwardedAmountToDate;
             if(v===undefined) return "-";
@@ -82,18 +82,18 @@ $(document).ready(function(){
     }
   });
 });
-        </script>
-<style> 
-    #chart_div { height: 750px; width:1250px; }
-    .content > a{
-        color: black;
-    }
-    .content > a:hover{
-        color: orangered;
-    }
-</style>
+    </script>
+    <style> 
+#chart_div { height: 750px; width:1250px; }
+.content > a{
+  color: black;
+}
+.content > a:hover{
+  color: orangered;
+}
+    </style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

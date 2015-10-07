@@ -35,12 +35,12 @@ $(document).ready( function() {
       tables: "pitchfork_reviews"
     },
     summaries: [
-      { title: "Highlights", value: function(){ if(this.accolade!=="None") return this.accolade; } },
-      { title: "Artist", value: "artist", minAggrValue: 4 },
-      { title: "Label", value: "label", minAggrValue: 3 },
-      { title: "Release Year",  layout: "bottom", value: function(){ return new Date(this.release_year,1,1);} },
-      { title: "Score", value:"score", layout:'right' },
-      { title: "reviewer", value: "reviewer", layout: "right" }
+      { name: "Highlights", value: function(){ if(this.accolade!=="None") return this.accolade; } },
+      { name: "Artist", value: "artist", minAggrValue: 4 },
+      { name: "Label", value: "label", minAggrValue: 3 },
+      { name: "Release Year",  panel: "bottom", value: function(){ return new Date(this.release_year,1,1);} },
+      { name: "Score", value:"score", panel:'right' },
+      { name: "reviewer", value: "reviewer", panel: "right" }
     ],
     itemDisplay: {
       sortColWidth: 70,

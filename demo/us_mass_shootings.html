@@ -29,12 +29,12 @@ google.setOnLoadCallback(function(){
       tables: "Mass Shootings in 12 Months"
     },
     summaries: [
-      { title: "State", layout: 'right' },
-      { title: "# Killed", layout: "left", catSortBy: 'id', 
+      { name: "State", panel: 'right' },
+      { name: "# Killed", panel: "left", catSortBy: 'id', 
         value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; },
-        catLabel: printPeopleIcons,  },
-      { title: "# Injured", layout: "left", catLabel: printPeopleIcons, catSortBy: 'id' },
-      { title: "Date", layout: "bottom" }
+        catLabel: printPeopleIcons },
+      { name: "# Injured", panel: "left", catLabel: printPeopleIcons, catSortBy: 'id' },
+      { name: "Date", panel: "bottom" }
     ],
     itemDisplay: {
       sortColWidth: 45,

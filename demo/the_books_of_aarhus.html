@@ -35,12 +35,12 @@ $(document).ready( function() {
       });
     },
     summaries: [
-      { title: "Location", value: "location" },
-      { title:"Day of Week", value: "weekday", catSortBy: function(){ return 1*this.id.substr(0,1);} },
-      { title:"Hour", value: "hour", layout: "bottom" },
-      { title:"Language", value:"language", layout: "middle" },
-      { title:"Dk5", value:"dk5", layout: "middle" },
-      { title:"Material", value:"material", layout: "middle" }
+      { name: "Location", value: "location" },
+      { name: "Day of Week", value: "weekday", catSortBy: function(){ return 1*this.id.substr(0,1);} },
+      { name: "Hour", value: "hour", panel: "bottom" },
+      { name: "Language", value:"language", panel: "middle" },
+      { name: "Dk5", value:"dk5", panel: "middle" },
+      { name: "Material", value:"material", panel: "middle" }
     ]
   });
 });

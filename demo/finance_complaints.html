@@ -145,16 +145,16 @@ $(document).ready( function(){
       tables: "Consumer_Complaints_2015"
     },
     summaries: [
-      {title:"Product", catLabel: product},
-      {title:"Sub-product"},
-      {title:"Submitted via", catLabel: submitted_via},
-      {title:"Company response to consumer", catLabel: company_response},
-      {title:"Timely response?"},
-      {title:"Consumer disputed?"},
-      {title:"Company", layout: "middle", minAggrValue: 100},
-      {title:"State", catLabel: function(){return getStateName(this.id);}, collapsed: true},
-      {title:"Issue", layout:"right", catLabel: issue},
-      {title:"Sub-issue", layout: "right"}
+      { name: "Product", catLabel: product},
+      { name: "Sub-product"},
+      { name: "Submitted via", catLabel: submitted_via},
+      { name: "Company response to consumer", catLabel: company_response},
+      { name: "Timely response?"},
+      { name: "Consumer disputed?"},
+      { name: "Company", panel: "middle", minAggrValue: 100},
+      { name: "State", catLabel: function(){return getStateName(this.id);}, collapsed: true},
+      { name: "Issue", panel:"right", catLabel: issue},
+      { name: "Sub-issue", panel: "right"}
     ]
   });
 });

@@ -37,14 +37,14 @@ $(document).ready( function(){
       tables: "Accidents"
     },
     summaries: [
-      { title: "Injury type" },
-      { title: "Injury source" },
-      { title: "Company" },
-      { title: "Injuries", catLabel: printPeopleIcons, catSortBy: "id", layout: "right" },
-      { title: "Fatalities", catLabel: printPeopleIcons, catSortBy: "id", layout: "right" },
-      { title: "Fine", intervalScale: "log", unitName: "$", layout: "right" },
-      { title: "State", catLabel: function(){return getStateName(this.id);}, layout: "right", collapsed: true },
-      { title: "Date", layout: "bottom" }
+      { name: "Injury type" },
+      { name: "Injury source" },
+      { name: "Company" },
+      { name: "Injuries", catLabel: printPeopleIcons, catSortBy: "id", panel: "right" },
+      { name: "Fatalities", catLabel: printPeopleIcons, catSortBy: "id", panel: "right" },
+      { name: "Fine", intervalScale: "log", unitName: "$", panel: "right" },
+      { name: "State", catLabel: function(){return getStateName(this.id);}, panel: "right", collapsed: true },
+      { name: "Date", panel: "bottom" }
     ],
     itemDisplay: {
       sortColWidth: 70,

@@ -88,17 +88,17 @@ $(document).ready( function() {
       callback: loadData
     },
     summaries: [
-      { title: "Brand" },
-      { title: "Model", collapsed: true },
-      { title: "Price", unitName: "$" },
-      { title: "Screen Size", unitName: "″" },
-      { title: "Weight", unitName: "oz." },
-      { title: "Storage", layout: 'right', unitName: "GB" },
-      { title: "SDCard", layout: 'right', unitName: "GB" },
-      { title: "RAM", layout: 'right', unitName: "GB" },
-      { title: "Pixels - Width", value: "att_pixels_x", layout: 'right' },
-      { title: "Pixels - Height", value: "att_pixels_y", layout: 'right' },
-      { title: "Has Dual SIM", type: 'categorical', collapsed: true }
+      { name: "Brand" },
+      { name: "Model", collapsed: true },
+      { name: "Price", unitName: "$" },
+      { name: "Screen Size", unitName: "″" },
+      { name: "Weight", unitName: "oz." },
+      { name: "Storage", panel: 'right', unitName: "GB" },
+      { name: "SDCard", panel: 'right', unitName: "GB" },
+      { name: "RAM", panel: 'right', unitName: "GB" },
+      { name: "Pixels - Width", value: "att_pixels_x", panel: 'right' },
+      { name: "Pixels - Height", value: "att_pixels_y", panel: 'right' },
+      { name: "Has Dual SIM", type: 'categorical', collapsed: true }
     ],
     itemDisplay: {
       sortingOpts: ["Price", "Storage", "Weight", "Screen Size"],

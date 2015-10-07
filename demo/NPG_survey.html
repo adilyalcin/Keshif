@@ -113,8 +113,8 @@ $(document).ready(function() {
             });
         },
         summaries: [
-            {   title: "Capture Link Source", collapsed: true, value: columns[7]
-            },{ title: "Area of Interest",
+            {   name: "Capture Link Source", collapsed: true, value: columns[7]
+            },{ name: "Area of Interest",
                 description: "Which of the following best describes your area of interest?",
                 value: function(){
                     var r=[];
@@ -123,7 +123,7 @@ $(document).ready(function() {
                     if(this[columns[10]]!==null) r.push("Other SocialSci.: "+this[columns[10]]);
                     return r;
                 }
-            },{ title: "Age", value: columns[12],
+            },{ name: "Age", value: columns[12],
                 description: "What is your age?",
                 catSortBy: function(){
                     switch(this.id){
@@ -135,9 +135,9 @@ $(document).ready(function() {
                         case "65 or over": return 5;
                     }
                 }
-            },{ title: "Continent", value: columns[13], collapsed: true,
+            },{ name: "Continent", value: columns[13], collapsed: true,
                 description: "In which continent do you live?",
-            },{ title: "Country",
+            },{ name: "Country",
                 description: "In which country do you live?",
                 value: function(){
                     var r=[];
@@ -149,7 +149,7 @@ $(document).ready(function() {
                     if(this[columns[19]]!==null) r.push(this[columns[19]]);
                     return r;
                 }
-            },{ title: "Industry",
+            },{ name: "Industry",
                 description: "Which category best describes your industry?",
                 value: function(){
                     var r=[];
@@ -157,21 +157,21 @@ $(document).ready(function() {
                     if(this[columns[21]]!==null) r.push("Other: "+this[columns[21]]);
                     return r;
                 }
-            },{ title: "Job Title",
-                description: "Which job title best applies to you?",
+            },{ name: "Job Title",
+                description: "Which job name best applies to you?",
                 value: function(){
                     var r=[];
                     if(this[columns[22]]!==null && this[columns[23]]===null) r.push(this[columns[22]]);
                     if(this[columns[23]]!==null) r.push("Other: "+this[columns[23]]);
                     return r;
                 }
-            },{ title: "Research Webpage", value: columns[24], collapsed: true, layout: 'right',
+            },{ name: "Research Webpage", value: columns[24], collapsed: true, panel: 'right',
                 description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?"
-            },{ title: "Self-Maintained R. Webpage", value: columns[25], collapsed: true, layout: 'right',
+            },{ name: "Self-Maintained R. Webpage", value: columns[25], collapsed: true, panel: 'right',
                 description: "Do you personally edit/update this? (research webpage)"
-            },{ title: "Written online research posts", value: columns[26], layout: 'right',
+            },{ name: "Written online research posts", value: columns[26], panel: 'right',
                 description: "Do you write, or have you ever written, online posts of any type (e.g., blogs, social media comments, discussion groups, publisher websites) in which you discuss research or matters relating to it?",
-            },{ title: "Social Network - Awareness", layout: 'right',
+            },{ name: "Social Network - Awareness", panel: 'right',
                 description: "\"I am aware of this site.\"",
                 value: function(){
                     var r=[];
@@ -194,7 +194,7 @@ $(document).ready(function() {
                     if(this[columns[43]]!=="NotAware") r.push("MLA Commons");
                     return r;
                 }
-            },{ title: "Social Network - Regular Use", layout: 'right',
+            },{ name: "Social Network - Regular Use", panel: 'right',
                 description: "\"I visit this site regularly.\"",
                 value: function(){
                     var r=[];
@@ -217,18 +217,18 @@ $(document).ready(function() {
                     if(this[columns[43]]==="Aware,Regular") r.push("MLA Commons");
                     return r;
                 }
-            },{ title: "Comment Length",
+            },{ name: "Comment Length",
                 value: function(){ 
                     if(this[columns[11]]===null) return;
                     if(this[columns[11]].length===0) return;
                     return this[columns[11]].length; 
                 },
                 unitName: "ch.",
-                layout: 'middle',
+                panel: 'middle',
                 intervalScale: 'log'
-            },{ title: "Information Publicly Shared",
+            },{ name: "Information Publicly Shared",
                 description: "What professional information do you make publicly available online?",
-                layout: 'right',
+                panel: 'right',
                 value: function(){
                     var r=[];
                     if(this[columns[44]]===1) r.push("Contact details");
@@ -244,29 +244,29 @@ $(document).ready(function() {
                     }
                     return r;
                 }
-            },{ title: "\"... Profiles are useful\"", collapsed: true,
+            },{ name: "\"... Profiles are useful\"", collapsed: true,
                 description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
-                layout: 'right', value: columns[53], 
+                panel: 'right', value: columns[53], 
                 catSortBy: likertSort
-            },{ title: "\"... I need to promote more online\"", collapsed: true,
+            },{ name: "\"... I need to promote more online\"", collapsed: true,
                 description: "\"I feel I should probably do more to promote my research using online networks\"",
-                layout: 'right', value: columns[54], 
+                panel: 'right', value: columns[54], 
                 catSortBy: likertSort
-            },{ title: "\"... Profiles are not important\"", value: columns[55], collapsed: true,
+            },{ name: "\"... Profiles are not important\"", value: columns[55], collapsed: true,
                 description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
-                layout: 'right',
+                panel: 'right',
                 catSortBy: likertSort
             }
         ],
         itemDisplay: {
             detailsToggle: "one",
-            textSearch: {title: "Comment", value: columns[11] },
-            sortingOpts: [{ 
-                title: "| <span class='fa fa-comment'></span> |", 
+            textSearch: {name: "Comment", value: columns[11] },
+            sortingOpts: { 
+                name: "| <span class='fa fa-comment'></span> |", 
                 value: function(){ 
                     if(this[columns[11]]!==null) return this[columns[11]].length; 
                 }
-            }],
+            },
             recordView: function(){ 
                 if(this[columns[11]]===null) return "-";
                 return "<blockquote>" + this[columns[11]] + "</blockquote>";

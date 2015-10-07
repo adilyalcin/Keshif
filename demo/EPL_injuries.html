@@ -33,16 +33,16 @@ google.setOnLoadCallback(function(){
       tables: "Injuries"
     },
     summaries: [
-      { title: "Team" },
-      { title: "Player" },
-      { title: "Injury",layout: 'right' },
-      { title: "Season", layout: 'right',
+      { name: "Team" },
+      { name: "Player" },
+      { name: "Injury", panel: 'right' },
+      { name: "Season", panel: 'right',
         catSortBy: function(){ return parseInt(this.id.substr(0,4)); }, },
-      { title: "Month", layout: 'right', collapsed: true,
+      { name: "Month", panel: 'right', collapsed: true,
         value: function(){ return this.Date.getMonth(); },
         catSortBy: "id",
         catLabel: function(){ return getMonthNameFromNumber(this.id); }, },
-      { title: "Date", layout: 'bottom' }
+      { name: "Date", panel: 'bottom' }
     ],
     itemDisplay: {
       sortingOpts: "Date",

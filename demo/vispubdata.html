@@ -70,22 +70,21 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { title: "Venue" },
-      { title: "Type", 
+      { name: "Venue" },
+      { name: "Type", 
         description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ..." },
-      { title: "# Citations To...",
+      { name: "# Citations To...",
         value: function(){
           if(this.CitationsFrom.length===0) return;
           return this.CitationsFrom.length;
         } },
-      { title: "First Author Affiliation", collapsed: false,
+      { name: "First Author Affiliation", collapsed: false,
         description: "Only affiliations with at least two papers are shown",
-        minAggrValue: 2, },
-      { title: "Year", layout: 'bottom' }, // value: function(){ return new Date(this.Year,0,0);}
-      { title: "Authors", value: function(){ return this['Deduped author names']; }, layout: 'right',
+        minAggrValue: 2 },
+      { name: "Year", panel: 'bottom' }, // value: function(){ return new Date(this.Year,0,0);}
+      { name: "Authors", value: function(){ return this['Deduped author names']; }, panel: 'right',
         description: "Only authors with at least two papers are shown",
-        minAggrValue: 2,
-      }
+        minAggrValue: 2 }
     ],
     itemDisplay: {
       sortColWidth: 45,

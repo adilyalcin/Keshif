@@ -48,31 +48,31 @@ google.setOnLoadCallback( function() {
       kshf.Util.cellToArray(kshf.dt.News, [newsCol.People, newsCol.Country, newsCol.Topic], /\b,/, false);
     },
     summaries: [
-        {   title: "Category",
-            value: function(){
-                var topics = this[newsCol.Topic];
-                var cats= {};
-                for(var i=0; i<topics.length; i++){
-                    var t=topics[i];
-                    var tDt=kshf.dt_id.Topics[t];
-                    if(tDt) cats[tDt.data[1]] = true;
-                }
-                var toRet=[]
-                for(c in cats){
-                    toRet.push(c);
-                }
-                return toRet;
-            }
-        },{ title: "Topic",
-        },{ title: "Country", catLabel: function(){ return capitaliseFirstLetter(this.id); }
-        },{ title: "People",
-            catLabel: function(){ return kshf.dt_id.People[this.id].data[peopleCol.Name]; },
-            catTooltip: function(){ 
-                var p = kshf.dt_id.People[this.id];
-                return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
-            }
-        },{ title: "Publish Time", layout: 'middle'
-        }
+      {   name: "Category",
+          value: function(){
+              var topics = this[newsCol.Topic];
+              var cats= {};
+              for(var i=0; i<topics.length; i++){
+                  var t=topics[i];
+                  var tDt=kshf.dt_id.Topics[t];
+                  if(tDt) cats[tDt.data[1]] = true;
+              }
+              var toRet=[]
+              for(c in cats){
+                  toRet.push(c);
+              }
+              return toRet;
+          }
+      },{ name: "Topic",
+      },{ name: "Country", catLabel: function(){ return capitaliseFirstLetter(this.id); }
+      },{ name: "People",
+          catLabel: function(){ return kshf.dt_id.People[this.id].data[peopleCol.Name]; },
+          catTooltip: function(){ 
+              var p = kshf.dt_id.People[this.id];
+              return p.data[peopleCol.Name]+", "+p.data[peopleCol.Role]+", "+p.data[peopleCol.Location];
+          }
+      },{ name: "Publish Time", panel: 'middle'
+      }
     ],
     itemDisplay: {
       sortColWidth: 70,

@@ -26,13 +26,13 @@ google.setOnLoadCallback(function(){
       tables: "FDA Citations"
     },
     summaries: [
-      { title: "Firm", minAggrValue: 20, description: "Firms with less than 20 violations are not listed here." },
-      { title: "Center" },
-      { title: "Country", layout: 'right' },
-      { title: "State", layout: 'right' },
-      { title: "City", layout: 'right', minAggrValue: 20, description: "Cities with less than 20 violations are not listed here." },
-      { title: "CFR", layout: 'middle' },
-      { title: "Inspection End Date", layout: 'bottom' }
+      { name: "Firm", minAggrValue: 20, description: "Firms with less than 20 violations are not listed here." },
+      { name: "Center" },
+      { name: "Country", panel: 'right' },
+      { name: "State", panel: 'right' },
+      { name: "City", panel: 'right', minAggrValue: 20, description: "Cities with less than 20 violations are not listed here." },
+      { name: "CFR", panel: 'middle' },
+      { name: "Inspection End Date", panel: 'bottom' }
     ]
   });
 });

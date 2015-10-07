@@ -97,19 +97,19 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { title: "Region Name" },
-      { title: "County Name", collapsed: true  },
-      { title: "Venue Type", layout: 'right', },
-      { title: "Dining Options" },
-      { title: "Overnight Accommodation" },
-      { title: "Venue Leisure Facilities" },
-      { title: "Other Features" },
-      { title: "Venue Staff Assistance", layout: 'right' },
-      { title: "Average Facility Rating", layout: 'right' },
-      { title: "Average Service Rating", layout: 'right' },
-      { title: "Number Of Reviews", value: 'Total Number Of Reviews', layout: 'right', collapsed: true },
-      { title: "Maximum Capacity", layout: 'right', unitName: "ppl" },
-      { title: "Minimum Capacity", layout: 'right', unitName: "ppl" }
+      "Region Name",
+      { name: "County Name", collapsed: true },
+      "Dining Options",
+      "Overnight Accommodation",
+      "Venue Leisure Facilities",
+      "Other Features",
+      { name: "Venue Type", panel: 'right', },
+      { name: "Venue Staff Assistance", panel: 'right' },
+      { name: "Average Facility Rating", panel: 'right' },
+      { name: "Average Service Rating", panel: 'right' },
+      { name: "Number Of Reviews", value: 'Total Number Of Reviews', panel: 'right', collapsed: true },
+      { name: "Maximum Capacity", panel: 'right', unitName: "ppl" },
+      { name: "Minimum Capacity", panel: 'right', unitName: "ppl" }
     ],
     itemDisplay: {
       textSearch: "Name",

@@ -85,19 +85,19 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { title: "Topic", },
-      { title: "Has Code", },
-      { title: "Column / Feature", },
-      { title: "Column Name", },
-      { title: "Issue Date", layout:'middle' },
-      { title: "Popularity", layout: 'right', catSortBy: { value: "id", inverse: true },
+      { name: "Topic", },
+      { name: "Has Code" },
+      { name: "Column / Feature" },
+      { name: "Column Name" },
+      { name: "Issue Date", panel: 'middle' },
+      { name: "Popularity", panel: 'right', catSortBy: { value: "id", inverse: true },
         catLabel: function(){
           var str='';
           for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";
           return str;
         } },
-      { title: "Page Views", layout: 'right' },
-      { title: "Authors", layout: 'right' }
+      { name: "Page Views", panel: 'right' },
+      { name: "Authors", panel: 'right' }
     ],
     itemDisplay: {
       sortingOpts: [ 'Page Views', {title:'id', inverse:true} ],

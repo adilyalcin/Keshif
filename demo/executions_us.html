@@ -26,15 +26,13 @@ google.setOnLoadCallback(function(){
       tables: "Executions"
     },
     summaries: [
-      { title: "Crime", value: function(){ return this.Crime.split(" - "); } },
-      { title: "Method", },
-      { title: "State", layout: 'right', catLabel: function(){ return getStateName(this.id); } },
-      { title: "Race", layout: 'right' },
-      { title: "Sex", layout: 'right',
-        catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); } },
-      { title: "Age", layout: 'right' },
-      { title: "Execution Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }
-      }
+      { name: "Crime", value: function(){ return this.Crime.split(" - "); } },
+      { name: "Method", },
+      { name: "State", panel: 'right', catLabel: function(){ return getStateName(this.id); } },
+      { name: "Race", panel: 'right' },
+      { name: "Sex", panel: 'right', catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); } },
+      { name: "Age", panel: 'right' },
+      { name: "Execution Year", panel: 'bottom', value: function(){ return new Date(this.Year,1,1); } }
     ],
     itemDisplay: {
       sortingOpts: "Year",

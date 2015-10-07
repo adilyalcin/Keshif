@@ -31,13 +31,13 @@ $(document).ready( function(){
       tables: "inc5000_2014"
     },
     summaries: [
-      { title: "<i class='fa fa-suitcase'></i> Industry", value: 'industry'},
-      { title: "State", value: 'state_l'},
-      { title: "<i class='fa fa-map-marker'></i> Metro Area", value: 'metro'},
-      { title: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', layout: "right"},
-      { title: "# of Workers", value: 'workers', layout: "right"},
-      { title: "<i class='fa fa-line-chart'></i> Growth", value: 'growth', layout: "right", unitName: "%"},
-      { title: "<i class='fa fa-money'></i> Revenue", value: 'revenue', layout: "right", unitName: "$"},
+      { name: "<i class='fa fa-suitcase'></i> Industry", value: 'industry'},
+      { name: "State", value: 'state_l'},
+      { name: "<i class='fa fa-map-marker'></i> Metro Area", value: 'metro'},
+      { name: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', panel: "right"},
+      { name: "# of Workers", value: 'workers', panel: "right"},
+      { name: "<i class='fa fa-line-chart'></i> Growth", value: 'growth', panel: "right", unitName: "%"},
+      { name: "<i class='fa fa-money'></i> Revenue", value: 'revenue', panel: "right", unitName: "$"},
     ],
     itemDisplay: {
       sortingOpts: [

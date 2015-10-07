@@ -28,21 +28,20 @@ $(document).ready( function(){
     source: {
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'json',
-      tables: {name: "people_1-6-2015", id:"un_curid"}
+      tables: { name: "people_1-6-2015", id:"un_curid" }
     },
     summaries: [
-      { title: "Gender", value: "gender"},
-      { title: "Continent Name", value: "continentName"},
-      { title: "Birth Country Name", value: "countryName"},
-      { title: "Gender", value: "gender"},
-      { title: "Domain", value: function(){ return kshf.Util.toProperCase(this.domain);}, layout: "right"},
-      { title: "Industry", value: function(){ return kshf.Util.toProperCase(this.industry);}, layout: "right"},
-      { title: "Occupation", value: function(){ return kshf.Util.toProperCase(this.occupation);}, layout: "right"},
-      { title: "Dataset", value: "dataset", layout: "right", collapsed: true},
-      { title: "HPI Score", value: "HPI", collapsed: true},
-      { title: "Total Wikipedia Views", value: "TotalPageViews", layout: "middle", collapsed: true},
-      { title: "Birth Year", value: "birthyear", layout: "middle"},
-
+      { name: "Gender", value: "gender"},
+      { name: "Continent Name", value: "continentName"},
+      { name: "Birth Country Name", value: "countryName"},
+      { name: "Gender", value: "gender"},
+      { name: "Domain", value: function(){ return kshf.Util.toProperCase(this.domain);}, panel: "right"},
+      { name: "Industry", value: function(){ return kshf.Util.toProperCase(this.industry);}, panel: "right"},
+      { name: "Occupation", value: function(){ return kshf.Util.toProperCase(this.occupation);}, panel: "right"},
+      { name: "Dataset", value: "dataset", panel: "right", collapsed: true},
+      { name: "HPI Score", value: "HPI", collapsed: true},
+      { name: "Total Wikipedia Views", value: "TotalPageViews", panel: "middle", collapsed: true},
+      { name: "Birth Year", value: "birthyear", panel: "middle"},
     ],
     itemDisplay: {
       sortingOpts: [ 'HPI Score', 'Birth Year', 'Total Wikipedia Views', 'numlangs' ],

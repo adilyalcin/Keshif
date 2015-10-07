@@ -45,11 +45,11 @@ $(document).ready( function(){
       callback: dataLoad
     },
     summaries: [
-      { title: "Age", value: "age" },
-      { title: "Race", value: "race" },
-      { title: "Sex", value: "sex",
+      { name: "Age", value: "age" },
+      { name: "Race", value: "race" },
+      { name: "Sex", value: "sex",
         catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id); } },
-      { title: "<span class='fa fa-th-large'></span> Quadrant", layout: 'right', value: "quadrant",
+      { name: "<span class='fa fa-th-large'></span> Quadrant", panel: 'right', value: "quadrant",
         catLabel: function(){
           switch(this.id){
             case "SE": return "South-East";
@@ -58,19 +58,19 @@ $(document).ready( function(){
             case "NW": return "North-West";
           }
         } },
-      { title: "Neighborhood", layout: 'right',
+      { name: "Neighborhood", panel: 'right',
         value: function(){ if(this.nbhd) return this.nbhd.subhood; } },
-      { title: "Status", layout: 'right',
+      { name: "Status", panel: 'right',
         value: function(){
           var r=[];
           r.push("Police Status: "+this.police_status.name);
           if(this.jury_trial) r.push("Had jury trial");
           return r;
         } },
-      { title: "Cases with +2 victims", layout: 'right', value: "ccn", minAggrValue:2, collapsed: true },
-      { title: "Manner", value: function(){ return this.manner.name; } },
-      { title: "Motive", value: function(){ return this.motive.name; } },
-      { title: "Incident Date", value: "incident_date", layout: "bottom", }
+      { name: "Cases with +2 victims", panel: 'right', value: "ccn", minAggrValue:2, collapsed: true },
+      { name: "Manner", value: function(){ return this.manner.name; } },
+      { name: "Motive", value: function(){ return this.motive.name; } },
+      { name: "Incident Date", value: "incident_date", panel: "bottom", }
     ],
     itemDisplay: {
       sortingOpts: [

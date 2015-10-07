@@ -1106,17 +1106,17 @@ kshf.RecordDisplay = function(kshf_, config, root){
         if(typeof(config.textSearch)==="string"){
             this.setTextSearchSummary( this.browser.summaries_by_name[config.textSearch] );
         } else {
-            var title = config.textSearch.title;
+            var name = config.textSearch.name;
             var value = config.textSearch.value;
-            if(title!==undefined){
+            if(name!==undefined){
                 var summary = this.browser.summaries_by_name[config.textSearch];
                 if(summary){
                     this.setTextSearchSummary(summary);
                 } else {
                     if(typeof(value)==="function"){
-                        this.setTextSearchSummary(browser.createSummary(title,value,'categorical'));
+                        this.setTextSearchSummary(browser.createSummary(name,value,'categorical'));
                     } else if(typeof(value)==="string"){
-                        this.setTextSearchSummary(browser.changeSummaryName(value,title));
+                        this.setTextSearchSummary(browser.changeSummaryName(value,name));
                     };
                 }
             }
@@ -1420,13 +1420,17 @@ kshf.RecordDisplay.prototype = {
             if(typeof(sortOpt)==="string"){
                 sortOpt = { title: sortOpt };
             }
+            // Old API
+            if(sortOpt.title){
+                sortOpt.name = sortOpt.title;
+            }
 
-            var summary = this.browser.summaries_by_name[sortOpt.title];
+            var summary = this.browser.summaries_by_name[sortOpt.name];
             if(summary===undefined){
                 if(typeof(sortOpt.value)==="string"){
-                    summary = this.browser.changeSummaryName(sortOpt.value,sortOpt.title);
+                    summary = this.browser.changeSummaryName(sortOpt.value,sortOpt.name);
                 } else{
-                    summary = this.browser.createSummary(sortOpt.title,sortOpt.value, "interval");
+                    summary = this.browser.createSummary(sortOpt.name,sortOpt.value, "interval");
                     if(sortOpt.unitName){
                         summary.setUnitName(sortOpt.unitName);
                     }
@@ -3292,11 +3296,20 @@ kshf.Browser.prototype = {
 
         this.options.facets.forEach(function(facetDescr){
             if(typeof facetDescr==="string"){
-                facetDescr = {title: facetDescr};
+                facetDescr = {name: facetDescr};
+            }
+
+            // API compability - process old keys
+            if(facetDescr.title){
+                facetDescr.name = facetDescr.title;
             }
             if(facetDescr.sortingOpts){
                 facetDescr.catSortBy = facetDescr.sortingOpts
             }
+            if(facetDescr.layout){
+                facetDescr.panel = facetDescr.layout;
+            }
+
             if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.catSortBy){
                 facetDescr.type="categorical";
             } else if(facetDescr.intervalScale || facetDescr.showPercentile || facetDescr.unitName ){
@@ -3307,16 +3320,16 @@ kshf.Browser.prototype = {
                 facetDescr.value = facetDescr.attribMap;
             }
 
-            var summary = this.summaries_by_name[facetDescr.title];
+            var summary = this.summaries_by_name[facetDescr.name];
             if(summary===undefined){
                 if(typeof(facetDescr.value)==="string"){
                     var summary = this.summaries_by_name[facetDescr.value];
                     if(summary===undefined){
                         summary = this.createSummary(facetDescr.value);
                     }
-                    summary = this.changeSummaryName(facetDescr.value,facetDescr.title);
+                    summary = this.changeSummaryName(facetDescr.value,facetDescr.name);
                 } else if(typeof(facetDescr.value)==="function"){
-                    summary = this.createSummary(facetDescr.title,facetDescr.value,facetDescr.type);
+                    summary = this.createSummary(facetDescr.name,facetDescr.value,facetDescr.type);
                 } else{
                     return;
                 }
@@ -3324,7 +3337,7 @@ kshf.Browser.prototype = {
                 if(facetDescr.value){
                     // Requesting a new summarywith the same name.
                     summary.destroy();
-                    summary = this.createSummary(facetDescr.title,facetDescr.value,facetDescr.type);
+                    summary = this.createSummary(facetDescr.name,facetDescr.value,facetDescr.type);
                 }
             }
 
@@ -3333,14 +3346,14 @@ kshf.Browser.prototype = {
                 if(facetDescr.type!==summary.type){
                     summary.destroy();
                     if(facetDescr.value===undefined){
-                        facetDescr.value = facetDescr.title;
+                        facetDescr.value = facetDescr.name;
                     }
                     if(typeof(facetDescr.value)==="string"){
                         summary = this.createSummary(facetDescr.value,null,facetDescr.type);
-                        if(facetDescr.value!==facetDescr.title)
-                            this.changeSummaryName(facetDescr.value,facetDescr.title);
+                        if(facetDescr.value!==facetDescr.name)
+                            this.changeSummaryName(facetDescr.value,facetDescr.name);
                     } else if(typeof(facetDescr.value)==="function"){
-                        summary = this.createSummary(facetDescr.title,facetDescr.value,facetDescr.type);
+                        summary = this.createSummary(facetDescr.name,facetDescr.value,facetDescr.type);
                     }
                     // TODO!
                     // summary.updateSummaryDataType();
@@ -3376,9 +3389,9 @@ kshf.Browser.prototype = {
                 if(facetDescr.minAggrValue) summary.setMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.catSortBy!==undefined) summary.setSortingOpts(facetDescr.catSortBy);
 
-                if(facetDescr.layout!=="none"){
-                    facetDescr.layout = facetDescr.layout || 'left';
-                    summary.addToPanel(this.panels[facetDescr.layout]);
+                if(facetDescr.panel!=="none"){
+                    facetDescr.panel = facetDescr.panel || 'left';
+                    summary.addToPanel(this.panels[facetDescr.panel]);
                 }
             }
 
@@ -3391,9 +3404,9 @@ kshf.Browser.prototype = {
                 summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
 
                 // add to panel before you set scale type and other options: TODO: Fix
-                if(facetDescr.layout!=="none"){
-                    facetDescr.layout = facetDescr.layout || 'left';
-                    summary.addToPanel(this.panels[facetDescr.layout]);
+                if(facetDescr.panel!=="none"){
+                    facetDescr.panel = facetDescr.panel || 'left';
+                    summary.addToPanel(this.panels[facetDescr.panel]);
                 }
 
                 if(facetDescr.intervalScale) {
@@ -5021,7 +5034,7 @@ var Summary_Categorical_functions = {
             else fscale = 'step';
             // TODO: FIX!!!
             var facetDescr = {
-                title:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryTitle,
+                name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryTitle,
                 value: function(d){
                     var arr=d.mappedDataCache[filterId];
                     if(arr==null) return 0;
@@ -5031,7 +5044,7 @@ var Summary_Categorical_functions = {
                 collapsed: true,
                 type: 'interval',
                 intervalScale: fscale,
-                layout: this.panel
+                panel: this.panel
             };
             this.browser.addFacet(facetDescr,this.browser.primaryTableName);
         }

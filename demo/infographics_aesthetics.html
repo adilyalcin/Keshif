@@ -70,50 +70,50 @@ google.setOnLoadCallback(function(){
         barChartWidth: 90,
         itemName: "Pacticipants",
         source: {
-            callback: function(browser){ 
-                browser.primaryTableName = "Participants",
-                browser.loadCharts();
-            }
+          callback: function(browser){ 
+            browser.primaryTableName = "Participants",
+            browser.loadCharts();
+          }
         },
         summaries: [
-            {title: "Gender", layout: "middle", catLabel: genderLabel},
-            {title: "Education Level", layout: "middle"},
-            {title: "Age", layout: "middle", showPercentile: true},
-            {title: "Web Usage", layout: "middle", collapsed: true},
-            {title: "Profession", layout: "middle"},
-            {title: "Country of Residence", layout: "middle", collapsed: true},
+          {name: "Gender", panel: "middle", catLabel: genderLabel},
+          {name: "Education Level", panel: "middle"},
+          {name: "Age", panel: "middle", showPercentile: true},
+          {name: "Web Usage", panel: "middle", collapsed: true},
+          {name: "Profession", panel: "middle"},
+          {name: "Country of Residence", panel: "middle", collapsed: true},
         ]
       });
     },
     summaries: [
-      { title: "All Avg.", value: "all_avg" },
-      { title: "Phase-1 Response Avg.", value: "phase_1_avg", collapsed: true },
-      { title: "Phase-2 Response Avg.", value: "phase_2_avg", collapsed: true },
-      { title: "Complexity" },
-      { title: "Colorfulness1" },
-      { title: "Colorfulness2" },
-      { title: "Saturation" },
-      { title: "# of Responses", attripMap: function(){ return this.responses.length; } },
-      { title: "QuadTree", collapsed: true },
-      { title: "TextArea", collapsed: true },
-      { title: "NonTextArea", collapsed: true },
-      { title: "TextGroup", collapsed: true },
-      { title: "ImageArea", collapsed: true }
+      { name: "All Avg.", value: "all_avg" },
+      { name: "Phase-1 Response Avg.", value: "phase_1_avg", collapsed: true },
+      { name: "Phase-2 Response Avg.", value: "phase_2_avg", collapsed: true },
+      { name: "Complexity" },
+      { name: "Colorfulness1" },
+      { name: "Colorfulness2" },
+      { name: "Saturation" },
+      { name: "# of Responses", attripMap: function(){ return this.responses.length; } },
+      { name: "QuadTree", collapsed: true },
+      { name: "TextArea", collapsed: true },
+      { name: "NonTextArea", collapsed: true },
+      { name: "TextGroup", collapsed: true },
+      { name: "ImageArea", collapsed: true }
     ],
     itemDisplay: {
       sortingOpts: [ 
-        {title: "All Avg.", value: "all_avg"},
-        {title: "Phase-1 Response Avg.", value: "phase_1_avg"},
-        {title: "Phase-2 Response Avg.", value: "phase_2_avg"},
-        {title: "Complexity"},
-        {title: "Colorfulness1"},
-        {title: "Colorfulness2"},
-        {title: "Saturation"},
-        {title: "QuadTree"},
-        {title: "TextArea"},
-        {title: "NonTextArea"},
-        {title: "TextGroup"},
-        {title: "ImageArea"}
+        {name: "All Avg.", value: "all_avg"},
+        {name: "Phase-1 Response Avg.", value: "phase_1_avg"},
+        {name: "Phase-2 Response Avg.", value: "phase_2_avg"},
+        "Complexity",
+        "Colorfulness1",
+        "Colorfulness2",
+        "Saturation",
+        "QuadTree",
+        "TextArea",
+        "NonTextArea",
+        "TextGroup",
+        "ImageArea"
       ],
       displayType: 'grid',
       detailsToggle: 'off',
@@ -143,26 +143,26 @@ function showBrowsers(v){
         }
       },
       summaries: [
-        { title: "Phase-1 Responses", value: 'Phase_1', layout: "middle"},
-        { title: "Phase-2 Responses", value: 'Phase_2', layout: "middle"},
-        { title: "Participant - Gender", layout: "middle", catLabel: genderLabel,
+        { name: "Phase-1 Responses", value: 'Phase_1', panel: "middle"},
+        { name: "Phase-2 Responses", value: 'Phase_2', panel: "middle"},
+        { name: "Participant - Gender", panel: "middle", catLabel: genderLabel,
           value: function(){ return this.participant.data.Gender; } },
-        { title: "Participant - Education Level", layout: "middle", type: "categorical",
+        { name: "Participant - Education Level", panel: "middle",
           value: function(){ return this.participant.data['Education Level']; } },
-        { title: "Participant - Age", layout: "middle",
+        { name: "Participant - Age", panel: "middle",
           value: function(){ return this.participant.data['Age']; } },
 
-        { title: "Stimulus", value: 'Stimulus ID', layout: "left", type: "categorical", collapsed: true },
+        { name: "Stimulus", value: 'Stimulus ID', panel: "left", catSortBy: "id", collapsed: true },
 
-        { title: "Complexity", 
+        { name: "Complexity", 
           value: function(){ return this.stimulus.data.Complexity; } },
-        { title: "Colorfulness1", 
+        { name: "Colorfulness1", 
           value: function(){ return this.stimulus.data.Colorfulness1; } },
-        { title: "Colorfulness2", 
+        { name: "Colorfulness2", 
           value: function(){ return this.stimulus.data.Colorfulness2; } },
-        { title: "TextArea", 
+        { name: "TextArea", 
           value: function(){ return this.stimulus.data.TextArea; } },
-        { title: "Saturation", 
+        { name: "Saturation", 
           value: function(){ return this.stimulus.data.Saturation; } }
       ]
     });

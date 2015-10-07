@@ -32,16 +32,15 @@ google.setOnLoadCallback( function () {
         ['Doctor actor','Motivation (invasion earth, kill humans, etc)','Story titles'], /\b,\s+/, false);
     },
     summaries:[
-      { title: "Doctor actor" },
-      { title: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)' },
-      { title: "Story titles", },
-      { title: "Total Stories", value: function(){ return this['Story titles'].length; } },
-      { title: "1st Appearance", layout: 'bottom',
+      { name: "Doctor actor" },
+      { name: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)' },
+      { name: "Story titles" },
+      { name: "Total Stories", value: function(){ return this['Story titles'].length; } },
+      { name: "1st Appearance", panel: 'bottom',
         value: function(){ 
           var y=this['Year first'];
           if(y) return new Date(y,1,1);
-        }
-      }
+        } }
     ],
     itemDisplay:{
       sortColWidth: 40,

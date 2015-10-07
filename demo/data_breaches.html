@@ -41,12 +41,12 @@ google.setOnLoadCallback(function(){
       kshf.Util.cellToArray(kshf.dt.Breaches,['Record Types'], /\,/, false);
     },
     summaries: [
-      { title: "Industry" },
-      { title: "# of Records" },
-      { title: "Source", },
-      { title: "Type", layout: 'right' },
-      { title: "Data Source", layout: 'right' },
-      { title: "Record Types", layout: 'right', 
+      { name: "Industry" },
+      { name: "# of Records" },
+      { name: "Source", },
+      { name: "Type", panel: 'right' },
+      { name: "Data Source", panel: 'right' },
+      { name: "Record Types", panel: 'right', 
         catLabel: function(){
           switch(this.id){
             case 'NAM': return 'Name';
@@ -62,15 +62,15 @@ google.setOnLoadCallback(function(){
             default   : return this.id;
           }
         } },
-      { title: "Date", layout: "bottom" }
+      { name: "Date", panel: "bottom" }
     ],
     itemDisplay: {
       sortColWidth: 85,
       sortingOpts: [ 
-        { title: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
+        { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
         '# of Records'
       ],
-      textSearch: {title: "Organization", value: "org" },
+      textSearch: {name: "Organization", value: "org" },
       recordView: function(){
         var str = this.org;
         if(this.source_1){

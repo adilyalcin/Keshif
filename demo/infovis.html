@@ -19,103 +19,103 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function () {
   browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 220,
-        rightPanelLabelWidth: 160,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
-            tables: "Publications"
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Publications, 
-                ['Authors','Concepts','Keywords','IndexTerms','Citations','citeLocs'], "*", false);
-            kshf.dt.Publications.forEach(function(publication){
-                publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
-            });
-        },
-        summaries: [
-            {   title: "Concepts",
-            },{ title: "Year", value: "time", layout: "middle",
-            },{ title: "Highlights",
-                value: function(){ if(this.best) return "Best in Year"; }
-            },{ title: "Citations to",
-                // these are how the items are related.
-                // X is related to Y (set) => Each Y stores the items it has been mapped to.
-                // That number is shown on display
-                value: "Citations",
-                // Using the main table name, this will enable linking through items
-                catTableName: "Publications",
-                collapsed: true
-            },{ title: "Total Citations", value: "num", intervalScale: 'log'
-            },{ title: "Authors", layout: 'right'
-            }/*,{
-//              title: "Keywords",
-                timeTitle: "Year",
-                timeItemMap: function(d){
-                    var yr = d.data[0].substring(7,9);
+    domID: "#chart_div",
+    categoryTextWidth: 220,
+    rightPanelLabelWidth: 160,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
+      tables: "Publications"
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Publications, 
+          ['Authors','Concepts','Keywords','IndexTerms','Citations','citeLocs'], "*", false);
+      kshf.dt.Publications.forEach(function(publication){
+          publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
+      });
+    },
+    summaries: [
+      { name: "Concepts" },
+      { name: "Year", value: "time", panel: "middle" },
+      { name: "Highlights",
+        value: function(){ if(this.best) return "Best in Year"; } },
+      { name: "Citations to",
+        // these are how the items are related.
+        // X is related to Y (set) => Each Y stores the items it has been mapped to.
+        // That number is shown on display
+        value: "Citations",
+        // Using the main table name, this will enable linking through items
+        catTableName: "Publications",
+        collapsed: true },
+      { name: "Total Citations", value: "num", intervalScale: 'log' },
+      { name: "Authors", panel: 'right' }
+      /*,{
+//              name: "Keywords",
+          timeTitle: "Year",
+          timeItemMap: function(d){
+              var yr = d.data[0].substring(7,9);
 //                    console.log(yr);
 //                    if(isNaN(yr)) return null;
-                    return new Date(moment(yr,"YY"));
-                }
+              return new Date(moment(yr,"YY"));
+          }
 //            },{
-//                title: "Concepts",
+//                name: "Concepts",
 //            },{
-//                title: "Keywords", // Big lisy : 1k keywords
+//                name: "Keywords", // Big lisy : 1k keywords
 //            }*/
-        ],
-        itemDisplay: {
-            sortColWidth: 35,
-            sortingOpts : [
-                { title: 'Year-', value: function(){ return this.time.getFullYear(); }, inverse: true },
-                { title: '# Cit.\'s To', value: function(d){ return d.items.length; } },
-                { title: '# Cit.\'s- Total', value: "num" } 
-            ],
-            detailsToggle : "one",
-            textSearch : 'Title',
-            showRank: true,
-            showSelectBox: true,
-            linkText: 'Citations to',
-            recordView : function() {
-                var j;
-                var str="";
+    ],
+    itemDisplay: {
+      sortColWidth: 35,
+      sortingOpts : [
+        { title: 'Year-', value: function(){ return this.time.getFullYear(); }, inverse: true },
+        { title: '# Cit.\'s To', value: function(d){ return d.items.length; } },
+        { title: '# Cit.\'s- Total', value: "num" } 
+      ],
+      detailsToggle : "one",
+      textSearch : 'Title',
+      showRank: true,
+      showSelectBox: true,
+      linkText: 'Citations to',
+      recordView : function() {
+        var j;
+        var str="";
 
-                // description
-                str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=this.Title;
-                str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+this.doi+"\">"+
-                    "<i class='fa fa-external-link'></i></a>";
-                str+="</div>";
+        // description
+        str+="<div class=\"iteminfo iteminfo_0\">";
+        str+=this.Title;
+        str+=" <a target=\"_blank\" href=\"http://dx.doi.org/"+this.doi+"\">"+
+            "<i class='fa fa-external-link'></i></a>";
+        str+="</div>";
 
-                str+="<span class=\"item_details\">";
+        str+="<span class=\"item_details\">";
 
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Year</b>: " + this.time.getFullYear()+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + this.Authors+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + this.Concepts+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + this.Keywords+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + this.IndexTerms+"</div>";
-                if(this[6])
-                    str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + this.Citations.length+"</div>";
-                str+="</span>";
+        str+="<div class=\"iteminfo iteminfo_1\"> <b>Year</b>: " + this.time.getFullYear()+"</div>";
+        str+="<div class=\"iteminfo iteminfo_1\"> <b>Authors</b>: " + this.Authors+"</div>";
+        str+="<div class=\"iteminfo iteminfo_1\"> <b>Concepts</b>: " + this.Concepts+"</div>";
+        str+="<div class=\"iteminfo iteminfo_1\"> <b>Keywords</b>: " + this.Keywords+"</div>";
+        str+="<div class=\"iteminfo iteminfo_1\"> <b>IndexTerms</b>: " + this.IndexTerms+"</div>";
+        if(this[6])
+            str+="<div class=\"iteminfo iteminfo_1\"> <b>Citation Count</b>: " + this.Citations.length+"</div>";
+        str+="</span>";
 
-                return str;
-            }
-        }
-    });
+        return str;
+      }
+    }
+  });
 });
         </script>
-        <style type="text/css" media="screen">
-            #chart_div{
-                width: 1250px;
-                height: 700px;
-                margin-top: 30px;
-            }
-            .content .fa{
-                font-size: 0.8em;
-                color:gray;
-            }
-        </style>
+  <style type="text/css" media="screen">
+#chart_div{
+  width: 1250px;
+  height: 700px;
+  margin-top: 30px;
+}
+.content .fa{
+  font-size: 0.8em;
+  color:gray;
+}
+  </style>
 	</head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+      <div class="contents"><div id="chart_div"></div></div>
     </body>
 </html>

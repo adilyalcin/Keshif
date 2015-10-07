@@ -33,7 +33,7 @@ $(document).ready( function(){
       tables: "epistat_public_cases"
     },
     summaries: [
-      { title: "Disease", value: "Subject",
+      { name: "Disease", value: "Subject",
         catLabel: function(){ 
           switch(this.id){
             case "BORPER": return "Bordetella pertussis";
@@ -162,12 +162,12 @@ $(document).ready( function(){
           }
         }
         },
-      { title: "Gender", layout: "right" },
-      { title: "Age", layout: "right", value: function(){ 
+      { name: "Gender", panel: "right" },
+      { name: "Age", panel: "right", value: function(){ 
           if(this.Age<0 || this.Age > 100) return;
           return this.Age;
         }},
-      { title: "Date", layout: "bottom",
+      { name: "Date", panel: "bottom",
         value: function(){ 
           if(this.DateMonday===undefined) return;
           var x=dateFormat.parse(this.DateMonday);

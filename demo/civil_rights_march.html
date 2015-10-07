@@ -39,7 +39,7 @@ $(document).ready( function(){
       tables: {name:"civil_rights_march", id:"arcIdentifier"}
     },
     summaries: [
-      { title: "Tags",
+      { name: "Tags",
         value: function(){
           var contribs = this.publicContributions;
           if(contribs===undefined) return;
@@ -55,7 +55,7 @@ $(document).ready( function(){
           }
           return r;
         } },
-      { title: "Tag Contributors",
+      { name: "Tag Contributors",
         value: function(){
           var contribs = this.publicContributions;
           if(contribs===undefined) return;
@@ -71,12 +71,12 @@ $(document).ready( function(){
           }
           return r;
         } },
-      { title: "contributors", },
-      { title: "Types", value: "typesOfArchivalMaterials" },
-      { title: "levelOfDescription", collapsed: true },
-      { title: "Use Restrictions", value: "useRestrictions", collapsed: true, },
-      { title: "Access Restrictions", value: "accessRestrictions", collapsed: true,
-/*            },{ title: "Date", layout: "bottom",
+      { name: "contributors", },
+      { name: "Types", value: "typesOfArchivalMaterials" },
+      { name: "levelOfDescription", collapsed: true },
+      { name: "Use Restrictions", value: "useRestrictions", collapsed: true, },
+      { name: "Access Restrictions", value: "accessRestrictions", collapsed: true,
+/*            },{ name: "Date", panel: "bottom",
           value: function(){
               var pDate=this.productionDates;
               if(pDate===undefined ||pDate.length!==1) return;

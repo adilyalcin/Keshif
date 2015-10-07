@@ -85,10 +85,10 @@ google.setOnLoadCallback( function() {
         },
         loadedCb: drawCharts,
         summaries: [
-            {   title: "Topic",
+            {   name: "Topic",
                 catTableName: "topics", catLabel: "topic",
                 visibleRows: 9
-            },{ title: "Author",
+            },{ name: "Author",
                 catTableName: "people",
                 catLabel: function() {
                     var f_name = this.first_name;
@@ -98,7 +98,7 @@ google.setOnLoadCallback( function() {
                     if(f_name) str+=l_name;
                     return str;
                 }
-            },{ title: "Member Type",
+            },{ name: "Member Type",
                 value: function(){
                     var typeList = {};
                     var r = [];
@@ -116,8 +116,8 @@ google.setOnLoadCallback( function() {
                     return r;
                 },
                 catTableName: "member_types", catLabel: "type",
-            },{ title: "Project", catTableName: "projects", catLabel: "project",
-            },{ title: "Date", value: function(){ return new Date(this.Date); }, layout: "middle",
+            },{ name: "Project", catTableName: "projects", catLabel: "project",
+            },{ name: "Date", value: function(){ return new Date(this.Date); }, layout: "middle",
             }
         ],
         itemDisplay: {

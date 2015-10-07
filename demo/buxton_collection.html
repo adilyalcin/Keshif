@@ -164,48 +164,47 @@ function dataLoad(browser){
 };
 
 $(document).ready( function(){
+  resizeBrowser(100,30);
+  $(window).resize(function() {
     resizeBrowser(100,30);
-    $(window).resize(function() {
-        resizeBrowser(100,30);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser =new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 150,
-        barChartWidth: 90,
-        source: {
-            url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
-            callback: dataLoad
-        },
-        summaries: [
-            {   title: "Type", 
-            },{ title: "Year", layout: 'middle'
-            },{ title: "Price", intervalScale: "log", unitName: "$"
-            },{ title: "Company", layout: "right" 
-            },{ title: "Degree of Freedom"
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: {
-                title: "Year",
-                value: function(){ if(this.Year) return this.Year.getTime(); },
-                label: function(){ if(this.Year) return this.Year.getFullYear(); }
-            },
-            displayType: 'grid',
-            maxVisibleItems_Default: 40,
-            textSearch: "Name",
-            recordView: function(){
-                return "<a href='"+this.url+"' target='_blank'><img><span class='title'>"+this.Name+"</span></a>";
-            },
-            visibleCb: function(d){
-                if(this['Related Images'].length===0) return;
-                d3.select(d.DOM.record).select("img").attr("src",
-                    "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"
-                    +this['Related Images'][0]);
-            }
-        }
-    });
+  browser =new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    barChartWidth: 90,
+    source: {
+      url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
+      callback: dataLoad
+    },
+    summaries: [
+      { name: "Type" },
+      { name: "Year", panel: 'middle' },
+      { name: "Price", intervalScale: "log", unitName: "$" },
+      { name: "Company", panel: "right" },
+      { name: "Degree of Freedom" }
+    ],
+    itemDisplay: {
+      sortingOpts: {
+        name: "Year",
+        value: function(){ if(this.Year) return this.Year.getTime(); },
+        label: function(){ if(this.Year) return this.Year.getFullYear(); }
+      },
+      displayType: 'grid',
+      maxVisibleItems_Default: 40,
+      textSearch: "Name",
+      recordView: function(){
+        return "<a href='"+this.url+"' target='_blank'><img><span class='title'>"+this.Name+"</span></a>";
+      },
+      visibleCb: function(d){
+        if(this['Related Images'].length===0) return;
+        d3.select(d.DOM.record).select("img").attr("src",
+            "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"
+            +this['Related Images'][0]);
+      }
+    }
+  });
 });
         </script>
         <style>

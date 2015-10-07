@@ -79,45 +79,45 @@ google.setOnLoadCallback(function(){
       callback: loadData
     },
     summaries: [
-      { title: "Type", value: "subtype"},
-      { title: "Highlights",
+      { name: "Type", value: "subtype"},
+      { name: "Highlights",
         value: function(){
           var r=[];
           if(this.award) r.push("Awarded");
           if(this.hm) r.push("Honorable Mention");
           return r;
         }},
-      { title: "Keywords", minAggrValue: 2,
+      { name: "Keywords", minAggrValue: 2,
         value: function(){
           if(this.keywords===undefined) return;
           var r=[];
           this.keywords.forEach(function(keyword){ r.push(kshf.Util.toProperCase(keyword)); });
           return r;
         },},
-      { title: "Authors", 
+      { name: "Authors", 
         value: function(){
           if(this.authors===undefined) return;
           var r=[];
           this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.name)); });
           return r;
         }},
-      { title: "Author Institution", 
+      { name: "Author Institution", 
         value: function(){
           if(this.authors===undefined) return;
           var r=[];
           this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.institution)); });
           return r;
         },},
-      { title: "Author Country", 
+      { name: "Author Country", 
         value: function(){
           if(this.authors===undefined) return;
           var r=[];
           this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.country)); });
           return r;
         }},
-      { title: "Session Title", layout: 'right',
+      { name: "Session Title", panel: 'right',
         value: function(){ if(this.session) return this.session.s_title.substring(8); },},
-      { title: "Session Day", layout: 'right',
+      { name: "Session Day", panel: 'right',
         value: function(){ if(this.session) return this.session.day; },
         catSortBy: function(){
           switch(this.id){
@@ -127,7 +127,7 @@ google.setOnLoadCallback(function(){
             case "Thursday" : return 3;
           }
         }},
-      { title: "Session Time",  layout: 'right',
+      { name: "Session Time",  panel: 'right',
         value: function(){ if(this.session) return this.session.time; },
         catSortBy: function(){
           switch(this.id){

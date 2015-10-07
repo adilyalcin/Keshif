@@ -35,10 +35,10 @@ $(document).ready( function(){
       tables: [{name:"world_war_2_posters", id:"arcIdentifier"}]
     },
     summaries: [
-      { title: "Date", value: "date" },
-      { title: "Collection", value: "from" },
-      { title: "Subjects", value: "subjects" },
-      { title: "Tags",
+      { name: "Date", value: "date" },
+      { name: "Collection", value: "from" },
+      { name: "Subjects", value: "subjects" },
+      { name: "Tags",
         value: function(){
           var contribs = this.publicContributions;
           if(contribs===undefined) return;
@@ -54,7 +54,7 @@ $(document).ready( function(){
           }
           return r;
         } },
-      { title: "Tag Contributors",
+      { name: "Tag Contributors",
         value: function(){
           var contribs = this.publicContributions;
           if(contribs===undefined) return;
@@ -70,9 +70,9 @@ $(document).ready( function(){
           }
           return r;
         } },
-      { title: "Types", value: "typesOfArchivalMaterials" },
-      { title: "Use Restrictions", value: "useRestrictions", collapsed: true, },
-      { title: "Access Restrictions", value: "accessRestrictions", collapsed: true }
+      { name: "Types", value: "typesOfArchivalMaterials" },
+      { name: "Use Restrictions", value: "useRestrictions", collapsed: true, },
+      { name: "Access Restrictions", value: "accessRestrictions", collapsed: true }
     ],
     itemDisplay: {
       displayType: 'grid',

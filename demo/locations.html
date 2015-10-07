@@ -53,8 +53,8 @@ $(document).ready( function(){
     itemName: "Locations",
     source: { callback: loadData },
     summaries: [
-      { title: "Type", value: "l_type" },
-      { title: "Part of", value: "parent_location_uuid", catTableName: "Locations", catLabel: "name", }
+      { name: "Type", value: "l_type" },
+      { name: "Part of", value: "parent_location_uuid", catTableName: "Locations", catLabel: "name", }
     ],
     itemDisplay: {
       sortColWidth: 80,

@@ -65,7 +65,7 @@ $(document).ready( function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Tasks: Analytics",
+            {   name: "Tasks: Analytics",
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="sentiment-analysis" ||
@@ -79,7 +79,7 @@ $(document).ready( function(){
                             c==="category-entry";
                     });
                 }
-            },{ title: "Tasks: Visualizations",
+            },{ name: "Tasks: Visualizations",
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="roi" ||
@@ -91,19 +91,19 @@ $(document).ready( function(){
                             c==="uncertainty";
                     });
                 }
-            },{ title: "Data: Sources", layout: 'right',
+            },{ name: "Data: Sources", panel: 'right',
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="document" || c==="corpora" || c==="streams";
                     });
                 }
-            },{ title: "Data: Properties", layout: 'right',
+            },{ name: "Data: Properties", panel: 'right',
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="geospatial" || c==="time-series" || c==="networks";
                     });
                 }
-            },{ title: "Domains",
+            },{ name: "Domains",
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="social-media" ||
@@ -115,13 +115,13 @@ $(document).ready( function(){
                             c==="editorial-media";
                     });
                 }
-            },{ title: "Vis: Dimensionalities", layout: 'right',
+            },{ name: "Vis: Dimensionalities", panel: 'right',
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="1d" || c==="2d" || c==="3d";
                     });
                 }
-            },{ title: "Vis: Representations", layout: 'right',
+            },{ name: "Vis: Representations", panel: 'right',
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="line-plot" ||
@@ -133,13 +133,13 @@ $(document).ready( function(){
                             c==="glyph";
                     });
                 }
-            },{ title: "Vis: Alignments", layout: 'right',
+            },{ name: "Vis: Alignments", panel: 'right',
                 value: function(){
                     return this.categories.filter(function(c){
                         return c==="radial" || c==="linear" || c==="metric";
                     });
                 }
-            },{ title: "Year", layout: 'bottom', 
+            },{ name: "Year", panel: 'bottom', 
                 value: function(){ return new Date(this.year,1,1); },
             }
         ],

@@ -238,70 +238,68 @@ $(document).ready( function(){
     });
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 250,
-        leftPanelLabelWidth: 135,
-        itemName: "Dynamic Graph Vis. Papers",
-        source: {
-            url: "http://dynamicgraphs.fbeck.com/",
-            callback: loadData
-        },
-        summaries: [
-            {   title: "Type",
-            },{ title: "Time",
-            },{ title: "Paradigms",
-            },{ title: "Applications",
-            },{ title: "Evaluations",
+    domID: "#chart_div",
+    categoryTextWidth: 250,
+    leftPanelLabelWidth: 135,
+    itemName: "Dynamic Graph Vis. Papers",
+    source: {
+      url: "http://dynamicgraphs.fbeck.com/",
+      callback: loadData
+    },
+    summaries: [
+      { name: "Type" },
+      { name: "Time" },
+      { name: "Paradigms" },
+      { name: "Applications" },
+      { name: "Evaluations" },
 /*            },{
-                title: "Citations",
-                value: function(){ return references[d.Key].split(" "); },
-                // Using the main table name, this will enable linking through items
-                catTableName: "Publications",
-                collapsed: true*/
-            },{ title: "Authors", layout: 'right'
-            },{ title: "Journal", layout: 'right', collapsed: false
-            },{ title: "Year", layout: "bottom", 
-                // value: function(){ return new Date(this.Year,1,1); } // Years can be split at 6months, looks bad.
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: "Year",
-            displayType: 'grid',
-            textSearch: "Title",
-            recordView: function(){
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
-                    "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",
-                    "http://dynamicgraphs.fbeck.com/data/papers_img/"+this.Key+".png");
-            }
-        }
-    });
+          name: "Citations",
+          value: function(){ return references[d.Key].split(" "); },
+          // Using the main table name, this will enable linking through items
+          catTableName: "Publications",
+          collapsed: true*/ 
+      { name: "Authors", panel: 'right' },
+      { name: "Journal", panel: 'right', collapsed: false },
+      { name: "Year", panel: "bottom" }
+    ],
+    itemDisplay: {
+      sortingOpts: "Year",
+      displayType: 'grid',
+      textSearch: "Title",
+      recordView: function(){
+        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
+            "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",
+            "http://dynamicgraphs.fbeck.com/data/papers_img/"+this.Key+".png");
+      }
+    }
+  });
 });
         </script>
 <style>
-    .listItem{
-        width: 150px;
-    }
-    .content{
-        padding: 3px;
-    }
-    .thumbnail{
-        height: 105px;
-    }
-</style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+.listItem{
+  width: 150px;
+}
+.content{
+  padding: 3px;
+}
+.thumbnail{
+  height: 105px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data: The <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>digital library</a>
-            for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf.<br>
-            Raw source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
-            <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>SurVis version</a>
-            <span class="fa fa-info-circle"></span>
-            </div>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data: The <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>digital library</a>
+      for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf.<br>
+      Raw source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
+      <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>SurVis version</a>
+      <span class="fa fa-info-circle"></span>
+      </div>
     </body>
 </html>

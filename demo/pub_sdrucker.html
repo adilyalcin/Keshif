@@ -39,11 +39,11 @@ $(document).ready( function(){
       callback: dataLoad
     },
     summaries: [
-      {title:"Primary Tag", value: "Primary"},
-      {title:"Tag: Subject", value: function(){ return this.tags.subject;}},
-      {title:"Publication", value: function(){ return this.tags.publication;}},
-      {title:"Collaborators", value: function(){ return this.tags.collaborators;}},
-      {title:"Year", value: function(){ return 1*this.year;}, layout:"bottom"},
+      { name: "Primary Tag", value: "Primary"},
+      { name: "Tag: Subject", value: function(){ return this.tags.subject;}},
+      { name: "Publication", value: function(){ return this.tags.publication;}},
+      { name: "Collaborators", value: function(){ return this.tags.collaborators;}},
+      { name: "Year", value: function(){ return 1*this.year;}, panel: "bottom"},
     ],
     itemDisplay: {
       sortingOpts: "Year",

@@ -29,19 +29,19 @@ google.setOnLoadCallback(function(){
       tables: "diamonds"
     },
     summaries: [
-      { title: "Carat", value: "carat", description: "Weight of the diamond" },
-      { title: "Color",  value: "color" },
-      { title: "Clarity",  value: "clarity", 
+      { name: "Carat", value: "carat", description: "Weight of the diamond" },
+      { name: "Color",  value: "color" },
+      { name: "Clarity",  value: "clarity", 
         description: "A measurement of how clear the diamond is (I1 (worst), SI1, SI2, VS1, VS2, VVS1, VVS2, IF (best))"  },
-      { title: "Cut", value: "cut", layout: "middle", description: "Quality of the cut" },
-      { title: "Depth",  value: "depth", layout: "middle",
+      { name: "Cut", value: "cut", panel: "middle", description: "Quality of the cut" },
+      { name: "Depth",  value: "depth", panel: "middle",
         description: "Total depth percentage = z / mean(x, y) = 2 * z / (x + y)" },
-      { title: "Table",  value: "table", layout: "middle",
+      { name: "Table",  value: "table", panel: "middle",
         description: "Width of top of diamond relative to widest point" },
-      { title: "Price",  value: "price",  unitName: "$",  layout: "bottom" },
-      { title: "Length (X)", value: "x", unitName: "mm", layout: "right" },
-      { title: "Width (Y)", value: "y", unitName: "mm", layout: "right" },
-      { title: "Depth (Z)", value: "z", unitName: "mm", layout: "right" }
+      { name: "Price",  value: "price",  unitName: "$",  panel: "bottom" },
+      { name: "Length (X)", value: "x", unitName: "mm", panel: "right" },
+      { name: "Width (Y)", value: "y", unitName: "mm", panel: "right" },
+      { name: "Depth (Z)", value: "z", unitName: "mm", panel: "right" }
     ]
   });
 });

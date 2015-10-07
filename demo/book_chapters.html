@@ -31,7 +31,7 @@ google.setOnLoadCallback(function(){
       tables: "Book Chapters"
     },
     summaries: [
-      { title: "Domain Properties",
+      { name: "Domain Properties",
         value: function(){
           var r=[];
           if(this['Number & Quantity']===1) r.push('Number & Quantity = 1.0');
@@ -54,10 +54,10 @@ google.setOnLoadCallback(function(){
             case 'Arrangement = 1.0': return 7;
           }
         } },
-      { title: "Modeling / Formulating" },
-      { title: "Manipulating / Transforming" },
-      { title: "Inferring / Drawing Conclusions" },
-      { title: "Communicating" },
+      { name: "Modeling / Formulating" },
+      { name: "Manipulating / Transforming" },
+      { name: "Inferring / Drawing Conclusions" },
+      { name: "Communicating" },
     ],
     itemDisplay: {
       sortColWidth: 45,

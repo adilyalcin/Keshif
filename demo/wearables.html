@@ -34,11 +34,11 @@ $(document).ready( function() {
       tables: {name: "wearables-crowdflower", id:"newID"}
     },
     summaries: [
-      { title: "Price", value: function(){ return 1*this.Price.substr(1,10000); }, unitName: "$" },
-      { title: "Body Location", value: "Body.Location" },
-      { title: "Category" },
-      { title: "Company Name", value: "Company.Name", layout: "right", },
-      { title: "Company Country", value: "Company...Country", layout: "right" }
+      { name: "Price", value: function(){ return 1*this.Price.substr(1,10000); }, unitName: "$" },
+      { name: "Body Location", value: "Body.Location" },
+      { name: "Category" },
+      { name: "Company Name", value: "Company.Name", panel: "right", },
+      { name: "Company Country", value: "Company...Country", panel: "right" }
     ],
     itemDisplay: {
       sortColWidth: 40,

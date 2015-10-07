@@ -215,7 +215,7 @@ google.setOnLoadCallback(function(){
             callback: loadData
         },
         summaries: [
-            {   title: "Era",
+            {   name: "Era",
                 value: function(){
                     var year=this.Year;
                     if(year<1600) return 0;
@@ -240,13 +240,13 @@ google.setOnLoadCallback(function(){
                         case 7: return "Computer as a new frontier <b>1975+</b>";
                     }
                 }
-            },{ title: "Year", layout: "bottom", intervalScale: "linear", collapsed: true
-            },{ title: "Highlights",
+            },{ name: "Year", panel: "bottom", intervalScale: "linear", collapsed: true
+            },{ name: "Highlights",
                 description: "Highlights are selected from the www.Infografe.com.br Milestones report"
                 // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
-            },{ title: "Main Category", value: "Category"
-            },{ title: "Keywords", layout: "right"
-            },{ title: "Author"
+            },{ name: "Main Category", value: "Category"
+            },{ name: "Keywords", panel: "right"
+            },{ name: "Author"
             }
         ],
         itemDisplay: {

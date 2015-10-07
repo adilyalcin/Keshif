@@ -48,8 +48,8 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { title: "Gender" },
-      { title: "Age Group", value: "actcat",
+      { name: "Gender" },
+      { name: "Age Group", value: "actcat",
         catSortBy: function(){
           switch(this.id){
             case '16-19' : return 0;
@@ -60,18 +60,18 @@ google.setOnLoadCallback(function(){
             default      : return 5;
           }
         }},
-      { title: "T1_Level2", layout: "middle" },
-      { title: "T2_Level2", layout: "middle" },
-      { title: "T3_Level2", layout: "middle" },
+      { name: "T1_Level2", panel: "middle" },
+      { name: "T2_Level2", panel: "middle" },
+      { name: "T3_Level2", panel: "middle" },
 
-      { title: "T1_IMFIT", layout: "right", catSortBy: sortSkills },
-      { title: "T2_IMFIT", layout: "right", catSortBy: sortSkills },
-      { title: "T3_IMFIT", layout: "right", catSortBy: sortSkills },
+      { name: "T1_IMFIT", panel: "right", catSortBy: sortSkills },
+      { name: "T2_IMFIT", panel: "right", catSortBy: sortSkills },
+      { name: "T3_IMFIT", panel: "right", catSortBy: sortSkills },
 
-      { title: "YR1"},
-      { title: "YR2"},
-      { title: "Transfer", value: "transfer", catLabel: function(){ return this.transfer===1?"Yes":"No"; }},
-      { title: "Highest Level", value: "HighestLevel2", layout: "right" }
+      { name: "YR1"},
+      { name: "YR2"},
+      { name: "Transfer", value: "transfer", catLabel: function(){ return this.transfer===1?"Yes":"No"; }},
+      { name: "Highest Level", value: "HighestLevel2", panel: "right" }
     ]
   });
 });

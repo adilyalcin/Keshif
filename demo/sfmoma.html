@@ -71,19 +71,19 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      {   title: "Artist", minAggrValue: 3, layout: 'right', collapsed: true },
-      { title: "Nationality", layout: 'right' },
-      { title: "Gender", layout: 'right' },
-      { title: "Living", layout: 'right' },
-      { title: "Year Born", layout: 'right' },
+      { name: "Artist", minAggrValue: 3, panel: 'right', collapsed: true },
+      { name: "Nationality", panel: 'right' },
+      { name: "Gender", panel: 'right' },
+      { name: "Living", panel: 'right' },
+      { name: "Year Born", panel: 'right' },
 
-      { title: "Collection", collapsed: true },
-      { title: "Object Type" },
-//    { title: "Medium", },
-      { title: "Creation Date", value: "Time", layout: 'bottom' },
-      { title: "Department" },
-      { title: "On Display" }
-//            },{ title: "Key Words", collapsed: true
+      { name: "Collection", collapsed: true },
+      { name: "Object Type" },
+//    { name: "Medium", },
+      { name: "Creation Date", value: "Time", panel: 'bottom' },
+      { name: "Department" },
+      { name: "On Display" }
+//            },{ name: "Key Words", collapsed: true
     ],
     itemDisplay: {
       textSearch: "Name",

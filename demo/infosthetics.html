@@ -39,11 +39,10 @@ $(document).ready( function(){
       kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
     },
     summaries: [
-      { title: "Category" },
-      { title: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true },
-      { title: "# Comments",  value: '# of Comments' },
-      { title: "Date", layout: 'bottom'
-      }
+      { name: "Category" },
+      { name: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true },
+      { name: "# Comments",  value: '# of Comments' },
+      { name: "Date", panel: 'bottom' }
     ],
     itemDisplay: {
       sortingOpts: [

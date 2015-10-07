@@ -65,10 +65,10 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { title: "Type", collapsed: true },
-      { title: "Authors" },
-      { title: "Journal", collapsed: false },
-      { title: "Year", layout: "bottom", value: function(){ return new Date(this.Year,1,1);} }
+      { name: "Type", collapsed: true },
+      { name: "Authors" },
+      { name: "Journal", collapsed: false },
+      { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,1,1);} }
     ],
     itemDisplay: {
       sortingOpts: "Year",

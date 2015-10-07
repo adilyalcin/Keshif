@@ -1,100 +1,99 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Architectures</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Architectures</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 function dataLoad(browser){
-    $.ajax({
-        url: "./data/freebase_architecture.json",
-        async: false,
-        success: function(data){
-            browser.primaryTableName = "Architectures";
-            kshf.dt.Architectures = [];
-            data.result.forEach(function(v){
-                var dt = {};
-                dt.id = v.id;
-                dt.Name = v.name;
-                dt.Year = new Date(parseInt(v.opened[0]),0);
-                dt.Architect = v.architect[0].name;
-                dt.Style = [];
-                v.architect[0].architectural_style.forEach(function(o){
-                    dt.Style.push(o.name);
-                });
-                dt.Location = v['/location/location/geolocation'][0];
-                dt.img_url = v['/common/topic/image'][0].id[0];
-                kshf.dt.Architectures.push(new kshf.Item(dt,'id'));
-            });
-            browser.loadCharts();
-        }
-    });
+  $.ajax({
+    url: "./data/freebase_architecture.json",
+    async: false,
+    success: function(data){
+      browser.primaryTableName = "Architectures";
+      kshf.dt.Architectures = [];
+      data.result.forEach(function(v){
+        var dt = {};
+        dt.id = v.id;
+        dt.Name = v.name;
+        dt.Year = new Date(parseInt(v.opened[0]),0);
+        dt.Architect = v.architect[0].name;
+        dt.Style = [];
+        v.architect[0].architectural_style.forEach(function(o){
+          dt.Style.push(o.name);
+        });
+        dt.Location = v['/location/location/geolocation'][0];
+        dt.img_url = v['/common/topic/image'][0].id[0];
+        kshf.dt.Architectures.push(new kshf.Item(dt,'id'));
+      });
+      browser.loadCharts();
+    }
+  });
 };
 
 $(document).ready( function(){
+  resizeBrowser(100,30);
+  $(window).resize(function() {
     resizeBrowser(100,30);
-    $(window).resize(function() {
-        resizeBrowser(100,30);
-        browser.updateLayout();
-    });
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 150,
-        source: {
-            url: "http://moritz.stefaner.eu/projects/elastic-lists/MACE%20ProjectSearch/index.html",
-            callback: dataLoad
-        },
-        summaries: [
-            {   title: "Architect"
-            },{ title: "Style", layout: 'right'
-            },{ title: "Year (Post 14th century)", layout: 'bottom',
-                value: function(){ if(this.Year.getFullYear()>1500) return this.Year; }
-            }
-        ],
-        itemDisplay: {
-            sortingOpts: "Year",
-            autoExpandMore: false,
-            displayType: "grid",
-            maxVisibleItems_Default: 48,
-            textSearch: "Name",
-            recordView: function(){
-                return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+this.Name+"</span>";
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",
-                    "https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
-            }
-        }
-    });
+    browser.updateLayout();
+  });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    source: {
+      url: "http://moritz.stefaner.eu/projects/elastic-lists/MACE%20ProjectSearch/index.html",
+      callback: dataLoad
+    },
+    summaries: [
+      { name: "Architect" },
+      { name: "Style", panel: 'right' },
+      { name: "Year (Post 14th century)", panel: 'bottom',
+        value: function(){ if(this.Year.getFullYear()>1500) return this.Year; }}
+    ],
+    itemDisplay: {
+      sortingOpts: "Year",
+      autoExpandMore: false,
+      displayType: "grid",
+      maxVisibleItems_Default: 48,
+      textSearch: "Name",
+      recordView: function(){
+        return "<span class='thumbnail'><img class='thumbImg'></span><span class='title'>"+this.Name+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",
+            "https://www.googleapis.com/freebase/v1/image/"+d.data.img_url);
+      }
+    }
+  });
 });
-        </script>
+    </script>
 <style>
-    .listItem{
-        width: 100px;
-    }
-    .content{
-        padding: 3px;
-    }
-    .thumbnail{
-        height: 75px;
-    }
-    .thumbImg{
-        position: absolute;
-        bottom: 0px;
-        left: 5%;
-    }
+.listItem{
+  width: 100px;
+}
+.content{
+  padding: 3px;
+}
+.thumbnail{
+  height: 75px;
+}
+.thumbImg{
+  position: absolute;
+  bottom: 0px;
+  left: 5%;
+}
 </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
 </html>

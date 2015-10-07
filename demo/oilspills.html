@@ -21,138 +21,122 @@
 var demoID = 15;
 
 function getDate(){
-    var dt=this.Date;
-    if(dt.getUTCFullYear) { return dt; }
-    return new Date(moment(this.Date,["YYYY-MM-DD"]));
+  var dt=this.Date;
+  if(dt.getUTCFullYear) { return dt; }
+  return new Date(moment(this.Date,["YYYY-MM-DD"]));
 }
 
 function getSource(){
-    if(this["Platform / Rig"]!==null){ return "Platform / Rig"; }
-    if(this["Pipeline"]!==null){ return "Pipeline"; }
-    if(this["Vessel"]!==null){ return "Vessel"; }
-    return "Unknown";
+  if(this["Platform / Rig"]!==null){ return "Platform / Rig"; }
+  if(this["Pipeline"]!==null){ return "Pipeline"; }
+  if(this["Vessel"]!==null){ return "Vessel"; }
+  return "Unknown";
 }
 function getMaterial(){
-    var toRet=[];
-    if(this["Crude & Condensate"]!==0) toRet.push("Crude & Condensate");
-    if(this["Refined Petroleum"]!==0) toRet.push("Refined Petroleum");
-    if(this["Synthetic Base Fluid"]!==0) toRet.push("Synthetic Base Fluid");
-    if(this["Other Chemicals"]!==0) toRet.push("Other Chemicals");
-    return toRet;
+  var toRet=[];
+  if(this["Crude & Condensate"]!==0) toRet.push("Crude & Condensate");
+  if(this["Refined Petroleum"]!==0) toRet.push("Refined Petroleum");
+  if(this["Synthetic Base Fluid"]!==0) toRet.push("Synthetic Base Fluid");
+  if(this["Other Chemicals"]!==0) toRet.push("Other Chemicals");
+  return toRet;
 }
 
 google.setOnLoadCallback( function(){
+  resizeBrowser(220,60);
+  $(window).resize(function() {
     resizeBrowser(220,60);
-    $(window).resize(function() {
-        resizeBrowser(220,60);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    logIf.Check = logIf.All();
+  logIf.Check = logIf.All();
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Oil Spills",
-        categoryTextWidth: 200,
-        leftPanelLabelWidth: 150,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
-            tables: ["Spills", "Notes", "Districts"]
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Spills, ['Cause'], ", ", false);
-            kshf.Util.cellToArray(kshf.dt.Spills, ['Notes'], /-|,\s*/, true);
-            kshf.Util.cellToArray(kshf.dt.Spills, ['During Activity'], /\/\s*/, false);
-        },
-        summaries: [
-            {   title: "Size"
-            },{ 
-                title: "Total Spilled", collapsed: false, layout: "middle"
-            },{ title: "Crude & Condensate", collapsed: true, layout: "middle"
-            },{ title: "Refined Petroleum", collapsed: true, layout: "middle"
-            },{ title: "Synthetic Base Fluid", collapsed: true, layout: "middle"
-            },{ title: "Other Chemicals", collapsed: true, layout: "middle"
-            },{ title: "Source", value: getSource
-            },{ title: "Material", value: getMaterial
-            },{ title: "Company", layout: 'right'
-            },{ title: "District", catTableName: "Districts", catLabel: "Name", layout: 'left'
-            },{ title: "Water Depth", layout: 'right', value: 'Water Depth (feet)',
-                intervalScale: 'log', unitName: 'ft'
-            },{ title: "During Activity", collapsed: false
-            },{ title: "Cause", layout: 'right'
-            },{ title: "Other Properties", value: "Notes", layout: 'right', collapsed: true,
-                catTableName: "Notes", catLabel: "name"
-            },{ title: "Spill Date", layout: 'bottom', value: getDate,
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 58,
-            sortingOpts: [
-                { title: 'Date', inverse: true, value: getDate,
-                    label: function(){ 
-                        var date=getDate.call(this);
-                        return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
-                    }
-                },
-                { title: "Total Spilled" },
-                { title: "Crude & Condensate" },
-                { title: "Synthetic Base Fluid" }
-            ],
-            detailsToggle: "Multi",
-            recordView: function(){
-                var j;
-                var str="";
-                // location
-                var district=kshf.dt_id.Districts[this.District];
-                if(district) district = district.data.Name;
-                str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b> "+this.Company+"</div>";
-                str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
-                    +" <u>District</u>:"+district
-                    +" - <u>Area Block</u>:"+this["Area Block"]
-                    +" - <u>Water Depth</u>:"+this["Water Depth (feet)"]+"feet"
-                    +" - <u>Distance to Shore</u>:"+this["Distance to Shore (miles)"]+"miles"
-                    +"</div>";
-                
-                str+="<span class=\"item_details\">";
-                
-                // Spillage
-                str+="<div class=\"iteminfo iteminfo_1\"><b>Spilled (in barrels): </b>";
-                str+=" <u>Total</u>:"+this["Total Spilled"];
-                str+=" <u>Crude & Condensate</u>:"+this["Crude & Condensate"];
-                str+=" <u>Refined Petroleum</u>:"+this["Refined Petroleum"];
-                str+=" <u>Synthetic Base Fluid</u>:"+this["Synthetic Base Fluid"];
-                str+=" <u>Other Chemicals</u>:"+this["Other Chemicals"];
-                str+="</div>"
-                str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+this.Cause+"</div>";
-                str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource.call(this)
-                    +" <b>Facility:</b> "+ this.Facility
-                    +"</div>";
+    domID: "#chart_div",
+    itemName: "Oil Spills",
+    categoryTextWidth: 200,
+    leftPanelLabelWidth: 150,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
+      tables: ["Spills", "Notes", "Districts"]
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Spills, ['Cause'], ", ", false);
+      kshf.Util.cellToArray(kshf.dt.Spills, ['Notes'], /-|,\s*/, true);
+      kshf.Util.cellToArray(kshf.dt.Spills, ['During Activity'], /\/\s*/, false);
+    },
+    summaries: [
+      { name: "Size" },
+      { name: "Total Spilled", collapsed: false, panel: "middle" },
+      { name: "Crude & Condensate", collapsed: true, panel: "middle" },
+      { name: "Refined Petroleum", collapsed: true, panel: "middle" },
+      { name: "Synthetic Base Fluid", collapsed: true, panel: "middle" },
+      { name: "Other Chemicals", collapsed: true, panel: "middle" },
+      { name: "Source", value: getSource },
+      { name: "Material", value: getMaterial },
+      { name: "Company", panel: 'right' },
+      { name: "District", catTableName: "Districts", catLabel: "Name", panel: 'left' },
+      { name: "Water Depth", panel: 'right', value: 'Water Depth (feet)', intervalScale: 'log', unitName: 'ft' },
+      { name: "During Activity", collapsed: false },
+      { name: "Cause", panel: 'right' },
+      { name: "Other Properties", value: "Notes", panel: 'right', collapsed: true, catTableName: "Notes", catLabel: "name" },
+      { name: "Spill Date", panel: 'bottom', value: getDate }
+    ],
+    itemDisplay: {
+      sortColWidth: 58,
+      sortingOpts: [
+        { name: "Date", inverse: true, value: getDate,
+          label: function(){ 
+            var date=getDate.call(this);
+            return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
+          } },
+        "Total Spilled",
+        "Crude & Condensate" ,
+        "Synthetic Base Fluid"
+      ],
+      recordView: function(){
+        var j;
+        var str="";
+        // location
+        var district=kshf.dt_id.Districts[this.District];
+        if(district) district = district.data.Name;
+        str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b> "+this.Company+"</div>";
+        str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
+            +" <u>District</u>:"+district
+            +" - <u>Area Block</u>:"+this["Area Block"]
+            +" - <u>Water Depth</u>:"+this["Water Depth (feet)"]+"feet"
+            +" - <u>Distance to Shore</u>:"+this["Distance to Shore (miles)"]+"miles"
+            +"</div>";
+        
+        str+="<span class=\"item_details\">";
+        
+        // Spillage
+        str+="<div class=\"iteminfo iteminfo_1\"><b>Spilled (in barrels): </b>";
+        str+=" <u>Total</u>:"+this["Total Spilled"];
+        str+=" <u>Crude & Condensate</u>:"+this["Crude & Condensate"];
+        str+=" <u>Refined Petroleum</u>:"+this["Refined Petroleum"];
+        str+=" <u>Synthetic Base Fluid</u>:"+this["Synthetic Base Fluid"];
+        str+=" <u>Other Chemicals</u>:"+this["Other Chemicals"];
+        str+="</div>"
+        str+="<div class=\"iteminfo iteminfo_2\"><b>Casuses:</b>"+this.Cause+"</div>";
+        str+="<div class=\"iteminfo iteminfo_2\"><b>Spill Source:</b> "+getSource.call(this)
+            +" <b>Facility:</b> "+ this.Facility
+            +"</div>";
 
-                str+="</span>";
-                
-                return str;
-            }
-        }
-    });
+        str+="</span>";
+        
+        return str;
+      }
+    }
+  });
 });
-        </script>
-        <style>
-            div.kshf.layout_header span.title{
-                letter-spacing: 0em;
-            }
-            div.kshf.layout_header span.title{
-                font-size: 1em;
-                letter-spacing: 0em;
-            }
-        </style>
-	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span> This page uses data from
-            <a href="http://www.bsee.gov/Inspection-and-Enforcement/Accidents-and-Incidents/Spills/" target="_blank">BSEE.gov</a>
-            oil spill summaries. <span class="fa fa-info-circle"></span>
-            </div>
-
+    </script>
+    </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span> This page uses data from
+      <a href="http://www.bsee.gov/Inspection-and-Enforcement/Accidents-and-Incidents/Spills/" target="_blank">BSEE.gov</a>
+      oil spill summaries. <span class="fa fa-info-circle"></span>
+      </div>
     </body>
 </html>

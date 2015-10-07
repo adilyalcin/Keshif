@@ -1,122 +1,121 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>German Lobbying Meetings</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>German Lobbying Meetings</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 var getIcon = function(d){
-    switch(d){
-        case "Energy": return "<i class='fa fa-lightbulb-o catIcon'></i>";
-        case "Transportation": return "<i class='fa fa-car catIcon'></i>";
-        case "Banking": return "<i class='fa fa-money catIcon'></i>";
-    }
+  switch(d){
+    case "Energy": return "<i class='fa fa-lightbulb-o catIcon'></i>";
+    case "Transportation": return "<i class='fa fa-car catIcon'></i>";
+    case "Banking": return "<i class='fa fa-money catIcon'></i>";
+  }
 };
 
 google.setOnLoadCallback(function(){
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        leftPanelLabelWidth: 280,
-        rightPanelLabelWidth: 250,
-        source: {
-            gdocId: '1B0vjide7zhHRjI2VVc_RF1-2rfoF_8AXl-7h7BvBkv8',
-            tables: [ 
-                "Meetings",
-                {name:"Politicians",id:"Politician"},
-                {name:"Organizations",id:"Organization"}
-            ]
-        },
-        summaries: [
-            {   title: "Politician",
-                catTableName: "Politicians", catLabel: "Politician",
-                summaries: [{ title: "Department" }]
-            },{ title: "Type", layout: 'right',
-                value: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
-                catLabel: function(){ return this.id+" "+getIcon(this.id); }
-            },{ title: "Organization", layout: 'right',
-                catTableName: "Organizations",
-                catLabel: function(){ return this.Organization+" "+getIcon(this.Type); },
-            },{ title: "Lobbyist", layout: 'right', collapsed: true
-            },{ title: "Date", layout: "bottom"
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 75,
-            sortingOpts: {
-                title: 'Date', label: function(){ return moment(this.Date).format("D MMM 'YY"); }, inverse: true
-            },
-            recordView: function(){
-                return getIcon(kshf.dt_id.Organizations[this.Organization].data.Type) +
-                    "<span style='display:block'>"+
-                        "<i class='fa fa-bank commonIcon'></i> "+
-                        "<span class='person'>"+this.Politician+"</span></span>"+
-                    "<span style='display:block; text-align:right; margin-right: 1.7em;'>"+
-                        "<span class='person' style='font-size: 0.8em'>("+this.Lobbyist+")</span> "+this.Organization+" "+
-                        "<i class='fa fa-briefcase commonIcon'></i></span>";
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    leftPanelLabelWidth: 280,
+    rightPanelLabelWidth: 250,
+    source: {
+      gdocId: '1B0vjide7zhHRjI2VVc_RF1-2rfoF_8AXl-7h7BvBkv8',
+      tables: [ 
+        "Meetings",
+        {name:"Politicians",id:"Politician"},
+        {name:"Organizations",id:"Organization"}
+      ]
+    },
+    summaries: [
+      { name: "Politician",
+        catTableName: "Politicians", catLabel: "Politician",
+        summaries: "Department" },
+      { name: "Type", panel: 'right',
+        value: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
+        catLabel: function(){ return this.id+" "+getIcon(this.id); } },
+      { name: "Organization", panel: 'right',
+        catTableName: "Organizations",
+        catLabel: function(){ return this.Organization+" "+getIcon(this.Type); }, },
+      { name: "Lobbyist", panel: 'right', collapsed: true },
+      { name: "Date", panel: "bottom" }
+    ],
+    itemDisplay: {
+      sortColWidth: 75,
+      sortingOpts: {
+        title: 'Date', label: function(){ return moment(this.Date).format("D MMM 'YY"); }, inverse: true
+      },
+      recordView: function(){
+        return getIcon(kshf.dt_id.Organizations[this.Organization].data.Type) +
+            "<span style='display:block'>"+
+                "<i class='fa fa-bank commonIcon'></i> "+
+                "<span class='person'>"+this.Politician+"</span></span>"+
+            "<span style='display:block; text-align:right; margin-right: 1.7em;'>"+
+                "<span class='person' style='font-size: 0.8em'>("+this.Lobbyist+")</span> "+this.Organization+" "+
+                "<i class='fa fa-briefcase commonIcon'></i></span>";
+      }
+    }
+  });
 });
         </script>
-        <style>
-            #chart_div {
-                width: 1260px;
-                height: 650px;
-            }
-            .theLabel > .fa{
-                width: 1.5em;
-                text-align: center;
-            }
-            .listItem{
-                padding-top: 3px !important;
-                padding-bottom: 3px !important;
-                border-top: dashed 1px lightgray !important;
-            }
-            .content > .fa.catIcon{
-                float: right;
-                color: gray;
-                font-size: 1.2em;
-                width: 1.4em;
-                position: absolute;
-                right: 0px;
-                display: block;
-                text-align: center;
-            }
-            .content .fa.commonIcon{
-                color: gray;
-                font-size: 0.9em;
-            }
-            .content .person{
-                font-weight: 300;
-            }
-            .content:hover > .fa.catIcon{
-                color: orangered;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">German Lobbying Meetings</div>
-        <div class="contents"><div id="chart_div"></div></div>
+    <style>
+#chart_div {
+  width: 1260px;
+  height: 650px;
+}
+.theLabel > .fa{
+  width: 1.5em;
+  text-align: center;
+}
+.listItem{
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+  border-top: dashed 1px lightgray !important;
+}
+.content > .fa.catIcon{
+  float: right;
+  color: gray;
+  font-size: 1.2em;
+  width: 1.4em;
+  position: absolute;
+  right: 0px;
+  display: block;
+  text-align: center;
+}
+.content .fa.commonIcon{
+  color: gray;
+  font-size: 0.9em;
+}
+.content .person{
+  font-weight: 300;
+}
+.content:hover > .fa.catIcon{
+  color: orangered;
+}
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">German Lobbying Meetings</div>
+    <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span> This page uses data compiled and published by
-            <a href="http://christopherwarnow.com/lobbyingcomplex/" target="_blank">Christopher Warnow</a>. Sources: 
-            <a href="http://dip21.bundestag.de/dip21/btd/17/123/1712332.pdf">Banking</a> <i class='fa fa-money'></i> - 
-            <a href="http://dip21.bundestag.de/dip21/btd/17/146/1714698.pdf">Transportation</a> <i class='fa fa-car'></i> - 
-            <a href="http://dip21.bundestag.de/dip21/btd/18/001/1800140.pdf">Energy <i class='fa fa-lightbulb-o'></i></a> - 
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span> This page uses data compiled and published by
+      <a href="http://christopherwarnow.com/lobbyingcomplex/" target="_blank">Christopher Warnow</a>. Sources: 
+      <a href="http://dip21.bundestag.de/dip21/btd/17/123/1712332.pdf">Banking</a> <i class='fa fa-money'></i> - 
+      <a href="http://dip21.bundestag.de/dip21/btd/17/146/1714698.pdf">Transportation</a> <i class='fa fa-car'></i> - 
+      <a href="http://dip21.bundestag.de/dip21/btd/18/001/1800140.pdf">Energy <i class='fa fa-lightbulb-o'></i></a> - 
 
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

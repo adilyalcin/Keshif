@@ -37,13 +37,13 @@ google.setOnLoadCallback(function(){
       kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
     },
     summaries: [
-      { title: "Categories" },
-      { title: "Credits", layout: 'right' },
-      { title: "Month", layout: 'right',
+      { name: "Categories" },
+      { name: "Credits", panel: 'right' },
+      { name: "Month", panel: 'right',
         value: function(){ if(this.Date) return this.Date.getMonth(); },
         catLabel: function(){ return getMonthNameFromNumber(this.id); },
         catSortBy: "id", },
-      { title: "Date",  layout: 'bottom' }
+      { name: "Date",  panel: 'bottom' }
     ],
     itemDisplay: {
       sortColWidth: 120,

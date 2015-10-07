@@ -26,14 +26,14 @@ google.setOnLoadCallback(function(){
       tables: "Inspections"
     },
     summaries: [
-      { title: "Country/Area", catLabel: function(){ return getCountryName(this.id);}, collapsed: true },
-      { title: "State", catLabel: function(){ return getStateName(this.id); } },
-      { title: "District" },
-      { title: "City", minAggrValue: 25 },
-      { title: "District Decision", layout: 'middle' },
-      { title: "Center", layout: 'middle' },
-      { title: "Project Area", layout: 'middle' },
-      { title: "Inspection End Date", layout: 'bottom' }
+      { name: "Country/Area", catLabel: function(){ return getCountryName(this.id);}, collapsed: true },
+      { name: "State", catLabel: function(){ return getStateName(this.id); } },
+      { name: "District" },
+      { name: "City", minAggrValue: 25 },
+      { name: "District Decision", layout: 'middle' },
+      { name: "Center", layout: 'middle' },
+      { name: "Project Area", layout: 'middle' },
+      { name: "Inspection End Date", layout: 'bottom' }
     ]
   });
 });

@@ -31,11 +31,11 @@ google.setOnLoadCallback(function(){
       kshf.Util.cellToArray(kshf.dt.Banks, ['Loss Share Type'], /\//, false);
     },
     summaries: [
-      { title: "Loss Share Type" },
-      { title: "State", value: "ST", catTableName: "States", catLabel: "name", layout: 'right', },
-      { title: "City", layout: 'right', },
-      { title: "Acquiring Institution" },
-      { title: "Closing Date", layout: 'bottom' }
+      { name: "Loss Share Type" },
+      { name: "State", value: "ST", catTableName: "States", catLabel: "name", panel: 'right', },
+      { name: "City", panel: 'right', },
+      { name: "Acquiring Institution" },
+      { name: "Closing Date", panel: 'bottom' }
     ],
     itemDisplay: {
       sortColWidth: 90,

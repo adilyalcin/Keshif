@@ -30,8 +30,8 @@ $(document).ready( function() {
 //  http://graphics8.nytimes.com/newsgraphics/2014/08/14/police-gear/a53e059e707a5f429107eee6c2e9f77f3f5f0c2f/'
     },
     summaries: [
-      { title: "state", catLabel: function(d){ return getStateName(this.id); } },
-      { title: "Gear Category",
+      { name: "state", catLabel: function(d){ return getStateName(this.id); } },
+      { name: "Gear Category",
         value: function(){
           var r=[];
           if(this['Armored Vehicle']>0) r.push('Received Armored Vehicles');
@@ -48,7 +48,7 @@ $(document).ready( function() {
           if(this['Shotgun']>0) r.push('Received Guns');
           return r;
         } },
-      { title: "Gear",
+      { name: "Gear",
         value: function(){
           var r=[];
           if(this['Armored Vehicle']>0) r.push('Armored Vehicle');
@@ -72,13 +72,13 @@ $(document).ready( function() {
           if(this['Other armored vehicle']>0) r.push('Other armored vehicle');
           return r;
         } },
-      { title: "Machine Gun", layout: 'right' },
-      { title: "Pistol", layout: 'right' },
-      { title: "Magazine", layout: 'right' },
-      { title: "Shotgun", layout: 'right' },
-      { title: "Armored Vehicle", layout: 'right', collapsed: true },
-      { title: "Personal Armor", layout: 'right', collapsed: true },
-      { title: "Night Vision", layout: 'right', collapsed: true }
+      { name: "Machine Gun", panel: 'right' },
+      { name: "Pistol", panel: 'right' },
+      { name: "Magazine", panel: 'right' },
+      { name: "Shotgun", panel: 'right' },
+      { name: "Armored Vehicle", panel: 'right', collapsed: true },
+      { name: "Personal Armor", panel: 'right', collapsed: true },
+      { name: "Night Vision", panel: 'right', collapsed: true }
     ],
     itemDisplay: {
       sortingOpts: [
