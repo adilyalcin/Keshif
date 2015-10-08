@@ -4,7 +4,7 @@ var googleDriveDir = "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledri
 
 var browser_configs = {
   lesMiserables: {
-    name: "Les Miserables",
+    title: "Les Miserables",
     sets: "80 characters",
     items: "356 chapters",
     attribs: "Book Volume",
@@ -51,7 +51,7 @@ var browser_configs = {
     }
   },
   movies: {
-    name: "Movies",
+    title: "Movies",
     sets: "17 genres",
     items: "3883 movies",
     attribs: "",
@@ -105,7 +105,7 @@ var browser_configs = {
     }
   },
   simpsons: {
-    name: "Simpsons",
+    title: "Simpsons",
     sets: "6 features",
     items: "24 characters",
     attribs: "Age",
@@ -143,7 +143,7 @@ var browser_configs = {
     }
   },
   foodFlavorNetwork: {
-    name: "Food Flavor Network",
+    title: "Food Flavor Network",
     sets: "82 Ingredients",
     items: "5000 Recipes",
     attribs: "Region",
@@ -167,7 +167,7 @@ var browser_configs = {
     }
   },
   hboShows: {
-    name: "HBO Actors",
+    title: "HBO Actors",
     sets: "24 Shows",
     items: "67 Actors",
     attribs: "",
@@ -278,7 +278,7 @@ var browser_configs = {
     }
   },
   dataBreaches: {
-    name: "Data Breaches",
+    title: "Data Breaches",
     sets: "18 RecordTypes",
     items: "284 breaches",
     attribs: "Industry, Date...",
@@ -312,7 +312,7 @@ var browser_configs = {
     }
   },
   tedTalks: {
-    name: "TED Talks",
+    title: "TED Talks",
     sets: "9 Feelings",
     items: "1759 TED Talks",
     attribs: "#ofViews",
@@ -351,7 +351,7 @@ var browser_configs = {
     }
   },
   acmPapers_terms: {
-    name: "ACM Papers - Terms",
+    title: "ACM Papers - Terms",
     sets: "135 Terms",
     items: "70k papers",
     attribs: "Year",
@@ -390,7 +390,7 @@ var browser_configs = {
     }
   },
   acmPapers_keywords: {
-    name: "ACM Papers - Keywords",
+    title: "ACM Papers - Keywords",
     sets: "60 Keywords",
     items: "70k papers",
     attribs: "Year",
@@ -429,7 +429,7 @@ var browser_configs = {
     }
   },
   sharks: {
-    name: "Shark Blood Tests",
+    title: "Shark Blood Tests",
     sets: "53 samples",
     items: "1817 compounds",
     attribs: "",
@@ -491,7 +491,7 @@ var browser_configs = {
     }
   },
   socialgraph: {
-    name: "Social Graph",
+    title: "Social Graph",
     sets: "7 Social Networks",
     items: "618 People",
     attribs: "",
@@ -520,7 +520,7 @@ var browser_configs = {
     }
   },
   faculty_country: {
-    name: "CS Faculty x Countries",
+    title: "CS Faculty x Countries",
     sets: "76 countries",
     items: "2100 faculty",
     attribs: "",
@@ -562,7 +562,7 @@ var browser_configs = {
     }
   },
   faculty_univ: {
-    name: "CS Faculty x Universities",
+    title: "CS Faculty x Universities",
     sets: "637 Universities",
     items: "2100 Faculty",
     attribs: "",
@@ -599,7 +599,7 @@ var browser_configs = {
     }
   },
   factbook_borders: {
-    name: "Neighbor Countries",
+    title: "Neighbor Countries",
     sets: ", As items & sets",
     items: "191 Countries",
     attribs: "",
@@ -634,7 +634,7 @@ var browser_configs = {
     }
   },
     senate: {
-        name: "Senate Votings",
+        title: "Senate Votings",
         items: "100 Senators",
         sets: "110 votings",
         attribs: "Party",
@@ -695,7 +695,7 @@ var browser_configs = {
         }
     },
   mutations: {
-    name: "Mutations in Glioblastoma",
+    title: "Mutations in Glioblastoma",
     sets: "100 genes",
     items: "284 mutations",
     attribs: "",
@@ -727,7 +727,7 @@ var browser_configs = {
     }
   },
   CpdsVsProteinFam: {
-    name: "Compound - Protein Interaction",
+    title: "Compound - Protein Interaction",
     sets: "10 sets",
     items: "1500 items",
     attribs: "",
@@ -764,7 +764,7 @@ var browser_configs = {
     }
   },
   CpdsVsProteinTable: {
-    name: "Compound - Protein Interaction",
+    title: "Compound - Protein Interaction",
     sets: "100 sets",
     items: "15k items",
     attribs: "",
@@ -794,7 +794,7 @@ var browser_configs = {
     }
   },
     bederson: {
-        name: "Ben Bederson's Coauthors",
+        title: "Ben Bederson's Coauthors",
         sets: "169 Co-Authors",
         items: "146 Papers",
         attribs: "",
@@ -835,7 +835,7 @@ var browser_configs = {
         }
     },
     teaser: {
-        name: "Paper Teaser",
+        title: "Paper Teaser",
         sets: "XX",
         items: "XX",
         attribs: "XX",
