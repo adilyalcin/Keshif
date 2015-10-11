@@ -271,7 +271,7 @@ $(document).ready( function(){
           d3.select(d.DOM.record).select("img").attr("src",url);
         var _this = this;
         d3.select(d.DOM.record).select(".toolInfo").on("click",function(){
-        	tool_browser.listDisplay.setRecordDetails(d,!d.showDetails);
+        	tool_browser.recordDisplay.setRecordDetails(d,!d.showDetails);
         })
       }
     }

@@ -41,14 +41,14 @@ google.setOnLoadCallback(function(){
       },
     readyCb: function(browser){
       $(".paperName").click(function(d){
-          browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+        browser.recordDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
       });
     },
     summaries: [
       { name: "Regulatory Domains", catTableName: "Regulatory Domains", catTooltip: "Description" },
       { name: "Research Topics" },
       { name: "Study Design",
-          description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental" },
+        description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental" },
       { name: "Study Type", description: "Venue where study was published" },
       { name: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; } },
       { name: "Summarized by MCEP", collapsed: true },

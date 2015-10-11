@@ -504,7 +504,7 @@ kshf.Item = function(d, idIndex){
     this.filterCache = [];
     // Wanted item / not filtered out
     this.isWanted = true;
-    // Used by listDisplay to adjust animations. Only used by primary entity type for now.
+    // Used by recordDisplay to adjust animations. Only used by primary entity type for now.
     this.visibleOrder = 0;
     this.visibleOrder_pre = -1;
     // The data that's used for mapping this item, used as a cache.
@@ -3421,7 +3421,10 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        this.listDisplay = new kshf.RecordDisplay(this,this.listDef, this.DOM.root);
+        this.recordDisplay = new kshf.RecordDisplay(this,this.listDef, this.DOM.root);
+
+        // for backwards compability
+        this.listDisplay = this.recordDisplay;
 
         this.setItemName();
 
@@ -3550,12 +3553,12 @@ kshf.Browser.prototype = {
             })
             .on("dblclick",function(summary){
                 if(summary.uniqueCategories()){
-                    me.listDisplay.setRecordViewSummary(summary);
-                    me.listDisplay.updateVisibleIndex();
-                    me.listDisplay.updateItemVisibility(false,true);
+                    me.recordDisplay.setRecordViewSummary(summary);
+                    me.recordDisplay.updateVisibleIndex();
+                    me.recordDisplay.updateItemVisibility(false,true);
 
-                    if(me.listDisplay.textSearchSummary===null) 
-                        me.listDisplay.setTextSearchSummary(summary);
+                    if(me.recordDisplay.textSearchSummary===null) 
+                        me.recordDisplay.setTextSearchSummary(summary);
                     return;
                 }
 
@@ -3567,7 +3570,7 @@ kshf.Browser.prototype = {
                     summary.updateBarPreviewScale2Active();
                 } else if(summary.type==='interval') {
                     summary.addToPanel(me.panels.right);
-                    me.listDisplay.addSortingOption(summary);
+                    me.recordDisplay.addSortingOption(summary);
                 }
                 summary.refreshWidth();
                 me.updateLayout();
@@ -3776,11 +3779,11 @@ kshf.Browser.prototype = {
      * - Else, no info is available. */
     updateAfterFilter: function (resultChange) {
         this.clearPreviewCompare();
-        // basically, propogate call under every facet and listDisplay
+        // basically, propogate call under every facet and recordDisplay
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.updateAfterFilter(resultChange);
         });
-        this.listDisplay.updateAfterFilter();
+        this.recordDisplay.updateAfterFilter();
 
         if(this.updateCb) this.updateCb(this);
     },
@@ -3999,10 +4002,10 @@ kshf.Browser.prototype = {
         var midPanelHeight = 0;
         if(this.panels.middle.summaries.length>0){
             var panelHeight = topPanelsHeight;
-            if(this.listDisplay.recordViewSummary){
+            if(this.recordDisplay.recordViewSummary){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
-                panelHeight -= this.listDisplay.DOM.root[0][0].offsetHeight;
+                panelHeight -= this.recordDisplay.DOM.root[0][0].offsetHeight;
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
@@ -4012,10 +4015,10 @@ kshf.Browser.prototype = {
             if(summary.inBrowser()) summary.refreshHeight();
         });
 
-        if(this.listDisplay){
+        if(this.recordDisplay){
             var listDivTop = 0;
             // get height of header
-            var listHeaderHeight=this.listDisplay.DOM.recordViewHeader[0][0].offsetHeight;
+            var listHeaderHeight=this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight;
             var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight;
             if(this.panels.bottom.summaries.length>0){
                 listDisplayHeight-=bottomFacetsHeight;
@@ -4023,8 +4026,8 @@ kshf.Browser.prototype = {
             listDisplayHeight-=midPanelHeight;
             if(this.showDropZones && this.panels.middle.summaries.length===0) 
                 listDisplayHeight*=0.5;
-            if(this.listDisplay.recordViewSummary!==null)
-                this.listDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
+            if(this.recordDisplay.recordViewSummary!==null)
+                this.recordDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
         }
     },
     /** -- */
@@ -4132,15 +4135,15 @@ kshf.Summary_Base.prototype = {
         }
         this.summaryFilter._refreshFilterSummary();
         // This summary may be used for sorting options. Refresh the list
-        if(this.browser.listDisplay){
-            this.browser.listDisplay.refreshSortingOptions();
+        if(this.browser.recordDisplay){
+            this.browser.recordDisplay.refreshSortingOptions();
         }
         if(this.isTextSearch){
-            this.browser.listDisplay.DOM.recordTextSearch.select("input")
+            this.browser.recordDisplay.DOM.recordTextSearch.select("input")
                 .attr("placeholder",kshf.lang.cur.Search+": "+this.summaryTitle);
         }
         if(this.sortFunc){
-            this.browser.listDisplay.refreshSortingOptions();
+            this.browser.recordDisplay.refreshSortingOptions();
         }
         if(this.DOM.nugget){
             this.DOM.nugget.select(".summaryTitle").text(this.summaryTitle);

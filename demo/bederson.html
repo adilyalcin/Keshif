@@ -1,20 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Publication Browser</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Publication Browser</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 var demoID = 7;
 var socialShare = false;
 var noRibbon = true;
@@ -23,16 +23,16 @@ var BEDERSON_ID = 3;
 
 google.setOnLoadCallback(function() {
   function resizeChart(){
-      var h=$(window).height()-90;
-      h = 700; // temp
-      var w=$(window).width()-29;
-      h = Math.max(h,500);
-      w = Math.max(w,700);
-      w-=50;
-      if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
-      $('#chart_div').height(h);
-      $('#chart_div').width (w);
-      return true;
+    var h=$(window).height()-90;
+    h = 700; // temp
+    var w=$(window).width()-29;
+    h = Math.max(h,500);
+    w = Math.max(w,700);
+    w-=50;
+    if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
+    $('#chart_div').height(h);
+    $('#chart_div').width (w);
+    return true;
   }
 
   resizeChart();
@@ -52,30 +52,25 @@ google.setOnLoadCallback(function() {
     },
     readyCb: function(){
       $(".paperName").click(function(d){
-        browser.listDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+        browser.recordDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
       });
-      browser.listDisplay.showListItemDetails(kshf.dt.Publications[0]);
+      browser.recordDisplay.showListItemDetails(kshf.dt.Publications[0]);
     },
     summaries: [
       { name: "Topics", catTableName: "Keywords", catLabel: "keyword" },
       { name: "Couthors",
-        value: function(){
-          return this.Coauthors.filter(function(coAuth){
-            return coAuth!=="3" && coAuth!==3;
-          });
-        },
+        value: function(){ return this.Coauthors.filter(function(coAuth){ return coAuth!=="3" && coAuth!==3; }); },
         catTableName: "Authors",
         catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
         catTooltip: function(){ return this.first_names+" "+this.last_name; } },
       { name: "Coauthor Types",
         value: function(){
           var types = [];
-          this.Coauthors.filter(function(coAuth){
-            return coAuth!=="3" && coAuth!==3;
-          }).forEach(function(coAuth){
-            var a=kshf.dt_id.Authors[coAuth];
-            if(a) types.push(a.data.author_type);
-          });
+          this.Coauthors.filter(function(coAuth){ return coAuth!=="3" && coAuth!==3;})
+            .forEach(function(coAuth){
+              var a=kshf.dt_id.Authors[coAuth];
+              if(a) types.push(a.data.author_type);
+            });
           return types;
         },
         catTableName: "AuthorTypes",
@@ -87,7 +82,7 @@ google.setOnLoadCallback(function() {
     ],
     itemDisplay: {
       sortColWidth: 45,
-      sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
+      sortingOpts: { title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
       textSearch: 'title',
       detailsToggle: "one",
       recordView: function(){
@@ -160,134 +155,132 @@ google.setOnLoadCallback(function() {
 <style>
 
 .header{
-    font-weight: 700;
-    font-variant: small-caps;
+  font-weight: 700;
+  font-variant: small-caps;
 }
 
 #chart_div {
-    background-color: white;
-    margin: 0px 25px 20px 25px;
+  background-color: white;
+  margin: 0px 25px 20px 25px;
 }
 
 #pagecell{
-    position: relative;
-    top: 10px;
-    left: 10px;
-    display:inline-block;
-    background-color: #ffffff;
+  position: relative;
+  top: 10px;
+  left: 10px;
+  display:inline-block;
+  background-color: #ffffff;
 }
 
 body {
-    font-family: Arial,sans-serif;
-    color: #333333;
-    margin: 0px;
-    padding: 0px;
-    background: #cccccc url("http://cs.umd.edu/~bederson/images/bg-grad.jpg") fixed;
+  font-family: Arial,sans-serif;
+  color: #333333;
+  margin: 0px;
+  padding: 0px;
+  background: #cccccc url("http://cs.umd.edu/~bederson/images/bg-grad.jpg") fixed;
 }
 
 #pageName {
-    padding: 0px 0px 14px 10px;
-    margin: 0px;
+  padding: 0px 0px 14px 10px;
+  margin: 0px;
 }
 
 #pageName h2 {
-    font: bold 175% Arial,sans-serif;
-    color: #000000;
-    margin: 0px;
-    padding: 0px;
+  font: bold 175% Arial,sans-serif;
+  color: #000000;
+  margin: 0px;
+  padding: 0px;
 }
 
 #pageName img {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    padding: 0px;
-    margin: 0px;
-    z-index:2;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 0px;
+  margin: 0px;
+  z-index:2;
 }
 
 #pageName a.mainTitle:link, a.mainTitle:visited{
-    color: #005FA9;
-    text-decoration: none;
+  color: #005FA9;
+  text-decoration: none;
 }
 
 #pageName a.mainTitle:hover{
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .KeshifCredit{
-    float:right;
-    margin: 15px;
-    font-size: 0.5em;
-    font-style: italic;
-    color: lightgray;
-    text-decoration: none;
+  float:right;
+  margin: 15px;
+  font-size: 0.5em;
+  font-style: italic;
+  color: lightgray;
+  text-decoration: none;
 }
 .KeshifCredit:hover{
-    color: gray;
+  color: gray;
 }
 
 .paperName{
-    cursor:pointer;
+  cursor:pointer;
 }
 .paperName:hover{
-    color: orangered;
+  color: orangered;
 }
 .authorNames{
-    font-weight: 300;
+  font-weight: 300;
 }
 .benb{
-    font-style: italic;
+  font-style: italic;
 }
 .doilink{
-    margin-left: 10px;
-    font-size: 0.7em;
-    vertical-align: top;
+  margin-left: 10px;
+  font-size: 0.7em;
+  vertical-align: top;
 }
 .externallink{
-    margin-left: 3px;
-    font-size: 0.7em;
-    vertical-align: top;
+  margin-left: 3px;
+  font-size: 0.7em;
+  vertical-align: top;
 }
 .pdflink{
-    margin-left: 10px;
-    vertical-align: top;
+  margin-left: 10px;
+  vertical-align: top;
 }
 .item_details{
-    margin-left: 5px;
+  margin-left: 5px;
 }
 .venueInfo{
-    margin-left: 5px;
-    font-size: 0.9em;
-    font-weight: 300;
+  margin-left: 5px;
+  font-size: 0.9em;
+  font-weight: 300;
 }
 .topics{
-    font-size: 0.9em;
-    font-weight: 300;
-    margin-left: 5px;
-    font-variant: small-caps;
+  font-size: 0.9em;
+  font-weight: 300;
+  margin-left: 5px;
+  font-variant: small-caps;
 }
 .pubLink{
-    color: #005FA9;
-    display: inline-block;
-    text-decoration: none;
+  color: #005FA9;
+  display: inline-block;
+  text-decoration: none;
 }
 .pubLink:hover {
-    color: orangered !important;
-    text-decoration: none;
+  color: orangered !important;
+  text-decoration: none;
 }
 
 .pdfImage{
-    position:absolute;
-    right: 0px;
-    height: 100%;
+  position:absolute;
+  right: 0px;
+  height: 100%;
 }
 .content{
-    padding-bottom: 4px;
-    padding-right: 40px;
+  padding-bottom: 4px;
+  padding-right: 40px;
 }
-
-
 
 </style>
 	</head>

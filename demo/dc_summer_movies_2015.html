@@ -86,10 +86,10 @@ $(document).ready( function(){
         },
         readyCb: function(browser){
             $(".movieName").click(function(){
-                browser.listDisplay.showListItemDetails(this.parentNode.__data__);
+                browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
             });
 
-            browser.listDisplay.DOM.listItemGroup
+            browser.recordDisplay.DOM.listItemGroup
                 .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
 
             if("geolocation" in navigator) {
@@ -103,7 +103,7 @@ $(document).ready( function(){
             }
 
             for(var i=0; i<5; i++){
-                browser.listDisplay.setRecordDetails(kshf.dt.Screenings[i],true);
+                browser.recordDisplay.setRecordDetails(kshf.dt.Screenings[i],true);
             }
             browser.summaries_by_name.Date.height_hist_max = 60;
             browser.updateLayout();

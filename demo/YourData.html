@@ -36,7 +36,7 @@ google.setOnLoadCallback(function(){
         categoryTextWidth: 160,
 		readyCb: function(browser){
 			browser.summaries.forEach(function(summary){
-				if(summary.type==="interval") browser.listDisplay.addSortingOption(summary);
+				if(summary.type==="interval") browser.recordDisplay.addSortingOption(summary);
 			});
 			/*
 			// URL.createObjectURL
