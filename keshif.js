@@ -3176,7 +3176,7 @@ kshf.Browser.prototype = {
         if(tableDescr instanceof File){
             // Load using FileReader
             var reader = new FileReader();
-            reader.onload = function(e) { processJSONText(e.target.result); };
+            reader.onload = function(e) { processJSONText( JSON.parse(e.target.result)); };
             reader.readAsText(tableDescr);
         } else {
             var fileName = this.source.dirPath+tableDescr.name+".json";
