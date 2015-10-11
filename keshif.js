@@ -3552,6 +3552,7 @@ kshf.Browser.prototype = {
                 return summary.aggr_initialized;
             })
             .on("dblclick",function(summary){
+                // If unique, insert into record view
                 if(summary.uniqueCategories()){
                     me.recordDisplay.setRecordViewSummary(summary);
                     me.recordDisplay.updateVisibleIndex();
@@ -3562,14 +3563,23 @@ kshf.Browser.prototype = {
                     return;
                 }
 
+                // If time, add to bottom panel
                 if(summary.hasTime!==undefined && summary.hasTime===true) {
                     summary.addToPanel(me.panels.bottom);
                 } else if(summary.type==='categorical') {
-                    summary.addToPanel(me.panels.left);
+                    var target_panel = me.panels.left;
+                    if(me.panels.left.summaries.length>Math.floor(me.panels.left.height/150)){
+                        target_panel = me.panels.middle;
+                    }
+                    summary.addToPanel(target_panel);
                     summary.refreshLabelWidth();
                     summary.updateBarPreviewScale2Active();
                 } else if(summary.type==='interval') {
-                    summary.addToPanel(me.panels.right);
+                    var target_panel = me.panels.right;
+                    if(me.panels.right.summaries.length>Math.floor(me.panels.right.height/150)){
+                        target_panel = me.panels.middle;
+                    }
+                    summary.addToPanel(target_panel);
                     me.recordDisplay.addSortingOption(summary);
                 }
                 summary.refreshWidth();
@@ -3980,11 +3990,6 @@ kshf.Browser.prototype = {
         };
 
         var topPanelsHeight = divHeight_Total;
-        if(this.panels.bottom.summaries.length>0) {
-/*            if(this.showDropZones) {
-                bottomFacetsHeight+=(1+this.panels.bottom.summaries.length)*36;
-            }*/
-        }
         this.panels.bottom.DOM.root.style("height",bottomFacetsHeight+"px");
 
         topPanelsHeight-=bottomFacetsHeight;
@@ -3992,10 +3997,12 @@ kshf.Browser.prototype = {
 
         // Left Panel
         if(this.panels.left.summaries.length>0){
+            this.panels.left.height = topPanelsHeight;
             doLayout.call(this,topPanelsHeight,this.panels.left.summaries);
         }
         // Right Panel
         if(this.panels.right.summaries.length>0){
+            this.panels.right.height = topPanelsHeight;
             doLayout.call(this,topPanelsHeight,this.panels.right.summaries);
         }
         // Middle Panel
