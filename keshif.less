@@ -420,8 +420,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .user-select(none);
             .transition(opacity 400ms linear, transform 400ms ease-in-out);
             > .summaryTitle{
-                display: inline;
+                display: inline-block;
                 margin: 1px;
+                overflow-wrap: break-word;
+                width: calc(~"100% - 70px");
             }
             > .editCodeButton{
                 display: none;

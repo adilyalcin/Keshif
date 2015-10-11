@@ -440,8 +440,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: opacity 400ms linear,-webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out;
 }
 .kshf > .attributePanel .nugget > .summaryTitle {
-  display: inline;
+  display: inline-block;
   margin: 1px;
+  overflow-wrap: break-word;
+  width: calc(100% - 70px);
 }
 .kshf > .attributePanel .nugget > .editCodeButton {
   display: none;
