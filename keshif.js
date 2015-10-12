@@ -5322,7 +5322,10 @@ var Summary_Categorical_functions = {
         this.DOM.attribTextSearch = this.DOM.facetControls.append("div").attr("class","attribTextSearch hasLabelWidth");
         this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
             .attr("class","attribTextSearchControl fa")
-            .on("click",function() { me.summaryFilter.clearFilter(); });
+            .on("click",function() { 
+                this.DOM.attribTextSearchControl.attr("showClear",false);
+                me.summaryFilter.clearFilter();
+            });
         this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
             .attr("class","attribTextSearchInput")
             .attr("type","text")
@@ -5334,29 +5337,47 @@ var Summary_Categorical_functions = {
                 }
                 var x = this;
                 this.timer = setTimeout( function(){
-                    var v=x.value.toLowerCase();
-                    if(v===""){
-                        me.summaryFilter.clearFilter();
-                    } else {
+                    me.unselectAllAttribs();
+                    var query = [];
+
+                    // split the query by " character
+                    var processed = x.value.toLowerCase().split('"');
+                    processed.forEach(function(block,i){
+                        if(i%2===0) {
+                            block.split(/\s+/).forEach(function(q){ query.push(q)});
+                        } else {
+                            query.push(block);
+                        }
+                    });
+                    // Remove the empty strings
+                    query = query.filter(function(v){ return v!==""});
+
+                    if(query.length>0){
                         me.DOM.attribTextSearchControl.attr("showClear",true);
-                        me.summaryFilter.selected_All_clear();
-                        me._cats.forEach(function(attrib){
-                            if(me.catLabel.call(attrib.data).toString().toLowerCase().indexOf(v)!==-1){
-                                attrib.set_OR(me.summaryFilter.selected_OR);
-                            } else {
-                                // search in tooltiptext
-                                if(me.catTooltip){
-                                    var tooltipText = me.catTooltip.call(attrib.data);
-                                    if(tooltipText && tooltipText.toLowerCase().indexOf(v)!==-1) {
-                                        attrib.set_OR(me.summaryFilter.selected_OR);
-                                    }
-                                } else{
-                                    attrib.set_NONE();
+                        var labelFunc = me.catLabel;
+                        var tooltipFunc = me.catTooltip;
+                        me._cats.forEach(function(_category){
+                            var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
+                            var f = query.every(function(query_str){
+                                if(catLabel.indexOf(query_str)!==-1){ return true; }
+                                if(tooltipFunc) {
+                                    var tooltipText = tooltipFunc.call(_category.data);
+                                    return (tooltipText && tooltipText.toLowerCase().indexOf(query_str)!==-1);
                                 }
+                                return false;
+                            });
+                            if(f){
+                                _category.set_OR(me.summaryFilter.selected_OR);
+                            } else {
+                                _category.set_NONE(me.summaryFilter.selected_OR);
                             }
                         });
+
+                        // All categories are process, and the filtering state is set. Now, process the summary as a whole
                         if(me.summaryFilter.selectedCount_Total()===0){
+                            me.skipTextSearchClear = true;
                             me.summaryFilter.clearFilter();
+                            me.skipTextSearchClear = false;
                         } else {
                             me.summaryFilter.how = "All";
                             me.summaryFilter.addFilter(true);
@@ -5438,6 +5459,7 @@ var Summary_Categorical_functions = {
     /** -- */
     clearCatTextSearch: function(){
         if(!this.showTextSearch) return;
+        if(this.skipTextSearchClear) return;
         this.DOM.attribTextSearchControl.attr("showClear",false);
         this.DOM.attribTextSearchInput[0][0].value = '';
     },
