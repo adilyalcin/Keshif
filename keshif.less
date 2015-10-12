@@ -1010,8 +1010,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-align: center;
             .transition(~'transform 500ms ease-in-out, opacity 500ms');
 
-            .keyframes(~'itemZoom, 0%{transform: scale(0); opacity:1;} 100% {transform: scale(1); opacity:1;}');
-
             .infobox_close_button{
                 position: absolute;
                 right: 3px;
@@ -1335,16 +1333,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 margin: 20px;
                 padding: 10px;
             }
-            &[show=loading] > .infobox_loading{
+            &[show="loading"] > .infobox_loading{
                 display: inline-block;
             }
-            &[show=credit] > .infobox_credit{
+            &[show="credit"] > .infobox_credit{
                 display: inline-block;
             }
-            &[show=source] > .infobox_source{
+            &[show="source"] > .infobox_source{
                 display: inline-block;
             }
-            &[show=none]{
+            &[show="none"]{
                 pointer-events: none;
                 //display: none;
                 > .background{ opacity: 0;}
@@ -2917,7 +2915,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:absolute;
             left: 4px;
             .transition(~"bottom 700ms ease 50ms");
-            .keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
+            //.keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
             > .MoreText{
                 display: inline-block;

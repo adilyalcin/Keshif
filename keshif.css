@@ -618,16 +618,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
   -webkit-transform: translateX(100px);
   -moz-transform: translateX(100px);
-  -o-transform: translateX(100px);
   -ms-transform: translateX(100px);
+  -o-transform: translateX(100px);
   transform: translateX(100px);
 }
 .kshf > .attributePanel .nugget[anim="appear"] {
   opacity: 1;
   -webkit-transform: translateX(0px);
   -moz-transform: translateX(0px);
-  -o-transform: translateX(0px);
   -ms-transform: translateX(0px);
+  -o-transform: translateX(0px);
   transform: translateX(0px);
 }
 .kshf .panel_Basic {
@@ -1164,13 +1164,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 500ms ease-in-out, opacity 500ms;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 500ms;
 }
-.kshf .panel.panel_infobox lesshat-selector {
-  -lh-property: 0; } 
-@-webkit-keyframes itemZoom{ 0%{-webkit-transform: scale(0); opacity:1;} 100% {-webkit-transform: scale(1); opacity:1;}}
-@-moz-keyframes itemZoom{ 0%{-moz-transform: scale(0); opacity:1;} 100% {-moz-transform: scale(1); opacity:1;}}
-@-o-keyframes itemZoom{ 0%{-o-transform: scale(0); opacity:1;} 100% {-o-transform: scale(1); opacity:1;}}
-@keyframes itemZoom{ 0%{-webkit-transform: scale(0);-moz-transform: scale(0);-ms-transform: scale(0);transform: scale(0); opacity:1;} 100% {-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); opacity:1;};
-}
 .kshf .panel.panel_infobox .infobox_close_button {
   position: absolute;
   right: 3px;
@@ -1501,19 +1494,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 20px;
   padding: 10px;
 }
-.kshf .panel.panel_infobox[show=loading] > .infobox_loading {
+.kshf .panel.panel_infobox[show="loading"] > .infobox_loading {
   display: inline-block;
 }
-.kshf .panel.panel_infobox[show=credit] > .infobox_credit {
+.kshf .panel.panel_infobox[show="credit"] > .infobox_credit {
   display: inline-block;
 }
-.kshf .panel.panel_infobox[show=source] > .infobox_source {
+.kshf .panel.panel_infobox[show="source"] > .infobox_source {
   display: inline-block;
 }
-.kshf .panel.panel_infobox[show=none] {
+.kshf .panel.panel_infobox[show="none"] {
   pointer-events: none;
 }
-.kshf .panel.panel_infobox[show=none] > .background {
+.kshf .panel.panel_infobox[show="none"] > .background {
   opacity: 0;
 }
 .kshf .panel.panel_infobox[show=itemZoom] > .infobox_itemZoom {
@@ -1817,8 +1810,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: color 250ms linear, opacity 100ms linear ;
   -webkit-transform-origin: 50% 50%;
   -moz-transform-origin: 50% 50%;
-  -o-transform-origin: 50% 50%;
   -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
   transform-origin: 50% 50%;
 }
 .kshf .headerGroup > .header_display_control > .fa {
@@ -1851,8 +1844,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #b8c7d2;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
 .kshf .aggr.active {
@@ -1868,8 +1861,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   -webkit-transform: scaleX(0);
   -moz-transform: scaleX(0);
-  -o-transform: scaleX(0);
   -ms-transform: scaleX(0);
+  -o-transform: scaleX(0);
   transform: scaleX(0);
 }
 .kshf .aggr.preview[fast] {
@@ -2166,8 +2159,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .facetCategorical > .attribGroup > .attrib > .aggr_Group .aggr {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
   top: 4px;
   width: 1px;
@@ -2396,8 +2389,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 1px;
   -webkit-transform-origin: 0% 100%;
   -moz-transform-origin: 0% 100%;
-  -o-transform-origin: 0% 100%;
   -ms-transform-origin: 0% 100%;
+  -o-transform-origin: 0% 100%;
   transform-origin: 0% 100%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .histogram > .bins > .aggr_Group > .aggr.total_tip {
@@ -2509,8 +2502,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .percentileGroup > .quantile.q_pos {
@@ -2611,8 +2604,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: inset 0px 0px 2px gray;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
 .kshf .kshfChart > .wrapper > .facetInterval > .intervalSlider > .controlLine > .base.total {
@@ -3027,8 +3020,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 .kshf .recordDisplay > .listItemGroup > .listItem[details="true"] .item_details {
@@ -3089,13 +3082,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: bottom 700ms ease 50ms;
   -o-transition: bottom 700ms ease 50ms;
   transition: bottom 700ms ease 50ms;
-}
-.kshf .recordDisplay > .showMore lesshat-selector {
-  -lh-property: 0; } 
-@-webkit-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
-@-moz-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
-@-o-keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}}
-@keyframes fade{ 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;};
 }
 .kshf .recordDisplay > .showMore > .MoreText {
   display: inline-block;
@@ -3533,15 +3519,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   100% {
     -webkit-transform: scaleY(0.4);
     -moz-transform: scaleY(0.4);
-    -o-transform: scaleY(0.4);
     -ms-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
     transform: scaleY(0.4);
   }
   20% {
     -webkit-transform: scaleY(0.8);
     -moz-transform: scaleY(0.8);
-    -o-transform: scaleY(0.8);
     -ms-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
     background-color: #fa7746;
   }
@@ -3552,15 +3538,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   100% {
     -webkit-transform: scaleY(0.4);
     -moz-transform: scaleY(0.4);
-    -o-transform: scaleY(0.4);
     -ms-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
     transform: scaleY(0.4);
   }
   20% {
     -webkit-transform: scaleY(0.8);
     -moz-transform: scaleY(0.8);
-    -o-transform: scaleY(0.8);
     -ms-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
     background-color: #fa7746;
   }
@@ -3571,15 +3557,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   100% {
     -webkit-transform: scaleY(0.4);
     -moz-transform: scaleY(0.4);
-    -o-transform: scaleY(0.4);
     -ms-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
     transform: scaleY(0.4);
   }
   20% {
     -webkit-transform: scaleY(0.8);
     -moz-transform: scaleY(0.8);
-    -o-transform: scaleY(0.8);
     -ms-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
     background-color: #fa7746;
   }
@@ -3590,15 +3576,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   100% {
     -webkit-transform: scaleY(0.4);
     -moz-transform: scaleY(0.4);
-    -o-transform: scaleY(0.4);
     -ms-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
     transform: scaleY(0.4);
   }
   20% {
     -webkit-transform: scaleY(0.8);
     -moz-transform: scaleY(0.8);
-    -o-transform: scaleY(0.8);
     -ms-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
     background-color: #fa7746;
   }
@@ -3609,15 +3595,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   100% {
     -webkit-transform: scaleY(0.4);
     -moz-transform: scaleY(0.4);
-    -o-transform: scaleY(0.4);
     -ms-transform: scaleY(0.4);
+    -o-transform: scaleY(0.4);
     transform: scaleY(0.4);
   }
   20% {
     -webkit-transform: scaleY(0.8);
     -moz-transform: scaleY(0.8);
-    -o-transform: scaleY(0.8);
     -ms-transform: scaleY(0.8);
+    -o-transform: scaleY(0.8);
     transform: scaleY(0.8);
     background-color: #fa7746;
   }
@@ -3751,15 +3737,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   from {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
-    -o-transform: scale(1);
     -ms-transform: scale(1);
+    -o-transform: scale(1);
     transform: scale(1);
   }
   to {
     -webkit-transform: scale(0.5);
     -moz-transform: scale(0.5);
-    -o-transform: scale(0.5);
     -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
     transform: scale(0.5);
   }
 }
@@ -3767,15 +3753,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   from {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
-    -o-transform: scale(1);
     -ms-transform: scale(1);
+    -o-transform: scale(1);
     transform: scale(1);
   }
   to {
     -webkit-transform: scale(0.5);
     -moz-transform: scale(0.5);
-    -o-transform: scale(0.5);
     -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
     transform: scale(0.5);
   }
 }
@@ -3783,15 +3769,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   from {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
-    -o-transform: scale(1);
     -ms-transform: scale(1);
+    -o-transform: scale(1);
     transform: scale(1);
   }
   to {
     -webkit-transform: scale(0.5);
     -moz-transform: scale(0.5);
-    -o-transform: scale(0.5);
     -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
     transform: scale(0.5);
   }
 }
@@ -3799,15 +3785,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   from {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
-    -o-transform: scale(1);
     -ms-transform: scale(1);
+    -o-transform: scale(1);
     transform: scale(1);
   }
   to {
     -webkit-transform: scale(0.5);
     -moz-transform: scale(0.5);
-    -o-transform: scale(0.5);
     -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
     transform: scale(0.5);
   }
 }
@@ -3815,15 +3801,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   from {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
-    -o-transform: scale(1);
     -ms-transform: scale(1);
+    -o-transform: scale(1);
     transform: scale(1);
   }
   to {
     -webkit-transform: scale(0.5);
     -moz-transform: scale(0.5);
-    -o-transform: scale(0.5);
     -ms-transform: scale(0.5);
+    -o-transform: scale(0.5);
     transform: scale(0.5);
   }
 }

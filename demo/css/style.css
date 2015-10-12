@@ -213,8 +213,8 @@ body {
     font-size: 1.1em;
     -webkit-transform: rotate(-45deg);
     -moz-transform: rotate(-45deg);
-    -o-transform: rotate(-45deg);
     -ms-transform: rotate(-45deg);
+    -o-transform: rotate(-45deg);
     transform: rotate(-45deg);
   }
   .forkongithub.fork-left {
@@ -223,8 +223,8 @@ body {
   .forkongithub.fork-left a.fork-ribbon {
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
-    -o-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
     transform: rotate(45deg);
     right: auto;
     left: 0px;
