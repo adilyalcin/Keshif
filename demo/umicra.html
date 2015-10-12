@@ -32,8 +32,9 @@ google.setOnLoadCallback(function(){
     barChartWidth: 120,
     rightPanelLabelWidth: 90,
     source: {
-      gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
-      tables: [ "Publications", "Regulatory Domains", "Authors"]
+      //gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
+      gdocId: '1Pl_NF5D9upONK7eKulb3C9Ly9_UX4FvLceMptw60k-k',
+      tables: ["Publications", "Research Topics", "Study Type", "Study Design", "Regulatory Domain", "Authors"]
     },
     loadedCb: function(browser){
   		kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
@@ -45,14 +46,15 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { name: "Regulatory Domains", catTableName: "Regulatory Domains", catTooltip: "Description" },
-      { name: "Research Topics" },
-      { name: "Study Design",
-        description: "Randomized control and field experiments are labelled as Experimental while natural experiments are considered Quasi-Experimental" },
-      { name: "Study Type", description: "Venue where study was published" },
+      { name: "Regulatory Domains", catTableName: "Regulatory Domain", catSortBy: "Order" },
+      { name: "Research Topics", catTableName: "Research Topics", catTooltip: "Description", catSortBy: "Order", 
+        description: "Please mouse over each topic to read more about what studies it encompasses." },
+      { name: "Study Design", catTableName: "Study Design", catTooltip: "Description", catSortBy: "Order",
+        description: "Please mouse over each study design to read about the type of studies it includes." },
+      { name: "Study Type",  catTableName: "Study Type", catTooltip: "Description", catSortBy: "Order" },
       { name: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; } },
-      { name: "Summarized by MCEP", collapsed: true },
-      { name: "Year", panel: 'middle', value: function(){ return this.Date.getFullYear(); } }
+      { name: "Summarized by MCEP", description: "In the future, the MCEP will provide nontechnical summaries of key papers in this literature.", collapsed: true },
+      { name: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear(); } }
     ],
     itemDisplay: {
       sortColWidth: 45,
@@ -199,6 +201,9 @@ google.setOnLoadCallback(function(){
     a.mainLink:hover{
         color: #005FA9 !important;
         text-decoration: underline !important;
+    }
+    .pageTitle{
+      text-shadow: none;
     }
 </style>
     </head>
