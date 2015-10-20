@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>AggreSet Visualization Technique</title><meta charset="utf-8">
+    <title>AggreSet Set Visualization Technique</title><meta charset="utf-8">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -75,10 +75,10 @@ function loadDemo(config){
       var setDegreeSummary = browser.createSummary(
         "<i class='fa fa-hand-o-up'></i> # of "+setListSummary.summaryTitle,
         function(d){
-                  var arr=d.mappedDataCache[filterID];
-                  if(arr==null) return 0;
-                  return arr.length;
-              }
+          var arr=d.mappedDataCache[filterID];
+          if(arr==null) return 0;
+          return arr.length;
+        }
       );
       if(config.id==="teaser") degreePanel = "right";
       setDegreeSummary.addToPanel(browser.panels[degreePanel],1);
