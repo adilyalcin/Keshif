@@ -52,7 +52,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_query_or:  #1C737A;
 @color_query_not: gray;
 
-
 @color_listHeader_background: rgb(239, 234, 223);
 
 .kshf{
@@ -67,492 +66,471 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .transition(~'left 300ms ease-in-out');
     .box-sizing(border-box);
-    *{
-        .box-sizing(border-box);
-    }
+    *{ .box-sizing(border-box); }
+
     &[noanim=false]{
-        .aggr{
-            .transition(@bar_animation);
-        }
-        .chartAxis_Measure {
-            .transition(@layout_animation);
-            .tick{
-                .transition(~'transform 500ms ease-out');
-            }
-        }
-        .attrib{
-            .transition(~'all 700ms ease-in-out');
-        }
-        .wrapper{
-            .transition(~'height 700ms ease-in-out');
-        }
-        .panels_Above{
-            .transition(~'height 700ms ease-in-out');
-        }
-        .controlLine {
-            > .base {
-                .transition(@bar_animation);
-            }
-            > .handle{
-                .transition(@bar_animation);
-            }
-        }
+      .aggr{ .transition(@bar_animation); }
+      .chartAxis_Measure {
+        .transition(@layout_animation);
+        .tick{ .transition(~'transform 500ms ease-out'); }
+      }
+      .aggrBlock{ .transition(~'all 700ms ease-in-out'); }
+      .wrapper{ .transition(~'height 700ms ease-in-out'); }
+      .panels_Above{ .transition(~'height 700ms ease-in-out'); }
+      .controlLine {
+        > .base { .transition(@bar_animation); }
+        > .handle{ .transition(@bar_animation); }
+      }
     }
     &[drag_cursor="grab"]{
-        cursor: -moz-grab;
-        cursor: -webkit-grab;
-        cursor: grab;
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+      cursor: grab;
     }
     &[drag_cursor="grabbing"]{
-        cursor: -moz-grabbing;
-        cursor: -webkit-grabbing;
-        cursor: grabbing;
+      cursor: -moz-grabbing;
+      cursor: -webkit-grabbing;
+      cursor: grabbing;
     }
-    .panel[catLabelDragging=true] .kshfChart > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize{
-        display: block;
-        border-left: solid lightgray 2px;
+    .panel[catLabelDragging=true] .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize{
+      display: block;
+      border-left: solid lightgray 2px;
     }
     &[attribsShown=true]{
-        left: 120px;
-        > .attributePanel{
-            .display(flex);
-        }
-        .kshfChart:hover > .wrapper > .facetCategorical > .attribGroup > .chartCatLabelResize{
-            display: block;
-        }
-        .recordDisplay .buttonRecordViewRemove{
-            visibility: visible;
-        }
-        .recordDisplay:hover > .listItemGroup > .dragWidthHandle{
-            display: block;
-        }
-        .recordDisplay--Header > .itemRank_control{
-            display: inline-block;
-        }
-        .panel:hover > .panelAdjustWidth{
-            display: block;
-        }
-        .editableTextContainer > .editTextButton{
-            display: inline-block;
-        }
-        .editableTextContainer:hover > .editTextButton{
-            opacity: 1; // Do not use display none-vs-inlineblock, because it changes layout
-        }
-        .buttonSummaryRemove{
-            display: inline-block !important;
-        }
+      left: 120px;
+      > .attributePanel{
+          .display(flex);
+      }
+      .kshfChart:hover > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize{
+        display: block;
+      }
+      .recordDisplay {
+        .buttonRecordViewRemove{ visibility: visible; }
+        &:hover > .listItemGroup > .dragWidthHandle{ display: block; }
+      }
+      .recordDisplay--Header > .itemRank_control{
+        display: inline-block;
+      }
+      .panel:hover > .panelAdjustWidth{
+        display: block;
+      }
+      .editableTextContainer {
+        > .editTextButton{ display: inline-block; }
+        &:hover > .editTextButton{ opacity: 1; }// Do not use display none-vs-inlineblock, because it changes layout
+      }
+      .buttonSummaryRemove{ display: inline-block !important; }
     }
     &[percentview=true]{
-        .chartAxis_Measure {
-            > .percentSign::after{
-                content: "%";
-            }
-            > .tick > .text:after{
-                content: "%";
-            }
-        }
-    }
-    &[showdropzone=true]{
-        &:not([dropattrtype~="unique"]){
-            .kshfChart[collapsed=false]{
-                .flex-grow(3);
-                .flex(3);
-                overflow: hidden;
-            }
-            .panel[hassummaries="true"] {
-                > .dropZone_between_wrapper{
-                    display: block;
-                }
-                > .dropZone_panel{
-                    display: block;
-                    width: 100%;
-                    height: 100%;
-                    background-color: #EEEEEE;//#E9E9E9;
-                    opacity: 0.3;
-                    cursor: default;
-                    border-width: 0px;
-                    border-radius: 5px;
-                    > .dropIcon{
-                        display: none;
-                    }
-                    > .dropText{
-                        display: none;
-                    }
-                }
-            }
-            .panel[hassummaries="false"] {
-                > .dropZone_panel{
-                    display: block;
-                }
-            }
-        }
-        &[dropSource="browser"]{
-            > .attributePanel > .attributeList > .dropZone_AttribList{
-                display: block;
-            }
-        }
-        &[dropattrtype~="unique"] {
-            .recordDisplay[hasRecordView="false"]{
-                .flex(1);
-                min-height: 50px;
-            }
-            .dropZone_recordView{
-                display: block !important;
-            }
-        }
-        &[dropattrtype~="interval"] .dropZone_resultSort{
-            display: block !important;
-        }
-        &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
-            .dropZone_textSearch{
-                display: block !important;
-            }
-        }
+      .chartAxis_Measure {
+        > .percentSign::after{ content: "%"; }
+        > .tick > .text:after{ content: "%"; }
+      }
     }
     &[ratiomode=true]{
-        .chartAxis_Measure {
-            > .tick > .text::after{
-                content: "%";
-            }
-        }
+      .chartAxis_Measure > .tick > .text::after{ content: "%"; }
     }
     &[previewcompare="true"]{
-        .compare{
-            opacity: 1 !important;
-        }
-        .compareLine{
-            opacity: 1 !important;
-        }
+      .compare    { opacity: 1 !important; }
+      .compareLine{ opacity: 1 !important; }
     }
     &[isfiltered=true] {
-        .panel_Basic > .filterClearAll{
-            opacity: 1;
-            pointer-events: all;
+      .panel_Basic > .filterClearAll{
+        opacity: 1;
+        pointer-events: all;
+      }
+    }
+    &[showdropzone=true]{
+      &:not([dropattrtype~="unique"]){
+        .kshfChart[collapsed=false]{
+          .flex-grow(3);
+          .flex(3);
+          overflow: hidden;
         }
+        .panel[hassummaries="true"] {
+          > .dropZone_between_wrapper{ display: block; }
+          > .dropZone_panel{
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-color: #EEEEEE;//#E9E9E9;
+            opacity: 0.3;
+            cursor: default;
+            border-width: 0px;
+            border-radius: 5px;
+            > .dropIcon{ display: none; }
+            > .dropText{ display: none; }
+          }
+        }
+        .panel[hassummaries="false"] {
+          > .dropZone_panel{ display: block; }
+        }
+      }
+      &[dropSource="browser"]{
+        > .attributePanel > .attributeList > .dropZone_AttribList{ display: block; }
+      }
+      &[dropattrtype~="unique"] {
+        .recordDisplay[hasRecordView="false"]{
+          .flex(1);
+          min-height: 50px;
+        }
+        .dropZone_recordView{ display: block !important; }
+      }
+      &[dropattrtype~="interval"] .dropZone_resultSort{
+        display: block !important;
+      }
+      &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
+        .dropZone_textSearch{ display: block !important; }
+      }
     }
 
-
-    .compareButton{
-        display: block;
-        position: absolute;
-        font-size: 0.7em;
-        color: gray;
-        opacity: 0;
-        cursor: pointer;
-        pointer-events: none;
-        .transition(~'opacity 500ms ease-in-out');
-        &:after{
-            content: "\f13e";
-        }
-        &:hover:after{
-            content: "\f023";
-        }
-        &[inside]{
-            color: white;
-            text-shadow: 0px 0px 1px rgb(0, 0, 0);
-        }
+    .lockButton{
+      display: block;
+      position: absolute;
+      font-size: 0.7em;
+      color: gray;
+      opacity: 0;
+      cursor: pointer;
+      pointer-events: none;
+      .transition(~'opacity 500ms ease-in-out');
+      &:after{ content: "\f13e"; } // Lock
+      &:hover:after{ content: "\f023"; } // Unlock
+      &[inside]{ // Appears inside the visual glyph
+        color: white;
+        text-shadow: 0px 0px 1px rgb(0, 0, 0);
+      }
     }
-    span[showlock="true"]{
-        .compareButton{
-            pointer-events: all;
-            opacity: 1;
-        }
+    .aggrBlock[showlock="true"] > .lockButton{
+      pointer-events: all;
+      opacity: 1;
     }
-    span[compare="true"]{
-        .compareButton{
-            pointer-events: all;
-            opacity: 1;
-            &:not([inside]){
-                color: @color_preview_compare;
-            }
-            &:after{
-                content: "\f023";
-            }
-            &:hover:after{
-                content: "\f13e";
-            }
-        }
+    .aggrBlock[compare="true"] > .lockButton{
+      pointer-events: all;
+      opacity: 1;
+      &:not([inside]){ color: @color_preview_compare; }
+      &:after{ content: "\f023"; } // Unlock
+      &:hover:after{ content: "\f13e"; } // Lock
     }
 
     .sortButton{
-        cursor: pointer;
-        &:hover{
-            color:orangered
-        }
-        &:before{
-            content: "\f161";
-        }
-        &[inverse='true']:before{
-            content: "\f160";
-        }
+      cursor: pointer;
+      &:hover{ color:orangered }
+      &:before{ content: "\f161"; } // decreasing
+      &[inverse='true']:before{ content: "\f160"; } // increasing
     }
 
-    // Used only in breadcrumb display
+    // Used only in breadcrumbs
     .AndOrNot{
-        color: white;
-        display: inline-block;
-        font-weight: 300;
-        font-size: 0.8em;
-        vertical-align: top;
-        border-radius: 3px;
-        padding: 0px 2px 0px 2px;
-        margin-top: 1px;
-        opacity: 0.7;
-        &.AndOrNot_And{
-            background-color: @color_query_and;
-        }
-        &.AndOrNot_Or{
-            background-color: @color_query_or;
-        }
-        &.AndOrNot_Not{
-            background-color: @color_query_not;
-        }
-    }
-    .noselect {
-        .user-select(none);
+      color: white;
+      display: inline-block;
+      font-weight: 300;
+      font-size: 0.8em;
+      vertical-align: top;
+      border-radius: 3px;
+      padding: 0px 2px 0px 2px;
+      margin-top: 1px;
+      opacity: 0.7;
+      &.AndOrNot_And{ background-color: @color_query_and; }
+      &.AndOrNot_Or{ background-color: @color_query_or; }
+      &.AndOrNot_Not{ background-color: @color_query_not; }
     }
 
     .editableTextContainer{
-        > .editableText:focus{
-            background-color: white;
-            box-shadow: 0 0 3px #2CABCF;
-            border-color: #2CABCF;
-            border-style: solid;
-            border-width: 1px;
-            outline: 0 none;
-            margin: 0px;
-        }
+      > .editableText:focus{
+        background-color: white;
+        box-shadow: 0 0 3px #2CABCF;
+        border-color: #2CABCF;
+        border-style: solid;
+        border-width: 1px;
+        outline: 0 none;
+        margin: 0px;
+      }
 
-        > .editTextButton{
-            display: none;
-            opacity: 0;
-            font-size: 0.8em;
-            color: gray;
-            margin-left: 2px;
-            vertical-align: top;
-            cursor: pointer;
-            &:before{ content: '\f040'; }
-            &:hover{ color: black; }
-        }
-        &[edittitle="true"]{
-            > .editTextButton{
-                &::before{ content: "\f00c"; }
-            }
-        }
-        &[state='edited']{
-            > .editTextButton{
-                display: inline-block;
-            }
-        }
+      > .editTextButton{
+        display: none;
+        opacity: 0;
+        font-size: 0.8em;
+        color: gray;
+        margin-left: 2px;
+        vertical-align: top;
+        cursor: pointer;
+        &:before{ content: '\f040'; }
+        &:hover{ color: black; }
+      }
+      &[edittitle="true"]{
+        > .editTextButton&::before{ content: "\f00c"; }
+      }
+      &[state='edited']{
+        > .editTextButton{ display: inline-block; }
+      }
     }
-
 
     > .attributePanel{
-        display: none;
+      display: none;
+      .flex-direction(column);
+      position: absolute;
+
+      left: -220px;
+      width: 215px;
+      top: 0px;
+      height: 100%;
+
+      > .attributePanelHeader{
+        cursor: default;
+        text-align: center;
+        border-radius: 3px;
+        background-color: #efeadf;
+        text-shadow: 0px 1px lightgray;
+        padding-top: 3px;
+        box-shadow: 0px 0px 2px #B0A47D;
+        > .addAttrib{
+          display: none;
+          color: gray;
+          position: absolute;
+          left: 5px;
+          cursor: pointer;
+          &:hover{ color:orangered; }
+        }
+        > .hidePanel{
+          color: gray;
+          position: absolute;
+          left: 3px;
+          cursor: pointer;
+          &:hover{ color:orangered; }
+        }
+      }
+
+      > .attributePanelControl{
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0px 0px 1px gray;
+        margin: 4px 0px 2px;
+        .display(flex);
+        .flex-direction(row);
+
+        > .attribFilterIcon{
+          margin: 2px;
+          color: gray;
+        }
+
+        > .addAllSummaries{
+          width: 20px;
+          display: inline-block;
+          cursor: pointer;
+          &:hover{ color: orangered; }
+        }
+
+        > .attribTextSearch{
+          .flex(1);
+        }
+
+      } // attributePanelControl
+
+      > .attributeList{
+        .display(flex);
+        .flex(1);
         .flex-direction(column);
-        position: absolute;
-
-        left: -220px;
-        width: 215px;
-        top: 0px;
-        height: 100%;
-
-        > .attributePanelHeader{
-            cursor: default;
-            text-align: center;
-            border-radius: 3px;
-            background-color: #efeadf;
-            text-shadow: 0px 1px lightgray;
-            padding-top: 3px;
-            box-shadow: 0px 0px 2px #B0A47D;
-            > .addAttrib{
-                display: none;
-                color: gray;
-                position: absolute;
-                left: 5px;
-                cursor: pointer;
-                &:hover{
-                    color:orangered;
-                }
-            }
-            > .hidePanel{
-                color: gray;
-                position: absolute;
-                right: 3px;
-                cursor: pointer;
-                &:hover{
-                    color:orangered;
-                }
-            }
+        overflow-y: auto;
+        overflow-x: hidden;
+        > .dropZone_AttribList{
+          .flex(1);
+          .order(10);
+          display: none;
+          border-radius: 10px;
+          border: solid 1px rgb(211, 219, 226);
+          box-shadow: 0px 0px 1px rgb(190, 200, 209);
+          margin: 2px;
         }
+      }
 
-        > .attributeList{
-            .display(flex);
-            .flex-direction(column);
-            .flex(1);
-            overflow-y: auto;
-            overflow-x: hidden;
-            > .dropZone_AttribList{
-                .flex(1);
-                .order(10);
-                display: none;
-                border-radius: 10px;
-                border: solid 1px rgb(211, 219, 226);
-                box-shadow: 0px 0px 1px rgb(190, 200, 209);
-                margin: 2px;
-            }
+      .nugget{
+        display: block;
+        position: relative;
+        font-size: 0.8em;
+        padding: 1px;
+        margin: 1px;
+        min-height: 34px;
+        left: 0px;
+        border-radius: 3px;
+        background-color: rgb(232, 232, 232);
+        border: solid 1px lightgray;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+        cursor: grab;
+        .user-select(none);
+        .transition(opacity 400ms linear, transform 400ms ease-in-out);
+        > .summaryTitle{
+          display: inline-block;
+          margin: 1px;
+          overflow-wrap: break-word;
+          max-width: calc(~"100% - 70px");
         }
-
-        .nugget{
-            display: block;
-            position: relative;
-            font-size: 0.8em;
-            padding: 2px;
-            margin: 2px;
-            min-height: 36px;
-            left: 0px;
-            border-radius: 3px;
-            background-color: rgb(232, 232, 232);
-            border: solid 1px lightgray;
-            cursor: -moz-grab;
-            cursor: -webkit-grab;
-            cursor: grab;
-            .user-select(none);
-            .transition(opacity 400ms linear, transform 400ms ease-in-out);
-            > .summaryTitle{
-                display: inline-block;
-                margin: 1px;
-                overflow-wrap: break-word;
-                width: calc(~"100% - 70px");
+        > .editCodeButton{
+          display: none;
+          font-size: 0.9em;
+          color: black;
+          cursor: pointer;
+          &:hover{ color: black; }
+        }
+        > .summaryTypeIcon{ float: right; }
+        
+        .nuggetInfo{
+          display: inline-block;
+          width: 100%;
+          .flex(1);
+          .align-self(center);
+          font-weight: 500;
+          font-size: 0.7em;
+          vertical-align: top;
+          text-align: center;
+          > .num_left{
+            float:left;
+            margin-left:2px;
+          }
+          > .num_right{
+            float:right;
+            margin-right:2px;
+          }
+          > .fa{ color: gray; }
+        }
+        &[filtered=true]{
+          display: none;
+        }
+        &[hidden=true]{
+          display: none;
+        }
+        &[aggr_initialized=false]{
+          > .nuggetViz {
+            > .nuggetInfo{
+              font-size: 2em;
+              text-align: center;
+              position: relative;
+              &:before{ content: "\f110"; } // spinner
             }
-            > .editCodeButton{
-                display: none;
-                font-size: 0.9em;
-                color: black;
-                cursor: pointer;
-                &:hover{ color: black; }
-            }
-            > .summaryTypeIcon{
-                float: right;
-            }
-            .nuggetInfo{
-                display: inline-block;
-                width: 100%;
-                .flex(1);
-                .align-self(center);
-                font-weight: 500;
-                font-size: 0.7em;
-                vertical-align: top;
-                text-align: center;
-                > .num_left{
-                    float:left;
-                    margin-left:2px;
-                }
-                > .num_right{
-                    float:right;
-                    margin-right:2px;
-                }
-                > .fa{
-                    color: gray;
-                }
-            }
-            &[aggr_initialized=false]{
-                > .nuggetViz {
-                    > .nuggetInfo{
-                        font-size: 2em;
-                        text-align: center;
-                        position: relative;
-                        &:before{
-                            content: "\f110"; // spinner
-                        }
-                    }
-                    > .nuggetChart{
-                        display: none !important;
-                    }
-                    &:hover{
-                        > .nuggetInfo{
-                            -webkit-animation: fa-spin 2s infinite linear;
-                            animation: fa-spin 2s infinite linear;
-                        }
-                    }
-                }
-            }
-            > .nuggetViz{
-                .display(flex);
-                height: 30px;
-                background-color: rgba(255,255,255,0.8);
-                width: 50px;
-                float: right;
-                width: 60px;
-                border-radius: 5px;
-                border: solid 1px rgba(255,255,255,0.8);
-                > .nuggetChart{
-                    .flex(1);
-                    height: 30px;
-                    margin-right: 3px;
-                    margin-left: 3px;
-                    > .nuggetBar{
-                        .flex(1);
-                        display: block;
-                        background-color: @color_bars;
-                    }
-                }
-            }
+            > .nuggetChart{ display: none !important; }
             &:hover{
-                background-color: #E8E0CE;
-                border-color: #B8B6B1;
-                > .nuggetViz{
-                    border-color: gray;
-                }
+              > .nuggetInfo{
+                -webkit-animation: fa-spin 2s infinite linear;
+                animation: fa-spin 2s infinite linear;
+              }
             }
-            &[datatype~="interval"]{
-                > .nuggetViz{
-                    .flex-direction(column);
-                    > .nuggetChart{
-                        .display(flex);
-                        .flex-direction(row);
-                        > .nuggetBar{
-                            .align-self(flex-end);
-                        }
-                    }
-                }
-                .nuggetChart{ .order(1); }
-                .nuggetInfo{ .order(2); max-height: 1em; }
+          }
+        }
+        > .nuggetViz{
+          .display(flex);
+          height: 30px;
+          background-color: #F8F6F6;
+          width: 50px;
+          float: right;
+          width: 60px;
+          border-radius: 5px;
+          border: solid 1px rgb(200,200,200);
+          > .nuggetChart{
+            .flex(1);
+            height: 30px;
+            margin-right: 3px;
+            margin-left: 3px;
+            > .nuggetBar{
+              .flex(1);
+              display: block;
+              background-color: @color_bars;
             }
-            &[datatype~='time']{
-                .nuggetInfo{
-                    &:before {
-                        content: '\f017'; // fa-clock-o
-                    }
-                }
-            }
-            &[datatype~="categorical"]{
-                > .nuggetViz{
+          }
+        }
+        &:hover{
+          background-color: #E8E0CE;
+          border-color: #B8B6B1;
+          > .nuggetViz{ border-color: gray; }
+        }
+        &[datatype~="interval"]{
+            > .nuggetViz{
+                .flex-direction(column);
+                > .nuggetChart{
+                    .display(flex);
                     .flex-direction(row);
-                    > .nuggetChart{
-                        .display(flex);
-                        .flex-direction(column);
+                    > .nuggetBar{
+                        .align-self(flex-end);
                     }
                 }
             }
-            &[state='custom']{
-                > .editCodeButton{
-                    display: inline-block;
+            .nuggetChart{ .order(1); }
+            .nuggetInfo{ .order(2); max-height: 1em; }
+        }
+        &[datatype~='time']{
+          .nuggetInfo{
+            &:before { content: '\f017'; } // fa-clock-o
+          }
+        }
+        &[datatype~="categorical"]{
+            > .nuggetViz{
+                .flex-direction(row);
+                > .nuggetChart{
+                    .display(flex);
+                    .flex-direction(column);
                 }
-            }
-            &[moved]{
-                opacity: 0.5 !important;
-            }
-            &[anim="disappear"]{
-                opacity: 0;
-                .transform(~'translateX(100px)');
-            }
-            &[anim="appear"]{
-                opacity: 1;
-                .transform(~'translateX(0px)');
             }
         }
-    }
+        &[state='custom']{
+            > .editCodeButton{ display: inline-block; }
+        }
+        &[moved]{ opacity: 0.5 !important; }
+        &[anim="disappear"]{
+          opacity: 0;
+          .transform(~'translateX(100px)');
+        }
+        &[anim="appear"]{
+          opacity: 1;
+          .transform(~'translateX(0px)');
+        }
+      }
+    } // .attributePanel
+
+    .textSearchBox{
+      white-space: nowrap;
+      position: relative;
+      height: 18px;
+
+      > .textSearchInput {
+        font-size: 0.7em;
+        font-weight: 700;
+        border-width: 0px;
+        color: #cb5454;
+        background-color:rgba(244, 244, 244,0);
+        pointer-events: all;
+        margin: 2px 0px 0px 0px;
+        cursor: text;
+        &:focus{
+          outline-color: #cb5454;
+          outline-width: 2px;
+        }
+        &:hover{
+          border: solid 1px #cb5454;
+          padding: 0px 0px 0px 0px;
+        }
+        &::-webkit-input-placeholder {
+          font-weight: 300;
+          color: #cb5454;
+        }
+        &:focus::-webkit-input-placeholder { color: #F3CDCD; }
+        &:hover::-webkit-input-placeholder { color: #F3CDCD; }
+      }
+
+      > .textSearchControl{
+        vertical-align: middle;
+        padding-left: 1px;
+        font-size: 0.7em;
+        pointer-events: none;
+        color: #cb5454;
+        cursor: default;
+        &:before{ content: "\f002"; } // Search icon
+        &[showClear=true]{
+          cursor: pointer;
+          pointer-events: all;
+          color: gray;
+          &:hover{ color: #cb5454; }
+          &:before{ content: "\f057"; }
+        }
+      }
+    } // textSearchBox
 
     .panel_Basic{
         .display(flex);
@@ -579,12 +557,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             > .recordName{ }
         }
-        > .filtercrumbs{
+        > .breadcrumbs{
             .flex(1);
-            padding: 4px 5px 0px 5px;
+            padding: 2px 2px 0px 5px;
             font-size: 0.8em;
             vertical-align: top;
-            > .filter-block{
+            > .crumb{
                 display: inline-block;
                 position: relative;
                 cursor: pointer;
@@ -883,11 +861,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 1.0em;
             font-weight: 300;
         }
-        &[hidebars=true] .kshf {
-            .attrib .aggr_Group{ display:none; }
+        &[hidebars=true] {
+            .aggrBlock{ display:none; }
         }
         &[hidebaraxis=true] {
-            .facetCategorical{
+            .summaryCategorical{
                 .chartAxis_Measure{ display:none; }
                 .barChartMainInfo{ display:none; }
             }
@@ -1347,7 +1325,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 //display: none;
                 > .background{ opacity: 0;}
             }
-            &[show=itemZoom] {
+            &[show=itemZoom]{
                 > .infobox_itemZoom{
                     .animation(itemZoom 500ms forwards);
                     .animation-iteration-count(1);
@@ -1359,16 +1337,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .hasLabelWidth{ text-align: right; }
-    .attrib{
-        // add background to the text area when an item is selected
-        &:not([selected="0"]) {
-            .attribLabel{
-                .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)");
-            }
-            .item_count_wrapper{
-                .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)");
-            }
-        }
+    .catBlock:not([selected="0"]) {
+      .categoryLabel{ .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)"); }
+      .item_count_wrapper{ .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)"); }
     }
     .kshfChart[collapsed=true] {
         .headerGroup > .header_display_control > .fa.buttonSummaryCollapse{
@@ -1378,10 +1349,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .belowAttribs{ direction: ltr; }
 
-    .subFacets{
-        .kshfChart{ margin-left: 17px; }
-    }
-    .facetCategorical{
+    .summaryCategorical{
         .scrollToTop{
             right: 1px;
         }
@@ -1609,7 +1577,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             line-height: 13px;
             margin-right: 3px;
         }
-        .facetIcons{
+        .summaryIcons{
             top: 2px;
             right: 2px;
             position: absolute;
@@ -1693,449 +1661,356 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         position: relative;
         .transition(max-height 700ms ease-in-out);
+
+        .unmapped_records{
+          display: none;
+          color: lightgray;
+          left: 0px;
+          position: absolute;
+          font-size: 0.8em;
+          padding: 2px;
+          //opacity: 0;
+          .transition(~'color 100ms linear');
+          cursor: pointer;
+          &:hover{ color: orangered !important; }
+          &[filtered=true]{ color: black !important; }
+        }
+
         > .wrapper{
             position: relative;
             overflow: hidden;
             .transition(height 700ms ease-in-out);
             // so that absolute positioned elements will not overflow
-            > .facetCategorical{
+            > .summaryCategorical{
                 overflow: hidden;
-                > .facetControls{
-                    border-bottom: dotted 1px lightgray;
-                    margin-bottom: -1px;
-                    position: relative;
+                > .summaryControls{
+                  border-bottom: dotted 1px lightgray;
+                  margin-bottom: -1px;
+                  position: relative;
+                  display: none;
+                  > .catTextSearch{
                     display: none;
-                    > .attribTextSearch{
-                        display: none;
-                        vertical-align: top;
-                        white-space:nowrap;
-                        position: relative;
-                        cursor: text;
-                        height: 18px;
-                        > .attribTextSearchInput {
-                            display: inline-block;
-                            width: calc(~"100% - 13px");
-                            height: 15px;
-                            font-size: 0.7em;
-                            font-weight: 700;
-                            border-width: 0px;
-                            // border-bottom: dashed 1px #cb5454;
-                            color: #cb5454;
-                            background-color:rgba(244, 244, 244,0);
-                            pointer-events: all;
-                            margin: 2px 0px 0px 0px;
-                            cursor:text;
-                            text-align: right;
-
-                            &:focus{
-                                outline-color: #cb5454;
-                                outline-width: 2px;
-                            }
-                            &:hover{
-                                border: solid 1px #cb5454;
-                                padding: 0px 0px 0px 0px;
-                            }
-                            &::-webkit-input-placeholder {
-                                font-weight: 500;
-                                color: #cb5454;
-                                text-align: right;
-                            }
-                            &:focus::-webkit-input-placeholder {
-                                color: #F3CDCD;
-                            }
-                            &:hover::-webkit-input-placeholder {
-                                color: #F3CDCD;
-                            }
-                        }
-                        > .attribTextSearchControl{
-                            position: relative;
-                            top: 0px;
-                            padding-left: 1px;
-                            font-size: 0.7em;
-                            pointer-events: none;
-                            color: #cb5454;
-                            cursor: default;
-                            // Search icon
-                            &:before{
-                                content: "\f002";
-                            }
-                            &[showClear=true]{
-                                cursor: pointer;
-                                pointer-events: all;
-                                color: gray;
-                                &:hover{
-                                    color: #cb5454;
-                                }
-                                &:before{
-                                    content: "\f057";
-                                }
-                            }
-                        }
-                    } // attribTextSearch
-
-                    > .catSortButton{
-                        opacity: 0;
-                        position: absolute;
-                        bottom: 1px;
-                        font-size: 0.7em;
-                        text-align: right;
-                        padding-right: 2px;
-                        .transition(~'opacity 200ms linear');
-                        &:hover{
-                            color:orangered
-                        }
-                        &:before{
-                            content: "\f161";
-                        }
-                        &[inverse='true']:before{
-                            content: "\f160";
-                        }
+                    vertical-align: top;
+                    > .textSearchInput {
+                      display: inline-block;
+                      width: calc(~"100% - 13px");
+                      height: 15px;
+                      text-align: right;
+                      &::-webkit-input-placeholder { text-align: right; }
                     }
+                  } // catTextSearch
 
-                    > .sortOptionSelectGroup{
-                        display: block;
-                        vertical-align: top;
-                        white-space:nowrap;
-                        position: relative;
-                        font-weight: 300;
-                        > .optionSelect{
-                            width: 100%;
-                            height: 17px;
-                            font-size: 0.7em;
-                            -webkit-appearance: none;
-                            -moz-appearance: none;
-                            background: transparent;
-                            appearance: none;
-                            font-weight: 300;
-                            border-width: 0px;
-                            cursor: pointer;
-                            padding-right: 0px;
-                            margin: 0px;
-                            vertical-align: middle;
+                  > .catSortButton{
+                    opacity: 0;
+                    position: absolute;
+                    bottom: 1px;
+                    font-size: 0.7em;
+                    text-align: right;
+                    padding-right: 2px;
+                    .transition(~'opacity 200ms linear');
+                    &:hover{ color:orangered }
+                    &:before{ content: "\f161"; }
+                    &[inverse='true']:before{ content: "\f160"; }
+                  }
+
+                  > .sortOptionSelectGroup{
+                    display: block;
+                    vertical-align: top;
+                    white-space:nowrap;
+                    position: relative;
+                    font-weight: 300;
+                    > .optionSelect{
+                      width: 100%;
+                      height: 17px;
+                      font-size: 0.7em;
+                      -webkit-appearance: none;
+                      -moz-appearance: none;
+                      background: transparent;
+                      appearance: none;
+                      font-weight: 300;
+                      border-width: 0px;
+                      cursor: pointer;
+                      padding-right: 0px;
+                      margin: 0px;
+                      vertical-align: middle;
 //                            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10px' height='15px'><polyline points='0,2 10,2, 5,11'/></svg>") no-repeat top right;
-                            &:hover{
-                                color: orangered;
-                            }
-                        }
+                      &:hover{ color: orangered; }
                     }
-
-                } // facetControls
+                  }
+                } // summaryControls
 
                 .scrollToTop{
-                    margin-top: -13px;
-                    font-size: 0.8em;
-                    pointer-events: all;
-                    position: absolute;
+                  margin-top: -13px;
+                  font-size: 0.8em;
+                  pointer-events: all;
+                  position: absolute;
                 }
                 .selectAllAttribsButton{
-                    font-size: 0.6em;
-                    float: left;
-                    margin-left: 2px;
-                    font-weight: 300;
-                    color: black;
-                    border: solid 1px lightgray;
-                    border-radius: 10px;
-                    padding: 1px 5px 0px 5px;
-                    background-color: rgba(150,150,100,0.2);
-                    cursor: pointer;
-                    &:hover{
-    //                    font-weight: 500;
-                        box-shadow: 0px 0px 1px black;
-                    }
-                    &::before{
-                        content: '+ Add Filter with All';
-                    }
+                  font-size: 0.6em;
+                  float: left;
+                  margin-left: 2px;
+                  font-weight: 300;
+                  color: black;
+                  border: solid 1px lightgray;
+                  border-radius: 10px;
+                  padding: 1px 5px 0px 5px;
+                  background-color: rgba(150,150,100,0.2);
+                  cursor: pointer;
+                  &:hover{ box-shadow: 0px 0px 1px black; }
+                  &::before{ content: '+ Add Filter with All'; }
+                }
+                .unmapped_records{
+                  top: 0px;
                 }
                 .scroll_display_more{
-                    font-size: 0.7em;
-                    line-height: 1.4em;
-                    vertical-align: top;
-                    cursor: pointer;
-                    color: rgb(180, 180, 180);
-                    opacity:1;
-                    pointer-events: all;
-                    display: inline-block;
-                    padding-top: 2px;
-                    &:hover{ color: #cb5454; }
+                  font-size: 0.7em;
+                  line-height: 1.4em;
+                  vertical-align: top;
+                  cursor: pointer;
+                  color: rgb(180, 180, 180);
+                  opacity:1;
+                  pointer-events: all;
+                  display: inline-block;
+                  padding-top: 2px;
+                  &:hover{ color: #cb5454; }
                 }
 
-                > .attribGroup{
-                    position:relative;
-                    overflow-y: auto;
-                    overflow-x: hidden;
+                > .aggrGroup{
+                  position: relative;
+                  overflow-y: auto;
+                  overflow-x: hidden;
+                  display: block;
+                  z-index: 5;
+                  .transition(~'height 700ms ease-in-out');
+
+                  > .chartBackground{
+                    opacity: 0;
+                    width: 1px;
                     display: block;
-                    z-index: 5;
-                    .transition(~'height 700ms ease-in-out');
+                    .transition(~'opacity 250ms');
+                  }
 
-                    > .chartBackground{
-                        opacity: 0;
+                  > .chartCatLabelResize{
+                    display: none;
+                    z-index: 25;
+                  }
+
+                  > .aggrBlock{
+                    display: block;
+                    position: absolute;
+                    white-space: nowrap;
+                    top: 0px;
+                    height: 16px;
+                    > .clickArea{
+                      position: absolute;
+                      left: 0px;
+                      z-index: 20;
+                      display: inline-block;
+                      vertical-align: top;
+                      pointer-events: all;
+                      // Note: The height of clickable area is the same as height of the bar!
+                      margin-top:4px;
+                      margin-bottom:4px;
+                      height: 10px !important; // total: 18px
+                      position: absolute;
+                      font-size: 0.8em;
+                      font-weight: 300;
+                      width: 1px;
+                      left: 0px;
+                    }
+                    .lockButton{
+                      width: 9px;
+                      text-align: right;
+                      top: 4px;
+                      z-index: 300;
+                      &[inside]{ margin-left: -11px; }
+                    }
+                    > .categoryLabel{
+                      position: absolute;
+                      display: inline-block;
+                      vertical-align: top;
+                      line-height: 18px;
+                      pointer-events: none;
+                      z-index: 21;
+
+                      font-size: 0.8em;
+                      font-weight: 300;
+                      cursor: default;
+                      // display ... when text is too long
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                      > .theLabel{
+                        // And/Or/Not can come before...
+                        &:before{
+                          color: white;
+                          font-weight: 300;
+                          font-size: 0.7em;
+                          vertical-align: top;
+                          border-radius: 3px;
+                          padding: 1px 2px 0px 2px;
+                          margin: 0px 2px;
+                          opacity: 0.4;
+                        }
+                        .AndOrNot{ display: inline; }
+                      }
+                    }
+                    > .measureLabel{
+                      position: absolute;
+                      display: inline-block;
+                      vertical-align: top;
+                      line-height: 19px;
+                      height: 18px;
+                      pointer-events: none;
+
+                      font-size: 0.7em;
+                      pointer-events: none;
+
+                      padding-right: 1px;
+                      text-align: right;
+                    }
+                    .aggr{
+                      .transform-origin(0%, 0%);
+                      top: 4px;
+                      width: 1px;
+                      height: 10px;
+                      &.total_tip{
+                        right: -5px;
+                        /* right arrow */
+                        border-top: 5px solid transparent;
+                        border-bottom: 5px solid transparent;
+                        border-left: 5px solid @color_bars_background;
+                        background-color: initial;
+                        /*
+                        // The sawtooth pattern
+                        width: 8px;
+                        left: 0px;
+                        height: 10px;
+                        top: 4px;
+                        opacity: 0px;
+
+                        background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
+                        linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
+
+                        background-position: top left, top left;
+                        background-repeat: repeat;
+                        background-size: 8px 8px;
+                        */
+                      }
+                      &.compare{
                         width: 1px;
-                        display: block;
-                        .transition(~'opacity 250ms');
-                    }
+                        height: 5px;
+                      }
+                    } // .aggr
 
-                    > .chartCatLabelResize{
-                        display: none;
-                        z-index: 25;
-                    }
-
-                    > .attrib{
-                        display: block;
-                        position: absolute;
-                        white-space: nowrap;
-                        top: 0px;
-                        height: 16px;
-                        > .clickArea{
-                            position: absolute;
-                            left: 0px;
-                            z-index: 20;
-                            display: inline-block;
-                            vertical-align: top;
-                            pointer-events: all;
-                            // Note: The height of clickable area is the same as height of the bar!
-                            margin-top:4px;
-                            margin-bottom:4px;
-                            height: 10px !important; // total: 18px
-                            position: absolute;
-                            font-size: 0.8em;
-                            font-weight: 300;
-                            width: 1px;
-                            left: 0px;
-                        }
-                        .compareButton{
-                            width: 9px;
-                            text-align: right;
-                            top: 4px;
-                            z-index: 300;
-                            &[inside]{
-                                margin-left: -11px;
-                            }
-                        }
-                        > .attribLabel{
-                            position: absolute;
-                            display: inline-block;
-                            vertical-align: top;
-                            line-height: 18px;
-                            pointer-events: none;
-                            z-index: 21;
-
-                            font-size: 0.8em;
-                            font-weight: 300;
-                            cursor: default;
-                            // display ... when text is too long
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                            > .theLabel{
-                                // And/Or/Not can come before...
-                                &:before{
-                                    color: white;
-                                    font-weight: 300;
-                                    font-size: 0.7em;
-                                    vertical-align: top;
-                                    border-radius: 3px;
-                                    padding: 1px 2px 0px 2px;
-                                    margin: 0px 2px;
-                                    opacity: 0.4;
-                                }
-                                .AndOrNot{
-                                    display: inline;
-                                }
-                            }
-                        }
-                        > .item_count_wrapper{
-                            position: absolute;
-                            display: inline-block;
-                            vertical-align: top;
-                            line-height: 19px;
-                            height: 18px;
-                            pointer-events: none;
-
-                            font-size: 0.7em;
-                            pointer-events: none;
-
-                            padding-right: 1px;
-                            text-align: right;
-                        }
-                        > .aggr_Group{
-                            display: inline-block;
-                            vertical-align: top;
-                            pointer-events: none;
-                            position: relative;
-                            pointer-events: none;
-                            .aggr{
-                                .transform-origin(0%, 0%);
-                                top: 4px;
-                                width: 1px;
-                                height: 10px;
-                                &.total_tip{
-                                    right: -5px;
-                                    /* right arrow */
-                                    border-top: 5px solid transparent;
-                                    border-bottom: 5px solid transparent;
-                                    border-left: 5px solid @color_bars_background;
-                                    background-color: initial;
-                                    /*
-                                    // The sawtooth pattern
-                                    width: 8px;
-                                    left: 0px;
-                                    height: 10px;
-                                    top: 4px;
-                                    opacity: 0px;
-
-                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-                                    linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
-
-                                    background-position: top left, top left;
-                                    background-repeat: repeat;
-                                    background-size: 8px 8px;
-                                    */
-                                }
-                                &.compare{
-                                    width: 1px;
-                                    height: 5px;
-                                }
-                            }
-                        }
-                        .filterButtons{
-                            white-space: nowrap;
-                            cursor: pointer;
-                            vertical-align: top;
-                            //float: left;
-                            z-index: 100;
+                    .filterButtons{
+                      white-space: nowrap;
+                      cursor: pointer;
+                      vertical-align: top;
+                      //float: left;
+                      z-index: 100;
 //                            margin-bottom: -2px;
 //                            font-size: 1.1em;
-                            pointer-events: all;
-                            > .filterButton{
-                                display: none;
-                                pointer-events: all;
-                                margin-right: 2px;
-                                border-radius: 4px;
-                                vertical-align: middle;
-                                padding: 1px 2px 0px 3px;
-                                line-height: 13px;
-                                color: white;
-                                font-weight: 300;
-                                font-size: 0.7em;
-                            }
-                            > .orButton {
-                                background-color: lighten(@color_query_or, 10%);
-                                &:hover { background-color: @color_query_or; }
-                            }
-                            > .notButton {
-                                background-color: rgb(166, 166, 166);
-                                &:hover { background-color: gray; }
-                            }
-                        }
+                      pointer-events: all;
+                      > .filterButton{
+                        display: none;
+                        pointer-events: all;
+                        margin-right: 2px;
+                        border-radius: 4px;
+                        vertical-align: middle;
+                        padding: 1px 2px 0px 3px;
+                        line-height: 13px;
+                        color: white;
+                        font-weight: 300;
+                        font-size: 0.7em;
+                      }
+                      > .orButton {
+                        background-color: lighten(@color_query_or, 10%);
+                        &:hover { background-color: @color_query_or; }
+                      }
+                      > .notButton {
+                        background-color: rgb(166, 166, 166);
+                        &:hover { background-color: gray; }
+                      }
+                    }
 
-                        &[activeItems='0'] {
-                            .measureLabel{
-                                visibility: hidden;
-                            }
-                        }
+                    &[activeItems='0'] {
+                      .measureLabel{ visibility: hidden; }
+                    }
 
-                        &[compare="true"] {
-                            > .attribLabel > .theLabel{
-                                font-weight: 700;
-                            }
-                        }
-                        &:not([selected="0"]) {
-                            > .attribLabel > .theLabel{
-                                font-weight: 700;
-                            }
-                            .clickArea{ cursor: pointer; }
-                        }
-                        &[selected="-1"] {
-                            > .attribLabel > .theLabel{
-                                text-decoration: line-through;
-                            }
-                        }
-                        // AND
-                        &[selected="1"]{
-                            > .attribLabel > .theLabel{ color: @color_query_and; }
-/*                            &[show-box=true]{
-                                > .attribLabel > .theLabel:before{
-                                    content: "And";
-                                    background-color: @color_query_and;
-                                }
-                            }*/
-                        }
-                        // OR
-                        &[selected="2"]{
-                            > .attribLabel > .theLabel{ color: @color_query_or; }
-                            &[show-box=true]{
-                                > .attribLabel > .filterButtons > .orButton {
-                                    display: inline;
-                                }
-                            }
-                        }
-                        // NOT
-                        &[selected="-1"]{
-                            /*
-                            > .attribLabel > .theLabel{
-                                color: @color_query_not;
-                                &:before{
-                                    content: "Not";
-                                    background-color: @color_query_not;
-                                }
-                            }
-                            */
-                            > .attribLabel > .theLabel{
-                                color: @color_query_not;
-                            }
-                            > .attribLabel > .filterButtons > .notButton{
-                                display: inline;
-                                background-color: @color_query_not;
-                            }
-                        }
+                    &[compare="true"] {
+                      > .categoryLabel > .theLabel{ font-weight: 700; }
+                    }
+                    &:not([selected="0"]) {
+                      > .categoryLabel > .theLabel{ font-weight: 700; }
+                      .clickArea{ cursor: pointer; }
+                    }
+                    &[selected="-1"] {
+                      > .categoryLabel > .theLabel{ text-decoration: line-through; }
+                    }
+                    // AND
+                    &[selected="1"]{
+                      > .categoryLabel > .theLabel{ color: @color_query_and; }
+                    }
+                    // OR
+                    &[selected="2"]{
+                      > .categoryLabel > .theLabel{ color: @color_query_or; }
+                      &[show-box=true]{
+                        > .categoryLabel > .filterButtons > .orButton { display: inline; }
+                      }
+                    }
+                    // NOT
+                    &[selected="-1"]{
+                      > .categoryLabel > .theLabel{ color: @color_query_not; }
+                      > .categoryLabel > .filterButtons > .notButton{
+                        display: inline;
+                        background-color: @color_query_not;
+                      }
+                    }
 
-                        &[noitems=false]{
-                            &[highlight^="selected"] {
-                                > .attribLabel > .theLabel{
-                                    font-weight: 700 !important;
-                                }
-                                // Not selected
-                                &[selected="0"] {
-                                    .clickArea { cursor: pointer; }
-                                    &[selecttype="and"] > .attribLabel > .theLabel{
-                                        color: @color_query_and;
-                                    }
-                                    &[selecttype="or"] > .attribLabel > .theLabel{
-                                        color: @color_query_or;
-                                    }
-                                    &[selecttype="not"] > .attribLabel > .theLabel{
-                                        color: @color_query_not;
-                                        text-decoration: line-through;
-                                    }
-                                }
-                            }
-                            &[highlight=true] {
-                                > .attribLabel > .theLabel{
-                                    color: @color_related;
-                                    font-weight: 700;
-                                }
-                            }
+                    &[noitems=false]{
+                      &[highlight^="selected"] {
+                        > .categoryLabel > .theLabel{ font-weight: 700 !important; }
+                        // Not selected
+                        &[selected="0"] {
+                          .clickArea { cursor: pointer; }
+                          &[selecttype="and"] > .categoryLabel > .theLabel{
+                            color: @color_query_and;
+                          }
+                          &[selecttype="or"] > .categoryLabel > .theLabel{
+                            color: @color_query_or;
+                          }
+                          &[selecttype="not"] > .categoryLabel > .theLabel{
+                            color: @color_query_not;
+                            text-decoration: line-through;
+                          }
                         }
-                        &[noitems=true] {
-                            color:gray;
-                            .measureLabel{ display: none; }
+                      }
+                      &[highlight=true] {
+                        > .categoryLabel > .theLabel{
+                          color: @color_related;
+                          font-weight: 700;
                         }
-                    } // .attrib
-                } // .attribGroup
+                      }
+                    }
+                    &[noitems=true] {
+                      color:gray;
+                      .measureLabel{ display: none; }
+                    }
+                  } // .aggrBlock
+                } // .aggrGroup
 
                 &:hover {
-                    > .facetControls > .catSortButton{
-                        opacity: 1;
-                    }
-                    .attribTextSearchInput::-webkit-input-placeholder{
-                        // color: #cb5454 !important;
-                    }
+                  > .summaryControls > .catSortButton{ opacity: 1; }
                 }
-            }// facetCategorical
+            }// summaryCategorical
 
-            > .facetInterval {
+            > .summaryInterval {
                 padding: 7px 11px 0px 6px;
                 overflow: hidden;
+                .unmapped_records{
+                  margin-top: -14px;
+                }
                 &[scaletype="time"]{
                     span.aggr{
                         opacity: 0 !important;
@@ -2197,65 +2072,63 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             opacity: 0;
                         }
                     }
-                    > .bins{
-                        position: absolute;
-                        top: 0px;
-                        // If this is set, it prevents background events from the other div layer
+                    > .aggrGroup{
+                      position: absolute;
+                      top: 0px;
+                      // If this is set, it prevents background events from the other div layer
 //                        width: 100%;
 //                        height: 100%;
-                        z-index: 3;
+                      z-index: 3;
+                      height: 100%;
+                      .transition(@layout_animation);
+                      > .aggrBlock{
+                        display: block;
+                        position: absolute;
                         height: 100%;
-                        .transition(@layout_animation);
-                        > .aggr_Group{
-                            position: absolute;
+                        pointer-events: none;
+                        > .aggr{
+                          width: 1px;
+                          height: 1px;
+                          .transform-origin(0% 100%);
+                          &.total_tip{
+                            content: " ";
                             display: block;
-                            height: 100%;
-                            pointer-events: none;
-                            > .aggr{
-                                width: 1px;
-                                height: 1px;
-                                .transform-origin(0% 100%);
-                                &.total_tip{
-                                    content: " ";
-                                    display: block;
-                                    position: absolute;
-                                    top: -7px;
-                                    width: 100%;
-                                    left: 0px;
-                                    height: 8px;
-                                    opacity: 0;
+                            position: absolute;
+                            top: -7px;
+                            width: 100%;
+                            left: 0px;
+                            height: 8px;
+                            opacity: 0;
 
-                                    background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-                                    linear-gradient(135deg, transparent 75%, @color_bars_background 75%) 0 50%;
+                            background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
+                            linear-gradient(135deg, transparent 75%, @color_bars_background 75%) 0 50%;
 
-                                    background-position: top left, top left;
-                                    background-repeat: repeat;
-                                    background-size: 8px 8px;
-                                }
-                            }
-                            > .compareButton{
-                                position: absolute;
-                                width: 100%;
-                                text-align: center;
-                                &[inside]{
-                                    margin-top: 12px;
-                                }
-                            }
-                            > .measureLabel{
-                                top: 1px;
-                                display: block;
-                                position: relative;
-                                width:100%;
-                                font-size: 0.7em;
-                                text-align: center;
-                                cursor: pointer;
-                                pointer-events: all;
-                                .transition(~'transform 700ms ease-in-out');
-                            }
-                            &[noitems=true]{
-                                > .measureLabel{ display: none; }
-                            }
+                            background-position: top left, top left;
+                            background-repeat: repeat;
+                            background-size: 8px 8px;
+                          }
+                        } // .aggr
+                        > .lockButton{
+                          position: absolute;
+                          width: 100%;
+                          text-align: center;
+                          &[inside]{ margin-top: 12px; }
                         }
+                        > .measureLabel{
+                          top: 1px;
+                          display: block;
+                          position: relative;
+                          width:100%;
+                          font-size: 0.7em;
+                          text-align: center;
+                          cursor: pointer;
+                          pointer-events: all;
+                          .transition(~'transform 700ms ease-in-out');
+                        }
+                        &[noitems=true]{
+                          > .measureLabel{ display: none; }
+                        }
+                      } // .aggrBlock
                     }
                     > .chartAxis_Measure{
                         top: 0px;
@@ -2263,8 +2136,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         height: 100%;
                         > .percentSign{
                             bottom: -1px;
-                            left: 0px;
-                            width: 20px;
+                            left: 10px;
+                            width: 12px;
                             text-align: right;
                         }
                         > .chartAxis_Measure_background{
@@ -2301,83 +2174,67 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     border-color: lightgray;
                     border-width: 1px 0px;
                     > .percentileTitle{
-                        font-size: 0.6em;
-                        position: absolute;
-                        display: inline-block;
-                        font-weight: 300;
-                        top: 0px;
-                        left: -9px;
-                        text-shadow: 0px 0px 2px white;
-                        z-index: 120;
-                        color: gray;
-                        pointer-events: none;
-                        display: none;
+                      font-size: 0.6em;
+                      position: absolute;
+                      display: inline-block;
+                      font-weight: 300;
+                      top: 0px;
+                      left: -9px;
+                      text-shadow: 0px 0px 2px white;
+                      z-index: 120;
+                      color: gray;
+                      pointer-events: none;
+                      display: none;
                     }
-                    &:hover > .percentileTitle{
-                        display: block;
-                    }
+                    &:hover > .percentileTitle{ display: block; }
                     > .quantile {
-                        display: inline-block;
-                        position: absolute;
-                        height: 10px;
-                        left: 0px;
-                        width:1px;
-                        .transition(~'transform 700ms ease-in-out');
-                        .transform-origin(0% 0%);
-                        &.q_pos{
-                            background-color: rgb(27, 111, 97);
-                            margin-left: -0.5px;
-                            z-index: 101;
-                            pointer-events: none;
-                            &.q_50 {
-                                width: 4px;
-                                background-color: rgb(27, 111, 97);
-                                margin-left: -2px;
-                                pointer-events: all;
-                            }
+                      display: inline-block;
+                      position: absolute;
+                      height: 10px;
+                      left: 0px;
+                      width:1px;
+                      .transition(~'transform 700ms ease-in-out');
+                      .transform-origin(0% 0%);
+                      &.q_pos{
+                        background-color: rgb(27, 111, 97);
+                        margin-left: -0.5px;
+                        z-index: 101;
+                        pointer-events: none;
+                        &.q_50 {
+                          width: 4px;
+                          background-color: rgb(27, 111, 97);
+                          margin-left: -2px;
+                          pointer-events: all;
                         }
-                        &.q_range{
-                            &:hover{
-                                border-color: rgb(27, 111, 97);
-                                border-style: solid;
-                                border-width: 1px 0px 1px 0px;
-                                z-index: 100;
-                            }
+                      }
+                      &.q_range{
+                        &:hover{
+                          border-color: rgb(27, 111, 97);
+                          border-style: solid;
+                          border-width: 1px 0px 1px 0px;
+                          z-index: 100;
                         }
-                        &.q_40_60 {
-                            background-color: lighten(rgb(27, 111, 97), 15%);
-                        }
-                        &.q_30_70 {
-                            background-color: lighten(rgb(27, 111, 97), 40%);
-                        }
-                        &.q_20_80 {
-                            background-color: lighten(rgb(27, 111, 97), 60%);
-                        }
-                        &.q_10_90 {
-                            background-color: lighten(rgb(27, 111, 97), 70%);
-                        }
+                      }
+                      &.q_40_60 { background-color: lighten(rgb(27, 111, 97), 15%); }
+                      &.q_30_70 { background-color: lighten(rgb(27, 111, 97), 40%); }
+                      &.q_20_80 { background-color: lighten(rgb(27, 111, 97), 60%); }
+                      &.q_10_90 { background-color: lighten(rgb(27, 111, 97), 70%); }
                     }
                 } // percentileGroup
                 > .intervalSlider{
                     position:relative;
                     pointer-events: all;
                     > .zoomControl{
-                        display: none;
-                        position: absolute;
-                        left: -20px;
-                        top: -1px;
-                        font-size: 0.8em;
-                        color: gray;
-                        cursor: pointer;
-                        &:hover{
-                            color: black;
-                        }
-                        &[sign="plus"]:before{
-                            content: "\f00e"; // zoom-plus
-                        }
-                        &[sign="minus"]:before{
-                            content: "\f010"; // zoom-minus
-                        }
+                      display: none;
+                      position: absolute;
+                      left: -18px;
+                      top: -1px;
+                      font-size: 0.8em;
+                      color: gray;
+                      cursor: pointer;
+                      &:hover{ color: black; }
+                      &[sign="plus"]:before{ content: "\f00e"; }// zoom-plus
+                      &[sign="minus"]:before{ content: "\f010"; } // zoom-minus
                     }
                     > .controlLine {
                         height: 11px;
@@ -2416,32 +2273,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                         > .base{
-                            display: block;
-                            position: absolute;
-                            box-shadow: inset 0px 0px 2px gray;
-                            .transform-origin(0% 0%);
-                            &.total{
-                                width: 100%;
-                                height: 3px;
-                                top: 3px;
-                                background-color: lightgray;
+                          display: block;
+                          position: absolute;
+                          box-shadow: inset 0px 0px 2px gray;
+                          .transform-origin(0% 0%);
+                          &.total{
+                            width: 100%;
+                            height: 3px;
+                            top: 3px;
+                            background-color: lightgray;
+                          }
+                          &.active{
+                            height: 8px;
+                            top: 1px;
+                            width:1px;
+                            opacity:0;
+                            pointer-events: none;
+                            background-color: @color_filtered;
+                            .transition(~"opacity 500ms");
+                            &[filtered=true]{
+                              opacity:1;
+                              pointer-events: all;
                             }
-                            &.active{
-                                height: 8px;
-                                top: 1px;
-                                width:1px;
-                                opacity:0;
-                                pointer-events: none;
-                                background-color: @color_filtered;
-                                .transition(~"opacity 500ms");
-                                &[filtered=true]{
-                                    opacity:1;
-                                    pointer-events: all;
-                                }
-                                &:hover{
-                                    background-color: orangered !important;
-                                }
-                            }
+                            &:hover{ background-color: orangered !important; }
+                          }
                         }
                         > .handle{
                             display:block;
@@ -2517,111 +2372,59 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     } // labelGroup
                 } // intervalSlider
 
-            } // facetInterval
+            } // summaryInterval
         } //
 
-        .subFacets {
-            position:relative;
-            height: 100%;
-        } // subFacets
-
-        .facetGroupBar{
-            display: inline-block;
-            position: absolute;
-            height: 100%;
-            width: 17px;
-            border-right: solid 2px rgb(204,195,195);
-            .background-image(~"linear-gradient(left, rgba(204,195,195,0) 0%, rgba(204,195,195,0.5) 100%)");
-            > .facetGroupBarSub{
-                height: 100%;
-                width: 1px;
-                margin: auto;
-                background-color: black;
-            }
-        }
-
         &[collapsed=true]{
-            > .headerGroup{
-                // color: gray;
-                .summaryTitle{
-                    cursor: pointer;
-                }
-            }
-            > .wrapper .facetCategorical{
-                > .facetControls { display: none; }
-                > .scrollToTop { display: none; }
-                > .attribGroup { display: none; }
-                > .belowAttribs { display: none; }
-            }
-            > .wrapper .facetInterval{
-                > .histogram { display: none; }
-                > .intervalSlider { display: none; }
-            }
+          > .headerGroup .summaryTitle{ cursor: pointer; }
+          > .wrapper .summaryCategorical{
+            > .summaryControls { display: none; }
+            > .scrollToTop { display: none; }
+            > .aggrGroup { display: none; }
+            > .belowAttribs { display: none; }
+          }
+          > .wrapper .summaryInterval{
+            > .histogram { display: none; }
+            > .intervalSlider { display: none; }
+          }
         }
 
         &[filtered=true] {
-            > .headerGroup {
-                .chartClearFilterButton{
-                    display: inline-block;
-                }
-            }
-            &:hover > .wrapper > .facetInterval > .intervalSlider {
-                > .zoomControl{
-                    display: block;
-                }
-                > .controlLine > .handle > .rangeLimitOnChart{
-                    display: block;
-                }
-            }
+          > .headerGroup .chartClearFilterButton{ display: inline-block; }
+          &:hover > .wrapper > .summaryInterval > .intervalSlider {
+            > .zoomControl{ display: block; }
+            > .controlLine > .handle > .rangeLimitOnChart{ display: block; }
+          }
         }
-        &:not([filtered_total="0"]):not([filtered_total="1"])[hasmultivalueitem=true]{
-            > .headerGroup {
-                .save_filter_as_set{
-                    // display: inline-block;
-                }
+        &[isMultiValued=false]{
+          &[filtered_or="0"][filtered_and="0"]{
+            > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:hover {
+              &[selected="0"] .notButton{ display: inline; }
             }
-        }
-        &[hasmultivalueitem=false]{
-            &[filtered_or="0"][filtered_and="0"]{
-                > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
-                    &[selected="0"] .notButton{
-                        display: inline;
-                    }
-                }
+          }
+          &[filtered_or="0"]{
+            > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:hover {
+              &[selected="-1"] { cursor: pointer; }
             }
-            &[filtered_or="0"]{
-                > .wrapper > .facetCategorical > .attribGroup > .attrib:hover {
-                    &[selected="-1"] {
-                        cursor: pointer;
-                    }
-                }
-            }
+          }
         }
         &:not([filtered_or="0"]){
-            > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton{
-                display: inline;
-            }
+          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton{ display: inline; }
         }
         &:not([filtered_and="0"]){
-            > .wrapper > .facetCategorical > .attribGroup > .attrib[selected="0"]:hover .orButton{
-                display: inline;
-            }
+          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton{ display: inline; }
         }
-        &[hasmultivalueitem=true]{
-            > .wrapper > .facetCategorical > .attribGroup > .attrib {
-                &[selected="0"][highlight="selected"] .notButton{
-                    display: inline;
-                }
-            }
+        &[isMultiValued=true]{
+          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock{
+            &[selected="0"][highlight="selected"] .notButton{ display: inline; }
+          }
         }
         &[filtered_range=true] .chartClearFilterButton.rangeFilter{
-            display:inline-block;
+          display:inline-block;
         }
 
         &[refreshSorting="true"]{
-            .catSortButton:before{
-                content: "\f175" !important;
-            }
+          .catSortButton:before{ content: "\f175" !important; }
         }
 
 /*        &:before{
@@ -2631,29 +2434,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }*/
 
         &:hover{
-//            margin: -1px;
-//            border: solid 1px gray;
-            > .headerGroup {
-                box-shadow: 0px 0px 2px rgb(100, 100, 100);
-                > .header_display_control > .fa{
-                    opacity: 1;
-                }
-            }
-            &[hasmultivalueitem=true] {
-                > .headerGroup .hasMultiMappings{
-                    display: inline-block;
-                }
-            }
+          > .headerGroup {
+            box-shadow: 0px 0px 2px rgb(100, 100, 100);
+            > .header_display_control > .fa{ opacity: 1; }
+          }
+          > .wrapper .unmapped_records { color: gray }
+          &[isMultiValued=true] > .headerGroup .hasMultiMappings{ display: inline-block; }
         }
 
-        &[hasFacets=true]{
-            > .headerGroup {
-                .background-image(~"linear-gradient(right, rgba(151, 151, 151, 0.2) 0%, rgba(151, 151, 151, 0.4) 20%, rgba(151, 151, 151, 0.4) 80%, rgba(151, 151, 151, 0.2) 100%);");
-                .summaryTitle{
-                    font-size: 1.3em;
-                }
-            }
-        }
     }// kshfChart
 
     .belowAttribs{
@@ -2685,80 +2473,65 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     }
 
-    .measureLabel{
-        color: @color_item_count;
-    }
+    .measureLabel{ color: @color_item_count; }
+
     &[resultpreview="true"]{
-        .measureLabel{
-            color: orangered;
-        }
-        .kshfChart:not([hasmultivalueitem="true"]):hover {
-            .attrib:not([highlight="selected"]) .measureLabel{
-                color: @color_item_count;;
-            }
-            .aggr_Group:not([highlight="selected"]) .measureLabel{
-                color: @color_item_count;;
-            }
-        }
-        .lineTrend.preview{
-            opacity: 1 !important;
-        }
-        .previewLine{
-            opacity: 1 !important;
-        }
+      .measureLabel{ color: orangered; }
+      .kshfChart:not([isMultiValued="true"]):hover {
+        .aggrBlock:not([highlight="selected"]) .measureLabel{ color: @color_item_count;; }
+      }
+      .lineTrend.preview{ opacity: 1 !important; }
+      .previewLine{ opacity: 1 !important; }
     }
 
     .selectVertLine {
-        display: inline-block;
-        background-color: #EEDDDE;
-        width:2px;
-        display:none;
-        position:absolute;
+      display: inline-block;
+      background-color: #EEDDDE;
+      width:2px;
+      display:none;
+      position:absolute;
     }
 
     .middleColumn{
-        .display(inline-flex);
-        .flex-direction(column);
-        .flex(1);
-        position: relative;
+      .display(inline-flex);
+      .flex-direction(column);
+      .flex(1);
+      position: relative;
     }
 
     .recordDisplay{
+      position: relative;
+      top: 0px;
+      overflow: hidden; // Don't remove!
+      .display(flex);
+      .flex-direction(column);
+      .transition(margin-top 700ms ease-in-out);
+
+      > .dropZone_recordView{
+        display: none;
         position: relative;
-        top: 0px;
-        overflow: hidden; // Don't remove!
-        .display(flex);
-        .flex-direction(column);
-        .transition(margin-top 700ms ease-in-out);
+        height: 100%;
+        width: 100%;
+        z-index: 50;
+        cursor: s-resize;
+        background-color: rgba(239, 236, 222, 1);
+        border-radius: 0px 0px 40px 40px;
+        border-style: solid;
+        border-width: 0px 0px 2px 0px;
+        border-color: rgb(145, 142, 123);
 
-        > .dropZone_recordView{
-            display: none;
-            position: relative;
-            height: 100%;
-            width: 100%;
-            z-index: 50;
-            cursor: s-resize;
-            background-color: rgba(239, 236, 222, 1);
-            border-radius: 0px 0px 40px 40px;
-            border-style: solid;
-            border-width: 0px 0px 2px 0px;
-            border-color: rgb(145, 142, 123);
-
-            text-align: center;
-            margin-bottom: 5px;
-            > .dropIcon{
-                margin: 10px 0px 0px 0px;
-                font-size: 2em;
-                color: #918E7B;
-                text-shadow: 1px 1px 1px #B8B6AB;
-            }
-            &:hover{
-                background-color: rgb(255, 188, 163);
-            }
-            &[readyToDrop=true]{
-                background-color: rgb(255, 188, 163);
-            }
+        text-align: center;
+        margin-bottom: 5px;
+        > .dropIcon{
+          margin: 10px 0px 0px 0px;
+          font-size: 2em;
+          color: #918E7B;
+          text-shadow: 1px 1px 1px #B8B6AB;
         }
+        &:hover{ background-color: rgb(255, 188, 163); }
+        &[readyToDrop=true]{ background-color: rgb(255, 188, 163); }
+      }
+
         > .listItemGroup{
             width: 100%;
             overflow-y: scroll;
@@ -2770,8 +2543,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .transition(~'height 700ms ease-in-out');
 
             > .dragWidthHandle{
-                z-index: 200;
-                height: 100%;
+              z-index: 200;
+              height: 100%;
             }
 
             > .listItem{
@@ -2784,57 +2557,57 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .transition(~"opacity 500ms ease");
 
                 > .recordRank{
-                    font-size: 0.6em;
-                    color: gray;
-                    font-weight: 300;
-                    font-style: italic;
-                    text-align: right;
+                  font-size: 0.6em;
+                  color: gray;
+                  font-weight: 300;
+                  font-style: italic;
+                  text-align: right;
                 }
 
                 > .content{
-                    vertical-align: top;
-                    border: solid 0px lightgray;
-                    position: relative;
+                  vertical-align: top;
+                  border: solid 0px lightgray;
+                  position: relative;
 
-                    > .iteminfo{
-                        float:none;
-                        clear: left;
-                        font-weight:normal;
-                        margin-bottom: 2px;
-                    }
-                    > .iteminfo_0{
-                        font-size:1.0em;
-                        color: black;
-                    }
-                    > .iteminfo_1{
-                        font-size:0.9em;
-                        color: #555555;
-                    }
-                    > .iteminfo_2{
-                        font-size:0.8em;
-                        color: #555555;
-                        font-style:italic;
-                        font-weight:300;
-                    }
-                    > .iteminfo_3{
-                        font-size:0.8em;
-                        color: rgb(167, 31, 31);
-                        font-style:italic;
-                        font-weight:300;
-                    }
+                  > .iteminfo{
+                    float:none;
+                    clear: left;
+                    font-weight:normal;
+                    margin-bottom: 2px;
+                  }
+                  > .iteminfo_0{
+                    font-size:1.0em;
+                    color: black;
+                  }
+                  > .iteminfo_1{
+                    font-size:0.9em;
+                    color: #555555;
+                  }
+                  > .iteminfo_2{
+                    font-size:0.8em;
+                    color: #555555;
+                    font-style:italic;
+                    font-weight:300;
+                  }
+                  > .iteminfo_3{
+                    font-size:0.8em;
+                    color: rgb(167, 31, 31);
+                    font-style:italic;
+                    font-weight:300;
+                  }
                 }
                 > .recordToggleDetail{
-                    display: none;
-                    vertical-align: top;
-                    width:18px; // includes the padding, using box model...
-                    cursor: pointer;
-                    font-weight: 700;
-                    > .item_details_toggle{
-                        .transition(~'transform 500ms');
-                        color: gray;
-                        position: relative;
-                        &:hover{ color:black; }
-                    }
+                  display: none;
+                  vertical-align: top;
+                  width:18px; // includes the padding, using box model...
+                  cursor: pointer;
+                  font-weight: 700;
+                  > .item_details_toggle{
+                    .transition(~'transform 500ms');
+                    color: gray;
+                    position: relative;
+                    &:hover{ color:black; }
+                  }
                 }
 
                 &[animst="open"]{
@@ -2918,74 +2691,71 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             //.keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
 
             > .MoreText{
-                display: inline-block;
-                vertical-align: top;
-                top: 2px;
-                position: relative;
+              display: inline-block;
+              vertical-align: top;
+              top: 2px;
+              position: relative;
             }
             > .Count{
-                font-size: 0.9em;
-                top: 3px;
-                position: relative;
-                color: gray;
-                &.CountAbove{
-                    float: left;
-                    margin-left: 3px;
-                }
-                &.CountBelow{
-                    float: right;
-                    margin-right: 3px;
-                }
+              font-size: 0.9em;
+              top: 3px;
+              position: relative;
+              color: gray;
+              &.CountAbove{
+                float: left;
+                margin-left: 3px;
+              }
+              &.CountBelow{
+                float: right;
+                margin-right: 3px;
+              }
             }
             &:hover{
-                //background-color: darken(lightgray,0%);
-                box-shadow: 2px 2px 2px gray;
-                span.MoreText{
-                    text-decoration: underline;
-                }
+              box-shadow: 2px 2px 2px gray;
+              > .MoreText{ text-decoration: underline; }
             }
             &[showMoreVisible=true]{
-                opacity: 1;
-                bottom: 4px;
+              opacity: 1;
+              bottom: 4px;
             }
             &[showMoreVisible=false]{
-                bottom: -27px;
-                opacity: 0;
+              bottom: -27px;
+              opacity: 0;
             }
         }
         &[showRank=true]  {
-            .recordRank{ display: inline-block; }
-            .itemRank_control{ color: black; }
+          .recordRank{ display: inline-block; }
+          .itemRank_control{ color: black; }
         }
         &[showRank=false] {
-            .recordRank{ display: none; }
-            .itemRank_control{ color: gray; }
+          .recordRank{ display: none; }
+          .itemRank_control{ color: gray; }
         }
 
         &[displaytype="grid"][hasrecordview="true"] {
-            > .listItemGroup {
-                .display(flex);
-                .flex-direction(row);
-                .flex-wrap(wrap);
-                justify-content: space-around;
-                -webkit-justify-content: space-around;
-                > .listItem{
-                    display: block;
-                    .align-self(flex-start);
-                    > .recordRank{
-                        vertical-align: top;
-                        margin-right: 2px;
-                    }
-                    > .content{
-                        display: block;
-                    }
-                    > .recordToggleDetail{
-                        display: block;
-                        position: absolute;
-                        z-index: 10;
-                    }
-                }
+          > .listItemGroup {
+            .display(flex);
+            .flex-direction(row);
+            .flex-wrap(wrap);
+            justify-content: space-around;
+            -webkit-justify-content: space-around;
+            > .listItem{
+              display: block;
+              .align-self(flex-start);
+              > .recordRank{
+                vertical-align: top;
+                margin-right: 2px;
+              }
+              > .content{
+                display: block;
+              }
+              > .recordToggleDetail{
+                display: block;
+                position: absolute;
+                z-index: 10;
+              }
             }
+          }
         }
         &[displaytype="list"][hasrecordview="true"] {
             > .listItemGroup{
@@ -3072,15 +2842,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // .recordDisplay
 
     .scrollToTop{
-        display:inline-block;
-        visibility: hidden;
-        color: red;
-        cursor: pointer;
-        color: #aaaaaa;
-        .transition(~'color 300ms ease-in-out');
-        &:hover{
-            color:#cb5454;
-        }
+      display: inline-block;
+      visibility: hidden;
+      color: red;
+      cursor: pointer;
+      color: #aaaaaa;
+      .transition(~'color 300ms ease-in-out');
+      &:hover{ color:#cb5454; }
     }
 
     .recordDisplay--Header{
@@ -3090,190 +2858,165 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .flex-direction(row);
         min-height: 18px;
         > .itemRank_control{
-            display: none;
-            width: 13px;
-            text-align: right;
-            font-weight: 100;
-            font-size: 0.9em;
-            cursor: pointer;
-            &:before{
-                content: "\f102";
-            }
-            &:hover{
-                color: orangered;
-            }
+          display: none;
+          width: 13px;
+          text-align: right;
+          font-weight: 100;
+          font-size: 0.9em;
+          cursor: pointer;
+          &:before{ content: "\f102"; }
+          &:hover{ color: orangered; }
         }
         > .removeSortOption_wrapper{
-            display: none;
+          display: none;
         }
         .removeSortOption{
-            cursor: pointer;
-            width: 14px;
-            height: 14px;
-            display: inline-block;
-            color:gray;
-            &:before{
-                content: "\f00d";
-            }
-            &:hover{
-                color: black;
-            }
+          cursor: pointer;
+          width: 14px;
+          height: 14px;
+          display: inline-block;
+          color:gray;
+          &:before{ content: "\f00d"; }
+          &:hover{ color: black; }
         }
         > .header_listSortColumn{
+          display: inline-block;
+          .align-self(flex-end);
+          white-space: nowrap;
+          text-align: right;
+          padding-right: 1px;
+          position: relative;
+          > .sortColumnName{
+            font-weight: 300;
+            font-size: 0.9em;
+            margin: 0px 0px 1px 3px;
             display: inline-block;
-            .align-self(flex-end);
-            white-space: nowrap;
-            text-align: right;
-            padding-right: 1px;
-            position: relative;
-            > .sortColumnName{
-                font-weight: 300;
-                font-size: 0.9em;
-                margin: 0px 0px 1px 3px;
-                display: inline-block;
-                cursor: default;
-                .user-select(none);
-                pointer-events: none;
+            cursor: default;
+            .user-select(none);
+            pointer-events: none;
+          }
+          > .listSortOptionSelect{
+            width: 100%;
+            bottom:0px;
+          }
+          > .dropZone_resultSort{
+            display: none;
+            cursor: s-resize;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            z-index: 50;
+            background-color: rgba(234, 234, 234, 1);
+            border-radius: 5px;
+            border-style: solid;
+            border-width: 2px;
+            border-color: gray;
+            text-align: center;
+            > .dropZone_resultSort_text{
+              pointer-events: none;
+              font-size: 0.8em;
+              display: block;
+              font-weight: 300;
+              &:before{ content: "Sort by"; }
             }
-            > .listSortOptionSelect{
-                width: 100%;
-                bottom:0px;
-            }
-            > .dropZone_resultSort{
-                display: none;
-                cursor: s-resize;
-                position: absolute;
-                height: 100%;
-                width: 100%;
-                z-index: 50;
-                background-color: rgba(234, 234, 234, 1);
-                border-radius: 5px;
-                border-style: solid;
-                border-width: 2px;
-                border-color: gray;
-                text-align: center;
-                > .dropZone_resultSort_text{
-                    pointer-events: none;
-                    font-size: 0.8em;
-                    display: block;
-                    font-weight: 300;
-                    &:before{
-                        content: "Sort by";
-                    }
-                }
-                &:hover{
-                    background-color: rgb(255, 188, 163);
-                }
-            }
+            &:hover{ background-color: rgb(255, 188, 163); }
+          }
         }
         > .sortColumn {
-            opacity: 0;
-            .align-self(flex-end);
-            width: 17px;
-            font-size: 0.8em;
-            margin-bottom: 2px;
-            vertical-align: bottom;
-            .transition(opacity 250ms linear);
+          opacity: 0;
+          .align-self(flex-end);
+          width: 17px;
+          font-size: 0.8em;
+          margin-bottom: 2px;
+          vertical-align: bottom;
+          .transition(opacity 250ms linear);
         }
         > .buttonRecordViewRemove{
-            display: inline-block;
-            visibility: hidden;
-            &:hover{
-                cursor: pointer;
-                color: orangered;
-            }
+          display: inline-block;
+          visibility: hidden;
+          cursor: pointer;
+          &:hover{ color: orangered; }
         }
-        > .scrollToTop{
-            padding-top: 2px;
-        }
+        > .scrollToTop{ padding-top: 2px; }
+
         > .recordTextSearch {
-            .flex(1);
-            .align-self(flex-end);
-            white-space: nowrap;
-            display: inline-block;
-            vertical-align: bottom;
-            position: relative;
-            height: 18px;
-            margin-left: 4px;
-            > .dropZone_textSearch{
-                display: none;
-                position: absolute;
-                height: 100%;
-                width: 100%;
-                z-index: 50;
-                background-color: rgba(234, 234, 234, 1);
-                border-radius: 5px;
-                border-style: solid;
-                border-width: 2px;
-                border-color: gray;
-                text-align: center;
-                > .dropZone_textSearch_text{
-                    pointer-events: none;
-                    font-size: 0.7em;
-                    display: block;
-                    font-weight: 300;
-                }
-                &:hover{
-                    background-color: rgb(255, 188, 163);
-                }
+          .flex(1);
+          .align-self(flex-end);
+          white-space: nowrap;
+          display: inline-block;
+          vertical-align: bottom;
+          position: relative;
+          height: 18px;
+          > .dropZone_textSearch{
+            display: none;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            z-index: 50;
+            background-color: rgba(234, 234, 234, 1);
+            border-radius: 5px;
+            border-style: solid;
+            border-width: 2px;
+            border-color: gray;
+            text-align: center;
+            > .dropZone_textSearch_text{
+              pointer-events: none;
+              font-size: 0.7em;
+              display: block;
+              font-weight: 300;
             }
-            > .mainTextSearch_input{
-                display: none;
-                font-size: 0.8em;
-                font-weight: 700;
-                color: #cb5454;
-                padding: 0px 2px;
-                background-color:rgba(255, 255, 255, 0);
-                pointer-events: all;
-                border-width:0px;
-                border-style: solid;
-                border-color: #cb5454;
-                margin: 1px;
-                width: calc(~"100% - 17px");
-                &:focus{
-                    outline-color: #cb5454;
-                    outline-width: 2px;
-                }
-                &:hover{
-                    border-width: 1px;
-                    background-color: white;
-                    margin: 0px;
-                    //padding: 0px 1px;
-                    //margin: 0px 1px;
-    //                padding: 0px 0px 1px 0px;
-                }
-                &::-webkit-input-placeholder{
-                    color: #cb5454;
-                    font-weight: 300;
-                }
-                &:focus::-webkit-input-placeholder{
-                    color: #F3CDCD;
-                }
+            &:hover{ background-color: rgb(255, 188, 163); }
+          }
+          > .mainTextSearch_input{
+            display: none;
+            font-size: 0.8em;
+            font-weight: 700;
+            color: #cb5454;
+            padding: 0px 2px;
+            background-color:rgba(255, 255, 255, 0);
+            pointer-events: all;
+            border-width:0px;
+            border-style: solid;
+            border-color: #cb5454;
+            margin: 1px;
+            width: calc(~"100% - 17px");
+            .transition(~'background-color 200ms linear');
+            &:focus{
+              outline-color: #cb5454;
+              outline-width: 2px;
             }
-            > .searchIcon{
-                display: none;
-                padding-left: 1px;
-                color: #cb5454;
+            &:hover{
+              border-width: 1px;
+              background-color: white;
+              margin: 0px;
             }
-            > .clearText{
-                display: none;
-                position: absolute;
-                right: 4px;
-                top: 1px;
-                cursor: pointer;
-                color:gray;
-                &:hover{
-                    color: #cb5454;
-                }
+            &::-webkit-input-placeholder{
+              color: #cb5454;
+              font-weight: 300;
             }
-            &[isActive="true"]{
-                > .mainTextSearch_input{
-                    display: inline-block;
-                }
-                > .searchIcon{
-                    display: inline-block;
-                }
+            &:focus::-webkit-input-placeholder{
+              color: #F3CDCD;
             }
+          }
+          > .searchIcon{
+            display: none;
+            font-size: 0.8em;
+            padding-left: 1px;
+            color: #cb5454;
+          }
+          > .clearText{
+            display: none;
+            position: absolute;
+            right: 4px;
+            top: 1px;
+            cursor: pointer;
+            color:gray;
+            &:hover{ color: #cb5454; }
+          }
+          &[isActive="true"]{
+            > .mainTextSearch_input{ display: inline-block; }
+            > .searchIcon{ display: inline-block; }
+          }
         } // mainTextSearch
     } // recordDisplay--Header
 

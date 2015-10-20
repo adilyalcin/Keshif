@@ -25,14 +25,14 @@
   -o-transition: all 200ms ease-in-out;
   transition: all 200ms ease-in-out;
 }
-.kshf .Summary_Set > .facetControls {
+.kshf .Summary_Set > .summaryControls {
   display: block;
   position: relative;
   text-align: center;
   border-bottom: dotted 1px lightgray;
   margin-bottom: -1px;
 }
-.kshf .Summary_Set > .facetControls > .strengthControl {
+.kshf .Summary_Set > .summaryControls > .strengthControl {
   font-size: 0.7em;
   display: inline-block;
   background-color: #eaeaea;
@@ -45,23 +45,23 @@
   color: #474747;
   cursor: pointer;
 }
-.kshf .Summary_Set > .facetControls > .strengthControl:hover {
+.kshf .Summary_Set > .summaryControls > .strengthControl:hover {
   border-color: gray;
 }
-.kshf .Summary_Set > .facetControls > .strengthControl > .strengthLabel {
+.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel {
   display: none;
   width: 36px;
   font-style: italic;
   font-size: 0.8em;
 }
-.kshf .Summary_Set > .facetControls > .heyooo {
+.kshf .Summary_Set > .summaryControls > .heyooo {
   display: block;
   position: absolute;
   right: 3px;
   top: 0px;
   font-size: 0.8em;
 }
-.kshf .Summary_Set > .facetControls .configOpt {
+.kshf .Summary_Set > .summaryControls .configOpt {
   display: inline-block;
   background-color: #eaeaea;
   cursor: pointer;
@@ -71,12 +71,12 @@
   border-radius: 15px;
   cursor: default;
 }
-.kshf .Summary_Set > .facetControls .configOpt .sdsdssds {
+.kshf .Summary_Set > .summaryControls .configOpt .sdsdssds {
   color: gray;
   font-size: 0.9em;
   margin-right: 2px;
 }
-.kshf .Summary_Set > .facetControls .configOpt > .configOpt_icon {
+.kshf .Summary_Set > .summaryControls .configOpt > .configOpt_icon {
   font-size: 1em;
   vertical-align: middle;
   background-color: white;
@@ -90,47 +90,47 @@
   border-width: 0px;
   margin: 1px;
 }
-.kshf .Summary_Set > .facetControls .configOpt > .configOpt_label {
+.kshf .Summary_Set > .summaryControls .configOpt > .configOpt_label {
   color: #474747;
   display: none;
   font-size: 0.9em;
   padding-left: 3px;
   height: 15px;
 }
-.kshf .Summary_Set > .facetControls .configOpt > .configOpt_label > .fa {
+.kshf .Summary_Set > .summaryControls .configOpt > .configOpt_label > .fa {
   margin-right: 3px;
 }
-.kshf .Summary_Set > .facetControls .configOpt.configRowHeight .fa:hover {
+.kshf .Summary_Set > .summaryControls .configOpt.configRowHeight .fa:hover {
   color: orangered;
   cursor: pointer;
 }
-.kshf .Summary_Set > .facetControls .configOpt:hover > .configOpt_label {
+.kshf .Summary_Set > .summaryControls .configOpt:hover > .configOpt_label {
   display: inline;
 }
-.kshf .Summary_Set > .facetControls svg.sizeLegend {
+.kshf .Summary_Set > .summaryControls svg.sizeLegend {
   position: absolute;
   left: 10px;
   margin-top: 4px;
   overflow: visible;
   cursor: default;
 }
-.kshf .Summary_Set > .facetControls svg.sizeLegend > .legendHeader {
+.kshf .Summary_Set > .summaryControls svg.sizeLegend > .legendHeader {
   font-size: 0.7em;
   alignment-baseline: central;
   fill: #969da3;
   text-anchor: start;
 }
-.kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendCircle {
+.kshf .Summary_Set > .summaryControls svg.sizeLegend .legendMark > .legendCircle {
   stroke: gray;
   stroke-width: 1;
   fill: none;
 }
-.kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendLine {
+.kshf .Summary_Set > .summaryControls svg.sizeLegend .legendMark > .legendLine {
   stroke: gray;
   stroke-width: 1;
   stroke-dasharray: 0.8;
 }
-.kshf .Summary_Set > .facetControls svg.sizeLegend .legendMark > .legendLabel {
+.kshf .Summary_Set > .summaryControls svg.sizeLegend .legendMark > .legendLabel {
   font-size: 0.7em;
   alignment-baseline: central;
   fill: gray;
@@ -251,7 +251,7 @@
 .kshf .Summary_Set .setPairGroup > .setPairMark:not([activesize="0"]) > .setPairBackground {
   opacity: 1;
 }
-.kshf .Summary_Set[showStrength='true'] .facetControls > .strengthControl {
+.kshf .Summary_Set[showStrength='true'] .summaryControls > .strengthControl {
   background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
   /* FF3.6+ */
   background: -webkit-gradient(linear, left top, right top, color-stop(0%, #e6e6f7), color-stop(100%, #9595db));
@@ -270,7 +270,7 @@
   color: black;
   text-shadow: 0px 0px 2px #FFFFFF;
 }
-.kshf .Summary_Set[showStrength='true'] .facetControls > .strengthControl > .strengthLabel {
+.kshf .Summary_Set[showStrength='true'] .summaryControls > .strengthControl > .strengthLabel {
   display: inline-block;
 }
 .kshf .Summary_Set[showStrength='true'] .setPairMark[subset=true] {

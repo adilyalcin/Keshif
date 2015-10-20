@@ -90,7 +90,7 @@ var Summary_Clique_functions = {
       me.refreshViz_Active();
       me.refreshRow_SetPairCount();
     };
-    this.setListSummary.cbCatCulled = function(){
+    this.setListSummary.onCategoryCull = function(){
       if(me.pausePanning) return;
       me.checkPan();
       me.refreshSVGViewBox();
@@ -217,7 +217,7 @@ var Summary_Clique_functions = {
         var gridPan_x_init = me.gridPan_x;
 
         // scroll the setlist summary too...
-        var scrollDom = me.setListSummary.DOM.attribGroup[0][0];
+        var scrollDom = me.setListSummary.DOM.categoryGroup[0][0];
         var initScrollPos = scrollDom.scrollTop;
         var w=me.getWidth();
         var h=me.getHeight();
@@ -284,7 +284,7 @@ var Summary_Clique_functions = {
   },
   /** -- */
   getHeight: function(){
-    return this.setListSummary.attribHeight;
+    return this.setListSummary.categoriesHeight;
   },
   /** -- */
   getWidth: function(){
@@ -331,11 +331,11 @@ var Summary_Clique_functions = {
   /** -- */
   insertControls: function(){
     var me=this;
-    this.DOM.facetControls = this.DOM.chartRoot.append("div").attr("class","facetControls noselect")
+    this.DOM.summaryControls = this.DOM.chartRoot.append("div").attr("class","summaryControls noselect")
       .style("height",(this.setListSummary.getHeight_Config())+"px"); // TODO: remove
 
     var buttonTop = (this.setListSummary.getHeight_Config()-18)/2;
-    this.DOM.strengthControl = this.DOM.facetControls.append("span").attr("class","strengthControl")
+    this.DOM.strengthControl = this.DOM.summaryControls.append("span").attr("class","strengthControl")
       .on("click",function(){
         me.browser.setRatioMode(me.browser.ratioModeActive!==true);
       })
@@ -348,9 +348,9 @@ var Summary_Clique_functions = {
     this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Strong")
       .style("text-align","right");
 
-    var dom_xxxx=this.DOM.facetControls.append("span").attr("class","heyooo");
+    var dom_xxxx=this.DOM.summaryControls.append("span").attr("class","heyooo");
     
-    this.DOM.scaleLegend_SVG = this.DOM.facetControls.append("svg").attr("xmlns","http://www.w3.org/2000/svg")
+    this.DOM.scaleLegend_SVG = this.DOM.summaryControls.append("svg").attr("xmlns","http://www.w3.org/2000/svg")
       .attr("class","sizeLegend noselect");
 
     this.DOM.legendHeader = this.DOM.scaleLegend_SVG.append("text").attr("class","legendHeader").text("#");
@@ -364,7 +364,7 @@ var Summary_Clique_functions = {
     sdad.append("span").attr("class","sdsdssds").text("Zoom");
     sdad.append("span").attr("class","fa fa-plus").on("mousedown",function(){
       // TODO: Keep calling as long as the mouse is clicked - to a certain limit
-      me.setListSummary.setHeightRow_attrib(me.getRowHeight()+1);
+      me.setListSummary.setHeight_Category(me.getRowHeight()+1);
       me.DOM.chartRoot.attr("show_gridlines",(me.getRowHeight()>15));
       me.setListSummary.cbSetHeight();
       me.refreshSetPair_Strength();
@@ -372,7 +372,7 @@ var Summary_Clique_functions = {
     });
     sdad.append("span").attr("class","fa fa-minus").on("mousedown",function(){
       // TODO: Keep calling as long as the mouse is clicked - to a certain limit
-      me.setListSummary.setHeightRow_attrib(me.getRowHeight()-1);
+      me.setListSummary.setHeight_Category(me.getRowHeight()-1);
       me.DOM.chartRoot.attr("show_gridlines",(me.getRowHeight()>15));
       me.setListSummary.cbSetHeight();
       me.refreshSetPair_Strength();
@@ -380,7 +380,7 @@ var Summary_Clique_functions = {
     });
     sdad.append("span").attr("class","fa fa-arrows-alt").on("mousedown",function(){
       // TODO: Keep calling as long as the mouse is clicked - to a certain limit
-      me.setListSummary.setHeightRow_attrib(10);
+      me.setListSummary.setHeight_Category(10);
       me.DOM.chartRoot.attr("show_gridlines",false);
       me.setListSummary.cbSetHeight();
       me.refreshSetPair_Strength();
@@ -396,16 +396,16 @@ var Summary_Clique_functions = {
     .enter().append("g").attr("class","row")
       .attr("highlight",false)
       .each(function(d){
-        d.setRow = this;
+        d.DOM.matrixRow = this;
         this.setAttribute("setPairCount",d.setPairs.length)
       })
       .on("mouseenter",function(d,i){
         this.setAttribute("highlight","selected");
-        me.setListSummary.cbAttribEnter(d,true);
+        me.setListSummary.onCatMouseOver(d,true);
       })
       .on("mouseleave",function(d,i){
         this.setAttribute("highlight",false);
-        me.setListSummary.cbAttribLeave(d);
+        me.setListSummary.onCatMouseLeave(d);
       })
       ;
 
@@ -447,15 +447,15 @@ var Summary_Clique_functions = {
         var set_1 = d.set_1;
         var set_2 = d.set_2;
         
-        set_1.setRow.setAttribute("highlight","selected");
-        set_2.setRow.setAttribute("highlight","selected");
+        set_1.DOM.matrixRow.setAttribute("highlight","selected");
+        set_2.DOM.matrixRow.setAttribute("highlight","selected");
 
-        set_1.DOM.facet.setAttribute("selectType","and");
-        set_2.DOM.facet.setAttribute("selectType","and");
+        set_1.DOM.aggrBlock.setAttribute("selectType","and");
+        set_2.DOM.aggrBlock.setAttribute("selectType","and");
 
         // modify the attribute so that the and/or blocks are not shown per set name
-        set_1.DOM.facet.setAttribute("highlight","selected-2");
-        set_2.DOM.facet.setAttribute("highlight","selected-2");
+        set_1.DOM.aggrBlock.setAttribute("highlight","selected-2");
+        set_2.DOM.aggrBlock.setAttribute("highlight","selected-2");
 
         var timeoutTime = 500;
         if(me.browser.vizCompareActive) timeoutTime = 0;
@@ -473,11 +473,11 @@ var Summary_Clique_functions = {
         var set_1 = d.set_1;
         var set_2 = d.set_2;
 
-        set_1.setRow.setAttribute("highlight",false);
-        set_2.setRow.setAttribute("highlight",false);
+        set_1.DOM.matrixRow.setAttribute("highlight",false);
+        set_2.DOM.matrixRow.setAttribute("highlight",false);
 
-        set_1.DOM.facet.setAttribute("highlight",false);
-        set_2.DOM.facet.setAttribute("highlight",false);
+        set_1.DOM.aggrBlock.setAttribute("highlight",false);
+        set_2.DOM.aggrBlock.setAttribute("highlight",false);
 
         me.browser.items.forEach(function(item){
           if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
@@ -489,10 +489,10 @@ var Summary_Clique_functions = {
         var set_1 = d.set_1;
         var set_2 = d.set_2;
 
-        if(set_1.DOM.facet.tipsy_active) set_1.DOM.facet.tipsy_active.hide();
-        if(set_2.DOM.facet.tipsy_active) set_2.DOM.facet.tipsy_active.hide();
-          me.setListSummary.filterAttrib(set_1,"AND");
-          me.setListSummary.filterAttrib(set_2,"AND");
+        if(set_1.DOM.aggrBlock.tipsy_active) set_1.DOM.aggrBlock.tipsy_active.hide();
+        if(set_2.DOM.aggrBlock.tipsy_active) set_2.DOM.aggrBlock.tipsy_active.hide();
+          me.setListSummary.filterCategory(set_1,"AND");
+          me.setListSummary.filterCategory(set_2,"AND");
       })
       ;
 
