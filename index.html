@@ -39,17 +39,15 @@ var loadDemoBrowser = function(){
     categoryTextWidth: 150,
     rightPanelLabelWidth: 140,
     barChartWidth: 70,
-    itemName: "Datasets Keshif-ized",
+    itemName: "Keshif Demo Datasets",
     source: {
       gdocId: '0Ai6LdDWgaqgNdFlZRk83NmpDLVc2cllCRjhpdkNYOWc',
       tables: "Demos"
     },
     summaries: [
-      { name: "Keywords", panel: 'left',
-        value: function(){ return this.Keywords.split(" + "); } },
+      { name: "Keywords", panel: 'left', value: function(){ return this.Keywords.split(" + ");} },
       { name: "# of Records", value: "# of Items", showPercentile: true, panel: 'left', intervalScale: "log"},
-      { name: "Data Source", panel: 'left', collapsed: true,
-        value: function(){ return this.Source.split(" + "); }},
+      { name: "Data Source Type", panel: 'left', collapsed: true, value: function(){ return this.Source.split(" + ");} },
       { name: "Code Complexity", panel: 'right',
         description: "Relative code complexity of demo source",
         catSortBy: "id",
@@ -70,8 +68,8 @@ var loadDemoBrowser = function(){
           var r = [];
           if(this['Facets - Histogram']>0)
             r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
-          if(this['Facets - Hierarchical'])
-            r.push("Hierarchical <span class='fa fa-outdent'></span>");
+/*          if(this['Facets - Hierarchical'])
+            r.push("Hierarchical <span class='fa fa-outdent'></span>");*/
           if(this['Has Time'])
             r.push("Time <span class='fa fa-clock-o'></span>");
           return r;
@@ -90,6 +88,8 @@ var loadDemoBrowser = function(){
             r.push("Grid <span class='fa fa-th'></span>");
           if(this['Result Display']==="List")
             r.push("List <span class='fa fa-list'></span>");
+          if(this['Result Display']==="None")
+            r.push("None");
           return r;
         }},
 /*        },{ name: "Other", panel: "right",
@@ -101,8 +101,7 @@ var loadDemoBrowser = function(){
                   r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
               return r;
           }*/
-      { name: "Created At", panel: "right", collapsed: false,
-        value: function(){ return this.Authored.getFullYear(); } }
+      { name: "Created At", panel: "right", collapsed: false, value: function(){ return this.Authored.getFullYear(); } }
     ],
     itemDisplay: {
       sortingOpts: [ 
@@ -640,7 +639,7 @@ Summaries-->
     <li><i class="fa-li fa fa-check-square"></i><b>Create summaries for the data properties you would like to explore.</b> Keshif will present your data in its effective visual design.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> across your summaries using its rapid interactive design. <b>Preview results </b> by quick mouse over. <b>Compare</b> across distributions by locking your selection. Keshif automatically <b>synronizes</b> all within your view so that you can make observations swiftly.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability through design</b>. Many visualization techniques have not been designed to scale gracefully. Keshif is designed to scale. It lets you explore large data collections, as far as the data can be loaded to your web browser.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs for a wide range of data with a single design. Our visual and interactive approach is cohesiv so that it's easy to start your exploration.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs for a wide range of data with a single design. Its visual and interaction design is cohesive so that it's easy to start your exploration.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>Don't worry about picking the right visualization.</b> Keshif does it for you. You focus on your data and your questions. Keshif will do the number crunching and visually present patterns.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>See the overview and the most relevant first.</b> After each step of exploration, the most relevant results and data properties are shown first, as they are dynamically and smoothly re-ordered.</li>
     <li><i class="fa-li fa fa-check-square"></i><b>Load your data in a flexible web-based pipeline.</b> Keshif is ready to load your structured data, whether it be digital collections, books that you have read, contact lists, public data sources, movies, etc. It can automatically import data from Google SpreadSheets and CSV/TEXT files. You can write your own importers in Javascript for JSON, XML, even HTML or BibTeX for publication databases. Check the demo list to find demos using various data resource types.</li>
@@ -686,12 +685,14 @@ http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/vast15-survis.pdf
 
 </br></br>
 <h2 id="participants">Developed By</h2>
-<a href="http://adilyalcin.me/">M. Adil Yalçın</a>, PhD student, Computer Science, University of Maryland
+<a href="http://adilyalcin.me/">M. Adil Yalçın</a>, Ph.D. Student, Computer Science, University of Maryland, College park
 
 </br></br>
 <h2 id="participants">Advised By</h2>
-<a href="https://engineering.purdue.edu/~elm/">Niklas Elmqvist</a>, Associate Professor, iSchool, University of Maryland<br><br>
-<a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a>, Professor, Computer Science, University of Maryland
+<a href="https://sites.umiacs.umd.edu/elm/" target="_blank">Niklas Elmqvist</a>, 
+  Associate Professor, iSchool, University of Maryland, College Park<br><br>
+<a href="http://www.cs.umd.edu/~bederson/" target="_blank">Ben Bederson</a>, 
+  Professor, Computer Science, University of Maryland, College Park
 
 </br></br>
 <h2 id="license">License <a href="https://raw.githubusercontent.com/adilyalcin/Keshif/master/LICENSE">
