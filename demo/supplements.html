@@ -60,7 +60,10 @@ google.setOnLoadCallback(function(){
         description: "The key study for grading the evidence", panel: 'right' }
     ],
     itemDisplay: {
-      sortingOpts: { name: "Popularity", value: function(){ return this.popularity; } },
+      sortingOpts: [
+        { name: "Evidence", value: function(){ return this.evidence; } },
+        { name: "Popularity", value: function(){ return this.popularity; } },
+      ],
       textSearch: "name",
       recordView: function(){
         var str="";
@@ -78,7 +81,7 @@ google.setOnLoadCallback(function(){
             var str_heart = "<i class='fa fa-heart' style='"+delay_str+"'></i>";
         str+="<span class='item_condition'>";
         for(var i=0; i<this.evidence;i++){ str+=str_heart; }
-        str+="<span style='margin-left: 5px'>"+this[2]+"</span></span>";
+        str+="<span style='margin-left: 5px'>"+this.condition+"</span></span>";
 
         if(this.url){
           str+="<span class='item_source'> Study:";
