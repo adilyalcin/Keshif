@@ -138,7 +138,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .recordDisplay .buttonRecordViewRemove {
   visibility: visible;
 }
-.kshf[attribsShown=true] .recordDisplay:hover > .listItemGroup > .dragWidthHandle {
+.kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .listItemGroup > .dragWidthHandle {
   display: block;
 }
 .kshf[attribsShown=true] .recordDisplay--Header > .itemRank_control {
