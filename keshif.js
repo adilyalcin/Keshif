@@ -4344,12 +4344,9 @@ kshf.Summary_Base.prototype = {
                 d3.event.stopPropagation();
             })
             .on("click",function(){
-                // Clique control
-                if(false){
-                    me.removeFromPanel();
-                    me.clearDOM();
-                    me.browser.updateLayout();
-                }
+                me.removeFromPanel();
+                me.clearDOM();
+                me.browser.updateLayout();
             })
             ;
 
@@ -6481,7 +6478,7 @@ var Summary_Interval_functions = {
         this.width_histMargin = 17; // ..
         this.width_vertAxisLabel = 23; // ..
 
-        this.optimumTickWidth = 50;
+        this.optimumTickWidth = 45;
 
         this.scaleType = 'linear'; // 'time', 'step', 'log'
         this.hasFloat = false;
@@ -7133,6 +7130,19 @@ var Summary_Interval_functions = {
                 return x;
             }
         }
+
+        // Make sure the non-extreme ticks are between intervalRange.active.min and intervalRange.active.max
+        for(var tickNo=1; tickNo<ticks.length-1; ){
+            var tick = ticks[tickNo];
+            if(tick<this.intervalRange.active.min){
+                ticks.splice(tickNo-1,1); // remove the tick
+            } else if(tick > this.intervalRange.active.max){
+                ticks.splice(tickNo+1,1); // remove the tick
+            } else {
+                tickNo++
+            }
+        }
+        this.valueScale.domain([ticks[0], ticks[ticks.length-1]]);
 
         return ticks;
     },
@@ -8199,7 +8209,7 @@ var Summary_Interval_functions = {
     /** -- */
     refreshWidth: function(){
         var _width_ = this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
-        this.updateScaleAndBins( _width_, Math.ceil(_width_/this.optimumTickWidth));
+        this.updateScaleAndBins( _width_, Math.floor(_width_/this.optimumTickWidth));
         this.updateDOMwidth();
     },
     /** -- */
