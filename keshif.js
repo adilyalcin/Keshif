@@ -759,10 +759,9 @@ kshf.Filter.prototype = {
         this._refreshFilterSummary();
 
         if(forceUpdate===true){
-            this.browser.update_itemsWantedCount();
+            this.browser.update_Records_Wanted_Count();
             this.browser.refresh_filterClearAll();
             if(stateChanged) this.browser.updateAfterFilter(-1);
-            if(sendLog) sendLog(kshf.LOG.FILTER_ADD,this.browser.getFilterState());
         }
     },
     /** -- */
@@ -785,13 +784,9 @@ kshf.Filter.prototype = {
         if(this.onClear) this.onClear.call(this,this.parentSummary);
 
         if(forceUpdate!==false){
-            this.browser.update_itemsWantedCount();
+            this.browser.update_Records_Wanted_Count();
             this.browser.refresh_filterClearAll();
             this.browser.updateAfterFilter(1); // more results
-
-            if(sendLog) {
-                sendLog(kshf.LOG.FILTER_CLEAR,this.browser.getFilterState());
-            }
         }
     },
 
@@ -1583,7 +1578,7 @@ kshf.RecordDisplay.prototype = {
             }
         });
 
-        var hiddenItemCount = this.browser.itemsWantedCount-visibleItemCount;
+        var hiddenItemCount = this.browser.recordsWantedCount-visibleItemCount;
         this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
         this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
     },
@@ -2462,7 +2457,7 @@ kshf.Browser.prototype = {
     /** -- */
     refreshTotalViz: function(){
         this.DOM.totalViz_active .style("width",
-            (100*this.itemsWanted_Aggregrate_Total/this.itemsTotal_Aggregrate_Total)+"%");
+            (100*this.recordsWanted_Aggr_Total/this.itemsTotal_Aggregrate_Total)+"%");
         this.DOM.totalViz_preview.style("width",
             (100*this.itemCount_Previewed/this.itemsTotal_Aggregrate_Total)+"%");
     },
@@ -3316,7 +3311,6 @@ kshf.Browser.prototype = {
                 if(facetDescr.catTooltip){
                     summary.setCatTooltip(facetDescr.catTooltip);
                 }
-                summary.catBarScale = facetDescr.catBarScale || summary.catBarScale;
                 if(facetDescr.minAggrValue) summary.setMinAggrValue(facetDescr.minAggrValue);
                 if(facetDescr.catSortBy!==undefined) summary.setSortingOpts(facetDescr.catSortBy);
 
@@ -3398,7 +3392,7 @@ kshf.Browser.prototype = {
         this.refresh_filterClearAll();
 
         this.items.forEach(function(item){item.updateWanted();});
-        this.update_itemsWantedCount();
+        this.update_Records_Wanted_Count();
 
         this.updateAfterFilter();
 
@@ -3707,7 +3701,7 @@ kshf.Browser.prototype = {
         })
         if(force!==false){
             this.items.forEach(function(item){ item.updateWanted_More(true); });
-            this.update_itemsWantedCount();
+            this.update_Records_Wanted_Count();
             this.refresh_filterClearAll();
             this.updateAfterFilter(1); // more results
             if(sendLog){
@@ -3717,27 +3711,26 @@ kshf.Browser.prototype = {
         setTimeout( function(){ me.updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
     },
     /** -- */
-    refreshActiveItemCount: function(){
-        var noneSelected = (this.itemsWanted_Aggregrate_Total===0);
-        var numStr = this.itemsWanted_Aggregrate_Total.toLocaleString();
+    refresh_ActiveRecordCount: function(){
+        var noneSelected = (this.recordsWanted_Aggr_Total===0);
+        var numStr = this.recordsWanted_Aggr_Total.toLocaleString();
         this.DOM.activeRecordCount
             .text(noneSelected?"No":numStr)
-            .style("width",(noneSelected?"30":(numStr.length*11+5))+"px")
-            ;
+            .style("width",(noneSelected?"30":(numStr.length*11+5))+"px");
     },
     /** -- */
-    update_itemsWantedCount: function(){
-        this.itemsWantedCount = 0;
-        this.itemsWanted_Aggregrate_Total = 0;
+    update_Records_Wanted_Count: function(){
+        this.recordsWantedCount = 0;
+        this.recordsWanted_Aggr_Total = 0;
         this.items.forEach(function(item){
             if(item.isWanted){
-                this.itemsWantedCount++;
-                this.itemsWanted_Aggregrate_Total+=item.aggregate_Self;
+                this.recordsWantedCount++;
+                this.recordsWanted_Aggr_Total+=item.aggregate_Self;
             }
         },this);
 
         this.refreshTotalViz();
-        this.refreshActiveItemCount();
+        this.refresh_ActiveRecordCount();
     },
     /** @arg resultChange:
      * - If positive, more results are shown
@@ -4013,28 +4006,6 @@ kshf.Browser.prototype = {
         this.panels.middle.updateSummariesWidth();
         this.panels.bottom.setTotalWidth(this.divWidth);
         this.panels.bottom.updateSummariesWidth();
-    },
-    /** -- */
-    getFilterState: function() {
-        var r={
-            resultCt : this.itemsWantedCount,
-        };
-
-        r.filtered="";
-        r.selected="";
-        this.filters.forEach(function(filter){
-            if(filter.isFiltered){
-                // set filtered to true for this summary ID
-                if(r.filtered!=="") r.filtered+="x";
-                r.filtered+=filter.id;
-                // include filteing state of summary
-                if(r.selected!=="") r.selected+="x";
-            }
-        },this);
-        if(r.filtered==="") r.filtered=undefined;
-        if(r.selected==="") r.selected=undefined;
-
-        return r;
     },
     /** -- */
     getFilterSummary: function(){
@@ -4992,9 +4963,6 @@ var Summary_Categorical_functions = {
     updateCatCount_Total: function(){
         this.catCount_Total = this._cats.length;
         this.catCount_Wanted = this.catCount_Total;
-        if(this.catCount_Total===1){
-            this.catBarScale = "scale_frequency";
-        }
         if(this.catCount_Total<=4) {
             this.catSortBy.forEach(function(opt){ opt.no_resort=true; });
         }
@@ -5423,12 +5391,7 @@ var Summary_Categorical_functions = {
         this.chartScale_Measure
             .rangeRound([0, this.getWidth_CatChart()])
             .nice(this.chartAxis_Measure_TickSkip())
-            .domain([
-                0,
-                (this.catBarScale==="scale_frequency")?
-                    this.browser.itemsWantedCount:
-                    (maxAggr_Active===0)?1:maxAggr_Active
-            ])
+            .domain([ 0,(maxAggr_Active===0)?1:maxAggr_Active ])
             ;
 
         this.refreshViz_Active();
@@ -5538,7 +5501,7 @@ var Summary_Categorical_functions = {
                         }
                         p = 100*p/category.aggregate_Active;
                     } else {
-                        p = 100*p/me.browser.itemsWanted_Aggregrate_Total;
+                        p = 100*p/me.browser.recordsWanted_Aggr_Total;
                     }
                     if(p<0) p=0;
                     this.textContent = p.toFixed(0)+"%";
@@ -5692,7 +5655,7 @@ var Summary_Categorical_functions = {
                 .ticks(this.chartAxis_Measure_TickSkip());
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.itemsWantedCount);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.recordsWanted_Aggr_Total);
                 tickValues = d3.scale.linear()
                     .rangeRound([0, chartWidth])
                     .nice(this.chartAxis_Measure_TickSkip())
@@ -5902,7 +5865,7 @@ var Summary_Categorical_functions = {
         }
         if(what==="NOT"){
             if(ctgry.is_NONE()){
-                if(ctgry.aggregate_Active===this.browser.itemsWantedCount){
+                if(ctgry.aggregate_Active===this.browser.recordsWanted_Aggr_Total){
                     alert("Removing this category will create an empty result list, so it is not allowed.");
                     return;
                 }
@@ -8072,7 +8035,7 @@ var Summary_Interval_functions = {
                 .filter(function(d){return d!==0;});
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.itemsWantedCount);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.recordsWanted_Aggr_Total);
                 tickValues = d3.scale.linear()
                     .rangeRound([0, this.height_hist])
                     .nice(chartAxis_Measure_TickSkip)
@@ -8157,7 +8120,7 @@ var Summary_Interval_functions = {
                         return;
                     }
                 } else {
-                    p = 100*p/me.browser.itemsWanted_Aggregrate_Total;
+                    p = 100*p/me.browser.recordsWanted_Aggr_Total;
                 }
                 if(p<0) p=0;
                 this.textContent = p.toFixed(0)+"%";
