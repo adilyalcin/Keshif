@@ -57,7 +57,7 @@ $(document).ready(function() {
             tables: "Participants"
         },
         readyCb: function(browser){
-            $(".listItem .content").click(function(){
+            $(".kshfRecord .content").click(function(){
                 browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
             });
         },
@@ -242,11 +242,11 @@ $(document).ready(function() {
               vertical-align: -0.5em;
               line-height: 0px;
             }
-            .listItem[details=true] blockquote{
+            .kshfRecord[details=true] blockquote{
                 overflow: visible;
                 white-space: normal;
             }
-            .listItem .content{
+            .kshfRecord .content{
                 cursor: pointer;
             }
             .qoutes{
@@ -259,7 +259,7 @@ $(document).ready(function() {
             .quotes:after{
                 content:'"';
             }
-            .listItem{
+            .kshfRecord{
                 max-height: 500px !important;
             }
             #infobox{

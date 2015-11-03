@@ -89,7 +89,7 @@ $(document).ready( function(){
                 browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
             });
 
-            browser.recordDisplay.DOM.listItemGroup
+            browser.recordDisplay.DOM.recordGroup
                 .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
 
             if("geolocation" in navigator) {
@@ -158,12 +158,12 @@ $(document).ready( function(){
           { name: "Location", value: "Series", panel: "right",
             catTableName: "Series", catLabel: "Name",
             catSortBy: [
-                { name: "# of Screenings" },
-                {   name: "Close to me",  
-                    value: function(){
-                        return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
-                    }
+              { name: "# of Screenings" },
+              { name: "Close to me",  
+                value: function(){
+                  return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
                 }
+              }
             ] },
           { name: "Time: Day Of Week", panel: "right",
             value: function(){ return moment(this.Date).day();  },
@@ -271,8 +271,8 @@ $(document).ready( function(){
 
 </script>
     <style type="text/css" media="screen">
-        .listItem{padding: 4px 0px 4px 0px !important;}
-        .listItem a{
+        .kshfRecord{padding: 4px 0px 4px 0px !important;}
+        .kshfRecord a{
             color: rgb(95, 62, 21);
         }
         .layout_left{
@@ -298,13 +298,13 @@ $(document).ready( function(){
             font-size: 1.3em;
             font-weight: 700;
         }
-        .listItem[details=false] .movieName{
+        .kshfRecord[details=false] .movieName{
             cursor: pointer !important;
         }
-        .listItem[details=true] .movieName{
+        .kshfRecord[details=true] .movieName{
             pointer-events: none;
         }
-        .listItem[details=false]:hover .movieName{
+        .kshfRecord[details=false]:hover .movieName{
             text-decoration: underline;
             color:rgb(151, 64, 43);
         }
@@ -402,17 +402,17 @@ $(document).ready( function(){
             text-decoration: none;
             font-style: italic;
         }
-        .listItem .Plot{
+        .kshfRecord .Plot{
             font-family: 'Handlee', cursive;
             border-top: dotted 1px gray;
             border-bottom: dotted 1px gray;
         }
-        .listItem .SeriesLocation{
+        .kshfRecord .SeriesLocation{
             font-weight: 300;
             font-size: 0.9em;
             margin-top: 3px;
         }
-        .listItem .Year{
+        .kshfRecord .Year{
             font-weight: 700;
         }
         .SeriesLocation .fa{

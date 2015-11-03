@@ -138,7 +138,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .recordDisplay .buttonRecordViewRemove {
   visibility: visible;
 }
-.kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .listItemGroup > .dragWidthHandle {
+.kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
   display: block;
 }
 .kshf[attribsShown=true] .recordDisplay--Header > .itemRank_control {
@@ -2925,7 +2925,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay > .dropZone_recordView[readyToDrop=true] {
   background-color: #ffbca3;
 }
-.kshf .recordDisplay > .listItemGroup {
+.kshf .recordDisplay > .recordGroup {
   width: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -2936,11 +2936,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .recordDisplay > .listItemGroup > .dragWidthHandle {
+.kshf .recordDisplay > .recordGroup > .dragWidthHandle {
   z-index: 200;
   height: 100%;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem {
+.kshf .recordDisplay > .recordGroup > .kshfRecord {
   opacity: 1;
   cursor: default;
   overflow: hidden;
@@ -2952,52 +2952,52 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms ease;
   transition: opacity 500ms ease;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .recordRank {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordRank {
   font-size: 0.6em;
   color: gray;
   font-weight: 300;
   font-style: italic;
   text-align: right;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .content {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .content {
   vertical-align: top;
   border: solid 0px lightgray;
   position: relative;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo {
   float: none;
   clear: left;
   font-weight: normal;
   margin-bottom: 2px;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_0 {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_0 {
   font-size: 1.0em;
   color: black;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_1 {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_1 {
   font-size: 0.9em;
   color: #555555;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_2 {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_2 {
   font-size: 0.8em;
   color: #555555;
   font-style: italic;
   font-weight: 300;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .content > .iteminfo_3 {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_3 {
   font-size: 0.8em;
   color: #a71f1f;
   font-style: italic;
   font-weight: 300;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .recordToggleDetail {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: none;
   vertical-align: top;
   width: 18px;
   cursor: pointer;
   font-weight: 700;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle {
   -webkit-transition: -webkit-transform 500ms;
   -moz-transition: -moz-transform 500ms;
   -o-transition: -o-transform 500ms;
@@ -3005,24 +3005,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   position: relative;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:hover {
+.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
   color: black;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[animst="open"] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[animst="open"] {
   opacity: 0;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[animst="closed"] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[animst="closed"] {
   max-height: 0px !important;
   padding: 0px !important;
   opacity: 0;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[animst="visible"] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[animst="visible"] {
   display: block;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[details="true"] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] {
   max-height: none;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[details="true"] .item_details_toggle {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] .item_details_toggle {
   display: inline-block;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
@@ -3030,44 +3030,44 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[details="true"] .item_details {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] .item_details {
   display: block;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[details="false"] .item_details_toggle {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[details="false"] .item_details_toggle {
   display: inline-block;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[details="false"] .item_details {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[details="false"] .item_details {
   display: none;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"] {
   box-shadow: inset 0px 0px 2px black;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"][selectedForLink=true] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: #cc3700;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon:hover {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon:hover {
   color: orangered;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[highlight=true] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight=true] {
   box-shadow: inset 0px 0px 5px #BBBBBB;
   background-color: #F8F8F8;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
   display: inline;
   color: gray;
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f046";
 }
-.kshf .recordDisplay > .listItemGroup > .listItem[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
   content: "\f096";
 }
 .kshf .recordDisplay > .showMore {
@@ -3135,7 +3135,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay[showRank=false] .itemRank_control {
   color: gray;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -3154,25 +3154,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   justify-content: space-around;
   -webkit-justify-content: space-around;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord {
   display: block;
   -webkit-align-self: flex-start;
   -ms-flex-item-align: start;
   align-self: flex-start;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem > .recordRank {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordRank {
   vertical-align: top;
   margin-right: 2px;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem > .content {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .content {
   display: block;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .listItemGroup > .listItem > .recordToggleDetail {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: block;
   position: absolute;
   z-index: 10;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -3187,7 +3187,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: row;
   width: 100%;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordSortCol {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordSortCol {
   padding-right: 3px;
   padding-top: 2px;
   font-weight: 300;
@@ -3199,33 +3199,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordRank {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordRank {
   float: left;
   margin-top: 4px;
   width: 15px;
   padding-right: 2px;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .recordToggleDetail {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   width: 18px;
   text-align: center;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .listItemGroup > .listItem > .content {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .content {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="zoom"] > .listItemGroup > .listItem > .recordToggleDetail {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .listItemGroup > .listItem > .recordToggleDetail {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:before {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
   content: "\f078";
 }
-.kshf .recordDisplay[detailsToggle="zoom"] > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:before {
+.kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
   content: "\f140";
 }
 .kshf .recordDisplay[hasRecordView="false"] > .recordDisplay--Header {
@@ -3239,7 +3239,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   position: absolute;
 }
-.kshf .recordDisplay[hasRecordView="false"] > .listItemGroup {
+.kshf .recordDisplay[hasRecordView="false"] > .recordGroup {
   display: none;
 }
 .kshf .recordDisplay[hasRecordView="true"] {

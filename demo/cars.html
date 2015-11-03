@@ -72,15 +72,34 @@ google.setOnLoadCallback(function(){
     <script id="dsq-count-scr" src="//keshif.disqus.com/count.js" async></script>
 
     <div id="disqus_thread"></div>
+    <div id="disqus_thread"></div>
     <script>
         /**
          *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
          *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
          */
+        /*
+        var disqus_config = function () {
+            this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+            this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        };
+        */
+        (function() {  // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            
+            s.src = '//keshif-dev.disqus.com/embed.js';
+            
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
+    </script>
+    <script>
+        /**
         var URL = window.location.protocol + "//" + window.location.host + "/" + window.location.pathname;
         var disqus_shortname = 'keshif.disqus.com'; // Required - Replace example with your forum shortname
         var disqus_identifier = "ww.keshif.me";
         var disqus_url = URL;
+        var disqus_developer = 1;
 
         (function() {  // DON'T EDIT BELOW THIS LINE
             var d = document, s = d.createElement('script');
@@ -88,6 +107,7 @@ google.setOnLoadCallback(function(){
             s.setAttribute('data-timestamp', +new Date());
             (d.head || d.body).appendChild(s);
         })();
+*/
     </script>
   </body>
 </html>

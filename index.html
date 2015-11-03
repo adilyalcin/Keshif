@@ -60,6 +60,7 @@ var loadDemoBrowser = function(){
             case 4: r="Detailed "; break;
             case 5: r="Fully featured "; break;
           }
+          // Add star's
           r+=Array(this.id+1).join("<span class='fa fa-star' style='font-size: 0.7em;'></span>")
           return r;
         }},
@@ -391,7 +392,7 @@ font-family: 'Roboto', Helvetica, Arial, sans-serif;
 .content img.theImage:hover{
   box-shadow: 0px 0px 2px black;
 }
-.listItem[highlight=true] div.content .thumbnail a{
+.kshfRecord[highlight=true] .content .thumbnail a{
   background-color: orangered;
 }
 .content .title{
@@ -458,7 +459,7 @@ font-family: 'Roboto', Helvetica, Arial, sans-serif;
 .content a{
   text-decoration: none;
 }
-.listItemGroup{
+.recordGroup{
   text-align: center;
 }
 
@@ -603,8 +604,8 @@ font-family: 'Roboto', Helvetica, Arial, sans-serif;
 Data Made Explorable</span>
 
 <div class="IntroVideoWrapper">
-  <a class='youtube author_link' href="https://www.youtube.com/embed/3Hmvms-1grU">5-minute tutorial to Keshif data exploration</a> 
-  <span class='fa fa-youtube-play'></span> 
+  <a class='youtube author_link' href="https://www.youtube.com/embed/3Hmvms-1grU">5-minute tutorial to data exploration</a> 
+  <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> 
   </div>
 
 <!--<div align="right">
@@ -651,7 +652,7 @@ Summaries-->
 <div align="center">
 Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank" class='fa fa-github fa-2x'></a> - 
 
-<iframe src="http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true&size=small" allowtransparency="true" frameborder="0" scrolling="0" width="80px" height="20px"></iframe>
+<iframe src="http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true&size=small" allowtransparency="true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
 
 </div>
 
@@ -661,8 +662,9 @@ Source code is on <a href="https://github.com/adilyalcin/Keshif" target="_blank"
 
 </br></br>
 <h2 id="participants">Media Coverage</h2>
-<a href="http://datadrivenjournalism.net/resources/keshif.me" target="_blank">
-  DataDrivenJournalism.net Interview with Adil Yalcin</a>, Oct 2015<br><br>
+<b><a href="http://datadrivenjournalism.net/resources/keshif.me" target="_blank">
+  DataDrivenJournalism.net - Interview with Adil Yalcin</a>, Oct 2015</b>
+<br><br>
 
 <a href="http://mobilitylab.org/2015/07/13/transit-data-gets-more-intriguing-as-the-way-its-presented-improves/" target='_blank'>Transit Data Gets More Intriguing As the Way It’s Presented Improves</a> - Mobility Lab, July 2015<br><br>
 

@@ -902,7 +902,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
         .attr('showRank',this.showRank)
         .attr('hasRecordView',false);
 
-    var zone=this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
+    var zone = this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
         .on("mouseenter",function(){ this.setAttribute("readyToDrop",true);  })
         .on("mouseleave",function(){ this.setAttribute("readyToDrop",false); })
         .on("mouseup",function(event){
@@ -910,9 +910,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
             if(movedSummary===null || movedSummary===undefined) return;
 
             movedSummary.refreshNuggetDisplay();
-
             me.setRecordViewSummary(movedSummary);
-
             me.updateVisibleIndex();
             me.updateItemVisibility(false,true);
 
@@ -922,10 +920,10 @@ kshf.RecordDisplay = function(kshf_, config, root){
         });
     zone.append("div").attr("class","dropIcon fa fa-list-ul");
     
-    this.DOM.recordViewHeader=this.DOM.root.append("div").attr("class","recordDisplay--Header");
+    this.DOM.recordViewHeader = this.DOM.root.append("div").attr("class","recordDisplay--Header");
     this.initDOM_RecordViewHeader();
 
-    this.DOM.listItemGroup = this.DOM.root.append("div").attr("class","listItemGroup")
+    this.DOM.recordGroup = this.DOM.root.append("div").attr("class","recordGroup")
         .on("scroll",function(d){
             if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
                 if(me.autoExpandMore===false){
@@ -933,14 +931,14 @@ kshf.RecordDisplay = function(kshf_, config, root){
                 } else {
                     me.showMore(); // automatically add more records
                 }
-            } else{
+            } else {
                 me.DOM.showMore.attr("showMoreVisible",false);
             }
             me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
             me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
         });
 
-    this.DOM.adjustSortColumnWidth = this.DOM.listItemGroup.append("div")
+    this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
         .attr("class","adjustSortColumnWidth dragWidthHandle")
         .on("mousedown", function (d, i) {
             if(d3.event.which !== 1) return; // only respond to left-click
@@ -1015,13 +1013,16 @@ kshf.RecordDisplay.prototype = {
         this.DOM.root.attr('detailsToggle',this.detailsToggle)
     },
     /** -- */
+    setHeight: function(v){
+        if(this.recordViewSummary===null) return;
+        this.DOM.recordGroup.style("height",v+"px");
+    },
+    /** -- */
     initDOM_RecordViewHeader: function(){
         var me=this;
         this.DOM.recordViewHeader.append("div").attr("class","itemRank_control fa")
             .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ 
-                    return (me.showRank?"Hide":"Show")+" ranking"; 
-                }});
+                this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){  return (me.showRank?"Hide":"Show")+" ranking"; }});
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
@@ -1040,9 +1041,7 @@ kshf.RecordDisplay.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",function(){
-                me.removeRecordViewSummary();
-            });
+            .on("click",    function(){ me.removeRecordViewSummary(); });
 
         this.DOM.scrollToTop = this.DOM.recordViewHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
             .each(function(){
@@ -1051,7 +1050,7 @@ kshf.RecordDisplay.prototype = {
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
             .on("click",function(d){
-                kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
+                kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
             });
     },
@@ -1101,15 +1100,9 @@ kshf.RecordDisplay.prototype = {
         this.DOM.recordTextSearch = this.DOM.recordViewHeader.append("span").attr("class","recordTextSearch");
 
         var x= this.DOM.recordTextSearch.append("div").attr("class","dropZone_textSearch")
-            .on("mouseenter",function(){
-                this.style.backgroundColor = "rgb(255, 188, 163)";
-            })
-            .on("mouseleave",function(){
-                this.style.backgroundColor = "";
-            })
-            .on("mouseup",function(){
-                me.setTextSearchSummary(me.movedSummary);
-            });
+            .on("mouseenter",function(){ this.style.backgroundColor = "rgb(255, 188, 163)"; })
+            .on("mouseleave",function(){ this.style.backgroundColor = ""; })
+            .on("mouseup"   ,function(){ me.setTextSearchSummary(me.movedSummary); });
         x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
 
         this.DOM.recordTextSearch.append("i").attr("class","fa fa-search searchIcon");
@@ -1135,9 +1128,8 @@ kshf.RecordDisplay.prototype = {
     setRecordViewSummary: function(summary){
         if(summary===undefined || summary===null) return;
         if(this.recordViewSummary===summary) return;
-        if(this.recordViewSummary){
-            this.removeRecordViewSummary();
-        }
+        if(this.recordViewSummary) this.removeRecordViewSummary();
+
         this.DOM.root.attr('hasRecordView',true);
         this.recordViewSummary = summary;
         this.recordViewSummary.isRecordView = true;
@@ -1188,12 +1180,8 @@ kshf.RecordDisplay.prototype = {
         this.DOM.header_listSortColumn = this.DOM.recordViewHeader.append("div")
             .attr("class","header_listSortColumn");
         var x=this.DOM.header_listSortColumn.append("div").attr("class","dropZone_resultSort")
-            .on("mouseenter",function(){
-                this.style.backgroundColor = "rgb(255, 188, 163)";
-            })
-            .on("mouseleave",function(event){
-                this.style.backgroundColor = "";
-            })
+            .on("mouseenter",function(){ this.style.backgroundColor = "rgb(255, 188, 163)"; })
+            .on("mouseleave",function(){ this.style.backgroundColor = ""; })
             .on("mouseup",function(event){
                 me.addSortingOption(me.browser.movedSummary);
                 me.setSortingOpt_Active(me.sortingOpts.length-1);
@@ -1207,8 +1195,7 @@ kshf.RecordDisplay.prototype = {
             .on("change", function(){
                 me.setSortingOpt_Active(this.selectedIndex);
                 if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
-            })
-            ;
+            });
 
         this.refreshSortingOptions();
 
@@ -1239,12 +1226,12 @@ kshf.RecordDisplay.prototype = {
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
                 this.setAttribute("inverse",me.sortingOpt_Active.inverse);
                 me.browser.items.reverse();
-                me.DOM.listItems = me.DOM.listItemGroup.selectAll(".listItem")
+                me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
                     .data(me.browser.items, function(d){ return d.id(); })
                     .order();
                 me.updateVisibleIndex();
                 me.updateItemVisibility(false,true);
-                kshf.Util.scrollToPos_do(me.DOM.listItemGroup[0][0],0);
+                kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
             })
             .each(function(){
@@ -1263,10 +1250,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordRanks: function(d3_selection){
         if(!this.showRank) return; // Do not refresh if not shown...
-        d3_selection.text(function(d){
-            if(d.visibleOrder<0) return "";
-            return d.visibleOrder+1;
-        });
+        d3_selection.text(function(d){ return (d.visibleOrder<0)?"":d.visibleOrder+1; });
     },
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
@@ -1333,14 +1317,14 @@ kshf.RecordDisplay.prototype = {
         this.sortingOpt_Active = this.sortingOpts[index];
 
         this.sortRecords();
-        this.DOM.listItems = this.DOM.listItemGroup.selectAll(".listItem")
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
             .data(this.browser.items, function(d){ return d.id(); })
             .order();
 
         this.updateVisibleIndex();
         this.updateItemVisibility();
         this.refreshRecordSortLabels(this.DOM.recordsSortCol);
-        kshf.Util.scrollToPos_do(this.DOM.listItemGroup[0][0],0);
+        kshf.Util.scrollToPos_do(this.DOM.recordGroup[0][0],0);
     },
     /** -- */
     setSortColumnWidth: function(v){
@@ -1351,8 +1335,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     refreshAdjustSortColumnWidth: function(){
-        this.DOM.adjustSortColumnWidth.style("left",
-            (this.sortColWidth-2)+(this.showRank?15:0)+"px")
+        this.DOM.adjustSortColumnWidth.style("left", (this.sortColWidth-2)+(this.showRank?15:0)+"px")
     },
     /** -- */
     setShowRank: function(v){
@@ -1365,15 +1348,15 @@ kshf.RecordDisplay.prototype = {
     insertRecords: function(){
         var me = this, x;
 
-        var newRecords = this.DOM.listItemGroup.selectAll(".listItem")
+        var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
             .data(this.browser.items, function(d){ return d.id(); })
         .enter()
             .append("div")
-            .attr("class","listItem")
+            .attr("class","kshfRecord")
             .attr("details","false")
             .attr("highlight",false)
             .attr("animSt","visible")
-            .attr("itemID",function(d){ return d.id(); }) // can be used to apply custom CSS
+            .attr("id",function(d){ return d.id(); }) // can be used to apply custom CSS
             // store the link to DOM in the data item
             .each(function(d){ d.DOM.record = this; })
             .on("mouseenter",function(d){
@@ -1429,10 +1412,10 @@ kshf.RecordDisplay.prototype = {
 
         x = newRecords.append("div").attr("class","content");
 
-        this.DOM.listItems      = this.DOM.listItemGroup.selectAll(".listItem");
-        this.DOM.recordsSortCol = this.DOM.listItemGroup.selectAll(".recordSortCol");
-        this.DOM.recordsContent = this.DOM.listItemGroup.selectAll(".content");
-        this.DOM.recordRanks    = this.DOM.listItemGroup.selectAll(".recordRank");
+        this.DOM.kshfRecords      = this.DOM.recordGroup.selectAll(".kshfRecord");
+        this.DOM.recordsSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
+        this.DOM.recordsContent = this.DOM.recordGroup.selectAll(".content");
+        this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
     },
     /** -- */
     setRecordDetails: function(item, value){
@@ -1521,7 +1504,7 @@ kshf.RecordDisplay.prototype = {
         var me = this;
         var visibleItemCount=0;
 
-        this.DOM.listItems.each(function(item){
+        this.DOM.kshfRecords.each(function(item){
             var domItem = this;
 
             var isVisible     = (item.visibleOrder>=0) && (item.visibleOrder<me.maxVisibleItems);
@@ -1587,7 +1570,7 @@ kshf.RecordDisplay.prototype = {
         if(this.recordViewSummary===null) return;
         var me=this;
         var startTime = null;
-        var scrollDom = this.DOM.listItemGroup[0][0];
+        var scrollDom = this.DOM.recordGroup[0][0];
         var scrollInit = scrollDom.scrollTop;
         var easeFunc = d3.ease('cubic-in-out');
         var scrollTime = 1000;
@@ -3974,16 +3957,10 @@ kshf.Browser.prototype = {
         if(this.recordDisplay){
             var listDivTop = 0;
             // get height of header
-            var listHeaderHeight=this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight;
-            var listDisplayHeight = divHeight_Total-listDivTop-listHeaderHeight;
-            if(this.panels.bottom.summaries.length>0){
-                listDisplayHeight-=bottomFacetsHeight;
-            }
-            listDisplayHeight-=midPanelHeight;
-            if(this.showDropZones && this.panels.middle.summaries.length===0) 
-                listDisplayHeight*=0.5;
-            if(this.recordDisplay.recordViewSummary!==null)
-                this.recordDisplay.DOM.listItemGroup.style("height",listDisplayHeight+"px");
+            var listHeaderHeight = this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight;
+            var listDisplayHeight = divHeight_Total - listDivTop - listHeaderHeight - midPanelHeight - bottomFacetsHeight;
+            if(this.showDropZones && this.panels.middle.summaries.length===0) listDisplayHeight*=0.5;
+            this.recordDisplay.setHeight(listDisplayHeight);
         }
     },
     /** -- */
@@ -4798,7 +4775,7 @@ var Summary_Categorical_functions = {
             },
             filterView_Detail: function(){
                 if(this.unmapped===true){
-                    return "(not defined)";
+                    return "(not included)";
                 }
                 // 'this' is the Filter
                 // go over all items and prepare the list

@@ -120,36 +120,31 @@ $(document).ready( function() {
   color:#606060;
   font-style:italic;
 }
-.listItem{
+.kshfRecord{
   width: 90px;
   box-shadow: none !important;
   overflow: visible !important;
 }
-.listItem .thumbImg{
+.kshfRecord .thumbImg{
   width: auto !important;
   max-height: 55px;
 }
+.kshfRecord:hover{
+  z-index: 200 !important;
+  overflow: visible !important;
+}
+.kshfRecord .content img:hover{
+  transform: scale(1.5);
+}
+
 .subTitle{
   font-size: 0.7em !important;
 }
 
-.listItem .content img:hover{
-  transform: scale(1.5);
-}
 .thumbnail{
   overflow: visible !important;
 }
 
-.listItem:hover{
-  z-index: 200 !important;
-  overflow: visible !important;
-}
-.itemRow{
-  width: 100% !important;
-}
-.listItem > .itemRow{
-  overflow: visible !important;
-}
 .content img.thumbImg{
   transition: all 200ms linear;
   -webkit-transition: all 200ms linear;

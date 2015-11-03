@@ -14,7 +14,7 @@ body {
 .showConfigButton {
   display: inline-block !important;
 }
-.recordDisplay[displaytype="grid"] > .listItemGroup > .listItem > .content .thumbnail {
+.recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord > .content .thumbnail {
   display: block;
   overflow-y: hidden;
   overflow-x: hidden;
@@ -24,14 +24,14 @@ body {
   -o-transition: background-color 300ms linear;
   transition: background-color 300ms linear;
 }
-.recordDisplay[displaytype="grid"] > .listItemGroup > .listItem > .content .thumbnail > .thumbImg {
+.recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord > .content .thumbnail > .thumbImg {
   display: block;
   margin-left: auto;
   margin-right: auto;
   background-color: white;
   width: 100%;
 }
-.recordDisplay[displaytype="grid"] > .listItemGroup > .listItem > .content .subTitle {
+.recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord > .content .subTitle {
   display: block;
   font-family: Georgia, "Times New Roman", Times, serif;
   font-style: italic;
@@ -40,7 +40,7 @@ body {
   font-size: 0.8em;
   text-align: left;
 }
-.recordDisplay[displaytype="grid"] > .listItemGroup > .listItem > .content .title {
+.recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord > .content .title {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -50,10 +50,10 @@ body {
   font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 700;
 }
-.recordDisplay[displaytype="grid"] > .listItemGroup > .listItem:hover .thumbImg {
+.recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord:hover .thumbImg {
   box-shadow: 0px 0px 4px black;
 }
-.recordDisplay[displaytype="grid"] > .listItemGroup > .listItem[highlight=true] > .content .thumbnail {
+.recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord[highlight=true] > .content .thumbnail {
   background-color: orangered;
 }
 .pageTitle {

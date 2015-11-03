@@ -106,7 +106,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       .recordDisplay {
         .buttonRecordViewRemove{ visibility: visible; }
-        &[displaytype="list"]:hover > .listItemGroup > .dragWidthHandle{ display: block; }
+        &[displaytype="list"]:hover > .recordGroup > .dragWidthHandle{ display: block; }
       }
       .recordDisplay--Header > .itemRank_control{
         display: inline-block;
@@ -2532,7 +2532,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[readyToDrop=true]{ background-color: rgb(255, 188, 163); }
       }
 
-        > .listItemGroup{
+        > .recordGroup{
             width: 100%;
             overflow-y: scroll;
             overflow-x: hidden;
@@ -2547,7 +2547,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               height: 100%;
             }
 
-            > .listItem{
+            > .kshfRecord{
                 opacity: 1;
                 cursor: default;
                 overflow: hidden;
@@ -2668,8 +2668,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
                     content: "\f096"; // unchecked
                 }
-            } // listItem
-        } // listItemGroup
+            } // kshfRecord
+        } // recordGroup
 
         > .showMore{
             display: block;
@@ -2733,13 +2733,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[displaytype="grid"][hasrecordview="true"] {
-          > .listItemGroup {
+          > .recordGroup {
             .display(flex);
             .flex-direction(row);
             .flex-wrap(wrap);
             justify-content: space-around;
             -webkit-justify-content: space-around;
-            > .listItem{
+            > .kshfRecord{
               display: block;
               .align-self(flex-start);
               > .recordRank{
@@ -2758,8 +2758,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[displaytype="list"][hasrecordview="true"] {
-            > .listItemGroup{
-                > .listItem{
+            > .recordGroup{
+                > .kshfRecord{
                     .display(flex);
                     .flex-direction(row);
                     width: 100%;
@@ -2792,12 +2792,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }
             &[detailsToggle="zoom"]{
-                > .listItemGroup > .listItem > .recordToggleDetail{
+                > .recordGroup > .kshfRecord > .recordToggleDetail{
                     display: inline-block;
                 }
             }
             &[detailsToggle="one"]{
-                > .listItemGroup > .listItem > .recordToggleDetail{
+                > .recordGroup > .kshfRecord > .recordToggleDetail{
                     display: inline-block;
                     > .item_details_toggle:before{
                         content: "\f078";
@@ -2806,7 +2806,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &[detailsToggle="zoom"]{
-            > .listItemGroup > .listItem > .recordToggleDetail > .item_details_toggle:before{
+            > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before{
                 content: "\f140";
             }
         }
@@ -2819,7 +2819,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .flex(1);
                 position: absolute; 
             }
-            > .listItemGroup{
+            > .recordGroup{
                 display: none;
             }
         }

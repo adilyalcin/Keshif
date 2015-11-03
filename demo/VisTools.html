@@ -159,7 +159,7 @@ $(document).ready( function(){
     				default: return this['★'];
     			}
     		},
-    		catSortBy: function(){ return 2-this.id.length; 	}
+    		catSortBy: function(){ return 2-this.id.length; }
     	},
     	{	name: "Features" },
     	{ name: "Data Types" },
@@ -290,7 +290,7 @@ $(document).ready( function(){
         kshf.Util.cellToArray(kshf.dt["Visualization Books"], ['Authors','Tags'], /\s*\+\s*/,false);
       },
       summaries: [
-        { name: "Highlights", value:"★", catSortBy: function(){ return 2-this.id.length;   }},
+        { name: "Highlights", value:"★", catSortBy: function(){ return 2-this.id.length; } },
         { name: "Authors"},
         { name: "Publisher", collapsed: true},
         { name: "Year" },
@@ -362,7 +362,7 @@ $(document).ready( function(){
 });
 </script>
 <style>
-  #vistools_div .listItem{
+  #vistools_div .kshfRecord{
     width: 150px;
   }
   #vistools_div .content{

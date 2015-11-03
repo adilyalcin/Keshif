@@ -18,66 +18,28 @@
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-
 socialShare = false;
 noRibbon = true;
 
 google.setOnLoadCallback(function(){
-
 	resizeBrowser(280,50);
 	$(window).resize(function() {
 		resizeBrowser(280,50);
 		browser.updateLayout();
 	});
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        showResizeCorner: true,
-        categoryTextWidth: 160,
-		readyCb: function(browser){
-			browser.summaries.forEach(function(summary){
-				if(summary.type==="interval") browser.recordDisplay.addSortingOption(summary);
-			});
-			/*
-			// URL.createObjectURL
-			window.URL = window.URL || window.webkitURL;
-
-			// "Server response", used in all examples
-			var responseFunc = function(e){
-				console.log(e.data);
-			};
-			var response = "self.onmessage="+responseFunc.toString();
-
-			var blob;
-			try {
-			    blob = new Blob([response], {type: 'application/javascript'});
-			} catch (e) { // Backwards-compatibility
-			    window.BlobBuilder = window.BlobBuilder || window.WebKitBlobBuilder || window.MozBlobBuilder;
-			    blob = new BlobBuilder();
-			    blob.append(response);
-			    blob = blob.getBlob();
-			}
-			var worker = new Worker(URL.createObjectURL(blob));
-			// Test, used in all examples:
-			worker.onmessage = function(e) {
-			    //alert('Response: ' + e.data);
-
-			};
-
-			worker.postMessage(browser.summaries[0].summaryTitle);
-			*/
-		}
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    showResizeCorner: true,
+    categoryTextWidth: 160,
+  	readyCb: function(browser){
+  		browser.summaries.forEach(function(summary){
+  			if(summary.type==="interval") browser.recordDisplay.addSortingOption(summary);
+  		});
+  	}
+  });
 });
     </script>
-    <style>
-#chart_div {
-  width: 900px;
-  height: 700px;
-}
-    </style>
 	</head>
-  <body>
-    <div class="contents"><div id="chart_div"></div></div>
-  </body>
+  <body><div class="contents"><div id="chart_div"></div></div></body>
 </html>

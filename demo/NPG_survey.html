@@ -108,7 +108,7 @@ $(document).ready(function() {
             tables: [ {name:"Participants", id:'Participants'}]
         },
         readyCb: function(browser){
-            $(".listItem .content").click(function(){
+            $(".kshfRecord .content").click(function(){
                 browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
             });
         },
@@ -323,14 +323,14 @@ $(document).ready(function() {
               vertical-align: -0.5em;
               line-height: 0px;
             }
-            .listItem[details=true] blockquote{
+            .kshfRecord[details=true] blockquote{
                 overflow: visible;
                 white-space: normal;
             }
-            .listItem .content{
+            .kshfRecord .content{
                 cursor: pointer;
             }
-            .listItem{
+            .kshfRecord{
                 max-height: 500px !important;
             }
         </style>
