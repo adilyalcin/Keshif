@@ -113,7 +113,7 @@ $(document).ready( function(){
     this.parentNode.setAttribute("shrink",this.parentNode.getAttribute("shrink")==="false"?true:false);
   });
 
-  var selector = d3.select("#set-selector");
+  var selector = d3.select("#datasetSelector");
   var configs = [];
   for(var configID in browser_configs){
     browser_configs[configID].id = configID;
@@ -123,7 +123,10 @@ $(document).ready( function(){
     .attr("value",function(d){ return d.id; })
     .text(function(d){ return d.title+" ("+d.items+", "+d.sets+(d.attribs===""?"":(" + "+d.attribs))+")"; });
   selector.on("change",function(){
-    d3.select("#SampleData").attr("ready",this.value!=="none");
+    var v=selector[0][0].value;
+    if(v==="none") return;
+    loadDemo(browser_configs[v]);
+    //d3.select("#SampleData").attr("ready",this.value!=="none");
   });
 
   $("#SampleData").click(function(){
@@ -210,24 +213,24 @@ html, body{
   overflow-y: visible !important;
   z-index: 400;
 }
-#theBrowserDIV[name="sharks"] .listItem{
+#theBrowserDIV[name="sharks"] .kshfRecord{
   width: 10px;
   height: 10px;
   background-color: #ACACAC;
   margin: 1px;
 }
-#theBrowserDIV[name="sharks"] .listItem[highlight=selected]{
+#theBrowserDIV[name="sharks"] .kshfRecord[highlight=selected]{
   background-color: red;
   box-shadow: none;
 }
-#theBrowserDIV[name="sharks"] .listItem[highlight=true]{
+#theBrowserDIV[name="sharks"] .kshfRecord[highlight=true]{
   background-color: orangered;
   box-shadow: none;
 }
-#theBrowserDIV[name="lesMiserables"] .listItem .fa{
+#theBrowserDIV[name="lesMiserables"] .kshfRecord .fa{
   color: rgb(161, 161, 161);
 }
-#theBrowserDIV[name="movies"] .listItem .fa{
+#theBrowserDIV[name="movies"] .kshfRecord .fa{
   color: gray;
 }
 
@@ -246,7 +249,7 @@ html, body{
         -ms-filter: grayscale(0%);
             filter: grayscale(0%);
 }
-#theBrowserDIV[resultpreview="true"] .listItem:not([highlight='true']) .simpson_head {
+#theBrowserDIV[resultpreview="true"] .kshfRecord:not([highlight='true']) .simpson_head {
   -webkit-filter: grayscale(100%);
      -moz-filter: grayscale(100%);
        -o-filter: grayscale(100%);
@@ -345,6 +348,7 @@ html, body{
   color: orangered;
 }
 .headerOption[ready="false"]{
+  display: none;
   pointer-events: none;
   color: gray;
 }
@@ -565,12 +569,12 @@ html, body{
       <div class="set-selector-wrapper"> 
         <div class="loadDataset_header">
           <span class="headerOption" id="AboutButton"><span class='fa fa-info'></span> About</span>
-          <span class="headerOption" id="SampleData" ready="false">
-            <span class='fa fa-arrow-up'></span> Load sample data</span>
           <span class="headerOption" id="YourData">
             <span class='fa fa-cloud-upload'></span> Import your data</span>
+          <span class="headerOption" id="SampleData" ready="false">
+            <span class='fa fa-arrow-up'></span> Load sample data</span>
         </div>
-        <select id="set-selector">
+        <select id="datasetSelector">
           <option value="none">* * * * Select Sample * * * *</option>}
             </select>
       </div>
