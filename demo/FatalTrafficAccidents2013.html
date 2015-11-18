@@ -79,6 +79,9 @@ $(document).ready( function() {
 
       })
     },
+    readyCb: function(browser){
+      browser.showAttributes();
+    },
     summaries: [
       { name: "Number of Vehicles in Crash", value: "VE_TOTAL", layout: "bottom", layout: "none"},
       { name: "Number of Fatalities that Occurred in the Crash", value: "FATALS", layout: "none"},
