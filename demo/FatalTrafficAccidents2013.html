@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Fatal Traffic Accidents, USA, 2013</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+
+noRibbon = true;
+showLogo = false;
+socialShare= false;
+
+$(document).ready( function() {
+  resizeBrowser(310,30);
+  $(window).resize(function() {
+    resizeBrowser(310,30);
+    browser.updateLayout();
+  });
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 120,
+    itemName: "Fatal Traffic Accidents in 2013",
+    leftPanelLabelWidth: 200,
+    rightPanelLabelWidth: 200,
+    middlePanelLabelWidth: 200,
+    source: {
+      dirPath: './data/',
+      fileType: 'csv',
+      tables: ["TrafficAccidents2013", "states_fips"]
+    },
+    loadedCb: function(){
+      kshf.dt.TrafficAccidents2013.forEach(function(a){
+        delete a.data.YEAR;
+        delete a.data.RAIL;
+        delete a.data.MILEPT;
+        delete a.data.TWAY_ID;
+        delete a.data.TWAY_ID2;
+        delete a.data.ST_CASE;
+        delete a.data.LATITUDE;
+        delete a.data.LONGITUD;
+        delete a.data.CITY;
+        delete a.data.COUNTY;
+        delete a.data.PERNOTMVIT;
+        delete a.data.PERSONS;
+        delete a.data.VE_FORMS;
+        a.data["Weather Conditions"] = [a.data.WEATHER, a.data.WEATHER1, a.data.WEATHER2];
+        delete a.data.WEATHER;
+        delete a.data.WEATHER1;
+        delete a.data.WEATHER2;
+
+        // This data element records the hour that emergency medical service was notified.
+        delete a.data.NOT_HOUR;
+        delete a.data.NOT_MIN;
+
+        delete a.data.HOSP_HR;
+        delete a.data.HOSP_MN;
+
+        delete a.data.CF1;
+        delete a.data.CF2;
+        delete a.data.CF3;
+
+        if(a.data.MINUTE>60) delete a.data.MINUTE;
+        if(a.data.ARR_HOUR>25) delete a.data.ARR_HOUR;
+        if(a.data.ARR_MIN>60) delete a.data.ARR_MIN;
+        if(a.data.HOUR>25) delete a.data.HOUR;
+
+      })
+    },
+    summaries: [
+      { name: "Number of Vehicles in Crash", value: "VE_TOTAL", layout: "bottom", layout: "none"},
+      { name: "Number of Fatalities that Occurred in the Crash", value: "FATALS", layout: "none"},
+      { name: "Number of Parked/Working Vehicles in the Crash", value: "PVH_INVL", layout: "none"},
+      { name: "State", value: "STATE", catLabel: function(){return kshf.dt_id.states_fips[this.id].data.Name;}, layout: "none" },
+      { name: "On National Highway System", value: "NHS",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "No";
+            case 1: return "Yes";
+            case 9: return "Unknown";
+          }
+        },
+        description: "This data element identifies whether this crash occurred on a trafficway that is part of the National Highway System.", layout: "none"},
+      { name: "Route", value: "ROUTE", layout: "none", 
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Interstate";
+            case 2: return "U.S. Highway";
+            case 3: return "State Highway";
+            case 4: return "County Road";
+            case 5: return "Local Street – Township";
+            case 6: return "Local Street – Municipality";
+            case 7: return "Local Street – Frontage Road";
+            case 8: return "Other";
+            case 9: return "Unknown";
+          }
+        }},
+      { name: "Number of Forms Submitted for Persons Not in Motor Vehicles", value: "PEDS", layout: "none",
+        description: "This data element counts the number of Person Forms (Not a Motor Vehicle Occupant) that are applicable to this case (i.e., non-occupants)"},
+      { name: "Number of Drunk Drivers", value: "DRUNK_DR", layout: "none",
+        description: "The number of drunk drivers involved in the fatal crash"},
+      { name: "Relation to Trafficway", value: "REL_ROAD", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "On Roadway";
+            case 2: return "On Shoulder";
+            case 3: return "On Median";
+            case 4: return "On Roadside";
+            case 5: return "Outside Trafficway";
+            case 6: return "Off Roadway – Location Unknown";
+            case 7: return "In Parking Lane/Zone";
+            case 8: return "Gore";
+            case 9: return "Separator";
+            case 10: return "Continuous Left-Turn Lane";
+            case 98: return "Not Reported";
+            case 99: return "Unknown";
+          }
+        },
+        description: "The location of the crash as it relates to its position within or outside the trafficway."},
+      { name: "Roadway Function Class", value: "ROAD_FNC", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Rural - Principal Arterial – Interstate";
+            case 2: return "Rural - Principal Arterial – Other";
+            case 3: return "Rural - Minor Arterial";
+            case 4: return "Rural - Major Collector";
+            case 5: return "Rural - Minor Collector";
+            case 6: return "Rural - Local Road or Street";
+            case 9: return "Rural - Unknown";
+            case 11: return "Urban - Principal Arterial – Interstate";
+            case 12: return "Urban - Principal Arterial – Other Freeways or Expressways";
+            case 13: return "Urban - Other Principal Arterial";
+            case 14: return "Urban - Minor Arterial";
+            case 15: return "Urban - Collector";
+            case 16: return "Urban - Local Road or Street";
+            case 19: return "Urban - Unknown";
+            case 99: return "Unknown";
+          }
+        },
+        description: "The functional classification of the trafficway on which the crash occurred."},
+      { name: "Special Jurisdiction", value: "SP_JUR", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "No Special Jurisdiction";
+            case 1: return "National Park Service";
+            case 2: return "Military";
+            case 3: return "Indian Reservation";
+            case 4: return "College/University Campus";
+            case 5: return "Other Federal Properties";
+            case 8: return "Other";
+            case 9: return "Unknown";
+          }
+        }},
+      { name: "Manner of Collision", value: "MAN_COLL", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "Not Collision with Motor Vehicle in Transport";
+            case 1: return "Front-to-Rear";
+            case 2: return "Front-to-Front";
+            case 6: return "Angle";
+            case 7: return "Sideswipe – Same Direction";
+            case 8: return "Sideswipe – Opposite Direction";
+            case 9: return "Rear-to-Side";
+            case 10: return "Rear-to-Rear";
+            case 11: return "Other (End-Swipes and Others)";
+            case 98: return "Not Reported";
+            case 99: return "Unknown";
+          }
+        },
+        description: "The functional classification of the trafficway on which the crash occurred."},
+      { name: "School Bus Related", value: "SCH_BUS", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "No";
+            case 1: return "Yes";
+            case 8: return "Not Reported";
+          }
+        },
+        description: "If a school bus, or motor vehicle functioning as a school bus, is related to the crash."},
+      
+      { name: "Work Zone", value: "WRK_ZONE", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "None";
+            case 1: return "Construction";
+            case 2: return "Maintenance";
+            case 3: return "Utility";
+            case 4: return "Work Zone, Type Unknown";
+          }
+        }},
+      
+      { name: "Type of Intersection", value: "TYP_INT", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Not an Intersection";
+            case 2: return "Four-Way Intersection";
+            case 3: return "T-Intersection";
+            case 4: return "Y-Intersection";
+            case 5: return "Traffic Circle";
+            case 6: return "Roundabout";
+            case 7: return "Five-Point, or More";
+            case 8: return "Not Reported";
+            case 9: return "Unknown";
+          }
+        },
+        description: "The functional classification of the trafficway on which the crash occurred."},
+      { name: "Day of Week", value: "DAY_WEEK", layout: "none", catSortBy: "id",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Sunday";
+            case 2: return "Monday";
+            case 3: return "Tuesday";
+            case 4: return "Wednesday";
+            case 5: return "Thursday";
+            case 6: return "Friday";
+            case 7: return "Saturday";
+            case 8: return "?";
+            case 9: return "?";
+          }
+        },
+        description: "The functional classification of the trafficway on which the crash occurred."},
+      { name: "Day of Month", value: "DAY", layout: "none"},
+      { name: "Minute of the Hour", value: "MINUTE", layout: "none"},
+      { name: "Hour of the Day", value: "HOUR", layout: "none"},
+      { name: "Month", value: "MONTH", layout: "none", catSortBy: "id",
+        catLabel: function(){ return getMonthNameFromNumber(this.id-1); },
+        description: "The functional classification of the trafficway on which the crash occurred."},
+      
+      { name: "Number of Persons in Motor Vehicles in Transport (MVIT)", value: "PERMVIT", layout: "none",
+        description: "The number of motorists in the crash. A motorist is a driver, passenger or unknown occupant type of a motor vehicle in-transport."},
+
+      
+      { name: "Light Condition", value: "LGT_COND", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Daylight";
+            case 2: return "Dark – Not Lighted";
+            case 3: return "Dark – Lighted";
+            case 4: return "Dawn";
+            case 5: return "Dusk";
+            case 6: return "Dark – Unknown Lighting";
+            case 7: return "Other";
+            case 8: return "Not Reported";
+            case 9: return "Unknown";
+          }
+        },
+        description: "The type/level of light that existed at the time of the crash"},
+
+      { name: "Weather Conditions", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Clear";
+            case 0: return "No Additional Atmospheric Conditions";
+            case 2: return "Rain";
+            case 3: return "Sleet, Hail (Freezing Rain or Drizzle)";
+            case 4: return "Snow";
+            case 5: return "Fog, Smog, Smoke";
+            case 6: return "Severe Crosswinds";
+            case 7: return "Blowing Sand, Soil, Dirt";
+            case 8: return "Other";
+            case 10: return "Cloudy";
+            case 11: return "Blowing Snow";
+            case 98: return "Not Reported";
+            case 99: return "Unknown";
+          }
+        },
+        description: "The prevailing atmospheric conditions that existed at the time of the crash"},
+        
+      { name: "First Harmful Event", value: "HARM_EV", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1 : return "Rollover/Overturn";
+            case 2 : return "Fire/Explosion";
+            case 3 : return "Immersion";
+            case 4 : return "Gas Inhalation";
+            case 5 : return "Fell/Jumped from Vehicle";
+            case 6 : return "Injured in Vehicle (Non-Collision)";
+            case 7 : return "Other Non-Collision";
+            case 8 : return "Pedestrian";
+            case 9 : return "Pedalcyclist";
+            case 10: return "Railway Vehicle";
+            case 11: return "Live Animal";
+            case 12: return "Motor Vehicle in Transport";
+            case 14: return "Parked Motor Vehicle";
+            case 15: return "Non-Motorist on Personal Conveyance";
+            case 16: return "Thrown or Falling Object";
+            case 17: return "Boulder";
+            case 18: return "Other Object (Not Fixed)";
+            case 19: return "Building";
+            case 20: return "Impact Attenuator/Crash Cushion";
+            case 21: return "Bridge Pier or Support";
+            case 23: return "Bridge Rail (Includes Parapet)";
+            case 24: return "Guardrail Face";
+            case 25: return "Concrete Traffic Barrier ";
+            case 26: return "Other Traffic Barrier";
+            case 30: return "Utility Pole/Light Support";
+            case 31: return "Other Post, Other Pole, or Other Support";
+            case 32: return "Culvert";
+            case 33: return "Curb";
+            case 34: return "Ditch";
+            case 35: return "Embankment";
+            case 38: return "Fence";
+            case 39: return "Wall";
+            case 40: return "Fire Hydrant";
+            case 41: return "Shrubbery";
+            case 42: return "Tree (Standing Only)";
+            case 43: return "Other Fixed Object";
+            case 44: return "Pavement Surface Irregularity (Ruts, Potholes, Grates, etc.";
+            case 45: return "Working Motor Vehicle";
+            case 46: return "Traffic Signal Support";
+            case 48: return "Snow Bank";
+            case 49: return "Ridden Animal or Animal-Drawn Conveyance (Since 1998)";
+            case 50: return "Bridge Overhead Structure";
+            case 51: return "Jackknife (Harmful to This Vehicle)";
+            case 52: return "Guardrail End";
+            case 53: return "Mail Box";
+            case 54: return "Motor Vehicle Struck by Falling/Shifting Cargo or Anything Set in Motion by Another Motor Vehicle in Transport";
+            case 55: return "Motor Vehicle in Motion Outside the Trafficway";
+            case 57: return "Cable Barrier";
+            case 58: return "Ground";
+            case 59: return "Traffic Sign Support ";
+            case 72: return "Cargo/Equipment Loss or Shift ";
+            case 98: return "Not Reported";
+            case 99: return "Unknown ";
+          }
+        },
+        description: "The first injury or damage producing event of the crash"},
+
+      { name: "Relation to Junction- Specific Location", value: "RELJCT2", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 1: return "Non-Junction";
+            case 2: return "Intersection";
+            case 3: return "Intersection Related";
+            case 4: return "Driveway Access";
+            case 5: return "Entrance/Exit Ramp Related";
+            case 6: return "Railway Grade Crossing";
+            case 7: return "Crossover Related";
+            case 8: return "Driveway Access Related";
+            case 16: return "Shared-Use Path or Trail";
+            case 17: return "Acceleration/Deceleration Lane";
+            case 18: return "Through Roadway";
+            case 19: return "Other Location Within Interchange Area";
+            case 98: return "Not Reported";
+            case 99: return "Unknown";
+          }
+        },
+        description: "The crash's location with respect to presence in an interchange area"},
+
+      { name: "Relation to Junction- Within Interchange Area", value: "RELJCT1", layout: "none",
+        catLabel: function(){
+          switch(this.id){
+            case 0: return "No";
+            case 1: return "Yes";
+            case 8: return "Not Reported";
+            case 9: return "Unknown";
+          }
+        },
+        description: "The crash's location with respect to presence in or proximity to components typically in junction or interchange areas"},
+
+    ]
+  });
+});
+    </script>
+    <style>
+#chart_div {
+  width: 890px;
+  height: 700px;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
+</html>
