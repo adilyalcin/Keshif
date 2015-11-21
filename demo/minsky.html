@@ -1,123 +1,122 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<title>Marvin Minsky - Bibliography</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Marvin Minsky - Bibliography</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 google.setOnLoadCallback( function() {
+  resizeBrowser(100,80);
+  $(window).resize(function() {
     resizeBrowser(100,80);
-    $(window).resize(function() {
-        resizeBrowser(100,80);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "works",
-        categoryTextWidth: 200,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdDN4Qm5aQTVwQW1fSnE1RTl1LXhzbGc',
-            tables: "Publications"
-        },
-        loadedCb: function(){
-            kshf.Util.cellToArray(kshf.dt.Publications, ['Co-Author','Topic'], /\b,/, false );
-        },
-        summaries: [
-            {   name: "Topic",
-            },{ name: "Co-Author",
-            },{ name: "Pub. Type"
-            },{ name: "Date", panel: 'middle'
-            }
-        ],
-        itemDisplay: {
-            sortColWidth: 72,
-            sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();} },
-            textSearch: 'Title',
-            recordView: function(){
-                var j;
-                var str="";
-                var ptype=this['Pub. Type'];
-                // paper name
-                str+="<div class=\"iteminfo iteminfo_0\">";
-                str+=this.Title;
-                if(ptype!=='') str+=" <i>("+ptype+")</i>";
-                str+="</div>";
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    itemName: "works",
+    categoryTextWidth: 200,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdDN4Qm5aQTVwQW1fSnE1RTl1LXhzbGc',
+      tables: "Publications"
+    },
+    loadedCb: function(){
+      kshf.Util.cellToArray(kshf.dt.Publications, ['Co-Author','Topic'], /\b,/, false );
+    },
+    summaries: [
+      { name: "Topic" },
+      { name: "Co-Author" },
+      { name: "Pub. Type" },
+      { name: "Date", panel: 'middle' }
+    ],
+    itemDisplay: {
+      sortBy: {title: 'Date', label: function(){ return this.Date.getFullYear();} },
+      sortColWidth: 72,
+      textSearch: 'Title',
+      recordView: function(){
+        var j;
+        var str="";
+        var ptype=this['Pub. Type'];
+        // paper name
+        str+="<div class=\"iteminfo iteminfo_0\">";
+        str+=this.Title;
+        if(ptype!=='') str+=" <i>("+ptype+")</i>";
+        str+="</div>";
 
-                str+="<span class=\"item_details\">";
+        str+="<span class=\"item_details\">";
 
-                // Venue
-                var year = this.Date.getFullYear();
-                var venue=this.Venue;
-                var subvenue=this['Venue-Sub'];
-                var location=this.Location;
-                var publisher=this.Publisher;
-                if(venue!==''){
-                    str+="<div class=\"iteminfo iteminfo_1\"> ["+year+"] "+venue;
-                    if(subvenue!=='') str+=", "+subvenue;
-                    if(location!=='') str+=", "+location;
-                    if(publisher!=='') str+=", "+publisher;
-                    str+="</div>";
-                }
-                // co-authors
-                var coAuthors=this['Co-Author'];
-                if(coAuthors && coAuthors.length!==0){
-                    str+="<div class=\"iteminfo iteminfo_2\"> <b>Co-Authors</b>: "+coAuthors+"</div>";
-                }
-                // topics
-                var topics=this.Topic;
-                if(topics && topics.length!==0){
-                    str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: "+topics+"</div>";
-                }
-
-                str+="</div>";
-
-                return str;
-            }
+        // Venue
+        var year = this.Date.getFullYear();
+        var venue=this.Venue;
+        var subvenue=this['Venue-Sub'];
+        var location=this.Location;
+        var publisher=this.Publisher;
+        if(venue!==''){
+          str+="<div class=\"iteminfo iteminfo_1\"> ["+year+"] "+venue;
+          if(subvenue!=='') str+=", "+subvenue;
+          if(location!=='') str+=", "+location;
+          if(publisher!=='') str+=", "+publisher;
+          str+="</div>";
         }
-    });
+        // co-authors
+        var coAuthors=this['Co-Author'];
+        if(coAuthors && coAuthors.length!==0){
+          str+="<div class=\"iteminfo iteminfo_2\"> <b>Co-Authors</b>: "+coAuthors+"</div>";
+        }
+        // topics
+        var topics=this.Topic;
+        if(topics && topics.length!==0){
+          str+="<div class=\"iteminfo iteminfo_2\"> <b>Topics</b>: "+topics+"</div>";
+        }
+
+        str+="</div>";
+
+        return str;
+      }
+    }
+  });
 });
         </script>
         <style>
-        div.kshfRecord div.thumbnail{
-            float:right;
-            color:#666666;
-            display:none
-        }
-        div.kshfRecord:hover div.thumbnail{
-            display:inline-block;
-        }
-        div.thumbnail img{
-            max-height:80px;
-            border: solid 1px gray;
-        }
+div.kshfRecord div.thumbnail{
+  float:right;
+  color:#666666;
+  display:none
+}
+div.kshfRecord:hover div.thumbnail{
+  display:inline-block;
+}
+div.thumbnail img{
+  max-height:80px;
+  border: solid 1px gray;
+}
 
-        div.kshfRecord div.thumbnail2{
-            float:right;
-            display: inline-block;
-            color:#666666;
-        }
-        div.kshfRecord:hover div.thumbnail2{
-            display:none
-        }
-        div.thumbnail2 img{
-            max-height:70px;
-            border: solid 1px gray;
-        }
-        #chart_div {
-            width: 100%;
-        }
+div.kshfRecord div.thumbnail2{
+  float:right;
+  display: inline-block;
+  color:#666666;
+}
+div.kshfRecord:hover div.thumbnail2{
+  display:none
+}
+div.thumbnail2 img{
+  max-height:70px;
+  border: solid 1px gray;
+}
+#chart_div {
+  width: 100%;
+}
         </style>
 	</head>
     <body>

@@ -114,6 +114,7 @@ google.setOnLoadCallback(function(){
           return r;
           }},
       { name: "Number of Role Types", value: function(){ return Object.keys(this.RoleNames).length; } },
+      { name: "Number of Roles", value: function(){ return this.Roles.length; } },
       { name: "Affiliations", collapsed: true },
       { name: "Year of First Role", layout: "bottom",
         value: function(){ return this.Roles[0].Year; } },
@@ -123,11 +124,7 @@ google.setOnLoadCallback(function(){
     ],
     itemDisplay: {
       sortColWidth: 35,
-      sortingOpts: [
-        {name: "Number of roles", value: function(){ return this.Roles.length; } },
-        {name: "Year of First Role", inverse: true},
-        {name: "Year of Last Role", inverse: true}
-      ],
+      sortBy: "Number of Roles",
       textSearch: "Name",
       detailsToggle: "one",
       recordView: function(){ 

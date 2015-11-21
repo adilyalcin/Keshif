@@ -141,7 +141,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
   display: block;
 }
-.kshf[attribsShown=true] .recordDisplay--Header > .itemRank_control {
+.kshf[attribsShown=true] .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control {
   display: inline-block;
 }
 .kshf[attribsShown=true] .panel:hover > .panelAdjustWidth {
@@ -174,6 +174,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[isfiltered=true] .panel_Basic > .filterClearAll {
   opacity: 1;
   pointer-events: all;
+}
+.kshf[record_display="list"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+  display: block;
+}
+.kshf[record_display="list"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay::before {
+  content: "\f0dc";
+}
+.kshf[record_display="map"] .kshfChart[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
+  content: "\f278";
+}
+.kshf[record_display="map"] .kshfChart[summary_type="interval"][usedforsorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
+  color: black;
+  display: block;
+}
+.kshf[record_display="map"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+  display: block;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfChart[collapsed=false] {
   -webkit-flex-grow: 3;
@@ -226,6 +242,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
   display: block !important;
+}
+.kshf .unitName {
+  margin-left: 1px;
 }
 .kshf .lockButton {
   display: block;
@@ -453,7 +472,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
   padding: 1px;
   margin: 1px;
-  min-height: 34px;
   left: 0px;
   border-radius: 3px;
   background-color: #e8e8e8;
@@ -807,8 +825,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   margin-right: 15px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds > .filterDetails .unitName {
-  margin-left: 1px;
+.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds > .filterDetails > .unitName {
   font-weight: 300;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb > .chartClearFilterButton.summary {
@@ -1168,6 +1185,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  z-index: 100;
   vertical-align: top;
   position: relative;
   height: 100%;
@@ -1812,11 +1830,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-top: 1px;
   border-radius: 3px;
   box-shadow: 0px 0px 2px #9b9b9b;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwLjMiLz48c3RvcCBvZmZzZXQ9IjIwJSIgc3RvcC1jb2xvcj0icmdiKDE5MCwgMTkwLCAxOTApIiBzdG9wLW9wYWNpdHk9IjAuNCIvPjxzdG9wIG9mZnNldD0iODAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMC40Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMC4zIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
-  background-image: -webkit-linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
-  background-image: -moz-linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
-  background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
-  background-image: linear-gradient(to left, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);;
+  background-color: #ebebeb;
   z-index: 6;
 }
 .kshf .headerGroup .summaryTitle {
@@ -1868,24 +1882,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-right: 3px;
 }
 .kshf .headerGroup .summaryIcons {
-  top: 2px;
+  top: 3px;
   right: 2px;
   position: absolute;
   font-size: 0.9em;
-  color: gray;
 }
-.kshf .headerGroup .summaryIcons .fa {
+.kshf .headerGroup .summaryIcons > .fa {
+  color: gray;
   cursor: pointer;
   margin-left: 2px;
 }
-.kshf .headerGroup .summaryIcons .fa:hover {
+.kshf .headerGroup .summaryIcons > .fa:hover {
   color: black;
 }
-.kshf .headerGroup .summaryIcons .hasMultiMappings {
+.kshf .headerGroup .summaryIcons > .hasMultiMappings {
   display: none;
 }
-.kshf .headerGroup .summaryIcons .summaryDescription {
+.kshf .headerGroup .summaryIcons > .summaryDescription {
+  display: none;
   cursor: default;
+}
+.kshf .headerGroup .summaryIcons > .useForRecordDisplay {
+  display: none;
+}
+.kshf .headerGroup .summaryIcons > .useForRecordDisplay:hover {
+  color: orangered;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -2629,7 +2650,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text > .selected-item-value-text-v {
   position: relative;
   left: -50%;
-  top: -2px;
+  top: -4px;
   background-color: white;
   border-radius: 4px;
   border: solid 1px #DDDDDD;
@@ -2731,8 +2752,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
-  opacity: 0.6;
-  margin-left: 1px;
+  color: gray;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
@@ -3049,26 +3069,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon {
-  display: inline;
-  color: #cc3700;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"][selectedForLink=true] > .itemLinkStateColumn > .itemLinkIcon:hover {
-  color: orangered;
-}
 .kshf .recordDisplay > .recordGroup > .kshfRecord[highlight=true] {
-  box-shadow: inset 0px 0px 5px #BBBBBB;
-  background-color: #F8F8F8;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight=true] > .itemLinkStateColumn > .itemLinkIcon {
-  display: inline;
-  color: gray;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before {
-  content: "\f046";
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before {
-  content: "\f096";
+  box-shadow: inset 0px 0px 5px #FF9973;
+  background-color: #FFFBF9;
 }
 .kshf .recordDisplay > .showMore {
   display: block;
@@ -3135,6 +3138,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay[showRank=false] .itemRank_control {
   color: gray;
 }
+.kshf .recordDisplay[displaytype="map"] {
+  overflow: visible !important;
+}
+.kshf .recordDisplay[displaytype="map"] .scrollToTop {
+  display: none;
+}
+.kshf .recordDisplay[displaytype="map"] .sortButton {
+  display: none;
+}
+.kshf .recordDisplay[displaytype="map"] .recordGroup {
+  overflow: visible !important;
+}
+.kshf .recordDisplay[displaytype="map"] .recordGroup > .kshfRecord {
+  stroke-width: 1px;
+  stroke: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+.kshf .recordDisplay[displaytype="map"] .recordGroup > .kshfRecord:hover {
+  fill: orangered !important;
+}
+.kshf .recordDisplay[displaytype="map"] .recordGroup > .kshfRecord[highlight="true"] {
+  stroke: orangered;
+  stroke-width: 1px;
+  opacity: 1 !important;
+}
 .kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup {
   display: -webkit-box;
   display: -moz-box;
@@ -3198,6 +3226,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordSortCol > .unitName {
+  color: gray;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordRank {
   float: left;
@@ -3641,6 +3672,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy .tipsy-inner span.action {
   font-weight: 700;
+}
+.tipsy .unitName {
+  margin-left: 1px;
+  color: lightgray;
 }
 .tipsy.tipsyFilterAnd .tipsy-inner {
   background-color: #1d4870;

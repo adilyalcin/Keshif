@@ -65,11 +65,8 @@ google.setOnLoadCallback(function(){
       { name: "Date", panel: "bottom" }
     ],
     itemDisplay: {
+      sortBy: { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
       sortColWidth: 85,
-      sortingOpts: [ 
-        { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
-        '# of Records'
-      ],
       textSearch: {name: "Organization", value: "org" },
       recordView: function(){
         var str = this.org;

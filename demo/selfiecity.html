@@ -48,19 +48,19 @@ $(document).ready( function(){
         } },
       { name: "Sex", value: "sex" },
       { name: "Age", value: "age", showPercentile: true },
-      { name: "Photo: Eyes Closed", value: "eye_closed" },
-      { name: "Photo: Mouth Open", value: "mouth_open_wide", collapsed: true },
-      { name: "Photo: Has Glasses", value: "glasses" },
+      { name: "Eyes Closed", value: "eye_closed" },
+      { name: "Mouth Open", value: "mouth_open_wide", collapsed: true },
+      { name: "Has Glasses", value: "glasses" },
        
       { name: "Happyness", value: "emotion_happy", panel: 'right', showPercentile: true },
-      { name: "Calmness", value: "emotion_calm", panel: 'right', type: 'interval', // TODO: Why need to define type? },
-      { name: "Confusion", value: "emotion_confused", panel: 'right', type: 'interval', // TODO: Why need to define type? },
+      { name: "Calmness", value: "emotion_calm", panel: 'right', type: 'interval'}, // Original data source has some problems...
+      { name: "Confusion", value: "emotion_confused", panel: 'right', type: 'interval'}, // Original data source has some problems...
       { name: "Sadness", value: "emotion_sad", panel: 'right', },
       { name: "Anger", value: "emotion_angry", collapsed: true, panel: 'right', },
       { name: "Disgust", value: "emotion_disgust", collapsed: true, panel: 'right', type: 'interval' }
     ],
     itemDisplay: {
-      sortingOpts: {title:"Happyness", value: "emotion_happy"},
+      sortBy: "Happyness",
       displayType: "grid",
       detailsToggle: "off",
       maxVisibleItems_Default: 104,

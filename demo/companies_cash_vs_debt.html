@@ -45,20 +45,14 @@ google.setOnLoadCallback(function(){
       { name: "Cash vs. Debt", panel: 'left',
         value: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); } },
       { name: "Cash", value: 'Cash ($B)', unitName: 'B$', intervalScale: 'log' },
-      { name: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log',
-//          },{ name: "Market Capitalization", panel: 'right'
-//          },{ name: "Profit Margin", panel: 'right'
-      }
+      { name: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log' },
+      { name: "Profit Margin", collapsed: true },
+      { name: "Value", value:function(){return (this['Cash ($B)']-this['Debt ($B)']);}, collapsed: true, description: "Cash - Debt"},
+      { name: "Market Capitalization", collapsed: true }
     ],
     itemDisplay: {
       detailsToggle: "none",
-      sortingOpts: [ 
-        {name: 'Value', value:function(){ return (this['Cash ($B)']-this['Debt ($B)']); }},
-        'Debt ($B)',
-        'Cash ($B)',
-        'Profit Margin',
-        'Market Cap.'
-      ],
+      sortBy: "Value",
       displayType: 'grid',
       textSearch: 'Stock',
       recordView: function(){
@@ -78,7 +72,7 @@ google.setOnLoadCallback(function(){
     <style>
 #chart_div {
   width: 700px;
-  height: 550px;
+  height: 580px;
 }
 .content{
   width: 130px;

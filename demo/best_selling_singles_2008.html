@@ -36,7 +36,7 @@ google.setOnLoadCallback(function(){
     ],
     itemDisplay: {
       sortColWidth: 45,
-      sortingOpts: { name: "Position", inverse:true},
+      sortBy: { name: "Position", inverse: true},
       textSearch: { name: "Artist & Track", value: function(){return this["Artist(s)"]+" "+this.Track; } },
       recordView: function(){ return this["Artist(s)"]+" - "+this.Track; }
     }
@@ -46,7 +46,7 @@ google.setOnLoadCallback(function(){
     <style>
 #chart_div {
   width: 890px;
-  height: 450px;
+  height: 480px;
 }
     </style>
   </head>

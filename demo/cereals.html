@@ -47,10 +47,7 @@ google.setOnLoadCallback(function(){
       { name: "Vitamins", panel: 'middle', showPercentile: true,  collapsed: true, }
     ],
       itemDisplay: {
-      sortingOpts: [
-        { title: 'Rating', label: function(){ return this.Rating.toPrecision(4)} },
-        'Calories'
-      ],
+      sortBy: { title: 'Rating', label: function(){ return this.Rating.toPrecision(4)} },
       textSearch: "Name",
       recordView: "Name"
     }

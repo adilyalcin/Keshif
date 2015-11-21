@@ -52,9 +52,7 @@ google.setOnLoadCallback(function(){
     ],
     itemDisplay: {
       sortColWidth: 75,
-      sortingOpts: {
-        title: 'Date', label: function(){ return moment(this.Date).format("D MMM 'YY"); }, inverse: true
-      },
+      sortBy: { title: 'Date', label: function(){ return moment(this.Date).format("D MMM 'YY"); }, inverse: true },
       recordView: function(){
         return getIcon(kshf.dt_id.Organizations[this.Organization].data.Type) +
             "<span style='display:block'>"+

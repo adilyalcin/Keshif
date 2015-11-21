@@ -60,10 +60,8 @@ google.setOnLoadCallback(function(){
         description: "The key study for grading the evidence", panel: 'right' }
     ],
     itemDisplay: {
-      sortingOpts: [
-        { name: "Evidence", value: function(){ return this.evidence; } },
-        { name: "Popularity", value: function(){ return this.popularity; } },
-      ],
+      sortBy: "evidence",
+      sortColWidth: 35,
       textSearch: "name",
       recordView: function(){
         var str="";

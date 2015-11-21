@@ -183,7 +183,7 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 90,
-            sortingOpts: [{
+            sortBy: {
                 name: 'Coming Up',
                 value: function(){ return this.Date; },
                 sortFunc: function(a,b){
@@ -198,17 +198,7 @@ $(document).ready( function(){
                 },
                 inverse: true,
                 label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
-            },{ name: "IMDb Rating",
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return 1*movie.imdbRating;
-                }
-            },{ name: "Year",
-                value: function(){
-                    var movie = moviesByTitle[this.Movie];
-                    if(movie) return 1*movie.Year;
-                }
-            }],
+            },
             textSearch: "Movie",
             detailsToggle: "one",
             recordView: function() {

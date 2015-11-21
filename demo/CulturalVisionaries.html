@@ -40,11 +40,11 @@ $(document).ready( function(){
       { name: "Occupation", value: function(){ return kshf.Util.toProperCase(this.occupation);}, panel: "right"},
       { name: "Dataset", value: "dataset", panel: "right", collapsed: true},
       { name: "HPI Score", value: "HPI", collapsed: true},
-      { name: "Total Wikipedia Views", value: "TotalPageViews", panel: "middle", collapsed: true},
+      { name: "Wikipedia Views", value: "TotalPageViews", panel: "middle", collapsed: true},
       { name: "Birth Year", value: "birthyear", panel: "middle"},
     ],
     itemDisplay: {
-      sortingOpts: [ 'HPI Score', 'Birth Year', 'Total Wikipedia Views', 'numlangs' ],
+      sortBy: 'HPI Score',
       showRank: true,
       textSearch: "name",
       recordView: function(){

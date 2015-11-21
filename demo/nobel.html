@@ -52,7 +52,7 @@ $(document).ready( function(){
       { name: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }, }
     ],
     itemDisplay: {
-      sortingOpts: { name: "Year", inverse: true},
+      sortBy: { name: "Year", inverse: true},
       textSearch: { name: "name", value: function () {
         var laureate = kshf.dt_id.Laureates[this.laureate_id];
         return laureate.data.firstname + " " + (laureate.data.surname || "");

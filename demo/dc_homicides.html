@@ -70,14 +70,13 @@ $(document).ready( function(){
       { name: "Cases with +2 victims", panel: 'right', value: "ccn", minAggrValue:2, collapsed: true },
       { name: "Manner", value: function(){ return this.manner.name; } },
       { name: "Motive", value: function(){ return this.motive.name; } },
-      { name: "Incident Date", value: "incident_date", panel: "bottom", }
+      { name: "Incident Date", value: "incident_date", panel: "bottom", },
+      { name: "Full Name", value: function(){ return this.last_name +", "+this.first_name; }, panel: "none" }
     ],
     itemDisplay: {
-      sortingOpts: [
-        { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
-        { title: 'Age', value: "age" }
-      ],
-      recordView: function(){ return this.last_name +", "+this.first_name; }
+      sortBy: { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
+      textSearch: "Full Name",
+      recordView: "Full Name"
     }
   });
 });

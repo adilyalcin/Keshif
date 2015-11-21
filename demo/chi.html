@@ -158,22 +158,11 @@ google.setOnLoadCallback(function(){
       { name: "Authors",
         catTableName: "People", catLabel: function(){ return this.last_name+", "+this.first_name; },
         summaries: [{ name: "Affiliaton" }] },
-      {
-      /*,{ name: "# of References", collapsed: true,
-          value: "ReferenceTotal"}
-      },{ name: "# of Citations", value: "CitedByTotal"
-      },{*/
-        name: "Citations to",
-        // these are how the items are related.
-        // X is related to Y (set) => Each Y stores the items it has been mapped to.
-        // That number is shown on display
-        value: "References",
-        // Using the main table name, this will enable linking through items
-        catTableName: "Articles"
-      }
+      { name: "# of References", value: "ReferenceTotal", collapsed: true},
+      { name: "# of Citations", value: "CitedByTotal"}
     ],
     itemDisplay: {
-      sortingOpts: {title: 'Citations', value: "CitedByTotal"},
+      sortBy: '# of Citations',
       textSearch: "Title",
       linkText: 'Citations to',
       recordView: "Title"

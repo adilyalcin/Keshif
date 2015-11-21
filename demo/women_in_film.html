@@ -52,7 +52,7 @@ $(document).ready( function(){
         } },
       { name: "Clarity of Pass", collapsed: true },
       { name: "Plot Keywords (top 10)", minAggrValue: 5 },
-      { name: "IMDb Popularity Score", panel: 'middle', },
+      { name: "IMDb Popularity", panel: 'middle', },
       { name: "Award Popularity", panel: 'left', collapsed: true },
       { name: "Rating" },
       { name: "Genre", panel: 'right' },
@@ -64,10 +64,7 @@ $(document).ready( function(){
     itemDisplay: {
       displayType: 'grid',
       textSearch: "Movie Title",
-      sortingOpts: [ 
-        {title: 'Popularity', value: "IMDb Popularity Score"},
-        {title: 'Year', inverse: true}
-      ],
+      sortingOpts: "IMDb Popularity",
       recordView: function(){
         return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'><img class='thumbImg'></a>";
       },

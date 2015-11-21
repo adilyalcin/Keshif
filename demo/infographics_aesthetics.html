@@ -86,9 +86,9 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { name: "All Avg.", value: "all_avg" },
-      { name: "Phase-1 Response Avg.", value: "phase_1_avg", collapsed: true },
-      { name: "Phase-2 Response Avg.", value: "phase_2_avg", collapsed: true },
+      { name: "Average Response", value: "all_avg" },
+      { name: "Avg. Response, Phase-1", value: "phase_1_avg", collapsed: true },
+      { name: "Avg. Response, Phase-2", value: "phase_2_avg", collapsed: true },
       { name: "Complexity" },
       { name: "Colorfulness1" },
       { name: "Colorfulness2" },
@@ -101,26 +101,11 @@ google.setOnLoadCallback(function(){
       { name: "ImageArea", collapsed: true }
     ],
     itemDisplay: {
-      sortingOpts: [ 
-        {name: "All Avg.", value: "all_avg"},
-        {name: "Phase-1 Response Avg.", value: "phase_1_avg"},
-        {name: "Phase-2 Response Avg.", value: "phase_2_avg"},
-        "Complexity",
-        "Colorfulness1",
-        "Colorfulness2",
-        "Saturation",
-        "QuadTree",
-        "TextArea",
-        "NonTextArea",
-        "TextGroup",
-        "ImageArea"
-      ],
+      sortBy: "Average Response",
       displayType: 'grid',
       detailsToggle: 'off',
       maxVisibleItems_Default: 20,
-      recordView: function(){ 
-          return "<a href='"+this['Image Link']+"' target='_blank'><img></a>";
-      },
+      recordView: function(){ return "<a href='"+this['Image Link']+"' target='_blank'><img></a>"; },
       visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this['Image Link']); }
     }
   });

@@ -33,11 +33,10 @@ google.setOnLoadCallback(function(){
     rightPanelLabelWidth: 240,
     source: {
       url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
+      //gdocId: '0AubxN1_iO2c-dElJVWFqaTFDeHBkRVFyUzJUWk9oRlE',
       dirPath: './data/',
       fileType: 'csv',
       tables: "cs_faculty"
-      //gdocId: '0AubxN1_iO2c-dElJVWFqaTFDeHBkRVFyUzJUWk9oRlE',
-      //tables: "Data"
     },
     summaries: [
       { name: "<i class='fa fa-university'></i> University", value: "University",
@@ -75,7 +74,7 @@ google.setOnLoadCallback(function(){
     itemDisplay: {
       sortColWidth: 60,
       autoExpandMore: true,
-      sortingOpts: "JoinYear",
+      sortBy: {name: "Year", value: "JoinYear"},
       textSearch: "Name",
       detailsToggle: "one",
       recordView: function(){

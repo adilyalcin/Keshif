@@ -15,6 +15,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+
     <script type="text/javascript">
 $(document).ready( function() {
   browser = new kshf.Browser({
@@ -22,15 +26,21 @@ $(document).ready( function() {
     itemName: "Counties",
     categoryTextWidth: 200,
     leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 90,
     source: {
+      //  http://graphics8.nytimes.com/newsgraphics/2014/08/14/police-gear/a53e059e707a5f429107eee6c2e9f77f3f5f0c2f/'
       url: "http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html",
       dirPath: 'data/',
       fileType: 'tsv',
-      tables: {name:"counties-gear", id:"CombinedName"},
-//  http://graphics8.nytimes.com/newsgraphics/2014/08/14/police-gear/a53e059e707a5f429107eee6c2e9f77f3f5f0c2f/'
+      tables: {name:"counties-gear", id:"fips"},
+      geo: {
+        file: 'data/us-counties-states-FIPS.json',
+        type: 'topojson',
+        objects: ['counties', 'states']
+      }
     },
     summaries: [
-      { name: "state", catLabel: function(d){ return getStateName(this.id); } },
+      { name: "State", value: "state", catLabel: function(d){ return getStateName(this.id); } },
       { name: "Gear Category",
         value: function(){
           var r=[];
@@ -72,35 +82,50 @@ $(document).ready( function() {
           if(this['Other armored vehicle']>0) r.push('Other armored vehicle');
           return r;
         } },
-      { name: "Machine Gun", panel: 'right' },
+      { name: "Machine Gun", panel: 'left' },
       { name: "Pistol", panel: 'right' },
       { name: "Magazine", panel: 'right' },
       { name: "Shotgun", panel: 'right' },
       { name: "Armored Vehicle", panel: 'right', collapsed: true },
       { name: "Personal Armor", panel: 'right', collapsed: true },
-      { name: "Night Vision", panel: 'right', collapsed: true }
+      { name: "Night Vision", panel: 'right', collapsed: true },
+      { name: "FIPS", value: "fips", panel: "none"}
     ],
     itemDisplay: {
-      sortingOpts: [
-        {title: 'ZipCode', value: "fips"}, 
-        "Machine Gun",
-        "Pistol",
-        "Magazine",
-        "Shotgun",
-        "Armored Vehicle",
-        "Personal Armor",
-        "Night Vision"
-      ],
+      sortBy: "FIPS",
       textSearch: 'county',
-      recordView: "CombinedName"
+      displayType: 'map',
+      geoObject: 'counties',
+      recordView: "CombinedName",
     }
   });
 });
     </script>
     <style>
 #chart_div {
-  width: 1000px;
+  width: 1200px;
   height: 700px;
+}
+
+.leaflet-overlay-pane >svg{
+  position: relative;
+      left: 0px;
+      top: 0px;
+      width: 687px;
+      height: 650px;
+      overflow: visible;
+}
+.mapRecordName{
+  display: block;
+  border-bottom: solid 1px white;
+}
+.mapTooltipValue{
+  font-size: 0.9em;
+  font-weight: 500;
+}
+.mapTooltipLabel{
+  font-size: 0.9em;
+  font-weight: 300;
 }
     </style>
 	</head>

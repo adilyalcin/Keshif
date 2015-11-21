@@ -151,6 +151,7 @@ google.setOnLoadCallback(function(){
             // Add group information to the Universities
             kshf.dt.Universities.forEach(function(u){
                 var name = u.data['institution name'];
+                u.data.Name = name;
                 u.data.Groups=[];
                 if(AAU_Group[name]){ u.data.Groups.push("AAU"); }
                 if(CIC_Group[name]){ u.data.Groups.push("CIC (Big 10)"); }
@@ -197,7 +198,7 @@ google.setOnLoadCallback(function(){
                 value: "HD2013.Carnegie Classification 2010: Enrollment Profile",
             },{ name: "Diversity", panel: 'right',
                 facets: [
-                    {*/   name: "% American Indian / Alaska Native", collapsed: true, panel: 'right',
+                    {*/   name: "% A. Indian / Alaska Native", collapsed: true, panel: 'right',
                         value: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
                         description: "Percent of total enrollment that are American Indian or Alaska Native",
                         unitName: "%"
@@ -232,31 +233,29 @@ google.setOnLoadCallback(function(){
                     /*}
                 ]*/
 
-            },{ name: "6-Year Grad Rate: % Total", panel: 'right',
+            },{ name: "6-Year Grad Rate", panel: 'right',
                 value: "DRVGR2013.Graduation rate, total cohort",
                 description: "Graduation rate, total cohort", unitName: "%"
-            },{ name: "6-Year Grad Rate: % Men", panel: 'right', collapsed: true, unitName: "%",
+            },{ name: "6-Year Grad Rate: Men", panel: 'right', collapsed: true, unitName: "%",
                 value: "DRVGR2013.Graduation rate, men",
                 description: "Graduation rate, men"
-            },{ name: "6-Year Grad Rate: % Women", panel: 'right', collapsed: true, unitName: "%",
+            },{ name: "6-Year Grad Rate: Women", panel: 'right', collapsed: true, unitName: "%",
                 value: "DRVGR2013.Graduation rate, women",
                 description: "Graduation rate, women"
             }
         ],
         itemDisplay: {
-            sortingOpts: [
-                { title:'Enrollment', value: "DRVEF2013.Total  enrollment" },
-                { title:'Grad. Rate', 
-                	value: function(){return this["DRVGR2013.Graduation rate, total cohort"];}, 
-                  unitName: "%"
-                }
-            ],
-            showRank: true,
-            textSearch: "institution name",
-            recordView: function(){
-                return "<a href='http://"+this["HD2013.Institution's internet website address"]
-                    +"' target='_blank'>"+this["institution name"]+"</a>"
-            }
+          sortBy:
+            { title:'Enrollment', 
+              value: function(){
+                return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"];
+              }},
+          showRank: true,
+          textSearch: "Name",
+          recordView: function(){
+              return "<a href='http://"+this["HD2013.Institution's internet website address"]
+                  +"' target='_blank'>"+this["institution name"]+"</a>"
+          }
         }
     });
 });

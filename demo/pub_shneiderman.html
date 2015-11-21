@@ -96,7 +96,7 @@ $(document).ready( function(){
       { name: "Year", panel: "bottom" }
     ],
     itemDisplay: {
-      sortingOpts: { name: "Year", label: function(){ return this.Year.getFullYear(); }, inverse: true },
+      sortBy: { name: "Year", label: function(){ return this.Year.getFullYear(); }, inverse: true },
       textSearch: { name: "title", value: function(){ return this.Fields.title;} },
       displayType: 'list',
       detailsToggle: "one",

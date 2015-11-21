@@ -337,7 +337,7 @@ google.setOnLoadCallback(function(){
     summaries: ["HBO_Shows"],
     itemDisplay: {
       sortColWidth: 65,
-      sortingOpts: { title: '# of Shows', value: function(){ return this.HBO_Shows.length; } },
+      sortBy: { title: '# of Shows', value: function(){ return this.HBO_Shows.length; } },
       textSearch: "Name",
       recordView: function(d){
         // resize d based on # of shows!

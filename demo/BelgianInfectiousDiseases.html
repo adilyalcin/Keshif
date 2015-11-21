@@ -17,6 +17,132 @@
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
+
+var DiseaseMap = {
+  "BORPER": "Bordetella pertussis",
+  "BRRBUR": "Borrelia burgdorferi (Lyme)",
+  "CAM_SP": "Campylobacter",
+  "CHLPSI": "Chlamydia psittaci",
+  "CHLTRA": "Chlamydia trachomatis",
+  "CRS_SP": "Cryptosporidium",
+  "ENTHIS": "Entamoeba histolytica",
+  "GIA_SP": "Giardia",
+  "HAEINF": "Haemophilus influenzae",
+  "LIS_SP": "Listeria monocytogenes",
+  "MENI": "Neisseria meningitidis",
+  "NEIGON": "Neisseria gonorrhoeae",
+  "PNEU": "Streptococcus pneumoniae",
+  "SALM": "Salmonella",
+  "SHIG": "Shigella",
+  "STRPYO": "Streptococcus pyogenes",
+  "TBEV": "Tick-borne encephalitis",
+  "V_ADV": "Adenovirus",
+  "V_HAV": "Hepatitis A virus",
+  "V_HCV": "Hepatitis C virus",
+  "V_HTV": "Hantavirus",
+  "V_PIV": "Parainfluenza",
+  "V_RSV": "Respiratory Syncytial Virus",
+  "V_RTV": "Rotavirus",
+  "VTEC": "Escherichia coli (VTEC)",
+  "WNF": "West Nile virus",
+  "YERENT": "Yersinia enterocolitica",
+  "AGAL": "S. agalactiae",
+  "AMR": "Antibiotic resistant Pseudomonas and Acinetobacter",
+  "ANAP": "Anaplasma (Ehrlichia)",
+  "BAR_SP": "Bartonella",
+  "BORPAR": "Bordetella parapertussis",
+  "BORR": "Borrelia burgdorferi",
+  "BOTU": "C. botulinum and perfringens and pseudotuberculosis",
+  "BRU_SP": "Brucella",
+  "BRUC": "Brucella",
+  "BURK": "Burkholderia cepacia",
+  "CAMP": "Campylobacter",
+  "CAN_SP": "Candida",
+  "CHIK": "Chikungunya virus",
+  "CHLPNE": "C. pneumoniae",
+  "CHOL": "V. cholerae and V. parahaemolyticus",
+  "CLSDIF": "C. difficile",
+  "COLBUR": "C. burnetii",
+  "CONG": "Congenital infections",
+  "CONSYPH": "T. pallidum congenital",
+  "CRY_SP": "Cryptococcus",
+  "CYC_SP": "Cyclospora",
+  "DENGUE": "Dengue virus",
+  "DIFF": "C. difficile",
+  "DIPH": "C. diphtheriae and ulcerans",
+  "ENC": "Enterococcus",
+  "ENTE": "Enterovirus",
+  "ESBL": "ESBL + carbapenemase producing Enterobacteriaceae",
+  "ESCCOL": "Escherichia coli (VTEC)",
+  "GONOAMR": "N. gonorrhoeae",
+  "HANTA": "Hantavirus",
+  "HELI": "H. pylori",
+  "HELPYL": "H. pylori",
+  "HEPA": "Hepatitis A virus",
+  "HEPB": "Hepatitis B virus",
+  "HEPC": "Hepatitis C virus",
+  "HEPD": "Hepatitis D virus",
+  "HEPE": "Hepatitis E virus",
+  "INFL": "Influenza virus",
+  "INFLANTIVIR": "Influenza virus",
+  "INFLVIRAGGR": "Influenza virus",
+  "LEGI": "Legionella",
+  "LEGPNE": "L. pneumophila",
+  "LEI_SP": "Leishmania",
+  "LEP_SP": "Leptospira",
+  "LGV": "C. trachomatis",
+  "LIST": "Listeria monocytogenes",
+  "MEAS": "Measles virus",
+  "MUMP": "Mumps virus",
+  "MYC_SP": "Mycobacterium",
+  "MYCO": "Mycosis",
+  "MYCOISO": "M. tuberculosis genotyping (ECDC project)",
+  "MYCTUB": "M. tuberculosis",
+  "MYPPNE": "M. pneumoniae",
+  "NEIMEN": "N. meningitidis",
+  "NORO": "Norovirus",
+  "PAS_SP": "Pasteurella",
+  "PERT": "Bordetella pertussis and parapertussis",
+  "PLA_SP": "Plasmodium",
+  "POLI": "Poliovirus",
+  "QFEV": "C. burnetii",
+  "RABI": "Rabies virus",
+  "RESP": "Respiratory pathogens",
+  "RICK": "Rickettsia",
+  "ROTA": "Rotavirus",
+  "RUBE": "Rubella virus",
+  "SAL_SP": "Salmonella",
+  "SARS": "Severe Acute Respiratory Syndrome",
+  "SHI_SP": "Shigella",
+  "STAAUR": "S. aureus",
+  "STAU": "S. aureus",
+  "STRBHB": "S. agalactiae",
+  "STRPNE": "S. pneumoniae",
+  "STRPYO": "S. pyogenes",
+  "STRPYOG": "S. pyogenes",
+  "SYPH": "T. pallidum",
+  "TOP_SP": "Toxoplasma",
+  "TREPAL": "T. pallidum",
+  "TUBE": "Mycobacterium",
+  "TUBECULT": "Mycobacterium identification",
+  "TUBEGENO": "M. tuberculosis genotyping (Brussels)",
+  "V_ENV": "Enterovirus",
+  "V_HBV": "Hepatitis B virus",
+  "V_HEV": "Hepatitis E virus",
+  "V_HSV": "Herpes simplex virus",
+  "V_INF": "Influenza virus",
+  "V_MEV": "Measles virus",
+  "V_MTV": "Human metapneumovirus",
+  "V_MUV": "Mumps virus",
+  "V_NWA": "Norovirus",
+  "V_PAV": "Human Papillomavirus",
+  "V_PVV": "Parvovirus B19",
+  "V_RBV": "Rubella virus",
+  "V_RHI": "Rhinovirus",
+  "YELF": "Yellow fever virus",
+  "YERS": "Y"
+};
+
 $(document).ready( function(){
 
   var dateFormat=d3.time.format("%Y-%m-%d");
@@ -33,140 +159,9 @@ $(document).ready( function(){
       tables: "epistat_public_cases"
     },
     summaries: [
-      { name: "Disease", value: "Subject",
-        catLabel: function(){ 
-          switch(this.id){
-            case "BORPER": return "Bordetella pertussis";
-            case "BRRBUR": return "Borrelia burgdorferi (Lyme)";
-            case "CAM_SP": return "Campylobacter";
-            case "CHLPSI": return "Chlamydia psittaci";
-            case "CHLTRA": return "Chlamydia trachomatis";
-            case "CRS_SP": return "Cryptosporidium";
-            case "ENTHIS": return "Entamoeba histolytica";
-            case "GIA_SP": return "Giardia";
-            case "HAEINF": return "Haemophilus influenzae";
-            case "LIS_SP": return "Listeria monocytogenes";
-            case "MENI": return "Neisseria meningitidis";
-            case "NEIGON": return "Neisseria gonorrhoeae";
-            case "PNEU": return "Streptococcus pneumoniae";
-            case "SALM": return "Salmonella";
-            case "SHIG": return "Shigella";
-            case "STRPYO": return "Streptococcus pyogenes";
-            case "TBEV": return "Tick-borne encephalitis";
-            case "V_ADV": return "Adenovirus";
-            case "V_HAV": return "Hepatitis A virus";
-            case "V_HCV": return "Hepatitis C virus";
-            case "V_HTV": return "Hantavirus";
-            case "V_PIV": return "Parainfluenza";
-            case "V_RSV": return "Respiratory Syncytial Virus";
-            case "V_RTV": return "Rotavirus";
-            case "VTEC": return "Escherichia coli (VTEC)";
-            case "WNF": return "West Nile virus";
-            case "YERENT": return "Yersinia enterocolitica";
-            case "AGAL": return "S. agalactiae";
-            case "AMR": return "Antibiotic resistant Pseudomonas and Acinetobacter";
-            case "ANAP": return "Anaplasma (Ehrlichia)";
-            case "BAR_SP": return "Bartonella";
-            case "BORPAR": return "Bordetella parapertussis";
-            case "BORR": return "Borrelia burgdorferi";
-            case "BOTU": return "C. botulinum and perfringens and pseudotuberculosis";
-            case "BRU_SP": return "Brucella";
-            case "BRUC": return "Brucella";
-            case "BURK": return "Burkholderia cepacia";
-            case "CAMP": return "Campylobacter";
-            case "CAN_SP": return "Candida";
-            case "CHIK": return "Chikungunya virus";
-            case "CHLPNE": return "C. pneumoniae";
-            case "CHOL": return "V. cholerae and V. parahaemolyticus";
-            case "CLSDIF": return "C. difficile";
-            case "COLBUR": return "C. burnetii";
-            case "CONG": return "Congenital infections";
-            case "CONSYPH": return "T. pallidum congenital";
-            case "CRY_SP": return "Cryptococcus";
-            case "CYC_SP": return "Cyclospora";
-            case "DENGUE": return "Dengue virus";
-            case "DIFF": return "C. difficile";
-            case "DIPH": return "C. diphtheriae and ulcerans";
-            case "ENC": return "Enterococcus";
-            case "ENTE": return "Enterovirus";
-            case "ESBL": return "ESBL + carbapenemase producing Enterobacteriaceae";
-            case "ESCCOL": return "Escherichia coli (VTEC)";
-            case "GONOAMR": return "N. gonorrhoeae";
-            case "HANTA": return "Hantavirus";
-            case "HELI": return "H. pylori";
-            case "HELPYL": return "H. pylori";
-            case "HEPA": return "Hepatitis A virus";
-            case "HEPB": return "Hepatitis B virus";
-            case "HEPC": return "Hepatitis C virus";
-            case "HEPD": return "Hepatitis D virus";
-            case "HEPE": return "Hepatitis E virus";
-            case "INFL": return "Influenza virus";
-            case "INFLANTIVIR": return "Influenza virus";
-            case "INFLVIRAGGR": return "Influenza virus";
-            case "LEGI": return "Legionella";
-            case "LEGPNE": return "L. pneumophila";
-            case "LEI_SP": return "Leishmania";
-            case "LEP_SP": return "Leptospira";
-            case "LGV": return "C. trachomatis";
-            case "LIST": return "Listeria monocytogenes";
-            case "MEAS": return "Measles virus";
-            case "MUMP": return "Mumps virus";
-            case "MYC_SP": return "Mycobacterium";
-            case "MYCO": return "Mycosis";
-            case "MYCOISO": return "M. tuberculosis genotyping (ECDC project)";
-            case "MYCTUB": return "M. tuberculosis";
-            case "MYPPNE": return "M. pneumoniae";
-            case "NEIMEN": return "N. meningitidis";
-            case "NORO": return "Norovirus";
-            case "PAS_SP": return "Pasteurella";
-            case "PERT": return "Bordetella pertussis and parapertussis";
-            case "PLA_SP": return "Plasmodium";
-            case "POLI": return "Poliovirus";
-            case "QFEV": return "C. burnetii";
-            case "RABI": return "Rabies virus";
-            case "RESP": return "Respiratory pathogens";
-            case "RICK": return "Rickettsia";
-            case "ROTA": return "Rotavirus";
-            case "RUBE": return "Rubella virus";
-            case "SAL_SP": return "Salmonella";
-            case "SARS": return "Severe Acute Respiratory Syndrome";
-            case "SHI_SP": return "Shigella";
-            case "STAAUR": return "S. aureus";
-            case "STAU": return "S. aureus";
-            case "STRBHB": return "S. agalactiae";
-            case "STRPNE": return "S. pneumoniae";
-            case "STRPYO": return "S. pyogenes";
-            case "STRPYOG": return "S. pyogenes";
-            case "SYPH": return "T. pallidum";
-            case "TOP_SP": return "Toxoplasma";
-            case "TREPAL": return "T. pallidum";
-            case "TUBE": return "Mycobacterium";
-            case "TUBECULT": return "Mycobacterium identification";
-            case "TUBEGENO": return "M. tuberculosis genotyping (Brussels)";
-            case "V_ENV": return "Enterovirus";
-            case "V_HBV": return "Hepatitis B virus";
-            case "V_HEV": return "Hepatitis E virus";
-            case "V_HSV": return "Herpes simplex virus";
-            case "V_INF": return "Influenza virus";
-            case "V_MEV": return "Measles virus";
-            case "V_MTV": return "Human metapneumovirus";
-            case "V_MUV": return "Mumps virus";
-            case "V_NWA": return "Norovirus";
-            case "V_PAV": return "Human Papillomavirus";
-            case "V_PVV": return "Parvovirus B19";
-            case "V_RBV": return "Rubella virus";
-            case "V_RHI": return "Rhinovirus";
-            case "YELF": return "Yellow fever virus";
-            case "YERS": return "Y";
-            default: return this.id;
-          }
-        }
-        },
+      { name: "Disease", value: "Subject", catLabel: function(){ return DiseaseMap[this.id]; } },
       { name: "Gender", panel: "right" },
-      { name: "Age", panel: "right", value: function(){ 
-          if(this.Age<0 || this.Age > 100) return;
-          return this.Age;
-        }},
+      { name: "Age", value: function(){if(this.Age>0 && this.Age<100) return this.Age;}, panel: "right"},
       { name: "Date", panel: "bottom",
         value: function(){ 
           if(this.DateMonday===undefined) return;

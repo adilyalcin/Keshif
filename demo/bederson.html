@@ -81,8 +81,8 @@ google.setOnLoadCallback(function() {
       { name: "Date", panel: 'middle' }
     ],
     itemDisplay: {
+      sortBy: {name: "Date", inverse: true},
       sortColWidth: 45,
-      sortingOpts: { title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
       textSearch: 'title',
       detailsToggle: "one",
       recordView: function(){

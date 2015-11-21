@@ -9,7 +9,6 @@
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
@@ -37,8 +36,8 @@ google.setOnLoadCallback(function(){
       { name: "Date", panel: "bottom" }
     ],
     itemDisplay: {
+      sortBy: "# Killed",
       sortColWidth: 45,
-      sortingOpts: ['# Killed', '# Injured', 'Date'],
       recordView: function(){ 
         // Date State   City Or County  Address # Killed    # Injured
       return "<b>"+this.State + ", " + this['City Or County'] +", "+this.Address+"</b>"+

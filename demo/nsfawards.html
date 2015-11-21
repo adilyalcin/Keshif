@@ -64,12 +64,11 @@ $(document).ready(function(){
     ],
     itemDisplay: {
       sortColWidth: 70,
-      sortingOpts:
-        { name: 'Amount', value: "AwardedAmountToDate",
+      sortBy:
+        { name: 'Awarded Amount',
           label: function(){
             var v=this.AwardedAmountToDate;
-            if(v===undefined) return "-";
-            return frmt(v) + " $";
+            return (v===undefined) "-" ? frmt(v);
           }
         },
       textSearch: 'Title',

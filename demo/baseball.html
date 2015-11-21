@@ -64,7 +64,7 @@ $(document).ready(function() {
     ],
     itemDisplay: {
       sortColWidth: 75,
-      sortingOpts: [
+      sortBy: [
         {   title: 'Date',
             value: function(){ 
                 var dt = this['primary-date'];
@@ -78,8 +78,7 @@ $(document).ready(function() {
                 if(dt===""){ return null; }
                 return moment(dt,"MM/DD/YYYY").format("MMM YYYY"); 
             }
-        },
-        'Transact.ID',
+        }
       ],
       recordView: function(){
         return "<div class=\"iteminfo iteminfo_0\">Player: "+

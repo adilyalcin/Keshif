@@ -56,13 +56,13 @@ $(document).ready( function() {
         value: function(){ if(this.participant_age) return this.participant_age.split(", ");} },
       { name: "Status", value: "status", panel: "right" },
       //{ name: "Project Topic", value: "project_topic"},
-      { name: "Start Date", value: "start_date", layout: "middle"}
+      { name: "Start Year", value: "start_date", layout: "middle"}
     ],
     itemDisplay: {
       sortColWidth: 50,
-      sortingOpts: [ "start_date", "cartodb_id" ],
-      textSearch: "Name",
-      recordView: function(){ return this.project_name; }
+      sortBy: "Start Year",
+      textSearch: "project_name",
+      recordView: "project_name"
     }
   });
 });

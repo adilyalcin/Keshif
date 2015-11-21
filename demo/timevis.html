@@ -135,22 +135,22 @@ $(document).ready( function(){
             }
         ],
         itemDisplay: {
-            sortingOpts: "Year",
-            displayType: 'grid',
-            textSearch: "Name",
-            recordView: function(){
-                var iconList="<div class='iconList'>";
-                this.categories.forEach(function(cat){
-                    iconList+="<span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
-                });
-                iconList+="</div>";
-                return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Name+
-                    "' class='thumbnail' title='"+this.Info+"'><img class='thumbImg'></a><span class='title'>"+this.Name+"</span>"+
-                    iconList;
-            },
-            visibleCb: function(d){
-                d3.select(d.DOM.record).select("img").attr("src",this.imageURL_full);
-            }
+          sortBy: "Year",
+          displayType: 'grid',
+          textSearch: "Name",
+          recordView: function(){
+            var iconList="<div class='iconList'>";
+            this.categories.forEach(function(cat){
+                iconList+="<span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
+            });
+            iconList+="</div>";
+            return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Name+
+                "' class='thumbnail' title='"+this.Info+"'><img class='thumbImg'></a><span class='title'>"+this.Name+"</span>"+
+                iconList;
+          },
+          visibleCb: function(d){
+            d3.select(d.DOM.record).select("img").attr("src",this.imageURL_full);
+          }
         }
     });
 });

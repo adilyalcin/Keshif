@@ -35,9 +35,9 @@ google.setOnLoadCallback(function(){
           }
         } },
       { name: "Cyclinders", catSortBy: "id" },
-      { name: "MPG" },
+      { name: "MPG", unitName: "mpg"},
       { name: "Engine Displacement", unitName: "cu.\"", panel: 'right' },
-      { name: "Horsepower", panel: 'right' },
+      { name: "Horsepower", unitName: "hp", panel: 'right' },
       { name: "Weight", unitName: "lbs", panel: 'right' },
       { name: "Acceleration", description: "0 to 60 mph", unitName: "sec" },
       { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,1,1);} },
@@ -46,7 +46,7 @@ google.setOnLoadCallback(function(){
         value: function(){ return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>"; } }
     ],
     itemDisplay: {
-      sortingOpts: ["MPG", "Weight", "Year"],
+      sortBy: "MPG",
       sortColWidth: 60,
       textSearch: "Name",
       recordView: "RecordView"

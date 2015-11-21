@@ -143,14 +143,11 @@ $(document).ready( function(){
       { name: "Reviewed", description: "Mouse-over the book image to see my review",
         value: function(){ return (this.Review!=="")?"Yes":"No"; } },
       { name: "# of Pages", value: "NumPages", collapsed: true },
-      { name: "Year: Book Read", value: "ReadYear", panel: "middle", collapsed: true },
-      { name: "Year: Publication (Excl. Books Pre-1990)", value: "PubYear", panel: "middle" }
+      { name: "Year Read", value: "ReadYear", panel: "middle", collapsed: true },
+      { name: "Year Publication", value: "PubYear", panel: "middle", description: "(Excl. Books Pre-1990)" }
     ],
     itemDisplay: {
-      sortingOpts: [
-        "Rating",
-        { name: "Date read", value: function(){ return this.ReadYear + (this.ReadMonth/12.0); } }
-      ],
+      sortBy: "Year Read",
       textSearch: "Title",
       displayType: "grid",
       recordView: function(){

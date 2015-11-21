@@ -57,7 +57,7 @@ $(document).ready( function(){
         value: function(){ if(this.claimed) return "Claimed"; } }
     ],
     itemDisplay: {
-      sortingOpts: { name: 'Age at Death', value: "Age", inverse:false },
+      sortBy: "Age at Death",
       textSearch: { name: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
       recordView: function(){
         var str="";

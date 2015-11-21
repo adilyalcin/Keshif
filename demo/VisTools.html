@@ -216,8 +216,8 @@ $(document).ready( function(){
       { name: "Author", panel: "right", collapsed: true },
     ],
     itemDisplay: {
-      sortingOpts: {
-      	title:'', 
+      sortBy: {
+      	title:'★s', 
       	value: function(){
       		if(this['★']===null) return this.id;
       		if(this['★']===undefined) return this.id;
@@ -296,12 +296,11 @@ $(document).ready( function(){
         { name: "Year" },
       ],
       itemDisplay: {
-        sortingOpts: { 
-          name: "★'s, then Year", 
+        sortBy: { 
+          name: "★s, then Year", 
           value: function(){ 
             if(this['★']===null) return this.Year;
             return this.Year+ this['★'].length*3000;
-            return 
           },
           label: function(){
             if(this['★']===null) return this.Year;

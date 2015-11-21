@@ -46,9 +46,9 @@ google.setOnLoadCallback(function(){
       { name: "Date",  panel: 'bottom' }
     ],
     itemDisplay: {
+      sortBy: { title: 'Date', label: function(){ return timeFormat(this.Date);} },
       sortColWidth: 120,
       displayType: 'grid',
-      sortingOpts: { title: 'Date', label: function(){ return timeFormat(this.Date);} },
       textSearch: "Info",
       recordView: function(){ 
         return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'><img class='thumbImg'></a>"+

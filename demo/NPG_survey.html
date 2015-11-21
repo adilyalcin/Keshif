@@ -261,11 +261,9 @@ $(document).ready(function() {
         itemDisplay: {
             detailsToggle: "one",
             textSearch: {name: "Comment", value: columns[11] },
-            sortingOpts: { 
-                name: "| <span class='fa fa-comment'></span> |", 
-                value: function(){ 
-                    if(this[columns[11]]!==null) return this[columns[11]].length; 
-                }
+            sortBy: { 
+                name: "Comment length", 
+                value: function(){ if(this[columns[11]]!==null) return this[columns[11]].length;  }
             },
             recordView: function(){ 
                 if(this[columns[11]]===null) return "-";

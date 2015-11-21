@@ -40,12 +40,7 @@ $(document).ready( function(){
       { name: "<i class='fa fa-money'></i> Revenue", value: 'revenue', panel: "right", unitName: "$"},
     ],
     itemDisplay: {
-      sortingOpts: [
-        {title: 'Growth', value: function(){ return this.growth;},
-            label: function(){ return simpleFormat(this.growth); }, unitName: "%"},
-        {title: 'Workers', value: function(){ return this.workers;}},
-        {title: 'Revenue', value: function(){ return this.revenue;}},
-      ],
+      sortBy: {title: 'growth', label: function(){ return simpleFormat(this.growth); }},
       textSearch: "company",
       showRank: true,
       recordView: function(){

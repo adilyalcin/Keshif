@@ -42,15 +42,15 @@ $(document).ready( function() {
       { name: "Base Salary", value:"Base", unitName:'$', panel:'right' },
       { name: "Overtime Salary", value:"OT", unitName:'$', panel:'right' },
       { name: "Other Salary", unitName:'$', panel:'right' },
-      { name: "Medical + Dental + Vision", value:"MDV", unitName:'$', panel:'right' },
-      { name: "ER (Salary)", value:'ER', unitName:'$', collapsed:true, panel:'right' },
-      { name: "EE (Salary)", value:'EE', unitName:'$', collapsed:true, panel:'right' },
-      { name: "DC (Salary)", value:'DC', unitName:'$', intervalScale:'log', collapsed:true, panel:'right' },
+      { name: "Medical, Dental, Vision", value:"MDV", unitName:'$', panel:'right' },
+      { name: "ER Salary", value:'ER', unitName:'$', collapsed:true, panel:'right' },
+      { name: "EE Salary", value:'EE', unitName:'$', collapsed:true, panel:'right' },
+      { name: "DC Salary", value:'DC', unitName:'$', intervalScale:'log', collapsed:true, panel:'right' },
       { name: "Source", panel: 'right' }
     ],
     itemDisplay: {
       sortColWidth: 70,
-      sortingOpts: [ 'Total Salary', 'Base Salary', 'Overtime Salary' ],
+      sortBy: "Total Salary",
       textSearch: "Name",
       recordView: function(){ return this.Name+" <span class='empTitle'>"+this.Title+"</span>"; }
     }

@@ -66,7 +66,7 @@ google.setOnLoadCallback( function(){
     },
     summaries: [
       { name: "Size" },
-      { name: "Total Spilled", collapsed: false, panel: "middle" },
+      { name: "Total Spilled Material", collapsed: false, panel: "middle" },
       { name: "Crude & Condensate", collapsed: true, panel: "middle" },
       { name: "Refined Petroleum", collapsed: true, panel: "middle" },
       { name: "Synthetic Base Fluid", collapsed: true, panel: "middle" },
@@ -79,20 +79,17 @@ google.setOnLoadCallback( function(){
       { name: "During Activity", collapsed: false },
       { name: "Cause", panel: 'right' },
       { name: "Other Properties", value: "Notes", panel: 'right', collapsed: true, catTableName: "Notes", catLabel: "name" },
-      { name: "Spill Date", panel: 'bottom', value: getDate }
+      { name: "Date", panel: 'bottom', value: getDate }
     ],
     itemDisplay: {
       sortColWidth: 58,
-      sortingOpts: [
-        { name: "Date", inverse: true, value: getDate,
+      sortBy: 
+        { name: "Date", inverse: true,
           label: function(){ 
             var date=getDate.call(this);
             return date.getUTCFullYear()+"-"+(date.getUTCMonth()+1); 
-          } },
-        "Total Spilled",
-        "Crude & Condensate" ,
-        "Synthetic Base Fluid"
-      ],
+          }
+        },
       recordView: function(){
         var j;
         var str="";

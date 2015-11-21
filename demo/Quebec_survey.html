@@ -173,21 +173,21 @@ $(document).ready(function() {
             }
         ],
         itemDisplay: {
-            sortColWidth: 45,
-            detailsToggle: "One",
-            textSearch: { title: 'content', value: 'Question_ouverte q_41_commentaires_généraux_questionnaire'},
-            sortingOpts: { 
-                title: "| <span class='fa fa-comment'></span> |", 
-                value: function(){ 
-                    var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
-                    if(v===null) return 0;
-                    return v.length; 
-                }
-            },
-            recordView: function(){ 
-                var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
-                return (v===null)?"-":("<blockquote>" + v + "</blockquote>");
+          sortBy: { 
+            title: "Length of comment", 
+            value: function(){ 
+              var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+              if(v===null) return 0;
+              return v.length; 
             }
+          },
+          sortColWidth: 45,
+          detailsToggle: "One",
+          textSearch: { title: 'content', value: 'Question_ouverte q_41_commentaires_généraux_questionnaire'},
+          recordView: function(){ 
+              var v=this[col_s['Question_ouverte q_41_commentaires_généraux_questionnaire']];
+              return (v===null)?"-":("<blockquote>" + v + "</blockquote>");
+          }
         }
     });
 

@@ -104,11 +104,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .kshfChart:hover > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize{
         display: block;
       }
-      .recordDisplay {
+      .recordDisplay{
         .buttonRecordViewRemove{ visibility: visible; }
         &[displaytype="list"]:hover > .recordGroup > .dragWidthHandle{ display: block; }
       }
-      .recordDisplay--Header > .itemRank_control{
+      .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control{
         display: inline-block;
       }
       .panel:hover > .panelAdjustWidth{
@@ -137,6 +137,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .panel_Basic > .filterClearAll{
         opacity: 1;
         pointer-events: all;
+      }
+    }
+    &[record_display="list"]{
+      .kshfChart[summary_type="interval"]:hover{
+        .headerGroup .summaryIcons > .useForRecordDisplay{
+          display: block;
+          &::before{ content: "\f0dc"; }
+        }
+      }
+    }
+    &[record_display="map"]{
+      .kshfChart[summary_type="interval"]{
+        .headerGroup .summaryIcons > .useForRecordDisplay{
+          &::before{ content: "\f278"; }
+        }
+        &[usedforsorting="true"]{
+          .headerGroup .summaryIcons > .useForRecordDisplay{
+            color: black;
+            display: block;
+          }
+        }
+        &:hover{
+          .headerGroup .summaryIcons > .useForRecordDisplay{
+            display: block;
+          }
+        }
       }
     }
     &[showdropzone=true]{
@@ -183,6 +209,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
+    .unitName{
+      margin-left: 1px;
+    }
+    
     .lockButton{
       display: block;
       position: absolute;
@@ -348,7 +378,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-size: 0.8em;
         padding: 1px;
         margin: 1px;
-        min-height: 34px;
+        //min-height: 34px;
         left: 0px;
         border-radius: 3px;
         background-color: rgb(232, 232, 232);
@@ -598,8 +628,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         padding:1px 0px 1px 0px;
                         display: inline;
                         margin-right: 15px;
-                        .unitName{
-                            margin-left: 1px;
+                        > .unitName{
                             font-weight: 300;
                         }
                     }
@@ -916,6 +945,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.panel_side{
             .display(flex);
             .flex-direction(column);
+            z-index: 100;
             vertical-align: top;
             position: relative;
             height: 100%;
@@ -1524,7 +1554,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-radius: 3px;
         box-shadow: 0px 0px 2px rgb(155, 155, 155);
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
-        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);");
+//        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);");
+        background-color: rgb(235, 235, 235);
         z-index: 6; // So that header shadow appears on top of the scrollbar / content below.
 
         .summaryTitle {
@@ -1578,21 +1609,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-right: 3px;
         }
         .summaryIcons{
-            top: 2px;
+            top: 3px;
             right: 2px;
             position: absolute;
             font-size: 0.9em;
-            color: gray;
-            .fa{
-                cursor: pointer;
-                margin-left: 2px;
-                &:hover{ color:black; }
+            > .fa{
+              color: gray;
+              cursor: pointer;
+              margin-left: 2px;
+              &:hover{ color: black; }
             }
-            .hasMultiMappings{
-                display: none;
+            > .hasMultiMappings{
+              display: none;
             }
-            .summaryDescription{
-                cursor: default;
+            > .summaryDescription{
+              display: none;
+              cursor: default;
+            }
+            > .useForRecordDisplay{
+              display: none;
+              &:hover{ color: orangered; }
             }
         }
         > .header_display_control{
@@ -2263,7 +2299,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 > .selected-item-value-text-v{
                                     position: relative;
                                     left: -50%;
-                                    top: -2px;
+                                    top: -4px;
                                     background-color: white;
                                     border-radius: 4px;
                                     border: solid 1px #DDDDDD;
@@ -2355,10 +2391,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 display: block;
                                 text-align: center;
                                 white-space: nowrap;
-                                > .unitName{
-                                    opacity: 0.6;
-                                    margin-left: 1px;
-                                }
+                                > .unitName{ color: gray; }
                             }
                             > .line{
                                 position: absolute;
@@ -2645,28 +2678,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
                     &[selectedForLink=true]{
                         .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
-                        > .itemLinkStateColumn > .itemLinkIcon{
-                            display: inline;
-                            color: @color_bars_selected;
-                            &:hover{
-                                color: orangered;
-                            }
-                        }
                     }
                 }
                 &[highlight=true]{
-                    box-shadow: inset 0px 0px 5px #BBBBBB;
-                    background-color: #F8F8F8;
-                    > .itemLinkStateColumn > .itemLinkIcon{
-                        display: inline;
-                        color: gray;
-                    }
-                }
-                &[selectedForLink=true] .itemLinkStateColumn > .itemSelectCheckbox:before{
-                    content: "\f046"; // checked
-                }
-                &[selectedForLink=false] .itemLinkStateColumn > .itemSelectCheckbox:before{
-                    content: "\f096"; // unchecked
+                    box-shadow: inset 0px 0px 5px #FF9973;
+                    background-color: #FFFBF9;
+                    //box-shadow: inset 0px 0px 5px #BBBBBB;
+                    //background-color: #F8F8F8;
                 }
             } // kshfRecord
         } // recordGroup
@@ -2732,6 +2750,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .itemRank_control{ color: gray; }
         }
 
+        &[displaytype="map"]{
+          overflow: visible !important;
+          .scrollToTop{ display: none; }
+          .sortButton{ display: none; }
+          .recordGroup{
+            overflow: visible !important;
+            > .kshfRecord{
+              stroke-width: 1px;
+              stroke: rgba(255,255,255,0.5);
+              cursor: pointer;
+              &:hover{
+                fill: orangered !important;
+              }
+              &[highlight="true"]{
+                stroke: orangered;
+                stroke-width: 1px;
+                opacity: 1 !important;
+              }
+            }
+          }
+        }
+
         &[displaytype="grid"][hasrecordview="true"] {
           > .recordGroup {
             .display(flex);
@@ -2759,37 +2799,38 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[displaytype="list"][hasrecordview="true"] {
             > .recordGroup{
-                > .kshfRecord{
-                    .display(flex);
-                    .flex-direction(row);
-                    width: 100%;
-                    > .recordSortCol{
-                        padding-right: 3px;
-                        padding-top: 2px;
-                        font-weight: 300;
-                        text-align: right;
-                        font-size: 0.8em;
-                        cursor: default;
-                        vertical-align: top;
+              > .kshfRecord{
+                .display(flex);
+                .flex-direction(row);
+                width: 100%;
+                > .recordSortCol{
+                  padding-right: 3px;
+                  padding-top: 2px;
+                  font-weight: 300;
+                  text-align: right;
+                  font-size: 0.8em;
+                  cursor: default;
+                  vertical-align: top;
 
-                        white-space: nowrap;
-                        text-overflow: ellipsis;
-                        overflow: hidden;
-                    }
-                    > .recordRank{
-                        float: left;
-                        margin-top: 4px;
-                        width: 15px;
-                        padding-right: 2px;
-                    }
-                    > .recordToggleDetail{
-                        width: 18px;
-                        text-align: center;
-                    }
-                    > .content{
-                        .flex(1);
-                    }
+                  white-space: nowrap;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  > .unitName { color: gray; }
                 }
+                > .recordRank{
+                  float: left;
+                  margin-top: 4px;
+                  width: 15px;
+                  padding-right: 2px;
+                }
+                > .recordToggleDetail{
+                  width: 18px;
+                  text-align: center;
+                }
+                > .content{
+                  .flex(1);
+                }
+              }
             }
             &[detailsToggle="zoom"]{
                 > .recordGroup > .kshfRecord > .recordToggleDetail{
@@ -3097,6 +3138,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         span.action{
             font-weight: 700;
         }
+    }
+    .unitName{
+      margin-left: 1px;
+      color: lightgray;
     }
     &.tipsyFilterAnd{
         .tipsy-inner{

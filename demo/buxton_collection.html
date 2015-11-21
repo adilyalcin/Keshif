@@ -186,8 +186,8 @@ $(document).ready( function(){
       { name: "Degree of Freedom" }
     ],
     itemDisplay: {
-      sortingOpts: {
-        name: "Year",
+      sortBy: {
+        name: "Year", inverse: true,
         value: function(){ if(this.Year) return this.Year.getTime(); },
         label: function(){ if(this.Year) return this.Year.getFullYear(); }
       },

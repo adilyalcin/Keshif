@@ -85,22 +85,22 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "Topic", },
-      { name: "Has Code" },
-      { name: "Column / Feature" },
-      { name: "Column Name" },
+      "Topic",
+      "Has Code",
+      "Column / Feature",
+      "Column Name",
       { name: "Issue Date", panel: 'middle' },
       { name: "Popularity", panel: 'right', catSortBy: { value: "id", inverse: true },
         catLabel: function(){
           var str='';
           for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";
           return str;
-        } },
+        }},
       { name: "Page Views", panel: 'right' },
       { name: "Authors", panel: 'right' }
     ],
     itemDisplay: {
-      sortingOpts: [ 'Page Views', {title:'id', inverse:true} ],
+      sortBy: 'Page Views',
       textSearch: "Name",
       recordView: function(){
         return "<a target='_blank' class='articleLink' href='"+

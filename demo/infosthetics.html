@@ -45,10 +45,7 @@ $(document).ready( function(){
       { name: "Date", panel: 'bottom' }
     ],
     itemDisplay: {
-      sortingOpts: [
-        { title: 'Date', label: function(){ return moment(this.Date).format("MMM Do, YY"); }, inverse: true },
-        '# of Comments'
-      ],
+      sortBy: { title: 'Date', label: function(){ return moment(this.Date).format("MMM Do, YY"); }, inverse: true },
       textSearch: "Title",
       displayType: 'grid',
       maxVisibleItems_Default: 50,

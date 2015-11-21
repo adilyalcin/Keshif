@@ -60,7 +60,7 @@ $(document).ready( function(){
       { name: "Number of <span class='fa fa-tree'></span>s in Staten Island", value: "Staten Island", intervalScale: "log" }
     ],
     itemDisplay: {
-      sortingOpts: {title: '# Total Trees', value: "Total"},
+      sortBy: {title: '# Total Trees', value: function(){ return this.Total;} },
       detailsToggle: "off",
       displayType: 'grid',
       textSearch: {title: 'Tree Name', value: "Common"},

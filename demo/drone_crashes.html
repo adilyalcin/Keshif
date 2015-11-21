@@ -37,7 +37,8 @@ $(document).ready( function(){
       { name: "Owner" }
     ],
     itemDisplay: {
-      sortingOpts: ['Estimated Damage', 'Date'],
+      sortBy: 'Estimated Damage',
+      sortColWidth: 70,
       recordView: function(){ return this.Narrative +", "+this.Country; }
     }
   });

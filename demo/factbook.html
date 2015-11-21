@@ -239,7 +239,7 @@ $(document).ready( function(){
             },{ name: "Border countries", panel: "right"
 //            },{
 //                name: "Independence", panel: "right"
-            },{ name: "Education Expend.s (%)", panel: "right", unitName: "%",
+            },{ name: "Education Expenditures", panel: "right", unitName: "%",
                 description: "This entry provides the public expenditure on education as a percent of GDP.",
                 value: "Education Expenditures"
             },{ name: "Population", panel: "right",
@@ -252,16 +252,14 @@ $(document).ready( function(){
         ],
         itemDisplay: {
             sortColWidth: 50,
-            sortingOpts : [
-                {   title: 'Population',
-                    label: function(){
-                        var p=this.Population;
-                        if(p===undefined) return "-";
-                        return d3.format(".4s")(p);
-                    }
-                },
-                'Education Expenditures'
-            ],
+            sortBy: { 
+              title: 'Population',
+              label: function(){
+                var p=this.Population;
+                if(p===undefined) return "-";
+                return d3.format(".4s")(p);
+              }
+            },
             showRank: true,
             textSearch: "Name",
             recordView : function(){
