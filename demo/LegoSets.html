@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Lego Sets</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  resizeBrowser(300,70);
+  $(window).resize(function() {
+    resizeBrowser(300,70);
+    browser.updateLayout();
+  });
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 150,
+    rightPanelLabelWidth: 200,
+    source: {
+      gdocId: '10oyawHEMwBfwDXPc9v0Il4OhRR-9OlDY6yg9gU6LJfU',
+      tables: "Lego Sets"
+    },
+    readyCb: function(){
+      this.summaries_by_name.Image_URL.destroy_full();
+      this.summaries_by_name.CAD_MSRP.destroy_full();
+      this.summaries_by_name.EUR_MSRP.destroy_full();
+      this.summaries_by_name.GBP_MSRP.destroy_full();
+      this.summaries_by_name.id.destroy_full();
+      this.summaries_by_name.Item_Number.destroy_full();
+      this.summaries_by_name.Name.destroy_full();
+    },
+    summaries: [
+      { name: "Year", panel: 'bottom' },
+      { name: "Theme"},
+      { name: "Sub-theme" },
+      { name: "# of Pieces", panel: 'right' },
+      { name: "# of Mini-Figures", panel: 'right', type: 'interval' },
+      { name: "Cost in USD$", value: 'USD_MSRP', panel: 'right', unitName: "$" },
+      { name: "Packaging", panel: "right" },
+      { name: "Availability", panel: "right", collapsed: true}
+    ],
+    itemDisplay: {
+      displayType: "grid",
+      sortBy: "Cost in USD$",
+      textSearch: "Name",
+      detailsToggle: "off",
+//      recordView: "Name",
+      recordView : function(){
+        return "<img class='thumbImg' id='img_"+this.id+"'></a><span class='subTitle'>"+this.Name+"</span>";
+      },
+      visibleCb: function(d){
+        d3.select(d.DOM.record).select("img").attr("src",this.Image_URL);
+      }
+    }
+  });
+});
+    </script>
+    <style>
+.kshfRecord{
+  width: 90px;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+.kshfRecord .thumbImg{
+  width: auto !important;
+  max-height: 55px;
+}
+.kshfRecord:hover{
+  z-index: 200 !important;
+  overflow: visible !important;
+}
+.kshfRecord .content img:hover{
+  transform: scale(1.5);
+}
+
+.subTitle{
+  font-size: 0.7em !important;
+}
+
+.thumbnail{
+  overflow: visible !important;
+}
+
+.content img.thumbImg{
+  transition: all 200ms linear;
+  -webkit-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
+</html>
