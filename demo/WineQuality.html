@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Wine Quality</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 350,
+    leftPanelLabelWidth: 100,
+    rightPanelLabelWidth: 100,
+    source: {
+      gdocId: '1NdbKqXPwE1l71VkpLgLhGKhJNnpDIH4wWGoLTXwwsK4',
+      tables: "Wine Samples"
+    },
+    summaries: [
+      { name: "Type" },
+      { name: "Alcohol" },
+      { name: "Residual Sugar" },
+      { name: "Sulphates" },
+      { name: "Total Sulfur Dioxide" },
+      { name: "Free Sulfur Dioxide" },
+      { name: "Quality", panel: "right" },
+      { name: "Chlorides", panel: "right" },
+      { name: "pH", panel: "right" },
+      { name: "Volatile Acidity", panel: "right" },
+      { name: "Fixed Acidity", panel: "right" },
+      { name: "Citric Acid", panel: "right" },
+    ]
+    });
+});
+    </script>
+    <style>
+#chart_div {
+  width: 990px;
+  height: 750px;
+}
+.kshfChart[chart_id="1"] {
+  background-color: #FCF9F1;
+}
+.kshfChart[chart_id="13"] {
+  background-color: #FCF9F1;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
+</html>
