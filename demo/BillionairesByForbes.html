@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Billionaires By Forbes</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  var currencyFormat = d3.format("s");
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 150,
+    rightPanelLabelWidth: 130,
+    itemName: "Billionaires",
+    source: {
+      url: "http://www.forbes.com/billionaires/list/",
+      // http://www.forbes.com/ajax/list/data?year=2015&uri=billionaires&type=person
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'json',
+      tables: "BillionairesByForbes"
+    },
+    loadedCb: function(){
+      kshf.dt.BillionairesByForbes.forEach(function(v){
+        if(v.data.worth) {
+          v.data.Worth = v.data.worth*1000000;
+        } else {
+          v.data.Worth = null;
+        }
+      })
+    },
+    summaries: [
+      {name: "Gender", value: "gender"},
+      {name: "Industry", value: "industry"},
+      {name: "Age", value: "age", panel: "right"},
+      {name: "Worth", unitName: "$", panel: "right"},
+      {name: "Country", value: "country", panel: "right"},
+      {name: "Source", value: function(){ return this.source.split(", "); }, minAggrValue: 2, collapsed: true },
+    ],
+    itemDisplay: {
+      sortColWidth: 40,
+      sortBy: { name: "Worth", label: function(){
+        return currencyFormat(this.Worth).replace("G","B");
+      }},
+      showRank: true,
+      textSearch: "name",
+      recordView: function(){ 
+        var str="";
+        if(this.uri){
+          str+="<a href='http://www.forbes.com/profile/"+this.uri+"' target='blank'>";
+        }
+        if(this.imageUri){
+          str+="<img src='http://i.forbesimg.com/media/lists/people/"+this.imageUri+"_100x100.jpg' class='bilPhoto'>"
+        }
+        str+="<div class='bilName'>"+this.name +" <span class='fa fa-arrow-right'></span></div>";
+        if(this.uri){
+          str+="<a>";
+        }
+        str+="<div class='bilIndustry'>"+this.industry+"<div>";
+        str+="<div class='bilOther'>"+this.age+', '+this.country+"<div>";
+        return str;
+      }
+    }
+  });
+});
+    </script>
+    <style>
+#chart_div {
+  width: 950px;
+  height: 680px;
+}
+.bilName{
+  color: black;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.kshfRecord:hover .bilName{
+  color: orangered;
+}
+.bilName > .fa-arrow-right{
+  font-size: 0.8em;
+  color: gray;
+}
+.bilPhoto{
+  float: left;
+  width: 50px;
+  height: 50px;
+  margin: 2px 5px 2px 0px;
+  border-radius: 8px;
+  border: solid 1px lightgray;
+}
+.bilIndustry{
+  color: gray;
+  font-size: 0.9em;
+  font-weight: 300;
+}
+.bilOther{
+  color: gray;
+  font-size: 0.8em;
+  font-weight: 100;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data from <a href='http://www.forbes.com/billionaires/list' target='_blank'>"The World's Billionaires"</a> by Forbes.
+      <span class="fa fa-info-circle"></span>
+      </div>
+
+  </body>
+</html>
