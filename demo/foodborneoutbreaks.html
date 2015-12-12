@@ -57,15 +57,12 @@ $(document).ready( function(){
 
   browser = new kshf.Browser({
     domID: "#chart_div",
-    leftPanelLabelWidth: 170,
+    leftPanelLabelWidth: 120,
     barChartWidth: 125,
     categoryTextWidth: 200,
     source: {
       url: 'http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx',
       callback: loadData
-    },
-    readyCb: function(browser){
-      browser.panels.left.setWidthCatChart(120);
     },
     summaries: [
       { name: "Year" },
