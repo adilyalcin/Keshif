@@ -175,21 +175,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   pointer-events: all;
 }
-.kshf[record_display="list"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: block;
-}
-.kshf[record_display="list"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay::before {
+.kshf[record_display="list"] .kshfChart[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f0dc";
+}
+.kshf[record_display="list"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+  display: inline-block;
 }
 .kshf[record_display="map"] .kshfChart[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f278";
 }
-.kshf[record_display="map"] .kshfChart[summary_type="interval"][usedforsorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
-  color: black;
-  display: block;
+.kshf[record_display="map"] .kshfChart[summary_type="interval"][usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 .kshf[record_display="map"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: block;
+  display: inline-block;
 }
 .kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfChart[collapsed=false] {
   -webkit-flex-grow: 3;
@@ -1710,16 +1713,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-width: 0px 0px 0px 1px;
   line-height: 19px;
 }
-.kshf .selection_bar rect {
-  fill: #788890;
-  fill-opacity: 0;
-  cursor: col-resize;
-  stroke-width: 1.5;
-  pointer-events: none;
-}
-.kshf .selection_bar rect:hover {
-  stroke: orangered;
-}
 .kshf .chartAxis_Measure {
   pointer-events: none;
   position: absolute;
@@ -1844,8 +1837,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 0 auto;
   height: 20px;
   /*white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;*/
+          overflow: hidden;
+          text-overflow: ellipsis;*/
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text {
   display: inline-block;
@@ -2364,7 +2357,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval .unmapped_records {
-  margin-top: -14px;
+  margin-top: 7px;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval[scaletype="time"] span.aggr {
   opacity: 0 !important;
@@ -2595,6 +2588,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_10_90 {
   background-color: #f3fcfb;
 }
+.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar {
+  display: none;
+  position: relative;
+  height: 12px;
+  padding: 0px;
+  border: solid 1px lightgray;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .invertColorScale {
+  font-size: 0.7em;
+  left: -13px;
+  position: absolute;
+  color: lightgray;
+  cursor: pointer;
+}
+.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .invertColorScale:hover {
+  color: black;
+}
+.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock {
+  margin: 0px;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  border: solid 1px rgba(1, 1, 1, 0);
+}
+.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock:hover {
+  border: solid 1px white;
+}
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider {
   position: relative;
   pointer-events: all;
@@ -2824,6 +2856,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart:hover[isMultiValued=true] > .headerGroup .hasMultiMappings {
   display: inline-block;
+}
+.kshf .kshfChart[usedForSorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
+  display: inline-block;
+  color: black;
 }
 .kshf .belowAttribs {
   position: relative;
@@ -3147,6 +3183,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay[displaytype="map"] .sortButton {
   display: none;
 }
+.kshf .recordDisplay[displaytype="map"] > .recordDisplay--Header > .mapColorScale {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: 30px;
+  margin: 2px;
+  border: solid 1px lightgray;
+  cursor: pointer;
+}
+.kshf .recordDisplay[displaytype="map"] > .recordDisplay--Header > .mapColorScale:hover {
+  border: solid 1px gray;
+}
+.kshf .recordDisplay[displaytype="map"] > .recordDisplay--Header > .mapColorScale > .mapColorScaleBin {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
 .kshf .recordDisplay[displaytype="map"] .recordGroup {
   overflow: visible !important;
 }
@@ -3317,6 +3384,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: row;
   flex-direction: row;
   min-height: 18px;
+}
+.kshf .recordDisplay--Header > .mapColorScale {
+  display: none;
 }
 .kshf .recordDisplay--Header > .itemRank_control {
   display: none;

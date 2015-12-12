@@ -140,11 +140,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
     &[record_display="list"]{
+      .kshfChart[summary_type="interval"] {
+        .headerGroup .summaryIcons > .useForRecordDisplay::before{ content: "\f0dc"; }
+      }
       .kshfChart[summary_type="interval"]:hover{
-        .headerGroup .summaryIcons > .useForRecordDisplay{
-          display: block;
-          &::before{ content: "\f0dc"; }
-        }
+        .headerGroup .summaryIcons > .useForRecordDisplay{ display: inline-block; }
       }
     }
     &[record_display="map"]{
@@ -152,15 +152,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .headerGroup .summaryIcons > .useForRecordDisplay{
           &::before{ content: "\f278"; }
         }
-        &[usedforsorting="true"]{
-          .headerGroup .summaryIcons > .useForRecordDisplay{
-            color: black;
-            display: block;
-          }
+        &[usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
+          .display(flex);
         }
         &:hover{
           .headerGroup .summaryIcons > .useForRecordDisplay{
-            display: block;
+            display: inline-block;
           }
         }
       }
@@ -1380,16 +1377,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .belowAttribs{ direction: ltr; }
 
     .summaryCategorical{
-        .scrollToTop{
-            right: 1px;
-        }
+      .scrollToTop{ right: 1px; }
     }
-    //}
 
-    .chartFilterButtonParent{
-        //position: absolute;
-        //left: -18px;
-    }
     .chartClearFilterButton{
         width: 14px;
         height: 100%;
@@ -1439,15 +1429,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-width: 0px 0px 0px 1px;
             line-height: 19px;
         }
-    }
-
-    .selection_bar rect{
-        fill: #788890;
-        fill-opacity: 0;
-        cursor: col-resize;
-        stroke-width:1.5;
-        pointer-events: none;
-        &:hover { stroke: orangered; }
     }
 
     .chartAxis_Measure {
@@ -1506,45 +1487,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-radius: 5px;
             opacity: 0;
             .transition(opacity 250ms linear);
-            &[highlight=true]{
-                opacity: 1;
-            }
+            &[highlight=true]{ opacity: 1; }
         }
     }
 
     .border_line{
-        position: relative;
-        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
+      position: relative;
+      .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);");
+      height: 1px;
+      margin-bottom: -2px;
+      pointer-events: all;
+      top: -1px;
+      &.border_line_bottom{
+        //position: absolute;
+        //top: calc(100% - 1px);
+        width: 100%;
         height: 1px;
-        margin-bottom: -2px;
-        pointer-events: all;
-        top: -1px;
-        &.border_line_bottom{
-            //position: absolute;
-            width: 100%;
-            height: 1px;
-            margin-bottom: 0px;
-            //top: calc(100% - 1px);
-        }
+        margin-bottom: 0px;
+      }
     }
 
     .dragWidthHandle{
-        display: none;
-        position: absolute;
-        top: 0px;
-        cursor: col-resize;
-        border-left: dotted lightgray 2px;
-        width: 4px;
-        &:hover{ border-color: gray; }
-        &[dragging]{
-            display: block;
-            border-color: lightgray;
-            border-style: solid;
-            border-left-width: 2px;
-            border-right: none;
-            border-top: none;
-            border-bottom: none;
-        }
+      display: none;
+      position: absolute;
+      top: 0px;
+      cursor: col-resize;
+      border-left: dotted lightgray 2px;
+      width: 4px;
+      &:hover{ border-color: gray; }
+      &[dragging]{
+        display: block;
+        border-color: lightgray;
+        border-style: solid;
+        border-left-width: 2px;
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+      }
     }
 
     .headerGroup{
@@ -1559,77 +1538,75 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         z-index: 6; // So that header shadow appears on top of the scrollbar / content below.
 
         .summaryTitle {
-            display: block;
-            font-weight: 700;
-            cursor: default;
-            //font-variant: small-caps;
-            padding-top: 2px;
-            text-rendering: initial;
+          display: block;
+          font-weight: 700;
+          cursor: default;
+          //font-variant: small-caps;
+          padding-top: 2px;
+          text-rendering: initial;
+          white-space: nowrap;
+          text-align: center;
+          margin: 0 auto;
+          height: 20px;
+          //min-height: 18px;
+          /*white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;*/
+          > .summaryTitle_text{
+            display: inline-block;
+            max-width: calc(~"100% - 60px");
             white-space: nowrap;
-            text-align: center;
-            margin: 0 auto;
-            height: 20px;
-            //min-height: 18px;
-            /*white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;*/
-            > .summaryTitle_text{
-                display: inline-block;
-                max-width: calc(~"100% - 60px");
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                font-size: 0.9em;
-                &:focus{
-                    background-color: white;
-                    box-shadow: 0 0 3px #2CABCF;
-                    outline: 0 none;
-                    padding-left: 3px;
-                    padding-right: 3px;
-                }
+            text-overflow: ellipsis;
+            font-size: 0.9em;
+            &:focus{
+              background-color: white;
+              box-shadow: 0 0 3px #2CABCF;
+              outline: 0 none;
+              padding-left: 3px;
+              padding-right: 3px;
             }
+          }
         }
         .save_filter_as_set{
-            display: none;
-            position: absolute;
-            cursor: pointer;
-            margin-left: 4px;
-            margin-top: 1px;
-            width: 15px;
-            color: gray;
-            &:hover{
-                color: black;
-            }
+          display: none;
+          position: absolute;
+          cursor: pointer;
+          margin-left: 4px;
+          margin-top: 1px;
+          width: 15px;
+          color: gray;
+          &:hover{ color: black; }
         }
         .chartClearFilterButton.rowFilter{
-            pointer-events: all;
-            height: 14px;
-            width: 14px;
-            line-height: 13px;
-            margin-right: 3px;
+          pointer-events: all;
+          height: 14px;
+          width: 14px;
+          line-height: 13px;
+          margin-right: 3px;
         }
         .summaryIcons{
-            top: 3px;
-            right: 2px;
-            position: absolute;
-            font-size: 0.9em;
-            > .fa{
-              color: gray;
-              cursor: pointer;
-              margin-left: 2px;
-              &:hover{ color: black; }
-            }
-            > .hasMultiMappings{
-              display: none;
-            }
-            > .summaryDescription{
-              display: none;
-              cursor: default;
-            }
-            > .useForRecordDisplay{
-              display: none;
-              &:hover{ color: orangered; }
-            }
+          top: 3px;
+          right: 2px;
+          position: absolute;
+          font-size: 0.9em;
+          > .fa{
+            color: gray;
+            cursor: pointer;
+            margin-left: 2px;
+            &:hover{ color: black; }
+          }
+          > .hasMultiMappings{
+            display: none;
+          }
+          > .summaryDescription{
+            display: none;
+            cursor: default;
+          }
+          > .useForRecordDisplay{
+            display: none;
+            &:hover{ color: orangered; }
+          }
         }
         > .header_display_control{
             display: block;
@@ -2045,7 +2022,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 padding: 7px 11px 0px 6px;
                 overflow: hidden;
                 .unmapped_records{
-                  margin-top: -14px;
+                  margin-top: 7px;
                 }
                 &[scaletype="time"]{
                     span.aggr{
@@ -2257,6 +2234,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       &.q_10_90 { background-color: lighten(rgb(27, 111, 97), 70%); }
                     }
                 } // percentileGroup
+                > .mapColorBar{
+                  display: none;
+                  position: relative;
+                  height: 12px;
+                  padding: 0px;
+                  border: solid 1px lightgray;
+                  .flex-direction(row);
+                  .flex-wrap(wrap);
+                  > .invertColorScale{
+                    font-size: 0.7em;
+                    left: -13px;
+                    position: absolute;
+                    color: lightgray;
+                    cursor: pointer;
+                    &:hover{
+                      color: black;
+                    }
+                  }
+                  > .mapColorBlock{
+                    margin: 0px;
+                    .flex(1);
+                    border: solid 1px rgba(1,1,1,0);
+                    &:hover{
+                      border: solid 1px white;
+                    }
+                  }
+                }
                 > .intervalSlider{
                     position:relative;
                     pointer-events: all;
@@ -2475,6 +2479,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[isMultiValued=true] > .headerGroup .hasMultiMappings{ display: inline-block; }
         }
 
+      &[usedForSorting="true"]{
+        .headerGroup .summaryIcons > .useForRecordDisplay{
+          display: inline-block;
+          color: black;
+        }
+      }
     }// kshfChart
 
     .belowAttribs{
@@ -2754,6 +2764,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           overflow: visible !important;
           .scrollToTop{ display: none; }
           .sortButton{ display: none; }
+          > .recordDisplay--Header > .mapColorScale{
+            .display(flex);
+            .flex-direction(row);
+            .flex-wrap(wrap);
+            width: 30px;
+            margin: 2px;
+            border: solid 1px lightgray;
+            cursor: pointer;
+            &:hover{
+              border: solid 1px gray;
+            }
+            > .mapColorScaleBin{
+              .flex(1);
+            }
+          }
           .recordGroup{
             overflow: visible !important;
             > .kshfRecord{
@@ -2898,6 +2923,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-color: #EBE5DF;
         .flex-direction(row);
         min-height: 18px;
+        > .mapColorScale{
+          display: none;
+        }
         > .itemRank_control{
           display: none;
           width: 13px;
