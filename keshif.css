@@ -1632,7 +1632,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_itemZoom {
   position: relative;
   margin: 20px;
-  padding: 10px;
+  padding: 10px 30px;
 }
 .kshf .panel.panel_infobox[show="loading"] > .infobox_loading {
   display: inline-block;
