@@ -82,7 +82,7 @@ var kshf = {
             Rows: "Rows",
             More: "More",
             LoadingData: "Loading data sources",
-            ShowAll: "All",
+            ShowAll: "Show All",
             ScrollToTop: "Top",
             Absolute: "Absolute",
             Percent: "Percent",
@@ -118,7 +118,7 @@ var kshf = {
             CreatingBrowser: "Arayüz oluşturuluyor...",
             Rows: "Satır",
             More: "Daha",
-            ShowAll: "Tüm",
+            ShowAll: "Hepsi",
             ScrollToTop: "Yukarı",
             Absolute: "Net",
             Percent: "Yüzde",
@@ -750,14 +750,13 @@ kshf.Filter = function(id, opts){
     this.onFilter = opts.onFilter;
     this.hideCrumb = opts.hideCrumb || false;
     this.filterView_Detail = opts.filterView_Detail; // must be a function
-    this.filterHeader = opts.filterHeader;
 
     this.id = id;
     this.parentSummary.items.forEach(function(item){
         item.setFilterCache(this.id,true);
     },this);
     this.how = "All";
-    this.filterSummaryBlock = null;
+    this.filterCrumb = null;
 };
 kshf.Filter.prototype = {
     addFilter: function(forceUpdate){
@@ -785,7 +784,7 @@ kshf.Filter.prototype = {
         if(forceUpdate===true){
             this.browser.update_Records_Wanted_Count();
             this.browser.refresh_filterClearAll();
-            this.browser.clearResultPreviews();
+            this.browser.clearSelect_Highlight();
             if(stateChanged) this.browser.updateAfterFilter(-1);
         }
     },
@@ -819,66 +818,20 @@ kshf.Filter.prototype = {
     _refreshFilterSummary: function(){
         if(this.hideCrumb===true) return;
         if(!this.isFiltered){
-            var root = this.filterSummaryBlock;
+            var root = this.filterCrumb;
             if(root===null || root===undefined) return;
             root.attr("ready",false);
             setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
-            this.filterSummaryBlock = null;
+            this.filterCrumb = null;
         } else {
             // insert DOM
-            if(this.filterSummaryBlock===null) {
-                this.filterSummaryBlock = this.insertFilterSummaryBlock();
-                if(this.filterSummaryBlock===false){
-                    this.filterSummaryBlock=null;
-                    return;
-                }
+            if(this.filterCrumb===null) {
+                this.filterCrumb = this.browser.insertDOM_crumb("filter",this);
             }
-            if(this.parentSummary!==undefined) this.filterHeader = this.parentSummary.summaryTitle;
-            this.filterSummaryBlock.select(".filterHeader").html(this.filterHeader);
-            this.filterSummaryBlock.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
+            this.filterCrumb.select(".crumbHeader").html(this.parentSummary.summaryTitle);
+            this.filterCrumb.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
         }
     },
-    /** Inserts a summary block to the list breadcrumb DOM */
-    /** Don't call this directly */
-    insertFilterSummaryBlock: function(){
-        var x;
-        var me=this;
-        if(this.browser.DOM.breadcrumbs===undefined) return false;
-        x = this.browser.DOM.breadcrumbs
-            .append("span").attr("class","crumb")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n',
-                    title: function(){ return kshf.lang.cur.RemoveFilter; }
-                })
-            })
-            .on("mouseenter",function(){
-                this.tipsy.show();
-                d3.event.stopPropagation();
-            })
-            .on("mouseleave",function(){
-                this.tipsy.hide();
-                d3.event.stopPropagation();
-            })
-            .on("click",function(){
-                this.tipsy.hide();
-                me.clearFilter();
-                // delay layout height update
-                setTimeout( function(){ me.browser.updateLayout_Height();}, 1000);
-                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_CRUMB, {id: this.id});
-            })
-            ;
-        x.append("span").attr("class","chartClearFilterButton summary")
-            .append("span").attr("class","fa fa-times")
-            ;
-        var y = x.append("span").attr("class","sdsdsds");
-        y.append("span").attr("class","filterHeader");
-        y.append("span").attr("class","filterDetails");
-        // animate appear
-        window.getComputedStyle(x[0][0]).opacity;
-        x.attr("ready",true);
-        return x;
-    }
 };
 
 /**
@@ -1525,6 +1478,11 @@ kshf.RecordDisplay.prototype = {
             return me.colorQuantize(vv); 
         });
     },
+    /** -- */
+    _cb_record_highlight: function(d){
+      d.highlightAll(true);
+      d.items.forEach(function(item){ item.highlightAll(false); });
+    },
     /** Insert items into the UI, called once on load */
     insertRecords: function(){
         var me = this, x;
@@ -1589,11 +1547,17 @@ kshf.RecordDisplay.prototype = {
                 }
             })
             .on("mouseenter",function(d){
-                d.highlightAll(true);
-                d.items.forEach(function(item){ item.highlightAll(false); });
-                if(this.tipsy) this.tipsy.show();
+              if(this.tipsy) this.tipsy.show();
+              if(me.browser.mouseSpeed<0.2) {
+                me._cb_record_highlight(d); return;
+              }
+              // mouse is moving fast, should wait a while...
+              this.highlightTimeout = window.setTimeout(
+                function(){ me._cb_record_highlight(d); }, 
+                me.browser.mouseSpeed*300);
             })
             .on("mouseleave",function(d){
+              if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
                 this.setAttribute("highlight","false");
                 d.nohighlightAll(true);
                 d.items.forEach(function(item){ item.nohighlightAll(false); });
@@ -1654,6 +1618,12 @@ kshf.RecordDisplay.prototype = {
         this.DOM.recordsSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
         this.DOM.recordsContent = this.DOM.recordGroup.selectAll(".content");
         this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
+    },
+    /** -- */
+    unhighlightRecords: function(){
+      this.browser.items.forEach(function(record){
+        if(record.DOM.record) record.DOM.record.setAttribute("highlight",false);
+      });
     },
     /** -- */
     setRecordDetails: function(item, value){
@@ -2185,6 +2155,8 @@ kshf.Browser = function(options){
 
     this.highlightSelectedSummary = null;
 
+    this.mouseSpeed = 0; // includes touch-screens...
+
     this.noAnim=false;
 
     this.listDef = options.itemDisplay || {};
@@ -2201,6 +2173,8 @@ kshf.Browser = function(options){
     this.previewCompareCb = options.previewCompareCb;
     this.preview_not = false;
     this.ratioModeCb = options.ratioModeCb;
+
+    this.compareSelectCrumb = null;
 
     this.showDropZones = false;
 
@@ -2227,10 +2201,25 @@ kshf.Browser = function(options){
         .attr("record_display","none")
         .style("position","relative")
         //.style("overflow-y","hidden")
-        .on("mousemove",function(d){
+        .on("mousemove",function(d,e){
             if(typeof logIf === "object"){
                 logIf.setSessionID();
             }
+            if(me.lastMouseMoveEvent===undefined){
+              me.lastMouseMoveEvent = d3.event;
+              return;
+            }
+            var timeDif = d3.event.timeStamp - me.lastMouseMoveEvent.timeStamp;
+            if(timeDif===0) return;
+
+            var xDif = Math.abs(d3.event.x - me.lastMouseMoveEvent.x);
+            var yDif = Math.abs(d3.event.y - me.lastMouseMoveEvent.y);
+            var posDif = Math.sqrt(xDif*xDif + yDif*yDif);
+            me.mouseSpeed = posDif / timeDif;
+            me.mouseSpeed = Math.min(me.mouseSpeed,5); // cannot exceed 5, controls highlight selection delay.
+            //console.log(me.mouseSpeed);
+
+            me.lastMouseMoveEvent = d3.event;
         })
         ;
 
@@ -2692,6 +2681,53 @@ kshf.Browser.prototype = {
         this.DOM.totalViz_active = adsdasda.append("span").attr("class","aggr active");
         this.DOM.totalViz_preview = adsdasda.append("span").attr("class","aggr preview");
     },
+    /** Inserts a summary block to the list breadcrumb DOM */
+    /** Don't call this directly */
+    insertDOM_crumb: function(_className, _filter){
+        var x;
+        var me=this;
+        // breadcrumbs must be always visible (as the basic panel)
+        x = this.DOM.breadcrumbs
+            .append("span").attr("class","crumb crumbMode_"+_className)
+            .each(function(d){
+                this.tipsy = new Tipsy(this, {
+                    gravity: 'n',
+                    title: function(){ 
+                        if(_className==="filter") return kshf.lang.cur.RemoveFilter;
+                        if(_className==="compare") return kshf.lang.cur.Unlock;
+                    }
+                })
+            })
+            .on("mouseenter",function(){
+                this.tipsy.show();
+            })
+            .on("mouseleave",function(){
+                this.tipsy.hide();
+            })
+            .on("click",function(){
+                this.tipsy.hide();
+                if(_className==="filter") {
+                    _filter.clearFilter();
+                    // delay layout height update
+                    setTimeout( function(){ me.updateLayout_Height();}, 1000);
+                }
+                if(_className==="compare") {
+                  me.clearSelect_Compare();
+                  me.clearSelect_Compare_Crumb();
+                }
+            })
+            ;
+        x.append("span").attr("class","clearCrumbButton inCrumb")
+            .append("span").attr("class","fa")
+            ;
+        var y = x.append("span").attr("class","crumbText");
+        y.append("span").attr("class","crumbHeader");
+        y.append("span").attr("class","filterDetails");
+        // animate appear
+        window.getComputedStyle(x[0][0]).opacity; // force redraw
+        x.attr("ready",true);
+        return x;
+    },
     /** -- */
     refreshTotalViz: function(){
         this.DOM.totalViz_active .style("width",
@@ -2716,7 +2752,7 @@ kshf.Browser.prototype = {
             })
             ;
         this.DOM.filterClearAll.append("span").attr("class","title").text(kshf.lang.cur.ShowAll);
-        this.DOM.filterClearAll.append("div").attr("class","chartClearFilterButton allFilter")
+        this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter")
             .append("span").attr("class","fa fa-times")
             ;
     },
@@ -4004,7 +4040,8 @@ kshf.Browser.prototype = {
      * - If negative, fewer results are shown
      * - Else, no info is available. */
     updateAfterFilter: function (resultChange) {
-        this.clearViz_Compare();
+        this.clearSelect_Compare();
+        this.clearSelect_Compare_Crumb();
         // basically, propogate call under every summary and recordDisplay
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.updateAfterFilter(resultChange);
@@ -4041,7 +4078,15 @@ kshf.Browser.prototype = {
         });
     },
     /** -- */
-    clearViz_Compare: function(){
+    clearSelect_Compare_Crumb: function(){
+      var root = this.compareSelectCrumb;
+      if(root===null || root===undefined) return;
+      root.attr("ready",false);
+      setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
+      this.compareSelectCrumb = null;
+    },
+    /** -- */
+    clearSelect_Compare: function(){
         this.vizCompareActive = false;
         this.DOM.root.attr("previewcompare",false);
         this.summaries.forEach(function(summary){
@@ -4054,11 +4099,14 @@ kshf.Browser.prototype = {
         if(this.previewCompareCb) this.previewCompareCb.call(this,true);
     },
     /** -- */
-    setPreviewCompare: function(aggregate){
+    setSelect_Compare: function(summary,aggregate){
         if(this.comparedAggregate){
             var reclick = aggregate===this.comparedAggregate;
-            this.clearViz_Compare();
-            if(reclick) return;
+            this.clearSelect_Compare();
+            if(reclick) {
+              this.clearSelect_Compare_Crumb();
+              return;
+            }
         }
         aggregate.DOM.aggrBlock.setAttribute("compare",true);
         this.comparedAggregate = aggregate;
@@ -4070,31 +4118,51 @@ kshf.Browser.prototype = {
                 summary.refreshViz_Compare();
             }
         });
+        if(this.compareSelectCrumb===null){
+          this.compareSelectCrumb = this.insertDOM_crumb("compare");
+        }
+        this.compareSelectCrumb.select(".crumbHeader").html(summary.summaryTitle);
+        var valText = "";
+        if(summary.type==="categorical"){
+          valText = summary.catLabel.call(aggregate.data);
+        }
+        if(summary.type==="interval"){
+          var unitName = "<span class='unitName'>"+(summary.unitName||"")+"</span>";
+          valText = aggregate.x+unitName+' to '+(aggregate.x+aggregate.dx)+unitName;
+        }
+        this.compareSelectCrumb.select(".filterDetails").html(valText);
+
         if(this.previewCompareCb) this.previewCompareCb.call(this,false);
     },
     /** -- */
-    clearResultPreviews: function(){
-        this.vizPreviewActive = false;
-        this.DOM.root.attr("resultpreview",false);
-        this.items.forEach(function(item){
-            item.updatePreview_Cache = false;
-        });
-        this.itemCount_Previewed = 0;
-        this.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.clearViz_Preview();
-        });
-        this.refreshTotalViz();
-        if(this.previewCb) this.previewCb.call(this,true);
+    clearSelect_Highlight: function(){
+      this.vizPreviewActive = false;
+      this.DOM.root.attr("resultpreview",false);
+      this.highlightSelectedSummary = null;
+
+      // unhighlight items in the record display
+      if(this.recordDisplay) this.recordDisplay.unhighlightRecords();
+
+      this.items.forEach(function(item){ item.updatePreview_Cache = false; });
+
+      this.itemCount_Previewed = 0;
+      // Clear highlight visualization in all summaries within the browser
+      this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.clearViz_Highlight(); });
+
+      this.refreshTotalViz();
+      if(this.previewCb) this.previewCb.call(this,true);
     },
     /** -- */
-    refreshResultPreviews: function(){
-        this.vizPreviewActive = true;
-        this.DOM.root.attr("resultpreview",true);
-        this.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.refreshViz_Preview();
-        });
-        this.refreshTotalViz();
-        if(this.previewCb) this.previewCb.call(this,false);
+    setSelect_Highlight: function(selectedSummary){
+      this.vizPreviewActive = true;
+      this.DOM.root.attr("resultpreview",true);
+      this.highlightSelectedSummary = selectedSummary;
+
+      // Refresh highligh visualization in all summaries within the browser
+      this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.refreshViz_Highlight(); });
+
+      this.refreshTotalViz();
+      if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
     checkZoomLevel: function(){
@@ -4593,7 +4661,7 @@ kshf.Summary_Base.prototype = {
             ;
 
         this.DOM.summaryTitle.append("span").attr("class","chartFilterButtonParent").append("div")
-            .attr("class","chartClearFilterButton rowFilter alone")
+            .attr("class","clearFilterButton rowFilter inSummary")
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'s':'n'; },
@@ -4791,7 +4859,7 @@ kshf.Summary_Base.prototype = {
         if(this.DOM.root){
             this.DOM.root.attr("collapsed",this.collapsed);
             if(!this.collapsed) {
-                this.clearViz_Preview();
+                this.clearViz_Highlight();
                 this.refreshViz_All();
             } else {
                 this.DOM.headerGroup.select(".buttonSummaryExpand").style("display","none");
@@ -4819,7 +4887,6 @@ var Summary_Categorical_functions = {
 
         // These settings affect the categories
         this.minAggrValue=1;
-        this.removeInactiveCats = true;
 
         this.catSortBy = [];
 
@@ -5370,7 +5437,7 @@ var Summary_Categorical_functions = {
         // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
         this.DOM.chartBackground = this.DOM.aggrGroup.append("span").attr("class","chartBackground");
 
-        this.DOM.chartCatLabelResize = this.DOM.aggrGroup.append("span").attr("class","chartCatLabelResize dragWidthHandle")
+        this.DOM.chartCatLabelResize = this.DOM.chartBackground.append("span").attr("class","chartCatLabelResize dragWidthHandle")
             .on("mousedown", function (d, i) {
                 var resizeDOM = this;
                 me.panel.DOM.root.attr("catLabelDragging",true);
@@ -5424,17 +5491,12 @@ var Summary_Categorical_functions = {
                     // calculate the preview
                     me.unmappedRecords.forEach(function(record){record.updatePreview();},me);
                     me.browser.itemCount_Previewed = me.unmappedRecords.length;
-                    me.browser.refreshResultPreviews();
+                    me.browser.setSelect_Highlight(me);
                 }
             })
             .on("mouseout" ,function(){ 
                 this.tipsy.hide();
-
-                me.browser.items.forEach(function(record){
-                    if(record.DOM.record) record.DOM.record.setAttribute("highlight",false);
-                });
-
-                me.browser.clearResultPreviews();
+                me.browser.clearSelect_Highlight();
             })
             .on("click", function(){
                 if(me.summaryFilter.unmapped===true){
@@ -5691,7 +5753,7 @@ var Summary_Categorical_functions = {
         this.refreshViz_Axis();
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
-        this.refreshViz_Preview();
+        this.refreshViz_Highlight();
         setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
     },
     /** -- */
@@ -5811,7 +5873,7 @@ var Summary_Categorical_functions = {
         this.refreshViz_Active();
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
-        this.refreshViz_Preview();
+        this.refreshViz_Highlight();
         setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
 
         this.refreshViz_Compare();
@@ -5868,7 +5930,7 @@ var Summary_Categorical_functions = {
             });
     },
     /** -- */
-    refreshViz_Preview: function(){
+    refreshViz_Highlight: function(){
         if(!this.hasCategories() || this.collapsed || !this.browser.vizPreviewActive) return;
         var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
         var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
@@ -5910,16 +5972,15 @@ var Summary_Categorical_functions = {
         }
     },
     /** -- */
-    clearViz_Preview: function(){
+    clearViz_Highlight: function(){
         if(!this.hasCategories()) return;
-        this._cats.forEach(function(cat){
-            cat.updatePreview_Cache = false;
-        });
+
+        this._cats.forEach(function(cat){ cat.updatePreview_Cache = false; });
+
         if(this.collapsed) return;
         var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
         this.DOM.aggr_Preview.each(function(cat){
             cat.aggregate_Preview=0;
-            if(cat.aggregate_Compare===0) return;
             kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX(0)");
         });
         this.refreshMeasureLabel();
@@ -6071,7 +6132,6 @@ var Summary_Categorical_functions = {
           this.style.marginTop = ((me.heightRow_category-18)/2)+"px";
         });
         this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
-        this.DOM.chartCatLabelResize.style("height",this.getTotalAttribHeight()+"px");
 
         setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },
@@ -6085,8 +6145,6 @@ var Summary_Categorical_functions = {
         if(category.aggregate_Active!==0) return true;
         // Show if item has been "isWanted" by some active sub-filtering
         if(this.catCount_Wanted < this.catCount_Total && category.isWanted) return true;
-        // if inactive attributes are not removed, well, don't remove them...
-        if(this.removeInactiveCats===false) return true;
         // summary is not filtered yet, cannot click on 0 items
         if(!this.isFiltered()) return category.aggregate_Active!==0;
         // Hide if multiple options are selected and selection is and
@@ -6212,68 +6270,41 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     onCatMouseOver: function(ctgry){
-        var me=this;
+      if(!this.isCategorySelectable(ctgry)) return;
 
-        this.browser.highlightSelectedSummary = this;
+      if(ctgry.DOM.matrixRow) ctgry.DOM.matrixRow.setAttribute("highlight","selected");
 
-        if(ctgry.DOM.matrixRow) ctgry.DOM.matrixRow.setAttribute("highlight","selected");
+      ctgry.DOM.aggrBlock.setAttribute("selecttype","and");
+      ctgry.DOM.aggrBlock.setAttribute("highlight","selected");
 
-        if(this.isCategorySelectable(ctgry)) {
-            ctgry.DOM.aggrBlock.setAttribute("selecttype","and");
-            ctgry.DOM.aggrBlock.setAttribute("highlight","selected");
-            if(!this.isMultiValued && this.summaryFilter.selected_AND.length!==0) return;
-            if(!me.browser.pauseResultPreview &&
-              (me.isMultiValued || me.summaryFilter.selected_AND.length===0) &&
-              (!ctgry.is_NOT()) ){
-                // calculate the preview
-                ctgry.items.forEach(function(item){item.updatePreview();},me);
-                me.browser.itemCount_Previewed = ctgry.aggregate_Preview;
-                ctgry.DOM.aggrBlock.setAttribute("showlock",true);
-                me.browser.refreshResultPreviews();
-                if(sendLog) {
-                    if(me.resultPreviewLogTimeout) clearTimeout(me.resultPreviewLogTimeout);
-                    me.resultPreviewLogTimeout = setTimeout(function(){
-                        sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.summaryFilter.id, info: ctgry.id()});
-                    }, 1000); // wait 1 second to see the update fully
-                }
-            }
-        }
+      // Comes after setting select type of the category - visual feedback on selection...
+      if(!this.isMultiValued && this.summaryFilter.selected_AND.length!==0) return;
+
+      // Show the highlight (preview)
+      if(this.browser.pauseResultPreview) return;
+      if(ctgry.is_NOT()) return;
+      if(this.isMultiValued || this.summaryFilter.selected_AND.length===0){
+          ctgry.items.forEach(function(item){item.updatePreview();});
+          this.browser.itemCount_Previewed = ctgry.aggregate_Preview;
+          ctgry.DOM.aggrBlock.setAttribute("showlock",true);
+          this.browser.setSelect_Highlight(this);
+      }
     },
     /** -- */
     onCatMouseLeave: function(ctgry){
-        this.browser.highlightSelectedSummary = null;
-
-        if(ctgry.skipMouseOut !==undefined && ctgry.skipMouseOut===true){
-            ctgry.skipMouseOut = false;
-            return;
-        }
-
         if(ctgry.DOM.matrixRow) ctgry.DOM.matrixRow.setAttribute("highlight",false);
 
         if(!this.isCategorySelectable(ctgry)) return;
         ctgry.nohighlightAll(true);
 
-        if(this.resultPreviewLogTimeout){
-            clearTimeout(this.resultPreviewLogTimeout);
-        }
-        this.browser.items.forEach(function(item){
-            if(item.DOM.record) item.DOM.record.setAttribute("highlight",false);
-        },this);
-
         if(!this.browser.pauseResultPreview){
             ctgry.DOM.aggrBlock.setAttribute("showlock",false);
-            this.browser.clearResultPreviews();
-        }
-
-        if(this.resultPreviewShowTimeout){
-            clearTimeout(this.resultPreviewShowTimeout);
-            this.resultPreviewShowTimeout = null;
+            this.browser.clearSelect_Highlight();
         }
     },
     /** - */
     insertCategories: function(){
         var me = this;
-        this.resultPreviewLogTimeout = null;
 
         var DOM_cats_new = this.DOM.aggrGroup.selectAll(".aggrBlock")
             .data(this._cats, function(category){ return category.id(); })
@@ -6289,8 +6320,21 @@ var Summary_Categorical_functions = {
                 category.pos_y = 0;
                 kshf.Util.setTransform(this,"translateY(0px)");
             })
-            .on("mouseover",function(category){ me.onCatMouseOver(category);})
-            .on("mouseleave",function(category){ me.onCatMouseLeave(category);})
+            .on("mouseover",function(category){ 
+              // mouse is moving slow, just do it.
+              if(me.browser.mouseSpeed<0.2) {
+                me.onCatMouseOver(category);
+                return;
+              }
+              // mouse is moving fast, should wait a while...
+              this.highlightTimeout = window.setTimeout(
+                function(){ me.onCatMouseOver(category) }, 
+                me.browser.mouseSpeed*300);
+            })
+            .on("mouseleave",function(category){ 
+              if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
+              me.onCatMouseLeave(category);
+            })
             .attr("title",me.catTooltip?function(cat){ return me.catTooltip.call(cat.data); }:null);
             ;
         this.updateCategoryCulling();
@@ -6406,10 +6450,10 @@ var Summary_Categorical_functions = {
         };
 
         var onEnter_OR = function(ctgry){
-            me.browser.clearResultPreviews();
+            me.browser.clearSelect_Highlight();
             ctgry.DOM.aggrBlock.setAttribute("selecttype","or");
             if(me.summaryFilter.selected_OR.length>0)
-                me.browser.clearResultPreviews();
+                me.browser.clearSelect_Highlight();
             d3.event.stopPropagation();
         };
         var onLeave_OR = function(ctgry){
@@ -6424,13 +6468,13 @@ var Summary_Categorical_functions = {
         var onEnter_NOT = function(ctgry){
             ctgry.DOM.aggrBlock.setAttribute("selecttype","not");
             me.browser.preview_not = true;
-            me.browser.refreshResultPreviews();
+            me.browser.setSelect_Highlight(me);
             d3.event.stopPropagation();
         };
         var onLeave_NOT = function(ctgry){
             ctgry.DOM.aggrBlock.setAttribute("selecttype","and");
             me.browser.preview_not = false;
-            me.browser.clearResultPreviews();
+            me.browser.clearSelect_Highlight();
         };
         var onClick_NOT = function(ctgry){
             me.browser.preview_not = true;
@@ -6486,7 +6530,7 @@ var Summary_Categorical_functions = {
             .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("click",function(ctgry){
                 this.tipsy.hide();
-                me.browser.setPreviewCompare(ctgry);
+                me.browser.setSelect_Compare(me,ctgry);
                 d3.event.stopPropagation();
             })
             ;
@@ -6566,17 +6610,17 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateCategoryCulling: function(){
-        var me=this;
-        this._cats.forEach(function(ctgry,i){
-            ctgry.isCulled_before = ctgry.isCulled;
-            if(ctgry.orderIndex<me.cat_InDisplay_First) {
-                ctgry.isCulled=true;
-            } else if(ctgry.orderIndex>me.cat_InDisplay_First+me.catCount_InDisplay) {
-                ctgry.isCulled=true;
-            } else {
-                ctgry.isCulled=false;
-            }
-        });
+      var me=this;
+      this._cats.forEach(function(ctgry){
+        ctgry.isCulled_before = ctgry.isCulled;
+        if(ctgry.orderIndex<me.cat_InDisplay_First) {
+          ctgry.isCulled = true;
+        } else if(ctgry.orderIndex>me.cat_InDisplay_First+me.catCount_InDisplay) {
+          ctgry.isCulled = true;
+        } else {
+          ctgry.isCulled = false;
+        }
+      });
     },
     /** -- */
     updateCatSorting: function(sortDelay,force,noAnim){
@@ -6584,27 +6628,24 @@ var Summary_Categorical_functions = {
         if(this._cats.length===0) return;
         if(this.uniqueCategories()) return; // Nothing to sort...
         if(this.catSortBy_Active.no_resort===true && force!==true) return;
-        if(this.removeInactiveCats){
-            this.updateCatCount_Visible();
-        }
+        if(sortDelay===undefined) sortDelay = 1000;
 
         var me = this;
-        if(sortDelay===undefined) sortDelay = 1000;
+
+        this.updateCatCount_Visible();
         this.sortCategories();
 
-        if(this.panel===undefined) return; // The rest deals with updating UI
+        if(this.panel===undefined) return; 
+        // The rest deals with updating UI
         if(this.DOM.cats===undefined) return;
 
         this.updateCategoryCulling();
 
-        var xRemoveOffset = -100;
-        if(this.panel.name==='right') xRemoveOffset *= -1; // disappear to the other edge
+        var xRemoveOffset = (this.panel.name==='right')?-1:-100; // disappear direction, depends on the panel location
         if(this.cbFacetSort) this.cbFacetSort.call(this);
 
-        // filler is used to insert the scroll bar.
-        // Items outside the view are not visible, something needs to expand the box
+        // Items outside the view are not visible, chartBackground expand the box and makes the scroll bar visible if necessary.
         this.DOM.chartBackground.style("height",this.getTotalAttribHeight()+"px");
-        this.DOM.chartCatLabelResize.style("height",this.getTotalAttribHeight()+"px");
 
         var attribGroupScroll = me.DOM.aggrGroup[0][0];
         // always scrolls to top row automatically when re-sorted
@@ -6612,14 +6653,18 @@ var Summary_Categorical_functions = {
         this.refreshScrollDisplayMore(this.cat_InDisplay_First+this.catCount_InDisplay);
 
         if(noAnim){
-            this.DOM.cats.each(function(ctgry){
-                var x = 0;
-                var y = me.heightRow_category*ctgry.orderIndex;
-                ctgry.posX = x;
-                ctgry.posY = y;
-                kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
-            });
-            return;
+          this.DOM.cats.each(function(ctgry){
+            this.style.opacity = 1;
+            this.style.visibility = "visible";
+            this.style.display = "block";
+
+            var x = 0;
+            var y = me.heightRow_category*ctgry.orderIndex;
+            ctgry.posX = x;
+            ctgry.posY = y;
+            kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
+          });
+          return;
         }
 
         setTimeout(function(){
@@ -6640,6 +6685,7 @@ var Summary_Categorical_functions = {
                     kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+ctgry.posY+"px)");
                 }
                 if(ctgry.isVisible || ctgry.isVisible_before){
+                    this.style.opacity = 0;
                     this.style.visibility = "visible";
                     this.style.display = "block";
                 }
@@ -6649,6 +6695,7 @@ var Summary_Categorical_functions = {
             setTimeout(function(){
                 me.DOM.cats.each(function(ctgry){
                     if(ctgry.isVisible && ctgry.isVisible_before){
+                        this.style.opacity = 1;
                         ctgry.posX = 0;
                         ctgry.posY = me.heightRow_category*ctgry.orderIndex;
                         kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
@@ -6935,7 +6982,7 @@ var Summary_Interval_functions = {
                     maxValue = maxValue.toFixed(2);
                 }
                 if(summary.isFiltered_min() && summary.isFiltered_max()){
-                    return "<b>"+minValue+unitNameStr+"</b> to <b>"+maxValue+unitNameStr+"</b>";
+                    return ""+minValue+unitNameStr+" to "+maxValue+unitNameStr+"";
                 } else if(summary.isFiltered_min()){
                     return "<b>at least "+minValue+unitNameStr+"</b>";
                 } else {
@@ -7130,16 +7177,11 @@ var Summary_Interval_functions = {
 
                 me.unmappedRecords.forEach(function(record){ record.updatePreview(); },me);
                 me.browser.itemCount_Previewed = me.unmappedRecords.length;
-                me.browser.refreshResultPreviews();
+                me.browser.setSelect_Highlight(me);
             })
             .on("mouseout" ,function(){ 
                 this.tipsy.hide();
-
-                me.browser.items.forEach(function(record){
-                    if(record.DOM.record) record.DOM.record.setAttribute("highlight",false);
-                });
-
-                me.browser.clearResultPreviews();
+                me.browser.clearSelect_Highlight();
             })
             .on("click", function(){
                 if(me.summaryFilter.unmapped===true){
@@ -7594,7 +7636,7 @@ var Summary_Interval_functions = {
 
         this.insertBins();
         this.refreshViz_Axis();
-        //this.refreshViz_Preview();
+        //this.refreshViz_Highlight();
         this.refreshMeasureLabel();
         this.updateTicks();
     },
@@ -7629,9 +7671,17 @@ var Summary_Interval_functions = {
         });
     },
     /** -- */
+    onBinMouseOver: function(aggr){
+      if(this.browser.pauseResultPreview) return;
+      aggr.forEach( function(record){record.updatePreview();} );
+      this.browser.itemCount_Previewed = aggr.aggregate_Preview;
+      aggr.DOM.aggrBlock.setAttribute("highlight","selected");
+      aggr.DOM.aggrBlock.setAttribute("showlock",true);
+      this.browser.setSelect_Highlight(this);
+    },
+    /** -- */
     insertBins: function(){
         var me=this;
-        var resultPreviewLogTimeout = null;
 
         var filterId = this.summaryFilter.id;
 
@@ -7648,45 +7698,22 @@ var Summary_Interval_functions = {
                 aggr.DOM.aggrBlock = this;
             })
             .on("mouseenter",function(aggr){
-                var thiss=this;
-
-                me.browser.highlightSelectedSummary = me;
-
-                if(!me.browser.pauseResultPreview){
-                    aggr.forEach(function(record){record.updatePreview();});
-                    me.browser.itemCount_Previewed = aggr.aggregate_Preview;
-                    thiss.setAttribute("highlight","selected");
-                    thiss.setAttribute("showlock",true);
-                    me.browser.refreshResultPreviews();
-                    if(sendLog) {
-                        if(resultPreviewLogTimeout){
-                            clearTimeout(resultPreviewLogTimeout);
-                        }
-                        resultPreviewLogTimeout = setTimeout(function(){
-                            sendLog(kshf.LOG.FILTER_PREVIEW, {id:me.summaryFilter.id, info: aggr.x+"x"+aggr.dx});
-                        }, 1000); // wait 1 second to see the update fully
-                    }
-                }
+              var thiss=this;
+              // mouse is moving slow, just do it.
+              if(me.browser.mouseSpeed<0.2) {
+                me.onBinMouseOver(aggr);
+                return;
+              }
+              // mouse is moving fast, should wait a while...
+              this.highlightTimeout = window.setTimeout(
+                function(){ me.onBinMouseOver(aggr) }, 
+                me.browser.mouseSpeed*300);
             })
             .on("mouseleave",function(aggr){
-                me.browser.highlightSelectedSummary = null;
-
-                if(resultPreviewLogTimeout){
-                    clearTimeout(resultPreviewLogTimeout);
-                }
-                if(this.resultPreviewShowTimeout){
-                    clearTimeout(this.resultPreviewShowTimeout);
-                    this.resultPreviewShowTimeout = null;
-                }
-                if(!me.browser.pauseResultPreview){
-                    this.setAttribute("highlight",false);
-                    this.setAttribute("showlock",false);
-
-                    me.browser.items.forEach(function(record){
-                        if(record.DOM.record) record.DOM.record.setAttribute("highlight",false);
-                    })
-                    me.browser.clearResultPreviews();
-                }
+              if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
+              this.setAttribute("highlight",false);
+              this.setAttribute("showlock",false);
+              me.browser.clearSelect_Highlight();
             })
             .on("click",function(aggr){
                 if(me.summaryFilter.filteredBin===this){
@@ -7737,7 +7764,7 @@ var Summary_Interval_functions = {
             })
             .on("click",function(aggr){
                 this.tipsy.hide();
-                me.browser.setPreviewCompare(aggr);
+                me.browser.setSelect_Compare(me,aggr);
                 d3.event.stopPropagation();
             })
             .on("mouseenter",function(aggr){
@@ -8063,7 +8090,7 @@ var Summary_Interval_functions = {
         this.refreshViz_Active();
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
-        this.refreshViz_Preview();
+        this.refreshViz_Highlight();
         setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);
 
         this.refreshViz_Compare();
@@ -8291,7 +8318,7 @@ var Summary_Interval_functions = {
         }
     },
     /** -- */
-    refreshViz_Preview: function(){
+    refreshViz_Highlight: function(){
         if(this.isEmpty || this.collapsed || !this.browser.vizPreviewActive) return;
         var me=this;
         var width = this.getBarWidth();
@@ -8372,7 +8399,7 @@ var Summary_Interval_functions = {
         }
     },
     /** -- */
-    clearViz_Preview: function(){
+    clearViz_Highlight: function(){
         if(this.isEmpty || this.collapsed) return;
         if(this.DOM.aggr_Preview===undefined) return;
         var me=this;
@@ -8565,7 +8592,7 @@ var Summary_Interval_functions = {
         this.refreshBins_Translate();
 
         this.refreshViz_Scale();
-        this.refreshViz_Preview();
+        this.refreshViz_Highlight();
         this.refreshViz_Compare();
         this.refreshViz_Axis();
         this.refreshHeight();
@@ -8592,7 +8619,7 @@ var Summary_Interval_functions = {
         this.refreshViz_Compare();
 
         this.DOM.aggr_Preview.attr("fast",null); // take it slow for result preview animations
-        this.refreshViz_Preview();
+        this.refreshViz_Highlight();
         this.refreshViz_Axis();
 
         setTimeout(function(){ me.DOM.aggr_Preview.attr("fast",true); },800);

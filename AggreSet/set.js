@@ -461,7 +461,7 @@ var Summary_Clique_functions = {
         if(me.browser.vizCompareActive) timeoutTime = 0;
         this.resultPreviewShowTimeout = setTimeout(function(){
           d.items.forEach(function(item){item.updatePreview();});
-          me.browser.refreshResultPreviews();
+          me.browser.setSelect_Highlight(me);
         },timeoutTime);
       })
       .on("mouseleave",function(d){
@@ -483,7 +483,7 @@ var Summary_Clique_functions = {
           if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
         })
 
-        me.browser.clearResultPreviews();
+        me.browser.clearSelect_Highlight();
       })
       .on("click",function(d){
         var set_1 = d.set_1;

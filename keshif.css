@@ -118,8 +118,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: -webkit-grabbing;
   cursor: grabbing;
 }
-.kshf .panel[catLabelDragging=true] .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize {
-  display: block;
+.kshf .panel[catLabelDragging=true] .chartCatLabelResize {
+  display: block !important;
   border-left: solid lightgray 2px;
 }
 .kshf[attribsShown=true] {
@@ -132,8 +132,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[attribsShown=true] .kshfChart:hover > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize {
-  display: block;
+.kshf[attribsShown=true] .kshfChart:hover .chartCatLabelResize {
+  display: block !important;
 }
 .kshf[attribsShown=true] .recordDisplay .buttonRecordViewRemove {
   visibility: visible;
@@ -248,6 +248,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .unitName {
   margin-left: 1px;
+  color: gray;
 }
 .kshf .lockButton {
   display: block;
@@ -257,10 +258,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
   cursor: pointer;
   pointer-events: none;
-  -webkit-transition: opacity 500ms ease-in-out;
-  -moz-transition: opacity 500ms ease-in-out;
-  -o-transition: opacity 500ms ease-in-out;
-  transition: opacity 500ms ease-in-out;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
 }
 .kshf .lockButton:after {
   content: "\f13e";
@@ -804,35 +805,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 250ms linear;
   transition: all 250ms linear;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText {
   pointer-events: none;
-  /*
-                    max-width: 300px;
-                    max-width: 300px;
-                    -o-text-overflow: ellipsis;
-                    text-overflow: ellipsis;*/
   display: block;
   white-space: nowrap;
   overflow: hidden;
+  margin-left: 13px;
+  margin-right: 2px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds > .filterHeader {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbHeader {
   padding: 1px;
   font-size: 1em;
   font-weight: 700;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds > .filterHeader:after {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbHeader:after {
   content: ': ';
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds > .filterDetails {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .filterDetails {
   padding: 1px 0px 1px 0px;
   display: inline;
-  margin-right: 15px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .sdsdsds > .filterDetails > .unitName {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .filterDetails > b {
+  font-weight: 700;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .filterDetails > .unitName {
   font-weight: 300;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .chartClearFilterButton.summary {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .clearCrumbButton {
+  width: 14px;
+  height: 100%;
+  position: absolute;
   pointer-events: none;
+  font-size: 11px;
+  left: 0px;
+  text-align: center;
+  color: white;
+  -webkit-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
+  -moz-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
+  -o-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
+  transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb[filtered=false] {
+  display: none;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb[ready=true] {
   max-width: 100%;
@@ -840,24 +854,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] {
   max-width: 0px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] .chartClearFilterButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] .clearCrumbButton {
   display: none;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_filter > .clearCrumbButton {
+  background-color: #788D9B;
+  border: solid 1px #788D9B;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_filter > .clearCrumbButton > .fa::before {
+  content: "\f0b0";
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton {
+  background-color: #2f4f4f;
+  border: solid 1px #2f4f4f;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton > .fa::before {
+  content: "\f023";
+  font-size: 1.1em;
+  position: relative;
+  top: 1px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb:hover {
   background-color: #ffffff;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb:hover .sdsdsds {
+.kshf .panel_Basic > .breadcrumbs > .crumb:hover > .crumbText {
   text-decoration: line-through;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb:hover .chartClearFilterButton {
-  background-color: #B6AF96;
-  color: #635d46;
+.kshf .panel_Basic > .breadcrumbs > .crumb:hover.crumbMode_compare > .clearCrumbButton > .fa::before {
+  content: "\f13e";
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb b {
-  font-weight: 700;
-}
-.kshf .panel_Basic > .breadcrumbs > .crumb[filtered=false] {
-  display: none;
+.kshf .panel_Basic > .breadcrumbs > .crumb:hover.crumbMode_filter > .clearCrumbButton > .fa::before {
+  content: "\f00d";
 }
 .kshf .panel_Basic > .filterClearAll {
   opacity: 0;
@@ -1666,7 +1693,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .summaryCategorical .scrollToTop {
   right: 1px;
 }
-.kshf .chartClearFilterButton {
+.kshf .clearFilterButton {
   width: 14px;
   height: 100%;
   display: inline-block;
@@ -1682,11 +1709,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #eeebe0;
   border: solid 1px #635d46;
 }
-.kshf .chartClearFilterButton:hover {
+.kshf .clearFilterButton:hover {
   background-color: #B6AF96;
   color: #635d46;
 }
-.kshf .chartClearFilterButton.alone {
+.kshf .clearFilterButton.inSummary {
   display: none;
   vertical-align: top;
   pointer-events: all;
@@ -1694,18 +1721,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-top: 1px;
   font-size: 0.8em;
 }
-.kshf .chartClearFilterButton.alone > .fa-times {
+.kshf .clearFilterButton.inSummary > .fa-times {
   top: -1px;
   position: relative;
 }
-.kshf .chartClearFilterButton.summary {
-  display: inline-block;
-  position: absolute;
-  right: 0px;
-  margin-left: 2px;
-  line-height: 0.9em;
-}
-.kshf .chartClearFilterButton.allFilter {
+.kshf .clearFilterButton.allFilter {
   display: inline-block;
   margin-left: 2px;
   height: 19px;
@@ -1867,7 +1887,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .save_filter_as_set:hover {
   color: black;
 }
-.kshf .headerGroup .chartClearFilterButton.rowFilter {
+.kshf .headerGroup .clearFilterButton.rowFilter {
   pointer-events: all;
   height: 14px;
   width: 14px;
@@ -2144,16 +2164,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: height 700ms ease-in-out;
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground {
-  opacity: 0;
   width: 1px;
   display: block;
+  position: relative;
   -webkit-transition: opacity 250ms;
   -moz-transition: opacity 250ms;
   -o-transition: opacity 250ms;
   transition: opacity 250ms;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize {
+.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground > .chartCatLabelResize {
   display: none;
+  height: 100%;
   z-index: 25;
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock {
@@ -2279,6 +2300,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: white;
   font-weight: 300;
   font-size: 0.7em;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons > .orButton {
   background-color: #269aa3;
@@ -2315,12 +2341,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="2"][show-box=true] > .categoryLabel > .filterButtons > .orButton {
   display: inline;
+  opacity: 1;
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="-1"] > .categoryLabel > .theLabel {
   color: #808080;
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="-1"] > .categoryLabel > .filterButtons > .notButton {
   display: inline;
+  opacity: 1;
   background-color: #808080;
 }
 .kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight^="selected"] > .categoryLabel > .theLabel {
@@ -2783,9 +2811,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   white-space: nowrap;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
-  color: gray;
-}
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
   top: -10px;
@@ -2815,7 +2840,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[collapsed=true] > .wrapper .summaryInterval > .intervalSlider {
   display: none;
 }
-.kshf .kshfChart[filtered=true] > .headerGroup .chartClearFilterButton {
+.kshf .kshfChart[filtered=true] > .headerGroup .clearFilterButton {
   display: inline-block;
 }
 .kshf .kshfChart[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
@@ -2824,22 +2849,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfChart[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
   display: block;
 }
-.kshf .kshfChart[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:hover[selected="0"] .notButton {
+.kshf .kshfChart[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[highlight="selected"][selected="0"] .notButton {
   display: inline;
+  opacity: 1;
 }
-.kshf .kshfChart[isMultiValued=false][filtered_or="0"] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:hover[selected="-1"] {
+.kshf .kshfChart[isMultiValued=false][filtered_or="0"] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[highlight="selected"][selected="-1"] {
   cursor: pointer;
 }
 .kshf .kshfChart:not([filtered_or="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton {
   display: inline;
+  opacity: 1;
 }
 .kshf .kshfChart:not([filtered_and="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton {
   display: inline;
+  opacity: 1;
 }
 .kshf .kshfChart[isMultiValued=true] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"][highlight="selected"] .notButton {
   display: inline;
+  opacity: 1;
 }
-.kshf .kshfChart[filtered_range=true] .chartClearFilterButton.rangeFilter {
+.kshf .kshfChart[filtered_range=true] .clearFilterButton.rangeFilter {
   display: inline-block;
 }
 .kshf .kshfChart[refreshSorting="true"] .catSortButton:before {
@@ -3293,9 +3322,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-}
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordSortCol > .unitName {
-  color: gray;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordRank {
   float: left;
@@ -3847,84 +3873,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-left: none;
   border-top-color: transparent !important;
   border-bottom-color: transparent !important;
-}
-@-webkit-keyframes shrink {
-  from {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-  to {
-    -webkit-transform: scale(0.5);
-    -moz-transform: scale(0.5);
-    -ms-transform: scale(0.5);
-    -o-transform: scale(0.5);
-    transform: scale(0.5);
-  }
-}
-@-moz-keyframes shrink {
-  from {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-  to {
-    -webkit-transform: scale(0.5);
-    -moz-transform: scale(0.5);
-    -ms-transform: scale(0.5);
-    -o-transform: scale(0.5);
-    transform: scale(0.5);
-  }
-}
-@-ms-keyframes shrink {
-  from {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-  to {
-    -webkit-transform: scale(0.5);
-    -moz-transform: scale(0.5);
-    -ms-transform: scale(0.5);
-    -o-transform: scale(0.5);
-    transform: scale(0.5);
-  }
-}
-@-o-keyframes shrink {
-  from {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-  to {
-    -webkit-transform: scale(0.5);
-    -moz-transform: scale(0.5);
-    -ms-transform: scale(0.5);
-    -o-transform: scale(0.5);
-    transform: scale(0.5);
-  }
-}
-@keyframes shrink {
-  from {
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
-    transform: scale(1);
-  }
-  to {
-    -webkit-transform: scale(0.5);
-    -moz-transform: scale(0.5);
-    -ms-transform: scale(0.5);
-    -o-transform: scale(0.5);
-    transform: scale(0.5);
-  }
 }

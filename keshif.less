@@ -92,8 +92,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       cursor: -webkit-grabbing;
       cursor: grabbing;
     }
-    .panel[catLabelDragging=true] .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize{
-      display: block;
+    .panel[catLabelDragging=true] .chartCatLabelResize{
+      display: block !important;
       border-left: solid lightgray 2px;
     }
     &[attribsShown=true]{
@@ -101,8 +101,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       > .attributePanel{
           .display(flex);
       }
-      .kshfChart:hover > .wrapper > .summaryCategorical > .aggrGroup > .chartCatLabelResize{
-        display: block;
+      .kshfChart:hover .chartCatLabelResize{
+        display: block !important;
       }
       .recordDisplay{
         .buttonRecordViewRemove{ visibility: visible; }
@@ -208,6 +208,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .unitName{
       margin-left: 1px;
+      color: gray;
     }
     
     .lockButton{
@@ -218,7 +219,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       opacity: 0;
       cursor: pointer;
       pointer-events: none;
-      .transition(~'opacity 500ms ease-in-out');
+      .transition(~'opacity 500ms linear');
       &:after{ content: "\f13e"; } // Lock
       &:hover:after{ content: "\f023"; } // Unlock
       &[inside]{ // Appears inside the visual glyph
@@ -590,72 +591,83 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             vertical-align: top;
             > .crumb{
-                display: inline-block;
-                position: relative;
-                cursor: pointer;
-                color: rgb(37, 33, 18);
-                font-weight: 300;
-                // border: 1px rgb(104, 91, 43) solid;
-                box-shadow: 1px 1px 1px rgb(78, 71, 43);
-                background-color: rgba(255,255,255,0.5);
-                margin-right: 5px;
-                padding-left: 2px;
+              display: inline-block;
+              position: relative;
+              cursor: pointer;
+              color: rgb(37, 33, 18);
+              font-weight: 300;
+              // border: 1px rgb(104, 91, 43) solid;
+              box-shadow: 1px 1px 1px rgb(78, 71, 43);
+              background-color: rgba(255,255,255,0.5);
+              margin-right: 5px;
+              padding-left: 2px;
+              max-width: 0px;
+              .transition(~"all 250ms linear");
+              > .crumbText{
+                pointer-events: none;
+                display: block;
+                white-space: nowrap;
+                overflow: hidden;
+                margin-left: 13px;
+                margin-right: 2px;
+                > .crumbHeader{
+                  padding: 1px;
+                  font-size: 1em;
+                  font-weight: 700;
+                  &:after{ content: ': '; }
+                }
+                > .filterDetails{
+                  padding:1px 0px 1px 0px;
+                  display: inline;
+                  > b{ font-weight: 700; }
+                  > .unitName{ font-weight: 300; }
+                }
+              }
+              > .clearCrumbButton{
+                width: 14px;
+                height: 100%;
+                position: absolute;
+                pointer-events: none;
+                font-size: 11px;
+                left: 0px;
+                text-align: center;
+                color: white;
+                .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
+              }
+              &[filtered=false]{ display: none; }
+              &[ready=true]{ max-width: 100%; }
+              &[ready=false]{
                 max-width: 0px;
-                .transition(~"all 250ms linear");
-                > .sdsdsds{
-                    pointer-events: none;
-                    /*
-                    max-width: 300px;
-                    max-width: 300px;
-                    -o-text-overflow: ellipsis;
-                    text-overflow: ellipsis;*/
-                    display: block;
-                    // margin-right: 20px;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    > .filterHeader{
-                        padding: 1px;
-                        font-size: 1em;
-                        font-weight: 700;
-                        &:after{
-                            content: ': ';
-                        }
-                    }
-                    > .filterDetails{
-                        padding:1px 0px 1px 0px;
-                        display: inline;
-                        margin-right: 15px;
-                        > .unitName{
-                            font-weight: 300;
-                        }
-                    }
+                .clearCrumbButton{ display:none; }
+              }
+              &.crumbMode_filter {
+                > .clearCrumbButton {
+                  background-color: #788D9B;
+                  border: solid 1px #788D9B;
+                  > .fa::before{ content: "\f0b0"; } // cross
                 }
-                > .chartClearFilterButton.summary{
-                    pointer-events: none;
+              }
+              &.crumbMode_compare {
+                > .clearCrumbButton {
+                  background-color: @color_preview_compare;
+                  border: solid 1px @color_preview_compare;
+                  > .fa::before{ 
+                    content: "\f023"; // lock
+                    font-size: 1.1em;
+                    position: relative;
+                    top: 1px;
+                  }
                 }
-                &[ready=true]{
-    //                opacity: 1;
-                    max-width: 100%;
+              }
+              &:hover{
+                background-color: rgba(255,255,255,1.0);
+                > .crumbText{ text-decoration: line-through; }
+                &.crumbMode_compare > .clearCrumbButton >.fa::before{  content: "\f13e"; } // unlock
+                &.crumbMode_filter > .clearCrumbButton >.fa::before{  content: "\f00d"; } // cross
+                .clearCrumbButton{
+                  //color: orangered;
                 }
-                &[ready=false]{
-    //                opacity: 1;
-                    max-width: 0px;
-                    .chartClearFilterButton{
-                        display:none;
-                    }
-                }
-                &:hover{
-                    background-color: rgba(255,255,255,1.0);
-                    .sdsdsds{
-                        text-decoration: line-through;
-                    }
-                    .chartClearFilterButton{
-                        background-color: #B6AF96;
-                        color: #635d46;
-                    }
-                }
-                b{ font-weight: 700; }
-                &[filtered=false]{ display: none; }
+              }
             }
         }
         > .filterClearAll{
@@ -1380,55 +1392,49 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .scrollToTop{ right: 1px; }
     }
 
-    .chartClearFilterButton{
-        width: 14px;
-        height: 100%;
+    .clearFilterButton{
+      width: 14px;
+      height: 100%;
 
+      display: inline-block;
+      cursor: pointer;
+
+      font-weight: 700;
+      font-size: 11px;
+
+      text-align: center;
+
+      .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
+
+      background-color: #635d46;
+      color: #eeebe0;
+      border: solid 1px #635d46;
+
+      &:hover{
+        background-color: #B6AF96;
+        color: #635d46;
+      }
+
+      &.inSummary{
+        display: none;
+        vertical-align: top;
+        pointer-events: all;
+        box-shadow: 0px 0px 1px #474940;
+        margin-top: 1px;
+        font-size: 0.8em;
+        > .fa-times{
+          top: -1px;
+          position: relative;
+        }
+      }
+      &.allFilter{
         display: inline-block;
-        cursor: pointer;
-
-        font-weight: 700;
-        font-size: 11px;
-
-        text-align: center;
-
-        .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
-
-        background-color: #635d46;
-        color: #eeebe0;
-        border: solid 1px #635d46;
-        &:hover{
-            background-color: #B6AF96;
-            color: #635d46;
-        }
-
-        &.alone{
-            display: none;
-            vertical-align: top;
-            pointer-events: all;
-            box-shadow: 0px 0px 1px #474940;
-            margin-top: 1px;
-            font-size: 0.8em;
-            > .fa-times{
-                top: -1px;
-                position: relative;
-            }
-        }
-        &.summary{
-            display: inline-block;
-            position: absolute;
-            right: 0px;
-            margin-left: 2px;
-            line-height: 0.9em;
-        }
-        &.allFilter{
-            display: inline-block;
-            margin-left: 2px;
-            height: 19px;
-            vertical-align: top;
-            border-width: 0px 0px 0px 1px;
-            line-height: 19px;
-        }
+        margin-left: 2px;
+        height: 19px;
+        vertical-align: top;
+        border-width: 0px 0px 0px 1px;
+        line-height: 19px;
+      }
     }
 
     .chartAxis_Measure {
@@ -1578,7 +1584,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           color: gray;
           &:hover{ color: black; }
         }
-        .chartClearFilterButton.rowFilter{
+        .clearFilterButton.rowFilter{
           pointer-events: all;
           height: 14px;
           width: 14px;
@@ -1797,15 +1803,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   .transition(~'height 700ms ease-in-out');
 
                   > .chartBackground{
-                    opacity: 0;
                     width: 1px;
                     display: block;
+                    position: relative; // so label resize gets its full height.
                     .transition(~'opacity 250ms');
-                  }
-
-                  > .chartCatLabelResize{
-                    display: none;
-                    z-index: 25;
+                    > .chartCatLabelResize{
+                      display: none;
+                      height: 100%;
+                      z-index: 25;
+                    }
                   }
 
                   > .aggrBlock{
@@ -1922,8 +1928,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       vertical-align: top;
                       //float: left;
                       z-index: 100;
-//                            margin-bottom: -2px;
-//                            font-size: 1.1em;
                       pointer-events: all;
                       > .filterButton{
                         display: none;
@@ -1936,6 +1940,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         color: white;
                         font-weight: 300;
                         font-size: 0.7em;
+                        opacity: 0;
+                        .transition(~'opacity 500ms linear');
                       }
                       > .orButton {
                         background-color: lighten(@color_query_or, 10%);
@@ -1969,7 +1975,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &[selected="2"]{
                       > .categoryLabel > .theLabel{ color: @color_query_or; }
                       &[show-box=true]{
-                        > .categoryLabel > .filterButtons > .orButton { display: inline; }
+                        > .categoryLabel > .filterButtons > .orButton { display: inline; opacity: 1; }
                       }
                     }
                     // NOT
@@ -1977,6 +1983,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       > .categoryLabel > .theLabel{ color: @color_query_not; }
                       > .categoryLabel > .filterButtons > .notButton{
                         display: inline;
+                        opacity: 1;
                         background-color: @color_query_not;
                       }
                     }
@@ -2395,7 +2402,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 display: block;
                                 text-align: center;
                                 white-space: nowrap;
-                                > .unitName{ color: gray; }
                             }
                             > .line{
                                 position: absolute;
@@ -2427,7 +2433,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         &[filtered=true] {
-          > .headerGroup .chartClearFilterButton{ display: inline-block; }
+          > .headerGroup .clearFilterButton{ display: inline-block; }
           &:hover > .wrapper > .summaryInterval > .intervalSlider {
             > .zoomControl{ display: block; }
             > .controlLine > .handle > .rangeLimitOnChart{ display: block; }
@@ -2435,28 +2441,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[isMultiValued=false]{
           &[filtered_or="0"][filtered_and="0"]{
-            > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:hover {
-              &[selected="0"] .notButton{ display: inline; }
+            > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[highlight="selected"] {
+              &[selected="0"] .notButton{ display: inline; opacity: 1; }
             }
           }
           &[filtered_or="0"]{
-            > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:hover {
+            > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[highlight="selected"] {
               &[selected="-1"] { cursor: pointer; }
             }
           }
         }
         &:not([filtered_or="0"]){
-          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton{ display: inline; }
+          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton{ display: inline; opacity: 1; }
         }
         &:not([filtered_and="0"]){
-          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton{ display: inline; }
+          > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton{ display: inline; opacity: 1; }
         }
         &[isMultiValued=true]{
           > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock{
-            &[selected="0"][highlight="selected"] .notButton{ display: inline; }
+            &[selected="0"][highlight="selected"] .notButton{ display: inline; opacity: 1 }
           }
         }
-        &[filtered_range=true] .chartClearFilterButton.rangeFilter{
+        &[filtered_range=true] .clearFilterButton.rangeFilter{
           display:inline-block;
         }
 
@@ -2840,7 +2846,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   white-space: nowrap;
                   text-overflow: ellipsis;
                   overflow: hidden;
-                  > .unitName { color: gray; }
                 }
                 > .recordRank{
                   float: left;
@@ -3220,13 +3225,3 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent !important; border-bottom-color: transparent !important; }
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent !important; border-bottom-color: transparent !important; }
 
-
-.mixi-frames () {
-    from { .transform(scale(1) )}
-    to { .transform(scale(0.5) )}
-}
-@-webkit-keyframes shrink {.mixi-frames;}
-@-moz-keyframes shrink {.mixi-frames;}
-@-ms-keyframes shrink {.mixi-frames;}
-@-o-keyframes shrink {.mixi-frames;}
-@keyframes shrink {.mixi-frames;}
