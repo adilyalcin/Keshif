@@ -222,10 +222,6 @@ a
     text-decoration: underline;
 }
 
-a:visited { color: #717171; }
-a:hover { color: #96BF1A; }
-a:active { color: #476F88; }
-
 .attention {
     color: #C31C5F;
     font-weight: bold;
@@ -292,8 +288,11 @@ div.row span.value
     color: green;
 }
 .titleee{
-    text-align: center;
-    font-size: 1.3em;
+  padding-top: 5px;
+  text-align: center;
+  font-size: 1.3em;
+  padding-bottom: 5px;
+  border-bottom: solid 1px lightgray;
 }
       
 my-email::after {
@@ -320,51 +319,27 @@ h1, .h1 {
 }
 #demobox{
   width: 1100px;
-  height: 500px;
+  height: 450px;
   position:relative;
-}
-#demoimg {
-  cursor: pointer;
-}
-#demobox[loaded=true] #demoimg{
-  display: none;
-}
-#demobox[loaded=true] #clicktoLoad{
-  display: none;
-}
-#demobox #clicktoLoad {
-  cursor: pointer;
-  position: absolute;
-  top: 0px;
-  background-color: rgba(255,255,255,0);
-  width: 1100px;
-  height: 500px;
-  display:none;
-}
-#demobox:hover[loaded=false] #clicktoLoad {
-  background-color: rgba(255,255,255,0.7);
-  display:block;
-  font-size: 3em;
-}
-#demobox #clicktoLoad > span{ 
-font-family: 'Roboto', Helvetica, Arial, sans-serif;
-  cursor: pointer;
-  vertical-align: middle;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  margin-top: 200px;
-  text-shadow: 0px 0px 5px white;
-  font-weight: 300 !important;
 }
 #livedemo {
   margin: 0 auto;
-  height: 500px;
+  height: 450px;
   font-size: 12pt;
 }
 #demobox[loaded=false] #livedemo{
   display:none;
 }
+
+.tutorialLink{
+  cursor: pointer;
+  color: black;
+  text-decoration: none;
+}
+.tutorialLink:hover{
+  color: orangered;
+}
+
 
 .iteminfo a{
   color:#606060;
@@ -460,13 +435,6 @@ font-family: 'Roboto', Helvetica, Arial, sans-serif;
   text-align: center;
 }
 
-.IntroVideoWrapper{
-  text-align: right;
-  position: absolute;
-  right: 0px;
-  top: 25px;
-}
-
 #forkongithub a{
   background:#000;
   color:#fff;
@@ -518,6 +486,35 @@ font-family: 'Roboto', Helvetica, Arial, sans-serif;
       -o-transform:rotate(-45deg);
       box-shadow:4px 4px 10px rgba(0,0,0,0.8);
   }
+}
+
+
+.affilLogo{
+  opacity: 0.8;
+  -webkit-filter: grayscale(100%);
+     -moz-filter: grayscale(100%);
+       -o-filter: grayscale(100%);
+      -ms-filter: grayscale(100%);
+          filter: grayscale(100%);
+}
+.affilLogo:hover{
+  opacity: 1;
+  -webkit-filter: grayscale(0%);
+     -moz-filter: grayscale(0%);
+       -o-filter: grayscale(0%);
+      -ms-filter: grayscale(0%);
+          filter: grayscale(0%);
+}
+
+#logo_umd{
+  width: 50px;
+  float: right;
+}
+
+#logo_hcil{
+  width: 50px;
+  float: right;
+  margin: 0px 10px;
 }
 
 /*
@@ -597,27 +594,32 @@ font-family: 'Roboto', Helvetica, Arial, sans-serif;
 
 <div id="mypage">
 <img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">
+<a href='http://www.umd.edu' target='_blank'>
+  <img src="./AggreSet/img/logo_umd.png" id="logo_umd" class="affilLogo" title="University of Maryland, College Park"></a>
+<a href='http://www.cs.umd.edu/hcil' target='_blank'>
+  <img src="./AggreSet/img/logo_hcil.gif" id="logo_hcil" class="affilLogo" title="Human Computer Interaction Lab"></a>
 <span class='h1'><strong>Keshif</strong></br>
 Data Made Explorable</span>
 
-<div class="IntroVideoWrapper">
-  <a class='youtube author_link' href="https://www.youtube.com/embed/3Hmvms-1grU">5-minute tutorial to data exploration</a> 
-  <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> 
+
+<div class="titleee">
+  With<b><img src='./demo/img/logo.png' style='height: 1.2em; position: relative; top: 3px; right: -2px'>eshif</b>, you can explore and understand your data - interactively, visually &amp; <b>easily</b> <span class='fa fa-magic'></span>.<br></div>
+
+<div style='text-align:center; margin: 5px 10px 10px 10px; font-size: 1.2em;'>
+  <span class='fa fa-eye' style='font-size: 1.4em;'></span> Explore 110+ public datasets below.
+  | 
+  <span class='youtube tutorialLink' href="https://www.youtube.com/embed/3Hmvms-1grU"> 
+    <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> Watch 5-minute tutorial</span>.
+  |
+  <a class='tutorialLink' href="./demo/YourData" target='_blank'> 
+    <span class='fa fa-upload' style='font-size: 1.4em;'></span> Import your data</a>. 
+  |
+  <a class='tutorialLink' href="http://www.github.com/adilyalcin/keshif" target='_blank'> 
+    <span class='fa fa-github' style='font-size: 1.4em;'></span> Get the code</a>.
+
   </div>
 
-<!--<div align="right">
-	Click on the image to load the interactive <b>Keshif</b> browser
-</div>-->
-
-
-<div id="demobox" loaded="false" style="margin:8px" onclick="loadDemoBrowser()">
-	<img id="demoimg" src="./demo/demo_img/demo.png" width="1100">
-	<div id="clicktoLoad">
-		<span align="center"> Click to use <span style="font-size: 1.2em; font-weight:400">keshif</span><br> 
-      to<br> <span style="font-size: 1.0em; font-weight:400">explore</span> its demo browsers!</span>
-	</div>
-	<div id="livedemo"></div>
-</div>
+<div id="demobox" loaded="false"> <div id="livedemo"></div> </div>
 
 
 <!-- Overview -->
@@ -632,16 +634,23 @@ Data
 Visual
 Summaries-->
 
-<div class="titleee"><b>Keshif</b> lets you explore and understand your data collections, visually &amp; easily.</div>
 <ul class="fa-ul featureList">
-    <li><i class="fa-li fa fa-check-square"></i><b>Create summaries for the data properties you would like to explore.</b> Keshif will present your data in its effective visual design.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> across your summaries using its rapid interactive design. <b>Preview results </b> by quick mouse over. <b>Compare</b> across distributions by locking your selection. Keshif automatically <b>synronizes</b> all within your view so that you can make observations swiftly.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability through design</b>. Many visualization techniques have not been designed to scale gracefully. Keshif is designed to scale. It lets you explore large data collections, as far as the data can be loaded to your web browser.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs for a wide range of data with a single design. Its visual and interaction design is cohesive so that it's easy to start your exploration.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Don't worry about picking the right visualization.</b> Keshif does it for you. You focus on your data and your questions. Keshif will do the number crunching and visually present patterns.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>See the overview and the most relevant first.</b> After each step of exploration, the most relevant results and data properties are shown first, as they are dynamically and smoothly re-ordered.</li>
-    <li><i class="fa-li fa fa-check-square"></i><b>Load your data in a flexible web-based pipeline.</b> Keshif is ready to load your structured data, whether it be digital collections, books that you have read, contact lists, public data sources, movies, etc. It can automatically import data from Google SpreadSheets and CSV/TEXT files. You can write your own importers in Javascript for JSON, XML, even HTML or BibTeX for publication databases. Check the demo list to find demos using various data resource types.</li>
+    <li><i class="fa-li fa fa-check-square"></i><b>Create summaries of data properties.</b> Keshif will present your data in its effective visual design.</li>
+    
+    <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> in your data rapidly. <b>Highlight</b> relations by mouse over. <b>Compare</b> records by locking your selection. </i>Keshif auto-<b>synronizes</b> all selections.</li>
+    
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability by design</b>. Keshif avoids visualization techniques that cannot scale. Explore data as long as it can be fully loaded to your web browser.</li>
+    
+    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs for a wide range of dataset in a single unified visual and interactive design.</li>
+    
+    <li><i class="fa-li fa fa-check-square"></i><b>Focus on your data and your questions. </b> Don't worry about picking the right visualization and doing the math. Keshif does it for you.</li>
+    
+    <li><i class="fa-li fa fa-check-square"></i><b>See the overview and the most relevant first.</b> After each step, the most relevant results and data properties are shown first.</li>
+    
+    <li><i class="fa-li fa fa-check-square"></i><b>Load your data in a flexible pipeline built for the web.</b> Keshif is ready to load your structured data, whether it be digital collections, books that you have read, contact lists, public data sources, movies, etc. It can automatically import data from Google SpreadSheets and CSV/TEXT files. You can write your own importers in Javascript for JSON, XML, even HTML or BibTeX for publication databases. Check the demo list to find demos using various data resource types.</li>
+    
     <li><i class="fa-li fa fa-check-square"></i><b>Define your browser using its simple <a href="https://github.com/adilyalcin/Keshif/wiki#wiki-api-documentation" target="_blank">API</a>.</b> The API is based on a single function which takes configuration parameters, such as data source, and the descriptions of your data summaries.</li>
+
 </ul>
 
 </div>
@@ -714,7 +723,7 @@ Chatter:
 
 </br></br>
 <h2 id="participants">Designed &amp; Developed By</h2>
-<a href="http://adilyalcin.me/">M. Adil Yalçın</a>, Ph.D. Candidate, Human Computer Interaction Lab &amp; Computer Science, University of Maryland, College park
+<a href="http://adilyalcin.me/"><b>M. Adil Yalçın</b></a>, Ph.D. Candidate, Human Computer Interaction Lab, Computer Science, University of Maryland, College Park
 
 </br></br>
 <h2 id="participants">Advised By</h2>
@@ -724,10 +733,10 @@ Chatter:
   Professor, Computer Science, University of Maryland, College Park
 
 </br></br>
-<h2 id="license">License <a href="https://raw.githubusercontent.com/adilyalcin/Keshif/master/LICENSE">
-    <span class='fa fa-external-link'></span></a></h2>
+<h2 id="license">License</h2>
 
-Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license</a>.
+Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license <a href="https://raw.githubusercontent.com/adilyalcin/Keshif/master/LICENSE">
+    <span class='fa fa-external-link'></span></a></a>.
 <span class='fa fa-copyright'></span> 2015 University of Maryland
 
 
