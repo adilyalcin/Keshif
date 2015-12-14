@@ -2651,6 +2651,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
   border: solid 1px rgba(1, 1, 1, 0);
+  cursor: pointer;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock:hover {
   border: solid 1px white;

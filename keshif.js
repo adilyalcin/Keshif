@@ -1554,7 +1554,7 @@ kshf.RecordDisplay.prototype = {
               // mouse is moving fast, should wait a while...
               this.highlightTimeout = window.setTimeout(
                 function(){ me._cb_record_highlight(d); }, 
-                me.browser.mouseSpeed*300);
+                me.browser.mouseSpeed*500);
             })
             .on("mouseleave",function(d){
               if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
@@ -2216,7 +2216,7 @@ kshf.Browser = function(options){
             var yDif = Math.abs(d3.event.y - me.lastMouseMoveEvent.y);
             var posDif = Math.sqrt(xDif*xDif + yDif*yDif);
             me.mouseSpeed = posDif / timeDif;
-            me.mouseSpeed = Math.min(me.mouseSpeed,5); // cannot exceed 5, controls highlight selection delay.
+            me.mouseSpeed = Math.min(me.mouseSpeed,2); // cannot exceed 5, controls highlight selection delay.
             //console.log(me.mouseSpeed);
 
             me.lastMouseMoveEvent = d3.event;
@@ -6329,7 +6329,7 @@ var Summary_Categorical_functions = {
               // mouse is moving fast, should wait a while...
               this.highlightTimeout = window.setTimeout(
                 function(){ me.onCatMouseOver(category) }, 
-                me.browser.mouseSpeed*300);
+                me.browser.mouseSpeed*500);
             })
             .on("mouseleave",function(category){ 
               if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
@@ -7742,8 +7742,6 @@ var Summary_Interval_functions = {
 
                 me.summaryFilter.filteredBin=this;
                 me.summaryFilter.addFilter(true);
-                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_BIN,
-                    {id:me.summaryFilter.id, info:me.summaryFilter.active.min+"x"+me.summaryFilter.active.max} );
             });
 
         newBins.append("span").attr("class","aggr total");
@@ -7845,19 +7843,31 @@ var Summary_Interval_functions = {
         this.DOM.mapColorBlocks = this.DOM.mapColorBar.selectAll("mapColorBlock").data([0,1,2,3,4,5,6,7,8])
             .enter()
                 .append("div").attr("class","mapColorBlock")
-                
                 .each(function(d){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){
-                            var r = me.valueScale.range()[1]/10;
-                            return Math.round(me.valueScale.invert(d*r))+
-                                " to "+
-                                Math.round(me.valueScale.invert((d+1)*r));
-                        }
-                    });
+                  var r = me.valueScale.range()[1]/9;
+                  this._minValue = me.valueScale.invert(d*r);
+                  this._maxValue = me.valueScale.invert((d+1)*r);
+                  this.tipsy = new Tipsy(this, {
+                    gravity: 's', title: function(){
+                      return Math.round(this._minValue)+" to "+Math.round(this._maxValue);
+                    }
+                  });
                 })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); })
+                .on("mouseenter",function(){ 
+                  // TODO: Preview items that fall under this range
+                  // TODO: Currently, the color blocks do not aggregate records. Hmmmm....
+                  this.tipsy.show();
+                })
+                .on("mouseleave",function(){ 
+                  this.tipsy.hide();
+                })
+                .on("click",function(){
+                  me.summaryFilter.active = {
+                      min: this._minValue,
+                      max: this._maxValue
+                  };
+                  me.summaryFilter.addFilter(true);
+                })
                 ;
         this.refreshMapColor();
     },
