@@ -355,7 +355,7 @@ var kshf = {
         s.parentNode.insertBefore(wf, s);
         this.fontLoaded = true;
     },
-
+    activeTipsy: undefined,
     colorScale : {
         converge: [
             d3.rgb('#ffffd9'),
@@ -386,115 +386,107 @@ var kshf = {
 // version 1.0.0a
 // (c) 2008-2010 jason frame [jason@onehackoranother.com]
 // released under the MIT license
-var activeTipsy = undefined;
 
 function Tipsy(element, options) {
-    this.jq_element = $(element);
-    this.options = $.extend({}, this.defaults, options);
+  this.jq_element = $(element);
+  this.options = $.extend({}, 
+    {
+      className: null,
+      delayOut: 0,
+      gravity: 'n',
+      offset: 0,
+      offset_x: 0,
+      offset_y: 0,
+      opacity: 1
+    },
+    options
+  );
 };
 Tipsy.prototype = {
-    defaults: {
-        className: null,
-        delayOut: 0,
-        fade: true,
-        fallback: '',
-        gravity: 'n',
-        offset: 0,
-        offset_x: 0,
-        offset_y: 0,
-        opacity: 1
-    },
-    show: function() {
-        var maybeCall = function(thing, ctx) {
-            return (typeof thing == 'function') ? (thing.call(ctx)) : thing;
-        };
-        if(activeTipsy) {
-            activeTipsy.hide();
-        }
+  show: function() {
+    var maybeCall = function(thing, ctx) {
+        return (typeof thing == 'function') ? (thing.call(ctx)) : thing;
+    };
+    // hide active Tipsy
+    if(kshf.activeTipsy) kshf.activeTipsy.hide();
 
-        activeTipsy=this;
+    kshf.activeTipsy = this;
 
-        var title = this.getTitle();
-        if(!title) return;
-        var jq_tip = this.tip();
+    var title = this.getTitle();
+    if(!title) return;
+    var jq_tip = this.tip();
 
-        jq_tip.find('.tipsy-inner')['html'](title);
-        jq_tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
-        jq_tip.remove().css({top: 0, left: 0, visibility: 'hidden', display: 'block'}).prependTo(document.body);
+    jq_tip.find('.tipsy-inner')['html'](title);
+    jq_tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
+    jq_tip.remove().css({top: 0, left: 0, visibility: 'hidden', display: 'block'}).prependTo(document.body);
 
-        var pos = $.extend({}, this.jq_element.offset(), {
-            width: this.jq_element[0].offsetWidth,
-            height: this.jq_element[0].offsetHeight
-        });
+    var pos = $.extend({}, this.jq_element.offset(), {
+        width: this.jq_element[0].offsetWidth,
+        height: this.jq_element[0].offsetHeight
+    });
 
-        var actualWidth = jq_tip[0].offsetWidth,
-            actualHeight = jq_tip[0].offsetHeight,
-            gravity = maybeCall(this.options.gravity, this.jq_element[0]);
+    var actualWidth = jq_tip[0].offsetWidth,
+        actualHeight = jq_tip[0].offsetHeight,
+        gravity = maybeCall(this.options.gravity, this.jq_element[0]);
 
-        var tp;
-        switch (gravity.charAt(0)) {
-            case 'n':
-                tp = {top: pos.top + pos.height + this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
-                break;
-            case 's':
-                tp = {top: pos.top - actualHeight - this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
-                break;
-            case 'e':
-                tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth - this.options.offset};
-                break;
-            case 'w':
-                tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width + this.options.offset};
-                break;
-        }
-        tp.top+=this.options.offset_y;
-        tp.left+=this.options.offset_x;
+    this.tipWidth = actualWidth;
+    this.tipHeight = actualHeight;
 
-        if (gravity.length == 2) {
-            if (gravity.charAt(1) == 'w') {
-                tp.left = pos.left + pos.width / 2 - 15;
-            } else {
-                tp.left = pos.left + pos.width / 2 - actualWidth + 15;
-            }
-        }
+    var tp;
+    switch (gravity.charAt(0)) {
+        case 'n':
+            tp = {top: pos.top + pos.height + this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
+            break;
+        case 's':
+            tp = {top: pos.top - actualHeight - this.options.offset, left: pos.left + pos.width / 2 - actualWidth / 2};
+            break;
+        case 'e':
+            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth - this.options.offset};
+            break;
+        case 'w':
+            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width + this.options.offset};
+            break;
+    }
+    tp.top+=this.options.offset_y;
+    tp.left+=this.options.offset_x;
 
-        jq_tip.css(tp).addClass('tipsy-' + gravity);
-        jq_tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
-        if (this.options.className) {
-            jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
-        }
+    if (gravity.length == 2) {
+      if (gravity.charAt(1) == 'w') {
+        tp.left = pos.left + pos.width / 2 - 15;
+      } else {
+        tp.left = pos.left + pos.width / 2 - actualWidth + 15;
+      }
+    }
 
-        if (this.options.fade) {
-            jq_tip.stop().css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: this.options.opacity},200);
-        } else {
-            jq_tip.css({visibility: 'visible', opacity: this.options.opacity});
-        }
-    },
-    hide: function(){
-        activeTipsy = undefined;
-        if (this.options.fade) {
-            this.tip().stop().fadeOut(200,function() { $(this).remove(); });
-        } else {
-            this.tip().remove();
-        }
-    },
-    getTitle: function() {
-        var title, jq_e = this.jq_element, o = this.options;
-        var title, o = this.options;
-        if (typeof o.title == 'string') {
-            title = jq_e.attr(o.title == 'title' ? 'original-title' : o.title);
-        } else if (typeof o.title == 'function') {
-            title = o.title.call(jq_e[0]);
-        }
-        title = ('' + title).replace(/(^\s*|\s*$)/, "");
-        return title || o.fallback;
-    },
-    tip: function() {
-        if(this.jq_tip) return this.jq_tip;
-        this.jq_tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
-        this.jq_tip;
-        this.jq_tip.data('tipsy-pointee', this.jq_element[0]);
-        return this.jq_tip;
-    },
+    jq_tip.css(tp).addClass('tipsy-' + gravity);
+    jq_tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
+    if (this.options.className) {
+      jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
+    }
+
+    jq_tip.stop().css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: this.options.opacity},200);
+  },
+  hide: function(){
+    kshf.activeTipsy = undefined;
+    this.tip().stop().fadeOut(200,function() { $(this).remove(); });
+  },
+  getTitle: function() {
+    var title, jq_e = this.jq_element, o = this.options;
+    var title, o = this.options;
+    if (typeof o.title == 'string') {
+      title = jq_e.attr(o.title == 'title' ? 'original-title' : o.title);
+    } else if (typeof o.title == 'function') {
+      title = o.title.call(jq_e[0]);
+    }
+    title = ('' + title).replace(/(^\s*|\s*$)/, "");
+    return title;
+  },
+  tip: function() {
+    if(this.jq_tip) return this.jq_tip;
+    this.jq_tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
+    this.jq_tip.data('tipsy-pointee', this.jq_element[0]);
+    return this.jq_tip;
+  }
 };
 
 /**
@@ -671,7 +663,7 @@ kshf.Item.prototype = {
         if(!this.isWanted) return;
 
         if(this.updatePreview_Cache===false){
-            this.updatePreview_Cache = true;
+            this.updatePreview_Cache = true; // Cannot updatePreview twice
         } else {
             return;
         }
@@ -1547,7 +1539,11 @@ kshf.RecordDisplay.prototype = {
                 }
             })
             .on("mouseenter",function(d){
-              if(this.tipsy) this.tipsy.show();
+              if(this.tipsy) {
+                this.tipsy.show();
+                this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+                this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+              }
               if(me.browser.mouseSpeed<0.2) {
                 me._cb_record_highlight(d); return;
               }
@@ -1561,12 +1557,25 @@ kshf.RecordDisplay.prototype = {
                 this.setAttribute("highlight","false");
                 d.nohighlightAll(true);
                 d.items.forEach(function(item){ item.nohighlightAll(false); });
-                if(this.tipsy) this.tipsy.hide();
+                //if(this.tipsy) this.tipsy.hide();
+            })
+            .on("mousedown", function(d){
+              this._mousedown = true;
+              this._mousemove = false;
+            })
+            .on("mousemove", function(d){
+              this._mousemove = true;
+              if(this.tipsy){
+                this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+                this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+              }
             })
             .on("click",function(d){
-                if(me.displayType==="map"){
-                    me.browser.updateItemZoomText(d);
-                }
+              // Do not show the detail view if the mouse was used to drag the map
+              if(this._mousemove) return;
+              if(me.displayType==="map"){
+                me.browser.updateItemZoomText(d);
+              }
             });
         
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
@@ -2220,6 +2229,10 @@ kshf.Browser = function(options){
             //console.log(me.mouseSpeed);
 
             me.lastMouseMoveEvent = d3.event;
+
+            console.log("pageX" + d3.event.pageX);
+            console.log("pageY" + d3.event.pageY);
+            console.log("-");
         })
         ;
 
@@ -3195,15 +3208,16 @@ kshf.Browser.prototype = {
                         if(v.geo.objects) {
                             o = v.geo.objects;
                         } else {
-                            for(var i in topojsonData.objects) o.push(i);
+                            for(var i in topojsonData.objects) o.push(i); // Use all available object names
                         }
                         o.forEach(function(objectName){
                             var objects = topojsonData.objects[objectName];
                             kshf.dt_id["_geo_"+objectName] = {};
                             var a = kshf.dt_id["_geo_"+objectName];
-                            topojson.feature(topojsonData, objects).features.forEach(function(feature){
-                                a[feature.id] = feature;
-                            });
+                            topojson.feature(topojsonData, objects) // Converts from topojson to geojson
+                              .features.forEach(function(feature){
+                                  a[feature.id] = feature;
+                              });
                         });
                     }
                 });
@@ -5489,7 +5503,7 @@ var Summary_Categorical_functions = {
                 if(!me.browser.pauseResultPreview &&
                   (me.isMultiValued || me.summaryFilter.selected_AND.length===0)){
                     // calculate the preview
-                    me.unmappedRecords.forEach(function(record){record.updatePreview();},me);
+                    me.unmappedRecords.forEach(function(record){record.updatePreview();});
                     me.browser.itemCount_Previewed = me.unmappedRecords.length;
                     me.browser.setSelect_Highlight(me);
                 }
@@ -7070,7 +7084,7 @@ var Summary_Interval_functions = {
                 this.updateIntervalRangeMinMax();
             }
         }
-        this.updateScaleAndBins();
+        this.updateScaleAndBins(true);
     },
     /** -- */
     getHeight_MapColor: function(){
@@ -7175,7 +7189,7 @@ var Summary_Interval_functions = {
             .on("mouseover",function(){
                 this.tipsy.show();
 
-                me.unmappedRecords.forEach(function(record){ record.updatePreview(); },me);
+                me.unmappedRecords.forEach(function(record){record.updatePreview();});
                 me.browser.itemCount_Previewed = me.unmappedRecords.length;
                 me.browser.setSelect_Highlight(me);
             })
@@ -7443,9 +7457,9 @@ var Summary_Interval_functions = {
             }
             this.intervalTickFormat = d3.format("d");
         } else if(this.scaleType==='log'){
-            this.valueScale.nice(optimalTickCount);
+            this.valueScale.nice();
             // Generate ticks
-            ticks = this.valueScale.ticks(optimalTickCount);
+            ticks = this.valueScale.ticks(); // ticks cannot be customized directly
             while(ticks.length > optimalTickCount*1.6){
                 ticks = ticks.filter(function(d,i){return i%2===0;});
             }
@@ -7496,7 +7510,7 @@ var Summary_Interval_functions = {
       - valueScale
       - intervalTickFormat
       */
-    updateScaleAndBins: function(){
+    updateScaleAndBins: function(force){
         if(this.isEmpty) return;
 
         var me=this;
@@ -7546,7 +7560,7 @@ var Summary_Interval_functions = {
             this.intervalTicks[this.intervalTicks.length-1] !== ticks[ticks.length-1]
             ;
 
-        if(ticksChanged){
+        if(ticksChanged || force){
             this.intervalTicks = ticks;
             var filterId = this.summaryFilter.id;
 
@@ -7560,7 +7574,7 @@ var Summary_Interval_functions = {
             if(this.scaleType!=='step'){
                 this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(itemV)(this.filteredItems);
             } else {
-                // I'll do the bins myself, d3 just messes it up when I need a simple step scale
+                // I'll do the bins myself
                 this.histBins = [];
                 for(var bin=this.intervalRange.active.min; bin<=this.intervalRange.active.max; bin++){
                     var d = [];
@@ -7673,7 +7687,7 @@ var Summary_Interval_functions = {
     /** -- */
     onBinMouseOver: function(aggr){
       if(this.browser.pauseResultPreview) return;
-      aggr.forEach( function(record){record.updatePreview();} );
+      aggr.forEach(function(record){record.updatePreview();});
       this.browser.itemCount_Previewed = aggr.aggregate_Preview;
       aggr.DOM.aggrBlock.setAttribute("highlight","selected");
       aggr.DOM.aggrBlock.setAttribute("showlock",true);
@@ -7723,7 +7737,12 @@ var Summary_Interval_functions = {
                 this.setAttribute("filtered","true");
 
                 // store histogram state
-                if(me.scaleType!=='time'){
+                if(me.scaleType==='step'){
+                  me.summaryFilter.active = {
+                      min: aggr.x,
+                      max: aggr.x
+                  };
+                } else if(me.scaleType!=='time'){
                     me.summaryFilter.active = {
                         min: aggr.x,
                         max: aggr.x+aggr.dx
@@ -8588,8 +8607,9 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshWidth: function(){
-        this.updateScaleAndBins();
-        this.updateDOMwidth();
+      this.detectScaleType();
+      this.updateScaleAndBins();
+      this.updateDOMwidth();
     },
     /** -- */
     setHeight: function(targetHeight){
