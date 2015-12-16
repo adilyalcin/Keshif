@@ -105,7 +105,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block !important;
       }
       .recordDisplay{
-        .buttonRecordViewRemove{ visibility: visible; }
+        &:hover .buttonRecordViewRemove{ visibility: visible; }
         &[displaytype="list"]:hover > .recordGroup > .dragWidthHandle{ display: block; }
       }
       .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control{
@@ -3175,6 +3175,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       margin-left: 1px;
       color: lightgray;
     }
+    .mapRecordName{
+      display: block;
+      border-bottom: solid 1px white;
+    }
+    .mapTooltipValue{
+      font-size: 0.9em;
+      font-weight: 500;
+    }
+    .mapTooltipLabel{
+      font-size: 0.9em;
+      font-weight: 300;
+    }
+
     &.tipsyFilterAnd{
         .tipsy-inner{
             background-color: @color_query_and;

@@ -135,7 +135,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .kshfChart:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[attribsShown=true] .recordDisplay .buttonRecordViewRemove {
+.kshf[attribsShown=true] .recordDisplay:hover .buttonRecordViewRemove {
   visibility: visible;
 }
 .kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
@@ -3773,6 +3773,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .tipsy .unitName {
   margin-left: 1px;
   color: lightgray;
+}
+.tipsy .mapRecordName {
+  display: block;
+  border-bottom: solid 1px white;
+}
+.tipsy .mapTooltipValue {
+  font-size: 0.9em;
+  font-weight: 500;
+}
+.tipsy .mapTooltipLabel {
+  font-size: 0.9em;
+  font-weight: 300;
 }
 .tipsy.tipsyFilterAnd .tipsy-inner {
   background-color: #1d4870;
