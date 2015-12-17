@@ -33,7 +33,7 @@ google.setOnLoadCallback(function(){
     rightPanelLabelWidth: 90,
     source: {
       //gdocId: '1NF677Qj-JeOCVPnZg3agdo1sahHRY8CMaZ_r6Uv97-k',
-      gdocId: '1Pl_NF5D9upONK7eKulb3C9Ly9_UX4FvLceMptw60k-k',
+      gdocId: '16Gjj2jR9GEplbP71TAzOPKpjWlIpOZUvOl78gtv63dg',
       tables: ["Publications", "Research Topics", "Study Type", "Study Design", "Regulatory Domain", "Authors"]
     },
     loadedCb: function(browser){
@@ -41,8 +41,9 @@ google.setOnLoadCallback(function(){
         kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
       },
     readyCb: function(browser){
-      $(".paperName").click(function(d){
-        browser.recordDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+      $(".pubMain").click(function(){
+        var d = this.parentNode.parentNode.__data__;
+        browser.recordDisplay.setRecordDetails(d,!d.showDetails);
       });
     },
     summaries: [
@@ -53,23 +54,34 @@ google.setOnLoadCallback(function(){
         description: "Please mouse over each study design to read about the type of studies it includes." },
       { name: "Study Type",  catTableName: "Study Type", catTooltip: "Description", catSortBy: "Order" },
       { name: "Authors", catTableName: "Authors", catLabel: function(){ return this['First Names']+" "+this['Last Name']; } },
-      { name: "Summarized by MCEP", description: "In the future, the MCEP will provide nontechnical summaries of key papers in this literature.", collapsed: true },
+      { name: "Summarized?", 
+        description: "Summaries are nontechnical summaries of papers.",
+        value: function(){
+          var v=this["Summarized by MCEP"];
+          if(v==="No") return "Not Summarized";
+          if(v===null || v==="" || v===undefined) return "Not Summarized";
+          return "Summarized by MCEP";
+        }
+        },
       { name: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear(); } }
     ],
     itemDisplay: {
       sortBy: 'Year',
       sortColWidth: 45,
-      textSearch: 'Title',
+      textSearch: {name: "Title and Abstract", value: function(){ return this['Title']+" "+this["Abstract"]; } },
       detailsToggle: "one",
       recordView: function(){
         var j;
         var str="";
 
         // paper name
-        str+="<div class=''> <span>";
+        str+="<div class='pubMain'>";
         str+="<span class='paperName'>"+this.Title+"</span>";
+        if(this["Summarized by MCEP"]!=="No"){
+          str+=" <span class='viewSummary'><span class='fa fa-align-justify'></span> View Summary</span> "
+        }
         if(this.url.trim()!==""){
-            str+=" <a class='pubLink fa fa-external-link  externallink' target='_blank' href='"+this.url+"'>link</a>";
+            str+=" <a class='pubLink fa fa-external-link' target='_blank' href='"+this.url+"'> Publication</a>";
         }
         str+="</div>";
 
@@ -77,34 +89,38 @@ google.setOnLoadCallback(function(){
 
         // author names
         var authors = this.Authors;
-        str+="<div class=\"authorNames\"><span class='header'></span> ";
+        str+="<div class='authorNames'><span style='font-weight: 500'>Authors:</span> ";
         for(j=0; j<authors.length; j++){
-            var authData=kshf.dt_id.Authors[authors[j]].data;
-            str+=authData['First Names']+" "+authData['Last Name'];
-            if(j!==authors.length-1) { str+=', '; }
+          // convert from author ID to the name
+          var authData=kshf.dt_id.Authors[authors[j]].data;
+          str+=authData['First Names']+" "+authData['Last Name'];
+          if(j!==authors.length-1) { str+=', '; }
         }
         str+="</div>";
+
+        // keywords for peer reviewed
+        str+="<div class='pubInfo'> <span class='header'>Study Type</span>: "+this['Study Type']+"</div>";
+        // keywords for study type
+        var cats = this['Study Design'];
+        if(cats.length>0){
+          str+="<div class='pubInfo'> <span class='header'>Study Design</span>: "+cats.join(", ")+"</div>";
+        }
+        str+="<br>";
+
         // keywords for sujects
         var cats = this['Regulatory Domains'];
         if(cats.length>0){
-          str+="<div class=\"subjects\"> <span class='header'>Regulatory Domain</span>: "+cats.join(", ")+"</div>";
+          str+="<div class='pubInfo'> <span class='header'>Regulatory Domain</span>: "+cats.join(", ")+"</div>";
         }
         // keywords for aspects
         var cats = this['Research Topics'];
         if(cats.length>0){
-            str+="<div class=\"aspects\"> <span class='header'>Research Topic</span>: "+cats.join(", ")+"</div>";
-        }
-        // keywords for peer reviewed
-        str+="<div class=\"peer\"> <span class='header'>Study Type</span>: "+this['Study Type']+"</div>";
-        // keywords for study type
-        var cats = this['Study Design'];
-        if(cats.length>0){
-        str+="<div class=\"study\"> <span class='header'>Study Design</span>: "+cats.join(", ")+"</div>";
+          str+="<div class='pubInfo'> <span class='header'>Research Topic</span>: "+cats.join(", ")+"</div>";
         }
         // keywords for summarized
         var cats = this['Summarized by MCEP'];
-        if(cats.length>0){
-            str+="<div class=\"summar\"> <span class='header'>Summarized</span>: "+cats+"</div>";
+        if(cats!=="No"){
+          str+="<div class='pubSummary pubInfo'> <span class='header'>Summary</span>: "+cats+"</div>";
         }
 
         return str;
@@ -114,6 +130,7 @@ google.setOnLoadCallback(function(){
 });
         </script>
 <style>
+  .showConfigButton{ display: none !important;}
     .paperName{
         cursor:pointer;
     }
@@ -122,19 +139,19 @@ google.setOnLoadCallback(function(){
     }
     .authorNames{
         font-weight: 300;
+        font-size: 0.9em;
     }
     .benb{
         font-style: italic;
     }
-    .doilink{
-        margin-left: 10px;
-        font-size: 0.7em;
-        vertical-align: top;
+    .pubInfo {
+      display: inline-block;
+      margin: 1px 3px;
+      font-size: 0.8em;
+      font-weight: 300;
     }
-    .externallink{
-        margin-left: 3px;
-        font-size: 0.7em;
-        vertical-align: top;
+    .pubInfo > .header{
+      font-weight: 500;
     }
     .pdflink{
         margin-left: 10px;
@@ -143,42 +160,18 @@ google.setOnLoadCallback(function(){
     .item_details{
         margin-left: 5px;
     }
-
-    .subjects{
-        font-size: 0.9em;
-        font-weight: 300;
-        margin-left: 5px;
-        font-variant: small-caps;
-    }
-    .aspects{
-        font-size: 0.9em;
-        font-weight: 300;
-        margin-left: 5px;
-        font-variant: small-caps;
+    .pubSummary{
+      font-weight: 300;
+      font-size: 0.9em;
     }
 
-    .peer{
-        font-size: 0.9em;
-        font-weight: 300;
-        margin-left: 5px;
-        font-variant: small-caps;
-    }
-    .summar{
-        font-size: 0.9em;
-        font-weight: 300;
-        margin-left: 5px;
-        font-variant: small-caps;
-    }
-    .study{
-        font-size: 0.9em;
-        font-weight: 300;
-        margin-left: 5px;
-        font-variant: small-caps;
-    }
     .pubLink{
-        color: #005FA9;
-        display: inline-block;
-        text-decoration: none;
+      color: #005FA9;
+      display: inline-block;
+      text-decoration: none;
+      vertical-align: middle;
+      margin-left: 3px;
+      font-size: 0.7em;
     }
     .pubLink:hover {
         color: orangered !important;
@@ -191,8 +184,7 @@ google.setOnLoadCallback(function(){
         height: 100%;
     }
     .content{
-        padding-bottom: 4px;
-        padding-right: 40px;
+      padding-bottom: 2px;
     }
     a.mainLink{
         color: black !important;
@@ -204,6 +196,21 @@ google.setOnLoadCallback(function(){
     }
     .pageTitle{
       text-shadow: none;
+    }
+    .viewSummary{
+      color: #005FA9;
+      font-weight: 300;
+      border-radius: 6px;
+      background-color: #DDE3E9;
+      font-size: 0.7em;
+      padding: 1px 3px;
+      display: inline-block;
+      cursor: pointer;
+      position: relative;
+      top: -2px;
+    }
+    .viewSummary:hover{
+      color: orangered;
     }
 </style>
     </head>

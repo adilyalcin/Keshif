@@ -41,11 +41,11 @@ google.setOnLoadCallback(function(){
       kshf.Util.cellToArray(kshf.dt.Breaches,['Record Types'], /\,/, false);
     },
     summaries: [
+      { name: "Type", panel: 'left' },
       { name: "Industry" },
       { name: "# of Records" },
-      { name: "Source", },
-      { name: "Type", panel: 'right' },
-      { name: "Data Source", panel: 'right' },
+      { name: "Source", panel: 'right'},
+//      { name: "Data Source", panel: 'right' },
       { name: "Record Types", panel: 'right', 
         catLabel: function(){
           switch(this.id){
@@ -59,6 +59,8 @@ google.setOnLoadCallback(function(){
             case 'PSS': return 'Password';
             case 'LOG': return 'Log';
             case 'MED': return 'Medical Records';
+            case 'PHO': return 'Phone Number';
+            case 'FIN': return 'Financial';
             default   : return this.id;
           }
         } },
