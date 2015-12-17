@@ -3077,14 +3077,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding-left: 1px;
             color: #cb5454;
           }
-          > .clearText{
+          > .clearSearchText{
             display: none;
             position: absolute;
-            right: 4px;
+            right: 6px;
             top: 1px;
             cursor: pointer;
-            color:gray;
+            color: gray;
             &:hover{ color: #cb5454; }
+          }
+          > .textSearchMode{
+            display: none;
+            position: absolute;
+            top: 2px;
+            cursor: pointer;
+            opacity: 0.5;
+            border-radius: 6px;
+            font-size: 0.7em;
+            padding: 1px 4px;
+            color: white;
+            font-weight: 300;
+            &:hover{ opacity: 1; }
+            &[active="true"]{
+              opacity: 1;
+              box-shadow: 0px 0px 2px black;
+            }
+            &[mode="and"]{
+              background-color: @color_query_and;
+              right: 20px;
+              &:after{ content: "all"; }
+            }
+            &[mode="or"]{
+              background-color: @color_query_or;
+              right: 41px;
+              &:after{ content: "some"; }
+            }
           }
           &[isActive="true"]{
             > .mainTextSearch_input{ display: inline-block; }

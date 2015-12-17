@@ -3599,16 +3599,49 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-left: 1px;
   color: #cb5454;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .clearText {
+.kshf .recordDisplay--Header > .recordTextSearch > .clearSearchText {
   display: none;
   position: absolute;
-  right: 4px;
+  right: 6px;
   top: 1px;
   cursor: pointer;
   color: gray;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .clearText:hover {
+.kshf .recordDisplay--Header > .recordTextSearch > .clearSearchText:hover {
   color: #cb5454;
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode {
+  display: none;
+  position: absolute;
+  top: 2px;
+  cursor: pointer;
+  opacity: 0.5;
+  border-radius: 6px;
+  font-size: 0.7em;
+  padding: 1px 4px;
+  color: white;
+  font-weight: 300;
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode:hover {
+  opacity: 1;
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[active="true"] {
+  opacity: 1;
+  box-shadow: 0px 0px 2px black;
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="and"] {
+  background-color: #1d4870;
+  right: 20px;
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="and"]:after {
+  content: "all";
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="or"] {
+  background-color: #1c737a;
+  right: 41px;
+}
+.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="or"]:after {
+  content: "some";
 }
 .kshf .recordDisplay--Header > .recordTextSearch[isActive="true"] > .mainTextSearch_input {
   display: inline-block;
