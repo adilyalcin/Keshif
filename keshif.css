@@ -854,15 +854,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] {
   max-width: 0px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] .clearCrumbButton {
-  display: none;
-}
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_filter > .clearCrumbButton {
   background-color: #788D9B;
   border: solid 1px #788D9B;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_filter > .clearCrumbButton > .fa::before {
   content: "\f0b0";
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_highlight > .clearCrumbButton {
+  background-color: orangered;
+  border: solid 1px orangered;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_highlight > .clearCrumbButton > .fa::before {
+  content: "\f245";
+  margin-left: 2px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton {
   background-color: #2f4f4f;

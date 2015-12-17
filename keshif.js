@@ -2203,6 +2203,12 @@ kshf.Browser = function(options){
 
     this.highlightSelectedSummary = null;
 
+    this.comparedAggregate = undefined;
+    this.highlightedAggregate = undefined;
+
+    this.highlightCrumbTimeout_Hide = undefined;
+    this.highlightCrumbTimeout_Show = undefined;
+
     this.mouseSpeed = 0; // includes touch-screens...
 
     this.noAnim=false;
@@ -2223,6 +2229,7 @@ kshf.Browser = function(options){
     this.ratioModeCb = options.ratioModeCb;
 
     this.compareSelectCrumb = null;
+    this.highlightSelectCrumb = null;
 
     this.showDropZones = false;
 
@@ -2745,13 +2752,13 @@ kshf.Browser.prototype = {
                 this.tipsy = new Tipsy(this, {
                     gravity: 'n',
                     title: function(){ 
-                        if(_className==="filter") return kshf.lang.cur.RemoveFilter;
-                        if(_className==="compare") return kshf.lang.cur.Unlock;
+                      if(_className==="filter") return kshf.lang.cur.RemoveFilter;
+                      if(_className==="compare") return kshf.lang.cur.Unlock;
                     }
                 })
             })
             .on("mouseenter",function(){
-                this.tipsy.show();
+                if(_className!=='highlight') this.tipsy.show();
             })
             .on("mouseleave",function(){
                 this.tipsy.hide();
@@ -2769,9 +2776,7 @@ kshf.Browser.prototype = {
                 }
             })
             ;
-        x.append("span").attr("class","clearCrumbButton inCrumb")
-            .append("span").attr("class","fa")
-            ;
+        x.append("span").attr("class","clearCrumbButton inCrumb").append("span").attr("class","fa");
         var y = x.append("span").attr("class","crumbText");
         y.append("span").attr("class","crumbHeader");
         y.append("span").attr("class","filterDetails");
@@ -4139,6 +4144,22 @@ kshf.Browser.prototype = {
       this.compareSelectCrumb = null;
     },
     /** -- */
+    clearSelect_Highlight_Crumb: function(){
+      if(this.highlightCrumbTimeout_Hide){
+        clearTimeout(this.highlightCrumbTimeout_Hide);
+        this.highlightCrumbTimeout_Hide = undefined;
+      }
+      if(this.highlightCrumbTimeout_Show){
+        clearTimeout(this.highlightCrumbTimeout_Show);
+        this.highlightCrumbTimeout_Show = undefined;
+      }
+      var root = this.highlightSelectCrumb;
+      if(root===null || root===undefined) return;
+      root.attr("ready",false);
+      setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
+      this.highlightSelectCrumb = null;
+    },
+    /** -- */
     clearSelect_Compare: function(){
         this.vizCompareActive = false;
         this.DOM.root.attr("previewcompare",false);
@@ -4152,36 +4173,38 @@ kshf.Browser.prototype = {
         if(this.previewCompareCb) this.previewCompareCb.call(this,true);
     },
     /** -- */
-    setSelect_Compare: function(summary,aggregate){
+    setSelect_Compare: function(selSummary,selAggregate){
         if(this.comparedAggregate){
-            var reclick = aggregate===this.comparedAggregate;
+            var reclick = selAggregate===this.comparedAggregate;
             this.clearSelect_Compare();
             if(reclick) {
               this.clearSelect_Compare_Crumb();
               return;
             }
         }
-        aggregate.DOM.aggrBlock.setAttribute("compare",true);
-        this.comparedAggregate = aggregate;
+
+        this.comparedAggregate = selAggregate;
         this.vizCompareActive = true;
+        selAggregate.DOM.aggrBlock.setAttribute("compare",true);
         this.DOM.root.attr("previewcompare",true);
-        this.summaries.forEach(function(summary){
-            if(summary.inBrowser()) {
-                summary.cachePreviewValue();
-                summary.refreshViz_Compare();
+        this.summaries.forEach(function(selSummary){
+            if(selSummary.inBrowser()) {
+                selSummary.cachePreviewValue();
+                selSummary.refreshViz_Compare();
             }
         });
+
         if(this.compareSelectCrumb===null){
           this.compareSelectCrumb = this.insertDOM_crumb("compare");
         }
-        this.compareSelectCrumb.select(".crumbHeader").html(summary.summaryTitle);
+        this.compareSelectCrumb.select(".crumbHeader").html(selSummary.summaryTitle);
         var valText = "";
-        if(summary.type==="categorical"){
-          valText = summary.catLabel.call(aggregate.data);
+        if(selSummary.type==="categorical"){
+          valText = selSummary.catLabel.call(selAggregate.data);
         }
-        if(summary.type==="interval"){
-          var unitName = "<span class='unitName'>"+(summary.unitName||"")+"</span>";
-          valText = aggregate.x+unitName+' to '+(aggregate.x+aggregate.dx)+unitName;
+        if(selSummary.type==="interval"){
+          var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
+          valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
         }
         this.compareSelectCrumb.select(".filterDetails").html(valText);
 
@@ -4189,9 +4212,25 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearSelect_Highlight: function(){
+      var me = this;
       this.vizPreviewActive = false;
-      this.DOM.root.attr("resultpreview",false);
       this.highlightSelectedSummary = null;
+      this.highlightedAggregate = undefined;
+      this.DOM.root.attr("resultpreview",false);
+
+      if(this.highlightCrumbTimeout_Show) {
+        // if the crumb is not yet shown, nothing to show...
+        clearTimeout(this.highlightCrumbTimeout_Show);
+        this.highlightCrumbTimeout_Show = undefined;
+      } else {
+        if(this.highlightCrumbTimeout_Hide) {
+          clearTimeout(this.highlightCrumbTimeout_Hide);
+        }
+        // if the crumb is shown, start the hide timeout
+        this.highlightCrumbTimeout_Hide = setTimeout(function(){
+          me.clearSelect_Highlight_Crumb();
+        },1000);
+      }
 
       // unhighlight items in the record display
       if(this.recordDisplay) this.recordDisplay.unhighlightRecords();
@@ -4206,15 +4245,50 @@ kshf.Browser.prototype = {
       if(this.previewCb) this.previewCb.call(this,true);
     },
     /** -- */
-    setSelect_Highlight: function(selectedSummary){
+    setSelect_Highlight: function(selSummary,selAggregate){
+      var me=this;
       this.vizPreviewActive = true;
+      this.highlightedAggregate = selAggregate;
+      this.highlightSelectedSummary = selSummary;
       this.DOM.root.attr("resultpreview",true);
-      this.highlightSelectedSummary = selectedSummary;
 
       // Refresh highligh visualization in all summaries within the browser
       this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.refreshViz_Highlight(); });
 
       this.refreshTotalViz();
+
+      function showHighlightCrumb(){
+        if(me.highlightCrumbTimeout_Show) {
+          clearTimeout(me.highlightCrumbTimeout_Show);
+          me.highlightCrumbTimeout_Show = undefined;
+        }
+        if(me.highlightCrumbTimeout_Hide) {
+          clearTimeout(me.highlightCrumbTimeout_Hide);
+          me.highlightCrumbTimeout_Hide = undefined;
+        }
+        if(me.highlightSelectCrumb===null){
+          me.highlightSelectCrumb = me.insertDOM_crumb("highlight");
+        }
+        me.highlightSelectCrumb.select(".crumbHeader").html(selSummary.summaryTitle);
+        var valText = "";
+        if(selSummary.type==="categorical"){
+          valText = selSummary.catLabel.call(selAggregate.data);
+        }
+        if(selSummary.type==="interval"){
+          var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
+          valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
+        }
+        me.highlightSelectCrumb.select(".filterDetails").html(valText);
+      };
+
+      if(this.highlightCrumbTimeout_Hide){
+        showHighlightCrumb();
+      } else {
+        this.highlightCrumbTimeout_Show = setTimeout(function(){
+          showHighlightCrumb();
+        },1000)
+      }
+
       if(this.previewCb) this.previewCb.call(this,false);
     },
     /** -- */
@@ -6340,7 +6414,7 @@ var Summary_Categorical_functions = {
           ctgry.items.forEach(function(item){item.updatePreview();});
           this.browser.itemCount_Previewed = ctgry.aggregate_Preview;
           ctgry.DOM.aggrBlock.setAttribute("showlock",true);
-          this.browser.setSelect_Highlight(this);
+          this.browser.setSelect_Highlight(this,ctgry);
       }
     },
     /** -- */
@@ -6521,7 +6595,7 @@ var Summary_Categorical_functions = {
         var onEnter_NOT = function(ctgry){
             ctgry.DOM.aggrBlock.setAttribute("selecttype","not");
             me.browser.preview_not = true;
-            me.browser.setSelect_Highlight(me);
+            me.browser.setSelect_Highlight(me,ctgry);
             d3.event.stopPropagation();
         };
         var onLeave_NOT = function(ctgry){
@@ -7730,7 +7804,7 @@ var Summary_Interval_functions = {
       this.browser.itemCount_Previewed = aggr.aggregate_Preview;
       aggr.DOM.aggrBlock.setAttribute("highlight","selected");
       aggr.DOM.aggrBlock.setAttribute("showlock",true);
-      this.browser.setSelect_Highlight(this);
+      this.browser.setSelect_Highlight(this,aggr);
     },
     /** -- */
     insertBins: function(){
