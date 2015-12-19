@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Album Reviews</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <link href="http://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  resizeBrowser(250,70);
+  $(window).resize(function() {
+    resizeBrowser(250,70);
+    browser.updateLayout();
+  });
+
+  var dateFormat = d3.time.format("%d %b, 2015");
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    itemName: "Music Album Reviews 2015",
+    leftPanelLabelWidth: 130,
+    rightPanelLabelWidth: 130,
+    source: {
+      gdocId: '1NnL4D55nF-OlOWZBDkrTqP3vChAHTNEncmBJmaymgs8',
+      tables: "Albums"
+    },
+    summaries: [
+      { name: "Genre <i class='fa fa-tag'></i>", value: "Genre" },
+      { name: "Label", collapsed: true },
+      { name: "Release Date <i class='fa fa-calendar'></i>", value: "Release Date", panel: "middle" },
+      { name: "Album of the Year <a target='_blank' class='rSite fa fa-external-link' href='http://www.albumoftheyear.org/'></a>",
+        value: "AoTY",
+        panel: "left" },
+      { name: "Pitchfork <a target='_blank' class='rSite fa fa-external-link' href='http://pitchfork.com/'></a>",
+        value: "P4K",
+        panel: "left" },
+      { name: "Rolling Stone <a target='_blank' class='rSite fa fa-external-link' href='http://www.rollingstone.com/'></a>",
+        value: "RS",
+        panel: "left" },
+      { name: "All Music <a target='_blank' class='rSite fa fa-external-link' href='http://www.allmusic.com/'></a>",
+        value: "AMG",
+        panel: "left" },
+      { name: "Spin Magazine <a target='_blank' class='rSite fa fa-external-link' href='http://www.spin.com/'></a>",
+        value: "Spin",
+        panel: "left" },
+      { name: "Tiny Mix Tapes <a target='_blank' class='rSite fa fa-external-link' href='http://www.tinymixtapes.com/'></a>",
+        value: "TMT",
+        panel: "left" },
+      { name: "The 405 <a target='_blank' class='rSite fa fa-external-link' href='http://www.thefourohfive.com/'></a>",
+        value: "405",
+        panel: "right" },
+      { name: "Paste <a target='_blank' class='rSite fa fa-external-link' href='http://www.pastemagazine.com/'></a>",
+        value: "Paste",
+        panel: "right" },
+      { name: "Under The Radar <a target='_blank' class='rSite fa fa-external-link' href='http://www.undertheradarmag.com/'></a>",
+        value: "Radar",
+        panel: "right" },
+      { name: "DIY Magazine <a target='_blank' class='rSite fa fa-external-link' href='http://www.diymag.com/'></a>",
+        value: "DIY",
+        panel: "right" },
+      { name: "The A.V. Club <a target='_blank' class='rSite fa fa-external-link' href='http://www.avclub.com/music/'></a>",
+        value: "A.V.",
+        panel: "right" },
+      { name: "Consequence of Sound <a target='_blank' class='rSite fa fa-external-link' href='http://consequenceofsound.net/'></a>",
+        value: "CoS",
+        panel: "right" },
+      { name: "New Musical Express <a target='_blank' class='rSite fa fa-external-link' href='http://www.nme.com/'></a>",
+        value: "NME",
+        panel: "right" },
+      { name: "No Ripcord <a target='_blank' class='rSite fa fa-external-link' href='http://www.noripcord.com/'></a>",
+        value: "NoRip",
+        panel: "right" },
+/*
+
+
+      { name: " <a target='_blank' class='rSite fa fa-external-link' href='http://www..com/'></a>",
+        value: "",
+        panel: "right" },
+*/
+        
+    ],
+    itemDisplay: {
+      sortColWidth: 25,
+      sortBy: { name: "AoTY", inverse: false},
+      textSearch: { name: "Artist & Album", value: function(){return this["Artist"]+" "+this.Album; } },
+      recordView: function(){ 
+        return ""+
+          "<a target='_blank' href='"+this["Album_url"]+"''><img class='albumCover' src='"+this.Thumbnail+"'></a>"+
+          "<a class='artistName' target='_blank' href='"+this["Artist Profile URL"]+"'>"+this["Artist"]+"</a> "+
+          "- <a class='albumName' target='_blank' href='"+this["Album_url"]+"''>"+this.Album+"</a>"+
+          "<br><span style='font-size: 0.9em'>"+
+          "<span class='albumGenre'><i class='fa fa-tag'></i>"+this.Genre+"</span> - "+
+          "<span class='albumLabel'>"+this.Label+"</span> - "+
+          "<span class='albumDate'><i class='fa fa-calendar'></i>"+dateFormat(this["Release Date"])+"</span> "+
+          "<br>"+
+          "<span class='albumScore'> AlbumOfTheYear Score: "+this.AoTY+"</span>"+
+          "</span>"
+          ;
+          ;
+      }
+    }
+  });
+});
+    </script>
+    <style>
+.rSite{
+  color: gray;
+  text-decoration: none;
+  font-size: 0.8em;
+  vertical-align: top;
+}
+.rSite:hover{
+  color: orangered;
+}
+.albumCover{
+  float:left;
+  width: 60px;
+  height: 60px;
+/*  border-radius: 5px;
+  box-shadow: 0px 0px 3px gray;*/
+  margin: 2px 5px;
+}
+.artistName{
+  font-family: Josefin Slab;
+  text-decoration: none;
+  color: black;
+  font-weight: 900;
+  font-size: 1.2em;
+}
+.albumName{
+  font-family: Josefin Slab;
+  text-decoration: none;
+  color: black;
+  font-weight: 400;
+  font-size: 1.2em;
+}
+.albumGenre{
+  font-weight: 300;
+}
+.albumLabel{
+  font-weight: 300;
+}
+.albumDate{
+  font-weight: 300;
+}
+.albumScore{
+  font-size: 0.8em;
+  font-weight: 100;
+}
+.kshfRecord a:hover{
+  color: orangered;
+}
+.kshfRecord .fa{
+  color: gray;
+  font-size: 0.7em;
+  margin: 2px;
+}
+    </style>
+  </head>
+  <body>
+<!--    <div class="pageTitle" align="center">Music Album Reviews - 2015</div>-->
+    <div class="contents"><div id="chart_div"></div></div>
+
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data Remixed from 
+      <a href='http://www.cs.ubc.ca/~brehmer/' target='_blank'>Matt Brehmer</a>'s 
+      <a href='http://mattbrehmer.github.io/SoundConsensus/2015/' target='_blank'>SoundConsensus 2015</a>.
+      Original data from <a href='http://www.albumoftheyear.org/ratings/overall/2015/19' target='_blank'>albumoftheyear</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
+</html>
