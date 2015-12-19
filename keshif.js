@@ -529,8 +529,6 @@ kshf.Item = function(d, idIndex){
         // DOM elements that this item is mapped to
         // - If this is a paper, it can be paper type. If this is author, it can be author affiliation.
     this.mappedDataCache = []; // caching the values this item was mapped to
-    // If true, item is currently selected to be included in link computation
-    this.selectedForLink = false;
 
     this.DOM = {};
     // If item is primary type, this will be set
@@ -725,11 +723,6 @@ kshf.Item.prototype = {
             }
         },this);
     },
-    setSelectedForLink: function(v){
-        this.selectedForLink = v;
-        if(this.DOM.record) this.DOM.record.setAttribute("selectedForLink",v);
-        if(v===false) this.set_NONE();
-    }
 };
 
 kshf.Filter = function(id, opts){
@@ -2275,10 +2268,6 @@ kshf.Browser = function(options){
             //console.log(me.mouseSpeed);
 
             me.lastMouseMoveEvent = d3.event;
-
-            console.log("pageX" + d3.event.pageX);
-            console.log("pageY" + d3.event.pageY);
-            console.log("-");
         })
         ;
 
@@ -3699,7 +3688,6 @@ kshf.Browser.prototype = {
                 }
             }
 
-            if(summary.isLinked) this.selfRefSummaries.push(summary);
         },this);
 
         this.panels.left.updateWidth_QueryPreview();
@@ -5017,8 +5005,6 @@ var Summary_Categorical_functions = {
 
         this.catSortBy = [];
 
-        this.isLinked = false; // TODO: document / update
-
         this.setCatLabel("id");
 
         if(this.items.length<=1000) this.initializeAggregates();
@@ -5202,11 +5188,7 @@ var Summary_Categorical_functions = {
             this.catTableName = this.summaryTitle+"_h_"+this.id;
         } else {
             if(this.catTableName===this.browser.primaryTableName){
-                this.isLinked=true;
-                //this.browser.listDef.hasLinkedItems = true;
-                this.catTableName = this.summaryTitle+"_h_"+this.id;
-                kshf.dt_id[this.catTableName] = kshf.dt_id[this.browser.primaryTableName];
-                kshf.dt[this.catTableName] = this.items.slice();
+              // Removed support for this kind of summaries
             }
         }
         if(this.aggr_initialized){
@@ -5296,7 +5278,7 @@ var Summary_Categorical_functions = {
                 var query_or = " <span class='AndOrNot AndOrNot_Or'>"+kshf.lang.cur.Or+"</span> ";
                 var query_not = " <span class='AndOrNot AndOrNot_Not'>"+kshf.lang.cur.Not+"</span> ";
 
-                if(totalSelectionCount>4 || this.linkFilterSummary){
+                if(totalSelectionCount>4){
                     selectedItemsText = "<b>"+totalSelectionCount+"</b> selected";
                     // Note: Using selected because selections can include not, or,and etc (a variety of things)
                 } else {
@@ -5326,10 +5308,6 @@ var Summary_Categorical_functions = {
                         selectedItemsCount++;
                     });
                 }
-                if(this.linkFilterSummary){
-                    selectedItemsText+= "<i class='fa fa-hand-o-left'></i><br> ["+this.linkFilterSummary+"]";
-                }
-
                 return selectedItemsText;
             }
         });
@@ -5429,7 +5407,6 @@ var Summary_Categorical_functions = {
             this.DOM.unmapped_records.style("display","block");
         }
     },
-    // TODO: Check how isLinked and dataMap (old variable) affected this calculations...
     // Modified internal dataMap function - Skip rows with 0 active item count
     setMinAggrValue: function(v){
         this.minAggrValue = Math.max(1,v);
@@ -5637,7 +5614,6 @@ var Summary_Categorical_functions = {
                 this.setAttribute("filtered",true);
                 me.summaryFilter.clearFilter();
                 me.summaryFilter.unmapped = true; // filter to unmapped items only
-                me.summaryFilter.linkFilterSummary = "";
                 me.summaryFilter.addFilter(true);
             })
             ;
@@ -5774,8 +5750,6 @@ var Summary_Categorical_functions = {
                             me.summaryFilter.how = "All";
                             me.summaryFilter.unmapped = false;
                             me.summaryFilter.addFilter(true);
-                            me.summaryFilter.linkFilterSummary = "";
-                            if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id:me.summaryFilter.id, info:v});
                         }
                     }
                 }, 750);
@@ -5828,9 +5802,6 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     selectAllAttribsButton: function(){
-        this._cats.forEach(function(category){
-            if(category.selectedForLink) category.set_OR(this.summaryFilter.selected_OR);
-        },this);
         this._update_Selected();
         this.summaryFilter.how="All";
         this.summaryFilter.unmapped = false;
@@ -6264,8 +6235,6 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     isAttribVisible: function(category){
-        if(this.isLinked) return category.selectedForLink;
-
         // Show selected attribute always
         if(category.f_selected()) return true;
         // Show if number of active items is not zero
@@ -6391,7 +6360,6 @@ var Summary_Categorical_functions = {
             return;
         }
         this.clearCatTextSearch();
-        this.summaryFilter.linkFilterSummary = "";
         this.summaryFilter.unmapped = false;
         this.summaryFilter.addFilter(true);
     },
@@ -6442,7 +6410,6 @@ var Summary_Categorical_functions = {
             .each(function(category){
                 category.DOM.aggrBlock = this;
                 category.isVisible = true;
-                this.isLinked = me.isLinked;
 
                 category.pos_y = 0;
                 kshf.Util.setTransform(this,"translateY(0px)");
@@ -6714,10 +6681,6 @@ var Summary_Categorical_functions = {
             };
 
             theSortFunc = function(a,b){
-                // linked items...
-                if(a.selectedForLink && !b.selectedForLink) return -1;
-                if(b.selectedForLink && !a.selectedForLink) return 1;
-
                 // selected on top of the list
                 if(!a.f_selected() &&  b.f_selected()) return  1;
                 if( a.f_selected() && !b.f_selected()) return -1;
@@ -6895,7 +6858,7 @@ var Summary_Interval_functions = {
 
         // pixel width settings...
         this.height_hist = 1; // Initial width (will be updated later...)
-        this.height_hist_min = 20; // Minimum possible histogram height
+        this.height_hist_min = 15; // Minimum possible histogram height
         this.height_hist_max = 100; // Maximim possible histogram height
         this.height_slider = 12; // Slider height
         this.height_labels = 13; // Height for labels
@@ -7322,7 +7285,6 @@ var Summary_Interval_functions = {
                 this.setAttribute("filtered",true);
                 me.summaryFilter.clearFilter();
                 me.summaryFilter.unmapped = true; // filter to unmapped items only
-                me.summaryFilter.linkFilterSummary = "";
                 me.summaryFilter.addFilter(true);
             })
             ;
@@ -7634,7 +7596,6 @@ var Summary_Interval_functions = {
         var stepRange=(this.intervalRange.active.max-this.intervalRange.active.min)+1;
         var stepWidth=_width_/stepRange;
 
-        // UPDATE intervalScale
         switch(this.scaleType){
             case 'linear': case 'step':
                 this.valueScale = d3.scale.linear();      break;
