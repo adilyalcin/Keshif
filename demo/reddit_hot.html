@@ -41,9 +41,9 @@ $(document).ready( function(){
     showDataSource: false,
     source: { callback: loadData },
     summaries: [
-      { name: "subreddit" },
-      { name: "num_comments", intervalScale: 'log' },
-      { name: "score" },
+      "subreddit",
+      "num_comments",
+      "score",
       { name: "gilded", catSortBy: "id" }
     ],
     itemDisplay: {
