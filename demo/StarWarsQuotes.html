@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Star Wars - What's Your Line?</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+
+function getIcon(v){
+  if(v==="Rebel Alliance")
+    return "<span class='fa fa-rebel'></span>";
+  if(v==="Galactic Empire")
+    return "<span class='fa fa-empire'></span>";
+};
+
+function getEpisode(v){
+  switch(v){
+    case "Star Wars": return 4;
+    case "Empire Strikes Back": return 5;
+    case "Return of The Jedi": return 6;
+  }
+};
+
+var numFormat = d3.format(".2r");
+
+google.setOnLoadCallback(function(){
+  resizeBrowser(300,160);
+  $(window).resize(function() {
+    resizeBrowser(300,160);
+    browser.updateLayout();
+  });
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 130,
+    itemName: "Lines",
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '1C8oK7ar2kCeUnwVDEGSvMzJYOI2qeWlN37bpcHiUOpo',
+      tables: "Character Lines"
+    },
+    loadedCb: function(){
+      kshf.dt["Character Lines"].forEach(function(d){
+        d.data.Character = kshf.Util.toProperCase(d.data.Character);
+        if(d.data.Character==="C3-Po") d.data.Character = "C3-PO";
+        d.data["% of Film"] = d.data['% of Film']*100;
+      });
+    },
+    summaries: [
+      { name: "Film",
+        catSortBy: function(){ return getEpisode(this.id); } },
+      { name: "Side",
+        catLabel: function(){ return this.id+" "+getIcon(this.id); } },
+      "Character",
+      {name: "Word Count", panel: "left", collapsed: true},
+      {name: "% of Film", panel: "bottom", unitName: "%"},
+    ],
+    itemDisplay: {
+      sortColWidth: 55,
+      sortBy: { name: "% of Film", inverse: true, 
+        label: function(){ return numFormat(this["% of Film"]);}
+        },
+      textSearch: "Line",
+      recordView: function(){
+        return getIcon(this.Side)+
+          " <span class='characterName'>"+this.Character + "</span> <span class='episode'>" + getEpisode(this.Film)+"</span> "+
+          " <span class='lineLine'>"+this.Line+"</span>";
+      }
+    }
+  });
+});
+    </script>
+    <style>
+#chart_div {
+  width: 820px;
+  height: 680px;
+}
+.characterName{
+  font-weight: 500;
+}
+.characterName:after{
+  margin-left: 2px;
+  /* content: ":"; */
+}
+.lineLine{
+  display: block;
+  margin-left: 10px;
+  font-weight: 300;
+}
+.lineLine:before{ 
+  content: "“";
+}
+.lineLine:after{ 
+  content: "”";
+}
+.episode{
+  display: inline-block;
+  color: gray;
+  font-weight: 100;
+  font-size: 0.8em;
+  margin-left: 0px;
+  font-style: italic;
+}
+.episode:before{
+  content: "- Episode ";
+}
+.fa-rebel{
+  color: #C00000;
+}
+.fa-empire{
+  color: #2E3192;
+}
+.kshfRecord{
+  border-top: solid 1px lightgray !important;
+}
+    </style>
+  </head>
+  <body>
+    <div class="pageTitle" align="center">Star Wars Quotes of the Original Trilogy</div>
+    <div class="pageSubtitle">
+      What are Yoda's wise teachings?
+      When does C3-PO share his worries?
+      Does the Empire or the Rebels talk most, and does it depend on the movie?
+      Explore it all!
+    </div>
+
+    <div class="contents"><div id="chart_div"></div></div>
+
+
+    <div id="infobox" align="center">
+        <span class="fa fa-info-circle"></span>
+        Visualization remixed from
+          <a href="https://twitter.com/Matt_Francis" target="_blank">Matt Francis'</a>
+         <a href="https://public.tableau.com/profile/ugleymatt#!/vizhome/Starwars/StarWords" target="_blank"> Tableau vis</a>.
+        <span class="fa fa-info-circle"></span>
+        </div>
+    
+  </body>
+</html>
