@@ -474,7 +474,7 @@ Tipsy.prototype = {
     var title, jq_e = this.jq_element, o = this.options;
     var title, o = this.options;
     if (typeof o.title == 'string') {
-      title = jq_e.attr(o.title == 'title' ? 'original-title' : o.title);
+      title = o.title;
     } else if (typeof o.title == 'function') {
       title = o.title.call(jq_e[0]);
     }
@@ -900,30 +900,64 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
         this.DOM.leafletMapDIV = this.DOM.root.append("div").attr("class","recordMap");
 
-        this.leafletMap = L.map(this.DOM.leafletMapDIV[0][0],{
-                center: [37.8, -96.9], 
-                zoom: 4
-            })
-            .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")); // Using openstreetmap tiles
+        this.leafletMap = L.map(this.DOM.leafletMapDIV[0][0])
+          .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")); // Using openstreetmap tiles
 
         this.DOM.mapSVG = d3.select(this.leafletMap.getPanes().overlayPane).append("svg")
-            .attr("xmlns","http://www.w3.org/2000/svg");
+          .attr("xmlns","http://www.w3.org/2000/svg");
 
+        // The fill pattern definition in SVG, used to denote geo-objects with no data.
         // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
         this.DOM.mapSVG.append('defs')
-            .append('pattern')
-                .attr('id', 'diagonalHatch')
-                .attr('patternUnits', 'userSpaceOnUse')
-                .attr('width', 4)
-                .attr('height', 4)
-                .append('path')
-                    .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
-                    .attr('stroke', 'gray')
-                    .attr('stroke-width', 1);
+          .append('pattern')
+            .attr('id', 'diagonalHatch')
+            .attr('patternUnits', 'userSpaceOnUse')
+            .attr('width', 4)
+            .attr('height', 4)
+            .append('path')
+              .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
+              .attr('stroke', 'gray')
+              .attr('stroke-width', 1);
 
         this.DOM.recordGroup = this.DOM.mapSVG.append("g")
             .attr("class", "leaflet-zoom-hide recordGroup");
 
+        // Add custom controls
+        var DOM_control = d3.select(this.leafletMap.getContainer()).select(".leaflet-control");
+
+        DOM_control.append("a")
+          .attr("class","leaflet-control-view-map").attr("title","Show/Hide Map")
+          .attr("href","#")
+          .html("<span class='viewMap fa fa-map-o'></span>")
+          .on("dblclick",function(){
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+            return true;
+          })
+          .on("click",function(){
+            var x = me.leafletMap.getPanes().tilePane.style
+            x.display = (x.display==="none")?"":"none";
+            d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.display==="none")?"":"-o"));
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+            return true;
+          });
+
+        DOM_control.append("a")
+          .attr("class","leaflet-control-viewFit").attr("title","Fit View")
+          .attr("href","#")
+          .html("<span class='viewFit fa fa-dot-circle-o'></span>")
+          .on("dblclick",function(){
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+            return true;
+          })
+          .on("click",function(){
+            me.map_zoomToWanted();
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+            return true;
+          });
     } else { // displayType is list or grid
         this.DOM.recordGroup = this.DOM.root.append("div").attr("class","recordGroup")
             .on("scroll",function(d){
@@ -1035,15 +1069,58 @@ kshf.RecordDisplay.prototype = {
                 return kshf.colorScale[me.browser.mapColorTheme][d];
             });
     },
+    /** --  */
+    map_projectFeatures: function(){
+      var me = this;
+      var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
+      this.DOM.recordGroup.selectAll(".kshfRecord")
+          .attr("d", function(d){ return me.geoPath(geoLookup[d.id()]); });
+    },
+    /** --  */
+    map_projectFeatures_2: function(){
+      var me = this;
+      var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
+      this.DOM.recordGroup.selectAll(".kshfRecord")
+          .attr("d", function(d){ return me.geoPath(geoLookup[d.id()]); });
+    },
+    /** -- */
+    map_zoomToWanted: function(){
+      var bs = [];
+      var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
 
+      this.items.forEach(function(d){
+        if(!d.isWanted) return;
+        var feature = geoLookup[d.id()];
+        if(feature===undefined) return;
+        var b = d3.geo.bounds(feature);
+        bs.push(L.latLng(b[0][1], b[0][0]));
+        bs.push(L.latLng(b[1][1], b[1][0]));
+      });
+      // var feature = kshf.dt_id["_geo_counties"][1001];
+      // me.geoPath.bounds(feature); // This one gives bounds in pixel space
+      if(this.asdsds===undefined){
+        this.asdsds = true;
+        this.leafletMap.fitBounds(
+          new L.LatLngBounds(bs),
+          { padding: [0,0], 
+            pan: {animate: true, duration: 1.2}, 
+            zoom: {animate: true} 
+          } );
+        return;
+      }
+      this.leafletMap.flyToBounds(
+        new L.LatLngBounds(bs),
+        { padding: [0,0], 
+          pan: {animate: true, duration: 1.2}, 
+          zoom: {animate: true} 
+        } );
+    },
     /** -- */
     initDOM_RecordViewHeader: function(){
         var me=this;
 
         this.DOM.mapColorScaleBins =  this.DOM.recordViewHeader.append("div").attr("class","mapColorScale")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return "Change color"; }});
-            })
+            .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Change color scale"}); })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
             .on("click",function(){
@@ -1077,7 +1154,7 @@ kshf.RecordDisplay.prototype = {
 
         this.DOM.recordViewHeader.append("div").attr("class","buttonRecordViewRemove fa fa-times")
             .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return kshf.lang.cur.RemoveRecords; }});
+                this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
@@ -1085,7 +1162,7 @@ kshf.RecordDisplay.prototype = {
 
         this.DOM.scrollToTop = this.DOM.recordViewHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
             .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return kshf.lang.cur.ScrollToTop; }});
+                this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
@@ -1173,14 +1250,14 @@ kshf.RecordDisplay.prototype = {
                 }, 750);
             });
         this.DOM.recordTextSearch.append("span").attr("class","fa fa-times-circle clearSearchText")
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return kshf.land.RemoveFilter; }}); })
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveFilter }); })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout",function(){ this.tipsy.hide(); })
           .on("click",function() { me.textFilter.clearFilter(); });
         
         this.DOM.textSearchMode_And = this.DOM.recordTextSearch.append("span")
           .attr("class","textSearchMode").attr("mode","and").attr("active",true)
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return "All words<br> must appear."; }}); })
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: "All words<br> must appear." }); })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout",function(){ this.tipsy.hide(); })
           .on("click",function() { 
@@ -1192,7 +1269,7 @@ kshf.RecordDisplay.prototype = {
           ;
         this.DOM.textSearchMode_Or = this.DOM.recordTextSearch.append("span")
           .attr("class","textSearchMode").attr("mode","or").attr("active",false)
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return "At least one word<br> must appear."; }}); })
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: "At least one word<br> must appear." }); })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout",function(){ this.tipsy.hide(); })
           .on("click",function() { 
@@ -1283,7 +1360,7 @@ kshf.RecordDisplay.prototype = {
             .append("span").attr("class","removeSortOption_wrapper")
             .append("span").attr("class","removeSortOption fa")
             .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return "Remove current sorting option"; }});
+                this.tipsy = new Tipsy(this, {gravity: 'n', title: "Remove current sorting option" });
             })
             .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -1315,9 +1392,7 @@ kshf.RecordDisplay.prototype = {
                 if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
             })
             .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){ return kshf.lang.cur.ReverseOrder; }
-                })
+                this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(){ this.tipsy.hide(); });
@@ -1523,22 +1598,29 @@ kshf.RecordDisplay.prototype = {
             //var width = 500, height = 500;
             //var projection = d3.geo.albersUsa().scale(900).translate([width / 2, height / 2]);
             var transform = d3.geo.transform({point: projectPoint});
-            var path = d3.geo.path().projection(transform); // (projection) 
+            this.geoPath = d3.geo.path().projection(transform); // (projection) 
 
             var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
 
-            newRecords = newRecords.append("path")
-                .attr("d", function(d){ return path(geoLookup[d.id()]); })
-                ;
+            newRecords = newRecords.append("path");
+            this.map_projectFeatures();
 
-            this.leafletMap.on("viewreset",reset);
-            reset();
-
-            function reset(){
-                me.DOM.recordGroup.selectAll(".kshfRecord")
-                    .attr("d", function(d){ return path(geoLookup[d.id()]); });
-            }
-
+            this.leafletMap
+              .on("viewreset",function(){ 
+                me.map_projectFeatures()
+              })
+              .on("movestart",function(){
+                me.DOM.recordGroup.style("display","none");
+              })
+              .on("move",function(){
+                console.log("MapZoom: "+me.leafletMap.getZoom());
+                // me.map_projectFeatures()
+              })
+              .on("moveend",function(){
+                me.DOM.recordGroup.style("display","block");
+                me.map_projectFeatures()
+              });
+            
             this.DOM.kshfRecords = newRecords;
             this.updateRecordColor();
         } else {
@@ -1586,10 +1668,10 @@ kshf.RecordDisplay.prototype = {
             })
             .on("mouseleave",function(d){
               if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
-                this.setAttribute("highlight","false");
-                d.nohighlightAll(true);
-                d.items.forEach(function(item){ item.nohighlightAll(false); });
-                //if(this.tipsy) this.tipsy.hide();
+              if(this.tipsy) this.tipsy.hide();
+              this.setAttribute("highlight","false");
+              d.nohighlightAll(true);
+              d.items.forEach(function(item){ item.nohighlightAll(false); });
             })
             .on("mousedown", function(d){
               this._mousedown = true;
@@ -1612,7 +1694,9 @@ kshf.RecordDisplay.prototype = {
         
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
 
-        if(this.displayType==="map") return;
+        if(this.displayType==="map") {
+          return;
+        }
        
         x = newRecords.append("span").attr("class","recordRank")
             .each(function(d){
@@ -1829,6 +1913,7 @@ kshf.RecordDisplay.prototype = {
         if(this.recordViewSummary===null) return;
         if(this.displayType==="map") {
             this.updateItemVisibility(false);
+            this.map_zoomToWanted();
             return;
         }
         var me=this;
@@ -2321,10 +2406,7 @@ kshf.Browser = function(options){
     xx.append("span").text("Available Attributes");
     xx.append("span").attr("class","addAttrib fa fa-plus")
         .each(function(){
-            this.tipsy = new Tipsy(this, {
-                gravity: "e",
-                title: function(){ return "Add new"; }
-            });
+            this.tipsy = new Tipsy(this, { gravity: "e", title: "Add new" });
         })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
@@ -2334,9 +2416,7 @@ kshf.Browser = function(options){
         });
     xx.append("span").attr("class","hidePanel fa fa-times")
         .each(function(){
-            this.tipsy = new Tipsy(this, {
-                gravity: "w", title: function(){ return "Close panel"; }
-            })
+            this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" });
         })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
@@ -2382,16 +2462,11 @@ kshf.Browser = function(options){
     attributePanelControl.append("span").attr("class","addAllSummaries")
         .append("span").attr("class","fa fa-magic") // fa-caret-square-o-right
             .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: "e",
-                    title: function(){ return "Add all to browser"; }
-                })
+                this.tipsy = new Tipsy(this, { gravity: "e", title: "Add all to browser" });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("click",function(){
-                me.autoCreateBrowser();
-            });
+            .on("click",function(){ me.autoCreateBrowser(); });
 
     this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
 
@@ -2556,9 +2631,7 @@ kshf.Browser.prototype = {
         var me=this;
         this.DOM.resizeBrowser_corner = this.DOM.root.append("div").attr("class", "resizeBrowser_corner")
             .each(function(summary){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'e', title: function(){ return kshf.lang.cur.ResizeBrowser; }
-                });
+                this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.ResizeBrowser });
             })
             .on("mouseover",function(){
                 if(this.getAttribute("dragging")==="true") return;
@@ -2687,7 +2760,7 @@ kshf.Browser.prototype = {
         // Attribute panel
         rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.ModifyBrowser; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
@@ -2697,7 +2770,7 @@ kshf.Browser.prototype = {
         this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
             .attr("target","_blank")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.OpenDataSource; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.OpenDataSource });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
@@ -2708,7 +2781,7 @@ kshf.Browser.prototype = {
         // Info & Credits
         rightBoxes.append("i").attr("class","fa fa-info-circle credits")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.ShowInfoCredits; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
@@ -2717,7 +2790,7 @@ kshf.Browser.prototype = {
         // Info & Credits
         rightBoxes.append("i").attr("class","fa fa-arrows-alt fullscreen")
             .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return kshf.lang.cur.ShowFullscreen; } });
+                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
@@ -2786,9 +2859,7 @@ kshf.Browser.prototype = {
         var me=this;
         this.DOM.filterClearAll = this.DOM.panel_Basic.append("span").attr("class","filterClearAll")
             .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'n', title: function(){ return kshf.lang.cur.RemoveAllFilters; }
-                });
+                this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.RemoveAllFilters });
             })
             .on("mouseenter",function(){ this.tipsy.show(); })
             .on("mouseleave",function(){ this.tipsy.hide(); })
@@ -3570,6 +3641,9 @@ kshf.Browser.prototype = {
         this.options.facets = this.options.facets || [];
 
         this.options.facets.forEach(function(facetDescr){
+          if(facetDescr.intervalScale){
+            facetDescr.scaleType = facetDescr.intervalScale;
+          }
             if(typeof facetDescr==="string"){
                 facetDescr = {name: facetDescr};
             }
@@ -3587,7 +3661,7 @@ kshf.Browser.prototype = {
 
             if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.catSortBy){
                 facetDescr.type="categorical";
-            } else if(facetDescr.intervalScale || facetDescr.showPercentile || facetDescr.unitName ){
+            } else if(facetDescr.scaleType || facetDescr.showPercentile || facetDescr.unitName ){
                 facetDescr.type="interval";
             }
 
@@ -3683,8 +3757,8 @@ kshf.Browser.prototype = {
                     summary.addToPanel(this.panels[facetDescr.panel]);
                 }
 
-                if(facetDescr.intervalScale) {
-                    summary.setScaleType(facetDescr.intervalScale);
+                if(facetDescr.scaleType) {
+                    summary.setScaleType(facetDescr.scaleType,true);
                 }
             }
 
@@ -3752,6 +3826,10 @@ kshf.Browser.prototype = {
         this.insertAttributeList();
 
         this.reorderAttributeList();
+
+        if(this.recordDisplay.displayType==="map") {
+          this.recordDisplay.map_zoomToWanted();
+        }
 
         if(this.readyCb!==undefined) this.readyCb(this);
         this.finalized = true;
@@ -4133,14 +4211,10 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearSelect_Highlight_Crumb: function(){
-      if(this.highlightCrumbTimeout_Hide){
-        clearTimeout(this.highlightCrumbTimeout_Hide);
+      clearTimeout(this.highlightCrumbTimeout_Hide);
         this.highlightCrumbTimeout_Hide = undefined;
-      }
-      if(this.highlightCrumbTimeout_Show){
-        clearTimeout(this.highlightCrumbTimeout_Show);
+      clearTimeout(this.highlightCrumbTimeout_Show);
         this.highlightCrumbTimeout_Show = undefined;
-      }
       var root = this.highlightSelectCrumb;
       if(root===null || root===undefined) return;
       root.attr("ready",false);
@@ -4246,23 +4320,20 @@ kshf.Browser.prototype = {
       this.refreshTotalViz();
 
       function showHighlightCrumb(){
-        if(me.highlightCrumbTimeout_Show) {
-          clearTimeout(me.highlightCrumbTimeout_Show);
+        clearTimeout(me.highlightCrumbTimeout_Show);
           me.highlightCrumbTimeout_Show = undefined;
-        }
-        if(me.highlightCrumbTimeout_Hide) {
-          clearTimeout(me.highlightCrumbTimeout_Hide);
+        clearTimeout(me.highlightCrumbTimeout_Hide);
           me.highlightCrumbTimeout_Hide = undefined;
-        }
         if(me.highlightSelectCrumb===null){
           me.highlightSelectCrumb = me.insertDOM_crumb("highlight");
         }
         me.highlightSelectCrumb.select(".crumbHeader").html(selSummary.summaryTitle);
         var valText = "";
-        if(selSummary.type==="categorical"){
+        if(typeof selAggregate === "string"){
+          valText = selAggregate;
+        } else if(selSummary.type==="categorical"){
           valText = selSummary.catLabel.call(selAggregate.data);
-        }
-        if(selSummary.type==="interval"){
+        } else if(selSummary.type==="interval"){
           var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
           valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
         }
@@ -4734,7 +4805,7 @@ kshf.Summary_Base.prototype = {
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-                    title: function(){ return kshf.lang.cur.MaximizeSummary; }
+                    title: kshf.lang.cur.MaximizeSummary
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -4752,7 +4823,7 @@ kshf.Summary_Base.prototype = {
             .each(function(){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-                    title: function(){ return kshf.lang.cur.RemoveSummary; }
+                    title: kshf.lang.cur.RemoveSummary
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -4780,7 +4851,7 @@ kshf.Summary_Base.prototype = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: function(){ return me.panelOrder!==0?'s':'n'; },
-                    title: function(){ return kshf.lang.cur.RemoveFilter; }
+                    title: kshf.lang.cur.RemoveFilter
                 })
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -4876,10 +4947,9 @@ kshf.Summary_Base.prototype = {
             .each(function(d){
                 this.tipsy = new Tipsy(this, {
                     gravity: 'ne', title: function(){
-                        if(me.browser.recordDisplay.displayType==="map"){
-                            return "Use to color "+me.browser.itemName;
-                        }
-                        return "Use to sort "+me.browser.itemName;
+                      return "Use to "+
+                        ((me.browser.recordDisplay.displayType==="map")?"color":"sort")+
+                        " "+me.browser.itemName;
                     }
                 });
             })
@@ -4895,9 +4965,8 @@ kshf.Summary_Base.prototype = {
 
         this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
             .attr("class","summaryDescription fa fa-info-circle")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return me.description;} });
-            })
+            .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', 
+              title: function(){ return me.description;} }); })
             .on("mouseover",function(d){ this.tipsy.show(); })
             .on("mouseout" ,function(d){ this.tipsy.hide(); });
 
@@ -5264,7 +5333,7 @@ var Summary_Categorical_functions = {
             },
             filterView_Detail: function(){
                 if(this.unmapped===true){
-                    return "(not included)";
+                    return "(no data)";
                 }
                 // 'this' is the Filter
                 // go over all items and prepare the list
@@ -5393,7 +5462,7 @@ var Summary_Categorical_functions = {
                 },
                 collapsed: true,
                 type: 'interval',
-                intervalScale: fscale,
+                scaleType: fscale,
                 panel: this.panel
             };
             this.browser.addFacet(facetDescr,this.browser.primaryTableName);
@@ -5506,7 +5575,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.scrollToTop = this.DOM.summaryCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
             .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return kshf.lang.cur.ScrollToTop; }});
+                this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
@@ -5583,7 +5652,7 @@ var Summary_Categorical_functions = {
             .style("display",this.unmappedRecords.length>0?"block":"none")
             .each(function(){
                 this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
-                    return "<b>"+me.unmappedRecords.length+"</b> "+me.browser.itemName+" not included"; 
+                    return "<b>"+me.unmappedRecords.length+"</b> "+me.browser.itemName+" without data"; 
                 }});
             })
             .on("mouseover",function(){
@@ -5595,7 +5664,7 @@ var Summary_Categorical_functions = {
                     // calculate the preview
                     me.unmappedRecords.forEach(function(record){record.updatePreview();});
                     me.browser.itemCount_Previewed = me.unmappedRecords.length;
-                    me.browser.setSelect_Highlight(me);
+                    me.browser.setSelect_Highlight(me,"(no data)");
                 }
             })
             .on("mouseout" ,function(){ 
@@ -6949,7 +7018,7 @@ var Summary_Interval_functions = {
 
         // TIME SCALE
         if(this.hasTime) {
-            this.setScaleType('time');
+            this.setScaleType('time',true);
             return;
         }
 
@@ -6965,7 +7034,7 @@ var Summary_Interval_functions = {
 
         // LOG SCALE
         if(deviation/activeRange<0.12 && this.intervalRange.active.min>=0){
-            this.setScaleType('log');
+            this.setScaleType('log',false);
             return;
         }
 
@@ -6973,16 +7042,16 @@ var Summary_Interval_functions = {
 
         // STEP SCALE if number are floating
         if(this.hasFloat){
-            this.setScaleType('linear');
+            this.setScaleType('linear',false);
             return;
         }
 
         var _width_ = this.getWidth_Chart();
         var stepRange = (this.intervalRange.active.max-this.intervalRange.active.min)+1;
         if( (_width_ / this.getWidth_Tick()) >= stepRange){
-            this.setScaleType('step');
+            this.setScaleType('step',false);
         } else {
-            this.setScaleType('linear');
+            this.setScaleType('linear',false);
         }
     },
     /** -- */
@@ -7139,10 +7208,17 @@ var Summary_Interval_functions = {
         };
     },
     /** -- */
-    setScaleType: function(t){
+    setScaleType: function(t,force){
         if(this.scaleType===t) return;
+
+        if(force===false && this.scaleType_forced){
+          return;
+        }
         var me=this;
-        this.scaleType=t;
+        this.scaleType = t;
+        if(force){
+          this.scaleType_forced = this.scaleType;
+        }
 
         if(this.DOM.summaryInterval) this.DOM.summaryInterval.attr("scaleType",this.scaleType);
 
@@ -7259,7 +7335,7 @@ var Summary_Interval_functions = {
                 this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
                     var x = me.unmappedRecords.length;
                     // TODO: Number should depend on filtering state, and also reflect percentage-mode
-                    return "<b>"+x+"</b> "+me.browser.itemName+" not included"; 
+                    return "<b>"+x+"</b> "+me.browser.itemName+" without data"; 
                 }});
             })
             .on("mouseover",function(){
@@ -7267,7 +7343,7 @@ var Summary_Interval_functions = {
 
                 me.unmappedRecords.forEach(function(record){record.updatePreview();});
                 me.browser.itemCount_Previewed = me.unmappedRecords.length;
-                me.browser.setSelect_Highlight(me);
+                me.browser.setSelect_Highlight(me,"(no data)");
             })
             .on("mouseout" ,function(){ 
                 this.tipsy.hide();
@@ -7920,9 +7996,7 @@ var Summary_Interval_functions = {
 
         this.DOM.mapColorBar.append("span").attr("class","invertColorScale fa fa-adjust")
             .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'sw', title: function(){ return "Invert"; }
-                });
+                this.tipsy = new Tipsy(this, { gravity: 'sw', title: "Invert Color Scale" });
             })
             .on("mouseenter",function(){ this.tipsy.show(); })
             .on("mouseleave",function(){ this.tipsy.hide(); })
@@ -8024,10 +8098,7 @@ var Summary_Interval_functions = {
         controlLine.append("span").attr("class","base total");
         controlLine.append("span").attr("class","base active")
             .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: "s",
-                    title: function(){ return kshf.lang.cur.DragToFilter; }
-                })
+                this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter });
             })
             // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
             // because the size of the bar is set by scaling, not through width....
@@ -8099,9 +8170,7 @@ var Summary_Interval_functions = {
         controlLine.selectAll(".handle").data(['min','max']).enter()
             .append("span").attr("class",function(d){ return "handle "+d; })
             .each(function(d,i){
-                this.tipsy = new Tipsy(this, {
-                    gravity: i==0?"e":"w", title: function(){ return kshf.lang.cur.DragToFilter }
-                })
+                this.tipsy = new Tipsy(this, { gravity: i==0?"e":"w", title: kshf.lang.cur.DragToFilter });
             })
             .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })
@@ -8660,7 +8729,9 @@ var Summary_Interval_functions = {
         this.DOM.intervalSlider.select(".base.active")
             .attr("filtered",this.isFiltered())
             .each(function(d){
-                kshf.Util.setTransform(this,"translateX("+minPos+"px) scaleX("+(maxPos-minPos)+")");
+              this.style.left = minPos+"px";
+              this.style.width = (maxPos-minPos)+"px";
+              //kshf.Util.setTransform(this,"translateX("+minPos+"px) scaleX("+(maxPos-minPos)+")");
             });
         this.DOM.intervalSlider.selectAll(".handle")
             .each(function(d){
