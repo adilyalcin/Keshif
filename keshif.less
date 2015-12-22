@@ -105,7 +105,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block !important;
       }
       .recordDisplay{
-        &:hover .buttonRecordViewRemove{ visibility: visible; }
+        &:hover .buttonRecordViewRemove{ display: block; }
         &[displaytype="list"]:hover > .recordGroup > .dragWidthHandle{ display: block; }
       }
       .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control{
@@ -484,9 +484,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .nuggetInfo{ .order(2); max-height: 1em; }
         }
         &[datatype~='time']{
-          .nuggetInfo{
-            &:before { content: '\f017'; } // fa-clock-o
-          }
+          .nuggetInfo:before { content: '\f017'; } // fa-clock-o
         }
         &[datatype~="categorical"]{
             > .nuggetViz{
@@ -745,8 +743,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .panels_Above{
-        .display(flex);
-        .flex-direction(row);
+      .display(flex);
+      .flex-direction(row);
     }
 
     .attribDragBox{
@@ -1576,6 +1574,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             overflow: hidden;
             text-overflow: ellipsis;
             font-size: 0.9em;
+            padding: 0px 3px;
             &:focus{
               background-color: white;
               box-shadow: 0 0 3px #2CABCF;
@@ -2266,9 +2265,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     position: absolute;
                     color: lightgray;
                     cursor: pointer;
-                    &:hover{
-                      color: black;
-                    }
+                    &:hover{ color: black; }
                   }
                   > .mapColorBlock{
                     margin: 0px;
@@ -2341,22 +2338,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             background-color: lightgray;
                           }
                           &.active{
+                            display: none;
                             height: 8px;
                             top: 1px;
                             width:1px;
-                            opacity:0;
                             pointer-events: none;
                             background-color: @color_filtered;
                             .transition(~"opacity 500ms");
                             &[filtered=true]{
-                              opacity:1;
+                              display: block;
                               pointer-events: all;
                             }
                             &:hover{ background-color: orangered !important; }
                           }
                         }
                         > .handle{
-                            display:block;
                             position:absolute;
                             width:6px;
                             height:8px;
@@ -2367,23 +2363,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             cursor: ew-resize;
                             z-index: 10;
                             top:1px;
-                            &:hover{
-                                background-color: orangered !important;
-                            }
+                            &:hover{ background-color: orangered !important; }
                             &.min{
                                 left: -5px;
                                 border-top-left-radius: 10px;
                                 border-bottom-left-radius: 10px;
-                                > .rangeLimitOnChart{
-                                    left: 3px;
-                                }
+                                > .rangeLimitOnChart{ left: 3px; }
                             }
                             &.max{
                                 border-top-right-radius: 10px;
                                 border-bottom-right-radius: 10px;
-                                > .rangeLimitOnChart{
-                                    left: -2px;
-                                }
+                                > .rangeLimitOnChart{ left: -2px; }
                             }
                             > .rangeLimitOnChart{
                                 position: absolute;
@@ -2392,9 +2382,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 border-left: dotted 2px #30b8c4;
                                 cursor: ew-resize;
                                 box-shadow: 0px 0px 2px white;
-                                &:hover{
-                                    border-left: solid 2px #30b8c4;
-                                }
+                                &:hover{ border-left: solid 2px #30b8c4; }
                             }
                         }
                     }
@@ -2920,6 +2908,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 pointer-events: all;
             }
         }
+      > .recordMap{
+        .viewMap{
+          font-size: 0.9em;
+        }
+        .viewFit{
+          font-size: 1em;
+        }
+      }
     } // .recordDisplay
 
     .scrollToTop{
@@ -3016,8 +3012,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .transition(opacity 250ms linear);
         }
         > .buttonRecordViewRemove{
-          display: inline-block;
-          visibility: hidden;
+          display: none;
           cursor: pointer;
           &:hover{ color: orangered; }
         }

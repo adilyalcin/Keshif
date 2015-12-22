@@ -136,7 +136,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block !important;
 }
 .kshf[attribsShown=true] .recordDisplay:hover .buttonRecordViewRemove {
-  visibility: visible;
+  display: block;
 }
 .kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
   display: block;
@@ -1872,6 +1872,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 0.9em;
+  padding: 0px 3px;
 }
 .kshf .headerGroup .summaryTitle > .summaryTitle_text:focus {
   background-color: white;
@@ -2740,10 +2741,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: lightgray;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active {
+  display: none;
   height: 8px;
   top: 1px;
   width: 1px;
-  opacity: 0;
   pointer-events: none;
   background-color: #30b8c4;
   -webkit-transition: opacity 500ms;
@@ -2752,14 +2753,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: opacity 500ms;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
-  opacity: 1;
+  display: block;
   pointer-events: all;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active:hover {
   background-color: orangered !important;
 }
 .kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle {
-  display: block;
   position: absolute;
   width: 6px;
   height: 8px;
@@ -3390,6 +3390,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   pointer-events: all;
 }
+.kshf .recordDisplay > .recordMap .viewMap {
+  font-size: 0.9em;
+}
+.kshf .recordDisplay > .recordMap .viewFit {
+  font-size: 1em;
+}
 .kshf .scrollToTop {
   display: inline-block;
   visibility: hidden;
@@ -3517,8 +3523,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: opacity 250ms linear;
 }
 .kshf .recordDisplay--Header > .buttonRecordViewRemove {
-  display: inline-block;
-  visibility: hidden;
+  display: none;
   cursor: pointer;
 }
 .kshf .recordDisplay--Header > .buttonRecordViewRemove:hover {
