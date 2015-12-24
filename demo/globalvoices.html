@@ -82,16 +82,11 @@ $(document).ready( function(){
 
         // add text / image
         str+="<span class=\"item_details\">";
-            str+="<img class='postImg' src=''>";
-            str+="<span class='postDetail'></span>";
+            str+="<img class='postImg' src='"+this[9]+"'>";
+            str+="<span class='postDetail'>"+this[5]+"</span>";
         str+="</span>";
         
         return str;
-      },
-      detailCb: function(d){
-        var x=d3.select(d.DOM.record);
-        x.select(".postImg").attr("src",this[9]);
-        x.select(".postDetail").html(this[5]);
       }
     }
   });

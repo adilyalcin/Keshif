@@ -62,201 +62,196 @@ function loadMovies(browser){
 var myLoc=null;
 
 $(document).ready( function(){
-    $('#div_screenings').height(Math.max($(window).height()-110,650));
-    $('#div_screenings').width (Math.max($(window).width()-110,1000));
+  $('#div_screenings').height(Math.max($(window).height()-110,650));
+  $('#div_screenings').width (Math.max($(window).width()-110,1000));
 
 
-    // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
-    var m_now = moment().subtract('days',1);
-    var m_thisweek = moment().add('days',7);
-    var m_nextweek = moment().add('days',14);
+  // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
+  var m_now = moment().subtract('days',1);
+  var m_thisweek = moment().add('days',7);
+  var m_nextweek = moment().add('days',14);
 
-    browser = new kshf.Browser({
-        domID: "#div_screenings",
-        categoryTextWidth: 210,
-        source: {
-            gdocId: '1tDXCp8nbwEGeH1_V90HBrKVSbuisAng-1GWdTSLcLAw',
-            tables: ["Screenings", "Series"],
-            callback: loadMovies
-        },
-        loadedCb: function(){
-            // expand cell content - movie*genres and series*features
-            kshf.Util.cellToArray(kshf.dt.Movies, ['Genre'], /\b,\s+/, false);
-            kshf.Util.cellToArray(kshf.dt.Series, ['Features'], ",", false);
-        },
-        readyCb: function(browser){
-            $(".movieName").click(function(){
-                browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
+  browser = new kshf.Browser({
+    domID: "#div_screenings",
+    categoryTextWidth: 210,
+    source: {
+      gdocId: '1tDXCp8nbwEGeH1_V90HBrKVSbuisAng-1GWdTSLcLAw',
+      tables: ["Screenings", "Series"],
+      callback: loadMovies
+    },
+    loadedCb: function(){
+      // expand cell content - movie*genres and series*features
+      kshf.Util.cellToArray(kshf.dt.Movies, ['Genre'], /\b,\s+/, false);
+      kshf.Util.cellToArray(kshf.dt.Series, ['Features'], ",", false);
+    },
+    readyCb: function(browser){
+        $(".movieName").click(function(){
+            browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
+        });
+
+        browser.recordDisplay.DOM.recordGroup
+            .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
+
+        if("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                myLoc = position.coords;
+                var seriesSummary = browser.summaries_by_name.Location;
+                seriesSummary.sortingOpt_Active = seriesSummary.catSortBy[1];
+                seriesSummary.refreshSortButton();
+                seriesSummary.updateCatSorting(0,true);
             });
-
-            browser.recordDisplay.DOM.recordGroup
-                .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
-
-            if("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    myLoc = position.coords;
-                    var seriesSummary = browser.summaries_by_name.Location;
-                    seriesSummary.sortingOpt_Active = seriesSummary.catSortBy[1];
-                    seriesSummary.refreshSortButton();
-                    seriesSummary.updateCatSorting(0,true);
-                });
-            }
-
-            for(var i=0; i<5; i++){
-                browser.recordDisplay.setRecordDetails(kshf.dt.Screenings[i],true);
-            }
-            browser.summaries_by_name.Date.height_hist_max = 60;
-            browser.updateLayout();
-        },
-        summaries: [
-          { name: "Movie", value: "Movie", collapsed: true },
-          { name: "Genres",
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return movie.Genre;
-            } },
-          { name: "Year",
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return 1*movie.Year;
-            } },
-          { name: "Actors", collapsed: true,
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return movie.Actors.split(/\b,\s+/);
-            } },
-          { name: "Directors", collapsed: true,
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return movie.Director.split(/\b,\s+/);
-            } },
-          { name: "IMDb Rating",
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return 1*movie.imdbRating;
-            } },
-          { name: "MetaScore", collapsed: true,
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return 1*movie.Metascore;
-            } },
-          { name: "Rated", collapsed: true,
-            value: function(){
-                var movie = moviesByTitle[this.Movie];
-                if(movie) return movie.Rated;
-            } },
-          { name: "Location - State", panel: "right",
-            value: function(){
-                var series = kshf.dt_id.Series[this.Series];
-                if(series===undefined) return;
-                switch(series.data.State){
-                    case "MD": return "Maryland";
-                    case "DC": return "District of Columbia";
-                    case "VA": return "Virginia";
-                }
-            } },
-          { name: "Location", value: "Series", panel: "right",
-            catTableName: "Series", catLabel: "Name",
-            catSortBy: [
-              { name: "# of Screenings" },
-              { name: "Close to me",  
-                value: function(){
-                  return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
-                }
-              }
-            ] },
-          { name: "Time: Day Of Week", panel: "right",
-            value: function(){ return moment(this.Date).day();  },
-            catSortBy: "id",
-            catLabel: function(){
-                switch(this.id){
-                    case 0: return "Sunday";
-                    case 1: return "Monday";
-                    case 2: return "Tuesday";
-                    case 3: return "Wednesday";
-                    case 4: return "Thursday";
-                    case 5: return "Friday";
-                    case 6: return "Saturday";
-                }
-            } },
-          { name: "Date", panel: "bottom" }
-        ],
-        itemDisplay: {
-            sortColWidth: 90,
-            sortBy: {
-                name: 'Coming Up',
-                value: function(){ return this.Date; },
-                sortFunc: function(a,b){
-                    // a and b are date objects
-                    var a_m = moment(a);
-                    var b_m = moment(b);
-                    var a_isBeforeNow = a_m.isBefore(m_now);
-                    var b_isBeforeNow = b_m.isBefore(m_now);
-                    if(a_isBeforeNow && !b_isBeforeNow) return -1;
-                    if(b_isBeforeNow && !a_isBeforeNow) return 1;
-                    return b.getTime() - a.getTime();
-                },
-                inverse: true,
-                label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
-            },
-            textSearch: "Movie",
-            detailsToggle: "one",
-            recordView: function() {
-                var series = kshf.dt_id.Series[this.Series].data;
-                var movie = moviesByTitle[this.Movie];
-                
-                var str="";
-                // movie poster
-                if(movie)
-                    str+="<span class='item_details'><a target='_blank' href='http://www.imdb.com/title/"+
-                        movie.imdbID+"'><img class='moviePoster'></a></span>";
-                // movie name
-                str+="<div class='movieName'>"+this.Movie+"</div>";
-
-                // series
-                str+="<div class='SeriesLocation'><a target='_blank' href='"
-                        +series.Web+"'>"+
-                    series.Name+"</a> "+
-                    series.Location+"</b>, "+ series.State+
-                    (series.Twitter?
-                        " <a href='http://www.twitter.com/"+series.Twitter.substr(1)+"' class='fa fa-twitter'"+
-                            " target='_blank'></a>":
-                        "")+
-                    (series.Facebook?
-                        " <a href='http://www.facebook.com/"+series.Facebook.substr(1)+"' class='fa fa-facebook'"+
-                            " target='_blank'></a>":
-                        "")+
-                    "</div>";
-
-                if(movie===undefined) return str;
-
-                str+="<span class='item_details'>";
-
-                str+="<div class='movieInfo'>";
-                // Plot
-                str+="<div class='Plot'>"+movie.Plot+"</br></div>";
-
-                str+=
-                    "<span class='Year'>"+movie.Year+"</span> - "+
-                    "<span class='Rated'> Rated <span style='font-weight:500'>"+movie.Rated+"</span></span> - "+
-                    "<span class='Genre'>"+movie.Genre.toString()+"</span></br>"+
-                    "<span class='Awards'>"+movie.Awards+"</span></br>"+
-                    "<span class='imdbRating'> IMDb Rating: "+movie.imdbRating+"</span>, "+
-                    "<span class='MetaScore'> Metascore: "+movie.Metascore+"</span>"+
-                    "</div>" // movieInfo
-                    ;
-
-                str+="</span>"; // item_details
-                return str;
-            },
-            detailCb: function(d){
-                var movieData = moviesByTitle[this.Movie];
-                if(movieData===undefined) return;
-                d3.select(d.DOM.record).select(".moviePoster").attr("src",
-                    "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.imdbID+".jpg");
-            }
         }
-    });
+
+        for(var i=0; i<5; i++){
+            kshf.dt.Screenings[i].setRecordDetails(true);
+        }
+        browser.summaries_by_name.Date.height_hist_max = 60;
+        browser.updateLayout();
+    },
+    summaries: [
+      { name: "Movie", value: "Movie", collapsed: true },
+      { name: "Genres",
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return movie.Genre;
+        } },
+      { name: "Year",
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return 1*movie.Year;
+        } },
+      { name: "Actors", collapsed: true,
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return movie.Actors.split(/\b,\s+/);
+        } },
+      { name: "Directors", collapsed: true,
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return movie.Director.split(/\b,\s+/);
+        } },
+      { name: "IMDb Rating",
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return 1*movie.imdbRating;
+        } },
+      { name: "MetaScore", collapsed: true,
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return 1*movie.Metascore;
+        } },
+      { name: "Rated", collapsed: true,
+        value: function(){
+            var movie = moviesByTitle[this.Movie];
+            if(movie) return movie.Rated;
+        } },
+      { name: "Location - State", panel: "right",
+        value: function(){
+            var series = kshf.dt_id.Series[this.Series];
+            if(series===undefined) return;
+            switch(series.data.State){
+                case "MD": return "Maryland";
+                case "DC": return "District of Columbia";
+                case "VA": return "Virginia";
+            }
+        } },
+      { name: "Location", value: "Series", panel: "right",
+        catTableName: "Series", catLabel: "Name",
+        catSortBy: [
+          { name: "# of Screenings" },
+          { name: "Close to me",  
+            value: function(){
+              return distanceKmGreatCircle(myLoc.latitude,myLoc.longitude,this.Latitude,this.Longitude);
+            }
+          }
+        ] },
+      { name: "Time: Day Of Week", panel: "right",
+        value: function(){ return moment(this.Date).day();  },
+        catSortBy: "id",
+        catLabel: function(){
+            switch(this.id){
+                case 0: return "Sunday";
+                case 1: return "Monday";
+                case 2: return "Tuesday";
+                case 3: return "Wednesday";
+                case 4: return "Thursday";
+                case 5: return "Friday";
+                case 6: return "Saturday";
+            }
+        } },
+      { name: "Date", panel: "bottom" }
+    ],
+    itemDisplay: {
+      sortColWidth: 90,
+      sortBy: {
+          name: 'Coming Up',
+          value: function(){ return this.Date; },
+          sortFunc: function(a,b){
+              // a and b are date objects
+              var a_m = moment(a);
+              var b_m = moment(b);
+              var a_isBeforeNow = a_m.isBefore(m_now);
+              var b_isBeforeNow = b_m.isBefore(m_now);
+              if(a_isBeforeNow && !b_isBeforeNow) return -1;
+              if(b_isBeforeNow && !a_isBeforeNow) return 1;
+              return b.getTime() - a.getTime();
+          },
+          inverse: true,
+          label: function(){ return moment(this.Date).format('MMM Do, ddd'); }
+      },
+      textSearch: "Movie",
+      detailsToggle: "one",
+      recordView: function() {
+        var series = kshf.dt_id.Series[this.Series].data;
+        var movieData = moviesByTitle[this.Movie];
+        
+        var str="";
+        // movie poster
+        if(movieData){
+          str+="<span class='item_details'><a target='_blank' href='http://www.imdb.com/title/"+
+            movieData.imdbID+"'>"+
+            "<img class='moviePoster' src='http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.imdbID+".jpg'></a></span>";
+        }
+        // movie name
+        str+="<div class='movieName'>"+this.Movie+"</div>";
+
+        // series
+        str+="<div class='SeriesLocation'><a target='_blank' href='"
+                +series.Web+"'>"+
+            series.Name+"</a> "+
+            series.Location+"</b>, "+ series.State+
+            (series.Twitter?
+                " <a href='http://www.twitter.com/"+series.Twitter.substr(1)+"' class='fa fa-twitter'"+
+                    " target='_blank'></a>":
+                "")+
+            (series.Facebook?
+                " <a href='http://www.facebook.com/"+series.Facebook.substr(1)+"' class='fa fa-facebook'"+
+                    " target='_blank'></a>":
+                "")+
+            "</div>";
+
+        if(movieData===undefined) return str;
+
+        str+="<span class='item_details'>";
+
+        str+="<div class='movieInfo'>";
+        // Plot
+        str+="<div class='Plot'>"+movieData.Plot+"</br></div>";
+
+        str+= "<span class='Year'>"+movieData.Year+"</span> - "+
+          "<span class='Rated'> Rated <span style='font-weight:500'>"+movieData.Rated+"</span></span> - "+
+          "<span class='Genre'>"+movieData.Genre.toString()+"</span></br>"+
+          "<span class='Awards'>"+movieData.Awards+"</span></br>"+
+          "<span class='imdbRating'> IMDb Rating: "+movieData.imdbRating+"</span>, "+
+          "<span class='MetaScore'> Metascore: "+movieData.Metascore+"</span>"+
+          "</div>" // movieInfo
+          ;
+
+        str+="</span>"; // item_details
+        return str;
+      }
+    }
+  });
 });
 
 </script>

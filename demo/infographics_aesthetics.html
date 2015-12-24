@@ -105,8 +105,9 @@ google.setOnLoadCallback(function(){
       displayType: 'grid',
       detailsToggle: 'off',
       maxVisibleItems_Default: 20,
-      recordView: function(){ return "<a href='"+this['Image Link']+"' target='_blank'><img></a>"; },
-      visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this['Image Link']); }
+      recordView: function(){ 
+        return "<a href='"+this['Image Link']+"' target='_blank'><img src='"+this['Image Link']+"'></a>";
+      }
     }
   });
 });

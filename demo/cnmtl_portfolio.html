@@ -33,9 +33,9 @@ $(document).ready( function(){
     summaries: [
       { name: "Disciplines"},
       { name: "Types"},
+      { name: "Status" },
       { name: "Group", collapsed: true },
       { name: "Access", collapsed: true },
-      { name: "Status" },
       { name: "Released Year", panel: "middle", collapsed: true, 
         value: function(){ return dateFormat.parse(this.released); } },
     ],
@@ -45,11 +45,9 @@ $(document).ready( function(){
       displayType: 'grid',
       detailsToggle: 'zoom',
       recordView: function(d){
-        return "<a target='_blank' href='"+this.entry+"' class='thumbnail'><img class='thumbImg'></a>"+
+        return "<a target='_blank' href='"+this.entry+"' class='thumbnail'>"+
+          "<img class='thumbImg' src='"+this.thumb_URL+"' title='"+this.description+"'></a>"+
         "<span class='title'>"+this.label+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",this.thumb_URL).attr("title",this.description);
       }
     }
   });

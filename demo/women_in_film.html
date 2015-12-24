@@ -66,11 +66,9 @@ $(document).ready( function(){
       textSearch: "Movie Title",
       sortingOpts: "IMDb Popularity",
       recordView: function(){
-        return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'><img class='thumbImg'></a>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",
-          "http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+this['IMDB Link'].substr(26,9)+".jpg");
+        return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'>"+
+          "<img class='thumbImg' src='http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+
+            this['IMDB Link'].substr(26,9)+".jpg'></a>";
       }
     }
   });

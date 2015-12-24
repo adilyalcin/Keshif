@@ -145,11 +145,10 @@ $(document).ready( function(){
             });
             iconList+="</div>";
             return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Name+
-                "' class='thumbnail' title='"+this.Info+"'><img class='thumbImg'></a><span class='title'>"+this.Name+"</span>"+
+                "' class='thumbnail' title='"+this.Info+"'>"+
+                "<img class='thumbImg' src='"+this.imageURL_full+"'>"+
+                "</a><span class='title'>"+this.Name+"</span>"+
                 iconList;
-          },
-          visibleCb: function(d){
-            d3.select(d.DOM.record).select("img").attr("src",this.imageURL_full);
           }
         }
     });

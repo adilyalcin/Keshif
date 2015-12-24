@@ -53,12 +53,10 @@ google.setOnLoadCallback(function(){
       textSearch: 'Title',
       displayType: 'grid',
       recordView: function(){ 
-        return "<a target='_blank' href='http://www.informationisbeautifulawards.com"+this.URL+"'><span class='thumbnail'><img class='thumbImg'></span></a>"+
+        return "<a target='_blank' href='http://www.informationisbeautifulawards.com"+this.URL+"'>"+
+          "<span class='thumbnail'><img class='thumbImg' src='"+this.Thumbnail+"'></span></a>"+
             "<span class='subTitle'>"+this.Credits+"</span>"+
             "<span class='title'>"+this.Title+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail);
       }
     }
   });

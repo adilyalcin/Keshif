@@ -50,12 +50,9 @@ $(document).ready( function(){
       displayType: 'grid',
       maxVisibleItems_Default: 50,
       recordView: function(){
-          return "<a target='_blank' href='"+this.URL+
-              "'><img><span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",this.Img);
-      },
+          return "<a target='_blank' href='"+this.URL+"'><img src='"+this.Img+"'>"+
+            "<span class='subTitle' style='margin-left:3px;'>"+this.Title+"</span></a>";
+      }
     }
   });
 });

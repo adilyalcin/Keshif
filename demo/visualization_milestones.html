@@ -255,35 +255,34 @@ google.setOnLoadCallback(function(){
           displayType: 'grid',
           textSearch: "Title",
           recordView: function(){
+            var imgIndex = undefined;
+            if(this.Images) {
+              if(this.Images.length>0){
+                imgIndex = 0;
+                // find first non-person image
+                for(var i=0; i<this.Images.length; i++){
+                  var img=this.Images[i];
+                  if(img.URL.indexOf("people")===-1 && img.URL.indexOf("portraits")===-1){
+                    imgIndex = i;
+                    break;
+                  }
+                }
+              }
+            }
             var str="";
-            str+="<a target='_blank' href='http://datavis.ca/milestones/"+this.URL+
-            "' class='thumbnail'><img class='thumbImg'></a>";
+            str+="<a target='_blank' href='http://datavis.ca/milestones/"+this.URL+"' class='thumbnail'>"+
+              "<img class='thumbImg' src='"+(imgIndex?this.Images[imgIndex].URL:"")+
+                  "' title='"+(imgIndex?this.Images[imgIndex].text:"")+"'></a>";
             str+="<span class='title'>"+this.Title+"</span>";
             str+="<span class='subTitle'>By: "+this.Author+" - "+this.Year+"</span>";
             str+="<div class='references'>";
             if(this.InfoLinks.length>0)
-            str+="Links: ";
+              str+="Links: ";
             this.InfoLinks.forEach(function(ref){
-            str+="<a href='"+ref.URL+"' target='_blank'><span class='fa fa-external-link'></span></a>";
+              str+="<a href='"+ref.URL+"' target='_blank'><span class='fa fa-external-link'></span></a>";
             })
-            str+="</div>"
+            str+="</div>";
             return str;
-          },
-          visibleCb: function(d){
-            if(this.Images===undefined) return;
-            if(this.Images.length===0) return;
-            var URL = this.Images[0].URL;
-            // find first non-person image
-            for(var i=0; i<this.Images.length; i++){
-            var img=this.Images[i];
-            if(img.URL.indexOf("people")===-1 && img.URL.indexOf("portraits")===-1){
-            URL = this.Images[i].URL;
-            break;
-            }
-            }
-            d3.select(d.DOM.record).select("img")
-              .attr("src",URL)
-              .attr("title",this.Images[0].text);
           }
         }
     });

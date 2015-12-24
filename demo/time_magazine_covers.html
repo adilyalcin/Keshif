@@ -51,11 +51,11 @@ google.setOnLoadCallback(function(){
       displayType: 'grid',
       textSearch: "Info",
       recordView: function(){ 
-        return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'><img class='thumbImg'></a>"+
+        return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'>"+
+          "<img class='thumbImg' src='"+this.Thumbnail_2+"'></a>"+
           "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+
           "<span class='title'>"+this.MagazineTitle+"</span>";
-      },
-      visibleCb: function(d){ d3.select(d.DOM.record).select("img").attr("src",this.Thumbnail_2); }
+      }
     }
   });
 });

@@ -25,6 +25,11 @@ google.setOnLoadCallback(function(){
       gdocId: '1cPUVuvdCswIUdBYHNUUVkFMn91y9QglZC2gK6qqHo3I',
       tables: "Executions"
     },
+    loadedCb: function(){
+      kshf.dt.Executions.forEach(function(d){
+        d.data.Year = new Date(d.data.Year,1,1);
+      })
+    },
     summaries: [
       { name: "Crime", value: function(){ return this.Crime.split(" - "); } },
       { name: "Method", },
@@ -32,7 +37,7 @@ google.setOnLoadCallback(function(){
       { name: "Race", panel: 'right' },
       { name: "Sex", panel: 'right', catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); } },
       { name: "Age", panel: 'right' },
-      { name: "Execution Year", panel: 'bottom', value: function(){ return new Date(this.Year,1,1); } }
+      { name: "Year", panel: 'bottom'}
     ],
     itemDisplay: {
       sortBy: "Year",

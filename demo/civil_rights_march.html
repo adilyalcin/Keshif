@@ -91,21 +91,17 @@ $(document).ready( function(){
       displayType: 'grid',
       textSearch: "title",
       recordView: function(){
-        return "<a target='_blank' href='"+this.url.replace("govid","gov/id")+"' class='thumbnail'>"+
-            "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
-      },
-      visibleCb: function(d){
-        if(this.objects===undefined) return;
         var url;
-        if(this.objects.object.length){
-          url = this.objects.object[0].thumbnail['@url'];
-        } else {
-          url = this.objects.object.thumbnail['@url'];
+        if(this.objects){
+          if(this.objects.object.length){
+            url = this.objects.object[0].thumbnail['@url'];
+          } else {
+            url = this.objects.object.thumbnail['@url'];
+          }
+          url = url.replace("govOpaAPI","gov/OpaAPI");
         }
-        // https://catalog.archives.govopaapi/media/542079/content/media/images/28/7/28-0604a.gif
-        // https://catalog.archives.gov/OpaAPI/media/542079/content/media/images/28/7/28-0604a.gif
-        url = url.replace("govOpaAPI","gov/OpaAPI");
-        d3.select(d.DOM.record).select("img").attr("src",url);
+        return "<a target='_blank' href='"+this.url.replace("govid","gov/id")+"' class='thumbnail'>"+
+            "<img class='thumbImg' src='"+url+"'></a><span class='title'>"+this.title+"</span>";
       }
     }
   });

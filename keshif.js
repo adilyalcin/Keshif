@@ -685,9 +685,9 @@ kshf.Item.prototype = {
      * Higlights all relevant UI parts to this UI item
      */
     highlightAll: function(recurse){
-        if(this.DOM.record) this.DOM.record.setAttribute("highlight",recurse?"selected":true);
-        if(this.DOM.aggrBlock)  this.DOM.aggrBlock.setAttribute("highlight",recurse?"selected":true);
-        if(this.DOM.matrixRow)  this.DOM.matrixRow.setAttribute("highlight","selected");
+        if(this.DOM.record)    this.DOM.record.setAttribute("highlight",recurse?"selected":true);
+        if(this.DOM.aggrBlock) this.DOM.aggrBlock.setAttribute("highlight",recurse?"selected":true);
+        if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight","selected");
 
         if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d){
@@ -705,9 +705,9 @@ kshf.Item.prototype = {
     },
     /** Removes higlight from all relevant UI parts to this UI item */
     nohighlightAll: function(recurse){
-        if(this.DOM.record) this.DOM.record.setAttribute("highlight",false);
-        if(this.DOM.aggrBlock)  this.DOM.aggrBlock .setAttribute("highlight",false);
-        if(this.DOM.matrixRow)   this.DOM.matrixRow.setAttribute("highlight",false);
+        if(this.DOM.record)    this.DOM.record.setAttribute("highlight",false);
+        if(this.DOM.aggrBlock) this.DOM.aggrBlock .setAttribute("highlight",false);
+        if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight",false);
 
         if(this.DOM.record && !recurse) return;
         this.mappedDataCache.forEach(function(d,i){
@@ -723,6 +723,17 @@ kshf.Item.prototype = {
             }
         },this);
     },
+    /** -- */
+    setRecordDetails: function(value){
+      this.showDetails = value;
+      if(this.DOM.record) this.DOM.record.setAttribute('details', this.showDetails);
+    },
+    /** -- */
+    recordHighlight: function(){
+      this.highlightAll(true);
+      this.items.forEach(function(item){ item.highlightAll(false); });
+    },
+
 };
 
 kshf.Filter = function(id, opts){
@@ -819,10 +830,7 @@ kshf.Filter.prototype = {
     },
 };
 
-/**
- * The list UI
- * @constructor
- */
+/** -- */
 kshf.RecordDisplay = function(kshf_, config, root){
     var me = this;
     this.browser = kshf_;
@@ -832,42 +840,38 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
     this.scrollTop_cache = 0;
 
-    this.items = this.browser.items;
-
     this.autoExpandMore = true;
     if(config.autoExpandMore===false) this.autoExpandMore = false;
 
     this.maxVisibleItems_Default = config.maxVisibleItems_Default || kshf.maxVisibleItems_Default;
     this.maxVisibleItems = this.maxVisibleItems_Default; // This is the dynamic property
 
-    config.sortingOpts = config.sortBy; // depracated option
+    this.showRank = config.showRank || false;
 
-    this.sortingOpts = config.sortingOpts || [ {title:this.browser.items[0].idIndex} ];
-    if(!Array.isArray(this.sortingOpts)){
-        this.sortingOpts = [this.sortingOpts];
-    }
+    this.displayType   = config.displayType   || 'list'; // 'grid', 'list'
+    this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off practically)
+
+    this.textSearchSummary = null; // no text search summary by default
+    this.recordViewSummary = null;
+
+    /***********
+     * SORTING OPTIONS
+     *************************************************************************/
+    config.sortingOpts = config.sortBy; // depracated option (sortingOpts)
+
+    this.sortingOpts = config.sortingOpts || [ {title:this.browser.items[0].idIndex} ]; // Sort by id by default
+    if(!Array.isArray(this.sortingOpts)) this.sortingOpts = [this.sortingOpts];
+
     this.prepSortingOpts();
     var firstSortOpt = this.sortingOpts[0];
     // Add all interval summaries as sorting options
     this.browser.summaries.forEach(function(summary){
         if(summary.panel===undefined) return; // Needs to be within view
-        if(summary.type!=="interval") return;
+        if(summary.type!=="interval") return; // Needs to be interval (numeric)
         this.addSortingOption(summary);
     },this);
     this.prepSortingOpts();
     this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
-
-    this.displayType   = config.displayType   || 'list'; // 'grid', 'list'
-    this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off practically)
-    this.linkText      = config.linkText      || "Related To";
-
-    this.visibleCb = config.visibleCb;
-    this.detailCb  = config.detailCb;
-
-    this.showRank = config.showRank || false;
-
-    this.textSearchSummary = null; // no text search summary by default
-    this.recordViewSummary = null;
 
     this.DOM.root = root.select(".recordDisplay")
         .attr('detailsToggle',this.detailsToggle)
@@ -885,7 +889,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
             movedSummary.refreshNuggetDisplay();
             me.setRecordViewSummary(movedSummary);
             me.updateVisibleIndex();
-            me.updateItemVisibility(false,true);
+            me.updateItemVisibility();
 
             if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
 
@@ -897,127 +901,154 @@ kshf.RecordDisplay = function(kshf_, config, root){
     this.initDOM_RecordViewHeader();
 
     if(this.displayType==="map"){
+      this.DOM.recordMap_Base = this.DOM.root.append("div").attr("class","recordMap_Base");
 
-        this.DOM.leafletMapDIV = this.DOM.root.append("div").attr("class","recordMap");
+      this.leafletMap = L.map(this.DOM.recordMap_Base[0][0])
+        .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")) // Using openstreetmap tiles
+        .on("viewreset",function(){ 
+          me.map_projectRecords()
+        })
+        .on("movestart",function(){
+          me.DOM.recordGroup.style("display","none");
+        })
+        .on("move",function(){
+          // console.log("MapZoom: "+me.leafletMap.getZoom());
+          // me.map_projectRecords()
+        })
+        .on("moveend",function(){
+          me.DOM.recordGroup.style("display","block");
+          me.map_projectRecords()
+        })
+        ;
 
-        this.leafletMap = L.map(this.DOM.leafletMapDIV[0][0])
-          .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")); // Using openstreetmap tiles
+      //var width = 500, height = 500;
+      //var projection = d3.geo.albersUsa().scale(900).translate([width / 2, height / 2]);
+      this.geoPath = d3.geo.path().projection( 
+        d3.geo.transform({
+          // Use Leaflet to implement a D3 geometric transformation.
+          point: function(x, y) {
+            var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+          }
+        }) 
+      );
 
-        this.DOM.mapSVG = d3.select(this.leafletMap.getPanes().overlayPane).append("svg")
-          .attr("xmlns","http://www.w3.org/2000/svg");
 
-        // The fill pattern definition in SVG, used to denote geo-objects with no data.
-        // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
-        this.DOM.mapSVG.append('defs')
-          .append('pattern')
-            .attr('id', 'diagonalHatch')
-            .attr('patternUnits', 'userSpaceOnUse')
-            .attr('width', 4)
-            .attr('height', 4)
-            .append('path')
-              .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
-              .attr('stroke', 'gray')
-              .attr('stroke-width', 1);
+      this.DOM.recordMap_SVG = d3.select(this.leafletMap.getPanes().overlayPane)
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg");
 
-        this.DOM.recordGroup = this.DOM.mapSVG.append("g")
-            .attr("class", "leaflet-zoom-hide recordGroup");
+      // The fill pattern definition in SVG, used to denote geo-objects with no data.
+      // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
+      this.DOM.recordMap_SVG.append('defs')
+        .append('pattern')
+          .attr('id', 'diagonalHatch')
+          .attr('patternUnits', 'userSpaceOnUse')
+          .attr('width', 4)
+          .attr('height', 4)
+          .append('path')
+            .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
+            .attr('stroke', 'gray')
+            .attr('stroke-width', 1);
 
-        // Add custom controls
-        var DOM_control = d3.select(this.leafletMap.getContainer()).select(".leaflet-control");
+      this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g")
+          .attr("class", "leaflet-zoom-hide recordGroup");
 
-        DOM_control.append("a")
-          .attr("class","leaflet-control-view-map").attr("title","Show/Hide Map")
-          .attr("href","#")
-          .html("<span class='viewMap fa fa-map-o'></span>")
-          .on("dblclick",function(){
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-            return true;
-          })
-          .on("click",function(){
-            var x = me.leafletMap.getPanes().tilePane.style
-            x.display = (x.display==="none")?"":"none";
-            d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.display==="none")?"":"-o"));
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-            return true;
+      // Add custom controls
+      var DOM_control = d3.select(this.leafletMap.getContainer()).select(".leaflet-control");
+
+      DOM_control.append("a")
+        .attr("class","leaflet-control-view-map").attr("title","Show/Hide Map")
+        .attr("href","#")
+        .html("<span class='viewMap fa fa-map-o'></span>")
+        .on("dblclick",function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+          return true;
+        })
+        .on("click",function(){
+          var x = me.leafletMap.getPanes().tilePane.style
+          x.display = (x.display==="none")?"":"none";
+          d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.display==="none")?"":"-o"));
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+          return true;
+        });
+
+      DOM_control.append("a")
+        .attr("class","leaflet-control-viewFit").attr("title","Fit View")
+        .attr("href","#")
+        .html("<span class='viewFit fa fa-dot-circle-o'></span>")
+        .on("dblclick",function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+          return true;
+        })
+        .on("click",function(){
+          me.map_zoomToWanted();
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+          return true;
+        });
+    } else {
+      // displayType is list or grid
+      this.DOM.recordGroup = this.DOM.root.append("div").attr("class","recordGroup")
+        .on("scroll",function(d){
+          if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
+            if(me.autoExpandMore===false){
+              me.DOM.showMore.attr("showMoreVisible",true);
+            } else {
+              me.showMore(); // automatically add more records
+            }
+          } else {
+            me.DOM.showMore.attr("showMoreVisible",false);
+          }
+          me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
+          me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
+        });
+
+      this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
+        .attr("class","adjustSortColumnWidth dragWidthHandle")
+        .on("mousedown", function (d, i) {
+          if(d3.event.which !== 1) return; // only respond to left-click
+          root.style('cursor','ew-resize');
+          var _this = this;
+          var mouseDown_x = d3.mouse(document.body)[0];
+          var mouseDown_width = me.sortColWidth;
+
+          me.browser.DOM.pointerBlock.attr("active","");
+
+          root.on("mousemove", function() {
+            _this.setAttribute("dragging","");
+            me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
+          }).on("mouseup", function(){
+            root.style('cursor','default');
+            me.browser.DOM.pointerBlock.attr("active",null);
+            root.on("mousemove", null).on("mouseup", null);
+            _this.removeAttribute("dragging");
           });
+          d3.event.preventDefault();
+        });
 
-        DOM_control.append("a")
-          .attr("class","leaflet-control-viewFit").attr("title","Fit View")
-          .attr("href","#")
-          .html("<span class='viewFit fa fa-dot-circle-o'></span>")
-          .on("dblclick",function(){
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-            return true;
-          })
-          .on("click",function(){
-            me.map_zoomToWanted();
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-            return true;
-          });
-    } else { // displayType is list or grid
-        this.DOM.recordGroup = this.DOM.root.append("div").attr("class","recordGroup")
-            .on("scroll",function(d){
-                if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
-                    if(me.autoExpandMore===false){
-                        me.DOM.showMore.attr("showMoreVisible",true);
-                    } else {
-                        me.showMore(); // automatically add more records
-                    }
-                } else {
-                    me.DOM.showMore.attr("showMoreVisible",false);
-                }
-                me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
-                me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
-            });
-
-        this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
-            .attr("class","adjustSortColumnWidth dragWidthHandle")
-            .on("mousedown", function (d, i) {
-                if(d3.event.which !== 1) return; // only respond to left-click
-                root.style('cursor','ew-resize');
-                var _this = this;
-                var mouseDown_x = d3.mouse(document.body)[0];
-                var mouseDown_width = me.sortColWidth;
-
-                me.browser.DOM.pointerBlock.attr("active","");
-
-                root.on("mousemove", function() {
-                    _this.setAttribute("dragging","");
-                    me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
-                }).on("mouseup", function(){
-                    root.style('cursor','default');
-                    me.browser.DOM.pointerBlock.attr("active",null);
-                    root.on("mousemove", null).on("mouseup", null);
-                    _this.removeAttribute("dragging");
-                });
-                d3.event.preventDefault();
-            });
-
-        this.DOM.showMore = this.DOM.root.append("div").attr("class","showMore")
-            .attr("showMoreVisible",false)
-            .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
-            .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
-            .on("click",function(){ me.showMore(); })
-            ;
-            this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
-            this.DOM.showMore.append("span").attr("class","Count CountAbove");
-            this.DOM.showMore.append("span").attr("class","Count CountBelow");
-            this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
-            this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
-            this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
+      this.DOM.showMore = this.DOM.root.append("div").attr("class","showMore")
+        .attr("showMoreVisible",false)
+        .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
+        .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
+        .on("click",function(){ me.showMore(); });
+      this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
+      this.DOM.showMore.append("span").attr("class","Count CountAbove");
+      this.DOM.showMore.append("span").attr("class","Count CountBelow");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
     }
 
     if(config.recordView!==undefined){
-        if(typeof config.recordView === 'string'){
-            this.setRecordViewSummary(this.browser.summaries_by_name[config.recordView]);
-        }
-        if(typeof config.recordView === 'function'){
-            this.setRecordViewSummary(this.browser.createSummary('_RecordView_',config.recordView,'categorical'));
-        }
+      this.setRecordViewSummary(
+        (typeof config.recordView === 'string') ?
+          this.browser.summaries_by_name[config.recordView] :
+          // function
+          this.browser.createSummary('_RecordView_',config.recordView,'categorical')
+      );
     }
 
     if(config.textSearch){
@@ -1045,50 +1076,42 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
 kshf.RecordDisplay.prototype = {
     /** -- */
-    setDetailsToggle: function(v){
-        this.detailsToggle = v;
-        this.DOM.root.attr('detailsToggle',this.detailsToggle)
-    },
-    /** -- */
     setHeight: function(v){
-        if(this.recordViewSummary===null) return;
-        if(this.displayType==="map"){
-            this.DOM.leafletMapDIV.style("height",v+"px");
-            if(this.DOM.mapSVG) this.DOM.mapSVG.style("height",v+"px");
-            if(this.leafletMap) this.leafletMap.invalidateSize();
-        } else {
-            this.DOM.recordGroup.style("height",v+"px");
-        }
+      if(this.recordViewSummary===null) return;
+      if(this.displayType==="map"){
+        this.DOM.recordMap_Base.style("height",v+"px");
+        if(this.DOM.recordMap_SVG) this.DOM.recordMap_SVG.style("height",v+"px");
+        if(this.leafletMap) this.leafletMap.invalidateSize();
+      } else {
+        this.DOM.recordGroup.style("height",v+"px");
+      }
     },
     /** -- */
-    refreshMapColor: function(){
-        var me=this;
-        this.DOM.mapColorScaleBins
-            .style("background-color", function(d){
-                if(me.sortingOpt_Active.invertColorScale) d = 8-d;
-                return kshf.colorScale[me.browser.mapColorTheme][d];
-            });
+    map_refreshColorScale: function(){
+      var me = this;
+      this.DOM.mapColorScaleBins
+        .style("background-color", function(d){
+          if(me.sortingOpt_Active.invertColorScale) d = 8-d;
+          return kshf.colorScale[me.browser.mapColorTheme][d];
+        });
     },
     /** --  */
-    map_projectFeatures: function(){
+    map_projectRecords: function(){
       var me = this;
       var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
-      this.DOM.recordGroup.selectAll(".kshfRecord")
-          .attr("d", function(d){ return me.geoPath(geoLookup[d.id()]); });
+      this.DOM.kshfRecords.attr("d", function(record){ return me.geoPath(geoLookup[record.id()]); });
     },
     /** --  */
     map_projectFeatures_2: function(){
-      var me = this;
-      var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
-      this.DOM.recordGroup.selectAll(".kshfRecord")
-          .attr("d", function(d){ return me.geoPath(geoLookup[d.id()]); });
+      // TODO: This should just move the SVG element (translate / scale, and do not re-compute the paths)
     },
     /** -- */
     map_zoomToWanted: function(){
-      var bs = [];
       var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
 
-      this.items.forEach(function(d){
+      // Insert the bounds for each record path into the bs
+      var bs = [];
+      this.browser.items.forEach(function(d){
         if(!d.isWanted) return;
         var feature = geoLookup[d.id()];
         if(feature===undefined) return;
@@ -1096,9 +1119,8 @@ kshf.RecordDisplay.prototype = {
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
-      // var feature = kshf.dt_id["_geo_counties"][1001];
-      // me.geoPath.bounds(feature); // This one gives bounds in pixel space
-      if(this.asdsds===undefined){
+
+      if(this.asdsds===undefined){ // First time: just fit bounds
         this.asdsds = true;
         this.leafletMap.fitBounds(
           new L.LatLngBounds(bs),
@@ -1117,59 +1139,53 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     initDOM_RecordViewHeader: function(){
-        var me=this;
+      var me=this;
 
-        this.DOM.mapColorScaleBins =  this.DOM.recordViewHeader.append("div").attr("class","mapColorScale")
-            .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Change color scale"}); })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("click",function(){
-                if(me.browser.mapColorTheme==="converge"){
-                    me.browser.mapColorTheme = "diverge";
-                } else {
-                    me.browser.mapColorTheme = "converge";
-                }
-                me.updateRecordColor();
-                me.refreshMapColor();
-                me.sortingOpt_Active.refreshMapColor();
-            })
-            .selectAll(".mapColorScaleBin").data([0,1,2,3,4,5,6,7,8])
-                .enter().append("div").attr("class","mapColorScaleBin");
-        this.refreshMapColor();
+      this.DOM.mapColorScaleBins =  this.DOM.recordViewHeader.append("div").attr("class","mapColorScale")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Change color scale"}); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          if(me.browser.mapColorTheme==="converge"){
+            me.browser.mapColorTheme = "diverge";
+          } else {
+            me.browser.mapColorTheme = "converge";
+          }
+          me.updateRecordColor();
+          me.map_refreshColorScale();
+          me.sortingOpt_Active.map_refreshColorScale();
+        })
+        .selectAll(".mapColorScaleBin").data([0,1,2,3,4,5,6,7,8])
+          .enter().append("div").attr("class","mapColorScaleBin");
+      
+      this.map_refreshColorScale();
 
-        this.DOM.recordViewHeader.append("div").attr("class","itemRank_control fa")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return (me.showRank?"Hide":"Show")+" ranking"; }});
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("click",function(){
-                me.setShowRank(!me.showRank);
-                d3.event.preventDefault();
-                d3.event.stopPropagation();
-            });
+      this.DOM.recordViewHeader.append("div").attr("class","itemRank_control fa")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return (me.showRank?"Hide":"Show")+" ranking"; }});
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          me.setShowRank(!me.showRank);
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+      });
 
-        this.initDOM_SortSelect();
-        this.initDOM_GlobalTextSearch();
+      this.initDOM_SortSelect();
+      this.initDOM_GlobalTextSearch();
 
-        this.DOM.recordViewHeader.append("div").attr("class","buttonRecordViewRemove fa fa-times")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",    function(){ me.removeRecordViewSummary(); });
+      this.DOM.recordViewHeader.append("div").attr("class","buttonRecordViewRemove fa fa-times")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",    function(){ me.removeRecordViewSummary(); });
 
-        this.DOM.scrollToTop = this.DOM.recordViewHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",function(d){
-                kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
-                if(sendLog) sendLog(kshf.LOG.LIST_SCROLL_TOP);
-            });
+      this.DOM.scrollToTop = this.DOM.recordViewHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(d){ kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0); });
     },
     /* -- */
     initDOM_GlobalTextSearch: function(){
@@ -1206,7 +1222,7 @@ kshf.RecordDisplay.prototype = {
                 // go over all the items in the list, search each keyword separately
                 // If some search matches, return true (any function)
                 var summaryFunc = me.textSearchSummary.summaryFunc;
-                me.items.forEach(function(item){
+                me.browser.items.forEach(function(item){
                     var f;
                     if(me.textFilter.multiMode==='or') 
                       f = ! query.every(function(v_i){
@@ -1282,53 +1298,54 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     setRecordViewSummary: function(summary){
-        if(summary===undefined || summary===null) return;
-        if(this.recordViewSummary===summary) return;
-        if(this.recordViewSummary) this.removeRecordViewSummary();
+      if(summary===undefined || summary===null) return;
+      if(this.recordViewSummary===summary) return;
+      if(this.recordViewSummary) this.removeRecordViewSummary();
 
-        this.DOM.root.attr('hasRecordView',true);
-        this.recordViewSummary = summary;
-        this.recordViewSummary.isRecordView = true;
-        this.recordViewSummary.refreshNuggetDisplay();
+      this.DOM.root.attr('hasRecordView',true);
+      this.recordViewSummary = summary;
+      this.recordViewSummary.isRecordView = true;
+      this.recordViewSummary.refreshNuggetDisplay();
 
-        this.sortRecords();
-        this.insertRecords();
-        this.setSortColumnWidth(this.config.sortColWidth || 50); // default: 50px;
-        this.refreshRecordContent(this.DOM.recordsContent);
-        this.browser.DOM.root.attr("record_display",this.displayType);
+      this.sortRecords();
+      this.updateVisibleIndex();
+      this.refreshRecordDOM();
+      this.setSortColumnWidth(this.config.sortColWidth || 50); // default: 50px;
+
+      this.browser.DOM.root.attr("record_display",this.displayType);
     },
     /** -- */
     removeRecordViewSummary: function(){
-        if(this.recordViewSummary===null) return;
-        this.DOM.root.attr("hasRecordView",false);
-        this.recordViewSummary.isRecordView = false;
-        this.recordViewSummary.refreshNuggetDisplay()
-        this.recordViewSummary = null;
-        this.browser.DOM.root.attr("record_display","none");
+      if(this.recordViewSummary===null) return;
+      this.DOM.root.attr("hasRecordView",false);
+      this.recordViewSummary.isRecordView = false;
+      this.recordViewSummary.refreshNuggetDisplay();
+      this.recordViewSummary = null;
+      this.browser.DOM.root.attr("record_display","none");
     },
     /** -- */
     setTextSearchSummary: function(summary){
-        if(summary===undefined || summary===null) return;
-        //if(this.textSearchSummary===summary) return;
-        this.textSearchSummary = summary;
-        this.textSearchSummary.isTextSearch = true;
-        this.DOM.recordTextSearch
-            .attr("isActive",true)
-            .select("input").attr("placeholder", kshf.lang.cur.Search+": "+summary.summaryTitle);
+      if(summary===undefined || summary===null) return;
+      //if(this.textSearchSummary===summary) return;
+      this.textSearchSummary = summary;
+      this.textSearchSummary.isTextSearch = true;
+      this.DOM.recordTextSearch
+        .attr("isActive",true)
+        .select("input").attr("placeholder", kshf.lang.cur.Search+": "+summary.summaryTitle);
     },
     /** -- */
     addSortingOption: function(summary){
-        // If parameter summary is already a sorting option, nothing else to do
-        if(this.sortingOpts.some(function(o){ return o===summary; })) return;
+      // If parameter summary is already a sorting option, nothing else to do
+      if(this.sortingOpts.some(function(o){ return o===summary; })) return;
 
-        this.sortingOpts.push(summary);
+      this.sortingOpts.push(summary);
 
-        summary.sortLabel   = summary.summaryFunc;
-        summary.sortInverse = false;
-        summary.sortFunc    = this.getSortFunc(summary.summaryFunc);
+      summary.sortLabel   = summary.summaryFunc;
+      summary.sortInverse = false;
+      summary.sortFunc    = this.getSortFunc(summary.summaryFunc);
 
-        this.prepSortingOpts();
-        this.refreshSortingOptions();
+      this.prepSortingOpts();
+      this.refreshSortingOptions();
     },
     /** -- */
     initDOM_SortSelect: function(){
@@ -1383,11 +1400,14 @@ kshf.RecordDisplay.prototype = {
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
                 this.setAttribute("inverse",me.sortingOpt_Active.inverse);
                 me.browser.items.reverse();
-                me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
-                    .data(me.browser.items, function(d){ return d.id(); })
-                    .order();
+
                 me.updateVisibleIndex();
-                me.updateItemVisibility(false,true);
+                me.refreshRecordDOM();
+                me.refreshRecordRanks(me.DOM.recordRanks);
+
+                me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
+                    .data(me.browser.items, function(record){ return record.id(); })
+                    .order();
                 kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
                 if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
             })
@@ -1396,12 +1416,6 @@ kshf.RecordDisplay.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(){ this.tipsy.hide(); });
-    },
-    /** -- */
-    refreshRecordContent: function(d3_selection){
-        if(this.displayType==="map") return;
-        var me=this;
-        d3_selection.html(function(d){ return me.recordViewSummary.summaryFunc.call(d.data,d); });
     },
     /** -- */
     refreshRecordRanks: function(d3_selection){
@@ -1482,60 +1496,59 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     setSortingOpt_Active: function(index){
-        if(this.sortingOpt_Active){
-            if(this.sortingOpt_Active.DOM.root)
-                this.sortingOpt_Active.DOM.root.attr("usedForSorting","false");
-            this.sortingOpt_Active.usedForSorting = false;
-        }
-        
-        if(typeof index === "number"){
-            if(index<0 || index>=this.sortingOpts.length) return;
-            this.sortingOpt_Active = this.sortingOpts[index];
-        } else if(index instanceof kshf.Summary_Base){
-            this.sortingOpt_Active = index;
-        }
-
-        this.sortingOpt_Active.usedForSorting = true;
-
+      if(this.sortingOpt_Active){
         if(this.sortingOpt_Active.DOM.root)
-            this.sortingOpt_Active.DOM.root.attr("usedForSorting","true");
+          this.sortingOpt_Active.DOM.root.attr("usedForSorting","false");
+        this.sortingOpt_Active.usedForSorting = false;
+      }
+      
+      if(typeof index === "number"){
+        if(index<0 || index>=this.sortingOpts.length) return;
+        this.sortingOpt_Active = this.sortingOpts[index];
+      } else if(index instanceof kshf.Summary_Base){
+        this.sortingOpt_Active = index;
+      }
 
-        if(this.DOM.root===undefined) return;
-        if(this.displayType==="map"){
-            this.updateRecordColor();
-        } else {
-            this.updateVisibleIndex();
-            this.updateItemVisibility();
-            kshf.Util.scrollToPos_do(this.DOM.recordGroup[0][0],0);
+      this.sortingOpt_Active.usedForSorting = true;
 
-            this.sortRecords();
-            this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
-                .data(this.browser.items, function(d){ return d.id(); })
-                .order();
+      if(this.sortingOpt_Active.DOM.root)
+        this.sortingOpt_Active.DOM.root.attr("usedForSorting","true");
 
-            this.refreshRecordSortLabels(this.DOM.recordsSortCol);
-        }
+      if(this.DOM.root===undefined) return;
+      if(this.displayType==="map"){
+        this.updateRecordColor();
+      } else {
+        this.sortRecords();
+        this.updateVisibleIndex();
+        this.refreshRecordDOM();
+        this.refreshRecordRanks(this.DOM.recordRanks);
+        kshf.Util.scrollToPos_do(this.DOM.recordGroup[0][0],0);
 
-        this.browser.updateLayout();
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
+          .data(this.browser.items, function(record){ return record.id(); })
+          .order();
+
+        this.refreshRecordSortLabels(this.DOM.recordsSortCol);
+      }
     },
     /** -- */
     setSortColumnWidth: function(v){
-        if(this.displayType!=='list') return;
-        this.sortColWidth = Math.max(Math.min(v,110),30);
-        this.DOM.recordsSortCol.style("width",this.sortColWidth+"px")
-        this.refreshAdjustSortColumnWidth();
+      if(this.displayType!=='list') return;
+      this.sortColWidth = Math.max(Math.min(v,110),30);
+      this.DOM.recordsSortCol.style("width",this.sortColWidth+"px");
+      this.refreshAdjustSortColumnWidth();
     },
     /** -- */
     refreshAdjustSortColumnWidth: function(){
-        if(this.displayType==="map") return;
-        this.DOM.adjustSortColumnWidth.style("left", (this.sortColWidth-2)+(this.showRank?15:0)+"px")
+      if(this.displayType!=="list") return;
+      this.DOM.adjustSortColumnWidth.style("left", (this.sortColWidth-2)+(this.showRank?15:0)+"px")
     },
     /** -- */
     setShowRank: function(v){
-        this.showRank=v;
-        this.DOM.root.attr('showRank',this.showRank);
-        this.refreshRecordRanks(this.DOM.recordRanks);
-        this.refreshAdjustSortColumnWidth();
+      this.showRank=v;
+      this.DOM.root.attr('showRank',this.showRank);
+      this.refreshRecordRanks(this.DOM.recordRanks);
+      this.refreshAdjustSortColumnWidth();
     },
     /** 
       Currently only called if displayType is map
@@ -1559,8 +1572,8 @@ kshf.RecordDisplay.prototype = {
         }
         var min_v = this.sortingOpt_Active.intervalRange.min;
         var max_v = this.sortingOpt_Active.intervalRange.max;
-        if(min_v===undefined) min_v = d3.min(this.items, function(d){ return s_f.call(d.data); });
-        if(max_v===undefined) max_v = d3.max(this.items, function(d){ return s_f.call(d.data); });
+        if(min_v===undefined) min_v = d3.min(this.browser.items, function(d){ return s_f.call(d.data); });
+        if(max_v===undefined) max_v = d3.max(this.browser.items, function(d){ return s_f.call(d.data); });
         this.mapColorScale
             .range([0, 9])
             //.range([d3.rgb("rgb(247,251,255)"), d3.rgb("rgb(8,48,107)")])
@@ -1578,171 +1591,157 @@ kshf.RecordDisplay.prototype = {
         });
     },
     /** -- */
-    _cb_record_highlight: function(d){
-      d.highlightAll(true);
-      d.items.forEach(function(item){ item.highlightAll(false); });
-    },
-    /** Insert items into the UI, called once on load */
-    insertRecords: function(){
-        var me = this, x;
+    insertRecordDOMs: function(newRecords){
+      var me = this, x;
 
-        var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
-            .data(this.browser.items, function(d){ return d.id(); }).enter();
-
-        if(this.displayType==="map"){
-            // Use Leaflet to implement a D3 geometric transformation.
-            function projectPoint(x, y) {
-                var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
-                this.stream.point(point.x, point.y);
-            }
-            //var width = 500, height = 500;
-            //var projection = d3.geo.albersUsa().scale(900).translate([width / 2, height / 2]);
-            var transform = d3.geo.transform({point: projectPoint});
-            this.geoPath = d3.geo.path().projection(transform); // (projection) 
-
-            var geoLookup = kshf.dt_id["_geo_"+this.config.geoObject];
-
-            newRecords = newRecords.append("path");
-            this.map_projectFeatures();
-
-            this.leafletMap
-              .on("viewreset",function(){ 
-                me.map_projectFeatures()
-              })
-              .on("movestart",function(){
-                me.DOM.recordGroup.style("display","none");
-              })
-              .on("move",function(){
-                console.log("MapZoom: "+me.leafletMap.getZoom());
-                // me.map_projectFeatures()
-              })
-              .on("moveend",function(){
-                me.DOM.recordGroup.style("display","block");
-                me.map_projectFeatures()
-              });
-            
-            this.DOM.kshfRecords = newRecords;
-            this.updateRecordColor();
-        } else {
-            newRecords = newRecords.append("div");
-        }
-
-        // Shared structure per record view
-        newRecords
-            .attr("class","kshfRecord")
-            .attr("details","false")
-            .attr("highlight",false)
-            .attr("animSt","visible")
-            .attr("id",function(d){ return d.id(); }) // can be used to apply custom CSS
-            .each(function(d){ 
-                d.DOM.record = this;
-                if(me.displayType==="map"){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'e',
-                        title: function(){ 
-            var s="";
-            if(me.sortingOpt_Active.unitName) 
-                s = "<span class='unitName'>"+me.sortingOpt_Active.unitName+"</span>";
-            return ""+
-                "<span class='mapRecordName'>"+me.recordViewSummary.summaryFunc.call(d.data,d)+"</span>"+
-                "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryTitle+"</span>: "+
-                "<span class='mapTooltipValue'>"+me.sortingOpt_Active.summaryFunc.call(d.data)+"</span>"+
-                s;
-                        }
-                    });
-                }
-            })
-            .on("mouseenter",function(d){
-              if(this.tipsy) {
-                this.tipsy.show();
-                this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-                this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
-              }
-              if(me.browser.mouseSpeed<0.2) {
-                me._cb_record_highlight(d); return;
-              }
-              // mouse is moving fast, should wait a while...
-              this.highlightTimeout = window.setTimeout(
-                function(){ me._cb_record_highlight(d); }, 
-                me.browser.mouseSpeed*500);
-            })
-            .on("mouseleave",function(d){
-              if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
-              if(this.tipsy) this.tipsy.hide();
-              this.setAttribute("highlight","false");
-              d.nohighlightAll(true);
-              d.items.forEach(function(item){ item.nohighlightAll(false); });
-            })
-            .on("mousedown", function(d){
-              this._mousedown = true;
-              this._mousemove = false;
-            })
-            .on("mousemove", function(d){
-              this._mousemove = true;
-              if(this.tipsy){
-                this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-                this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
-              }
-            })
-            .on("click",function(d){
-              // Do not show the detail view if the mouse was used to drag the map
-              if(this._mousemove) return;
-              if(me.displayType==="map"){
-                me.browser.updateItemZoomText(d);
+      // Shared structure per record view
+      newRecords = newRecords
+        .append( (this.displayType==="map") ? "path" : "div" )
+        .attr("class","kshfRecord")
+        .attr("details","false")
+        .attr("highlight",false)
+        .attr("id",function(d){ return d.id(); }) // can be used to apply custom CSS
+        .each(function(d){ 
+          d.DOM.record = this;
+          if(me.displayType==="map"){
+            this.tipsy = new Tipsy(this, {
+              gravity: 'e',
+              title: function(){ 
+                var s="";
+                if(me.sortingOpt_Active.unitName) 
+                  s = "<span class='unitName'>"+me.sortingOpt_Active.unitName+"</span>";
+                return ""+
+                  "<span class='mapRecordName'>"+me.recordViewSummary.summaryFunc.call(d.data,d)+"</span>"+
+                  "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryTitle+"</span>: "+
+                  "<span class='mapTooltipValue'>"+me.sortingOpt_Active.summaryFunc.call(d.data,d)+"</span>"+
+                  s;
               }
             });
-        
-        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
-
-        if(this.displayType==="map") {
-          return;
-        }
-       
+          }
+        })
+        .on("mouseenter",function(d){
+          if(this.tipsy) {
+            this.tipsy.show();
+            this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+          }
+          if(me.browser.mouseSpeed<0.2) {
+            d.recordHighlight(); return;
+          }
+          // mouse is moving fast, should wait a while...
+          this.highlightTimeout = window.setTimeout(
+            function(){ d.recordHighlight(); }, 
+            me.browser.mouseSpeed*500);
+        })
+        .on("mouseleave",function(d){
+          if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
+          if(this.tipsy) this.tipsy.hide();
+          this.setAttribute("highlight","false");
+          d.nohighlightAll(true);
+          d.items.forEach(function(item){ item.nohighlightAll(false); });
+        })
+        .on("mousedown", function(d){
+          this._mousedown = true;
+          this._mousemove = false;
+        })
+        .on("mousemove", function(d){
+          this._mousemove = true;
+          if(this.tipsy){
+            this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+          }
+        })
+        .on("click",function(d){
+          // Do not show the detail view if the mouse was used to drag the map
+          if(this._mousemove) return;
+          if(me.displayType==="map"){
+            me.browser.updateItemZoomText(d);
+          }
+        });
+      
+      if(this.displayType!=="map"){
         x = newRecords.append("span").attr("class","recordRank")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'e',
-                    title: function(){ return kshf.Util.ordinal_suffix_of((d.visibleOrder+1)); }
-                });
-            })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseout"  ,function(){ this.tipsy.hide(); });
+          .each(function(d){
+            this.tipsy = new Tipsy(this, {
+              gravity: 'e',
+              title: function(){ return kshf.Util.ordinal_suffix_of((d.visibleOrder+1)); }
+            });
+          })
+          .on("mouseenter",function(){ this.tipsy.show(); })
+          .on("mouseout"  ,function(){ this.tipsy.hide(); });
         this.refreshRecordRanks(x);
 
         if(this.displayType==='list'){
-            x = newRecords.append("div").attr("class","recordSortCol");
-            this.refreshRecordSortLabels(x);
+          x = newRecords.append("div").attr("class","recordSortCol").style("width",this.sortColWidth+"px");
+          this.refreshRecordSortLabels(x);
         }
 
         newRecords.append("div").attr("class","recordToggleDetail")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, {
-                    gravity:'s',
-                    title: function(){
-                        if(me.detailsToggle==="one" && this.displayType==='list')
-                            return d.showDetails===true?"Show less":"Show more";
-                        return kshf.lang.cur.ShowMoreInfo;
-                    }
-                });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .append("span").attr("class","item_details_toggle fa")
-                .on("click", function(d){
-                    this.parentNode.tipsy.hide();
-                    if(me.detailsToggle==="one" && me.displayType==='list'){
-                        me.setRecordDetails(d,!d.showDetails);
-                    }
-                    if(me.detailsToggle==="zoom"){
-                        me.browser.updateItemZoomText(d);
-                    }
-                });
+          .each(function(d){
+            this.tipsy = new Tipsy(this, {
+              gravity:'s',
+              title: function(){
+                if(me.detailsToggle==="one" && this.displayType==='list')
+                  return d.showDetails===true?"Show less":"Show more";
+                return kshf.lang.cur.ShowMoreInfo;
+              }
+            });
+          })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); })
+          .append("span").attr("class","item_details_toggle fa")
+            .on("click", function(d){
+              this.parentNode.tipsy.hide();
+              if(me.detailsToggle==="one" && me.displayType==='list'){
+                d.setRecordDetails(!d.showDetails);
+              }
+              if(me.detailsToggle==="zoom"){
+                me.browser.updateItemZoomText(d);
+              }
+            });
 
-        x = newRecords.append("div").attr("class","content");
+        // Insert the custom content!
+        // Note: the value was already evaluated and stored in the record object
+        var recordViewID = this.recordViewSummary.id;
+        newRecords.append("div").attr("class","content")
+          //.html(function(record){ return record.mappedDataCache[recordViewID][0].data.id; })
+          .html(function(record){ 
+            return me.recordViewSummary.summaryFunc.call(record.data, record);
+          })
+      }
 
+      // Call the domCb function for all the records that have been inserted to the page
+      if(this.config.domCb) {
+        newRecords.each(function(record){ me.config.domCb.call(record.data,record) });
+      }
+
+    },
+    /** Insert items into the UI, called once on load */
+    refreshRecordDOM: function(){
+      var me=this;
+      var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
+        .data(
+          this.browser.items.filter(function(record){
+            if(!record.isWanted) return false;
+            return record.visibleOrder<me.maxVisibleItems;
+          }),
+          function(record){ return record.id(); })
+        .enter();
+
+      this.insertRecordDOMs(newRecords);
+
+      this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+
+      if(this.displayType==="map") {
+        this.map_zoomToWanted();
+        this.map_projectRecords();
+        this.updateRecordColor();
+      } else {
         this.DOM.recordsSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
-        this.DOM.recordsContent = this.DOM.recordGroup.selectAll(".content");
         this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
+      }
+
+      this.updateItemVisibility();
     },
     /** -- */
     unhighlightRecords: function(){
@@ -1751,208 +1750,149 @@ kshf.RecordDisplay.prototype = {
       });
     },
     /** -- */
-    setRecordDetails: function(item, value){
-        item.showDetails = value;
-        item.DOM.record.setAttribute('details', item.showDetails);
-        if(item.showDetails){
-            if(this.detailCb) this.detailCb.call(item.data, item);
-        }
-        if(sendLog) sendLog(kshf.LOG.ITEM_DETAIL_OFF, {info:item.id(), value:value});
-    },
-    /** -- */
     showMore: function(){
-        if(this.displayType==="map") return;
-        this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
-        this.updateItemVisibility(true);
-        this.DOM.showMore.attr("showMoreVisible",false);
-        if(sendLog) sendLog(kshf.LOG.LIST_SHOWMORE,{info: this.maxVisibleItems});
+      if(this.displayType==="map") return;
+      this.DOM.showMore.attr("showMoreVisible",false);
+      this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
+      this.refreshRecordDOM();
     },
     /** Sort all records given the active sort option
      *  Records are only sorted on init & when active sorting option changes.
      *  They are not resorted on filtering. ** Filtering does not affect record sorting.
      */
     sortRecords: function(){
-        var sortValueFunc = this.sortingOpt_Active.summaryFunc;
-        var sortFunc = this.sortingOpt_Active.sortFunc;
-        var inverse = this.sortingOpt_Active.sortInverse;
-        this.browser.items.sort(
-            function(a,b){
-                // Put filtered/remove data to later position
-                // !! Don't do above!! Then, when you filter set, you'd need to re-order
-                // Now, you don't need to re-order after filtering, which is a nice property to have.
-                var v_a = sortValueFunc.call(a.data,a);
-                var v_b = sortValueFunc.call(b.data,b);
+      var sortValueFunc = this.sortingOpt_Active.summaryFunc;
+      var sortFunc = this.sortingOpt_Active.sortFunc;
+      var inverse = this.sortingOpt_Active.sortInverse;
+      this.browser.items.sort(
+        function(a,b){
+          // Put filtered/remove data to later position
+          // !! Don't do above!! Then, when you filter set, you'd need to re-order
+          // Now, you don't need to re-order after filtering, which is a nice property to have.
+          var v_a = sortValueFunc.call(a.data,a);
+          var v_b = sortValueFunc.call(b.data,b);
 
-                if(isNaN(v_a)) v_a = undefined;
-                if(isNaN(v_b)) v_b = undefined;
-                if(v_a===null) v_a = undefined;
-                if(v_b===null) v_b = undefined;
+          if(isNaN(v_a)) v_a = undefined;
+          if(isNaN(v_b)) v_b = undefined;
+          if(v_a===null) v_a = undefined;
+          if(v_b===null) v_b = undefined;
 
-                if(v_a===undefined && v_b!==undefined) return  1;
-                if(v_b===undefined && v_a!==undefined) return -1;
-                if(v_b===undefined && v_a===undefined) return 0;
+          if(v_a===undefined && v_b!==undefined) return  1;
+          if(v_b===undefined && v_a!==undefined) return -1;
+          if(v_b===undefined && v_a===undefined) return 0;
 
-                var dif=sortFunc(v_a,v_b);
-                if(dif===0) dif=b.id()-a.id();
-                if(inverse) return -dif;
-                return dif; // use unique IDs to add sorting order as the last option
-            }
-        );
+          var dif=sortFunc(v_a,v_b);
+          if(dif===0) dif=b.id()-a.id();
+          if(inverse) return -dif;
+          return dif; // use unique IDs to add sorting order as the last option
+        }
+      );
     },
     /** Returns the sort value type for given sort Value function */
     getSortFunc: function(sortValueFunc){
-        // 0: string, 1: date, 2: others
-        var sortValueFunction, same;
+      // 0: string, 1: date, 2: others
+      var sortValueFunction, same;
 
-        // find appropriate sortvalue type
-        for(var k=0, same=0; true ; k++){
-            if(same===3 || k===this.browser.items.length){
-                break;
-            }
-            var item = this.browser.items[k];
-            var f = sortValueFunc.call(item.data,item);
-            var sortValueType_temp2;
-            switch(typeof f){
-            case 'string': sortValueType_temp2 = kshf.Util.sortFunc_List_String; break;
-            case 'number': sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
-            case 'object':
-                if(f instanceof Date)
-                    sortValueType_temp2 = kshf.Util.sortFunc_List_Date;
-                else
-                    sortValueType_temp2 = kshf.Util.sortFunc_List_Number;
-                break;
-            default: sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
-            }
-
-            if(sortValueType_temp2===sortValueFunction){
-                same++;
-            } else {
-                sortValueFunction = sortValueType_temp2;
-                same=0;
-            }
+      // find appropriate sortvalue type
+      for(var k=0, same=0; true ; k++){
+        if(same===3 || k===this.browser.items.length) break;
+        var item = this.browser.items[k];
+        var f = sortValueFunc.call(item.data,item);
+        var sortValueType_temp2;
+        switch(typeof f){
+          case 'string': sortValueType_temp2 = kshf.Util.sortFunc_List_String; break;
+          case 'number': sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
+          case 'object':
+            if(f instanceof Date)
+                sortValueType_temp2 = kshf.Util.sortFunc_List_Date;
+            else
+                sortValueType_temp2 = kshf.Util.sortFunc_List_Number;
+            break;
+          default: sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
         }
-        return sortValueFunction;
+
+        if(sortValueType_temp2===sortValueFunction){
+          same++;
+        } else {
+          sortValueFunction = sortValueType_temp2;
+          same=0;
+        }
+      }
+      return sortValueFunction;
     },
     /** Updates visibility of list items */
-    updateItemVisibility: function(showMoreOnly, noAnimation){
-        var me = this;
-        var visibleItemCount=0;
+    updateItemVisibility: function(){
+      var me = this;
+      var visibleItemCount=0;
 
-        if(this.DOM.kshfRecords===undefined) return;
+      if(this.DOM.kshfRecords===undefined) return;
 
-        this.DOM.kshfRecords.each(function(item){
-            var domItem = this;
-            if(me.displayType==="map"){
-                domItem.style.opacity = item.isWanted?0.9:0.2;
-                domItem.style.pointerEvents = item.isWanted?"":"none";
-                return;
-            }
+      this.DOM.kshfRecords.each(function(record){
+          var domItem = this;
+          if(me.displayType==="map"){
+              domItem.style.opacity = record.isWanted?0.9:0.2;
+              domItem.style.pointerEvents = record.isWanted?"":"none";
+              return;
+          }
 
-            var isVisible     = (item.visibleOrder>=0) && (item.visibleOrder<me.maxVisibleItems);
-            var isVisible_pre = (item.visibleOrder_pre>=0) && (item.visibleOrder_pre<me.maxVisibleItems);
-            if(isVisible) {
-                visibleItemCount++;
-                if(me.visibleCb) me.visibleCb.call(item.data,item);
-            }
+          var isVisible = (record.visibleOrder>=0) && (record.visibleOrder<me.maxVisibleItems);
+          if(isVisible) {
+              visibleItemCount++;
+          }
+          domItem.style.display = isVisible?null:'none';
+      });
 
-            if(showMoreOnly){
-                domItem.style.display = isVisible?'':'none';
-                domItem.setAttribute("animSt","visible");
-                return;
-            }
-
-            if(noAnimation){
-                if(isVisible && !isVisible_pre){
-                    domItem.style.display = '';
-                    domItem.setAttribute("animSt","visible");
-                }
-                if(!isVisible && isVisible_pre){
-                    domItem.setAttribute("animSt","closed");
-                    domItem.style.display = 'none';
-                }
-                return;
-            }
-
-            // NOTE: Max 100 items can be under animation (visibility change), so don't worry about performance!
-
-            if(isVisible && !isVisible_pre){
-                domItem.setAttribute("animSt","closed"); // start from closed state
-                setTimeout(function(){
-                    domItem.style.display = '';
-                    domItem.setAttribute("animSt","open");
-                },500);
-                setTimeout(function(){
-                    domItem.setAttribute("animSt","visible");
-                },1100+item.visibleOrder*20);
-            }
-            if(!isVisible && isVisible_pre){
-                // not in view now, but in view before
-                setTimeout(function(){
-                    domItem.setAttribute("animSt","open");
-                },-item.visibleOrder*20);
-                setTimeout(function(){
-                    domItem.setAttribute("animSt","closed");
-                },500);
-                setTimeout(function(){
-                    domItem.style.display = 'none';
-                },1000);
-            }
-            if(!isVisible && !isVisible_pre){
-                domItem.style.display = 'none';
-            }
-        });
-
-        if(this.displayType!=="map") {
-            var hiddenItemCount = this.browser.recordsWantedCount-visibleItemCount;
-            this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
-            this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
-        }
+      if(this.displayType!=="map") {
+        var hiddenItemCount = this.browser.recordsWantedCount-visibleItemCount;
+        this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
+        this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
+      }
     },
     /** -- */
     updateAfterFilter: function(){
-        if(this.recordViewSummary===null) return;
-        if(this.displayType==="map") {
-            this.updateItemVisibility(false);
-            this.map_zoomToWanted();
-            return;
+      if(this.recordViewSummary===null) return;
+      if(this.displayType==="map") {
+        this.updateItemVisibility(false);
+        this.map_zoomToWanted();
+        return;
+      }
+      var me=this;
+      var startTime = null;
+      var scrollDom = this.DOM.recordGroup[0][0];
+      var scrollInit = scrollDom.scrollTop;
+      var easeFunc = d3.ease('cubic-in-out');
+      var scrollTime = 1000;
+      var animateToTop = function(timestamp){
+        var progress;
+        if(startTime===null) startTime = timestamp;
+        // complete animation in 500 ms
+        progress = (timestamp - startTime)/scrollTime;
+        scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
+        if(scrollDom.scrollTop!==0){
+          window.requestAnimationFrame(animateToTop);
+          return;
         }
-        var me=this;
-        var startTime = null;
-        var scrollDom = this.DOM.recordGroup[0][0];
-        var scrollInit = scrollDom.scrollTop;
-        var easeFunc = d3.ease('cubic-in-out');
-        var scrollTime = 1000;
-        var animateToTop = function(timestamp){
-            var progress;
-            if(startTime===null) startTime = timestamp;
-            // complete animation in 500 ms
-            progress = (timestamp - startTime)/scrollTime;
-            scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
-            if(scrollDom.scrollTop===0){
-                me.updateVisibleIndex();
-                me.updateItemVisibility(false);
-            } else {
-                window.requestAnimationFrame(animateToTop);
-            }
-        };
-        window.requestAnimationFrame(animateToTop);
+        me.updateVisibleIndex();
+        me.refreshRecordDOM();
+        me.refreshRecordRanks(me.DOM.recordRanks);
+      };
+      window.requestAnimationFrame(animateToTop);
     },
     /** -- */
     updateVisibleIndex: function(){
-        var wantedCount = 0;
-        var unwantedCount = 1;
-        this.browser.items.forEach(function(item){
-            item.visibleOrder_pre = item.visibleOrder;
-            if(item.isWanted){
-                item.visibleOrder = wantedCount;
-                wantedCount++;
-            } else {
-                item.visibleOrder = -unwantedCount;
-                unwantedCount++;
-            }
-        });
-        this.refreshRecordRanks(this.DOM.recordRanks);
-        this.maxVisibleItems = this.maxVisibleItems_Default;
+      var wantedCount = 0;
+      var unwantedCount = 1;
+      this.browser.items.forEach(function(item){
+        item.visibleOrder_pre = item.visibleOrder;
+        if(item.isWanted){
+          item.visibleOrder = wantedCount;
+          wantedCount++;
+        } else {
+          item.visibleOrder = -unwantedCount;
+          unwantedCount++;
+        }
+      });
+      this.maxVisibleItems = this.maxVisibleItems_Default;
     }
 };
 
@@ -4086,7 +4026,7 @@ kshf.Browser.prototype = {
         if(summary.uniqueCategories()){
             this.recordDisplay.setRecordViewSummary(summary);
             this.recordDisplay.updateVisibleIndex();
-            this.recordDisplay.updateItemVisibility(false,true);
+            this.recordDisplay.updateItemVisibility();
             if(this.recordDisplay.textSearchSummary===null) 
                 this.recordDisplay.setTextSearchSummary(summary);
             return;
@@ -7979,7 +7919,7 @@ var Summary_Interval_functions = {
         }
     },
     /** -- */
-    refreshMapColor: function(){
+    map_refreshColorScale: function(){
         var me=this;
         this.DOM.mapColorBlocks
             .style("background-color", function(d){
@@ -8003,8 +7943,8 @@ var Summary_Interval_functions = {
             .on("click", function(){
                 me.invertColorScale = !me.invertColorScale;
                 me.browser.recordDisplay.updateRecordColor();
-                me.browser.recordDisplay.refreshMapColor();
-                me.refreshMapColor();
+                me.browser.recordDisplay.map_refreshColorScale();
+                me.map_refreshColorScale();
             });
 
         this.DOM.mapColorBlocks = this.DOM.mapColorBar.selectAll("mapColorBlock").data([0,1,2,3,4,5,6,7,8])
@@ -8036,7 +7976,7 @@ var Summary_Interval_functions = {
                   me.summaryFilter.addFilter(true);
                 })
                 ;
-        this.refreshMapColor();
+        this.map_refreshColorScale();
     },
     /** -- */
     initDOM_Slider: function(){

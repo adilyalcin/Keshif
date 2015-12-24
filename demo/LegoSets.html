@@ -57,10 +57,8 @@ google.setOnLoadCallback(function(){
       detailsToggle: "off",
 //      recordView: "Name",
       recordView : function(){
-        return "<img class='thumbImg' id='img_"+this.id+"'></a><span class='subTitle'>"+this.Name+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",this.Image_URL);
+        return "<img class='thumbImg' id='img_"+this.id+"' src='"+this.Image_URL.replace(/sets\/images/g,"sets\/small")+"'></a>"+
+          "<span class='subTitle'>"+this.Name+"</span>";
       }
     }
   });

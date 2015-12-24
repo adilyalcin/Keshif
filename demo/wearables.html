@@ -46,11 +46,9 @@ $(document).ready( function() {
       displayType: 'grid',
       textSearch: 'Name',
       recordView: function(){
-        return "<a target='_blank' href='"+this.Link
-            +"'><span class='thumbnail'><img class='thumbImg'></span></a><span class='title'>"+this.Name+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",this.Image);
+        return "<a target='_blank' href='"+this.Link+"'>"+
+          "<span class='thumbnail'><img class='thumbImg' src='"+this.Image+"'></span></a>"+
+          "<span class='title'>"+this.Name+"</span>";
       }
     }
   });

@@ -82,9 +82,9 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "Dimension" },
-      { name: "Representation" },
-      { name: "Alignment" },
+      "Dimension",
+      "Representation",
+      "Alignment",
       { name: "Authors", collapsed: false },
       { name: "Year", value: function(){ return new Date(this.Year,1,1); }, panel: "bottom" }
     ],
@@ -94,11 +94,9 @@ $(document).ready( function(){
       displayType: 'grid',
       recordView: function(){
         return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
-            "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",
-          "http://www.cs.umd.edu/~yalcin/keshif_res/treevis/"+this.id+".png");
+            "' class='thumbnail'>"+
+            "<img class='thumbImg' src='http://www.cs.umd.edu/~yalcin/keshif_res/treevis/"+this.id+".png'>"+
+            "</a><span class='subTitle'>"+this.Title+"</span>";
       }
     }
   });

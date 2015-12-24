@@ -152,11 +152,12 @@ $(document).ready( function(){
       displayType: "grid",
       recordView: function(){
         return "<a target='_blank' href="+this.URL+" class='thumbnail'>"+
-            "<img class='thumbImg'></a><span class='subTitle'>"+this.Author+"</span>"+
+            "<img class='thumbImg' src='"+this.Thumb+"' title='"+
+/*              //encodeURI(this.Review) 
+              this.Review.replace(/\"/g,"'").replace(/<br>/g,"")+ */
+              "'></a>"+
+            "<span class='subTitle'>"+this.Author+"</span>"+
             "<span class='title'>"+this.Title+"</span>"+getStars(this.Rating);
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",this.Thumb).attr("title", this.Review);
       }
     }
   });

@@ -40,12 +40,6 @@ google.setOnLoadCallback(function(){
   		kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
         kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
       },
-    readyCb: function(browser){
-      $(".pubMain").click(function(){
-        var d = this.parentNode.parentNode.__data__;
-        browser.recordDisplay.setRecordDetails(d,!d.showDetails);
-      });
-    },
     summaries: [
       { name: "Regulatory Domains", catTableName: "Regulatory Domain", catSortBy: "Order" },
       { name: "Research Topics", catTableName: "Research Topics", catTooltip: "Description", catSortBy: "Order", 
@@ -124,6 +118,11 @@ google.setOnLoadCallback(function(){
         }
 
         return str;
+      },
+      domCb: function(d){
+        d3.select(d.DOM.record).select(".pubMain").on("click",function(){
+          d.setRecordDetails(!d.showDetails);
+        });
       }
     }
   });

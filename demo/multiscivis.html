@@ -93,10 +93,10 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "Data Facets" },
-      { name: "Main Goals" },
-      { name: "Techniques" },
-      { name: "Authors" },
+      "Data Facets",
+      "Main Goals",
+      "Techniques",
+      "Authors",
       { name: "Year", value: function(){ return new Date(this.Year,1,1); }, panel: "bottom" }
     ],
     itemDisplay: {
@@ -104,16 +104,13 @@ $(document).ready( function(){
       displayType: 'grid',
       textSearch: "Title",
       recordView: function(){
-        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
-            "' class='thumbnail'><img class='thumbImg'></a><span class='subTitle'>"+this.Title+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src","http://multivis.net/t200/"+this.id+".png");
+        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+"' class='thumbnail'>"+
+          "<img class='thumbImg' src='http://multivis.net/t200/"+this.id+".png'></a><span class='subTitle'>"+this.Title+"</span>";
       }
     }
   });
 });
-        </script>
+    </script>
 <style>
 .kshfRecord{
   width: 150px;
@@ -125,19 +122,19 @@ $(document).ready( function(){
   height: 105px;
 }
 </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data: <a href="http://multivis.net/"
-                target='_blank'>multivis.net</a> A Visual Bibliography of Tree Visualization 2.0
-                by
-                <a href="http://wwwcg.in.tum.de/group/persons/kehrer.html" target='_blank'>Johannes Kehrer</a>
-                and 
-                <a href="http://www.ii.uib.no/vis/team/hauser/index.html" target='_blank'>Helwig Hauser</a>.<br>
-            All rights for the technique images belong to their respective owners.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data: <a href="http://multivis.net/"
+        target='_blank'>multivis.net</a> A Visual Bibliography of Tree Visualization 2.0
+        by
+        <a href="http://wwwcg.in.tum.de/group/persons/kehrer.html" target='_blank'>Johannes Kehrer</a>
+        and 
+        <a href="http://www.ii.uib.no/vis/team/hauser/index.html" target='_blank'>Helwig Hauser</a>.<br>
+      All rights for the technique images belong to their respective owners.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
 </html>

@@ -49,21 +49,18 @@ $(document).ready( function(){
       sortBy: "Year",
       displayType: 'grid',
       textSearch: "caption",
-      recordView: function(){
-        return "<img class='thumbImg'>"+
+      recordView: function(d){
+        return "<img class='thumbImg' src='http://research.microsoft.com/en-us/um/people/sdrucker/images/"+this.thumb+"'>"+
           "<div class='links'>"+
           (this.pdf!==""?" <a href='"+this.pdf+"' target='_blank' class='fa fa-file-pdf-o'></a>":"")+
           (this.video!==""?" <a href='"+this.video+"' target='_blank' class='fa fa-file-video-o'></a>":"")+
           //(this.reference!==""?" <a href='"+this.reference+"' target='_blank' class='fa fa-external-link'></a>":"")+
           "</div>"+
-          "<span class='title'>"+this.caption+"</span>"+
-          ""
+          "<span class='title'>"+this.caption+"</span>"
           ;
       },
-      visibleCb: function(d){
+      domCb: function(d){ 
         d.DOM.record.setAttribute("title",this.pabstract);
-        d3.select(d.DOM.record).select("img").attr("src",
-            "http://research.microsoft.com/en-us/um/people/sdrucker/images/"+this.thumb);
       }
     }
   });

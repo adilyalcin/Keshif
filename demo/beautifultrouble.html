@@ -90,10 +90,7 @@ $(document).ready( function(){
       textSearch: { name: "Title and text", value: function(){return this.title+" "+this.text;} },
       recordView: function() {
         return "<span class='typeImg'></span> "+this.title +" <a target='_blank' href='"+this.url+"' class='fa fa-external-link viewExternal'>view</a></div>"+
-            "<span class='item_details'><img class='itemImg' src=''></span>";
-      },
-      detailCb: function(d){
-        if(this.image)  d3.select(d.DOM.record).select(".itemImg").attr("src",this.image);
+            "<span class='item_details'><img class='itemImg' src='"+(this.image?this.image:"")+"'></span>";
       }
     }
   });

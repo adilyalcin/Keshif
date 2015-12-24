@@ -230,8 +230,14 @@ $(document).ready( function(){
       },
       textSearch: "Title",
       displayType: 'grid',
+      maxVisibleItems_Default: 50,
       recordView: function(){
-        var str="<a target='_blank' href='"+this.URL+"' class='thumbnail'><img class='thumbImg'></a>";
+        var _this = this;
+        var url="";
+        if(this.ImageURL) url = "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+this.ImageURL;
+
+        var str="<a target='_blank' href='"+this.URL+"' class='thumbnail'>" + 
+          "<img class='thumbImg' src='"+url+"'></a>";
         if(this.Description)
         	str+="<span><span class='fa fa-info toolIcon toolInfo'></span></span>"
         str+="<a target='_blank' href='"+this.URL+"' class='tool_title'>"+this.Title+"</a>";
@@ -265,14 +271,11 @@ $(document).ready( function(){
             str+="<span class='tool_features'>"+this.Programming.join(" + ")+" </span>";
         return str;
       },
-      visibleCb: function(d){
-      	var url="";
-      	if(this.ImageURL) url = "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+this.ImageURL;
-          d3.select(d.DOM.record).select("img").attr("src",url);
-        var _this = this;
+      domCb: function(d){
         d3.select(d.DOM.record).select(".toolInfo").on("click",function(){
-        	tool_browser.recordDisplay.setRecordDetails(d,!d.showDetails);
-        })
+          if(d.showDetails===undefined) d.showDetails = false;
+        	d.setRecordDetails(!d.showDetails);
+        });
       }
     }
   });

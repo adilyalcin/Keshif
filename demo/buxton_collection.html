@@ -195,13 +195,13 @@ $(document).ready( function(){
       maxVisibleItems_Default: 40,
       textSearch: "Name",
       recordView: function(){
-        return "<a href='"+this.url+"' target='_blank'><img><span class='title'>"+this.Name+"</span></a>";
-      },
-      visibleCb: function(d){
-        if(this['Related Images'].length===0) return;
-        d3.select(d.DOM.record).select("img").attr("src",
-            "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"
-            +this['Related Images'][0]);
+        var imgUrl = (this['Related Images'].length===0)?
+          "":
+          "http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/a/m/"+this['Related Images'][0]);
+        
+        return "<a href='"+this.url+"' target='_blank'>"+
+          "<img src='"+imgUrl+"''>"+
+          "<span class='title'>"+this.Name+"</span></a>";
       }
     }
   });

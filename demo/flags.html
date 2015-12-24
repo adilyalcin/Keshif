@@ -140,14 +140,9 @@ $(document).ready( function(){
     itemDisplay: {
       sortBy: 'Country',
       displayType: 'grid',
-      maxVisibleItems_Default: 200,
       textSearch: "Country",
       recordView: function(){
-        return "<img><span class='title'>"+this.Country+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",
-            "http://www.cs.umd.edu/~yalcin/keshif_res/"+this.Flag);
+        return "<img src='http://www.cs.umd.edu/~yalcin/keshif_res/"+this.Flag+"'><span class='title'>"+this.Country+"</span>";
       }
     }
   });

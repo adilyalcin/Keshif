@@ -63,34 +63,25 @@ $(document).ready( function(){
         var surname_short = (laureate.data.surname||"").toLowerCase().replace(/ /g,"_");
         surname_short = surname_short.replace("von_","").replace("la_","");
         var fullname = laureate.data.firstname + " " + (laureate.data.surname||"");
-
-        return "<span class='thumbnail'><img class='thumbImg'></span>"+
+        var imgUrl="";
+        if(laureate.data.gender!==3){
+          imgUrl = "http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
+        }
+        return "<span class='thumbnail'><img class='thumbImg' src='"+imgUrl+"'></span>"+
             "<span class='laureateName'>"+fullname+"</span>"+
             "<div style='text-align: center;'>"+
             "<span class='prizeCategory'>"+getIcon(this.Category)+" "+this.Category+"</span> "+
             //getIcon(getGender(laureate.data.gender))+
             "</div>";
-      },
-      visibleCb: function(d){
-        var laureate = kshf.dt_id.Laureates[this.laureate_id];
-        if(laureate.data.gender!==3){
-          // insert the image url
-          var surname_short = laureate.data.surname.toLowerCase().replace(/ /g,"_");
-          surname_short = surname_short.replace("von_","").replace("la_","");
-          var imgUrl="http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
-          d3.select(d.DOM.record).select("img").attr("src",imgUrl);
-        }
       }
     }
   });
 });
-var demoID = 14;
-
     </script>
     <style>
 #chart_div {
   height: 700px;
-  width:1150px;
+  width: 1150px;
 }
 .attrib .fa{
   width: 15px;

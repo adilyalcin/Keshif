@@ -2656,38 +2656,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &:hover{ color:black; }
                   }
                 }
-
-                &[animst="open"]{
-                    opacity: 0;
-                }
-                &[animst="closed"]{
-                    max-height: 0px !important;
-                    padding: 0px !important;
-                    opacity: 0;
-                }
-                &[animst="visible"]{
-                    display: block;
-                }
-
                 &[details="true"]{
                     max-height: none;
                     .item_details_toggle{
                         display: inline-block;
                         .rotate(180deg);
                     }
-                    .item_details{
-                        display:block;
-                    }
+                    .item_details{ display:block; }
                 }
                 &[details="false"]{
-                    .item_details_toggle{
-                        display: inline-block;
-                    }
-                    .item_details{
-                        display:none;
-                    }
+                    .item_details_toggle{ display: inline-block; }
+                    .item_details{ display: none; }
                 }
-
                 &[highlight^="selected"]{
                     box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
                     &[selectedForLink=true]{

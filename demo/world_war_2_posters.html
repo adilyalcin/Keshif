@@ -78,18 +78,16 @@ $(document).ready( function(){
       displayType: 'grid',
       textSearch: "title",
       recordView: function(){
-        return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
-            "<img class='thumbImg'></a><span class='title'>"+this.title+"</span>";
-      },
-      visibleCb: function(d){
-        if(this.objects===undefined) return;
-        var url;
-        if(this.objects.object.length){
-          url = this.objects.object[0].file['@url'];
-        } else {
-          url = this.objects.object.file['@url'];
+        var url="";
+        if(this.objects){
+          if(this.objects.object.length){
+            url = this.objects.object[0].file['@url'];
+          } else {
+            url = this.objects.object.file['@url'];
+          }
         }
-        d3.select(d.DOM.record).select("img").attr("src",url);
+        return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
+            "<img class='thumbImg' src='"+url+"'></a><span class='title'>"+this.title+"</span>";
       }
     }
   });

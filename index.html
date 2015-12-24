@@ -111,9 +111,11 @@ var loadDemoBrowser = function(){
       maxVisibleItems_Default: 100,
       textSearch: 'Name',
       recordView: function(){
+        var link=this["Link"];
+        if(link==="../index") link = "index";
           var str='';
           str+="<span class='thumbnail'><a target='_blank' href='./demo/"
-              +this["Link"]+"'><img class='theImage'></a></span>";
+              +this["Link"]+"'><img class='theImage' src='demo/demo_img/"+link+".jpg')></a></span>";
 //          str+="<div class=\"iteminfo iteminfo_0\">";
           str+="<span class='title'>"+this["Name"]+"</span>";
           str+="<span class='icons'>";
@@ -134,11 +136,6 @@ var loadDemoBrowser = function(){
                   +this["Link"]+".html' class='fa fa-code'></a></span>";
           return str;
       },
-      visibleCb: function(d){
-          var link=this["Link"];
-          if(link==="../index") link = "index";
-          d3.select(d.DOM.record).select("img").attr("src","demo/demo_img/"+link+".jpg");
-      }
     }
   });
 };

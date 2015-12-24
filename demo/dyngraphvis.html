@@ -247,11 +247,11 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "Type" },
-      { name: "Time" },
-      { name: "Paradigms" },
-      { name: "Applications" },
-      { name: "Evaluations" },
+       "Type",
+       "Time",
+       "Paradigms",
+       "Applications",
+       "Evaluations",
 /*            },{
           name: "Citations",
           value: function(){ return references[d.Key].split(" "); },
@@ -267,12 +267,9 @@ $(document).ready( function(){
       displayType: 'grid',
       textSearch: "Title",
       recordView: function(){
-        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+
-            "' class='thumbnail'><img class='thumbImg'></a><span class='title'>"+this.Title+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",
-            "http://dynamicgraphs.fbeck.com/data/papers_img/"+this.Key+".png");
+        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+"' class='thumbnail'>"+
+            "<img class='thumbImg' src='http://dynamicgraphs.fbeck.com/data/papers_img/"+this.Key+".png'></a>"+
+            "<span class='title'>"+this.Title+"</span>";
       }
     }
   });

@@ -64,10 +64,8 @@ $(document).ready( function(){
       displayType: "grid",
       detailsToggle: "off",
       maxVisibleItems_Default: 104,
-      recordView: function(){ return "<img>"; },
-      visibleCb: function(d){
-          d3.select(d.DOM.record).select("img").attr("src",
-              'http://d25rsf93iwlmgu.cloudfront.net/selfies/150/'+this.city+'/'+this.id);
+      recordView: function(){ 
+        return "<img src='http://d25rsf93iwlmgu.cloudfront.net/selfies/150/"+this.city+'/'+this.id+"'>";
       }
     }
   });

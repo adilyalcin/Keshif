@@ -58,13 +58,9 @@ google.setOnLoadCallback(function(){
       displayType: 'grid',
       recordView: function(){
         return "<a target='_blank' href='http://www.ted.com/talks/"+this.URL+"'><span class='thumbnail'>"+
-            "<img class='thumbImg'></span></a>"+
+            "<img class='thumbImg' src='http://img.tedcdn.com/r/images.ted.com/images/ted/"+this.ThumbImg+"'></span></a>"+
             "<span class='subTitle'>"+this.Speaker+"</span>"+
             "<span class='title'>"+this.Title+"</span>";
-      },
-      visibleCb: function(d){
-        d3.select(d.DOM.record).select("img").attr("src",
-            "http://img.tedcdn.com/r/images.ted.com/images/ted/"+this.ThumbImg);
       }
     }
   });

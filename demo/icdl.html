@@ -20,136 +20,131 @@ var dt_book_indices,dt_indices,dt_metadata;
 
 // Returns list of IDs of a book given the parent property
 var getIndicesWithParent = function(book, parentId){
-    var indices = dt_book_indices[book.id];
-    if(indices===undefined) return;
-    // parent needs to be 1
-    var list = [];
-    indices.data.Indices.forEach(function(i){
-        var indexData=dt_indices[i];
-        if(indexData===undefined) return;
-        if(indexData.data.Parent===parentId) list.push(i);
-    });
-    return list;
+  var indices = dt_book_indices[book.id];
+  if(indices===undefined) return;
+  // parent needs to be 1
+  var list = [];
+  indices.data.Indices.forEach(function(i){
+    var indexData=dt_indices[i];
+    if(indexData===undefined) return;
+    if(indexData.data.Parent===parentId) list.push(i);
+  });
+  return list;
 };
 
 $(document).ready( function(){
-    var sortFormat = d3.time.format("%Y-%m-%d");
+  var sortFormat = d3.time.format("%Y-%m-%d");
 
+  resizeBrowser(150,100);
+  $(window).resize(function() {
     resizeBrowser(150,100);
-    $(window).resize(function() {
-        resizeBrowser(150,100);
-        browser.updateLayout();
-    });
+    browser.updateLayout();
+  });
 
-	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth:175,
-        // barChartWidth: 40,
-        itemName: "Books in ICDL",
-        source: {
-            gdocId: '1rBXoLpfJyyBG_vWMZDvHmTgtoGb3v5pm6eHdAWcJPQk',
-            tables: ["Books", "Book Metadata", "Countries", "Book Indices", "Indices"]
-        },
-        loadedCb: function(){
-            // convert authors and keywords columns in publication table ( space separated IDs) to array
-            kshf.Util.cellToArray(kshf.dt.Books, ['From Countries','About Countries'],"-",true);
-            kshf.Util.cellToArray(kshf.dt["Book Metadata"], ['Language','Genres'],"-",false);
-            kshf.Util.cellToArray(kshf.dt["Book Indices"], ['Indices'],"-",true);
-            dt_book_indices = kshf.dt_id['Book Indices'];
-            dt_indices = kshf.dt_id['Indices'];
-            dt_metadata = kshf.dt_id['Book Metadata'];
-
-        },
-        summaries: [
-            {   name: "Type",
-                value: function(){
-                    var metadata = dt_metadata[this.id];
-                    if(metadata) return metadata.data.Type;
-                }
-            },{ name: "Genre",
-                value: function(){
-                    var metadata = dt_metadata[this.id];
-                    if(metadata) return metadata.data.Genres;
-                }
-            },{ name: "Features",
-                value: function(){
-                    var r=[];
-                    if(this['Public Domain']) r.push('Public Domain');
-                    if(this['Featured']) r.push('Featured');
-                    return r;
-                }
-            },{ name: "Number of Pages", value: "Pages", collapsed: true,
-            },{ name: "Rating",
-                value: function(){ return getIndicesWithParent(this,71); },
-                catTableName: "Indices", catLabel: "Attribute",
-                collapsed: true,
-            },{ name: "Feeling",
-                value: function(){ return getIndicesWithParent(this,5); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Audience: Language",
-                value: function(){ return getIndicesWithParent(this,3); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Audience: Age",
-                value: function(){ return getIndicesWithParent(this,83); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Audience: Collection",
-                value: function(){ return getIndicesWithParent(this,473); },
-                catTableName: "Indices", catLabel: "Attribute",
-                collapsed:true
-            },{ name: "Audience: Publication Date",
-                value: function(){ return getIndicesWithParent(this,326); },
-                catTableName: "Indices", catLabel: "Attribute",
-                collapsed: true
-            },{ name: "Appearance: Format", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,15); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Appearance: Length", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,260); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Appearance: Cover Color", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,4); },
-                catTableName: "Indices", catLabel: "Attribute",
-                collapsed: true
-            },{ name: "Appearance: Shape", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,6); },
-                catTableName: "Indices", catLabel: "Attribute",
-                collapsed: true
-            },{ name: "Content: Countries", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,359); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Content: Characters", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,257); },
-                catTableName: "Indices", catLabel: "Attribute",
-            },{ name: "Content: Time Periods - When", panel: 'right',
-                value: function(){ return getIndicesWithParent(this,287); },
-                catTableName: "Indices", catLabel: "Attribute",
-                collapsed: true
-            },{ name: "Date Added", panel: "bottom", collapsed: true
-            }
-        ],
-        itemDisplay: {
-            sortBy: 'Date Added',
-            textSearchFunc: function(){ 
-                var metadata = dt_metadata[this.id];
-                if(metadata) return metadata.data.Title;
-            },
-            displayType: 'grid',
-            maxVisibleItems_Default: 20,
-            recordView: function(){
-                var id = this.id;
-                var metadata = dt_metadata[id];
-                if(metadata)
-                    return "<a target='_blank' href='http://www.childrenslibrary.org/icdl/BookPreview?bookid="
-                            +id+"&route=text' class='thumbnail'><img class='thumbImg'></a>"+
-                            "<span class='title'>"+metadata.data.Title+"</span>";
-            },
-            visibleCb: function(d){
-                var id=d.data.id;
-                d3.select(d.DOM.record).select(".thumbImg").attr("src",
-                    "http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg");
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth:175,
+    // barChartWidth: 40,
+    itemName: "Books in ICDL",
+    source: {
+      gdocId: '1rBXoLpfJyyBG_vWMZDvHmTgtoGb3v5pm6eHdAWcJPQk',
+      tables: ["Books", "Book Metadata", "Countries", "Book Indices", "Indices"]
+    },
+    loadedCb: function(){
+      // convert authors and keywords columns in publication table ( space separated IDs) to array
+      kshf.Util.cellToArray(kshf.dt.Books, ['From Countries','About Countries'],"-",true);
+      kshf.Util.cellToArray(kshf.dt["Book Metadata"], ['Language','Genres'],"-",false);
+      kshf.Util.cellToArray(kshf.dt["Book Indices"], ['Indices'],"-",true);
+      dt_book_indices = kshf.dt_id['Book Indices'];
+      dt_indices = kshf.dt_id['Indices'];
+      dt_metadata = kshf.dt_id['Book Metadata'];
+    },
+    summaries: [
+      {   name: "Type",
+          value: function(){
+              var metadata = dt_metadata[this.id];
+              if(metadata) return metadata.data.Type;
+          }
+      },{ name: "Genre",
+          value: function(){
+              var metadata = dt_metadata[this.id];
+              if(metadata) return metadata.data.Genres;
+          }
+      },{ name: "Features",
+          value: function(){
+              var r=[];
+              if(this['Public Domain']) r.push('Public Domain');
+              if(this['Featured']) r.push('Featured');
+              return r;
+          }
+      },{ name: "Number of Pages", value: "Pages", collapsed: true,
+      },{ name: "Rating",
+          value: function(){ return getIndicesWithParent(this,71); },
+          catTableName: "Indices", catLabel: "Attribute",
+          collapsed: true,
+      },{ name: "Feeling",
+          value: function(){ return getIndicesWithParent(this,5); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Audience: Language",
+          value: function(){ return getIndicesWithParent(this,3); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Audience: Age",
+          value: function(){ return getIndicesWithParent(this,83); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Audience: Collection",
+          value: function(){ return getIndicesWithParent(this,473); },
+          catTableName: "Indices", catLabel: "Attribute",
+          collapsed:true
+      },{ name: "Audience: Publication Date",
+          value: function(){ return getIndicesWithParent(this,326); },
+          catTableName: "Indices", catLabel: "Attribute",
+          collapsed: true
+      },{ name: "Appearance: Format", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,15); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Appearance: Length", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,260); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Appearance: Cover Color", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,4); },
+          catTableName: "Indices", catLabel: "Attribute",
+          collapsed: true
+      },{ name: "Appearance: Shape", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,6); },
+          catTableName: "Indices", catLabel: "Attribute",
+          collapsed: true
+      },{ name: "Content: Countries", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,359); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Content: Characters", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,257); },
+          catTableName: "Indices", catLabel: "Attribute",
+      },{ name: "Content: Time Periods - When", panel: 'right',
+          value: function(){ return getIndicesWithParent(this,287); },
+          catTableName: "Indices", catLabel: "Attribute",
+          collapsed: true
+      },{ name: "Date Added", panel: "bottom", collapsed: true
+      }
+    ],
+    itemDisplay: {
+      sortBy: 'Date Added',
+      textSearchFunc: function(){ 
+        var metadata = dt_metadata[this.id];
+        if(metadata) return metadata.data.Title;
+      },
+      displayType: 'grid',
+      maxVisibleItems_Default: 20,
+      recordView: function(){
+        var id = this.id;
+        var metadata = dt_metadata[id];
+        if(metadata)
+          return "<a target='_blank' href='http://www.childrenslibrary.org/icdl/BookPreview?bookid="
+            +id+"&route=text' class='thumbnail'>"+
+            "<img class='thumbImg' src='http://www.childrenslibrary.org/library/books/"+id[0]+"/"+id+"/thumbs2/"+id+"-0001-thumb3.jpg'></a>"+
+            "<span class='title'>"+metadata.data.Title+"</span>";
+      }
+    }
+  });
 });
 
 </script>
