@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Brazil Credit Operations</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript">
+var docRoot = 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/BrazilCreditOperations/'
+google.setOnLoadCallback(function(){
+  resizeBrowser(300,60);
+  $(window).resize(function() {
+    resizeBrowser(300,60);
+    browser.updateLayout();
+  });
+  var dateFormat = d3.time.format("%m/%d/%Y");
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 110,
+    rightPanelLabelWidth: 200,
+    itemName: "Credit Operations in Brazil",
+    source: {
+      dirPath: docRoot,
+      fileType: 'json',
+      tables: "Data"
+    },
+    loadedCb: function(){
+      kshf.dt.Data.forEach(function(d){
+        d.data.Date = dateFormat.parse(d.data.Date);
+      });
+    },
+    summaries: [
+      { name: "Category" },
+      { name: "Entitie's Type"},
+      { name: "Creditor's Type" },
+      { name: "State", panel: "middle" },
+      { name: "Entity", panel: "middle", minAggrValue: 5 },
+      { name: "Currency" },
+      { name: "Date", panel: 'bottom' },
+      { name: "IBGE", panel: "left" },
+      { name: "Finality", panel: "right" },
+      { name: "Creditor", panel: "right" },
+    ]
+  });
+});
+    </script>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+  </body>
+</html>
