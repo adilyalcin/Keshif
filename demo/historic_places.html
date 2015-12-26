@@ -29,13 +29,18 @@ google.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "State", catLabel: function(){ return getStateName(this.id) } },
-      { name: "County", panel: 'middle', minAggrValue: 50,
+      { name: "County", panel: 'right', minAggrValue: 50,
         value: function(){ return this.County+", "+this.State; } },
       { name: "Listed Time", panel: 'bottom',
         value: function(){ return moment(this.Listed,"YYYYMMDD")._d; } },
-      { name: "City", panel: 'right', minAggrValue: 50,
+      { name: "City", panel: 'middle', minAggrValue: 50,
         value: function(){ return this.City+", "+this.State; } }
-    ]
+    ],
+    itemDisplay: {
+      sortBy: "Listed Time",
+      textSearch: "Resource",
+      recordView: function(){ return this.Resource; }
+    }
   });
 });
     </script>

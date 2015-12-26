@@ -143,6 +143,21 @@ var DiseaseMap = {
   "YERS": "Y"
 };
 
+var ProvinceMap = {
+  10: "Brussels",
+  21: "Antwerp",
+  22: "Limburg", 
+  23: "East Flanders",
+  24: "Flemish Brabant",
+  25: "West Flanders",
+  31: "Walloon Brabant",
+  32: "Hainaut",
+  33: "Liege",
+  34: "Luxembourg",
+  35: "Namur"
+  // the rest: Unknown;
+};
+
 $(document).ready( function(){
 
   var dateFormat=d3.time.format("%Y-%m-%d");
@@ -156,11 +171,20 @@ $(document).ready( function(){
       url: "https://epistat.wiv-isp.be/",
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'csv',
-      tables: "epistat_public_cases"
+      tables: "epistat_public_cases",
+      // Belgium-provinces-unk.geo.json
     },
     summaries: [
       { name: "Disease", value: "Subject", catLabel: function(){ return DiseaseMap[this.id]; } },
-      { name: "Gender", panel: "right" },
+      { name: "Province", value: "NUTS2", catLabel: function(){ return ProvinceMap[this.id]; }, panel: "right" },
+      { name: "Gender", panel: "right",
+        value: function(){ 
+          switch(this.Gender){
+            case "M": return "Male "+getIcon("M");
+            case "F": return "Female "+getIcon("F");
+            default: return "Unknown <span class='fa fa-question'></span>";
+          }
+        } },
       { name: "Age", value: function(){if(this.Age>0 && this.Age<100) return this.Age;}, panel: "right"},
       { name: "Date", panel: "bottom",
         value: function(){ 

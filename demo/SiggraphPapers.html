@@ -76,9 +76,8 @@ $(document).ready( function() {
     barChartWidth: 140,
     itemName: "SIGGRAPH Papers",
     source: {
-      url: "http://www.productchart.com/smartphones/",
+      url: "http://www.cs.utah.edu/~kwu/vis/sigvis.html'",
       dirPath: gDocRoot,
-      //dirPath: './data/',
       fileType: 'json',
       tables: "Papers",
       callback: loadData
@@ -88,7 +87,6 @@ $(document).ready( function() {
       {name: "Keywords", catLabel: function(){ return keywords[this.id].text; }},
       {name: "Citation Count"},
       {name: "Year", panel: "bottom"}
-
     ],
     itemDisplay: {
       sortBy: "Citation Count",
