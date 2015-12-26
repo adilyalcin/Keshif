@@ -866,9 +866,9 @@ kshf.RecordDisplay = function(kshf_, config, root){
     var firstSortOpt = this.sortingOpts[0];
     // Add all interval summaries as sorting options
     this.browser.summaries.forEach(function(summary){
-        if(summary.panel===undefined) return; // Needs to be within view
-        if(summary.type!=="interval") return; // Needs to be interval (numeric)
-        this.addSortingOption(summary);
+      if(summary.panel===undefined) return; // Needs to be within view
+      if(summary.type!=="interval") return; // Needs to be interval (numeric)
+      this.addSortingOption(summary);
     },this);
     this.prepSortingOpts();
     this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
@@ -888,8 +888,6 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
             movedSummary.refreshNuggetDisplay();
             me.setRecordViewSummary(movedSummary);
-            me.updateVisibleIndex();
-            me.updateItemVisibility();
 
             if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
 
@@ -1151,7 +1149,7 @@ kshf.RecordDisplay.prototype = {
           } else {
             me.browser.mapColorTheme = "converge";
           }
-          me.updateRecordColor();
+          me.map_updateRecordColor();
           me.map_refreshColorScale();
           me.sortingOpt_Active.map_refreshColorScale();
         })
@@ -1189,112 +1187,112 @@ kshf.RecordDisplay.prototype = {
     },
     /* -- */
     initDOM_GlobalTextSearch: function(){
-        var me=this;
+      var me=this;
 
-        this.textFilter = this.browser.createFilter({
-            parentSummary: this.browser, 
-            hideCrumb: true,
-            onClear: function(){
-                me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
-                me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display","none"); 
-                me.DOM.recordTextSearch.select("input")[0][0].value = "";
-            },
-            onFilter: function(){
-                me.DOM.recordTextSearch.select(".clearSearchText").style('display','inline-block');
+      this.textFilter = this.browser.createFilter({
+        parentSummary: this.browser, 
+        hideCrumb: true,
+        onClear: function(){
+          me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
+          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display","none"); 
+          me.DOM.recordTextSearch.select("input")[0][0].value = "";
+        },
+        onFilter: function(){
+          me.DOM.recordTextSearch.select(".clearSearchText").style('display','inline-block');
 
-                var query = [];
+          var query = [];
 
-                // split the input by " character
-                var processed = this.filterStr.split('"');
-                processed.forEach(function(block,i){
-                    if(i%2===0) {
-                        block.split(/\s+/).forEach(function(q){ query.push(q)});
-                    } else {
-                        query.push(block);
-                    }
-                });
+          // split the input by " character
+          var processed = this.filterStr.split('"');
+          processed.forEach(function(block,i){
+              if(i%2===0) {
+                  block.split(/\s+/).forEach(function(q){ query.push(q)});
+              } else {
+                  query.push(block);
+              }
+          });
 
-                // Remove the empty strings
-                query = query.filter(function(v){ return v!==""});
+          // Remove the empty strings
+          query = query.filter(function(v){ return v!==""});
 
-                me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",query.length>1?"inline-block":"none"); 
+          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",query.length>1?"inline-block":"none"); 
 
-                // go over all the items in the list, search each keyword separately
-                // If some search matches, return true (any function)
-                var summaryFunc = me.textSearchSummary.summaryFunc;
-                me.browser.items.forEach(function(item){
-                    var f;
-                    if(me.textFilter.multiMode==='or') 
-                      f = ! query.every(function(v_i){
-                        var v = summaryFunc.call(item.data,item);
-                        if(v===null || v===undefined) return true;
-                        return (""+v).toLowerCase().indexOf(v_i)===-1;
-                      });
-                    if(me.textFilter.multiMode==='and')
-                      f = query.every(function(v_i){
-                        var v = summaryFunc.call(item.data,item);
-                        return (""+v).toLowerCase().indexOf(v_i)!==-1;
-                      });
-                    item.setFilterCache(this.id,f);
-                },this);
-            },
+          // go over all the items in the list, search each keyword separately
+          // If some search matches, return true (any function)
+          var summaryFunc = me.textSearchSummary.summaryFunc;
+          me.browser.items.forEach(function(item){
+            var f;
+            if(me.textFilter.multiMode==='or') 
+              f = ! query.every(function(v_i){
+                var v = summaryFunc.call(item.data,item);
+                if(v===null || v===undefined) return true;
+                return (""+v).toLowerCase().indexOf(v_i)===-1;
+              });
+            if(me.textFilter.multiMode==='and')
+              f = query.every(function(v_i){
+                var v = summaryFunc.call(item.data,item);
+                return (""+v).toLowerCase().indexOf(v_i)!==-1;
+              });
+            item.setFilterCache(this.id,f);
+          },this);
+        },
+      });
+      this.textFilter.multiMode = 'and';
+
+      this.DOM.recordTextSearch = this.DOM.recordViewHeader.append("span").attr("class","recordTextSearch");
+
+      var x= this.DOM.recordTextSearch.append("div").attr("class","dropZone_textSearch")
+        .on("mouseenter",function(){ this.style.backgroundColor = "rgb(255, 188, 163)"; })
+        .on("mouseleave",function(){ this.style.backgroundColor = ""; })
+        .on("mouseup"   ,function(){ me.setTextSearchSummary(me.movedSummary); });
+      x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
+
+      this.DOM.recordTextSearch.append("i").attr("class","fa fa-search searchIcon");
+      this.DOM.recordTextSearch.append("input").attr("class","mainTextSearch_input")
+        .on("keydown",function(){
+          var x = this;
+          if(this.timer) clearTimeout(this.timer);
+          this.timer = setTimeout( function(){
+            me.textFilter.filterStr = x.value.toLowerCase();
+            if(me.textFilter.filterStr!=="") {
+              me.textFilter.addFilter(true);
+            } else {
+              me.textFilter.clearFilter();
+            }
+            if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id: me.textFilter.id, info: me.textFilter.filterStr});
+            x.timer = null;
+          }, 750);
         });
-        this.textFilter.multiMode = 'and';
-
-        this.DOM.recordTextSearch = this.DOM.recordViewHeader.append("span").attr("class","recordTextSearch");
-
-        var x= this.DOM.recordTextSearch.append("div").attr("class","dropZone_textSearch")
-            .on("mouseenter",function(){ this.style.backgroundColor = "rgb(255, 188, 163)"; })
-            .on("mouseleave",function(){ this.style.backgroundColor = ""; })
-            .on("mouseup"   ,function(){ me.setTextSearchSummary(me.movedSummary); });
-        x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
-
-        this.DOM.recordTextSearch.append("i").attr("class","fa fa-search searchIcon");
-        this.DOM.recordTextSearch.append("input").attr("class","mainTextSearch_input")
-            .on("keydown",function(){
-                var x = this;
-                if(this.timer) clearTimeout(this.timer);
-                this.timer = setTimeout( function(){
-                    me.textFilter.filterStr = x.value.toLowerCase();
-                    if(me.textFilter.filterStr!=="") {
-                        me.textFilter.addFilter(true);
-                    } else {
-                        me.textFilter.clearFilter();
-                    }
-                    if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id: me.textFilter.id, info: me.textFilter.filterStr});
-                    x.timer = null;
-                }, 750);
-            });
-        this.DOM.recordTextSearch.append("span").attr("class","fa fa-times-circle clearSearchText")
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveFilter }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(){ this.tipsy.hide(); })
-          .on("click",function() { me.textFilter.clearFilter(); });
-        
-        this.DOM.textSearchMode_And = this.DOM.recordTextSearch.append("span")
-          .attr("class","textSearchMode").attr("mode","and").attr("active",true)
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: "All words<br> must appear." }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(){ this.tipsy.hide(); })
-          .on("click",function() { 
-            me.DOM.textSearchMode_Or.attr("active",false);
-            me.DOM.textSearchMode_And.attr("active",true);
-            me.textFilter.multiMode = "and";
-            me.textFilter.addFilter(true);
-          })
-          ;
-        this.DOM.textSearchMode_Or = this.DOM.recordTextSearch.append("span")
-          .attr("class","textSearchMode").attr("mode","or").attr("active",false)
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: "At least one word<br> must appear." }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(){ this.tipsy.hide(); })
-          .on("click",function() { 
-            me.DOM.textSearchMode_Or.attr("active",true);
-            me.DOM.textSearchMode_And.attr("active",false);
-            me.textFilter.multiMode = "or";
-            me.textFilter.addFilter(true);
-          })
-          ;
+      this.DOM.recordTextSearch.append("span").attr("class","fa fa-times-circle clearSearchText")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveFilter }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(){ this.tipsy.hide(); })
+        .on("click",function() { me.textFilter.clearFilter(); });
+      
+      this.DOM.textSearchMode_And = this.DOM.recordTextSearch.append("span")
+        .attr("class","textSearchMode").attr("mode","and").attr("active",true)
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: "All words<br> must appear." }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(){ this.tipsy.hide(); })
+        .on("click",function() { 
+          me.DOM.textSearchMode_Or.attr("active",false);
+          me.DOM.textSearchMode_And.attr("active",true);
+          me.textFilter.multiMode = "and";
+          me.textFilter.addFilter(true);
+        })
+        ;
+      this.DOM.textSearchMode_Or = this.DOM.recordTextSearch.append("span")
+        .attr("class","textSearchMode").attr("mode","or").attr("active",false)
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: "At least one word<br> must appear." }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(){ this.tipsy.hide(); })
+        .on("click",function() { 
+          me.DOM.textSearchMode_Or.attr("active",true);
+          me.DOM.textSearchMode_And.attr("active",false);
+          me.textFilter.multiMode = "or";
+          me.textFilter.addFilter(true);
+        })
+        ;
     },
     /** -- */
     setRecordViewSummary: function(summary){
@@ -1419,41 +1417,47 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     refreshRecordRanks: function(d3_selection){
-        if(!this.showRank) return; // Do not refresh if not shown...
-        d3_selection.text(function(d){ return (d.visibleOrder<0)?"":d.visibleOrder+1; });
+      if(!this.showRank) return; // Do not refresh if not shown...
+      d3_selection.text(function(d){ return (d.visibleOrder<0)?"":d.visibleOrder+1; });
+    },
+    /** -- */
+    setSortColumnWidth: function(v){
+      if(this.displayType!=='list') return;
+      this.sortColWidth = Math.max(Math.min(v,110),30); // between 30 and 110 pixels
+      this.DOM.recordsSortCol.style("width",this.sortColWidth+"px");
+      this.refreshAdjustSortColumnWidth();
     },
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
-        if(this.displayType!=="list") return;
-        var labelFunc=this.sortingOpt_Active.sortLabel;
-        var unitName =this.sortingOpt_Active.unitName;
-        var sortColformat = d3.format(".s");
-        if(this.sortingOpt_Active.hasTime){
-            sortColformat = d3.time.format("%Y");
-        }
-
-        d3_selection.html(function(d){
-            var s=labelFunc.call(d.data);
-            if(s===null || s===undefined) return "";
-            this.setAttribute("title",s);
-            if(typeof s!=="string") s = sortColformat(s);
-            if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
-            return s;
-        });
+      if(this.displayType!=="list") return; // Only list-view allows sorting
+      var labelFunc=this.sortingOpt_Active.sortLabel;
+      var unitName =this.sortingOpt_Active.unitName;
+      var sortColformat = d3.format(".s");
+      if(this.sortingOpt_Active.hasTime){
+        sortColformat = d3.time.format("%Y");
+      }
+      d3_selection.html(function(d){
+        var s=labelFunc.call(d.data);
+        if(s===null || s===undefined) return "";
+        this.setAttribute("title",s);
+        if(typeof s!=="string") s = sortColformat(s);
+        if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
+        return s;
+      });
     },
     /** -- */
     refreshSortingOptions: function(){
-        var me=this;
-        if(this.DOM.listSortOptionSelect===undefined) return;
-        this.DOM.listSortOptionSelect.selectAll("option").remove();
-        var x = this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts);
-        x.enter().append("option").html(function(summary){ return summary.summaryTitle; })
-        x.exit().each(function(summary){ summary.sortingSummary = false; });
-        var selectIndex = 0;
-        this.sortingOpts.forEach(function(summary, i){
-            if(summary===me.sortingOpt_Active) selectIndex = i;
-        });
-        this.DOM.listSortOptionSelect[0][0].selectedIndex = selectIndex;
+      if(this.DOM.listSortOptionSelect===undefined) return;
+      this.DOM.listSortOptionSelect.selectAll("option").remove();
+      var me=this;
+      var x = this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts);
+      x.enter().append("option").html(function(summary){ return summary.summaryTitle; })
+      x.exit().each(function(summary){ summary.sortingSummary = false; });
+      this.sortingOpts.forEach(function(summary, i){
+        if(summary===me.sortingOpt_Active) {
+          me.DOM.listSortOptionSelect[0][0].selectedIndex = i;
+        }
+      });
     },
     /** -- */
     prepSortingOpts: function(){
@@ -1516,7 +1520,7 @@ kshf.RecordDisplay.prototype = {
 
       if(this.DOM.root===undefined) return;
       if(this.displayType==="map"){
-        this.updateRecordColor();
+        this.map_updateRecordColor();
       } else {
         this.sortRecords();
         this.updateVisibleIndex();
@@ -1532,20 +1536,13 @@ kshf.RecordDisplay.prototype = {
       }
     },
     /** -- */
-    setSortColumnWidth: function(v){
-      if(this.displayType!=='list') return;
-      this.sortColWidth = Math.max(Math.min(v,110),30);
-      this.DOM.recordsSortCol.style("width",this.sortColWidth+"px");
-      this.refreshAdjustSortColumnWidth();
-    },
-    /** -- */
     refreshAdjustSortColumnWidth: function(){
       if(this.displayType!=="list") return;
       this.DOM.adjustSortColumnWidth.style("left", (this.sortColWidth-2)+(this.showRank?15:0)+"px")
     },
     /** -- */
     setShowRank: function(v){
-      this.showRank=v;
+      this.showRank = v;
       this.DOM.root.attr('showRank',this.showRank);
       this.refreshRecordRanks(this.DOM.recordRanks);
       this.refreshAdjustSortColumnWidth();
@@ -1553,46 +1550,54 @@ kshf.RecordDisplay.prototype = {
     /** 
       Currently only called if displayType is map
       */
-    updateRecordColor: function(){
-        var me=this;
-        var s_id = this.sortingOpt_Active.summaryFilter.id;
-        var s_f  = this.sortingOpt_Active.summaryFunc;
-        var s_log;
+    map_updateRecordColor: function(){
+      var me=this;
+      var s_id = this.sortingOpt_Active.summaryFilter.id;
+      var s_f  = this.sortingOpt_Active.summaryFunc;
+      var s_log;
 
-        this.colorQuantize = d3.scale.quantize()
-            .domain([0,9])
-            .range(kshf.colorScale[me.browser.mapColorTheme]);
+      this.colorQuantize = d3.scale.quantize()
+        .domain([0,9])
+        .range(kshf.colorScale[me.browser.mapColorTheme]);
 
-        if(this.sortingOpt_Active.scaleType==='log'){
-            this.mapColorScale = d3.scale.log();
-            s_log = true;
-        } else {
-            this.mapColorScale = d3.scale.linear();
-            s_log = false;
-        }
-        var min_v = this.sortingOpt_Active.intervalRange.min;
-        var max_v = this.sortingOpt_Active.intervalRange.max;
-        if(min_v===undefined) min_v = d3.min(this.browser.items, function(d){ return s_f.call(d.data); });
-        if(max_v===undefined) max_v = d3.max(this.browser.items, function(d){ return s_f.call(d.data); });
-        this.mapColorScale
-            .range([0, 9])
-            //.range([d3.rgb("rgb(247,251,255)"), d3.rgb("rgb(8,48,107)")])
+      if(this.sortingOpt_Active.scaleType==='log'){
+        this.mapColorScale = d3.scale.log();
+        s_log = true;
+      } else {
+        this.mapColorScale = d3.scale.linear();
+        s_log = false;
+      }
+      var min_v = this.sortingOpt_Active.intervalRange.min;
+      var max_v = this.sortingOpt_Active.intervalRange.max;
+      if(min_v===undefined) min_v = d3.min(this.browser.items, function(d){ return s_f.call(d.data); });
+      if(max_v===undefined) max_v = d3.max(this.browser.items, function(d){ return s_f.call(d.data); });
+      this.mapColorScale
+        .range([0, 9])
+        //.range([d3.rgb("rgb(247,251,255)"), d3.rgb("rgb(8,48,107)")])
 //            .interpolate(d3.interpolateHcl)
-            .domain( [min_v, max_v] );
+        .domain( [min_v, max_v] );
 
-        this.DOM.kshfRecords.attr("fill", function(d){ 
-            //var v = d.mappedDataCache[s_id];
-            var v = s_f.call(d.data);
-            if(s_log && v<=0) v=undefined;
-            if(v===undefined) return "url(#diagonalHatch)";
-            var vv = me.mapColorScale(v);
-            if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
-            return me.colorQuantize(vv); 
-        });
+      this.DOM.kshfRecords.attr("fill", function(d){ 
+        //var v = d.mappedDataCache[s_id];
+        var v = s_f.call(d.data);
+        if(s_log && v<=0) v=undefined;
+        if(v===undefined) return "url(#diagonalHatch)";
+        var vv = me.mapColorScale(v);
+        if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
+        return me.colorQuantize(vv); 
+      });
     },
-    /** -- */
-    insertRecordDOMs: function(newRecords){
-      var me = this, x;
+    /** Insert items into the UI, called once on load */
+    refreshRecordDOM: function(){
+      var me=this, x;
+      var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
+        .data(
+          this.browser.items.filter(function(record){
+            if(!record.isWanted) return false;
+            return record.visibleOrder<me.maxVisibleItems;
+          }),
+          function(record){ return record.id(); })
+        .enter();
 
       // Shared structure per record view
       newRecords = newRecords
@@ -1712,30 +1717,15 @@ kshf.RecordDisplay.prototype = {
 
       // Call the domCb function for all the records that have been inserted to the page
       if(this.config.domCb) {
-        newRecords.each(function(record){ me.config.domCb.call(record.data,record) });
+        newRecords.each(function(record){ me.config.domCb.call(record.data,record); });
       }
-
-    },
-    /** Insert items into the UI, called once on load */
-    refreshRecordDOM: function(){
-      var me=this;
-      var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
-        .data(
-          this.browser.items.filter(function(record){
-            if(!record.isWanted) return false;
-            return record.visibleOrder<me.maxVisibleItems;
-          }),
-          function(record){ return record.id(); })
-        .enter();
-
-      this.insertRecordDOMs(newRecords);
 
       this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
 
       if(this.displayType==="map") {
         this.map_zoomToWanted();
         this.map_projectRecords();
-        this.updateRecordColor();
+        this.map_updateRecordColor();
       } else {
         this.DOM.recordsSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
         this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
@@ -1745,9 +1735,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     unhighlightRecords: function(){
-      this.browser.items.forEach(function(record){
-        if(record.DOM.record) record.DOM.record.setAttribute("highlight",false);
-      });
+      if(this.DOM.kshfRecords) this.DOM.kshfRecords.attr("highlight",false);
     },
     /** -- */
     showMore: function(){
@@ -2345,24 +2333,20 @@ kshf.Browser = function(options){
     var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
     xx.append("span").text("Available Attributes");
     xx.append("span").attr("class","addAttrib fa fa-plus")
-        .each(function(){
-            this.tipsy = new Tipsy(this, { gravity: "e", title: "Add new" });
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("click",function(){
-            me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
-            me.insertAttributeList();
-        });
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: "e", title: "Add new" }); })
+      .on("mouseover",function(){ this.tipsy.show(); })
+      .on("mouseout" ,function(){ this.tipsy.hide(); })
+      .on("click",function(){
+        me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
+        me.insertAttributeList();
+      });
     xx.append("span").attr("class","hidePanel fa fa-times")
-        .each(function(){
-            this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" });
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("click",function(){
-            me.showAttributes();
-        });
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
+      .on("mouseover",function(){ this.tipsy.show(); })
+      .on("mouseout" ,function(){ this.tipsy.hide(); })
+      .on("click",function(){
+          me.showAttributes();
+      });
 
     var attributePanelControl = this.DOM.attributePanel.append("div").attr("class","attributePanelControl");
 
@@ -4025,8 +4009,6 @@ kshf.Browser.prototype = {
     autoAddSummary: function(summary){
         if(summary.uniqueCategories()){
             this.recordDisplay.setRecordViewSummary(summary);
-            this.recordDisplay.updateVisibleIndex();
-            this.recordDisplay.updateItemVisibility();
             if(this.recordDisplay.textSearchSummary===null) 
                 this.recordDisplay.setTextSearchSummary(summary);
             return;
@@ -4920,51 +4902,54 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     insertChartAxis_Measure: function(dom, pos1, pos2){
-        var me=this;
-        this.DOM.chartAxis_Measure = dom.append("div").attr("class","chartAxis_Measure");
-        this.DOM.chartAxis_Measure.append("span").attr("class","percentSign")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: pos1, title: function(){
-                        return (me.browser.percentModeActive?"# "+kshf.lang.cur.Absolute:"% "+kshf.lang.cur.Percent)+
-                            " <span class='fa fa-eye'></span>";
-                    },
-                })
-            })
-            .on("click",function(){
-                this.tipsy.hide();
-                me.browser.setPercentMode(!me.browser.percentModeActive);
-            })
-            .on("mouseover",function(){
-                me.browser.DOM.root.selectAll(".percentSign").attr("highlight",true);
-                this.tipsy.show();
-                })
-            .on("mouseout",function(){
-                me.browser.DOM.root.selectAll(".percentSign").attr("highlight",false);
-                this.tipsy.hide();
+      var me=this;
+      this.DOM.chartAxis_Measure = dom.append("div").attr("class","chartAxis_Measure");
+      this.DOM.chartAxis_Measure.append("span").attr("class","percentSign")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: pos1, title: function(){
+              return (me.browser.percentModeActive?"# "+kshf.lang.cur.Absolute:"% "+kshf.lang.cur.Percent)+
+                  " <span class='fa fa-eye'></span>";
+            },
+          })
+        })
+        .on("click",function(){
+          this.tipsy.hide();
+          me.browser.setPercentMode(!me.browser.percentModeActive);
+        })
+        .on("mouseover",function(){
+          me.browser.DOM.root.selectAll(".percentSign").attr("highlight",true);
+          this.tipsy.show();
+        })
+        .on("mouseout",function(){
+          me.browser.DOM.root.selectAll(".percentSign").attr("highlight",false);
+          this.tipsy.hide();
+        });
+
+      this.DOM.chartAxis_Measure.selectAll(".chartAxis_Measure_background").data([1,2])
+        .enter().append("span")
+          .attr("class",function(d){ return "chartAxis_Measure_background chartAxis_Measure_background_"+d; })
+          .each(function(){
+            this.tipsy = new Tipsy(this, {
+              gravity: pos2, title: function(){
+                return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
+                    kshf.lang.cur.Width+
+                    " <span class='fa fa-arrows-h'></span>";
+              },
             });
-        this.DOM.chartAxis_Measure.append("span").attr("class","chartAxis_Measure_background")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: pos2, title: function(){
-                        return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
-                            kshf.lang.cur.Width+
-                            " <span class='fa fa-arrows-h'></span>";
-                    },
-                })
-            })
-            .on("click",function(){ 
-                this.tipsy.hide();
-                me.browser.setRatioMode(!me.browser.ratioModeActive);
-            })
-            .on("mouseover",function(){
-                me.browser.DOM.root.selectAll(".chartAxis_Measure_background").attr("highlight",true);
-                this.tipsy.show();
-            })
-            .on("mouseout",function(){
-                me.browser.DOM.root.selectAll(".chartAxis_Measure_background").attr("highlight",false);
-                this.tipsy.hide();
-            });
+          })
+          .on("click",function(){ 
+            this.tipsy.hide();
+            me.browser.setRatioMode(!me.browser.ratioModeActive);
+          })
+          .on("mouseover",function(){
+            me.browser.DOM.root.selectAll(".chartAxis_Measure_background").attr("highlight",true);
+            this.tipsy.show();
+          })
+          .on("mouseout",function(){
+            me.browser.DOM.root.selectAll(".chartAxis_Measure_background").attr("highlight",false);
+            this.tipsy.hide();
+          });
     },
     /** -- */
     setCollapsedAndLayout: function(hide){
@@ -5925,8 +5910,8 @@ var Summary_Categorical_functions = {
         if(this.DOM.summaryCategorical){
             this.DOM.summaryCategorical.style("width",this.getWidth()+"px");
             this.DOM.summaryTitle.style("max-width",(this.getWidth()-40)+"px");
-            this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background")
-                .style("width",(this.getWidth()-this.panel.width_catMeasureLabel-this.getWidth_Label())+"px");
+            this.DOM.chartAxis_Measure.selectAll(".chartAxis_Measure_background")
+                .style("width",(this.getWidth()-this.panel.width_catMeasureLabel-this.getWidth_Label()-kshf.scrollWidth)+"px");
             this.refreshViz_Axis();
         }
     },
@@ -6171,6 +6156,7 @@ var Summary_Categorical_functions = {
             } else {
                 hm.text(function(d){return d3.format("s")(d);});
             }
+            this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background_2").style("display","block");
         }
 
         setTimeout(function(){
@@ -6223,6 +6209,7 @@ var Summary_Categorical_functions = {
         var h=this.categoriesHeight;
         this.DOM.chartAxis_Measure.selectAll(".line").style("top",(-h+1)+"px").style("height",(h-2)+"px");
         this.DOM.chartAxis_Measure.selectAll(".text_upper").style("top",(-h-19)+"px");
+        this.DOM.chartAxis_Measure.selectAll(".chartAxis_Measure_background_2").style("top",(-h-12)+"px");
     },
     /** -- */
     setHeight_Category: function(h){
@@ -7942,7 +7929,7 @@ var Summary_Interval_functions = {
             .on("mouseleave",function(){ this.tipsy.hide(); })
             .on("click", function(){
                 me.invertColorScale = !me.invertColorScale;
-                me.browser.recordDisplay.updateRecordColor();
+                me.browser.recordDisplay.map_updateRecordColor();
                 me.browser.recordDisplay.map_refreshColorScale();
                 me.map_refreshColorScale();
             });

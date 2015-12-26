@@ -867,7 +867,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_highlight > .clearCrumbButton > .fa::before {
   content: "\f245";
-  margin-left: 2px;
+  position: relative;
+  top: 2px;
+  left: 1px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton {
   background-color: #2f4f4f;
@@ -894,14 +896,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .filterClearAll {
   opacity: 0;
   pointer-events: none;
-  right: 41px;
-  height: 1.3em;
+  position: relative;
+  top: 2px;
+  height: 1em;
   cursor: pointer;
   color: #252112;
   font-weight: 300;
   border: 1px #685b2b solid;
   background-color: #E9E2CE;
-  padding-left: 1px;
   white-space: nowrap;
   -webkit-transition: background-color 100ms linear, opacity 300ms linear;
   -moz-transition: background-color 100ms linear, opacity 300ms linear;
@@ -913,7 +915,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: none;
 }
 .kshf .panel_Basic > .filterClearAll .title {
+  padding: 0px 2px;
   font-size: 0.8em;
+  font-weight: 500;
+  vertical-align: top;
 }
 .kshf .panel_Basic > .rightBoxes {
   font-size: 1.0em;
@@ -1732,11 +1737,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .clearFilterButton.allFilter {
   display: inline-block;
-  margin-left: 2px;
-  height: 19px;
   vertical-align: top;
   border-width: 0px 0px 0px 1px;
-  line-height: 19px;
+  line-height: 16px;
 }
 .kshf .chartAxis_Measure {
   pointer-events: none;
@@ -1804,6 +1807,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .chartAxis_Measure > .chartAxis_Measure_background[highlight=true] {
   opacity: 1;
+}
+.kshf .chartAxis_Measure > .chartAxis_Measure_background.chartAxis_Measure_background_2 {
+  display: none;
 }
 .kshf .border_line {
   position: relative;
@@ -2908,6 +2914,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .belowAttribs > .chartAxis_Measure > .chartAxis_Measure_background {
   height: 12px;
+  margin-left: 2px;
 }
 .kshf .belowAttribs > .chartAxis_Measure > .tick > .text {
   width: 20px;
@@ -3098,17 +3105,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
   color: black;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[animst="open"] {
-  opacity: 0;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[animst="closed"] {
-  max-height: 0px !important;
-  padding: 0px !important;
-  opacity: 0;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[animst="visible"] {
-  display: block;
 }
 .kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] {
   max-height: none;
