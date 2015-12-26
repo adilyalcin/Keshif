@@ -1590,14 +1590,15 @@ kshf.RecordDisplay.prototype = {
     /** Insert items into the UI, called once on load */
     refreshRecordDOM: function(){
       var me=this, x;
+      var records = (this.displayType==="map")?
+        this.browser.items:
+        this.browser.items.filter(function(record){
+          if(!record.isWanted) return false;
+          return record.visibleOrder<me.maxVisibleItems;
+        });
+
       var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
-        .data(
-          this.browser.items.filter(function(record){
-            if(!record.isWanted) return false;
-            return record.visibleOrder<me.maxVisibleItems;
-          }),
-          function(record){ return record.id(); })
-        .enter();
+        .data(records, function(record){ return record.id(); }).enter();
 
       // Shared structure per record view
       newRecords = newRecords
