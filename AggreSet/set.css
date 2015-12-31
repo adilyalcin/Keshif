@@ -1,9 +1,9 @@
-.kshf .kshfChart.setPairSummary {
+.kshf .kshfSummary.setPairSummary {
   display: none;
   position: absolute;
   top: 0px;
 }
-.kshf .kshfChart[show_set_matrix=true] > .kshfChart.setPairSummary {
+.kshf .kshfSummary[show_set_matrix=true] > .kshfSummary.setPairSummary {
   display: block;
 }
 .kshf .Summary_Set {
@@ -201,55 +201,11 @@
   stroke: #ff6a33;
   stroke-width: 2px;
 }
-.kshf .Summary_Set .setPairGroup[animate_position="true"] > .setPairMark {
+.kshf .Summary_Set g.setPairGroup[animate_position="true"] > .setPairGlyph {
   -webkit-transition: all 500ms ease-in-out;
   -moz-transition: all 500ms ease-in-out;
   -o-transition: all 500ms ease-in-out;
   transition: all 500ms ease-in-out;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark {
-  position: absolute;
-  display: block;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairBackground {
-  opacity: 0;
-  fill: rgba(234, 234, 234, 0.5);
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark {
-  display: block;
-  position: absolute;
-  fill: #b8c7d2;
-  cursor: pointer;
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark.preview {
-  fill: #ff6a33;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark_Compare {
-  fill: none;
-  stroke: #2f4f4f;
-  stroke-width: 1px;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-  opacity: 1;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark > .setPairMark_Compare[hidden='true'] {
-  opacity: 0;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark[activesize="0"] {
-  display: none;
-}
-.kshf .Summary_Set .setPairGroup > .setPairMark:not([activesize="0"]) > .setPairBackground {
-  opacity: 1;
 }
 .kshf .Summary_Set[showStrength='true'] .summaryControls > .strengthControl {
   background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
@@ -273,7 +229,7 @@
 .kshf .Summary_Set[showStrength='true'] .summaryControls > .strengthControl > .strengthLabel {
   display: inline-block;
 }
-.kshf .Summary_Set[showStrength='true'] .setPairMark[subset=true] {
+.kshf .Summary_Set[showStrength='true'] .setPairGlyph[subset=true] {
   stroke-width: 2px;
   stroke: #4000ff;
 }

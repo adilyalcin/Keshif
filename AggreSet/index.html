@@ -54,7 +54,7 @@ function loadDemo(config){
       setListSummary.addToPanel(this.panels.left);
 
       browser.summaries.forEach(function(summary){
-        if(summary.summaryTitle===browser.items[0].idIndex) return;
+        if(summary.summaryName===browser.items[0].idIndex) return;
         if(summary.type==='interval'){
           summary.addToPanel(this.panels.middle);
           summary.setCollapsed(true);
@@ -73,7 +73,7 @@ function loadDemo(config){
     {  // Add the degree sumary
       var filterID = setListSummary.summaryFilter.id;
       var setDegreeSummary = browser.createSummary(
-        "<i class='fa fa-hand-o-up'></i> # of "+setListSummary.summaryTitle,
+        "<i class='fa fa-hand-o-up'></i> # of "+setListSummary.summaryName,
         function(d){
           var arr=d.mappedDataCache[filterID];
           if(arr==null) return 0;

@@ -15,6 +15,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
@@ -25,10 +29,18 @@ google.setOnLoadCallback(function(){
     rightPanelLabelWidth: 120,
     source: {
       gdocId: '1yvkEwRmxHH_1fjIMGQQd2Tq2ygA0CaTmAKi3muToXBw',
-      tables: "Mass Shootings in 12 Months"
+      tables: "Mass Shootings in 12 Months",
+      callback: function(browser){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
-      { name: "State", panel: 'right' },
+      { name: "State", panel: 'right',
+        catMap: function(){ 
+          var x=US_States.index_name[this.id];
+          if(x) return x.geo;
+        }},
       { name: "# Killed", panel: "left", catSortBy: 'id', 
         value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; },
         catLabel: printPeopleIcons },
@@ -58,12 +70,12 @@ google.setOnLoadCallback(function(){
 .kshfRecord{
   margin-top: 3px;
 }
-.kshfChart[chart_id="9"] .theLabel .fa{
+.kshfSummary[summary_id="9"] .theLabel .fa{
   font-size: 1.4em;
   color: red;
   margin: 0px 2px;
 }
-.kshfChart[chart_id="10"] .theLabel .fa{
+.kshfSummary[summary_id="10"] .theLabel .fa{
   margin: 0px 2px;
 }
 .fwidth{

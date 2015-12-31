@@ -21,6 +21,23 @@
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
+
+function loadData(browser){
+  var records = kshf.dt_id["counties-gear"];
+  $.ajax({
+    // Load topojson file
+    url: 'data/us-counties-states-FIPS.json',
+    success: function(topojsonData){
+      topojson.feature(topojsonData, topojsonData.objects.counties)
+        .features.forEach(function(feature){
+          var record = records[feature.id];
+          if(record) record.data._geo_ = feature;
+        });
+      browser.loadCharts();
+    }
+  });
+};
+
 $(document).ready( function() {
   browser = new kshf.Browser({
     domID: "#chart_div",
@@ -34,11 +51,7 @@ $(document).ready( function() {
       dirPath: 'data/',
       fileType: 'tsv',
       tables: {name:"counties-gear", id:"fips"},
-      geo: {
-        file: 'data/us-counties-states-FIPS.json',
-        type: 'topojson',
-        objects: ['counties', 'states']
-      }
+      callback: loadData
     },
     summaries: [
       { name: "State", value: "state", catLabel: function(d){ return getStateName(this.id); } },
@@ -95,9 +108,8 @@ $(document).ready( function() {
     itemDisplay: {
       sortBy: "Machine Gun",
       textSearch: 'county',
-      displayType: 'map',
-      geoObject: 'counties',
       recordView: "CombinedName",
+      geo: '_geo_',
     }
   });
 });
@@ -108,14 +120,6 @@ $(document).ready( function() {
   height: 630px;
 }
 
-.leaflet-overlay-pane >svg{
-  position: relative;
-  left: 0px;
-  top: 0px;
-  width: 687px;
-  height: 650px;
-  overflow: visible;
-}
     </style>
 	</head>
   <body>

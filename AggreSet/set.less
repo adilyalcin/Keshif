@@ -17,13 +17,13 @@
 @color_setPair_background: rgba(234, 234, 234, 0.5);
 
 .kshf{
-	.kshfChart{
+	.kshfSummary{
 		&.setPairSummary{ 
       display: none;
       position: absolute;
       top: 0px;
     }
-		&[show_set_matrix=true] > .kshfChart.setPairSummary{ display: block; }
+		&[show_set_matrix=true] > .kshfSummary.setPairSummary{ display: block; }
 	}
 
 	.Summary_Set{
@@ -157,9 +157,9 @@
 					}
 				}
 			}
-
-		}
-		> .widthAdjust{
+		} // summaryControls
+		
+    > .widthAdjust{
 			display: block;
 			position: absolute;
 			left: 0px;
@@ -177,11 +177,13 @@
 				border-color: gray;
 			}
 		}
+
     > svg.setMatrix{
       display: block;
       border-right: dotted 1px lightgray;
     }
-		.rows{
+
+    .rows{
 			position: relative;
 			display: block;
 			width: 100%;
@@ -224,41 +226,11 @@
 					}
 				}
 			}
-		}
-		.setPairGroup{
-			&[animate_position="true"]> .setPairMark {
+		} // .rows
+
+		g.setPairGroup{
+			&[animate_position="true"]> .setPairGlyph {
 				.transition(@reorder_animation);
-			}
-			> .setPairMark{
-				position: absolute;
-				display: block;
-				> .setPairBackground{
-					opacity: 0;
-					fill: @color_setPair_background;
-					.transition(~'opacity 500ms linear');
-				}
-				> .setPairMark{
-					display: block;
-					position: absolute;
-					fill: @color_bars;
-					cursor: pointer;
-          .transition(@reorder_animation);
-					&.preview{ fill: @color_preview; }
-				}
-				> .setPairMark_Compare{
-					fill: none;
-					stroke: @color_preview_compare;
-					stroke-width: 1px;
-					.transition(~'opacity 500ms linear');
-					opacity: 1;
-					&[hidden='true']{ opacity: 0; }
-				}
-				&[activesize="0"]{ 
-          display: none;
-        }
-        &:not([activesize="0"]) > .setPairBackground{
-          opacity: 1;
-        }
 			}
 		} //.setPairGroup
 
@@ -278,7 +250,7 @@
 					display: inline-block;
 				}
 			}
-			.setPairMark[subset=true]{
+			.setPairGlyph[subset=true]{
 				stroke-width: 2px;
 				stroke: @color_set_containment;
 			}

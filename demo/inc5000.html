@@ -17,7 +17,13 @@
 
     <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
+
+
 $(document).ready( function(){
   var simpleFormat = d3.format(".2s");
   browser = new kshf.Browser({
@@ -28,11 +34,18 @@ $(document).ready( function(){
       url: "http://www.inc.com/inc5000/index.html",
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'json',
-      tables: "inc5000_2014"
+      tables: "inc5000_2014",
+      callback: function(browser){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
       { name: "<i class='fa fa-suitcase'></i> Industry", value: 'industry'},
-      { name: "State", value: 'state_l'},
+      { name: "State", 
+        value: 'state_l',
+        catMap: function(){ return US_States.index_name[this.id].geo; },
+        },
       { name: "<i class='fa fa-map-marker'></i> Metro Area", value: 'metro'},
       { name: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', panel: "right"},
       { name: "# of Workers", value: 'workers', panel: "right"},

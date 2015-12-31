@@ -16,6 +16,9 @@
 
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 
 var DiseaseMap = {
@@ -158,6 +161,9 @@ var ProvinceMap = {
   // the rest: Unknown;
 };
 
+var ProvinceFeatures = {};
+
+
 $(document).ready( function(){
 
   var dateFormat=d3.time.format("%Y-%m-%d");
@@ -172,12 +178,28 @@ $(document).ready( function(){
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'csv',
       tables: "epistat_public_cases",
-      // Belgium-provinces-unk.geo.json
+      callback: function(browser){
+        $.ajax({
+          // Load state geometries
+          url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/GeoJSONs/Belgium-provinces-unk.geo.json',
+          async: false,
+          success: function(topojsonData){
+            topojsonData.features.forEach(function(feature){
+              ProvinceFeatures[feature.properties.name] = feature;
+            });
+          }
+        });
+        browser.loadCharts();
+      }
     },
     summaries: [
       { name: "Disease", value: "Subject", catLabel: function(){ return DiseaseMap[this.id]; } },
-      { name: "Province", value: "NUTS2", catLabel: function(){ return ProvinceMap[this.id]; }, panel: "right" },
-      { name: "Gender", panel: "right",
+      { name: "Province", 
+        value: "NUTS2", 
+        catLabel: function(){ return ProvinceMap[this.id]; }, 
+        catMap: function(){ return ProvinceFeatures[ProvinceMap[this.id]]; },
+        panel: "middle" },
+      { name: "Gender",
         value: function(){ 
           switch(this.Gender){
             case "M": return "Male "+getIcon("M");
@@ -185,7 +207,7 @@ $(document).ready( function(){
             default: return "Unknown <span class='fa fa-question'></span>";
           }
         } },
-      { name: "Age", value: function(){if(this.Age>0 && this.Age<100) return this.Age;}, panel: "right"},
+      { name: "Age", value: function(){if(this.Age>0 && this.Age<100) return this.Age;}},
       { name: "Date", panel: "bottom",
         value: function(){ 
           if(this.DateMonday===undefined) return;

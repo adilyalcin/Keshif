@@ -39,64 +39,101 @@ var getIcon = function(v){
     return "<span class='fa fa-"+iconName+"'></span>";
 };
 
+var US_States = { 
+  index_code: {},
+  index_id: {},
+  index_name: {},
+  data: [
+    {code: 'AL', id:1 , name: 'Alabama' },
+    {code: 'AK', id:2 , name: 'Alaska' },
+    {code: 'AZ', id:4 , name: 'Arizona' },
+    {code: 'AR', id:5 , name: 'Arkansas' },
+    {code: 'CA', id:6 , name: 'California' },
+    {code: 'CO', id:8 , name: 'Colorado' },
+    {code: 'CT', id:9 , name: 'Connecticut' },
+    {code: 'DE', id:10 , name: 'Delaware' },
+    {code: 'DC', id:11 , name: 'District of Columbia' },
+    {code: 'FL', id:12 , name: 'Florida' },
+    {code: 'GA', id:13 , name: 'Georgia' },
+    {code: 'HI', id:15 , name: 'Hawaii' },
+    {code: 'ID', id:16 , name: 'Idaho' },
+    {code: 'IL', id:17 , name: 'Illinois' },
+    {code: 'IN', id:18 , name: 'Indiana' },
+    {code: 'IA', id:19 , name: 'Iowa' },
+    {code: 'KS', id:20 , name: 'Kansas' },
+    {code: 'KY', id:21 , name: 'Kentucky' },
+    {code: 'LA', id:22 , name: 'Louisiana' },
+    {code: 'ME', id:23 , name: 'Maine' },
+    {code: 'MD', id:24 , name: 'Maryland' },
+    {code: 'MA', id:25 , name: 'Massachusetts' },
+    {code: 'MI', id:26 , name: 'Michigan' },
+    {code: 'MN', id:27 , name: 'Minnesota' },
+    {code: 'MS', id:28 , name: 'Mississippi' },
+    {code: 'MO', id:29 , name: 'Missouri' },
+    {code: 'MT', id:30 , name: 'Montana' },
+    {code: 'NE', id:31 , name: 'Nebraska' },
+    {code: 'NV', id:32 , name: 'Nevada' },
+    {code: 'NH', id:33 , name: 'New Hampshire' },
+    {code: 'NJ', id:34 , name: 'New Jersey' },
+    {code: 'NM', id:35 , name: 'New Mexico' },
+    {code: 'NY', id:36 , name: 'New York' },
+    {code: 'NC', id:37 , name: 'North Carolina' },
+    {code: 'ND', id:38 , name: 'North Dakota' },
+    {code: 'OH', id:39 , name: 'Ohio' },
+    {code: 'OK', id:40 , name: 'Oklahoma' },
+    {code: 'OR', id:41 , name: 'Oregon' },
+    {code: 'PA', id:42 , name: 'Pennsylvania' },
+    {code: 'RI', id:44 , name: 'Rhode Island' },
+    {code: 'SC', id:45 , name: 'South Carolina' },
+    {code: 'SD', id:46 , name: 'South Dakota' },
+    {code: 'TN', id:47 , name: 'Tennessee' },
+    {code: 'TX', id:48 , name: 'Texas' },
+    {code: 'UT', id:49 , name: 'Utah' },
+    {code: 'VT', id:50 , name: 'Vermont' },
+    {code: 'VA', id:51 , name: 'Virginia' },
+    {code: 'WA', id:53 , name: 'Washington' },
+    {code: 'WV', id:54 , name: 'West Virginia' },
+    {code: 'WI', id:55 , name: 'Wisconsin' },
+    {code: 'WY', id:56 , name: 'Wyoming' },
+    {code: 'AS', id:60 , name: 'American Samoa' },
+    {code: 'GU', id:66 , name: 'GUAM' },
+    {code: 'MP', id:69 , name: 'Northern Mariana Islands' },
+    {code: 'PR', id:72 , name: 'Puerto Rico' },
+    {code: 'VI', id:78 , name: 'Virgin Islands' },
+    {            id:14 , name: 'Guam' },
+    {            id:79 , name: 'Wake Island' },
+    {            id:81 , name: 'Baker Island' },
+    {            id:84 , name: 'Howland Island' },
+    {            id:86 , name: 'Jarvis Island' },
+    {            id:89 , name: 'Kingman Reef' },
+    {            id:95 , name: 'Palmyra Atoll' },
+  ],
+  loadGeo: function(){
+    $.ajax({
+      // Load state geometries
+      url: 'data/us-counties-states-FIPS.json',
+      async: false,
+      success: function(topojsonData){
+        topojson.feature(topojsonData, topojsonData.objects.states)
+          .features.forEach(function(feature){
+            var state = US_States.index_id[feature.id];
+            if(state) state.geo = feature;
+          });
+      }
+    });
+  }
+};
+
+US_States.data.forEach(function(s){
+  if(s.id) US_States.index_id[s.id] = s;
+  if(s.code) US_States.index_code[s.code] = s;
+  if(s.name) US_States.index_name[s.name] = s;
+});
+
 var getStateName = function(v){
-    switch(v){
-        case 'AL': return 'Alabama';
-        case 'AK': return 'Alaska';
-        case 'AZ': return 'Arizona';
-        case 'AR': return 'Arkansas';
-        case 'CA': return 'California';
-        case 'CO': return 'Colorado';
-        case 'CT': return 'Connecticut';
-        case 'DE': return 'Delaware';
-        case 'DC': return 'District of Columbia';
-        case 'FL': return 'Florida';
-        case 'GA': return 'Georgia';
-        case 'HI': return 'Hawaii';
-        case 'ID': return 'Idaho';
-        case 'IL': return 'Illinois';
-        case 'IN': return 'Indiana';
-        case 'IA': return 'Iowa';
-        case 'KS': return 'Kansas';
-        case 'KY': return 'Kentucky';
-        case 'LA': return 'Louisiana';
-        case 'ME': return 'Maine';
-        case 'MD': return 'Maryland';
-        case 'MA': return 'Massachusetts';
-        case 'MI': return 'Michigan';
-        case 'MN': return 'Minnesota';
-        case 'MS': return 'Mississippi';
-        case 'MO': return 'Missouri';
-        case 'MT': return 'Montana';
-        case 'NE': return 'Nebraska';
-        case 'NV': return 'Nevada';
-        case 'NH': return 'New Hampshire';
-        case 'NJ': return 'New Jersey';
-        case 'NM': return 'New Mexico';
-        case 'NY': return 'New York';
-        case 'NC': return 'North Carolina';
-        case 'ND': return 'North Dakota';
-        case 'OH': return 'Ohio';
-        case 'OK': return 'Oklahoma';
-        case 'OR': return 'Oregon';
-        case 'PA': return 'Pennsylvania';
-        case 'RI': return 'Rhode Island';
-        case 'SC': return 'South Carolina';
-        case 'SD': return 'South Dakota';
-        case 'TN': return 'Tennessee';
-        case 'TX': return 'Texas';
-        case 'UT': return 'Utah';
-        case 'VT': return 'Vermont';
-        case 'VA': return 'Virginia';
-        case 'WA': return 'Washington';
-        case 'WV': return 'West Virginia';
-        case 'WI': return 'Wisconsin';
-        case 'WY': return 'Wyoming';
-        case 'PR': return 'Puerto-Rico';
-        case 'VI': return 'Virgin Islands';
-        case 'GU': return 'GUAM';
-        default  : return 'Unknown: '+v;
-    }
+  var state = US_States.index_code[v];
+  if(state) return state.name;
+  return "Unknown: "+v;
 };
 
 function getMonthNameFromNumber(v){

@@ -17,6 +17,10 @@
 
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 
 var AAU_Group = {
@@ -137,141 +141,150 @@ var Unizin_Group = {
 socialShare = false;
 noRibbon = true;
 
+function loadData(browser){
+  US_States.loadGeo();
+  browser.loadCharts();
+};
+
 google.setOnLoadCallback(function(){
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 210,
-        barChartWidth: 90,
-        source: {
-            url: "https://nces.ed.gov/ipeds/datacenter/",
-            gdocId: '1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM',
-            tables: "Universities"
-        },
-        loadedCb: function(d){
-            // Add group information to the Universities
-            kshf.dt.Universities.forEach(function(u){
-                var name = u.data['institution name'];
-                u.data.Name = name;
-                u.data.Groups=[];
-                if(AAU_Group[name]){ u.data.Groups.push("AAU"); }
-                if(CIC_Group[name]){ u.data.Groups.push("CIC (Big 10)"); }
-                if(ACC_Group[name]){ u.data.Groups.push("ACC"); }
-                if(Unizin_Group[name]){ u.data.Groups.push("Unizin"); }
-            })
-        },
-        summaries: [
-            {   name: "Groups", collapsed: false,
-            },{ name: "Undergraduate enrollment", value: "DRVEF2013.Undergraduate enrollment",
-            },{ name: "Graduate enrollment", value: "DRVEF2013.Graduate enrollment",
-            },{ name: "% Transfers",
-                value: function(){
-                    var transfer = this["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
-                    var firstTime = this["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
-                    return 100*transfer/(transfer+firstTime);
-                }, unitName: "%"
-            },{ name: "Institution Type", value: "HD2013.Sector of institution",
-                catSortBy: function(){ 
-                    switch(this.id){
-                        case 'Public, 4-year or above': return 0;
-                        case 'Private not-for-profit, 4-year or above': return 1;
-                        case 'Private for-profit, 4-year or above': return 2;
-                    }
-                },
-            },{ name: "State", value: "HD2013.State abbreviation", panel: "middle", collapsed: true,
-            },{ name: "Geographic region", value: "HD2013.Geographic region", panel: "middle", collapsed: true,
-            },{ name: "Degree of urbanization", panel: "middle", collapsed: true,
-                value: "HD2013.Degree of urbanization (Urban-centric locale)"
-            
-            },{ name: "Carnegie Class. - Basic", collapsed: true,
-                value: "HD2013.Carnegie Classification 2010: Basic"
-            },{ name: "Carnegie Class. - Size and Setting", collapsed: true,
-                value: "HD2013.Carnegie Classification 2010: Size and Setting"
-            },{ name: "Carnegie Class. - Undergrad. Instr. Prog.", collapsed: true,
-                value: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program"
-            },{ name: "Carnegie Class. - Grad. Instr. Prog.", collapsed: true,
-                value: "HD2013.Carnegie Classification 2010: Graduate Instructional Program"
-            },{/*
-                name: "Undergraduate Profile", collapsed: true,
-                value: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
-            },{
-                name: "Enrollment Profile", collapsed: true,
-                value: "HD2013.Carnegie Classification 2010: Enrollment Profile",
-            },{ name: "Diversity", panel: 'right',
-                facets: [
-                    {*/   name: "% A. Indian / Alaska Native", collapsed: true, panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
-                        description: "Percent of total enrollment that are American Indian or Alaska Native",
-                        unitName: "%"
-                    },{ name: "% Asian", collapsed: true, panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are Asian",
-                        description: "Percent of total enrollment that are Asian",
-                        unitName: "%"
-                    },{ name: "% Hispanic / Latino", collapsed: true, panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
-                        description: "Percent of total enrollment that are Hispanic/Latino",
-                        unitName: "%"
-                    },{ name: "% Nativa Hawaiian / Pac. Isl.", collapsed: true, panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
-                        description: "Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
-                        unitName: "%"
-                    },{ name: "% Nonresident Alien", collapsed: true, panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
-                        description: "Percent of total enrollment that are Nonresident Alien",
-                        unitName: "%"
-                    },{ name: "% White",
-                        value: "DRVEF2013.Percent of total enrollment that are White",panel: 'right',
-                        description: "Percent of total enrollment that are White",
-                        unitName: "%"
-                    },{ name: "% Black / African American",panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are Black or African American",
-                        description: "Percent of total enrollment that are Black or African American",
-                        unitName: "%"
-                    },{ name: "% Women",panel: 'right',
-                        value: "DRVEF2013.Percent of total enrollment that are women",
-                        description: "Percent of total enrollment that are women",
-                        unitName: "%"
-                    /*}
-                ]*/
+    domID: "#chart_div",
+    categoryTextWidth: 210,
+    barChartWidth: 90,
+    source: {
+      url: "https://nces.ed.gov/ipeds/datacenter/",
+      gdocId: '1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM',
+      tables: "Universities",
+      callback: loadData
+    },
+    loadedCb: function(d){
+      // Add group information to the Universities
+      kshf.dt.Universities.forEach(function(u){
+        var name = u.data['institution name'];
+        u.data.Name = name;
+        u.data.Groups=[];
+        if(AAU_Group[name]){ u.data.Groups.push("AAU"); }
+        if(CIC_Group[name]){ u.data.Groups.push("CIC (Big 10)"); }
+        if(ACC_Group[name]){ u.data.Groups.push("ACC"); }
+        if(Unizin_Group[name]){ u.data.Groups.push("Unizin"); }
+      })
+    },
+    summaries: [
+        { name: "Groups", collapsed: false },
+        { name: "Undergraduate enrollment", value: "DRVEF2013.Undergraduate enrollment" },
+        { name: "Graduate enrollment", value: "DRVEF2013.Graduate enrollment" },
+        { name: "% Transfers",
+          value: function(){
+              var transfer = this["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
+              var firstTime = this["DRVEF2013.First-time degree/certificate-seeking undergraduate enrollment"];
+              return 100*transfer/(transfer+firstTime);
+          }, 
+          unitName: "%" },
+        { name: "Institution Type", value: "HD2013.Sector of institution",
+          catSortBy: function(){ 
+              switch(this.id){
+                  case 'Public, 4-year or above': return 0;
+                  case 'Private not-for-profit, 4-year or above': return 1;
+                  case 'Private for-profit, 4-year or above': return 2;
+              }
+          } },
+        { name: "State", 
+          value: "HD2013.State abbreviation", panel: "middle",
+          catMap: function(){ return US_States.index_name[this.id].geo; },
+          },
+        { name: "Geographic region", value: "HD2013.Geographic region", panel: "middle", collapsed: true, },
+        { name: "Degree of urbanization", panel: "middle", collapsed: true,
+          value: "HD2013.Degree of urbanization (Urban-centric locale)" },
+        { name: "Carnegie Class. - Basic", collapsed: true,
+          value: "HD2013.Carnegie Classification 2010: Basic" },
+        { name: "Carnegie Class. - Size and Setting", collapsed: true,
+          value: "HD2013.Carnegie Classification 2010: Size and Setting" },
+        { name: "Carnegie Class. - Undergrad. Instr. Prog.", collapsed: true,
+          value: "HD2013.Carnegie Classification 2010: Undergraduate Instructional Program" },
+        { name: "Carnegie Class. - Grad. Instr. Prog.", collapsed: true,
+          value: "HD2013.Carnegie Classification 2010: Graduate Instructional Program" },
+        {/*
+            name: "Undergraduate Profile", collapsed: true,
+            value: "HD2013.Carnegie Classification 2010: Undergraduate Profile",
+        },{
+            name: "Enrollment Profile", collapsed: true,
+            value: "HD2013.Carnegie Classification 2010: Enrollment Profile",
+        },{ name: "Diversity", panel: 'right',
+            facets: [
+                {*/   name: "% A. Indian / Alaska Native", collapsed: true, panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are American Indian or Alaska Native",
+                    description: "Percent of total enrollment that are American Indian or Alaska Native",
+                    unitName: "%"
+                },{ name: "% Asian", collapsed: true, panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are Asian",
+                    description: "Percent of total enrollment that are Asian",
+                    unitName: "%"
+                },{ name: "% Hispanic / Latino", collapsed: true, panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are Hispanic/Latino",
+                    description: "Percent of total enrollment that are Hispanic/Latino",
+                    unitName: "%"
+                },{ name: "% Nativa Hawaiian / Pac. Isl.", collapsed: true, panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
+                    description: "Percent of total enrollment that are Native Hawaiian or Other Pacific Islander",
+                    unitName: "%"
+                },{ name: "% Nonresident Alien", collapsed: true, panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are Nonresident Alien",
+                    description: "Percent of total enrollment that are Nonresident Alien",
+                    unitName: "%"
+                },{ name: "% White",
+                    value: "DRVEF2013.Percent of total enrollment that are White",panel: 'right',
+                    description: "Percent of total enrollment that are White",
+                    unitName: "%"
+                },{ name: "% Black / African American",panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are Black or African American",
+                    description: "Percent of total enrollment that are Black or African American",
+                    unitName: "%"
+                },{ name: "% Women",panel: 'right',
+                    value: "DRVEF2013.Percent of total enrollment that are women",
+                    description: "Percent of total enrollment that are women",
+                    unitName: "%"
+                /*}
+            ]*/
 
-            },{ name: "6-Year Grad Rate", panel: 'right',
-                value: "DRVGR2013.Graduation rate, total cohort",
-                description: "Graduation rate, total cohort", unitName: "%"
-            },{ name: "6-Year Grad Rate: Men", panel: 'right', collapsed: true, unitName: "%",
-                value: "DRVGR2013.Graduation rate, men",
-                description: "Graduation rate, men"
-            },{ name: "6-Year Grad Rate: Women", panel: 'right', collapsed: true, unitName: "%",
-                value: "DRVGR2013.Graduation rate, women",
-                description: "Graduation rate, women"
-            }
-        ],
-        itemDisplay: {
-          sortBy:
-            { title:'Enrollment', 
-              value: function(){
-                return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"];
-              }},
-          showRank: true,
-          textSearch: "Name",
-          recordView: function(){
-              return "<a href='http://"+this["HD2013.Institution's internet website address"]
-                  +"' target='_blank'>"+this["institution name"]+"</a>"
-          }
+        },{ name: "6-Year Grad Rate", panel: 'right',
+            value: "DRVGR2013.Graduation rate, total cohort",
+            description: "Graduation rate, total cohort", unitName: "%"
+        },{ name: "6-Year Grad Rate: Men", panel: 'right', collapsed: true, unitName: "%",
+            value: "DRVGR2013.Graduation rate, men",
+            description: "Graduation rate, men"
+        },{ name: "6-Year Grad Rate: Women", panel: 'right', collapsed: true, unitName: "%",
+            value: "DRVGR2013.Graduation rate, women",
+            description: "Graduation rate, women"
         }
-    });
+    ],
+    itemDisplay: {
+      sortBy:
+        { title:'Enrollment', 
+          value: function(){
+            return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"];
+          }},
+      showRank: true,
+      textSearch: "Name",
+      recordView: function(){
+          return "<a href='http://"+this["HD2013.Institution's internet website address"]
+              +"' target='_blank'>"+this["institution name"]+"</a>"
+      }
+    }
+  });
 });
         </script>
 <style>
 #chart_div{
-    width: 1120px;
-    height: 700px;
+  width: 1120px;
+  height: 700px;
 }
 .kshfRecord a{
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 }
 .kshfRecord a:hover{
-    color: #2A5DB0;
-    text-decoration: underline;
+  color: #2A5DB0;
+  text-decoration: underline;
 }
 </style>
     </head>

@@ -78,7 +78,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 500ms ease-out;
   transition: -webkit-transform 500ms ease-out,-moz-transform 500ms ease-out,-o-transform 500ms ease-out,transform 500ms ease-out;
 }
-.kshf[noanim=false] .aggrBlock {
+.kshf[noanim=false] .aggrGlyph {
   -webkit-transition: all 700ms ease-in-out;
   -moz-transition: all 700ms ease-in-out;
   -o-transition: all 700ms ease-in-out;
@@ -132,7 +132,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[attribsShown=true] .kshfChart:hover .chartCatLabelResize {
+.kshf[attribsShown=true] .kshfSummary:hover .chartCatLabelResize {
   display: block !important;
 }
 .kshf[attribsShown=true] .recordDisplay:hover .buttonRecordViewRemove {
@@ -156,13 +156,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[attribsShown=true] .buttonSummaryRemove {
   display: inline-block !important;
 }
-.kshf[percentview=true] .chartAxis_Measure > .percentSign::after {
+.kshf[percentview=true] .measurePercentControl::after {
   content: "%";
+}
+.kshf[percentview=true] .measurePercentControl[highlight="true"]::after {
+  content: '#';
 }
 .kshf[percentview=true] .chartAxis_Measure > .tick > .text:after {
   content: "%";
 }
+.kshf[percentview=true] .scaleBound::after {
+  content: "%";
+}
 .kshf[ratiomode=true] .chartAxis_Measure > .tick > .text::after {
+  content: "%";
+}
+.kshf[ratiomode=true] .scaleBound::after {
   content: "%";
 }
 .kshf[previewcompare="true"] .compare {
@@ -171,30 +180,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[previewcompare="true"] .compareLine {
   opacity: 1 !important;
 }
-.kshf[isfiltered=true] .panel_Basic > .filterClearAll {
-  opacity: 1;
-  pointer-events: all;
-}
-.kshf[record_display="list"] .kshfChart[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
+.kshf[record_display="list"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f0dc";
 }
-.kshf[record_display="list"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf[record_display="list"] .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
   display: inline-block;
 }
-.kshf[record_display="map"] .kshfChart[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
+.kshf[record_display="map"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f278";
 }
-.kshf[record_display="map"] .kshfChart[summary_type="interval"][usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
+.kshf[record_display="map"] .kshfSummary[summary_type="interval"][usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[record_display="map"] .kshfChart[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf[record_display="map"] .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
   display: inline-block;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfChart[collapsed=false] {
+.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfSummary[collapsed=false] {
   -webkit-flex-grow: 3;
   flex-grow: 3;
   -webkit-box-flex: 3;
@@ -249,46 +254,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .unitName {
   margin-left: 1px;
   color: gray;
-}
-.kshf .lockButton {
-  display: block;
-  position: absolute;
-  font-size: 0.7em;
-  color: gray;
-  opacity: 0;
-  cursor: pointer;
-  pointer-events: none;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-}
-.kshf .lockButton:after {
-  content: "\f13e";
-}
-.kshf .lockButton:hover:after {
-  content: "\f023";
-}
-.kshf .lockButton[inside] {
-  color: white;
-  text-shadow: 0px 0px 1px #000000;
-}
-.kshf .aggrBlock[showlock="true"] > .lockButton {
-  pointer-events: all;
-  opacity: 1;
-}
-.kshf .aggrBlock[compare="true"] > .lockButton {
-  pointer-events: all;
-  opacity: 1;
-}
-.kshf .aggrBlock[compare="true"] > .lockButton:not([inside]) {
-  color: #2f4f4f;
-}
-.kshf .aggrBlock[compare="true"] > .lockButton:after {
-  content: "\f023";
-}
-.kshf .aggrBlock[compare="true"] > .lockButton:hover:after {
-  content: "\f13e";
 }
 .kshf .sortButton {
   cursor: pointer;
@@ -492,7 +457,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 400ms linear, -o-transform 400ms ease-in-out;
   transition: opacity 400ms linear,-webkit-transform 400ms ease-in-out,-moz-transform 400ms ease-in-out,-o-transform 400ms ease-in-out,transform 400ms ease-in-out;
 }
-.kshf > .attributePanel .nugget > .summaryTitle {
+.kshf > .attributePanel .nugget > .summaryName {
   display: inline-block;
   margin: 1px;
   overflow-wrap: break-word;
@@ -868,7 +833,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_highlight > .clearCrumbButton > .fa::before {
   content: "\f245";
   position: relative;
-  top: 2px;
+  top: 1px;
   left: 1px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton {
@@ -910,15 +875,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: background-color 100ms linear, opacity 300ms linear;
   transition: background-color 100ms linear, opacity 300ms linear;
 }
-.kshf .panel_Basic > .filterClearAll:hover {
-  background-color: white;
-  box-shadow: none;
-}
 .kshf .panel_Basic > .filterClearAll .title {
   padding: 0px 2px;
   font-size: 0.8em;
   font-weight: 500;
   vertical-align: top;
+}
+.kshf .panel_Basic > .filterClearAll:hover {
+  background-color: white;
+  box-shadow: none;
+}
+.kshf .panel_Basic > .filterClearAll[active=true] {
+  opacity: 1;
+  pointer-events: all;
 }
 .kshf .panel_Basic > .rightBoxes {
   font-size: 1.0em;
@@ -1149,7 +1118,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 1.0em;
   font-weight: 300;
 }
-.kshf .panel[hidebars=true] .aggrBlock {
+.kshf .panel[hidebars=true] .catGlyph {
   display: none;
 }
 .kshf .panel[hidebaraxis=true] .summaryCategorical .chartAxis_Measure {
@@ -1691,15 +1660,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
   background-image: linear-gradient(to right, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%);
 }
-.kshf .kshfChart[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse {
-  opacity: 1;
-}
-.kshf .kshfChart[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse::before {
-  content: "\f065" !important;
-}
-.kshf .belowAttribs {
-  direction: ltr;
-}
 .kshf .summaryCategorical .scrollToTop {
   right: 1px;
 }
@@ -1741,6 +1701,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-width: 0px 0px 0px 1px;
   line-height: 16px;
 }
+.kshf .measurePercentControl {
+  pointer-events: all;
+  position: absolute;
+  color: black;
+  font-size: 0.7em;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1em;
+  padding: 0px 2px;
+  border: solid 1px rgba(153, 171, 146, 0);
+  border-radius: 5px;
+  background-color: rgba(211, 217, 197, 0);
+  -webkit-transition: background-color 250ms linear, border-color 250ms linear;
+  -moz-transition: background-color 250ms linear, border-color 250ms linear;
+  -o-transition: background-color 250ms linear, border-color 250ms linear;
+  transition: background-color 250ms linear, border-color 250ms linear;
+}
+.kshf .measurePercentControl:after {
+  content: '#';
+}
+.kshf .measurePercentControl[highlight="true"] {
+  color: orangered;
+  background-color: #d3d9c5;
+  border: solid 1px #99ab92;
+}
+.kshf .measurePercentControl[highlight="true"]:after {
+  content: '%';
+}
 .kshf .chartAxis_Measure {
   pointer-events: none;
   position: absolute;
@@ -1765,32 +1753,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: absolute;
 }
-.kshf .chartAxis_Measure > .percentSign {
-  pointer-events: all;
-  position: absolute;
-  color: gray;
-  font-size: 0.7em;
-  font-weight: 700;
-  cursor: pointer;
-  line-height: 1em;
-  padding: 0px 2px;
-  border: solid 1px rgba(153, 171, 146, 0);
-  border-radius: 5px;
-  background-color: rgba(211, 217, 197, 0);
-  -webkit-transition: background-color 250ms linear, border-color 250ms linear;
-  -moz-transition: background-color 250ms linear, border-color 250ms linear;
-  -o-transition: background-color 250ms linear, border-color 250ms linear;
-  transition: background-color 250ms linear, border-color 250ms linear;
-}
-.kshf .chartAxis_Measure > .percentSign:after {
-  content: '#';
-}
-.kshf .chartAxis_Measure > .percentSign[highlight=true] {
-  color: black;
-  background-color: #d3d9c5;
-  border: solid 1px #99ab92;
-}
-.kshf .chartAxis_Measure > .chartAxis_Measure_background {
+.kshf .chartAxis_Measure > .relativeModeControl {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -1805,28 +1768,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 250ms linear;
   transition: opacity 250ms linear;
 }
-.kshf .chartAxis_Measure > .chartAxis_Measure_background[highlight=true] {
+.kshf .chartAxis_Measure > .relativeModeControl[highlight="true"] {
   opacity: 1;
 }
-.kshf .chartAxis_Measure > .chartAxis_Measure_background.chartAxis_Measure_background_2 {
+.kshf .chartAxis_Measure > .relativeModeControl.relativeModeControl_2 {
   display: none;
-}
-.kshf .border_line {
-  position: relative;
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIwIi8+PHN0b3Agb2Zmc2V0PSIxMCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSI5MCUiIHN0b3AtY29sb3I9InJnYigxOTAsIDE5MCwgMTkwKSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSJyZ2IoMTkwLCAxOTAsIDE5MCkiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
-  background-image: -webkit-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);;
-  background-image: -moz-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);;
-  background-image: -o-linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);;
-  background-image: linear-gradient(to left, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 1) 10%, rgba(190, 190, 190, 1) 90%, rgba(190, 190, 190, 0) 100%);;
-  height: 1px;
-  margin-bottom: -2px;
-  pointer-events: all;
-  top: -1px;
-}
-.kshf .border_line.border_line_bottom {
-  width: 100%;
-  height: 1px;
-  margin-bottom: 0px;
 }
 .kshf .dragWidthHandle {
   display: none;
@@ -1857,7 +1803,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #ebebeb;
   z-index: 6;
 }
-.kshf .headerGroup .summaryTitle {
+.kshf .headerGroup .summaryName {
   display: block;
   font-weight: 700;
   cursor: default;
@@ -1871,7 +1817,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           overflow: hidden;
           text-overflow: ellipsis;*/
 }
-.kshf .headerGroup .summaryTitle > .summaryTitle_text {
+.kshf .headerGroup .summaryName > .summaryName_text {
   display: inline-block;
   max-width: calc(100% - 60px);
   white-space: nowrap;
@@ -1880,7 +1826,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.9em;
   padding: 0px 3px;
 }
-.kshf .headerGroup .summaryTitle > .summaryTitle_text:focus {
+.kshf .headerGroup .summaryName > .summaryName_text:focus {
   background-color: white;
   box-shadow: 0 0 3px #2CABCF;
   outline: 0 none;
@@ -1926,6 +1872,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .summaryIcons > .summaryDescription {
   display: none;
   cursor: default;
+}
+.kshf .headerGroup .summaryIcons > .summaryViewAs {
+  display: none;
+  cursor: pointer;
+}
+.kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="map"]:before {
+  content: "\f0ac";
+}
+.kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="list"]:before {
+  content: "\f03a";
 }
 .kshf .headerGroup .summaryIcons > .useForRecordDisplay {
   display: none;
@@ -1973,49 +1929,236 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .header_display_control > .buttonSummaryExpand {
   display: none;
 }
-.kshf .aggr {
+.kshf .aggrGlyph {
   display: block;
   position: absolute;
-  background-color: #b8c7d2;
+}
+.kshf .aggrGlyph > .aggr {
+  display: block;
+  position: absolute;
+}
+.kshf .aggrGlyph > span.aggr {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
+  pointer-events: none;
 }
-.kshf .aggr.active {
+.kshf .aggrGlyph > span.aggr.active {
+  background-color: #b8c7d2;
   cursor: pointer;
   pointer-events: all;
 }
-.kshf .aggr.total {
+.kshf .aggrGlyph > span.aggr.total {
   background-color: #dee2e6;
-  pointer-events: none;
 }
-.kshf .aggr.preview {
+.kshf .aggrGlyph > span.aggr.preview {
   background-color: #ff6a33;
-  pointer-events: none;
   -webkit-transform: scaleX(0);
   -moz-transform: scaleX(0);
   -ms-transform: scaleX(0);
   -o-transform: scaleX(0);
   transform: scaleX(0);
 }
-.kshf .aggr.preview[fast] {
+.kshf .aggrGlyph > span.aggr.preview[fast] {
   -webkit-transition: -webkit-transform 200ms ease-in-out;
   -moz-transition: -moz-transform 200ms ease-in-out;
   -o-transition: -o-transform 200ms ease-in-out;
   transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
 }
-.kshf .aggr.compare {
+.kshf .aggrGlyph > span.aggr.compare {
   background-color: #2f4f4f;
-  pointer-events: none;
   -webkit-transition: -webkit-transform 700ms ease-in-out, opacity 400ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, opacity 400ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, opacity 400ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, opacity 400ms ease-in-out;
   opacity: 0;
 }
-.kshf .kshfChart {
+.kshf .aggrGlyph > .measureLabel {
+  color: #969da3;
+  font-size: 0.7em;
+}
+.kshf .aggrGlyph > .lockButton {
+  display: block;
+  position: absolute;
+  font-size: 0.7em;
+  color: gray;
+  opacity: 0;
+  cursor: pointer;
+  pointer-events: none;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .aggrGlyph > .lockButton:after {
+  content: "\f13e";
+}
+.kshf .aggrGlyph > .lockButton:hover:after {
+  content: "\f023";
+}
+.kshf .aggrGlyph > .lockButton[inside] {
+  color: white;
+  text-shadow: 0px 0px 1px #000000;
+}
+.kshf .aggrGlyph[showlock="true"] > .lockButton {
+  pointer-events: all;
+  opacity: 1;
+}
+.kshf .aggrGlyph[compare="true"] > .lockButton {
+  pointer-events: all;
+  opacity: 1;
+}
+.kshf .aggrGlyph[compare="true"] > .lockButton:not([inside]) {
+  color: #2f4f4f;
+}
+.kshf .aggrGlyph[compare="true"] > .lockButton:after {
+  content: "\f023";
+}
+.kshf .aggrGlyph[compare="true"] > .lockButton:hover:after {
+  content: "\f13e";
+}
+.kshf .aggrGlyph[noitems=true] {
+  color: gray;
+}
+.kshf .aggrGlyph[noitems=true] > .measureLabel {
+  display: none;
+}
+.kshf .aggrGlyph.rangeGlyph {
+  height: 100%;
+  pointer-events: none;
+}
+.kshf .aggrGlyph.rangeGlyph > .aggr {
+  width: 1px;
+  height: 1px;
+  -webkit-transform-origin: 0% 100%;
+  -moz-transform-origin: 0% 100%;
+  -ms-transform-origin: 0% 100%;
+  -o-transform-origin: 0% 100%;
+  transform-origin: 0% 100%;
+}
+.kshf .aggrGlyph.rangeGlyph > .aggr.total_tip {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: -7px;
+  width: 100%;
+  left: 0px;
+  height: 8px;
+  opacity: 0;
+  background: linear-gradient(-135deg, transparent 75%, #dee2e6 75%) 0 50%, linear-gradient(135deg, transparent 75%, #dee2e6 75%) 0 50%;
+  background-position: top left, top left;
+  background-repeat: repeat;
+  background-size: 8px 8px;
+}
+.kshf .aggrGlyph.rangeGlyph > .lockButton {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+.kshf .aggrGlyph.rangeGlyph > .lockButton[inside] {
+  margin-top: 12px;
+}
+.kshf .aggrGlyph.rangeGlyph > .measureLabel {
+  position: relative;
+  display: block;
+  top: 1px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  pointer-events: all;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+}
+.kshf .aggrGlyph.setPairGlyph > .setPairBackground {
+  opacity: 0;
+  fill: rgba(234, 234, 234, 0.5);
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .aggrGlyph.setPairGlyph > .aggr {
+  cursor: pointer;
+  -webkit-transition: all 500ms ease-in-out;
+  -moz-transition: all 500ms ease-in-out;
+  -o-transition: all 500ms ease-in-out;
+  transition: all 500ms ease-in-out;
+}
+.kshf .aggrGlyph.setPairGlyph > .aggr.active {
+  fill: #b8c7d2;
+}
+.kshf .aggrGlyph.setPairGlyph > .aggr.preview {
+  fill: #ff6a33;
+}
+.kshf .aggrGlyph.setPairGlyph > .aggr.compare {
+  fill: none;
+  stroke: #2f4f4f;
+  stroke-width: 1px;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+  opacity: 1;
+}
+.kshf .aggrGlyph.setPairGlyph > .aggr.compare[hidden='true'] {
+  opacity: 0;
+}
+.kshf .aggrGlyph.setPairGlyph[activesize="0"] {
+  display: none;
+}
+.kshf .aggrGlyph.setPairGlyph:not([activesize="0"]) > .setPairBackground {
+  opacity: 1;
+}
+.kshf .aggrGlyph.mapGlyph > .aggr {
+  opacity: 0.8;
+}
+.kshf .aggrGlyph.mapGlyph > .aggr.active {
+  stroke-width: 1px;
+  -webkit-transition: fill 700ms ease-in-out;
+  -moz-transition: fill 700ms ease-in-out;
+  -o-transition: fill 700ms ease-in-out;
+  transition: fill 700ms ease-in-out;
+}
+.kshf .aggrGlyph.mapGlyph > .aggr.preview {
+  -webkit-transition: opacity 500ms ease-in-out;
+  -moz-transition: opacity 500ms ease-in-out;
+  -o-transition: opacity 500ms ease-in-out;
+  transition: opacity 500ms ease-in-out;
+  stroke-width: 1px;
+  opacity: 0;
+}
+.kshf .aggrGlyph.mapGlyph > .measureLabel {
+  color: black;
+  fill: black;
+  font-weight: 500;
+  text-shadow: 0 0 1px #FFFFFF,0 0 1px #FFFFEF,0 0 1px #FFFFFF,0 0 1px #FFFFFF,0 0 10px #FFFFFF;
+  text-rendering: geometricPrecision;
+  text-anchor: middle;
+  alignment-baseline: middle;
+}
+.kshf .aggrGlyph.mapGlyph[highlight="selected"] > .aggr.active {
+  cursor: pointer;
+  stroke: orangered;
+  stroke-width: 1px;
+  opacity: 1 !important;
+  fill: #ff6a33;
+  -webkit-transition: fill 200ms ease-in-out;
+  -moz-transition: fill 200ms ease-in-out;
+  -o-transition: fill 200ms ease-in-out;
+  transition: fill 200ms ease-in-out;
+}
+.kshf .aggrGlyph.mapGlyph[highlight="selected"] > .aggr.preview {
+  display: none;
+}
+.kshf .aggrGlyph.mapGlyph[highlight="true"] > .aggr.active {
+  stroke: orangered;
+  stroke-width: 2px;
+}
+.kshf .kshfSummary {
   display: block;
   position: relative;
   -webkit-transition: max-height 700ms ease-in-out;
@@ -2028,26 +2171,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             pointer-events:none;
         }*/
 }
-.kshf .kshfChart .unmapped_records {
+.kshf .kshfSummary .unmapped_records {
   display: none;
   color: lightgray;
   left: 0px;
   position: absolute;
   font-size: 0.8em;
-  padding: 2px;
+  padding: 1px;
   -webkit-transition: color 100ms linear;
   -moz-transition: color 100ms linear;
   -o-transition: color 100ms linear;
   transition: color 100ms linear;
   cursor: pointer;
 }
-.kshf .kshfChart .unmapped_records:hover {
+.kshf .kshfSummary .unmapped_records:hover {
   color: orangered !important;
 }
-.kshf .kshfChart .unmapped_records[filtered=true] {
+.kshf .kshfSummary .unmapped_records[filtered=true] {
   color: black !important;
 }
-.kshf .kshfChart > .wrapper {
+.kshf .kshfSummary > .wrapper {
   position: relative;
   overflow: hidden;
   -webkit-transition: height 700ms ease-in-out;
@@ -2055,29 +2198,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical {
+.kshf .kshfSummary > .wrapper > .summaryCategorical {
   overflow: hidden;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls {
-  border-bottom: dotted 1px lightgray;
-  margin-bottom: -1px;
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls {
+  border-bottom: solid 1px #E9E9E9;
+  margin-top: -1px;
   position: relative;
   display: none;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catTextSearch {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catTextSearch {
   display: none;
   vertical-align: top;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catTextSearch > .textSearchInput {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catTextSearch > .textSearchInput {
   display: inline-block;
   width: calc(100% - 13px);
   height: 15px;
   text-align: right;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catTextSearch > .textSearchInput::-webkit-input-placeholder {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catTextSearch > .textSearchInput::-webkit-input-placeholder {
   text-align: right;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catSortButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton {
   opacity: 0;
   position: absolute;
   bottom: 1px;
@@ -2089,23 +2232,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catSortButton:hover {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton:hover {
   color: #ff4500;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catSortButton:before {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton:before {
   content: "\f161";
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .catSortButton[inverse='true']:before {
-  content: "\f160";
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton[inverse='true']:before {
+  content: "\f160" !important;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton[resort="true"]:before {
+  content: "\f175" !important;
+}
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup {
   display: block;
   vertical-align: top;
   white-space: nowrap;
   position: relative;
   font-weight: 300;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup > .optionSelect {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup > .optionSelect {
   width: 100%;
   height: 17px;
   font-size: 0.7em;
@@ -2120,16 +2266,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 0px;
   vertical-align: middle;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup > .optionSelect:hover {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup > .optionSelect:hover {
   color: orangered;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical .scrollToTop {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .scrollToTop {
   margin-top: -13px;
   font-size: 0.8em;
   pointer-events: all;
   position: absolute;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical .selectAllAttribsButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .selectAllAttribsButton {
   font-size: 0.6em;
   float: left;
   margin-left: 2px;
@@ -2141,16 +2287,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: rgba(150, 150, 100, 0.2);
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical .selectAllAttribsButton:hover {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .selectAllAttribsButton:hover {
   box-shadow: 0px 0px 1px black;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical .selectAllAttribsButton::before {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .selectAllAttribsButton::before {
   content: '+ Add Filter with All';
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical .unmapped_records {
-  top: 0px;
-}
-.kshf .kshfChart > .wrapper > .summaryCategorical .scroll_display_more {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .scroll_display_more {
   font-size: 0.7em;
   line-height: 1.4em;
   vertical-align: top;
@@ -2159,12 +2302,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   pointer-events: all;
   display: inline-block;
-  padding-top: 2px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical .scroll_display_more:hover {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .scroll_display_more:hover {
   color: #cb5454;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup {
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -2175,7 +2317,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground {
   width: 1px;
   display: block;
   position: relative;
@@ -2184,19 +2326,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 250ms;
   transition: opacity 250ms;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground > .chartCatLabelResize {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground > .chartCatLabelResize {
   display: none;
   height: 100%;
   z-index: 25;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock {
-  display: block;
-  position: absolute;
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph {
   white-space: nowrap;
   top: 0px;
   height: 16px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock > .clickArea {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .clickArea {
   z-index: 20;
   display: inline-block;
   vertical-align: top;
@@ -2210,16 +2350,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 1px;
   left: 0px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .lockButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .lockButton {
   width: 9px;
   text-align: right;
   top: 4px;
   z-index: 300;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .lockButton[inside] {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .lockButton[inside] {
   margin-left: -11px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock > .categoryLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .categoryLabel {
   position: absolute;
   display: inline-block;
   vertical-align: top;
@@ -2233,7 +2373,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock > .categoryLabel > .theLabel:before {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .categoryLabel > .theLabel:before {
   color: white;
   font-weight: 300;
   font-size: 0.7em;
@@ -2243,21 +2383,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 0px 2px;
   opacity: 0.4;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock > .categoryLabel > .theLabel .AndOrNot {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .categoryLabel > .theLabel .AndOrNot {
   display: inline;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock > .measureLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .measureLabel {
   position: absolute;
   display: inline-block;
-  vertical-align: top;
-  line-height: 19px;
   height: 18px;
-  font-size: 0.7em;
-  pointer-events: none;
   padding-right: 1px;
+  pointer-events: none;
+  vertical-align: top;
   text-align: right;
+  line-height: 19px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .aggr {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .aggr {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
@@ -2267,7 +2406,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 1px;
   height: 10px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .aggr.total_tip {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .aggr.total_tip {
   right: -5px;
   /* right arrow */
   border-top: 5px solid transparent;
@@ -2290,18 +2429,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         background-size: 8px 8px;
                         */
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .aggr.compare {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .aggr.compare {
   width: 1px;
   height: 5px;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons {
   white-space: nowrap;
   cursor: pointer;
   vertical-align: top;
   z-index: 100;
   pointer-events: all;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons > .filterButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons > .filterButton {
   display: none;
   pointer-events: all;
   margin-right: 2px;
@@ -2318,97 +2457,102 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons > .orButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons > .orButton {
   background-color: #269aa3;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons > .orButton:hover {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons > .orButton:hover {
   background-color: #1c737a;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons > .notButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons > .notButton {
   background-color: #a6a6a6;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock .filterButtons > .notButton:hover {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons > .notButton:hover {
   background-color: gray;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[activeItems='0'] .measureLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[activeItems='0'] .measureLabel {
   visibility: hidden;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[compare="true"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[compare="true"] > .categoryLabel > .theLabel {
   font-weight: 700;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:not([selected="0"]) > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([selected="0"]) > .categoryLabel > .theLabel {
   font-weight: 700;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock:not([selected="0"]) .clickArea {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([selected="0"]) .clickArea {
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="-1"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] > .categoryLabel > .theLabel {
   text-decoration: line-through;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="1"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="1"] > .categoryLabel > .theLabel {
   color: #1d4870;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="2"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="2"] > .categoryLabel > .theLabel {
   color: #1c737a;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="2"][show-box=true] > .categoryLabel > .filterButtons > .orButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="2"][show-box=true] > .categoryLabel > .filterButtons > .orButton {
   display: inline;
   opacity: 1;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="-1"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] > .categoryLabel > .theLabel {
   color: #808080;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="-1"] > .categoryLabel > .filterButtons > .notButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] > .categoryLabel > .filterButtons > .notButton {
   display: inline;
   opacity: 1;
   background-color: #808080;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight^="selected"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"] > .categoryLabel > .theLabel {
   font-weight: 700 !important;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight^="selected"][selected="0"] .clickArea {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"] .clickArea {
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight^="selected"][selected="0"][selecttype="and"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"][selecttype="and"] > .categoryLabel > .theLabel {
   color: #1d4870;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight^="selected"][selected="0"][selecttype="or"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"][selecttype="or"] > .categoryLabel > .theLabel {
   color: #1c737a;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight^="selected"][selected="0"][selecttype="not"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"][selecttype="not"] > .categoryLabel > .theLabel {
   color: #808080;
   text-decoration: line-through;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=false][highlight=true] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight="true"] > .categoryLabel > .theLabel {
   color: #ff6a33;
   font-weight: 700;
 }
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=true] {
-  color: gray;
-}
-.kshf .kshfChart > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[noitems=true] .measureLabel {
-  display: none;
-}
-.kshf .kshfChart > .wrapper > .summaryCategorical:hover > .summaryControls > .catSortButton {
+.kshf .kshfSummary > .wrapper > .summaryCategorical:hover > .summaryControls > .catSortButton {
   opacity: 1;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval {
+.kshf .kshfSummary > .wrapper > .summaryCategorical .catMap_SVG {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  overflow: visible;
+}
+.kshf .kshfSummary > .wrapper > .summaryCategorical .catMap_Base .leaflet-control > a {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval {
   padding: 7px 11px 0px 6px;
   overflow: hidden;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval .unmapped_records {
+.kshf .kshfSummary > .wrapper > .summaryInterval .unmapped_records {
   margin-top: 7px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval[scaletype="time"] span.aggr {
+.kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="time"] .aggr {
   opacity: 0 !important;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval[scaletype="step"] .zoomControl[sign="plus"] {
+.kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="step"] .zoomControl[sign="plus"] {
   display: none !important;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval[zoomed="true"] .zoomControl[sign="minus"] {
+.kshf .kshfSummary > .wrapper > .summaryInterval[zoomed="true"] .zoomControl[sign="minus"] {
   display: block !important;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram {
   position: relative;
   pointer-events: all;
   -webkit-transition: height 700ms ease-in-out;
@@ -2416,51 +2560,49 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.total {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .activeLine {
+  stroke: #b8c7d2;
+  stroke-width: 2px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .previewLine {
+  stroke: #ff6a33;
+  stroke-width: 2px;
+  opacity: 0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .compareLine {
+  stroke: #2f4f4f;
+  stroke-width: 2px;
+  opacity: 0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend {
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.total {
   fill: #EEF0F2;
   stroke: none;
   stroke-width: 1.5px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.active {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.active {
   fill: #d7e0e6;
   stroke: #b8c7d2;
   stroke-width: 1.5px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .activeLine {
-  stroke: #b8c7d2;
-  stroke-width: 2px;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.preview {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.preview {
   fill: rgba(255, 106, 51, 0.3);
   stroke: #ff6a33;
   stroke-width: 2px;
   opacity: 0;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .previewLine {
-  stroke: #ff6a33;
-  stroke-width: 2px;
-  opacity: 0;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.compare {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.compare {
   fill: none;
   stroke: #2f4f4f;
   stroke-width: 1.5px;
   opacity: 0;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .timeSVG .compareLine {
-  stroke: #2f4f4f;
-  stroke-width: 2px;
-  opacity: 0;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .aggrGroup {
   position: absolute;
   top: 0px;
   z-index: 3;
@@ -2470,87 +2612,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock {
-  display: block;
-  position: absolute;
-  height: 100%;
-  pointer-events: none;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock > .aggr {
-  width: 1px;
-  height: 1px;
-  -webkit-transform-origin: 0% 100%;
-  -moz-transform-origin: 0% 100%;
-  -ms-transform-origin: 0% 100%;
-  -o-transform-origin: 0% 100%;
-  transform-origin: 0% 100%;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock > .aggr.total_tip {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: -7px;
-  width: 100%;
-  left: 0px;
-  height: 8px;
-  opacity: 0;
-  background: linear-gradient(-135deg, transparent 75%, #dee2e6 75%) 0 50%, linear-gradient(135deg, transparent 75%, #dee2e6 75%) 0 50%;
-  background-position: top left, top left;
-  background-repeat: repeat;
-  background-size: 8px 8px;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock > .lockButton {
-  position: absolute;
-  width: 100%;
-  text-align: center;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock > .lockButton[inside] {
-  margin-top: 12px;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock > .measureLabel {
-  top: 1px;
-  display: block;
-  position: relative;
-  width: 100%;
-  font-size: 0.7em;
-  text-align: center;
-  cursor: pointer;
-  pointer-events: all;
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .aggrGroup > .aggrBlock[noitems=true] > .measureLabel {
-  display: none;
-}
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure {
   top: 0px;
   width: 100%;
   height: 100%;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .percentSign {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .measurePercentControl {
   bottom: -1px;
   left: 10px;
   width: 12px;
   text-align: right;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .chartAxis_Measure_background {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
   width: 21px;
   height: calc(100% - 12px);
   top: 0px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick {
   left: 21px;
   width: 100%;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .line {
   border-bottom: dotted 1px #b6b3b3;
   width: 100%;
   left: 0px;
   pointer-events: none;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .text {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .text {
   position: relative;
   width: 25px;
   left: -25px;
@@ -2558,7 +2646,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   padding-right: 1px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup {
   height: 12px;
   margin-top: 1px;
   position: relative;
@@ -2566,7 +2654,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: lightgray;
   border-width: 1px 0px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .percentileTitle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileTitle {
   font-size: 0.6em;
   position: absolute;
   display: inline-block;
@@ -2579,10 +2667,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   display: none;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup:hover > .percentileTitle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup:hover > .percentileTitle {
   display: block;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile {
   display: inline-block;
   position: absolute;
   height: 10px;
@@ -2598,42 +2686,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_pos {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_pos {
   background-color: #1b6f61;
   margin-left: -0.5px;
   z-index: 101;
   pointer-events: none;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_pos.q_50 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_pos.q_50 {
   width: 4px;
   background-color: #1b6f61;
   margin-left: -2px;
   pointer-events: all;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_range:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_range:hover {
   border-color: #1b6f61;
   border-style: solid;
   border-width: 1px 0px 1px 0px;
   z-index: 100;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_40_60 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_40_60 {
   background-color: #2aad97;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_30_70 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_30_70 {
   background-color: #78decd;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_20_80 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_20_80 {
   background-color: #caf2eb;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_10_90 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_10_90 {
   background-color: #f3fcfb;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar {
-  display: none;
-  position: relative;
-  height: 12px;
-  padding: 0px;
-  border: solid 1px lightgray;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: horizontal;
@@ -2644,18 +2727,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
+  display: none;
+  position: relative;
+  height: 12px;
+  padding: 0px;
+  border: solid 1px lightgray;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .invertColorScale {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar > .invertColorScale {
   font-size: 0.7em;
   left: -13px;
   position: absolute;
   color: lightgray;
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .invertColorScale:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar > .invertColorScale:hover {
   color: black;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock {
   margin: 0px;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
@@ -2665,14 +2753,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px rgba(1, 1, 1, 0);
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock:hover {
   border: solid 1px white;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider {
   position: relative;
   pointer-events: all;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: none;
   position: absolute;
   left: -18px;
@@ -2681,20 +2769,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   cursor: pointer;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .zoomControl:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl:hover {
   color: black;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .zoomControl[sign="plus"]:before {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl[sign="plus"]:before {
   content: "\f00e";
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .zoomControl[sign="minus"]:before {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl[sign="minus"]:before {
   content: "\f010";
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine {
   height: 11px;
   cursor: ew-resize;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .selectedItemValue {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue {
   position: absolute;
   z-index: 20;
   top: 1px;
@@ -2704,33 +2792,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 450ms ease-in-out;
   transition: all 450ms ease-in-out;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .selectedItemValue > .circlee {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .circlee {
   display: block;
   border-radius: 20px;
   width: 8px;
   height: 8px;
   background-color: orangered;
   left: -4px;
+  z-index: 2;
   position: relative;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .selected-item-value-text {
   position: relative;
-  top: 0px;
+  top: -4px;
   color: #ff6a33;
   font-size: 0.8em;
   white-space: nowrap;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .selectedItemValue > .selected-item-value-text > .selected-item-value-text-v {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .selected-item-value-text > .selected-item-value-text-v {
   position: relative;
   left: -50%;
-  top: -4px;
   background-color: white;
   border-radius: 4px;
   border: solid 1px #DDDDDD;
   padding: 0px 1px;
   font-size: 0.9em;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base {
   display: block;
   position: absolute;
   box-shadow: inset 0px 0px 2px gray;
@@ -2740,13 +2828,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.total {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.total {
   width: 100%;
   height: 3px;
   top: 3px;
   background-color: lightgray;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active {
   display: none;
   height: 8px;
   top: 1px;
@@ -2758,14 +2846,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms;
   transition: opacity 500ms;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
   display: block;
   pointer-events: all;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active:hover {
   background-color: orangered !important;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle {
   position: absolute;
   width: 6px;
   height: 8px;
@@ -2777,25 +2865,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 10;
   top: 1px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle:hover {
   background-color: orangered !important;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.min {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.min {
   left: -5px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.min > .rangeLimitOnChart {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.min > .rangeLimitOnChart {
   left: 3px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.max {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.max {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.max > .rangeLimitOnChart {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.max > .rangeLimitOnChart {
   left: -2px;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
   position: absolute;
   display: none;
   width: 2px;
@@ -2803,17 +2891,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: ew-resize;
   box-shadow: 0px 0px 2px white;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart:hover {
   border-left: solid 2px #30b8c4;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup {
   cursor: default;
   position: relative;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick {
   position: absolute;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text {
   top: -1px;
   font-size: 0.7em;
   font-weight: 300;
@@ -2823,7 +2911,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   white-space: nowrap;
 }
-.kshf .kshfChart > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
   top: -10px;
   height: 10px;
@@ -2831,92 +2919,125 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   pointer-events: none;
 }
-.kshf .kshfChart[collapsed=true] > .headerGroup .summaryTitle {
+.kshf .kshfSummary[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse {
+  opacity: 1;
+}
+.kshf .kshfSummary[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse::before {
+  content: "\f065" !important;
+}
+.kshf .kshfSummary[collapsed=true] > .headerGroup .summaryName {
   cursor: pointer;
 }
-.kshf .kshfChart[collapsed=true] > .wrapper .summaryCategorical > .summaryControls {
+.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .summaryControls {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .wrapper .summaryCategorical > .scrollToTop {
+.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .scrollToTop {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .wrapper .summaryCategorical > .aggrGroup {
+.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .aggrGroup {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .wrapper .summaryCategorical > .belowAttribs {
+.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .belowCatChart {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .wrapper .summaryInterval > .histogram {
+.kshf .kshfSummary[collapsed=true] > .wrapper .summaryInterval > .histogram {
   display: none;
 }
-.kshf .kshfChart[collapsed=true] > .wrapper .summaryInterval > .intervalSlider {
+.kshf .kshfSummary[collapsed=true] > .wrapper .summaryInterval > .intervalSlider {
   display: none;
 }
-.kshf .kshfChart[filtered=true] > .headerGroup .clearFilterButton {
+.kshf .kshfSummary[filtered=true] > .headerGroup .clearFilterButton {
   display: inline-block;
 }
-.kshf .kshfChart[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
+.kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: block;
 }
-.kshf .kshfChart[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
+.kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
   display: block;
 }
-.kshf .kshfChart[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[highlight="selected"][selected="0"] .notButton {
+.kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[highlight="selected"][selected="0"] .notButton {
   display: inline;
   opacity: 1;
 }
-.kshf .kshfChart[isMultiValued=false][filtered_or="0"] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[highlight="selected"][selected="-1"] {
+.kshf .kshfSummary[isMultiValued=false][filtered_or="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[highlight="selected"][selected="-1"] {
   cursor: pointer;
 }
-.kshf .kshfChart:not([filtered_or="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton {
+.kshf .kshfSummary:not([filtered_or="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"]:hover .orButton {
   display: inline;
   opacity: 1;
 }
-.kshf .kshfChart:not([filtered_and="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"]:hover .orButton {
+.kshf .kshfSummary:not([filtered_and="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"]:hover .orButton {
   display: inline;
   opacity: 1;
 }
-.kshf .kshfChart[isMultiValued=true] > .wrapper > .summaryCategorical > .aggrGroup > .aggrBlock[selected="0"][highlight="selected"] .notButton {
+.kshf .kshfSummary[isMultiValued=true] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"][highlight="selected"] .notButton {
   display: inline;
   opacity: 1;
 }
-.kshf .kshfChart[filtered_range=true] .clearFilterButton.rangeFilter {
+.kshf .kshfSummary[filtered_range=true] .clearFilterButton.rangeFilter {
   display: inline-block;
 }
-.kshf .kshfChart[refreshSorting="true"] .catSortButton:before {
-  content: "\f175" !important;
-}
-.kshf .kshfChart:hover > .headerGroup {
+.kshf .kshfSummary:hover > .headerGroup {
   box-shadow: 0px 0px 2px #646464;
 }
-.kshf .kshfChart:hover > .headerGroup > .header_display_control > .fa {
+.kshf .kshfSummary:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
 }
-.kshf .kshfChart:hover > .wrapper .unmapped_records {
+.kshf .kshfSummary:hover > .wrapper .unmapped_records {
   color: #808080;
 }
-.kshf .kshfChart:hover[isMultiValued=true] > .headerGroup .hasMultiMappings {
+.kshf .kshfSummary:hover[isMultiValued=true] > .headerGroup .hasMultiMappings {
   display: inline-block;
 }
-.kshf .kshfChart[usedForSorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf .kshfSummary[hasMap="true"][collapsed="false"] .summaryViewAs {
+  display: inline-block;
+}
+.kshf .kshfSummary[usedForSorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
   display: inline-block;
   color: black;
 }
-.kshf .belowAttribs {
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
+  display: none;
+}
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .summaryControls .catSortButton {
+  display: none !important;
+}
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .scrollToTop {
+  display: none;
+}
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .aggrGroup {
+  display: none;
+}
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .belowCatChart > .chartAxis_Measure {
+  display: none;
+}
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .belowCatChart > .scroll_display_more {
+  display: none;
+}
+.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .belowCatChart > .catMapColorScale {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.kshf .kshfSummary[catViewType="list"] .catMap_Base {
+  display: none;
+}
+.kshf .belowCatChart {
   position: relative;
   height: 18px;
+  border-top: solid 1px #E9E9E9;
 }
-.kshf .belowAttribs .border_line {
-  opacity: 0.6;
-}
-.kshf .belowAttribs > .chartAxis_Measure > .percentSign {
+.kshf .belowCatChart > .chartAxis_Measure > .measurePercentControl {
   right: 0px;
+  top: 1px;
 }
-.kshf .belowAttribs > .chartAxis_Measure > .chartAxis_Measure_background {
+.kshf .belowCatChart > .chartAxis_Measure > .relativeModeControl {
   height: 12px;
   margin-left: 2px;
 }
-.kshf .belowAttribs > .chartAxis_Measure > .tick > .text {
+.kshf .belowCatChart > .chartAxis_Measure > .tick > .text {
   width: 20px;
   left: -10px;
   top: 2px;
@@ -2925,7 +3046,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: top 700ms ease-in-out;
   transition: top 700ms ease-in-out;
 }
-.kshf .belowAttribs > .chartAxis_Measure > .tick > .line {
+.kshf .belowCatChart > .chartAxis_Measure > .tick > .line {
   width: 0px;
   border-left: dotted 1px #b6b3b3;
   -webkit-transition: top 700ms ease-in-out, height 700ms ease-in-out;
@@ -2933,20 +3054,110 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: top 700ms ease-in-out, height 700ms ease-in-out;
   transition: top 700ms ease-in-out, height 700ms ease-in-out;
 }
-.kshf .measureLabel {
-  color: #969da3;
+.kshf .belowCatChart > .catMapColorScale {
+  display: none;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-left: 60px;
+  margin-right: 60px;
+  margin-top: 1px;
+  position: relative;
+  height: 12px;
+  padding: 0px;
+  border: solid 1px lightgray;
 }
-.kshf[resultpreview="true"] .measureLabel {
+.kshf .belowCatChart > .catMapColorScale > .measurePercentControl {
+  left: -35px;
+  top: -1px;
+}
+.kshf .belowCatChart > .catMapColorScale > .relativeModeControl {
+  position: absolute;
+  right: -57px;
+  top: -1px;
+  color: gray;
+  cursor: pointer;
+  padding: 0px 2px;
+  line-height: 0.7em;
+  border-radius: 5px;
+  border: solid 1px rgba(255, 255, 255, 0);
+  -webkit-transition: background-color 250ms linear;
+  -moz-transition: background-color 250ms linear;
+  -o-transition: background-color 250ms linear;
+  transition: background-color 250ms linear;
+}
+.kshf .belowCatChart > .catMapColorScale > .relativeModeControl[highlight="true"] {
+  border-color: #B7CAAF;
+  background-color: #E0E4D7;
+  color: black;
+}
+.kshf .belowCatChart > .catMapColorScale > .catHighlightedValue {
+  position: absolute;
+  top: 2px;
+  margin-left: -3px;
+  height: 6px;
+  width: 6px;
+  border-radius: 10px;
+  background-color: orangered;
+  -webkit-transition: opacity 250ms linear;
+  -moz-transition: opacity 250ms linear;
+  -o-transition: opacity 250ms linear;
+  transition: opacity 250ms linear;
+  opacity: 0;
+}
+.kshf .belowCatChart > .catMapColorScale > .mapColorBlock {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  border: solid 1px rgba(1, 1, 1, 0);
+}
+.kshf .belowCatChart > .catMapColorScale > .scaleBound {
+  color: gray;
+  font-size: 11px;
+  font-weight: 300;
+  position: absolute;
+  width: 22px;
+  top: -1px;
+  cursor: pointer;
+}
+.kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMin {
+  left: -24px;
+  text-align: right;
+}
+.kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMax {
+  right: -24px;
+}
+.kshf[resultpreview="true"] .aggrGlyph > .measureLabel {
   color: orangered;
+  fill: orangered;
 }
-.kshf[resultpreview="true"] .kshfChart:not([isMultiValued="true"]):hover .aggrBlock:not([highlight="selected"]) .measureLabel {
+.kshf[resultpreview="true"] .kshfSummary:not([isMultiValued="true"]):hover .aggrGlyph:not([highlight="selected"]) > .measureLabel {
   color: #969da3;
+  fill: black;
 }
 .kshf[resultpreview="true"] .lineTrend.preview {
   opacity: 1 !important;
 }
 .kshf[resultpreview="true"] .previewLine {
   opacity: 1 !important;
+}
+.kshf[resultpreview="true"][ratiomode=false] .mapGlyph > .aggr.preview {
+  -webkit-animation: mapPreviewAnimation 2s infinite ease-in-out;
+  -moz-animation: mapPreviewAnimation 2s infinite ease-in-out;
+  -o-animation: mapPreviewAnimation 2s infinite ease-in-out;
+  animation: mapPreviewAnimation 2s infinite ease-in-out;
+}
+.kshf[resultpreview="true"][ratiomode=true] .mapGlyph > .aggr.preview {
+  opacity: 1;
 }
 .kshf .selectVertLine {
   display: inline-block;
@@ -3022,6 +3233,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .recordDisplay > .dropZone_recordView[readyToDrop=true] {
   background-color: #ffbca3;
+}
+.kshf .recordDisplay .recordMap_SVG {
+  position: relative;
+  left: 0px;
+  top: 0px;
+  overflow: visible;
 }
 .kshf .recordDisplay > .recordGroup {
   width: 100%;
@@ -3136,7 +3353,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight=true] {
+.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight="true"] {
   box-shadow: inset 0px 0px 5px #FF9973;
   background-color: #FFFBF9;
 }
@@ -3294,8 +3511,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
 }
 .kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordToggleDetail {
-  display: block;
   position: absolute;
+  left: 0px;
   z-index: 10;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord {
@@ -3342,17 +3559,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
-}
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail {
-  display: inline-block;
-}
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"][detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
-  content: "\f078";
 }
 .kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
   content: "\f140";
+}
+.kshf .recordDisplay[detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail {
+  display: inline-block;
+}
+.kshf .recordDisplay[detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
+  content: "\f078";
 }
 .kshf .recordDisplay[hasRecordView="false"] > .recordDisplay--Header {
   display: none;
@@ -3578,10 +3795,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: #cb5454;
   margin: 1px;
   width: calc(100% - 17px);
-  -webkit-transition: background-color 200ms linear;
-  -moz-transition: background-color 200ms linear;
-  -o-transition: background-color 200ms linear;
-  transition: background-color 200ms linear;
+  -webkit-transition: background-color 150ms linear;
+  -moz-transition: background-color 150ms linear;
+  -o-transition: background-color 150ms linear;
+  transition: background-color 150ms linear;
 }
 .kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:focus {
   outline-color: #cb5454;
@@ -3690,6 +3907,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .boxinbox.project_3rdparty img {
   position: relative;
 }
+.kshf .leaflet-container {
+  font: inherit;
+}
 @-webkit-keyframes stretchdelay {
   0%,
   40%,
@@ -3785,6 +4005,56 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     background-color: #fa7746;
   }
 }
+@-webkit-keyframes mapPreviewAnimation {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
+@-moz-keyframes mapPreviewAnimation {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
+@-ms-keyframes mapPreviewAnimation {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
+@-o-keyframes mapPreviewAnimation {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes mapPreviewAnimation {
+  0%,
+  20% {
+    opacity: 0;
+  }
+  80%,
+  100% {
+    opacity: 1;
+  }
+}
 .tipsy {
   font-size: 10px;
   position: absolute;
@@ -3813,9 +4083,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-left: 1px;
   color: lightgray;
 }
-.tipsy .mapRecordName {
+.tipsy .mapItemName {
   display: block;
   border-bottom: solid 1px white;
+  font-weight: 600;
 }
 .tipsy .mapTooltipValue {
   font-size: 0.9em;

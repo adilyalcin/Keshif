@@ -159,25 +159,25 @@ google.setOnLoadCallback(function(){
             }
         },
         newSummaryCb: function(summary){
-            var summaryTitle = summary.summaryTitle;
-            var question = kshf.dt_id.Questions[summaryTitle];
+            var summaryName = summary.summaryName;
+            var question = kshf.dt_id.Questions[summaryName];
             if(question===undefined) return;
             
             if(question.data.ResponseList){
                 if(summary.type!=='categorical'){
                     summary.destroy();
-                    summary = this.createSummary(summaryTitle,null,'categorical');
+                    summary = this.createSummary(summaryName,null,'categorical');
                     return;
                 }
                 if(question.data.Name){
-                    this.changeSummaryName(summaryTitle,question.data.Name);
+                    this.changeSummaryName(summaryName,question.data.Name);
                 }
                 summary.setCatTable(question.data.ResponseList);
                 summary.setCatLabel("Name");
                 summary.setSortingOpts([{ value: "id" }]);
             } else {
                 if(question.data.Name){
-                    this.changeSummaryName(summaryTitle,question.data.Name);
+                    this.changeSummaryName(summaryName,question.data.Name);
                 }
             }
 

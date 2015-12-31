@@ -14,7 +14,17 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
+
+function loadData(browser){
+  US_States.loadGeo();
+  browser.loadCharts();
+};
+
 $(document).ready( function() {
   resizeBrowser(250,100);
   $(window).resize(function() {
@@ -33,6 +43,7 @@ $(document).ready( function() {
       dirPath: './data/',
       fileType: 'json',
       tables: "ccsinventory_wilsoncenter",
+      callback: loadData
     },
     loadedCb: function(){
       kshf.dt.ccsinventory_wilsoncenter.forEach(function(d){
@@ -47,14 +58,19 @@ $(document).ready( function() {
       { name: "Affiliation", value: "affiliation"},
       { name: "Agency Sponsor", 
         value: function(){ if(this.agency_sponsor) return this.agency_sponsor.split(", ");} },
-      { name: "Geographic Scope", value: "geographic_scope", panel: "right"},
-      { name: "State", value: function(){return getStateName(this.state);}, panel: "right" },
-      { name: "City", value: "city", collapsed: true, panel: "right"},
-      { name: "Intended Outcomes", panel: "right",
+      { name: "Geographic Scope", value: "geographic_scope", panel: "right", collapsed: true},
+      { name: "State", 
+        value:    function(){ return this.state.trim(); }, // there are 2 MD's one with a new line character. Let's fix that
+        catLabel: function(){ return US_States.index_code[this.id].name; },
+        catMap:   function(){ return US_States.index_code[this.id].geo; },
+        panel: "right",
+        },
+      { name: "City", value: "city", collapsed: true, panel: "right", collapsed: true},
+      { name: "Intended Outcomes", panel: "right", collapsed: true,
         value: function(){ if(this.intended_outcomes) return this.intended_outcomes.split(", ");} },
-      { name: "Participant Age", panel: "right",
+      { name: "Participant Age", panel: "right", collapsed: true,
         value: function(){ if(this.participant_age) return this.participant_age.split(", ");} },
-      { name: "Status", value: "status", panel: "right" },
+      { name: "Status", value: "status", panel: "right", collapsed: true },
       //{ name: "Project Topic", value: "project_topic"},
       { name: "Start Year", value: "start_date", layout: "middle"}
     ],
