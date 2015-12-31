@@ -19,12 +19,12 @@
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
     <script type="text/javascript">
 
-var gDocRoot = 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/sigvis/'
+var docRoot = 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/sigvis/'
 var keywords;
 function loadData(browser){
   var table = kshf.dt_id.Papers;
   $.ajax({
-    url: gDocRoot+"all_papers_cited_count.json",
+    url: docRoot+"all_papers_cited_count.json",
     async: false,
     success: function(data){
       for(year in data){
@@ -41,7 +41,7 @@ function loadData(browser){
     }
   });
   $.ajax({
-    url: gDocRoot+"paper_keywords.json",
+    url: docRoot+"paper_keywords.json",
     async: false,
     success: function(data){
       data.forEach(function(paper,id){
@@ -51,7 +51,7 @@ function loadData(browser){
   });
 
   $.ajax({
-    url: gDocRoot+"keyword_graph.json",
+    url: docRoot+"keyword_graph.json",
     async: false,
     success: function(data){ 
       keywords = data.vertices;
@@ -76,8 +76,8 @@ $(document).ready( function() {
     barChartWidth: 140,
     itemName: "SIGGRAPH Papers",
     source: {
-      url: "http://www.cs.utah.edu/~kwu/vis/sigvis.html'",
-      dirPath: gDocRoot,
+      url: "http://www.cs.utah.edu/~kwu/vis/sigvis.html",
+      dirPath: docRoot,
       fileType: 'json',
       tables: "Papers",
       callback: loadData
@@ -127,7 +127,9 @@ $(document).ready( function() {
     <div id="infobox" align="center">
       <span class="fa fa-info-circle"></span>
       Data from <a href='http://www.cs.utah.edu/~kwu/vis/sigvis.html' target='_blank'>SiggraphPubVis</a> project 
-        by Kui Wu, Duong Hoang, as part of 
+        by 
+        <a href="http://www.cs.utah.edu/~kwu/" target='_blank'>Kui Wu</a>,
+        <a href="http://www.hoangthaiduong.com/" target="_blank">Duong Hoang</a>, as part of 
         <a href='http://dataviscourse.net/2015/fame/' target='_blank'>Visualization CS-5630/CS-6630</a> course at 
         the University of Utah.
         <span class="fa fa-info-circle"></span>
