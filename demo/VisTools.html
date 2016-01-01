@@ -246,6 +246,9 @@ $(document).ready( function(){
         	str+="</span>"; // item_details
         str+="<div class='toolIconList'>"
 	        str+="<a href='"+this.URL+"' target='_blank' title='Source Code'><span class='fa fa-home toolIcon'></span></a>"
+          if(this.Twitter){
+            str+="<a href='http://www.twitter.com/"+this.Twitter+"' target='_blank' title='Video'><span class='fa fa-twitter toolIcon'></span></a>"
+          }
 		      if(this.VideoURL){
 	        	str+="<a href='"+this.VideoURL+"' target='_blank' title='Video'><span class='fa fa-video-camera toolIcon'></span></a>"
 	        }
