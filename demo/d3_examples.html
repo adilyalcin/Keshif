@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>D3 Examples</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    
+    <script type="text/javascript">
+
+$(document).ready( function(){
+  resizeBrowser(200,80);
+  $(window).resize(function() {
+    resizeBrowser(200,80);
+    browser.updateLayout();
+  });
+
+  browser = new kshf.Browser({
+    domID: "#chart_div",
+    categoryTextWidth: 150,
+    barChartWidth: 100,
+    itemName: "D3 Examples",
+    source: {
+      url: "http://christopheviau.com/d3list/gallery.html",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: "csv",
+      tables: "d3_gallery"
+    },
+    summaries: [
+      {name: "Visualization Type", value: function(){ return this.visualizationType.split("; "); }},
+      {name: "Author", value: function(){ return this.author.split("; ");} }
+    ],
+    itemDisplay: {
+      sortBy: {name: "-", value: function(){ return ((this.thumbnail!=="")?10000:0)+this.id; }},
+      textSearch: "Title",
+      displayType: 'grid',
+      detailsToggle: 'off',
+      recordView: function(){
+          return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
+            "<img class='thumbImg' src='"+this.thumbnail  +"'></a>"+
+            "<span class='title'>"+this.title+"</span> <span class='author'>"+this.author+"</span> "+
+            "<span class='tags'>"+this.visualizationType+"</span>";
+      }
+    }
+  });
+});
+    </script>
+    <style>
+.kshfRecord{
+  width: 150px;
+}
+.content{
+  padding: 3px;
+}
+.thumbnail{
+  height: 105px;
+}
+.author{
+  font-size: 0.9em;
+  font-weight: 400;
+}
+.author:before{
+  content: " by ";
+  font-weight: 100;
+}
+.tags{
+  font-size: 0.7em;
+  display: block;
+  color: gray;
+}
+.tags:before{ 
+  content: "Tags: ";
+}
+.title{
+  display: inline !important;
+}
+    </style>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+
+    <div id="infobox" align="center">
+      <span class="fa fa-info-circle"></span>
+      Data collected by <a href="http://christopheviau.com/d3list/gallery.html" target='_blank'>Christophe Viau</a>.
+      <span class="fa fa-info-circle"></span>
+      </div>
+  </body>
+</html>
