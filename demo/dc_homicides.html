@@ -50,14 +50,7 @@ $(document).ready( function(){
       { name: "Sex", value: "sex",
         catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id); } },
       { name: "<span class='fa fa-th-large'></span> Quadrant", panel: 'right', value: "quadrant",
-        catLabel: function(){
-          switch(this.id){
-            case "SE": return "South-East";
-            case "SW": return "South-West";
-            case "NE": return "North-East";
-            case "NW": return "North-West";
-          }
-        } },
+        catLabel: { SE: "South-East", SW: "South-West", NE: "North-East", NW: "North-West" } },
       { name: "Neighborhood", panel: 'right',
         value: function(){ if(this.nbhd) return this.nbhd.subhood; } },
       { name: "Status", panel: 'right',

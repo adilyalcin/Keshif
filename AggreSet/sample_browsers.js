@@ -23,12 +23,8 @@ var browser_configs = {
         kshf.Util.cellToArray(kshf.dt.Chapters, ['Characters'], /,|;/g, false);
       },
       summaries: [
-        { name: "Characters",
-          catSortBy: {name: "# of Occurances"},
-          catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
-        { name: "Volume", collapsed: true,
-          catSortBy: "id",
-          catLabel: function(){ return "Volume "+this.id; } }
+        { name: "Characters", catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
+        { name: "Volume", collapsed: true, catSortBy: "id", catLabel: function(){ return "Volume "+this.id;} }
       ],
       itemDisplay: {
         sortColWidth: 45,
@@ -87,7 +83,7 @@ var browser_configs = {
       itemDisplay: {
         sortColWidth: 50,
         detailsToggle: "off",
-        sortingOpts: ["Rating", "Watched"],
+        sortBy: ["Rating", "Watched"],
         textSearch: "Name",
         recordView: function(d){ 
           var genres=[];
@@ -133,7 +129,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 45,
-        sortingOpts: 'Age',
+        sortBy: 'Age',
         displayType: 'grid',
         recordView: function(){
             return "<img class='simpson_head' src='img/simpsons/"+this.Name+".jpeg'>"+
@@ -268,7 +264,7 @@ var browser_configs = {
       summaries: [{ name: "HBO Shows", panel: "left" }],
       itemDisplay: {
         sortColWidth: 15,
-        sortBy: [{ name: '# of Shows', value: function(){ return this['HBO Shows'].length; } }],
+        sortBy: { name: '# of Shows', value: function(){ return this['HBO Shows'].length; } },
         textSearch: "Name",
         recordView: function(d){
             if(d.DOM.record) d.DOM.record.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";
@@ -298,7 +294,23 @@ var browser_configs = {
         kshf.Util.cellToArray(kshf.dt.Breaches, ['Record Types'], ",", false);
       },
       summaries:[
-        { name: "Record Types", catLabel: getRecordTypeLabel },
+        { name: "Record Types", 
+          catLabel: {
+            'NAM': 'Name',
+            'PII': 'Personally Iden. Info.',
+            'SSN': 'Social Sec. No.',
+            'DOB': 'Birthdate',
+            'ADD': 'Address',
+            'EMA': 'Email',
+            'CCN': 'Credit Card No',
+            'PSS': 'Password',
+            'LOG': 'Log',
+            'MED': 'Medical Records',
+            'FIN': 'Financial',
+            'VIRUS': 'Virus',
+            'PHO': 'Phone',
+            '1 MILLAN DOLLAR': "1M $"
+          } },
         { name: "Type", panel: 'right' },
         { name: "Industry", panel: 'right' },
         { name: "Source", panel: 'right' },
@@ -306,7 +318,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 65,
-        sortingOpts: "# of Records",
+        sortBy: "# of Records",
         recordView: "org"
       }
     }
@@ -345,7 +357,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 80,
-        sortingOpts: 'Views',
+        sortBy: 'Views',
         recordView: function(){ return this.Speaker+" - <b>"+this.Title+"</b>"; },
       }
     }
@@ -483,7 +495,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 65,
-        sortingOpts: [ {title: '#samples', value:function(){ return this[0].length; }} ],
+        sortBy: [ {title: '#samples', value:function(){ return this[0].length; }} ],
         displayType: 'grid',
         maxVisibleItems_Default: 2000,
         recordView: function(d){ d.DOM.record.setAttribute("title",d.data[1]); }
@@ -556,7 +568,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 60,
-        sortingOpts: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
+        sortBy: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
         recordView: "Name"
       }
     }
@@ -593,7 +605,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 60,
-        sortingOpts: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
+        sortBy: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
         recordView: "Name"
       }
     }
@@ -628,7 +640,7 @@ var browser_configs = {
       ],
       itemDisplay: {
         sortColWidth: 40,
-        sortingOpts: 'Education Expenditures',
+        sortBy: 'Education Expenditures',
         recordView: "Name"
       }
     }
@@ -689,7 +701,7 @@ var browser_configs = {
             ],
             itemDisplay: {
                 sortColWidth: 65,
-                sortingOpts: [ {title: '# Votes', value:function(){ return this.Votes.length; }} ],
+                sortBy: [ {title: '# Votes', value:function(){ return this.Votes.length; }} ],
                 recordView: "Name"
             }
         }
@@ -827,7 +839,7 @@ var browser_configs = {
             ],
             itemDisplay: {
                 sortColWidth: 45,
-                sortingOpts: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
+                sortBy: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
                 textSearch: 'title',
                 detailsToggle: "One",
                 recordView: "title"
@@ -868,36 +880,13 @@ var browser_configs = {
             itemDisplay: {
                 sortColWidth: 50,
                 detailsToggle: 'off',
-                sortingOpts: ['Rating', 'Watched'],
+                sortBy: ['Rating', 'Watched'],
                 recordView: function(){ return "<i class='fa fa-film'></i> "+this.Name; }
             }
         }
     },
 
     };
-
-    var breachTypeInfo = {
-    'NAM': 'Name',
-    'PII': 'Personally Iden. Info.',
-    'SSN': 'Social Sec. No.',
-    'DOB': 'Birthdate',
-    'ADD': 'Address',
-    'EMA': 'Email',
-    'CCN': 'Credit Card No',
-    'PSS': 'Password',
-    'LOG': 'Log',
-    'MED': 'Medical Records',
-    'FIN': 'Financial',
-    'VIRUS': 'Virus',
-    'PHO': 'Phone',
-    '1 MILLAN DOLLAR': "1M $"
-    };
-
-    var getRecordTypeLabel = function(){
-    if(breachTypeInfo[this.id]) return breachTypeInfo[this.id];
-    return this.id;
-    };
-
 
     function loadFactbook(facts, factBrowser){
     var tableName = "Countries";

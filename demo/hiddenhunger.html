@@ -82,11 +82,7 @@ function showBrowsers(v){
         },
         summaries: [
           { name:"Region", value:"cq11"},
-          { name:"Is Rural?", value: "ur",
-            catLabel: function(){
-              if(this.id===1) return "Not-Rural";
-              if(this.id===2) return "Rural";
-            } },
+          { name:"Is Rural?", value: "ur", catLabel: { 1: "Not-Rural", 2: "Rural" },
           { name: "Diversity (Using Shannon Index)", value: "simpson", panel: "middle", 
             description: 
                 "The higher the Simpson index reported in the dataset, the more diverse is the diet of the individual" },

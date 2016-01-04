@@ -27,11 +27,11 @@ google.setOnLoadCallback( function(){
     },
     summaries: [
       { name: "Result" },
-      { name: "Session", catSortBy: "id", catLabel: function(){return ((this.id===1)?"1st":"2nd")+" Session";} },
-      { name: "Yea's" },
-      { name: "Nay's" },
+      { name: "Session", catSortBy: "id", catLabel: {1: "1st", 2: "2nd"} },
+      { name: "Yea's", panel: 'right' },
+      { name: "Nay's", panel: 'right' },
       { name: "Bill" },
-      { name: "Vote Date", panel: 'middle' }
+      { name: "Vote Date", panel: 'bottom' }
     ],
     itemDisplay: {
       sortColWidth: 80,

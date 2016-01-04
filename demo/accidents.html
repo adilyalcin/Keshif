@@ -58,21 +58,59 @@ google.setOnLoadCallback( function(){
     barChartWidth: 120,
     source: {
       gdocId: '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
-      tables: [ sheetInfo, "RoadType", "RoadSurface", "JuncDet", "JuncCont", "SpecCond", "Severity", "LightCond", "WeatherCond" ]
+      tables: [ sheetInfo, "SpecCond", "LightCond", "WeatherCond" ]
     },
     summaries: [
-      { name: "Road Type", catTableName: "RoadType", catLabel: "name" },
-      { name: "Severity", catTableName: "Severity", catLabel: "name" },
-      { name: "Area", catLabel: function(){ return (this.id===1)?"Urban":"Rural"; } },
+      { name: "Road Type",
+        catLabel: {
+          1: "Roundabout",
+          2: "One way Street",
+          3: "Dual Carriageway",
+          6: "Single Carriageway",
+          7: "Slip Road",
+          9: "Unknown",
+        } },
+      { name: "Severity",
+        catLabel: {
+          1: "Fatal",
+          2: "Serious",
+          3: "Slight",
+        } },
+      { name: "Area", 
+        catLabel: {1: "Urban", 2: "Rural"} },
       { name: "Time of Day", panel: "middle", unitName: ":00", value: function(){return this['Time of Day'].getHours();} },
-      { name: "# of Vehicles", panel: 'middle' },
+      { name: "# of Vehicles", panel: 'middle', unitName: "veh" },
       { name: "Speed Limit", panel: 'middle', catSortBy: "id", catLabel: function(){return this.id+"mph";} },
-      { name: "Road Surface Condition", catTableName: "RoadSurface", catLabel: "name", panel: 'right' },
+      { name: "Road Surface Condition", panel: 'right', 
+        catLabel: {
+          1: "Dry",
+          2: "Wet / Damp",
+          3: "Snow",
+          4: "Frost / Ice",
+          5: "Flood",
+          "-1": "Unknown",
+        } },
       { name: "Light Condition", catTableName: "LightCond", catLabel: "name" },
       { name: "Weather Condition", catTableName: "WeatherCond", catLabel: "name" },
       { name: "Special Condition", catTableName: "SpecCond", catLabel: "name", panel: 'right' },
-      { name: "Junction Detail", catTableName: "JuncDet", catLabel: "name", panel: 'right' },
-      { name: "Junction Control", catTableName: "JuncCont",  catLabel: "name", panel: 'right' },
+      { name: "Junction Detail", panel: 'right',
+        catLabel: {
+          1: "Roundabout",
+          2: "Mini roundabout",
+          3: "T/staggered junction",
+          5: "Slip road",
+          6: "Crossroads",
+          7: "More than four arms (not RAB)",
+          8: "Private drive or entrance",
+          9: "Other",
+        } },
+      { name: "Junction Control",  panel: 'right',
+        catLabel: {
+          1: "Authorized Person",
+          2: "Traffic signal",
+          3: "Stop sign",
+          4: "Give way or uncontrolled",
+        } },
       { name: "Date", panel: 'bottom' }
     ]
   });

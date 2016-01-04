@@ -26,14 +26,7 @@ google.setOnLoadCallback(function(){
       tables: "Cars"
     },
     summaries: [
-      { name: "Origin",
-        catLabel: function(){
-          switch(this.id){
-            case 1: return "American";
-            case 2: return "European";
-            case 3: return "Japanese";
-          }
-        } },
+      { name: "Origin", catLabel: { 1: "American", 2: "European", 3: "Japanese" },
       { name: "Cyclinders", catSortBy: "id" },
       { name: "MPG", unitName: "mpg"},
       { name: "Engine Displacement", unitName: "cu.\"", panel: 'right' },

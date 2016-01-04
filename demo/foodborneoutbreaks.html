@@ -71,7 +71,7 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "Year" },
-      { name: "Month", catSortBy: function(){ return getMonthNumberFromName(this.id); }, },
+      { name: "Month", catSortBy: _demo.Month_id },
       { name: "Contaminated Ingredient", value: "Contaminated_Ingredient", panel: 'middle' },
       { name: "State",
         catMap: function(){ 

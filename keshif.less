@@ -106,8 +106,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       > .attributePanel{
           .display(flex);
       }
-      .kshfSummary:hover .chartCatLabelResize{
-        display: block !important;
+      .saveBrowserConfig{
+        display: inline-block;
+      }
+      .kshfSummary{
+        &:hover {
+          .chartCatLabelResize{ display: block !important; }
+          .summaryConfigControl{ color: gray; }
+        }
+        &[collapsed=false][viewType='bar'] .summaryConfigControl{ display: inline-block !important; }
+        &[showConfig=true]{
+          .summaryConfig{
+            top: 21px;
+            opacity: 1;
+            pointer-events: all;
+          }
+          .summaryConfigControl{ 
+            color: black;
+            -webkit-animation: fa-spin 4s infinite linear;
+            animation: fa-spin 4s infinite linear;
+          }
+        }
       }
       .recordDisplay{
         &:hover .buttonRecordViewRemove{ display: block; }
@@ -124,6 +143,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover > .editTextButton{ opacity: 1; }// Do not use display none-vs-inlineblock, because it changes layout
       }
       .buttonSummaryRemove{ display: inline-block !important; }
+      .kshfSummary
     }
     &[percentview=true]{
       .measurePercentControl{
@@ -141,7 +161,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .compare    { opacity: 1 !important; }
       .compareLine{ opacity: 1 !important; }
     }
-    &[record_display="list"]{
+    &:not([record_display="map"]){
       .kshfSummary[summary_type="interval"] {
         .headerGroup .summaryIcons > .useForRecordDisplay::before{ content: "\f0dc"; }
       }
@@ -213,6 +233,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       color: gray;
     }
     
+    .saveBrowserConfig{
+      display: none;
+    }
+
+    .fa-dropbox{
+      color: #007EE5 !important;
+    }
 
     .sortButton{
       cursor: pointer;
@@ -678,27 +705,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .rightBoxes{
-            font-size: 1.0em;
-            color: #635d46;
-            padding-right: 2px;
-            white-space: nowrap;
-            > .fa{
-                cursor: pointer;
-                margin-left: 4px;
-                &:hover{ color: #cb5454; }
+          font-size: 1.0em;
+          color: #635d46;
+          padding-right: 2px;
+          white-space: nowrap;
+          > .fa{
+            cursor: pointer;
+            margin-left: 4px;
+            &:hover{ color: #cb5454; }
+          }
+          > .showConfigButton{
+            display: none;
+            &:hover{
+              animation: fa-spin 2s infinite linear;
+              -webkit-animation: fa-spin 2s infinite linear;
             }
-            .showConfigButton{
-                display: none;
-                &:hover{
-                    animation: fa-spin 2s infinite linear;
-                    -webkit-animation: fa-spin 2s infinite linear;
-                }
-            }
-            .datasource{
-                display: none;
-                text-decoration: none;
-                color: #635d46; // if dom type is a, it will show visited links in different color
-            }
+          }
+          > .datasource{
+            display: none;
+            text-decoration: none;
+            color: #635d46; // if dom type is a, it will show visited links in different color
+          }
         } // rightBoxes
         > .totalViz{
             height: 3px;
@@ -1054,7 +1081,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .infobox_source{
                 background-color:white;
                 width: 550px;
-                height: 250px;
+                height: 270px;
                 position: absolute;
                 top: 0; left: 0; bottom: 0; right: 0;
 
@@ -1062,9 +1089,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     color: gray;
                     cursor: pointer;
                     padding: 0px 5px;
-                    &:hover{
-                        color: black;
-                    }
+                    &:hover{ color: black; }
                 }
 
                 > .sourceHeader{
@@ -1074,7 +1099,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
 
                 > .source_wrapper{
-                    width: 430px;
+                    width: 530px;
                     display: inline-block;
                     margin: 5px;
                     padding: 5px;
@@ -1233,7 +1258,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         cursor: default;
                     }
                 }
-
 
                 >.actionButton{
                     display: inline-block;
@@ -1505,7 +1529,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);");
         background-color: rgb(235, 235, 235);
-        z-index: 6; // So that header shadow appears on top of the scrollbar / content below.
+        z-index: 111; // So that header shadow appears on top of the scrollbar / content below.
 
         .summaryName {
           display: block;
@@ -1583,6 +1607,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .useForRecordDisplay{
             display: none;
             &:hover{ color: orangered; }
+          }
+          > .summaryConfigControl{
+            display: none;
+            color: lightgray;
           }
         }
         > .header_display_control{
@@ -1798,6 +1826,60 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     } // .aggrGlyph
 
+    .summaryConfig{
+      position: absolute;
+      display: block;
+      top: -0px;
+      opacity: 0;
+      .transition(all 400ms ease-in-out);
+      pointer-events: none;
+      background-color: rgba(235, 235, 235, 0.9);
+      border-radius: 0px 0px 10px 10px;
+      box-shadow: 0px 0px 1px black;
+      padding: 1px 5px;
+      width: 100%;
+      z-index: 100;
+      right: 0%;
+      font-size: 0.8em;
+      box-shadow: 0px 2px 2px #9b9b9b;
+      > .summaryConfig_Option{
+        font-weight: 300;
+        text-align: center;
+        margin-bottom: 1px;
+      }
+      .configOption{
+        //background-color: white;
+        cursor: pointer;
+        border: solid 1px #AFAFAF;
+        padding: 0px 3px;
+        margin-left: -1px;
+        font-size: 0.8em;
+        vertical-align: top;
+        &:hover{ color: orangered; }
+        &[active=true]{ background-color: white; pointer-events: none;}
+        &:first-child{ border-radius: 5px 0px 0px 5px; }
+        &:last-child{ border-radius: 0px 5px 5px 0px; }
+      }
+    }
+    .summaryConfig_UnitName{
+      > .unitNameInput{
+        height: 14px;
+        background-color: white;
+        border: solid 1px #AFAFAF;
+        cursor: text;
+        width: 22px;
+        font-size: 0.8em;
+        font-weight: 300;
+        margin: 0px;
+        padding: 0px 2px;
+        vertical-align: top;
+        &:focus{
+          outline-color: #cb5454;
+          outline-width: 2px;
+        }
+        &:hover{ border-color: #cb5454; }
+      }
+    }
 
     .kshfSummary{
         display: block;
@@ -2233,8 +2315,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             height: calc(~"100% - 12px");
                             top: 0px;
                         }
+                        > .highlightedAggrValue{
+                          position: absolute;
+                          width: calc(~"100% - 21px");
+                          height: 2px;
+                          border-bottom: dotted 1px orangered;
+                          opacity: 0;
+                          .transition(opacity 200ms linear);
+                        }
                         > .tick{
-                            left: 21px;
+                            width: calc(~"100% - 21px");
                             width: 100%;
                             > .line{
                                 border-bottom: dotted 1px @color_axis_line;
@@ -2254,61 +2344,62 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
 
                 }
-                > .percentileGroup{
-                    height: 12px;
-                    margin-top: 1px;
-                    position: relative;
-                    border-style: solid;
-                    border-color: lightgray;
-                    border-width: 1px 0px;
-                    > .percentileTitle{
-                      font-size: 0.6em;
-                      position: absolute;
-                      display: inline-block;
-                      font-weight: 300;
-                      top: 0px;
-                      left: -9px;
-                      text-shadow: 0px 0px 2px white;
-                      z-index: 120;
-                      color: gray;
+                > .percentileChart{
+                  display: none;
+                  height: 12px;
+                  margin-top: 1px;
+                  position: relative;
+                  border-style: solid;
+                  border-color: lightgray;
+                  border-width: 1px 0px;
+                  > .percentileTitle{
+                    font-size: 0.6em;
+                    position: absolute;
+                    display: inline-block;
+                    font-weight: 300;
+                    top: 0px;
+                    left: -9px;
+                    text-shadow: 0px 0px 2px white;
+                    z-index: 120;
+                    color: gray;
+                    pointer-events: none;
+                    display: none;
+                  }
+                  &:hover > .percentileTitle{ display: block; }
+                  > .quantile {
+                    display: inline-block;
+                    position: absolute;
+                    height: 10px;
+                    left: 0px;
+                    width:1px;
+                    .transition(~'transform 700ms ease-in-out');
+                    .transform-origin(0% 0%);
+                    &.q_pos{
+                      background-color: rgb(27, 111, 97);
+                      margin-left: -0.5px;
+                      z-index: 101;
                       pointer-events: none;
-                      display: none;
-                    }
-                    &:hover > .percentileTitle{ display: block; }
-                    > .quantile {
-                      display: inline-block;
-                      position: absolute;
-                      height: 10px;
-                      left: 0px;
-                      width:1px;
-                      .transition(~'transform 700ms ease-in-out');
-                      .transform-origin(0% 0%);
-                      &.q_pos{
+                      &.q_50 {
+                        width: 4px;
                         background-color: rgb(27, 111, 97);
-                        margin-left: -0.5px;
-                        z-index: 101;
-                        pointer-events: none;
-                        &.q_50 {
-                          width: 4px;
-                          background-color: rgb(27, 111, 97);
-                          margin-left: -2px;
-                          pointer-events: all;
-                        }
+                        margin-left: -2px;
+                        pointer-events: all;
                       }
-                      &.q_range{
-                        &:hover{
-                          border-color: rgb(27, 111, 97);
-                          border-style: solid;
-                          border-width: 1px 0px 1px 0px;
-                          z-index: 100;
-                        }
-                      }
-                      &.q_40_60 { background-color: lighten(rgb(27, 111, 97), 15%); }
-                      &.q_30_70 { background-color: lighten(rgb(27, 111, 97), 40%); }
-                      &.q_20_80 { background-color: lighten(rgb(27, 111, 97), 60%); }
-                      &.q_10_90 { background-color: lighten(rgb(27, 111, 97), 70%); }
                     }
-                } // percentileGroup
+                    &.q_range{
+                      &:hover{
+                        border-color: rgb(27, 111, 97);
+                        border-style: solid;
+                        border-width: 1px 0px 1px 0px;
+                        z-index: 100;
+                      }
+                    }
+                    &.q_40_60 { background-color: lighten(rgb(27, 111, 97), 15%); }
+                    &.q_30_70 { background-color: lighten(rgb(27, 111, 97), 40%); }
+                    &.q_20_80 { background-color: lighten(rgb(27, 111, 97), 60%); }
+                    &.q_10_90 { background-color: lighten(rgb(27, 111, 97), 70%); }
+                  }
+                } // percentileChart
                 > .mapColorBar{
                   .flex-direction(row);
                   .flex-wrap(wrap);
@@ -2359,20 +2450,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             .transition(~'all 450ms ease-in-out');
                             > .circlee{
                                 display: block;
-                                border-radius: 20px;
-                                width: 8px;
+                                border-radius: 1px;
+                                width: 4px;
                                 height: 8px;
                                 background-color: orangered;
-                                left: -4px;
+                                left: -2px;
                                 z-index: 2;
                                 position: relative;
                             }
                             > .selected-item-value-text{
-                                position: relative;
-                                top: -4px;
-                                color: @color_related;
+                                color: #ff6a33;
                                 font-size: 0.8em;
                                 white-space: nowrap;
+                                top: 7px;
+                                position: absolute;
                                 > .selected-item-value-text-v{
                                     position: relative;
                                     left: -50%;
@@ -2552,7 +2643,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           color: black;
         }
       }
-      &[catViewType="map"]{
+      &[viewType="map"]{
         .summaryCategorical{
           > .summaryControls > {
             .sortOptionSelectGroup{ display: none; }
@@ -2570,8 +2661,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
       }
-      &[catViewType="list"]{
+      &[viewType="list"]{
         .catMap_Base{ display: none; }
+      }
+      &[viewType="line"]{
+        .summaryConfig_UnitName{ display: none;}
       }
     }// kshfSummary
 
@@ -2587,6 +2681,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .relativeModeControl{ 
           height: 12px;
           margin-left: 2px;
+        }
+        > .highlightedAggrValue{
+          position: absolute;
+          border-left: dotted 1px orangered;
+          opacity: 0;
+          .transition(opacity 200ms linear);
         }
         > .tick{
           > .text{
@@ -2634,7 +2734,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: black;
           }
         }
-        > .catHighlightedValue{
+        > .highlightedAggrValue{
           position: absolute;
           top: 2px;
           margin-left: -3px; // center the circle

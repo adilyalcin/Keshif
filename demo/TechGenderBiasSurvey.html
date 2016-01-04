@@ -48,40 +48,34 @@ google.setOnLoadCallback(function(){
         name: "Programming Experience",
         value: "How many years have you been programming?",
         description: "How many years have you been programming?",
-        catSortBy: function(){
-          switch(this.id){
-            case ">10 years": return 0;
-            case "8-10 years": return 1;
-            case "6-7 years": return 2;
-            case "5 years": return 3;
-            case "4 years": return 4;
-            case "3 years": return 5;
-            case "2 years": return 6;
-            case "1 year": return 7;
-            case "< 1 year": return 8;
-            default: console.log(this.id); return 0;
-          }
-        }
+        catSortBy: [
+          ">10 years",
+          "8-10 years",
+          "6-7 years",
+          "5 years",
+          "4 years",
+          "3 years",
+          "2 years",
+          "1 year",
+          "< 1 year"
+        ]
       },
       {
         name: "First Programming Age",
         value: "What age did you start programming?",
         description: "What age did you start programming?",
         collapsed: true,
-        catSortBy: function(){
-          switch(this.id){
-            case "> 25 years old": return 0;
-            case "21-25 years old": return 1;
-            case "19-20 years old": return 2;
-            case "17-18 years old": return 3;
-            case "15-16 years old": return 4;
-            case "12-14 years old": return 5;
-            case "9-11 years old": return 6;
-            case "6-8 years old": return 7;
-            case "< 5 years old": return 8;
-            default: console.log(this.id); return 0;
-          }
-        }
+        catSortBy: [
+          "> 25 years old",
+          "21-25 years old",
+          "19-20 years old",
+          "17-18 years old",
+          "15-16 years old",
+          "12-14 years old",
+          "9-11 years old",
+          "6-8 years old",
+          "< 5 years old"
+        ]
       },
       {
         name: "Tech Area",

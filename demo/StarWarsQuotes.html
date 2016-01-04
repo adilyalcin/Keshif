@@ -23,12 +23,10 @@ function getIcon(v){
     return "<span class='fa fa-empire'></span>";
 };
 
-function getEpisode(v){
-  switch(v){
-    case "Star Wars": return 4;
-    case "Empire Strikes Back": return 5;
-    case "Return of The Jedi": return 6;
-  }
+var episodeID = {
+  "Star Wars": 4,
+  "Empire Strikes Back": 5,
+  "Return of The Jedi": 6,
 };
 
 var numFormat = d3.format(".2r");
@@ -58,23 +56,19 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      { name: "Film",
-        catSortBy: function(){ return getEpisode(this.id); } },
-      { name: "Side",
-        catLabel: function(){ return this.id+" "+getIcon(this.id); } },
+      { name: "Film", catSortBy: episodeID  },
+      { name: "Side", catLabel: function(){ return this.id+" "+getIcon(this.id); } },
       "Character",
       {name: "Word Count", panel: "left", collapsed: true},
       {name: "% of Film", panel: "bottom", unitName: "%"},
     ],
     itemDisplay: {
       sortColWidth: 55,
-      sortBy: { name: "% of Film", inverse: true, 
-        label: function(){ return numFormat(this["% of Film"]);}
-        },
+      sortBy: { name: "% of Film", inverse: true,  label: function(){ return numFormat(this["% of Film"]);} },
       textSearch: "Line",
       recordView: function(){
         return getIcon(this.Side)+
-          " <span class='characterName'>"+this.Character + "</span> <span class='episode'>" + getEpisode(this.Film)+"</span> "+
+          " <span class='characterName'>"+this.Character + "</span> <span class='episode'>" + episodeID[this.Film]+"</span> "+
           " <span class='lineLine'>"+this.Line+"</span>";
       }
     }

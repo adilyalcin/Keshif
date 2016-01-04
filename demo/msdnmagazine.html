@@ -74,7 +74,7 @@ var loadData = function(browser){
 };
 
 $(document).ready( function(){
-  new kshf.Browser({
+  browser = new kshf.Browser({
     domID: "#chart_div",
     itemName: "Articles on MSDN Magazine",
     categoryTextWidth: 180,
@@ -95,7 +95,7 @@ $(document).ready( function(){
           var str='';
           for(var i=0; i<this.id; i++) str +="<span class='fa fa-star'></span>";
           return str;
-        }},
+        } },
       { name: "Page Views", panel: 'right' },
       { name: "Authors", panel: 'right' }
     ],
@@ -103,8 +103,7 @@ $(document).ready( function(){
       sortBy: 'Page Views',
       textSearch: "Name",
       recordView: function(){
-        return "<a target='_blank' class='articleLink' href='"+
-            this.url+"'>"+this.Name+" <i class='fa fa-external-link'></i></a>";
+        return "<a target='_blank' class='articleLink' href='"+this.url+"'>"+this.Name+" <i class='fa fa-external-link'></i></a>";
       }
     }
   });

@@ -1047,6 +1047,14 @@ kshf.RecordDisplay = function(kshf_, config, root){
     }
 
     if(config.recordView!==undefined){
+      if(typeof(config.recordView)==="string"){
+        // it may be a function definition if so, evaluate
+        if(config.recordView.substr(0,8)==="function"){
+          // Evaluate string to a function!!
+          eval("\"use strict\"; config.recordView = "+config.recordView);
+        }
+      }
+
       this.setRecordViewSummary(
         (typeof config.recordView === 'string') ?
           this.browser.summaries_by_name[config.recordView] :
@@ -1883,6 +1891,25 @@ kshf.RecordDisplay.prototype = {
         }
       });
       this.maxVisibleItems = this.maxVisibleItems_Default;
+    },
+    /** -- */
+    exportConfig: function(){
+      var c={};
+      c.displayType = this.displayType;
+      if(this.textSearchSummary){
+        c.textSearch = this.textSearchSummary.summaryName;
+      }
+      if(typeof(this.recordViewSummary.summaryColumn)==="string"){
+        c.recordView = this.recordViewSummary.summaryColumn;
+      } else {
+        c.recordView = this.recordViewSummary.summaryFunc.toString();
+      }
+      c.sortBy = [];
+      browser.recordDisplay.sortingOpts.forEach(function(summary){
+        c.sortBy.push(summary.summaryName);
+      });
+      if(c.sortBy.length===1) c.sortBy = c.sortBy[0];
+      return c;
     }
 };
 
@@ -2122,9 +2149,6 @@ kshf.Panel.prototype = {
         this.hideBars = _w_<=5;
         this.hideBarAxis = _w_<=20;
 
-        if(this.forceHideBarAxis===true){
-            this.hideBarAxis = true;
-        }
         if(this.hideBars===false){
             this.DOM.root.attr("hidebars",false);
         } else {
@@ -2177,7 +2201,7 @@ kshf.Panel.prototype = {
                 if(summary.refreshLabelWidth) summary.refreshLabelWidth();
             });
         }
-    }
+    },
 };
 
 /**
@@ -2186,9 +2210,7 @@ kshf.Panel.prototype = {
 kshf.Browser = function(options){
     this.options = options;
 
-    if(kshf.lang.cur===null){
-        kshf.lang.cur = kshf.lang.en;
-    }
+    if(kshf.lang.cur===null) kshf.lang.cur = kshf.lang.en; // English is Default language
 
     // BASIC OPTIONS
     this.summaries = [];
@@ -2216,12 +2238,16 @@ kshf.Browser = function(options){
     this.highlightCrumbTimeout_Hide = undefined;
     this.highlightCrumbTimeout_Show = undefined;
 
+    this.compareSelectCrumb = null;
+    this.highlightSelectCrumb = null;
+
+    this.showDropZones = false;
+
+    this.mapColorTheme = "converge";
+
     this.mouseSpeed = 0; // includes touch-screens...
 
-    this.noAnim=false;
-
-    this.listDef = options.itemDisplay || {};
-    if(options.list) this.listDef = options.list;
+    this.noAnim = false;
 
     this.domID = options.domID;
 
@@ -2235,55 +2261,41 @@ kshf.Browser = function(options){
     this.preview_not = false;
     this.ratioModeCb = options.ratioModeCb;
 
-    this.compareSelectCrumb = null;
-    this.highlightSelectCrumb = null;
-
-    this.showDropZones = false;
-
-    this.mapColorTheme = "converge";
-
     this.itemName = options.itemName || "";
-
-    this.showDataSource = true;
-    if(options.showDataSource===false) this.showDataSource = false;
-
-    this.forceHideBarAxis = false;
-    if(options.forceHideBarAxis!==undefined) this.forceHideBarAxis = options.forceHideBarAxis;
+    if(options.itemDisplay) options.recordDisplay = options.itemDisplay;
 
     this.DOM = {};
     this.DOM.root = d3.select(this.domID)
-        .classed("kshf",true)
-        .attr("percentview",false)
-        .attr("noanim",true)
-        .attr("ratiomode",false)
-        .attr("attribsShown",false)
-        .attr("showdropzone",false)
-        .attr("previewcompare",false)
-        .attr("resultpreview",false)
-        .attr("record_display","none")
-        .style("position","relative")
-        //.style("overflow-y","hidden")
-        .on("mousemove",function(d,e){
-            if(typeof logIf === "object"){
-                logIf.setSessionID();
-            }
-            if(me.lastMouseMoveEvent===undefined){
-              me.lastMouseMoveEvent = d3.event;
-              return;
-            }
-            var timeDif = d3.event.timeStamp - me.lastMouseMoveEvent.timeStamp;
-            if(timeDif===0) return;
+      .classed("kshf",true)
+      .attr("percentview",false)
+      .attr("noanim",true)
+      .attr("ratiomode",false)
+      .attr("attribsShown",false)
+      .attr("showdropzone",false)
+      .attr("previewcompare",false)
+      .attr("resultpreview",false)
+      .attr("record_display","none")
+      .style("position","relative")
+      //.style("overflow-y","hidden")
+      .on("mousemove",function(d,e){
+        // Action logging...
+        if(typeof logIf === "object"){ logIf.setSessionID(); }
 
-            var xDif = Math.abs(d3.event.x - me.lastMouseMoveEvent.x);
-            var yDif = Math.abs(d3.event.y - me.lastMouseMoveEvent.y);
-            var posDif = Math.sqrt(xDif*xDif + yDif*yDif);
-            me.mouseSpeed = posDif / timeDif;
-            me.mouseSpeed = Math.min(me.mouseSpeed,2); // cannot exceed 5, controls highlight selection delay.
-            //console.log(me.mouseSpeed);
+        // Compute mouse moving speed, to adjust repsonsiveness
+        if(me.lastMouseMoveEvent===undefined){
+          me.lastMouseMoveEvent = d3.event;
+          return;
+        }
+        var timeDif = d3.event.timeStamp - me.lastMouseMoveEvent.timeStamp;
+        if(timeDif===0) return;
 
-            me.lastMouseMoveEvent = d3.event;
-        })
-        ;
+        var xDif = Math.abs(d3.event.x - me.lastMouseMoveEvent.x);
+        var yDif = Math.abs(d3.event.y - me.lastMouseMoveEvent.y);
+        // controls highlight selection delay
+        me.mouseSpeed = Math.min( Math.sqrt(xDif*xDif + yDif*yDif) / timeDif , 2);
+
+        me.lastMouseMoveEvent = d3.event;
+      });
 
     // remove any DOM elements under this domID, kshf takes complete control over what's inside
     var rootDomNode = this.DOM.root[0][0];
@@ -2292,7 +2304,6 @@ kshf.Browser = function(options){
     this.DOM.pointerBlock  = this.DOM.root.append("div").attr("class","pointerBlock");
     this.DOM.attribDragBox = this.DOM.root.append("div").attr("class","attribDragBox");
 
-    this.insertDOM_ResizeBrowser();
     this.insertDOM_Infobox();
     this.insertDOM_WarningBox();
 
@@ -2330,103 +2341,21 @@ kshf.Browser = function(options){
         parentDOM: this.DOM.root
     });
 
-    this.DOM.attributePanel = this.DOM.root.append("div").attr("class","panel attributePanel");
-    var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
-    xx.append("span").text("Available Attributes");
-    xx.append("span").attr("class","addAttrib fa fa-plus")
-      .each(function(){ this.tipsy = new Tipsy(this, { gravity: "e", title: "Add new" }); })
-      .on("mouseover",function(){ this.tipsy.show(); })
-      .on("mouseout" ,function(){ this.tipsy.hide(); })
-      .on("click",function(){
-        me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
-        me.insertAttributeList();
-      });
-    xx.append("span").attr("class","hidePanel fa fa-times")
-      .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
-      .on("mouseover",function(){ this.tipsy.show(); })
-      .on("mouseout" ,function(){ this.tipsy.hide(); })
-      .on("click",function(){
-          me.showAttributes();
-      });
-
-    var attributePanelControl = this.DOM.attributePanel.append("div").attr("class","attributePanelControl");
-
-    attributePanelControl.append("span").attr("class","attribFilterIcon fa fa-filter");
-
-    this.DOM.attribTextSearch = attributePanelControl.append("span").attr("class","textSearchBox attribTextSearch");
-    this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
-        .attr("class","textSearchControl fa")
-        .on("click",function() { 
-            me.DOM.attribTextSearchControl.attr("showClear",false)[0][0].value="";
-            me.summaries.forEach(function(summary){
-                if(summary.DOM.nugget===undefined) return;
-                summary.DOM.nugget.attr("filtered",false);
-            });
-        });
-    this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
-        .attr("class","textSearchInput")
-        .attr("type","text")
-        .attr("placeholder",kshf.lang.cur.Search)
-        .on("input",function(){
-            if(this.timer) clearTimeout(this.timer);
-            var x = this;
-            var queryString = x.value.toLowerCase();
-            if(queryString===""){
-                me.DOM.attribTextSearchControl.attr("showClear",true);
-            } else {
-                me.DOM.attribTextSearchControl.attr("showClear",true);
-            }
-            this.timer = setTimeout( function(){
-                me.summaries.forEach(function(summary){
-                    if(summary.DOM.nugget===undefined) return;
-                    summary.DOM.nugget.attr("filtered",(summary.summaryName.toLowerCase().indexOf(queryString)===-1));
-                });
-            }, 750);
-        });
-
-    attributePanelControl.append("span").attr("class","addAllSummaries")
-        .append("span").attr("class","fa fa-magic") // fa-caret-square-o-right
-            .each(function(){
-                this.tipsy = new Tipsy(this, { gravity: "e", title: "Add all to browser" });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("click",function(){ me.autoCreateBrowser(); });
-
-    this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
-
-    this.DOM.dropZone_AttribList = this.DOM.attributeList.append("div").attr("class","dropZone dropZone_AttribList")
-        .attr("readyToDrop",false)
-        .on("mouseenter",function(event){
-            this.setAttribute("readyToDrop",true);
-        })
-        .on("mouseleave",function(event){
-            this.setAttribute("readyToDrop",false);
-        })
-        .on("mouseup",function(event){
-            var movedSummary = me.movedSummary;
-            movedSummary.removeFromPanel();
-            movedSummary.clearDOM();
-            movedSummary.browser.updateLayout();
-            me.movedSummary = null;
-        })
-        ;
-    this.DOM.dropZone_AttribList.append("span").attr("class","dropIcon fa fa-angle-double-down");
-    this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
+    this.insertDOM_AttributePanel();
 
     var me = this;
 
     this.DOM.root.selectAll(".panel").on("mouseleave",function(){
-        setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
+      setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
     });
+
+    kshf.loadFont();
 
     if(options.source){
         window.setTimeout(function() { me.loadSource(options.source); }, 10);
     } else {
         this.panel_infobox.attr("show","source");
     }
-
-    kshf.loadFont();
 };
 
 kshf.Browser.prototype = {
@@ -2551,48 +2480,6 @@ kshf.Browser.prototype = {
         this.filters.push(newFilter);
         return newFilter;
     },
-    /** -- */
-    insertDOM_ResizeBrowser: function(){
-        var me=this;
-        this.DOM.resizeBrowser_corner = this.DOM.root.append("div").attr("class", "resizeBrowser_corner")
-            .each(function(summary){
-                this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.ResizeBrowser });
-            })
-            .on("mouseover",function(){
-                if(this.getAttribute("dragging")==="true") return;
-                this.tipsy.show();
-            })
-            .on("mouseout",function(){
-                this.tipsy.hide();
-            })
-            .on("mousedown", function (d, i) {
-                var resizeDOM = this;
-                this.tipsy.hide();
-                resizeDOM.setAttribute("dragging",true);
-                me.DOM.root.style('cursor','nwse-resize');
-                me.setNoAnim(true);
-                var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
-                var mouseDown_y = d3.mouse(d3.select("body")[0][0])[1];
-                var mouseDown_width  = parseInt(d3.select(this.parentNode).style("width"));
-                var mouseDown_height = parseInt(d3.select(this.parentNode).style("height"));
-                d3.select("body").on("mousemove", function() {
-                    var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
-                    var mouseDown_y_diff = d3.mouse(d3.select("body")[0][0])[1]-mouseDown_y;
-                    d3.select(me.domID).style("height",(mouseDown_height+mouseDown_y_diff)+"px");
-                    d3.select(me.domID).style("width" ,(mouseDown_width +mouseDown_x_diff)+"px");
-                    me.updateLayout();
-                }).on("mouseup", function(){
-                    if(sendLog) sendLog(kshf.LOG.RESIZE);
-                    resizeDOM.removeAttribute("dragging");
-                    me.DOM.root.style('cursor','default');
-                    me.setNoAnim(false);
-                    // unregister mouse-move callbacks
-                    d3.select("body").on("mousemove", null).on("mouseup", null);
-                });
-               d3.event.preventDefault();
-            })
-            .style("display",this.options.showResizeCorner?true:false);
-    },
     /* -- */
     insertDOM_WarningBox: function(){
         this.panel_warningBox = this.DOM.root.append("div").attr("class", "warningBox_wrapper").attr("shown",false)
@@ -2683,6 +2570,17 @@ kshf.Browser.prototype = {
 
         var rightBoxes = this.DOM.panel_Basic.append("span").attr("class","rightBoxes");
         // Attribute panel
+        if (typeof saveAs !== 'undefined') { // FileSaver.js is included
+          rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-download")
+            .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Download Browser Configuration" }); })
+            .on("mouseover",function(){ this.tipsy.show(); })
+            .on("mouseout", function(){ this.tipsy.hide(); })
+            .on("click",function(){ 
+              var c = JSON.stringify(me.exportConfig(),null,'  ');
+              var blob = new Blob([c]);//, {type: "text/plain;charset=utf-8"});
+              saveAs(blob, "kshf_config.json");
+            });          
+        }
         rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
             .each(function(d){
                 this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser });
@@ -2905,9 +2803,14 @@ kshf.Browser.prototype = {
         x = source_wrapper.append("div").attr("class","sourceOptions");
 
         x.append("span").attr("class","sourceOption").text("Google Sheet").attr("source_type","GoogleSheet");
-        x.append("span").attr("class","sourceOption").text("Google Drive Folder").attr("source_type","GoogleDrive");
-        x.append("span").attr("class","sourceOption").text("Dropbox Folder").attr("source_type","Dropbox");
-        x.append("span").attr("class","sourceOption").text("Local File").attr("source_type","LocalFile");
+        x.append("span").attr("class","sourceOption").html(
+          "<img src='https://developers.google.com/drive/images/drive_icon.png' style='height:12px; position: relative; top: 2px'> "+
+          "Google Drive Folder")
+          .attr("source_type","GoogleDrive");
+        x.append("span").attr("class","sourceOption").html(
+          "<i class='fa fa-dropbox'></i> Dropbox Folder").attr("source_type","Dropbox");
+        x.append("span").attr("class","sourceOption")
+          .html("<i class='fa fa-file'></i> Local File").attr("source_type","LocalFile");
 
         x.selectAll(".sourceOption").on("click",function(){
             source_type=this.getAttribute("source_type");
@@ -2991,15 +2894,15 @@ kshf.Browser.prototype = {
                 switch(localFile.type){
                     case "application/json": // json
                         localFile.fileType = "json";
-                        localFile.tableName = localFile.name.replace(".json","");
+                        localFile.name = localFile.name.replace(".json","");
                         break;
                     case "text/csv": // csv
                         localFile.fileType = "csv";
-                        localFile.tableName = localFile.name.replace(".csv","");
+                        localFile.name = localFile.name.replace(".csv","");
                         break;
                     case "text/tab-separated-values":  // tsv
                         localFile.fileType = "tsv";
-                        localFile.tableName = localFile.name.replace(".tsv","");
+                        localFile.name = localFile.name.replace(".tsv","");
                         break;
                     default:
                         localFile = undefined;
@@ -3007,7 +2910,7 @@ kshf.Browser.prototype = {
                         alert("The selected file type is not supported (csv, tsv, json)");
                         return;
                 }
-                localFile.tableName = localFile.tableName.replace("_"," ");
+                localFile.name = localFile.name.replace("_"," ");
                 gdocLink_ready.style("opacity",1);
                 gdocLink_ready.attr("ready",true);
                 actionButton.attr("disabled",false);
@@ -3114,61 +3017,150 @@ kshf.Browser.prototype = {
                     .on("mouseleave",function(){ this.tipsy.hide(); });;
                 sheetColumn_sep_wrapper.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
 
-
         var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton")
-            .html("Explore it with Keshif")
-            .attr("disabled",true)
-            .on("click",function(){
-                if(!readyToLoad()){
-                    alert("Please input your data source link and sheet name.");
-                    return;
-                }
-                var sheetID = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
-                if(sheetID==="") sheetID = "id";
-                var loadedCb_pre = me.loadedCb;
-                me.loadedCb = function(){
-                    var splitColumnName = me.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
-                    var splitSepName = me.DOM.infobox_source.select(".sheetColumn_Seperator")[0][0].value;
-                    if(splitColumnName){
-                        kshf.Util.cellToArray(this.items, [splitColumnName], splitSepName, false);
-                    }
-                    if(loadedCb_pre) loadedCb_pre.call(this,this);
-                };
-                var readyCb_pre = me.readyCb;
-                me.readyCb = function(){
-                    me.showAttributes();
-                    if(readyCb_pre) readyCb_pre.call(this,this);
-                }
-                switch(source_type){
-                    case "GoogleSheet":
-                        me.loadSource({
-                            gdocId: sourceURL,
-                            tables: {name:sourceSheet, id:sheetID}
-                        });
-                        break;
-                    case "GoogleDrive":
-                        me.loadSource({
-                            dirPath: sourceURL,
-                            fileType: DOMfileType[0][0].value,
-                            tables: {name:sourceSheet, id:sheetID}
-                        });
-                        break;
-                    case "Dropbox":
-                        me.loadSource({
-                            dirPath: sourceURL,
-                            fileType: DOMfileType[0][0].value,
-                            tables: {name:sourceSheet, id:sheetID}
-                        });
-                        break;
-                    case "LocalFile":
-                        localFile.id = sheetID;
-                        me.loadSource({
-                            dirPath: "", // TODO: temporary
-                            tables: localFile
-                        });
-                        break;
-                }
+          .text("Explore it with Keshif")
+          .attr("disabled",true)
+          .on("click",function(){
+            if(!readyToLoad()){
+              alert("Please input your data source link and sheet name.");
+              return;
+            }
+            var sheetID = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
+            if(sheetID==="") sheetID = "id";
+            var loadedCb_pre = me.loadedCb;
+            me.loadedCb = function(){
+              var splitColumnName = me.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
+              var splitSepName = me.DOM.infobox_source.select(".sheetColumn_Seperator")[0][0].value;
+              if(splitColumnName){
+                kshf.Util.cellToArray(this.items, [splitColumnName], splitSepName, false);
+              }
+              if(loadedCb_pre) loadedCb_pre.call(this,this);
+            };
+            var readyCb_pre = me.readyCb;
+            me.readyCb = function(){
+              me.showAttributes();
+              if(readyCb_pre) readyCb_pre.call(this,this);
+            }
+            switch(source_type){
+              case "GoogleSheet":
+                me.loadSource({
+                  gdocId: sourceURL,
+                  tables: {name:sourceSheet, id:sheetID}
+                });
+                break;
+              case "GoogleDrive":
+                me.loadSource({
+                  dirPath: sourceURL,
+                  fileType: DOMfileType[0][0].value,
+                  tables: {name:sourceSheet, id:sheetID}
+                });
+                break;
+              case "Dropbox":
+                me.loadSource({
+                  dirPath: sourceURL,
+                  fileType: DOMfileType[0][0].value,
+                  tables: {name:sourceSheet, id:sheetID}
+                });
+                break;
+              case "LocalFile":
+                localFile.id = sheetID;
+                me.loadSource({
+                  dirPath: "", // TODO: temporary
+                  tables: localFile
+                });
+                break;
+            }
+          });
+    },
+    /** -- */
+    insertDOM_AttributePanel: function(){
+      var me=this;
+
+      this.DOM.attributePanel = this.DOM.root.append("div").attr("class","panel attributePanel");
+      
+      var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
+      xx.append("span").text("Available Attributes");
+      xx.append("span").attr("class","addAttrib fa fa-plus")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: "e", title: "Add new" }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
+          me.insertAttributeList();
+        });
+      xx.append("span").attr("class","hidePanel fa fa-times")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          me.showAttributes();
+        });
+
+      var attributePanelControl = this.DOM.attributePanel.append("div").attr("class","attributePanelControl");
+
+      attributePanelControl.append("span").attr("class","attribFilterIcon fa fa-filter");
+
+      // *******************************************************
+      // TEXT SEARCH
+      // *******************************************************
+
+      this.DOM.attribTextSearch = attributePanelControl.append("span").attr("class","textSearchBox attribTextSearch");
+      this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
+        .attr("class","textSearchControl fa")
+        .on("click",function() { 
+          me.DOM.attribTextSearchControl.attr("showClear",false)[0][0].value="";
+          me.summaries.forEach(function(summary){
+            if(summary.DOM.nugget===undefined) return;
+            summary.DOM.nugget.attr("filtered",false);
+          });
+        });
+      this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
+        .attr("class","textSearchInput")
+        .attr("type","text")
+        .attr("placeholder",kshf.lang.cur.Search)
+        .on("input",function(){
+          if(this.timer) clearTimeout(this.timer);
+          var x = this;
+          var queryString = x.value.toLowerCase();
+          if(queryString===""){
+            me.DOM.attribTextSearchControl.attr("showClear",true);
+          } else {
+            me.DOM.attribTextSearchControl.attr("showClear",true);
+          }
+          this.timer = setTimeout( function(){
+            me.summaries.forEach(function(summary){
+              if(summary.DOM.nugget===undefined) return;
+              summary.DOM.nugget.attr("filtered",(summary.summaryName.toLowerCase().indexOf(queryString)===-1));
             });
+          }, 750);
+        });
+
+      attributePanelControl.append("span").attr("class","addAllSummaries")
+        .append("span").attr("class","fa fa-magic") // fa-caret-square-o-right
+          .each(function(){ this.tipsy = new Tipsy(this, { gravity: "e", title: "Add all to browser" }); })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); })
+          .on("click",function(){ me.autoCreateBrowser(); });
+
+      this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
+
+      this.DOM.dropZone_AttribList = this.DOM.attributeList.append("div").attr("class","dropZone dropZone_AttribList")
+        .attr("readyToDrop",false)
+        .on("mouseenter",function(event){
+          this.setAttribute("readyToDrop",true);
+        })
+        .on("mouseleave",function(event){
+          this.setAttribute("readyToDrop",false);
+        })
+        .on("mouseup",function(event){
+          var movedSummary = me.movedSummary;
+          movedSummary.removeFromPanel();
+          movedSummary.clearDOM();
+          movedSummary.browser.updateLayout();
+          me.movedSummary = null;
+        });
+      this.DOM.dropZone_AttribList.append("span").attr("class","dropIcon fa fa-angle-double-down");
+      this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
     },
     /** -- */
     updateItemZoomText: function(item){
@@ -3229,69 +3221,56 @@ kshf.Browser.prototype = {
     },
     /** -- */
     showInfoBox: function(){
-        this.panel_infobox.attr("show","credit");
-        if(sendLog) sendLog(kshf.LOG.INFOBOX);
+      this.panel_infobox.attr("show","credit");
+      if(sendLog) sendLog(kshf.LOG.INFOBOX);
     },
     /** -- */
     loadSource: function(v){
-        this.source = v;
-        this.panel_infobox.attr("show","loading");
-        // Compability with older versions.. Used to specify "sheets" instead of "tables"
-        if(this.source.sheets){
-            this.source.tables = this.source.sheets;
-        }
-        if(this.source.tables){
-            // If not array, make it an array with a single item
-            if(!Array.isArray(this.source.tables)) {
-                this.source.tables = [this.source.tables];
-            }
-            // If table definition a string, match name to string
-            this.source.tables.forEach(function(tableDescr, i){
-                if(typeof tableDescr === "string") {
-                    this.source.tables[i] = {name: tableDescr};
-                }
-                if(tableDescr instanceof File){ // Local File
-                    // Get file type
-                }
-            }, this);
-            // Reset loadedTableCount
-            this.source.loadedTableCount=0;
+      this.source = v;
+      this.panel_infobox.attr("show","loading");
+      // Compability with older versions.. Used to specify "sheets" instead of "tables"
+      if(this.source.sheets){
+          this.source.tables = this.source.sheets;
+      }
+      if(this.source.tables){
+        if(!Array.isArray(this.source.tables)) this.source.tables = [this.source.tables];
 
-            this.DOM.status_text_sub_dynamic
-                .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
+        this.source.tables.forEach(function(tableDescr, i){
+            if(typeof tableDescr === "string") this.source.tables[i] = {name: tableDescr};
+        }, this);
 
-            this.source.tables[0].primary = true;
-            this.primaryTableName = this.source.tables[0].tableName || this.source.tables[0].name;
-            if(this.source.gdocId){
-                this.source.url = this.source.url || ("https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId);
-            }
-            this.source.tables.forEach(function(tableDescr){
-                tableDescr.tableName = tableDescr.tableName || tableDescr.name;
-                if(tableDescr.id===undefined){ // set id column
-                    tableDescr.id = "id";
-                }
-                // if this table name has been loaded, skip this one
-                if(kshf.dt[tableDescr.tableName]!==undefined){
-                    this.incrementLoadedSheetCount();
-                    return;
-                }
-                if(this.source.gdocId){
-                    this.loadTable_Google(tableDescr);
-                } else {
-                    switch(this.source.fileType || tableDescr.fileType){
-                        case "json": 
-                            this.loadTable_JSON(tableDescr); break;
-                        case "csv":
-                        case "tsv":  
-                            this.loadTable_CSV(tableDescr); break;
-                    }
-                }
-            },this);
-        } else {
-            if(this.source.callback){
-                this.source.callback(this);
-            }
+        // Reset loadedTableCount
+        this.source.loadedTableCount=0;
+
+        this.DOM.status_text_sub_dynamic
+          .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
+
+        this.primaryTableName = this.source.tables[0].name;
+        if(this.source.gdocId){
+          this.source.url = this.source.url || ("https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId);
         }
+        this.source.tables.forEach(function(tableDescr){
+          if(tableDescr.id===undefined) tableDescr.id = "id";
+          // if this table name has been loaded, skip this one
+          if(kshf.dt[tableDescr.name]!==undefined){
+            this.incrementLoadedTableCount();
+            return;
+          }
+          if(this.source.gdocId){
+            this.loadTable_Google(tableDescr);
+          } else {
+            switch(this.source.fileType || tableDescr.fileType){
+              case "json": 
+                this.loadTable_JSON(tableDescr); break;
+              case "csv":
+              case "tsv":  
+                this.loadTable_CSV(tableDescr); break;
+            }
+          }
+        },this);
+      } else {
+        if(this.source.callback) this.source.callback(this);
+      }
     },
     loadTable_Google: function(sheet){
         var me=this;
@@ -3313,8 +3292,8 @@ kshf.Browser.prototype = {
         if(sheet.query) googleQuery.setQuery(sheet.query);
 
         googleQuery.send( function(response){
-            if(kshf.dt[sheet.tableName]!==undefined){
-                me.incrementLoadedSheetCount();
+            if(kshf.dt[sheet.name]!==undefined){
+                me.incrementLoadedTableCount();
                 return;
             }
             if(response.isError()) {
@@ -3367,8 +3346,8 @@ kshf.Browser.prototype = {
 
         function processCSVText(data){
             // if data is already loaded, nothing else to do...
-            if(kshf.dt[tableDescr.tableName]!==undefined){
-                me.incrementLoadedSheetCount();
+            if(kshf.dt[tableDescr.name]!==undefined){
+                me.incrementLoadedTableCount();
                 return;
             }
             var arr = [];
@@ -3413,20 +3392,26 @@ kshf.Browser.prototype = {
     loadTable_JSON: function(tableDescr){
         var me = this;
         function processJSONText(data){
-            // if data is already loaded, nothing else to do...
-            if(kshf.dt[tableDescr.tableName]!==undefined){
-                me.incrementLoadedSheetCount();
-                return;
-            }
-            var arr = [];
-            var idColumn = tableDescr.id;
+          // File may describe keshif config. Load from config file here!
+          if(data.domID){
+            me.options = data;
+            me.loadSource(data.source);
+            return;
+          };
+          // if data is already loaded, nothing else to do...
+          if(kshf.dt[tableDescr.name]!==undefined){
+            me.incrementLoadedTableCount();
+            return;
+          }
+          var arr = [];
+          var idColumn = tableDescr.id;
 
-            data.forEach(function(dataItem,i){
-                if(dataItem[idColumn]===undefined) dataItem[idColumn] = i;
-                arr.push(new kshf.Item(dataItem, idColumn));
-            });
+          data.forEach(function(dataItem,i){
+            if(dataItem[idColumn]===undefined) dataItem[idColumn] = i;
+            arr.push(new kshf.Item(dataItem, idColumn));
+          });
 
-            me.finishDataLoad(tableDescr, arr);
+          me.finishDataLoad(tableDescr, arr);
         };
         if(tableDescr instanceof File){
             // Load using FileReader
@@ -3489,14 +3474,14 @@ kshf.Browser.prototype = {
     },
     /** -- */
     finishDataLoad: function(table,arr) {
-        kshf.dt[table.tableName] = arr;
+        kshf.dt[table.name] = arr;
         var id_table = {};
         arr.forEach(function(r){id_table[r.id()] = r;});
-        kshf.dt_id[table.tableName] = id_table;
-        this.incrementLoadedSheetCount();
+        kshf.dt_id[table.name] = id_table;
+        this.incrementLoadedTableCount();
     },
     /** -- */
-    incrementLoadedSheetCount: function(){
+    incrementLoadedTableCount: function(){
         var me=this;
         this.source.loadedTableCount++;
         this.panel_infobox.select("div.status_text .dynamic")
@@ -3566,6 +3551,14 @@ kshf.Browser.prototype = {
           }
           if(facetDescr.attribMap){
             facetDescr.value = facetDescr.attribMap;
+          }
+
+          if(typeof(facetDescr.value)==="string"){
+            // it may be a function definition if so, evaluate
+            if(facetDescr.value.substr(0,8)==="function"){
+              // Evaluate string to a function!!
+              eval("\"use strict\"; facetDescr.value = "+facetDescr.value);
+            }
           }
 
           // String -> resolve to name
@@ -3651,28 +3644,27 @@ kshf.Browser.prototype = {
             }
 
             if(facetDescr.panel!=="none"){
-                facetDescr.panel = facetDescr.panel || 'left';
-                summary.addToPanel(this.panels[facetDescr.panel]);
+              facetDescr.panel = facetDescr.panel || 'left';
+              summary.addToPanel(this.panels[facetDescr.panel]);
             }
           }
 
           if(summary.type==='interval'){
-              summary.unitName = facetDescr.unitName || summary.unitName;
-              if(facetDescr.showPercentile){
-                  summary.showPercentile = true;
-                  summary.initDOM_Percentile();
-              }
-              summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
+            summary.unitName = facetDescr.unitName || summary.unitName;
+            if(facetDescr.showPercentile) {
+              summary.showPercentileChart(true);
+            }
+            summary.optimumTickWidth = facetDescr.optimumTickWidth || summary.optimumTickWidth;
 
-              // add to panel before you set scale type and other options: TODO: Fix
-              if(facetDescr.panel!=="none"){
-                  facetDescr.panel = facetDescr.panel || 'left';
-                  summary.addToPanel(this.panels[facetDescr.panel]);
-              }
+            // add to panel before you set scale type and other options: TODO: Fix
+            if(facetDescr.panel!=="none"){
+              facetDescr.panel = facetDescr.panel || 'left';
+              summary.addToPanel(this.panels[facetDescr.panel]);
+            }
 
-              if(facetDescr.scaleType) {
-                  summary.setScaleType(facetDescr.scaleType,true);
-              }
+            if(facetDescr.scaleType) {
+              summary.setScaleType(facetDescr.scaleType,true);
+            }
           }
         },this);
 
@@ -3680,14 +3672,12 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        this.recordDisplay = new kshf.RecordDisplay(this,this.listDef, this.DOM.root);
+        this.recordDisplay = new kshf.RecordDisplay(this,this.options.itemDisplay||{}, this.DOM.root);
 
         this.DOM.recordName.html(this.itemName);
 
-        if(this.showDataSource !== false && this.source.url){
-            this.DOM.datasource
-                .style("display","inline-block")
-                .attr("href",this.source.url);
+        if(this.source.url){
+          this.DOM.datasource.style("display","inline-block").attr("href",this.source.url);
         }
 
         this.checkBrowserZoomLevel();
@@ -3747,35 +3737,32 @@ kshf.Browser.prototype = {
     },
     /** -- */
     unregisterBodyCallbacks: function(){
-        // TODO: Revert to previous handlers...
-        d3.select("body").style('cursor','auto')
-            .on("mousemove",null)
-            .on("mouseup",null)
-            .on("keydown",null);
+      // TODO: Revert to previous handlers...
+      d3.select("body").style('cursor','auto')
+        .on("mousemove",null)
+        .on("mouseup",null)
+        .on("keydown",null);
     },
     /** -- */
     prepareDropZones: function(summary,source){
-        this.movedSummary = summary;
-        this.showDropZones = true;
-        this.DOM.root
-            .attr("showdropzone",true)
-            .attr("dropattrtype",summary.getDataType())
-            .attr("dropSource",source)
-            ;
-        this.DOM.attribDragBox.style("display","block").text(summary.summaryName);
-        if(!summary.uniqueCategories()){
-        }
+      this.movedSummary = summary;
+      this.showDropZones = true;
+      this.DOM.root
+        .attr("showdropzone",true)
+        .attr("dropattrtype",summary.getDataType())
+        .attr("dropSource",source);
+      this.DOM.attribDragBox.style("display","block").text(summary.summaryName);
     },
     /** -- */
     clearDropZones: function(){
-        this.showDropZones = false;
-        this.unregisterBodyCallbacks();
-        this.DOM.root.attr("showdropzone",false);
-        this.DOM.attribDragBox.style("display","none");
-        if(this.movedSummary && !this.movedSummary.uniqueCategories()){
-            // ?
-        }
-        this.movedSummary = undefined;
+      this.showDropZones = false;
+      this.unregisterBodyCallbacks();
+      this.DOM.root.attr("showdropzone",false);
+      this.DOM.attribDragBox.style("display","none");
+      if(this.movedSummary && !this.movedSummary.uniqueCategories()){
+          // ?
+      }
+      this.movedSummary = undefined;
     },
     /** -- */
     reorderAttributeList: function(){
@@ -4097,7 +4084,7 @@ kshf.Browser.prototype = {
       this.summaries.forEach(function(summary){
         if(!summary.inBrowser()) return;
         summary.refreshMeasureLabel();
-        if(summary.catViewType==='map'){
+        if(summary.viewType==='map'){
           summary.temp_refreshMapColorScale();
         }
         summary.refreshViz_Axis();
@@ -4163,7 +4150,7 @@ kshf.Browser.prototype = {
       this.compareSelectCrumb.select(".crumbHeader").html(selSummary.summaryName);
       var valText = "";
       if(selSummary.type==="categorical"){
-        valText = selSummary.catLabel.call(selAggregate.data);
+        valText = selSummary.catLabel_Func.call(selAggregate.data);
       }
       if(selSummary.type==="interval"){
         var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
@@ -4233,7 +4220,7 @@ kshf.Browser.prototype = {
         if(typeof selAggregate === "string"){
           valText = selAggregate;
         } else if(selSummary.type==="categorical"){
-          valText = selSummary.catLabel.call(selAggregate.data);
+          valText = selSummary.catLabel_Func.call(selAggregate.data);
         } else if(selSummary.type==="interval"){
           var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
           valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
@@ -4288,80 +4275,83 @@ kshf.Browser.prototype = {
         // initialize all summaries as not yet processed.
         this.summaries.forEach(function(summary){
             if(summary.inBrowser()) summary.heightProcessed = false;
-        })
+        });
 
-        var bottomFacetsHeight=0;
-        // process bottom summary too
+        var bottomPanelHeight=0;
+        // process bottom summary
         if(this.panels.bottom.summaries.length>0){
-            var targetHeight=divHeight_Total/3;
-            // they all share the same target height
-            this.panels.bottom.summaries.forEach(function(summary){
-                targetHeight = Math.min(summary.getHeight_RangeMax(),targetHeight);
-                summary.setHeight(targetHeight);
-                summary.heightProcessed = true;
-                bottomFacetsHeight += summary.getHeight();
-            });
+          var targetHeight=divHeight_Total/3;
+          // they all share the same target height
+          this.panels.bottom.summaries.forEach(function(summary){
+            targetHeight = Math.min(summary.getHeight_RangeMax(),targetHeight);
+            summary.setHeight(targetHeight);
+            summary.heightProcessed = true;
+            bottomPanelHeight += summary.getHeight();
+          });
         }
 
         var doLayout = function(sectionHeight,summaries){
-            var finalPass = false;
-            var processedFacets=0;
-            var lastRound = false;
+          sectionHeight-=1;// just use 1-pixel gap
+          var finalPass = false;
+          var lastRound = false;
 
+          var processedFacets=0;
+          summaries.forEach(function(summary){ if(summary.heightProcessed) processedFacets++; });
+
+          while(true){
+            var remainingFacetCount = summaries.length-processedFacets;
+            if(remainingFacetCount===0) break;
+            var processedFacets_pre = processedFacets;
+            function finishSummary(summary){
+              sectionHeight-=summary.getHeight();
+              summary.heightProcessed = true;
+              processedFacets++;
+              remainingFacetCount--;
+            };
             summaries.forEach(function(summary){
-                // if it's already processed, log it
-                if(summary.heightProcessed) processedFacets++;
-            });
+              if(summary.heightProcessed) return;
+              // Empty or collapsed summaries: Fixed height, nothing to change;
+              if(summary.isEmpty() || summary.collapsed) {
+                finishSummary(summary);
+                return;
+              }
+              // in last round, if summary can expand, expand it further
+              if(lastRound===true && summary.heightProcessed && summary.getHeight_RangeMax()>summary.getHeight()){
+                sectionHeight+=summary.getHeight();
+                summary.setHeight(sectionHeight);
+                sectionHeight-=summary.getHeight();
+                return;
+              }
+              if(remainingFacetCount===0) return;
 
-            while(true){
-                var remainingFacetCount = summaries.length-processedFacets;
-                if(remainingFacetCount===0) {
-                    break;
-                }
-                var processedFacets_pre = processedFacets;
-                summaries.forEach(function(summary){
-                    // in last round, if you have more attribs than visible, you may increase your height!
-                    if(lastRound===true && sectionHeight>5/*px*/ && !summary.collapsed && summary._cats.length!==undefined){
-                        if(summary.catCount_InDisplay<summary._cats.length){
-                            sectionHeight+=summary.getHeight();
-                            summary.setHeight(sectionHeight);
-                            sectionHeight-=summary.getHeight();
-                            return;
-                        }
-                    }
-                    if(summary.heightProcessed) return;
-                    if(remainingFacetCount===0) return;
-                    // auto-collapse summary if you do not have enough space
-                    var targetHeight = Math.floor(sectionHeight/remainingFacetCount);
-                    if(finalPass && targetHeight<summary.getHeight_RangeMin()){
-                        summary.setCollapsed(true);
-                    }
-                    if(!summary.collapsed){
-                        if(summary.getHeight_RangeMax()<=targetHeight){
-                            summary.setHeight(summary.getHeight_RangeMax());
-                        } else if(finalPass){
-                            summary.setHeight(targetHeight);
-                        } else if(lastRound){
-                        } else {
-                            return;
-                        }
-                    }
-                    sectionHeight-=summary.getHeight();
-                    summary.heightProcessed = true;
-                    processedFacets++;
-                    remainingFacetCount--;
-                },this);
-                finalPass = processedFacets_pre===processedFacets;
-                if(lastRound===true) break;
-                if(remainingFacetCount===0) lastRound = true;
-            }
-            return sectionHeight;
+              // Fairly distribute remaining size across all remaining summaries.
+              var targetHeight = Math.floor(sectionHeight/remainingFacetCount);
+
+              // auto-collapse summary if you do not have enough space
+              if(finalPass && targetHeight<summary.getHeight_RangeMin()){
+                summary.setCollapsed(true);
+                finishSummary(summary);
+                return;
+              }
+              if(summary.getHeight_RangeMax()<=targetHeight){
+                summary.setHeight(summary.getHeight_RangeMax());
+                finishSummary(summary);
+              } else if(finalPass){
+                summary.setHeight(targetHeight);
+                finishSummary(summary);
+              }
+            },this);
+            finalPass = processedFacets_pre===processedFacets;
+            if(lastRound===true) break;
+            if(remainingFacetCount===0) lastRound = true;
+          }
+          return sectionHeight;
         };
 
         var topPanelsHeight = divHeight_Total;
-        this.panels.bottom.DOM.root.style("height",bottomFacetsHeight+"px");
+        this.panels.bottom.DOM.root.style("height",bottomPanelHeight+"px");
 
-        topPanelsHeight-=bottomFacetsHeight;
+        topPanelsHeight-=bottomPanelHeight;
         this.DOM.panelsTop.style("height",topPanelsHeight+"px");
 
         // Left Panel
@@ -4395,7 +4385,7 @@ kshf.Browser.prototype = {
             var listDivTop = 0;
             // get height of header
             var listHeaderHeight = this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight;
-            var listDisplayHeight = divHeight_Total - listDivTop - listHeaderHeight - midPanelHeight - bottomFacetsHeight;
+            var listDisplayHeight = divHeight_Total - listDivTop - listHeaderHeight - midPanelHeight - bottomPanelHeight;
             if(this.showDropZones && this.panels.middle.summaries.length===0) listDisplayHeight*=0.5;
             this.recordDisplay.setHeight(listDisplayHeight);
         }
@@ -4464,23 +4454,20 @@ kshf.Browser.prototype = {
       config.domID = this.domID;
       config.itemName = this.itemName;
       config.source = this.source;
+      delete config.source.loadedTableCount;
       config.summaries = [];
       config.leftPanelLabelWidth = this.panels.left.width_catLabel;
       config.rightPanelLabelWidth = this.panels.right.width_catLabel;
       config.middlePanelLabelWidth = this.panels.middle.width_catLabel;
       ['left', 'right', 'middle', 'bottom'].forEach(function(p){
+        // Need to export summaries in-order of the panel appearance
+        // TODO: Export summaries not within browser...
         this.panels[p].summaries.forEach(function(summary){
           config.summaries.push(summary.exportConfig());
         });
       },this);
       if(this.recordDisplay.recordViewSummary){
-        config.recordDisplay = {};
-        config.recordDisplay.displayType = this.recordDisplay.displayType;
-        if(this.recordDisplay.textSearchSummary){
-          config.recordDisplay.textSearch = this.recordDisplay.textSearchSummary.summaryName;
-        }
-        config.recordDisplay.recordView = 
-          this.recordDisplay.recordViewSummary.summaryFunc.toString();
+        config.recordDisplay = this.recordDisplay.exportConfig();
       }
       return config;
     }
@@ -4683,18 +4670,19 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     removeFromPanel: function(){
-        if(this.panel===undefined) return;
-        this.panel.removeSummary(this);
-        this.refreshNuggetDisplay();
+      if(this.panel===undefined) return;
+      this.panel.removeSummary(this);
+      this.refreshNuggetDisplay();
     },
     /** -- */
     insertRoot: function(beforeDOM){
-        this.DOM.root = this.panel.DOM.root.insert("div", function(){ return beforeDOM; });
-        this.DOM.root
-            .attr("class","kshfSummary")
-            .attr("summary_id",this.id)
-            .attr("collapsed",this.collapsed)
-            .attr("filtered",false);
+      this.DOM.root = this.panel.DOM.root.insert("div", function(){ return beforeDOM; });
+      this.DOM.root
+        .attr("class","kshfSummary")
+        .attr("summary_id",this.id)
+        .attr("collapsed",this.collapsed)
+        .attr("filtered",false)
+        .attr("showConfig",false);
     },
     /** -- */
     insertHeader: function(){
@@ -4892,74 +4880,78 @@ kshf.Summary_Base.prototype = {
                 }
             });
 
-        this.DOM.summaryIcons = this.DOM.headerGroup.append("span").attr("class","summaryIcons");
+      this.DOM.summaryIcons = this.DOM.headerGroup.append("span").attr("class","summaryIcons");
 
-        this.DOM.summaryIcons.append("span").attr("class", "hasMultiMappings fa fa-tags")
-          .each(function(d){
-            this.tipsy = new Tipsy(this, {
-              gravity: 'ne', title: function(){
-                return "Multiple "+me.summaryName+" possible.<br>Click to show relations.";
-              }
-            });
-          })
-          .on("mouseover",function(d){ this.tipsy.show(); })
-          .on("mouseout" ,function(d){ this.tipsy.hide(); })
-          .on("click",function(d){
-            me.setShowSetMatrix(!me.show_set_matrix);
-          });
-
-        this.DOM.summaryForRecordDisplay = this.DOM.summaryIcons.append("span")
-          .attr("class", "useForRecordDisplay fa")
-          .each(function(d){
-            this.tipsy = new Tipsy(this, {
-              gravity: 'ne', title: function(){
-                return "Use to "+
-                  ((me.browser.recordDisplay.displayType==="map")?"color":"sort")+
-                  " "+me.browser.itemName;
-              }
-            });
-          })
-          .on("mouseover",function(d){ this.tipsy.show(); })
-          .on("mouseout" ,function(d){ this.tipsy.hide(); })
-          .on("click",function(d){
-            if(me.browser.recordDisplay.recordViewSummary){
-              me.browser.recordDisplay.setSortingOpt_Active(me);
-              me.browser.recordDisplay.refreshSortingOptions();
+      this.DOM.summaryIcons.append("span").attr("class", "hasMultiMappings fa fa-tags")
+        .each(function(d){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'ne', title: function(){
+              return "Multiple "+me.summaryName+" possible.<br>Click to show relations.";
             }
           });
+        })
+        .on("mouseover",function(d){ this.tipsy.show(); })
+        .on("mouseout" ,function(d){ this.tipsy.hide(); })
+        .on("click",function(d){
+          me.setShowSetMatrix(!me.show_set_matrix);
+        });
 
-        this.DOM.summaryViewAs = this.DOM.summaryIcons.append("span")
-          .attr("class","summaryViewAs fa")
-          .attr("viewAs","map")
-          .each(function(d){ 
-            this.tipsy = new Tipsy(this, { gravity: 'ne', 
-              title: function(){ return "View as "+(me.catViewType==='list'?'Map':'List'); }
-            });
-          })
-          .on("mouseover",function(d){ this.tipsy.show(); })
-          .on("mouseout" ,function(d){ this.tipsy.hide(); })
-          .on("click",function(d){
-            if(me.catViewType==='list'){
-              me.viewAsMap();
-              this.setAttribute("viewAs","list");
-              return;
-            }
-            if(me.catViewType==='map'){
-              me.viewAsList();
-              this.setAttribute("viewAs","map");
-              return;
+      this.DOM.summaryForRecordDisplay = this.DOM.summaryIcons.append("span")
+        .attr("class", "useForRecordDisplay fa")
+        .each(function(d){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'ne', title: function(){
+              return "Use to "+
+                ((me.browser.recordDisplay.displayType==="map")?"color":"sort")+" "+me.browser.itemName;
             }
           });
+        })
+        .on("mouseover",function(d){ this.tipsy.show(); })
+        .on("mouseout" ,function(d){ this.tipsy.hide(); })
+        .on("click",function(d){
+          if(me.browser.recordDisplay.recordViewSummary){
+            me.browser.recordDisplay.setSortingOpt_Active(me);
+            me.browser.recordDisplay.refreshSortingOptions();
+          }
+        });
 
-        this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
-          .attr("class","summaryDescription fa fa-info-circle")
-          .each(function(d){ 
-            this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return me.description;} });
-          })
-          .on("mouseover",function(d){ this.tipsy.show(); })
-          .on("mouseout" ,function(d){ this.tipsy.hide(); });
+      this.DOM.summaryViewAs = this.DOM.summaryIcons.append("span")
+        .attr("class","summaryViewAs fa")
+        .attr("viewAs","map")
+        .each(function(d){ 
+          this.tipsy = new Tipsy(this, { gravity: 'ne', 
+            title: function(){ return "View as "+(me.viewType==='list'?'Map':'List'); }
+          });
+        })
+        .on("mouseover",function(d){ this.tipsy.show(); })
+        .on("mouseout" ,function(d){ this.tipsy.hide(); })
+        .on("click",function(d){
+          this.tipsy.hide();
+          this.setAttribute("viewAs",me.viewType);
+          me.viewAs( (me.viewType==='list') ? 'map' : 'list' );
+        });
 
-        this.setSummaryDescription(this.summaryDescription);
+      this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
+        .attr("class","summaryDescription fa fa-info-circle")
+        .each(function(d){  this.tipsy = new Tipsy(this, { gravity:'ne', title:function(){return me.description;} }); })
+        .on("mouseover",function(d){ this.tipsy.show(); })
+        .on("mouseout" ,function(d){ this.tipsy.hide(); });
+
+      this.setSummaryDescription(this.summaryDescription);
+
+      this.DOM.summaryConfigControl = this.DOM.summaryIcons.append("span")
+        .attr("class","summaryConfigControl fa fa-gear")
+        .each(function(d){  this.tipsy = new Tipsy(this, { gravity:'ne', title: "Configure" }); })
+        .on("mouseover",function(d){ this.tipsy.show(); })
+        .on("mouseout" ,function(d){ this.tipsy.hide(); })
+        .on("click",function(d){
+          this.tipsy.hide();
+          me.DOM.root.attr("showConfig",me.DOM.root.attr("showConfig")==="false");
+        });
+
+      this.DOM.summaryConfig = this.DOM.root.append("div").attr("class","summaryConfig");
+
+      this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
     },
     /** -- */
     setSummaryDescription: function(description){
@@ -4992,6 +4984,7 @@ kshf.Summary_Base.prototype = {
           this.tipsy.hide();
         });
 
+      // Two controls, one for each side of the scale
       this.DOM.chartAxis_Measure.selectAll(".relativeModeControl").data([1,2])
         .enter().append("span")
           .attr("class",function(d){ return "relativeModeControl relativeModeControl_"+d; })
@@ -5016,6 +5009,8 @@ kshf.Summary_Base.prototype = {
             me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",false);
             this.tipsy.hide();
           });
+
+      this.DOM.highlightedAggrValue = this.DOM.chartAxis_Measure.append("div").attr("class","highlightedAggrValue longRefLine");
     },
     /** -- */
     setCollapsedAndLayout: function(hide){
@@ -5028,7 +5023,9 @@ kshf.Summary_Base.prototype = {
       this.collapsed_pre = this.collapsed;
       this.collapsed = v;
       if(this.DOM.root){
-        this.DOM.root.attr("collapsed",this.collapsed);
+        this.DOM.root
+          .attr("collapsed",this.collapsed)
+          .attr("showConfig",false);
         if(!this.collapsed) {
           this.clearViz_Highlight();
           this.refreshViz_All();
@@ -5066,9 +5063,37 @@ kshf.Summary_Base.prototype = {
         name: this.summaryName,
         panel: this.panel.name,
       };
+      // config.value
       if(this.summaryColumn!==this.summaryName){
         config.value = this.summaryColumn;
+        if(config.value===null){
+          // custom function
+          config.value = this.summaryFunc.toString(); // if it is function, converts it to string representation
+        }
       }
+      if(this.collapsed) config.collapsed = true;
+      if(this.description) config.description = this.description;
+      if(this.catLabel_attr){ // Indexed string
+        if(this.catLabel_attr!=="id") config.catLabel = this.catLabel_attr;
+      } else if(this.catLabel_table){ // Lookup table
+        config.catLabel = this.catLabel_table;
+      } else if(this.catLabel_Func){
+        config.catLabel = this.catLabel_Func.toString(); // Function to string
+      }
+      if(this.minAggrValue>1) config.minAggrValue = this.minAggrValue;
+      if(this.unitName) config.unitName = this.unitName;
+      if(this.scaleType_forced) config.intervalScale = this.scaleType_forced;
+      if(this.percentileChartVisible) config.showPercentile = true;
+      // catSortBy
+      if(this.catSortBy){
+        var _sortBy = this.catSortBy[0];
+        if(_sortBy.sortKey){ 
+          config.catSortBy = _sortBy.sortKey; // string or lookup table
+        } else if(_sortBy.value) {
+          config.catSortBy = _sortBy.value.toString();
+        }
+        // TODO: support 'inverse' option
+      };
       return config;
     }
 };
@@ -5088,7 +5113,7 @@ var Summary_Categorical_functions = {
     this.configRowCount = 0;
     this.minAggrValue = 1;
     this.catSortBy = [];
-    this.catViewType = 'list';
+    this.viewType = 'list';
 
     this.setCatLabel("id");
 
@@ -5107,7 +5132,6 @@ var Summary_Categorical_functions = {
     }
     this.mapToAggregates();
     if(this.catSortBy.length===0) this.setSortingOptions();
-    if(this.getMaxAggr_Total()!=1 && this._cats.length>1) this.sortCategories();
 
     this.aggr_initialized = true;
     this.refreshViz_Nugget();
@@ -5145,16 +5169,20 @@ var Summary_Categorical_functions = {
    *************************************/
   /** -- */
   getHeight_RangeMax: function(){
-    if(this.catViewType==="map") {
+    if(this.viewType==="map") {
       return this.getWidth()*1.5;
     }
-    if(this.isEmpty()) return this.heightRow_category;
-    return this.getHeight_Header()+(this.configRowCount+this.catCount_Visible+1)*this.heightRow_category-1;
+    if(this.isEmpty()) return this.getHeight_Header();
+    // minimum 2 categories
+    return this.getHeight_WithoutCats() + this._cats.length*this.heightRow_category;
   },
   /** -- */
   getHeight_RangeMin: function(){
     if(this.isEmpty()) return this.getHeight_Header();
-    return this.getHeight_Header()+this.getHeight_Config()+(Math.min(this.catCount_Visible,2)+1)*this.heightRow_category;
+    return this.getHeight_WithoutCats() + Math.min(this.catCount_Visible,2)*this.heightRow_category;
+  },
+  getHeight_WithoutCats: function(){
+    return this.getHeight_Header() + this.getHeight_Config() + this.getHeight_Bottom();
   },
   /** -- */
   getHeight_Config: function(){
@@ -5216,16 +5244,34 @@ var Summary_Categorical_functions = {
   },
   /** -- */
   prepareSortingOption: function(opt){
+    if(Array.isArray(opt)){
+      var _lookup = {};
+      opt.forEach(function(s,i){
+        _lookup[s] = i;
+      });
+      return {
+        inverse   : false,
+        no_resort : true,
+        sortKey   : opt,
+        name      : 'Custom Order',
+        value     : function(){
+          var v=_lookup[this.id];
+          if(v!==undefined) return v;
+          return 99999; // unknown is 99999th item
+        }
+      };
+    }
     opt.inverse = opt.inverse || false; // Default is false
     if(opt.value){
       if(typeof(opt.value)==="string"){
         var x = opt.value;
         opt.name = opt.name || x;
+        opt.sortKey = x;
         opt.value = function(){ return this[x]; }
       } else if(typeof(opt.value)==="function"){
         if(opt.name===undefined) opt.name = "custom"
       }
-      if(opt.no_resort===undefined) opt.no_resort = true;
+      opt.no_resort = true;
     } else {
       opt.name = opt.name || "# of Active";
     }
@@ -5236,11 +5282,18 @@ var Summary_Categorical_functions = {
   setSortingOptions: function(opts){
     this.catSortBy = opts || {};
 
-    if(!Array.isArray(this.catSortBy)) this.catSortBy = [this.catSortBy];
+    if(!Array.isArray(this.catSortBy)) {
+      this.catSortBy = [this.catSortBy];
+    } else {
+      // if it is an array, it might still be defining a sorting order for the categories
+      if(this.catSortBy.every(function(v){ return (typeof v==="string"); })){
+        this.catSortBy = [this.catSortBy];
+      }
+    }
 
     this.catSortBy.forEach(function(opt,i){
       if(typeof opt==="string" || typeof opt==="function") this.catSortBy[i] = {value: opt};
-      this.prepareSortingOption(this.catSortBy[i]);
+      this.catSortBy[i] = this.prepareSortingOption(this.catSortBy[i]);
     },this);
 
     this.catSortBy_Active = this.catSortBy[0];
@@ -5319,17 +5372,29 @@ var Summary_Categorical_functions = {
 
   /** -- */
   setCatLabel: function( accessor ){
+    // Clear all assignments
+    this.catLabel_attr = null;
+    this.catLabel_table = null;
+    this.catLabel_Func = null;
     if(typeof(accessor)==="function"){
-      this.catLabel = accessor;
-    } else if(typeof(accessor)==="string" || typeof(accessor)=="number"){
-      var x = accessor;
-      this.catLabel = function(){ return this[x]; };
+      this.catLabel_Func = accessor;
+    } else if(typeof(accessor)==="string"){
+      this.catLabel_attr = accessor;
+      this.catLabel_Func = function(){ return this[accessor]; };
+    } else if(typeof(accessor)==="object"){ 
+      // specifies key->value
+      this.catLabel_table = accessor;
+      this.catLabel_Func = function(){
+        var x = accessor[this.id];
+        return x?x:this.id;
+      }
     } else {
+      alert("Bad parameter");
       return;
     }
     var me=this;
     if(this.DOM.theLabel)
-      this.DOM.theLabel.html(function(cat){ return me.catLabel.call(cat.data); });
+      this.DOM.theLabel.html(function(cat){ return me.catLabel_Func.call(cat.data); });
   },
   /** -- */
   setCatTooltip: function( catTooltip ){
@@ -5464,7 +5529,7 @@ var Summary_Categorical_functions = {
                         // X or Y or ....
                         this.selected_OR.forEach(function(category,i){
                             selectedItemsText+=((i!==0 || selectedItemsCount>0)?query_or:"")+"<span class='attribName'>"
-                                +me.catLabel.call(category.data)+"</span>";
+                                +me.catLabel_Func.call(category.data)+"</span>";
                             selectedItemsCount++;
                         });
                         if(useBracket_or) selectedItemsText+="]";
@@ -5472,12 +5537,12 @@ var Summary_Categorical_functions = {
                     // AND selections
                     this.selected_AND.forEach(function(category,i){
                         selectedItemsText+=((selectedItemsText!=="")?query_and:"")
-                            +"<span class='attribName'>"+me.catLabel.call(category.data)+"</span>";
+                            +"<span class='attribName'>"+me.catLabel_Func.call(category.data)+"</span>";
                         selectedItemsCount++;
                     });
                     // NOT selections
                     this.selected_NOT.forEach(function(category,i){
-                        selectedItemsText+=query_not+"<span class='attribName'>"+me.catLabel.call(category.data)+"</span>";
+                        selectedItemsText+=query_not+"<span class='attribName'>"+me.catLabel_Func.call(category.data)+"</span>";
                         selectedItemsCount++;
                     });
                 }
@@ -5630,14 +5695,14 @@ var Summary_Categorical_functions = {
     this.insertRoot(beforeDOM);
 
     this.DOM.root
-        .attr("filtered_or",0)
-        .attr("filtered_and",0)
-        .attr("filtered_not",0)
-        .attr("filtered_total",0)
-        .attr("isMultiValued",this.isMultiValued)
-        .attr("summary_type","categorical")
-        .attr("hasMap",this.catMap!==undefined)
-        ;
+      .attr("filtered_or",0)
+      .attr("filtered_and",0)
+      .attr("filtered_not",0)
+      .attr("filtered_total",0)
+      .attr("isMultiValued",this.isMultiValued)
+      .attr("summary_type","categorical")
+      .attr("hasMap",this.catMap!==undefined)
+      ;
 
     this.insertHeader();
 
@@ -5650,8 +5715,6 @@ var Summary_Categorical_functions = {
     /** -- */
     init_DOM_Cat: function(){
         var me=this;
-        this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
-
         this.DOM.summaryCategorical = this.DOM.wrapper.append("div").attr("class","summaryCategorical");
 
         this.DOM.summaryControls = this.DOM.summaryCategorical.append("div").attr("class","summaryControls");
@@ -5860,7 +5923,7 @@ var Summary_Categorical_functions = {
 
                     if(query.length>0){
                         me.DOM.catTextSearchControl.attr("showClear",true);
-                        var labelFunc = me.catLabel;
+                        var labelFunc = me.catLabel_Func;
                         var tooltipFunc = me.catTooltip;
                         me._cats.forEach(function(_category){
                             var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
@@ -5967,8 +6030,8 @@ var Summary_Categorical_functions = {
       if(this.isEmpty()) return;
       // take into consideration the other components in the summary
       var attribHeight_old = this.categoriesHeight;
-      newHeight -= this.getHeight_Header()+this.getHeight_Config()+this.getHeight_Bottom()-2;
-      if(this.catViewType==='map'){
+      newHeight -= this.getHeight_Header()+this.getHeight_Config()+this.getHeight_Bottom();
+      if(this.viewType==='map'){
         this.categoriesHeight = newHeight;
         if(this.categoriesHeight!==attribHeight_old)
           setTimeout(function(){ me.map_zoomToActive();}, 1000);
@@ -5983,7 +6046,7 @@ var Summary_Categorical_functions = {
       if(this.isEmpty() || this.collapsed) return;
       var me=this;
       
-      if(this.catViewType==='map'){
+      if(this.viewType==='map'){
         this.updateCatCount_Active();
         this.map_refreshBounds_Active();
         setTimeout(function(){ me.map_zoomToActive(); }, 1000);
@@ -6018,7 +6081,7 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshMeasureLabel: function(){
       if(this.isEmpty() || this.collapsed) return;
-      //if(this.catViewType!=='list') return;
+      //if(this.viewType!=='list') return;
       if(this.browser.highlightSelectedSummary===this && !this.isMultiValued) return;
       var me=this;
       this.DOM.aggrGlyphs.attr("noitems",function(aggr){ return !me.isCatSelectable(aggr); });
@@ -6072,7 +6135,7 @@ var Summary_Categorical_functions = {
       var me=this;
       var ratioMode = this.browser.ratioModeActive;
 
-      if(this.catViewType==='map') {
+      if(this.viewType==='map') {
         var boundMin = this.browser.percentModeActive?
           0 :
           1; //d3.min(this._cats, function(_cat){ return _cat.aggregate_Active; }), 
@@ -6140,7 +6203,7 @@ var Summary_Categorical_functions = {
 
       this.refreshMeasureLabel();
 
-      if(this.catViewType=='map'){
+      if(this.viewType=='map'){
 
         if(!isThisIt) {
           var boundMin = ratioMode ? 
@@ -6223,13 +6286,14 @@ var Summary_Categorical_functions = {
       });
       if(this.collapsed) return;
 
+      this.DOM.highlightedAggrValue.style("opacity",0);
       this.refreshMeasureLabel();
 
-      if(this.catViewType==='map'){
+      if(this.viewType==='map'){
         this.temp_refreshMapColorScale();
         return;
       }
-      if(this.catViewType==='list'){
+      if(this.viewType==='list'){
         var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
         this.DOM.aggr_Preview.each(function(_cat){
             kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX(0)");
@@ -6298,7 +6362,7 @@ var Summary_Categorical_functions = {
         if(x===false) this.browser.setNoAnim(false);
 
         // translate the ticks horizontally on scale
-        tickData_new.append("span").attr("class","line")
+        tickData_new.append("span").attr("class","line longRefLine")
             .style("top","-"+(this.categoriesHeight+3)+"px")
             .style("height",(this.categoriesHeight-1)+"px");
 
@@ -6390,11 +6454,11 @@ var Summary_Categorical_functions = {
       this.DOM.aggrGroup.style("height",h+"px");
       this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
-      this.DOM.chartAxis_Measure.selectAll(".line").style("top",(-h+1)+"px").style("height",(h-2)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".longRefLine").style("top",(-h+1)+"px").style("height",(h-2)+"px");
       this.DOM.chartAxis_Measure.selectAll(".text_upper").style("top",(-h-21)+"px");
       this.DOM.chartAxis_Measure.selectAll(".chartAxis_Measure_background_2").style("top",(-h-12)+"px");
 
-      if(this.catViewType==='map'){
+      if(this.viewType==='map'){
         this.DOM.catMap_Base.style("height",h+"px");
         if(this.DOM.catMap_SVG) this.DOM.catMap_SVG.style("height",h+"px");
         if(this.leafletMap) this.leafletMap.invalidateSize();
@@ -6406,7 +6470,7 @@ var Summary_Categorical_functions = {
       if(category.aggregate_Active!==0) return true;
       // summary is not filtered yet, don't show categories with no items
       if(!this.isFiltered()) return category.aggregate_Active!==0;
-      if(this.catViewType==='map') return category.aggregate_Active!==0;
+      if(this.viewType==='map') return category.aggregate_Active!==0;
       // Hide if multiple options are selected and selection is and
 //        if(this.summaryFilter.selecttype==="SelectAnd") return false;
       // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
@@ -6569,33 +6633,37 @@ var Summary_Categorical_functions = {
       }
     },
     /** -- */
-    onCatEnter: function(ctgry){
-      if(!this.isCatSelectable(ctgry)) return;
+    onCatEnter: function(aggr){
+      if(!this.isCatSelectable(aggr)) return;
 
-      if(ctgry.DOM.matrixRow) ctgry.DOM.matrixRow.setAttribute("highlight","selected");
+      if(aggr.DOM.matrixRow) aggr.DOM.matrixRow.setAttribute("highlight","selected");
 
-      ctgry.DOM.aggrGlyph.setAttribute("selecttype","and");
-      ctgry.DOM.aggrGlyph.setAttribute("highlight","selected");
+      aggr.DOM.aggrGlyph.setAttribute("selecttype","and");
+      aggr.DOM.aggrGlyph.setAttribute("highlight","selected");
 
       // Comes after setting select type of the category - visual feedback on selection...
       if(!this.isMultiValued && this.summaryFilter.selected_AND.length!==0) return;
 
       // Show the highlight (preview)
       if(this.browser.pauseResultPreview) return;
-      if(ctgry.is_NOT()) return;
+      if(aggr.is_NOT()) return;
       if(this.isMultiValued || this.summaryFilter.selected_AND.length===0){
-        ctgry.items.forEach(function(item){item.updatePreview();});
-        this.browser.itemCount_Previewed = ctgry.aggregate_Preview;
-        ctgry.DOM.aggrGlyph.setAttribute("showlock",true);
-        this.browser.setSelect_Highlight(this,ctgry);
+        aggr.items.forEach(function(item){item.updatePreview();});
+        this.browser.itemCount_Previewed = aggr.aggregate_Preview;
+        aggr.DOM.aggrGlyph.setAttribute("showlock",true);
+        this.browser.setSelect_Highlight(this,aggr);
         // 
-        if(this.DOM.catHighlightedValue){
-          var v = ctgry.aggregate_Preview;
+        if(this.viewType==="map"){
+          var v = aggr.aggregate_Preview;
           if(this.browser.ratioMode) {
-            v = 100*v/ctgry.aggregate_Active;
+            v = 100*v/aggr.aggregate_Active;
           }
-          this.DOM.catHighlightedValue
+          this.DOM.highlightedAggrValue
             .style("left",(100*(this.mapColorScale(v)/9))+"%")
+            .style("opacity",1);
+        } else {
+          this.DOM.highlightedAggrValue
+            .style("left",this.chartScale_Measure(aggr.aggregate_Active)+"px")
             .style("opacity",1);
         }
       }
@@ -6610,7 +6678,7 @@ var Summary_Categorical_functions = {
       if(!this.browser.pauseResultPreview){
         ctgry.DOM.aggrGlyph.setAttribute("showlock",false);
         this.browser.clearSelect_Highlight();
-        if(this.catViewType==='map') this.DOM.catHighlightedValue.style("opacity",0);
+        if(this.viewType==='map') this.DOM.highlightedAggrValue.style("opacity",0);
       }
     },
     /** -- */
@@ -6619,7 +6687,7 @@ var Summary_Categorical_functions = {
       ctgry.DOM.aggrGlyph.setAttribute("selecttype","or");
       if(this.summaryFilter.selected_OR.length>0){
         this.browser.clearSelect_Highlight();
-        if(this.catViewType==='map') this.DOM.catHighlightedValue.style("opacity",0);
+        if(this.viewType==='map') this.DOM.highlightedAggrValue.style("opacity",0);
       }
       d3.event.stopPropagation();
     },
@@ -6645,7 +6713,7 @@ var Summary_Categorical_functions = {
       ctgry.DOM.aggrGlyph.setAttribute("selecttype","and");
       this.browser.preview_not = false;
       this.browser.clearSelect_Highlight();
-      if(this.catViewType==='map') this.DOM.catHighlightedValue.style("opacity",0);
+      if(this.viewType==='map') this.DOM.highlightedAggrValue.style("opacity",0);
     },
     /** -- */
     onCatClick_NOT: function(ctgry){
@@ -6664,17 +6732,17 @@ var Summary_Categorical_functions = {
       var DOM_cats_new = this.DOM.aggrGroup.selectAll(".aggrGlyph")
         .data(this._cats, function(category){ return category.id(); })
       .enter()
-        .append(this.catViewType=='list' ? 'span' : 'g')
-        .attr("class","aggrGlyph "+(this.catViewType=='list'?'cat':'map')+"Glyph")
+        .append(this.viewType=='list' ? 'span' : 'g')
+        .attr("class","aggrGlyph "+(this.viewType=='list'?'cat':'map')+"Glyph")
         .attr("highlight",false)
         .attr("showlock" ,false)
         .attr("selected",0)
         .each(function(_cat){
-          if(me.catViewType==='map'){
+          if(me.viewType==='map'){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
               title: function(){ 
-                return "<span class='mapItemName'>"+me.catLabel.call(_cat.data)+"</span>"+
+                return "<span class='mapItemName'>"+me.catLabel_Func.call(_cat.data)+"</span>"+
                   me.browser.getMeasureLabel(_cat)+" "+me.browser.itemName;
               }
             });
@@ -6717,7 +6785,7 @@ var Summary_Categorical_functions = {
 
       this.updateCatIsInView();
 
-      if(this.catViewType==='list'){
+      if(this.viewType==='list'){
         var domAttrLabel = DOM_cats_new.append("span").attr("class", "categoryLabel hasLabelWidth");
 
         var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
@@ -6733,7 +6801,7 @@ var Summary_Categorical_functions = {
           .on("click",    function(_cat){ me.onCatClick_OR(_cat); });
 
         this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(_cat){
-          return me.catLabel.call(_cat.data);
+          return me.catLabel_Func.call(_cat.data);
         });
         DOM_cats_new.append("span").attr("class", "measureLabel");
 
@@ -6784,7 +6852,7 @@ var Summary_Categorical_functions = {
         _cat.DOM.aggrGlyph = this;
       });
 
-      if(this.catViewType==='list'){
+      if(this.viewType==='list'){
         this.DOM.attribClickArea = this.DOM.aggrGlyphs.selectAll(".clickArea");
         this.DOM.lockButton      = this.DOM.aggrGlyphs.selectAll(".lockButton");
       }
@@ -6799,7 +6867,7 @@ var Summary_Categorical_functions = {
     /** -- */
     updateCatIsInView: function(){
       var me=this;
-      if(this.catViewType==='map'){
+      if(this.viewType==='map'){
         this._cats.forEach(function(_cat){
           _cat.isVisible = true;
         });
@@ -6820,7 +6888,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     cullAttribs: function(){
-      if(this.catViewType==='map') return; // no culling on maps, for now.  
+      if(this.viewType==='map') return; // no culling on maps, for now.  
       this.DOM.aggrGlyphs
         .style("visibility",function(_cat){ return _cat.isVisible?"visible":"hidden"; })
         .style("display",function(_cat){ return _cat.isVisible?"block":"none"; });
@@ -6828,7 +6896,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     updateCatSorting: function(sortDelay,force,noAnim){
-      if(this.catViewType==='map') return;
+      if(this.viewType==='map') return;
       if(this._cats===undefined) return;
       if(this._cats.length===0) return;
       if(this.uniqueCategories()) return; // Nothing to sort...
@@ -7007,22 +7075,18 @@ var Summary_Categorical_functions = {
         });
     },
     /** -- */
-    viewAsList: function(){
+    viewAs: function(_type){
       var me = this;
-      this.catViewType = 'list';
-      this.DOM.root.attr("catViewType",this.catViewType);
+      this.viewType = _type;
+      this.DOM.root.attr("viewType",this.viewType);
+      if(this.viewType==='list'){
+        this.DOM.aggrGroup = this.DOM.aggrGroup_list;
 
-      this.DOM.aggrGroup = this.DOM.aggrGroup_list;
-
-      this.refreshDOMcats();
-      this.updateCatSorting(0,true,true);
-    },
-    /** -- */
-    viewAsMap: function(){
-      var me = this;
-      this.catViewType = 'map';
-      this.DOM.root.attr("catViewType",this.catViewType);
-
+        this.refreshDOMcats();
+        this.updateCatSorting(0,true,true);
+        return;
+      }
+      // 'map'
       // The map view is already initialized
       if(this.leafletMap) {
         this.DOM.aggrGroup = this.DOM.summaryCategorical.select(".catMap_SVG > .aggrGroup");
@@ -7173,8 +7237,8 @@ var Summary_Categorical_functions = {
           this.tipsy.hide();
         });
 
-      this.DOM.catHighlightedValue = this.DOM.catMapColorScale.append("span")
-        .attr("class","catHighlightedValue");
+      this.DOM.highlightedAggrValue = this.DOM.catMapColorScale.append("span")
+        .attr("class","highlightedAggrValue");
 
       this.DOM.mapColorBlocks = this.DOM.catMapColorScale.selectAll(".mapColorBlock")
         .data([0,1,2,3,4,5,6,7,8]).enter()
@@ -7247,7 +7311,7 @@ var Summary_Interval_functions = {
       this.hasTime  = false;
 
       this.unitName = undefined; // the text appended to the numeric value (TODO: should not apply to time)
-      this.showPercentile = false; // Percentile chart is a 1-line chart which shows %10-%20-%30-%40-%50 percentiles
+      this.percentileChartVisible = false; // Percentile chart is a 1-line chart which shows %10-%20-%30-%40-%50 percentiles
       this.zoomed = false;
       this.usedForSorting = false;
       this.invertColorScale = false;
@@ -7339,6 +7403,17 @@ var Summary_Interval_functions = {
       var deviation   = d3.deviation(this.filteredItems, activeItemV);
       var activeRange = this.intervalRange.active.max-this.intervalRange.active.min;
 
+      var _width_ = this.getWidth_Chart();
+      var stepRange = (this.intervalRange.active.max-this.intervalRange.active.min)+1;
+
+      // Apply step range before you check for log - it has higher precedence
+      if(!this.hasFloat){
+        if( (_width_ / this.getWidth_Tick()) >= stepRange){
+          this.setScaleType('step',false);
+          return;
+        }  
+      }
+
       // LOG SCALE
       if(deviation/activeRange<0.12 && this.intervalRange.active.min>=0){
         this.setScaleType('log',false);
@@ -7352,8 +7427,6 @@ var Summary_Interval_functions = {
         this.setScaleType('linear',false);
         return;
       }
-      var _width_ = this.getWidth_Chart();
-      var stepRange = (this.intervalRange.active.max-this.intervalRange.active.min)+1;
       if( (_width_ / this.getWidth_Tick()) >= stepRange){
         this.setScaleType('step',false);
       } else {
@@ -7517,10 +7590,20 @@ var Summary_Interval_functions = {
     setScaleType: function(t,force){
       if(this.scaleType===t) return;
 
+      this.viewType = t==='time'?'line':'bar';
+      if(this.DOM.inited) {
+        this.DOM.root.attr("viewType",this.viewType);
+      }
+
       if(force===false && this.scaleType_forced) return;
 
       this.scaleType = t;
       if(force) this.scaleType_forced = this.scaleType;
+      
+      if(this.DOM.summaryConfig){
+        this.DOM.summaryConfig.selectAll(".summaryConfig_ScaleType .configOption").attr("active",false);
+        this.DOM.summaryConfig.selectAll(".summaryConfig_ScaleType .pos_"+this.scaleType).attr("active",true);
+      }
 
       if(this.DOM.summaryInterval) this.DOM.summaryInterval.attr("scaleType",this.scaleType);
 
@@ -7553,7 +7636,7 @@ var Summary_Interval_functions = {
     /** -- */
     getHeight_Extra: function(){
       return 7+this.height_hist_topGap+this.height_labels+this.height_slider+
-          (this.showPercentile?this.height_percentile:0);
+          (this.percentileChartVisible?this.height_percentile:0);
     },
     /** -- */
     getHeight_RangeMax: function(){
@@ -7598,92 +7681,106 @@ var Summary_Interval_functions = {
       return d3.max(this.histBins,function(aggr){ return aggr.aggregate_Active; });
     },
     /** -- */
+    showPercentileChart: function(v){
+      this.percentileChartVisible = v;
+      if(this.DOM.inited){
+        this.DOM.percentileChart.style("display",this.percentileChartVisible?"block":"none");
+
+        this.DOM.summaryConfig.selectAll(".summaryConfig_Percentile .configOption").attr("active",false);
+        this.DOM.summaryConfig.selectAll(".summaryConfig_Percentile .pos_"+this.percentileChartVisible).attr("active",true);
+
+        if(this.percentileChartVisible){
+          this.updatePercentiles();
+        }
+        this.browser.updateLayout_Height();
+      }
+    },
+    /** -- */
     initDOM: function(beforeDOM){
-        this.initializeAggregates();
-        if(this.isEmpty()) return;
-        if(this.DOM.inited===true) return;
-        var me = this;
+      this.initializeAggregates();
+      if(this.isEmpty()) return;
+      if(this.DOM.inited===true) return;
+      var me = this;
 
-        this.insertRoot(beforeDOM);
-        this.DOM.root
-            .attr("summary_type","interval")
-            .attr("usedForSorting",this.usedForSorting);
+      this.insertRoot(beforeDOM);
+      this.DOM.root
+        .attr("summary_type","interval")
+        .attr("usedForSorting",this.usedForSorting)
+        .attr("viewType",this.viewType);
 
-        this.insertHeader();
+      this.insertHeader();
 
-        this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
-        this.DOM.summaryInterval = this.DOM.wrapper.append("div").attr("class","summaryInterval")
-            .attr("scaleType",this.scaleType)
-            .attr("zoomed",this.zoomed)
-            .on("mousedown",function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            });
+      this.initDOM_IntervalConfig();
 
-        this.DOM.histogram = this.DOM.summaryInterval.append("div").attr("class","histogram");
-        this.DOM.histogram_bins = this.DOM.histogram.append("div").attr("class","aggrGroup")
-            .style("margin-left",(this.width_vertAxisLabel)+"px");
+      this.DOM.summaryInterval = this.DOM.wrapper.append("div").attr("class","summaryInterval")
+          .attr("scaleType",this.scaleType)
+          .attr("zoomed",this.zoomed)
+          .on("mousedown",function(){
+              d3.event.stopPropagation();
+              d3.event.preventDefault();
+          });
 
+      this.DOM.histogram = this.DOM.summaryInterval.append("div").attr("class","histogram");
+      this.DOM.histogram_bins = this.DOM.histogram.append("div").attr("class","aggrGroup")
+          .style("margin-left",(this.width_vertAxisLabel)+"px");
 
-        this.DOM.unmapped_records = this.DOM.summaryInterval.append("span").attr("class","unmapped_records fa fa-ban")
-            .style("display",this.unmappedRecords.length>0?"block":"none")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
-                    var x = me.unmappedRecords.length;
-                    // TODO: Number should depend on filtering state, and also reflect percentage-mode
-                    return "<b>"+x+"</b> "+me.browser.itemName+" without data"; 
-                }});
-            })
-            .on("mouseover",function(){
-                this.tipsy.show();
+      this.DOM.unmapped_records = this.DOM.summaryInterval.append("span").attr("class","unmapped_records fa fa-ban")
+          .style("display",this.unmappedRecords.length>0?"block":"none")
+          .each(function(){
+              this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
+                  var x = me.unmappedRecords.length;
+                  // TODO: Number should depend on filtering state, and also reflect percentage-mode
+                  return "<b>"+x+"</b> "+me.browser.itemName+" without data"; 
+              }});
+          })
+          .on("mouseover",function(){
+              this.tipsy.show();
 
-                me.unmappedRecords.forEach(function(record){record.updatePreview();});
-                me.browser.itemCount_Previewed = me.unmappedRecords.length;
-                me.browser.setSelect_Highlight(me,"(no data)");
-            })
-            .on("mouseout" ,function(){ 
-                this.tipsy.hide();
-                me.browser.clearSelect_Highlight();
-            })
-            .on("click", function(){
-                if(me.summaryFilter.unmapped===true){
-                    me.summaryFilter.unmapped = false;
-                    this.setAttribute("filtered",false);
-                    me.summaryFilter.clearFilter();
-                    return;
-                }
-                // filter
-                me.summaryFilter.how = "All";
-                this.setAttribute("filtered",true);
-                me.summaryFilter.clearFilter();
-                me.summaryFilter.unmapped = true; // filter to unmapped items only
-                me.summaryFilter.addFilter(true);
-            })
-            ;
+              me.unmappedRecords.forEach(function(record){record.updatePreview();});
+              me.browser.itemCount_Previewed = me.unmappedRecords.length;
+              me.browser.setSelect_Highlight(me,"(no data)");
+          })
+          .on("mouseout" ,function(){ 
+              this.tipsy.hide();
+              me.browser.clearSelect_Highlight();
+          })
+          .on("click", function(){
+              if(me.summaryFilter.unmapped===true){
+                  me.summaryFilter.unmapped = false;
+                  this.setAttribute("filtered",false);
+                  me.summaryFilter.clearFilter();
+                  return;
+              }
+              // filter
+              me.summaryFilter.how = "All";
+              this.setAttribute("filtered",true);
+              me.summaryFilter.clearFilter();
+              me.summaryFilter.unmapped = true; // filter to unmapped items only
+              me.summaryFilter.addFilter(true);
+          })
+          ;
 
-        if(this.scaleType==='time'){
-            this.DOM.timeSVG = this.DOM.histogram.append("svg").attr("class","timeSVG")
-                .attr("xmlns","http://www.w3.org/2000/svg")
-                .style("margin-left",(this.width_vertAxisLabel+this.width_barGap)+"px");
-        }
+      if(this.scaleType==='time'){
+          this.DOM.timeSVG = this.DOM.histogram.append("svg").attr("class","timeSVG")
+              .attr("xmlns","http://www.w3.org/2000/svg")
+              .style("margin-left",(this.width_vertAxisLabel+this.width_barGap)+"px");
+      }
 
-        this.insertChartAxis_Measure(this.DOM.histogram, 'w', 'nw');
-        this.DOM.chartAxis_Measure.style("padding-left",(this.width_vertAxisLabel-2)+"px")
+      this.insertChartAxis_Measure(this.DOM.histogram, 'w', 'nw');
+      this.DOM.chartAxis_Measure.style("padding-left",(this.width_vertAxisLabel-2)+"px")
 
-        this.initDOM_Slider();
+      this.initDOM_Slider();
 
-        this.initDOM_MapColor();
+      this.initDOM_MapColor();
 
-        if(this.showPercentile===true){
-            this.initDOM_Percentile();
-        }
+      this.initDOM_Percentile();
 
-        this.updateScaleAndBins();
+      this.updateScaleAndBins();
 
-        this.setCollapsed(this.collapsed);
-        this.setUnitName(this.unitName);
+      this.setCollapsed(this.collapsed);
+      this.setUnitName(this.unitName);
 
-        this.DOM.inited=true;
+      this.DOM.inited=true;
     },
     /** -- */
     setZoomed: function(v){
@@ -7704,55 +7801,93 @@ var Summary_Interval_functions = {
     /** -- */
     setUnitName: function(v){
       this.unitName = v;
+      if(this.unitName)
+        this.DOM.unitNameInput[0][0].value = this.unitName;
       this.refreshTickLabels();
     },
     /** -- */
-    getUnitName: function(){
+    printUnitName: function(){
       return this.unitName ? ("<span class='unitName'>"+this.unitName+"</span>") : "";
     },
     /** -- */
+    initDOM_IntervalConfig: function(){
+      var me=this, x;
+
+      var summaryConfig_UnitName = this.DOM.summaryConfig.append("div")
+        .attr("class","summaryConfig_UnitName summaryConfig_Option");
+      summaryConfig_UnitName.append("span").text("Value Unit: ");
+      this.DOM.unitNameInput = summaryConfig_UnitName.append("input").attr("type","text")
+        .attr("class","unitNameInput")
+        .attr("placeholder",kshf.unitName)
+        .attr("maxlength",5)
+        .on("input",function(){
+          if(this.timer) clearTimeout(this.timer);
+          var x = this;
+          var queryString = x.value.toLowerCase();
+          this.timer = setTimeout( function(){
+            me.setUnitName(queryString);
+          }, 750);
+        });;
+
+      var summaryConfig_ScaleType = this.DOM.summaryConfig.append("div")
+        .attr("class","summaryConfig_ScaleType summaryConfig_Option");
+      summaryConfig_ScaleType.append("span").text("Scale: ");
+      x = summaryConfig_ScaleType.append("span").attr("class","optionGroup");
+      x.selectAll(".configOption").data(["Linear","Log"]).enter()
+        .append("span").attr("class",function(d){ return "configOption pos_"+d.toLowerCase();})
+        .attr("active",function(d){ return d.toLowerCase()===me.scaleType; })
+        .text(function(d){ return d; })
+        .on("click", function(d){ me.setScaleType(d.toLowerCase()); })
+
+      var summaryConfig_Percentile = this.DOM.summaryConfig.append("div")
+        .attr("class","summaryConfig_Percentile summaryConfig_Option");
+      summaryConfig_Percentile.append("span").text("Percentiles: ")
+      x = summaryConfig_Percentile.append("span").attr("class","optionGroup");
+      x.selectAll(".configOption").data([{l:"Show",v:true},{l:"Hide",v:false}]).enter()
+        .append("span").attr("class",function(d){ return "configOption pos_"+d.v;})
+        .attr("active",function(d){ return d.v===me.percentileChartVisible; })
+        .text(function(d){ return d.l; })
+        .on("click", function(d){ me.showPercentileChart(d.v); });
+    },
+    /** -- */
     initDOM_Percentile: function(){
-        var me=this;
-        if(this.DOM.summaryInterval===undefined) return;
-        this.DOM.percentileGroup = this.DOM.summaryInterval.append("div").attr("class","percentileGroup")
-            .style('margin-left',this.width_vertAxisLabel+"px");;
-        this.DOM.percentileGroup.append("span").attr("class","percentileTitle").html(kshf.lang.cur.Percentiles);
+      var me=this;
+      if(this.DOM.summaryInterval===undefined) return;
+      this.DOM.percentileChart = this.DOM.summaryInterval.append("div").attr("class","percentileChart")
+        .style('margin-left',this.width_vertAxisLabel+"px")
+        .style("display",this.percentileChartVisible?"block":"none");
+      this.DOM.percentileChart.append("span").attr("class","percentileTitle").html(kshf.lang.cur.Percentiles);
 
-        this.DOM.quantile = {};
+      this.DOM.quantile = {};
 
-        [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
-            this.DOM.quantile[""+qb[0]+"_"+qb[1]] = this.DOM.percentileGroup.append("span")
-                .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
-                .each(function(){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's',
-                        title: function(){
-                            return "<span style='font-weight:300'>%"+qb[0]+" - %"+qb[1]+" Percentile: <span style='font-weight:500'>"+
-                                me.quantile_val[qb[0]]+" - "+me.quantile_val[qb[1]]+"</span></span>"
-                            ;
-                        }
-                    })
-                })
-                .on("mouseover",function(){ this.tipsy.show(); })
-                .on("mouseout" ,function(){ this.tipsy.hide(); })
-                ;
-        },this);
+      [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
+        this.DOM.quantile[""+qb[0]+"_"+qb[1]] = this.DOM.percentileChart.append("span")
+          .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
+          .each(function(){
+            this.tipsy = new Tipsy(this, {
+              gravity: 's',
+              title: function(){
+                return "<span style='font-weight:300'>%"+qb[0]+" - %"+qb[1]+" Percentile: <span style='font-weight:500'>"+
+                    me.quantile_val[qb[0]]+" - "+me.quantile_val[qb[1]]+"</span></span>";
+              }
+            })
+          })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); });
+      },this);
 
-        [10,20,30,40,50,60,70,80,90].forEach(function(q){
-            this.DOM.quantile[q] = this.DOM.percentileGroup.append("span")
-                .attr("class","quantile q_pos q_"+q)
-                .each(function(){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's',
-                        title: function(){
-                            return "Median: "+ me.quantile_val[q];
-                        }
-                    })
-                })
-                .on("mouseover",function(){ this.tipsy.show(); })
-                .on("mouseout" ,function(){ this.tipsy.hide(); })
-                ;
-        },this);
+      [10,20,30,40,50,60,70,80,90].forEach(function(q){
+        this.DOM.quantile[q] = this.DOM.percentileChart.append("span")
+          .attr("class","quantile q_pos q_"+q)
+          .each(function(){
+            this.tipsy = new Tipsy(this, {
+                gravity: 's',
+                title: function(){ return "Median: "+ me.quantile_val[q]; }
+            });
+          })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); });
+      },this);
     },
     /** --
         Uses
@@ -8042,7 +8177,7 @@ var Summary_Interval_functions = {
                 this.insertVizDOM();
             }
 
-            if(this.showPercentile) this.updatePercentiles();
+            if(this.percentileChartVisible) this.updatePercentiles();
         }
         if(this.DOM.root){
             if(this.DOM.aggrGlyphs===undefined){
@@ -8113,9 +8248,9 @@ var Summary_Interval_functions = {
            return me.intervalTickFormat(d);
         }
         if(d<1 && d!==0) 
-          return d.toFixed(1);
+          return d.toFixed(1) + me.printUnitName();
         else 
-          return me.intervalTickFormat(d) + me.getUnitName();
+          return me.intervalTickFormat(d) + me.printUnitName();
       });
     },
     /** -- */
@@ -8125,6 +8260,9 @@ var Summary_Interval_functions = {
       this.browser.itemCount_Previewed = aggr.aggregate_Preview;
       aggr.DOM.aggrGlyph.setAttribute("highlight","selected");
       aggr.DOM.aggrGlyph.setAttribute("showlock",true);
+      this.DOM.highlightedAggrValue
+        .style("top",(this.height_hist - this.chartScale_Measure(aggr.aggregate_Active))+"px")
+        .style("opacity",1);
       this.browser.setSelect_Highlight(this,aggr);
     },
     /** -- */
@@ -8841,6 +8979,7 @@ var Summary_Interval_functions = {
             kshf.Util.setTransform(this,transform);
         });
         this.refreshMeasureLabel();
+        this.DOM.highlightedAggrValue.style("opacity",0);
 
         if(this.scaleType==='time'){
             var durationTime=200;
@@ -9021,7 +9160,7 @@ var Summary_Interval_functions = {
       this.updateAggregate_Active();
       this.refreshMeasureLabel();
       this.updateBarPreviewScale2Active();
-      if(this.showPercentile) this.updatePercentiles();
+      if(this.percentileChartVisible) this.updatePercentiles();
     },
     /** -- */
     updateBarPreviewScale2Active: function(){
@@ -9051,7 +9190,7 @@ var Summary_Interval_functions = {
         .each(function(){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(v))+"px)"); })
         .style("display","block");
 
-      this.DOM.selectedItemValueText.html( this.intervalTickFormat(v)+this.getUnitName() );
+      this.DOM.selectedItemValueText.html( this.intervalTickFormat(v)+this.printUnitName() );
     },
     /** -- */
     hideRecordValue: function(){

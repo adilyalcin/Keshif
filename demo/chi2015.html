@@ -117,26 +117,17 @@ google.setOnLoadCallback(function(){
         }},
       { name: "Session Title", panel: 'right',
         value: function(){ if(this.session) return this.session.s_title.substring(8); },},
-      { name: "Session Day", panel: 'right',
+      { name: "Session Day", panel: 'right', 
         value: function(){ if(this.session) return this.session.day; },
-        catSortBy: function(){
-          switch(this.id){
-            case "Monday"   : return 0;
-            case "Tuesday"  : return 1;
-            case "Wednesday": return 2;
-            case "Thursday" : return 3;
-          }
-        }},
+        catSortBy: _demo.DayOfWeek_id },
       { name: "Session Time",  panel: 'right',
         value: function(){ if(this.session) return this.session.time; },
-        catSortBy: function(){
-          switch(this.id){
-            case "9:30-10:50" : return 0;
-            case "11:30-12:50": return 1;
-            case "14:30-15:50": return 2;
-            case "16:30-17:50": return 3;
-          }
-        }
+        catSortBy: [
+           "9:30-10:50",
+          "11:30-12:50",
+          "14:30-15:50",
+          "16:30-17:50",
+        ]
       }
     ],
     itemDisplay: {

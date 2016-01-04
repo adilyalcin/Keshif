@@ -228,17 +228,15 @@ google.setOnLoadCallback(function(){
                     return 7;
                 },
                 catSortBy: "id",
-                catLabel: function(){
-                    switch(this.id){
-                        case 0: return "Maps and diagrams <b>Pre-1600</b>";
-                        case 1: return "Measurements &amp; theories <b>1600s</b>";
-                        case 2: return "New graphic forms <b>1700s</b>";
-                        case 3: return "Beginning of modern infographics <b>1800+</b>";
-                        case 4: return "Golden Age of data graphics <b>1850+</b>";
-                        case 5: return "Modern Dark Ages <b>1900+</b>";
-                        case 6: return "Re-birth of visualization <b>1950+</b>";
-                        case 7: return "Computer as a new frontier <b>1975+</b>";
-                    }
+                catLabel: {
+                  0: "Maps and diagrams <b>Pre-1600</b>",
+                  1: "Measurements &amp; theories <b>1600s</b>",
+                  2: "New graphic forms <b>1700s</b>",
+                  3: "Beginning of modern infographics <b>1800+</b>",
+                  4: "Golden Age of data graphics <b>1850+</b>",
+                  5: "Modern Dark Ages <b>1900+</b>",
+                  6: "Re-birth of visualization <b>1950+</b>",
+                  7: "Computer as a new frontier <b>1975+</b>"
                 }
             },{ name: "Year", panel: "bottom", collapsed: true
             },{ name: "Highlights",

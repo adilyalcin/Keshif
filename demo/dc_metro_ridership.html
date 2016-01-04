@@ -130,15 +130,7 @@ google.setOnLoadCallback(function(){
       { name: "Date-Holiday", panel: "middle" },
       { name: "Day In Week", value: "Date-Service Type", panel: "middle" },
       { name: "Entry Time Period", value: "Ent Time Period", panel: "middle",
-        catSortBy: function(){
-          switch(this.id){
-            case 'AM Peak': return 0;
-            case 'Midday': return 1;
-            case 'PM Peak': return 2;
-            case 'Evening': return 3;
-            case 'Late Night Peak': return 4;
-          }
-        } },
+        catSortBy: [ 'AM Peak', 'Midday', 'PM Peak', 'Evening', 'Late Night Peak' ] },
       { name: "Station - From", panel: "left" },
       { name: "Line - From", panel: "middle",
         description: "The line information of the station-from. A station can be on multiple lines.",
@@ -148,8 +140,7 @@ google.setOnLoadCallback(function(){
         description: "The line information of the station-to. A station can be on multiple lines.",
         value: function(){ return stations[this["Station - To"]].line; } },
       { name: "Average Travel Minutes", panel: "bottom",
-        value: function(){ return this['Total Travel Minutes']/this['# Riders'];}
-      }
+        value: function(){ return this['Total Travel Minutes']/this['# Riders']; } }
     ]
   });
 });

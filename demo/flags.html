@@ -40,58 +40,46 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "Continent",
-        catLabel: function(){
-          switch(this.id){
-            case 1: return "North America";
-            case 2: return "South America";
-            case 3: return "Europe";
-            case 4: return "Africa";
-            case 5: return "Asia";
-            case 6: return "Oceania";
-            default: return "-";
-          }
+        catLabel: {
+          1: "North America",
+          2: "South America",
+          3: "Europe",
+          4: "Africa",
+          5: "Asia",
+          6: "Oceania"
         } },
       { name: "Zone", collapsed: true,
-        catLabel: function(){
-          switch(this.id){
-            case 1: return "North East";
-            case 2: return "South East";
-            case 3: return "South West";
-            case 4: return "North West";
-            default: return "-";
-          }
+        catLabel: {
+          1: "North East",
+          2: "South East",
+          3: "South West",
+          4: "North West",
         } },
       { name: "Language",
         value: function(){ return (this.Language===9)?10:this.Language; },
-        catLabel: function(){
-          switch(this.id){
-            case 1: return "English";
-            case 2: return "Spanish";
-            case 3: return "French";
-            case 4: return "German";
-            case 5: return "Slavic";
-            case 6: return "Other Indo-European";
-            case 7: return "Chinese";
-            case 8: return "Arabic";
-            case 9: return "Others";
-            case 10: return "Others";
-            case 11: return "Portuguese"
-            default: return "-";
-          }
+        catLabel: {
+          1: "English",
+          2: "Spanish",
+          3: "French",
+          4: "German",
+          5: "Slavic",
+          6: "Other Indo-European",
+          7: "Chinese",
+          8: "Arabic",
+          9: "Others",
+          10: "Others",
+          11: "Portuguese",
         } },
       { name: "Religion",
-        catLabel: function(){
-          switch(this.id){
-            case 0: return "Catholic";
-            case 1: return "Other Christian";
-            case 2: return "Muslim";
-            case 3: return "Buddhist";
-            case 4: return "Hindu";
-            case 5: return "Ethnic";
-            case 6: return "Diverse";
-            case 7: return "Others";
-            default: return "-";
-          }
+        catLabel: {
+          0: "Catholic",
+          1: "Other Christian",
+          2: "Muslim",
+          3: "Buddhist",
+          4: "Hindu",
+          5: "Ethnic",
+          6: "Diverse",
+          7: "Others",
         } },
       { name: "Flag Date", panel: 'left',
         value: function(){

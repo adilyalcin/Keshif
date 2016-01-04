@@ -39,10 +39,8 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Categories" },
       { name: "Credits", panel: 'right' },
-      { name: "Month", panel: 'right',
-        value: function(){ if(this.Date) return this.Date.getMonth(); },
-        catLabel: function(){ return getMonthNameFromNumber(this.id); },
-        catSortBy: "id", },
+      { name: "Month", panel: 'right', catLabel: _demo.Month, catSortBy: "id",
+        value: function(){ if(this.Date) return this.Date.getMonth(); } },
       { name: "Date",  panel: 'bottom' }
     ],
     itemDisplay: {

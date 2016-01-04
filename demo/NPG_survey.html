@@ -20,15 +20,12 @@
         <script type="text/javascript">
 var demoID = 89;
 
-var likertSort = function(){
-    switch(this.id){
-        case "Strongly agree": return 0;
-        case "Somewhat agree": return 1;
-        case "Neutral": return 2;
-        case "Somewhat disagree": return 3;
-        case "Strongly disagree": return 4;
-        default: return 5;
-    }
+var likertSort = {
+  "Strongly agree": 0,
+  "Somewhat agree": 1,
+  "Neutral": 2,
+  "Somewhat disagree": 3,
+  "Strongly disagree": 4,
 };
 
 var columns = [
@@ -125,16 +122,7 @@ $(document).ready(function() {
                 }
             },{ name: "Age", value: columns[12],
                 description: "What is your age?",
-                catSortBy: function(){
-                    switch(this.id){
-                        case "18 - 24": return 0;
-                        case "25 - 34": return 1;
-                        case "35 - 44": return 2;
-                        case "45 - 54": return 3;
-                        case "55 - 64": return 4;
-                        case "65 or over": return 5;
-                    }
-                }
+                catSortBy: [ "18 - 24", "25 - 34", "35 - 44", "45 - 54", "55 - 64", "65 or over" ]
             },{ name: "Continent", value: columns[13], collapsed: true,
                 description: "In which continent do you live?",
             },{ name: "Country",

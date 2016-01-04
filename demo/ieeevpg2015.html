@@ -17,12 +17,11 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  function sortSkills(){
-    switch(this.id){
-      case 'Good' : return 0;
-      case 'Moderate' : return 1;
-      case 'Poor' : return 2;
-    }
+  
+  var skill_order = {
+    Good     : 0,
+    Moderate : 1,
+    Poor     : 2,
   };
 
   browser = new kshf.Browser({
@@ -50,23 +49,20 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Gender" },
       { name: "Age Group", value: "actcat",
-        catSortBy: function(){
-          switch(this.id){
-            case '16-19' : return 0;
-            case '20-23' : return 1;
-            case '24-27' : return 2;
-            case '28-32' : return 3;
-            case '33-36' : return 4;
-            default      : return 5;
-          }
-        }},
+        catSortBy: [
+          '16-19',
+          '20-23',
+          '24-27',
+          '28-32',
+          '33-36',
+        ] },
       { name: "T1_Level2", panel: "middle" },
       { name: "T2_Level2", panel: "middle" },
       { name: "T3_Level2", panel: "middle" },
 
-      { name: "T1_IMFIT", panel: "right", catSortBy: sortSkills },
-      { name: "T2_IMFIT", panel: "right", catSortBy: sortSkills },
-      { name: "T3_IMFIT", panel: "right", catSortBy: sortSkills },
+      { name: "T1_IMFIT", panel: "right", catSortBy: skill_order },
+      { name: "T2_IMFIT", panel: "right", catSortBy: skill_order },
+      { name: "T3_IMFIT", panel: "right", catSortBy: skill_order },
 
       { name: "YR1"},
       { name: "YR2"},

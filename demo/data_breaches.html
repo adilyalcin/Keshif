@@ -47,22 +47,19 @@ google.setOnLoadCallback(function(){
       { name: "Source", panel: 'right'},
 //      { name: "Data Source", panel: 'right' },
       { name: "Record Types", panel: 'right', 
-        catLabel: function(){
-          switch(this.id){
-            case 'NAM': return 'Name';
-            case 'PII': return 'Personally Identifying Information';
-            case 'SSN': return 'Social Security Number';
-            case 'DOB': return 'Day of Birth';
-            case 'ADD': return 'Address';
-            case 'EMA': return 'Email';
-            case 'CCN': return 'Credit Card Number';
-            case 'PSS': return 'Password';
-            case 'LOG': return 'Log';
-            case 'MED': return 'Medical Records';
-            case 'PHO': return 'Phone Number';
-            case 'FIN': return 'Financial';
-            default   : return this.id;
-          }
+        catLabel: {
+          'NAM': 'Name',
+          'PII': 'Personally Identifying Information',
+          'SSN': 'Social Security Number',
+          'DOB': 'Day of Birth',
+          'ADD': 'Address',
+          'EMA': 'Email',
+          'CCN': 'Credit Card Number',
+          'PSS': 'Password',
+          'LOG': 'Log',
+          'MED': 'Medical Records',
+          'PHO': 'Phone Number',
+          'FIN': 'Financial',
         } },
       { name: "Date", panel: "bottom" }
     ],

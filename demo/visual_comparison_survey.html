@@ -267,12 +267,10 @@ $(document).ready( function(){
       { name: "Authors", panel: 'right' },
       { name: "Venue", panel: 'right' },
       { name: "Categorized By", value: "CategorizedBy", panel: 'right', collapsed: true,
-        catLabel: function(){
-          switch(this.id){
-            case 'DA'  : return "Danielle Albers";
-            case 'Ilir': return "Ilir Jusuf";
-            case 'RW'  : return "Rick Walker";
-          }
+        catLabel: {
+          DA  : "Danielle Albers",
+          Ilir: "Ilir Jusuf",
+          RW  : "Rick Walker",
         } },
       { name: "Year", panel: "bottom" }
     ],

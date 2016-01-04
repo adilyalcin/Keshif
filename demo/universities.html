@@ -181,13 +181,11 @@ google.setOnLoadCallback(function(){
           }, 
           unitName: "%" },
         { name: "Institution Type", value: "HD2013.Sector of institution",
-          catSortBy: function(){ 
-              switch(this.id){
-                  case 'Public, 4-year or above': return 0;
-                  case 'Private not-for-profit, 4-year or above': return 1;
-                  case 'Private for-profit, 4-year or above': return 2;
-              }
-          } },
+          catSortBy: [
+            'Public, 4-year or above',
+            'Private not-for-profit, 4-year or above',
+            'Private for-profit, 4-year or above'
+          ] },
         { name: "State", 
           value: "HD2013.State abbreviation", panel: "middle",
           catMap: function(){ return US_States.index_name[this.id].geo; },

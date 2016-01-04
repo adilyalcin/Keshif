@@ -196,7 +196,7 @@ $(document).ready( function(){
       { name: "Disease", value: "Subject", catLabel: function(){ return DiseaseMap[this.id]; } },
       { name: "Province", 
         value: "NUTS2", 
-        catLabel: function(){ return ProvinceMap[this.id]; }, 
+        catLabel: ProvinceMap, 
         catMap: function(){ return ProvinceFeatures[ProvinceMap[this.id]]; },
         panel: "middle" },
       { name: "Gender",

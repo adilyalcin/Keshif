@@ -42,10 +42,8 @@ google.setOnLoadCallback(function(){
         value: function(){ return Math.round(this["Total duration (ms)"]/60000); } },
       { name: "Day of Month", panel: "bottom",
         value: function(){ return this["Start Time"].getDate(); } },
-      { name: "Day of Week", panel: "middle",
-        value: function(){ return this["Start Time"].getDay(); },
-        catSortBy: "id",
-        catLabel: function(){ return getDayNameFromNumber(this.id); } },
+      { name: "Day of Week", panel: "middle", catSortBy: "id", catLabel: _demo.DayOfWeek,
+        value: function(){ return this["Start Time"].getDay(); } },
       { name: "Trip Start Hour", panel: "bottom", unitName: ":00", collapsed: false,
         value: function(){ return this["Start Time"].getHours(); } }
     ]

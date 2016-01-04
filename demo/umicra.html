@@ -57,7 +57,7 @@ google.setOnLoadCallback(function(){
           return "Summarized by MCEP";
         }
         },
-      { name: "Year", layout: 'middle', attribMap: function(){ return this.Date.getFullYear(); } }
+      { name: "Year", layout: 'middle', value: function(){ return this.Date.getFullYear(); } }
     ],
     itemDisplay: {
       sortBy: 'Year',

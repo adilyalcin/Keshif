@@ -10,6 +10,7 @@
         <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
         <link rel="stylesheet" href="../keshif.css"/ type="text/css">
         <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+        <script type="text/javascript" src="../js/FileSaver.min.js" charset="utf-8"></script>
 
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
@@ -36,12 +37,9 @@ google.setOnLoadCallback(function(){
       { name: "Team" },
       { name: "Player" },
       { name: "Injury", panel: 'right' },
-      { name: "Season", panel: 'right',
-        catSortBy: function(){ return parseInt(this.id.substr(0,4)); }, },
-      { name: "Month", panel: 'right', collapsed: true,
-        value: function(){ return this.Date.getMonth(); },
-        catSortBy: "id",
-        catLabel: function(){ return getMonthNameFromNumber(this.id); }, },
+      { name: "Season", panel: 'right', catSortBy: function(){ return parseInt(this.id.substr(0,4)); }, },
+      { name: "Month", panel: 'right', catSortBy: "id", catLabel: _demo.Month, collapsed: true,
+        value: function(){ return this.Date.getMonth(); } },
       { name: "Date", panel: 'bottom' }
     ],
     itemDisplay: {
@@ -52,7 +50,10 @@ google.setOnLoadCallback(function(){
         return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+this.Player+"</span>";
       }
     }
-  });
+  }
+  );
+});
+
 });
         </script>
         <style>

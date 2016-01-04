@@ -37,14 +37,12 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "City", value: "city",
-        catLabel: function(){
-          switch(this.id){
-            case 'ny': return "New York";
-            case 'bangkok': return "Bangkok";
-            case 'sao_paulo': return "Sao Paulo";
-            case 'moscow': return "Moscow";
-            case 'berlin': return "Berlin";
-          }
+        catLabel: {
+          'ny': "New York",
+          'bangkok': "Bangkok",
+          'sao_paulo': "Sao Paulo",
+          'moscow': "Moscow",
+          'berlin': "Berlin",
         } },
       { name: "Sex", value: "sex" },
       { name: "Age", value: "age", showPercentile: true },

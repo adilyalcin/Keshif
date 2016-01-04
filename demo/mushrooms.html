@@ -12,139 +12,114 @@
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/FileSaver.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
 
 var getName = {
-    Class: function(){
-        switch(this.id){
-            case 'e': return 'Edible';
-            case 'p': return 'Poisonous';
-        }
+    Class: {
+      e: 'Edible',
+      p: 'Poisonous',
     },
-    Shape: function(){
-        switch(this.id){
-            case 'b': return "Bell";
-            case 'c': return "Conical";
-            case 'x': return "Convex";
-            case 'f': return "Flat";
-            case 'k': return "Knobbed";
-            case 's': return "Sunken";
-            case 'e': return "Enlarging";
-            case 't': return "Tapering";
-        }
+    Shape: {
+      b: "Bell",
+      c: "Conical",
+      x: "Convex",
+      f: "Flat",
+      k: "Knobbed",
+      s: "Sunken",
+      e: "Enlarging",
+      t: "Tapering",
     },
-    Surface: function(){
-        switch(this.id){
-            case 'f': return "Fibrous";
-            case 'g': return "Grooves";
-            case 'y': return "Scaly";
-            case 's': return "Smooth";
-            case 'k': return "Silky";
-        }
+    Surface: {
+      f: "Fibrous",
+      g: "Grooves",
+      y: "Scaly",
+      s: "Smooth",
+      k: "Silky",
     },
-    Color: function(){
-        switch(this.id){
-            case 'n': return "Brown";
-            case 'b': return "Buff";
-            case 'c': return "Cinnamon";
-            case 'g': return "Gray";
-            case 'r': return "Green";
-            case 'p': return "Pink";
-            case 'u': return "Purple";
-            case 'e': return "Red";
-            case 'w': return "White";
-            case 'y': return "Yellow";
-            case 'k': return "Black";
-            case 'h': return "Chocolate";
-            case 'o': return "Orange";
-        }
+    Color: {
+      n: "Brown",
+      b: "Buff",
+      c: "Cinnamon",
+      g: "Gray",
+      r: "Green",
+      p: "Pink",
+      u: "Purple",
+      e: "Red",
+      w: "White",
+      y: "Yellow",
+      k: "Black",
+      h: "Chocolate",
+      o: "Orange",
     },
-    Odor: function(){
-        switch(this.id){
-            case 'a': return "Almond";
-            case 'l': return "Anise";
-            case 'c': return "Creosote";
-            case 'y': return "Fishy";
-            case 'f': return "Foul";
-            case 'm': return "Musty";
-            case 'n': return "None";
-            case 'p': return "Pungent";
-            case 's': return "Spicy";
-        }
+    Odor: {
+      a: "Almond",
+      l: "Anise",
+      c: "Creosote",
+      y: "Fishy",
+      f: "Foul",
+      m: "Musty",
+      n: "None",
+      p: "Pungent",
+      s: "Spicy",
     },
-    GillAttachment: function(){
-        switch(this.id){
-            case 'a': return 'Attached';
-            case 'd': return 'Descending';
-            case 'f': return 'Free';
-            case 'n': return 'Notched';
-        }
+    GillAttachment: {
+      a: 'Attached',
+      d: 'Descending',
+      f: 'Free',
+      n: 'Notched',
     },
-    GillSpacing: function(){
-        switch(this.id){
-            case 'c': return 'Close';
-            case 'w': return 'Crowded';
-            case 'd': return 'Distant';
-        }
+    GillSpacing: {
+      c: 'Close',
+      w: 'Crowded',
+      d: 'Distant',
     },
-    GillSize: function(){
-        switch(this.id){
-            case 'b': return 'Broad';
-            case 'n': return 'Narrow';
-        }
+    GillSize: {
+      b: 'Broad',
+      n: 'Narrow',
     },
-    Population: function(){
-        switch(this.id){
-            case 'a': return 'Abundant';
-            case 'c': return 'Clustered';
-            case 'n': return 'Numerous';
-            case 's': return 'Scattered';
-            case 'v': return 'Several';
-            case 'y': return 'Solitary';
-        }
+    Population: {
+      a: 'Abundant',
+      c: 'Clustered',
+      n: 'Numerous',
+      s: 'Scattered',
+      v: 'Several',
+      y: 'Solitary',
     },
-    Habitat: function(){
-        switch(this.id){
-            case 'g': return 'Grasses';
-            case 'l': return 'Leaves';
-            case 'm': return 'Meadows';
-            case 'p': return 'Paths';
-            case 'u': return 'Urban';
-            case 'w': return 'Waste';
-            case 'd': return 'Woods';
-        }
+    Habitat: {
+      g: 'Grasses',
+      l: 'Leaves',
+      m: 'Meadows',
+      p: 'Paths',
+      u: 'Urban',
+      w: 'Waste',
+      d: 'Woods',
     },
-    RingNumber: function(){
-        switch(this.id){
-            case 'n': return 'None';
-            case 'o': return 'One';
-            case 't': return 'Two';
-        }
+    RingNumber: {
+      n: 'None',
+      o: 'One',
+      t: 'Two',
     },
-    RingType: function(){
-        switch(this.id){
-            case 'c': return 'Cobwebby';
-            case 'e': return 'Evanescent';
-            case 'f': return 'Flaring';
-            case 'l': return 'Large';
-            case 'n': return 'None';
-            case 'p': return 'Pendant';
-            case 's': return 'Sheathing';
-            case 'z': return 'Zone';
-        }
+    RingType: {
+      c: 'Cobwebby',
+      e: 'Evanescent',
+      f: 'Flaring',
+      l: 'Large',
+      n: 'None',
+      p: 'Pendant',
+      s: 'Sheathing',
+      z: 'Zone',
     },
-    Root: function(){
-        switch(this.id){
-            case 'b': return 'Bulbous';
-            case 'c': return 'Club';
-            case 'u': return 'Cup';
-            case 'e': return 'Equal';
-            case 'z': return 'Rhizomorphs';
-            case 'r': return 'Rooted';
-            case '?': return '?';
-        }
+    Root: {
+      b: 'Bulbous',
+      c: 'Club',
+      u: 'Cup',
+      e: 'Equal',
+      z: 'Rhizomorphs',
+      r: 'Rooted',
+      '?': '?'
     }
 };
 
@@ -200,6 +175,7 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="contents"><div id="chart_div"></div></div>
+
     <div id="infobox" align="center">
       <span class="fa fa-info-circle"></span>
       <a href="http://archive.ics.uci.edu/ml/datasets/Mushroom" target='_blank'>Mushroom Data Set</a> from

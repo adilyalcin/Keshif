@@ -43,34 +43,28 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Country" },
       { name: "Age",
-        catSortBy: function(){
-          switch(this.id){
-            case '< 20' : return 0;
-            case '20-24': return 1;
-            case '25-29': return 2;
-            case '30-34': return 3;
-            case '35-39': return 4;
-            case '40-50': return 5;
-            case '51-60': return 6;
-            case '> 60' : return 7;
-            case 'Prefer not to disclose': return 8;
-            default: return 9;
-          }
-        } },
+        catSortBy: [
+          '< 20' ,
+          '20-24',
+          '25-29',
+          '30-34',
+          '35-39',
+          '40-50',
+          '51-60',
+          '> 60' ,
+          'Prefer not to disclose',
+        ] },
       { name: "Gender", },
       { name: "Occupation" },
       { name: "Years IT / Programming Experience", 
-        catSortBy: function(){
-          switch(this.id){
-            case 'Less than 1 year': return 0;
-            case '1 - 2 years'     : return 1;
-            case '2 - 5 years'     : return 2;
-            case '6 - 10 years'    : return 3;
-            case '11+ years'       : return 4;
-            default                : return 5;
-          }
-        } },
-//          { name: "Desktop Operating System" },
+        catSortBy: [
+          'Less than 1 year',
+          '1 - 2 years',
+          '2 - 5 years',
+          '6 - 10 years',
+          '11+ years'
+        ] },
+//    { name: "Desktop Operating System" },
       { name: "Training & Education" },
       { name: "Current Language", panel:'middle', minAggrValue: 2 },
       { name: "Future Language", panel:'middle' },
@@ -81,49 +75,40 @@ google.setOnLoadCallback(function(){
       { name: "Prefered Source Control", panel:'middle', collapsed: true },
       { name: "Why use Stack Overflow", panel:'middle', collapsed: true },
       { name: "How often are Stack Overflow's answers helpful", panel:'middle', collapsed: true, 
-        catSortBy: function(){
-          switch(this.id){
-            case 'Always'   : return 0;
-            case 'Usually'  : return 1;
-            case 'Sometimes': return 2;
-            case 'Rarely'   : return 3;
-            case 'Never'    : return 4;
-            default         : return 5;
-          }
-        } },
+        catSortBy: [
+          'Always',
+          'Usually',
+          'Sometimes',
+          'Rarely',
+          'Never',
+        ] },
       { name: "Why answer?", panel:'middle' },
       { name: "Employment Status", panel:'right' },
       { name: "Compensation", panel:'right', 
-        catSortBy: function(){
-          switch(this.id){
-            case 'Less than $20,000'  : return 0;
-            case '$20,000 - $40,000'  : return 1;
-            case '$40,000 - $60,000'  : return 2;
-            case '$60,000 - $80,000'  : return 3;
-            case '$80,000 - $100,000' : return 4;
-            case '$100,000 - $120,000': return 5;
-            case '$120,000 - $140,000': return 6;
-            case '$140,000 - $160,000': return 7;
-            case 'More than $160,000' : return 8;
-            case 'Rather not say'     : return 9;
-            case "Unemployed"         : return 10;
-            default                   : return 11;
-          }
-        } },
+        catSortBy: [
+          'Less than $20,000',
+          '$20,000 - $40,000',
+          '$40,000 - $60,000',
+          '$60,000 - $80,000',
+          '$80,000 - $100,000',
+          '$100,000 - $120,000',
+          '$120,000 - $140,000',
+          '$140,000 - $160,000',
+          'More than $160,000',
+          'Rather not say',
+          "Unemployed"
+        ] },
       { name: "Industry", panel:'right' },
       { name: "Job Satisfaction", panel:'right' },
       { name: "Remote Status", panel:'right', collapsed: true,
-        catSortBy: function(){
-          switch(this.id){
-            case 'Full-time Remote'    : return 0;
-            case 'Part-time Remote'    : return 1;
-            case 'I rarely work remote': return 2;
-            case "Never"               : return 3;
-            default                    : return 4;
-          }
-        } },
-//          { name: "Open to new job opportunities" },
-//          { name: "Most important aspect of new job opportunity" },
+        catSortBy: [
+          'Full-time Remote',
+          'Part-time Remote',
+          'I rarely work remote',
+          "Never"
+        ] },
+//    { name: "Open to new job opportunities" },
+//    { name: "Most important aspect of new job opportunity" },
       { name: "How many caffeinated beverages per day?", panel:'middle' },
       { name: "How many hours programming as hobby per week?", panel:'middle' }
     ]

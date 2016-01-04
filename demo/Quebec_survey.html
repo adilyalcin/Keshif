@@ -21,19 +21,6 @@
 
 var demoID = 899;
 
-var ageSort = function(){
-  switch(this.id){
-    case "17-34": return 0;
-    case "25-34": return 1;
-    case "35-44": return 2;
-    case "45-54": return 3;
-    case "55-64": return 4;
-    case "65-74": return 5;
-    case "75-84": return 5;
-    case "85+": return 6;
-  }
-};
-
 $(document).ready(function() {
     // set div height accordingly 
     $('#chart_div').height(800);
@@ -90,7 +77,16 @@ $(document).ready(function() {
                     if(v==="85") v= "85+";
                     return v;
                 },
-                catSortBy: ageSort
+                catSortBy: [
+                  "17-34",
+                  "25-34",
+                  "35-44",
+                  "45-54",
+                  "55-64",
+                  "65-74",
+                  "75-84",
+                  "85+"
+                ]
             },{
                 title: "Région Géographique",
                 description: "Votre région de résidence",

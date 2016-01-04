@@ -136,54 +136,54 @@ var getStateName = function(v){
   return "Unknown: "+v;
 };
 
-function getMonthNameFromNumber(v){
-    switch(v){
-        case 0:  return "January";
-        case 1:  return "February";
-        case 2:  return "March";
-        case 3:  return "April";
-        case 4:  return "May";
-        case 5:  return "June";
-        case 6:  return "July";
-        case 7:  return "August";
-        case 8:  return "September";
-        case 9:  return "October";
-        case 10: return "November";
-        case 11: return "December";
-    }
-    return "?";
-};
-
-
-function getDayNameFromNumber(v){
-    switch(v){
-        case 1: return "Monday";
-        case 2: return "Tuesday";
-        case 3: return "Wednesday";
-        case 4: return "Thursday";
-        case 5: return "Friday";
-        case 6: return "Saturday";
-        case 0: return "Sunday";
-    }
-    return "?";
-};
-
-function getMonthNumberFromName(v){
-    switch(v){
-        case "January"  : return 0;
-        case "February" : return 1;
-        case "March"    : return 2;
-        case "April"    : return 3;
-        case "May"      : return 4;
-        case "June"     : return 5;
-        case "July"     : return 6;
-        case "August"   : return 7;
-        case "September": return 8;
-        case "October"  : return 9;
-        case "November" : return 10;
-        case "December" : return 11;
-        default         : return 12;
-    }
+var _demo = {
+  Month: {
+    0:  "January",
+    1:  "February",
+    2:  "March",
+    3:  "April",
+    4:  "May",
+    5:  "June",
+    6:  "July",
+    7:  "August",
+    8:  "September",
+    9:  "October",
+    10: "November",
+    11: "December",
+  },
+  DayOfWeek: {
+    0: "Sunday",
+    1: "Monday",
+    2: "Tuesday",
+    3: "Wednesday",
+    4: "Thursday",
+    5: "Friday",
+    6: "Saturday",
+  },
+  // Can be used for sorting
+  DayOfWeek_id: {
+    Sunday: 0,
+    Monday: 1,
+    Tuesday: 2,
+    Wednesday: 3,
+    Thursday: 4,
+    Friday: 5,
+    Saturday: 6,
+  },
+  Month_id: {
+    January  : 0,
+    February : 1,
+    March    : 2,
+    April    : 3,
+    May      : 4,
+    June     : 5,
+    July     : 6,
+    August   : 7,
+    September: 8,
+    October  : 9,
+    November : 10,
+    December : 11,
+  }
 };
 
 // Based on ISO_3166 codes

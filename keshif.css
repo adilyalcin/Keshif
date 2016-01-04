@@ -132,8 +132,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
+.kshf[attribsShown=true] .saveBrowserConfig {
+  display: inline-block;
+}
 .kshf[attribsShown=true] .kshfSummary:hover .chartCatLabelResize {
   display: block !important;
+}
+.kshf[attribsShown=true] .kshfSummary:hover .summaryConfigControl {
+  color: gray;
+}
+.kshf[attribsShown=true] .kshfSummary[collapsed=false][viewType='bar'] .summaryConfigControl {
+  display: inline-block !important;
+}
+.kshf[attribsShown=true] .kshfSummary[showConfig=true] .summaryConfig {
+  top: 21px;
+  opacity: 1;
+  pointer-events: all;
+}
+.kshf[attribsShown=true] .kshfSummary[showConfig=true] .summaryConfigControl {
+  color: black;
+  -webkit-animation: fa-spin 4s infinite linear;
+  animation: fa-spin 4s infinite linear;
 }
 .kshf[attribsShown=true] .recordDisplay:hover .buttonRecordViewRemove {
   display: block;
@@ -155,6 +174,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[attribsShown=true] .buttonSummaryRemove {
   display: inline-block !important;
+}
+.kshf[attribsShown=true]:hover .chartCatLabelResize {
+  display: block !important;
+}
+.kshf[attribsShown=true]:hover .summaryConfigControl {
+  color: gray;
+}
+.kshf[attribsShown=true][collapsed=false][viewType='bar'] .summaryConfigControl {
+  display: inline-block !important;
+}
+.kshf[attribsShown=true][showConfig=true] .summaryConfig {
+  top: 21px;
+  opacity: 1;
+  pointer-events: all;
+}
+.kshf[attribsShown=true][showConfig=true] .summaryConfigControl {
+  color: black;
+  -webkit-animation: fa-spin 4s infinite linear;
+  animation: fa-spin 4s infinite linear;
 }
 .kshf[percentview=true] .measurePercentControl::after {
   content: "%";
@@ -180,10 +218,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[previewcompare="true"] .compareLine {
   opacity: 1 !important;
 }
-.kshf[record_display="list"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
+.kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f0dc";
 }
-.kshf[record_display="list"] .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
   display: inline-block;
 }
 .kshf[record_display="map"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
@@ -254,6 +292,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .unitName {
   margin-left: 1px;
   color: gray;
+}
+.kshf .saveBrowserConfig {
+  display: none;
+}
+.kshf .fa-dropbox {
+  color: #007EE5 !important;
 }
 .kshf .sortButton {
   cursor: pointer;
@@ -902,14 +946,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .rightBoxes > .fa:hover {
   color: #cb5454;
 }
-.kshf .panel_Basic > .rightBoxes .showConfigButton {
+.kshf .panel_Basic > .rightBoxes > .showConfigButton {
   display: none;
 }
-.kshf .panel_Basic > .rightBoxes .showConfigButton:hover {
+.kshf .panel_Basic > .rightBoxes > .showConfigButton:hover {
   animation: fa-spin 2s infinite linear;
   -webkit-animation: fa-spin 2s infinite linear;
 }
-.kshf .panel_Basic > .rightBoxes .datasource {
+.kshf .panel_Basic > .rightBoxes > .datasource {
   display: none;
   text-decoration: none;
   color: #635d46;
@@ -1328,7 +1372,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_source {
   background-color: white;
   width: 550px;
-  height: 250px;
+  height: 270px;
   position: absolute;
   top: 0;
   left: 0;
@@ -1349,7 +1393,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 5px 5px 0px 5px;
 }
 .kshf .panel.panel_infobox > .infobox_source > .source_wrapper {
-  width: 430px;
+  width: 530px;
   display: inline-block;
   margin: 5px;
   padding: 5px;
@@ -1801,7 +1845,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 3px;
   box-shadow: 0px 0px 2px #9b9b9b;
   background-color: #ebebeb;
-  z-index: 6;
+  z-index: 111;
 }
 .kshf .headerGroup .summaryName {
   display: block;
@@ -1888,6 +1932,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .summaryIcons > .useForRecordDisplay:hover {
   color: orangered;
+}
+.kshf .headerGroup .summaryIcons > .summaryConfigControl {
+  display: none;
+  color: lightgray;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -2157,6 +2205,71 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggrGlyph.mapGlyph[highlight="true"] > .aggr.active {
   stroke: orangered;
   stroke-width: 2px;
+}
+.kshf .summaryConfig {
+  position: absolute;
+  display: block;
+  top: 0px;
+  opacity: 0;
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
+  pointer-events: none;
+  background-color: rgba(235, 235, 235, 0.9);
+  border-radius: 0px 0px 10px 10px;
+  box-shadow: 0px 0px 1px black;
+  padding: 1px 5px;
+  width: 100%;
+  z-index: 100;
+  right: 0%;
+  font-size: 0.8em;
+  box-shadow: 0px 2px 2px #9b9b9b;
+}
+.kshf .summaryConfig > .summaryConfig_Option {
+  font-weight: 300;
+  text-align: center;
+  margin-bottom: 1px;
+}
+.kshf .summaryConfig .configOption {
+  cursor: pointer;
+  border: solid 1px #AFAFAF;
+  padding: 0px 3px;
+  margin-left: -1px;
+  font-size: 0.8em;
+  vertical-align: top;
+}
+.kshf .summaryConfig .configOption:hover {
+  color: orangered;
+}
+.kshf .summaryConfig .configOption[active=true] {
+  background-color: white;
+  pointer-events: none;
+}
+.kshf .summaryConfig .configOption:first-child {
+  border-radius: 5px 0px 0px 5px;
+}
+.kshf .summaryConfig .configOption:last-child {
+  border-radius: 0px 5px 5px 0px;
+}
+.kshf .summaryConfig_UnitName > .unitNameInput {
+  height: 14px;
+  background-color: white;
+  border: solid 1px #AFAFAF;
+  cursor: text;
+  width: 22px;
+  font-size: 0.8em;
+  font-weight: 300;
+  margin: 0px;
+  padding: 0px 2px;
+  vertical-align: top;
+}
+.kshf .summaryConfig_UnitName > .unitNameInput:focus {
+  outline-color: #cb5454;
+  outline-width: 2px;
+}
+.kshf .summaryConfig_UnitName > .unitNameInput:hover {
+  border-color: #cb5454;
 }
 .kshf .kshfSummary {
   display: block;
@@ -2628,8 +2741,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: calc(100% - 12px);
   top: 0px;
 }
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedAggrValue {
+  position: absolute;
+  width: calc(100% - 21px);
+  height: 2px;
+  border-bottom: dotted 1px orangered;
+  opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
+}
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick {
-  left: 21px;
+  width: calc(100% - 21px);
   width: 100%;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .line {
@@ -2646,7 +2770,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   padding-right: 1px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart {
+  display: none;
   height: 12px;
   margin-top: 1px;
   position: relative;
@@ -2654,7 +2779,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: lightgray;
   border-width: 1px 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileTitle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .percentileTitle {
   font-size: 0.6em;
   position: absolute;
   display: inline-block;
@@ -2667,10 +2792,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
   display: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup:hover > .percentileTitle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart:hover > .percentileTitle {
   display: block;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile {
   display: inline-block;
   position: absolute;
   height: 10px;
@@ -2686,34 +2811,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_pos {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_pos {
   background-color: #1b6f61;
   margin-left: -0.5px;
   z-index: 101;
   pointer-events: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_pos.q_50 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_pos.q_50 {
   width: 4px;
   background-color: #1b6f61;
   margin-left: -2px;
   pointer-events: all;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_range:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_range:hover {
   border-color: #1b6f61;
   border-style: solid;
   border-width: 1px 0px 1px 0px;
   z-index: 100;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_40_60 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_40_60 {
   background-color: #2aad97;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_30_70 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_30_70 {
   background-color: #78decd;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_20_80 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_20_80 {
   background-color: #caf2eb;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .quantile.q_10_90 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_10_90 {
   background-color: #f3fcfb;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
@@ -2794,20 +2919,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .circlee {
   display: block;
-  border-radius: 20px;
-  width: 8px;
+  border-radius: 1px;
+  width: 4px;
   height: 8px;
   background-color: orangered;
-  left: -4px;
+  left: -2px;
   z-index: 2;
   position: relative;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .selected-item-value-text {
-  position: relative;
-  top: -4px;
   color: #ff6a33;
   font-size: 0.8em;
   white-space: nowrap;
+  top: 7px;
+  position: absolute;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .selected-item-value-text > .selected-item-value-text-v {
   position: relative;
@@ -2996,32 +3121,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   color: black;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
   display: none;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .summaryControls .catSortButton {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .catSortButton {
   display: none !important;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .scrollToTop {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .scrollToTop {
   display: none;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .aggrGroup {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .aggrGroup {
   display: none;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .belowCatChart > .chartAxis_Measure {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .belowCatChart > .chartAxis_Measure {
   display: none;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .belowCatChart > .scroll_display_more {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .belowCatChart > .scroll_display_more {
   display: none;
 }
-.kshf .kshfSummary[catViewType="map"] .summaryCategorical > .belowCatChart > .catMapColorScale {
+.kshf .kshfSummary[viewType="map"] .summaryCategorical > .belowCatChart > .catMapColorScale {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
-.kshf .kshfSummary[catViewType="list"] .catMap_Base {
+.kshf .kshfSummary[viewType="list"] .catMap_Base {
+  display: none;
+}
+.kshf .kshfSummary[viewType="line"] .summaryConfig_UnitName {
   display: none;
 }
 .kshf .belowCatChart {
@@ -3036,6 +3164,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .belowCatChart > .chartAxis_Measure > .relativeModeControl {
   height: 12px;
   margin-left: 2px;
+}
+.kshf .belowCatChart > .chartAxis_Measure > .highlightedAggrValue {
+  position: absolute;
+  border-left: dotted 1px orangered;
+  opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
 }
 .kshf .belowCatChart > .chartAxis_Measure > .tick > .text {
   width: 20px;
@@ -3098,7 +3235,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #E0E4D7;
   color: black;
 }
-.kshf .belowCatChart > .catMapColorScale > .catHighlightedValue {
+.kshf .belowCatChart > .catMapColorScale > .highlightedAggrValue {
   position: absolute;
   top: 2px;
   margin-left: -3px;

@@ -415,14 +415,14 @@ var Summary_Clique_functions = {
       .attr("x1",0).attr("y1",0).attr("y1",0).attr("y2",0);
     newRows.append("text").attr("class","label label_horz")
       .text(function(d){
-        tmp.innerHTML = me.setListSummary.catLabel.call(d.data);
+        tmp.innerHTML = me.setListSummary.catLabel_Func.call(d.data);
         return tmp.textContent || tmp.innerText || "";
       });
     newRows.append("line").attr("class","line line_horz")
       .attr("x1",0).attr("y1",0).attr("y2",0);
     newRows.append("text").attr("class","label label_vert")
       .text(function(d){
-        tmp.innerHTML = me.setListSummary.catLabel.call(d.data);
+        tmp.innerHTML = me.setListSummary.catLabel_Func.call(d.data);
         return tmp.textContent || tmp.innerText || "";
       })
       .attr("y",-4);
@@ -519,7 +519,7 @@ var Summary_Clique_functions = {
     var t=this.setListSummary.scrollTop_cache;
     var r=(t)*-1;
     this.DOM.line_vert_label // points up/right
-      .attr("show",function(d){ return d.isCulled; })
+      .attr("show",function(d){ return d.isVisible; })
       .attr("transform",function(d){
         var i=d.orderIndex;
         var x=totalWidth-((i+0.5)*me.setPairDiameter)-2;
