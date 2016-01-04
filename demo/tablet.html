@@ -19,14 +19,15 @@
     <script type="text/javascript">
 
 $(document).ready( function() {
-  resizeBrowser(160,40);
+  resizeBrowser(160,60);
   $(window).resize(function() {
-      resizeBrowser(160,40);
+      resizeBrowser(160,60);
       browser.updateLayout();
   });
 
   browser = new kshf.Browser({
     domID: "#chart_div",
+    itemName: "Tablets",
     categoryTextWidth: 200,
     source: {
       dirPath: 'data/',
@@ -56,7 +57,7 @@ $(document).ready( function() {
         }
       }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Customer Reviews",
       textSearch: 'name',
       recordView: function(){

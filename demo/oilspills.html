@@ -81,7 +81,7 @@ google.setOnLoadCallback( function(){
       { name: "Other Properties", value: "Notes", panel: 'right', collapsed: true, catTableName: "Notes", catLabel: "name" },
       { name: "Date", panel: 'bottom', value: getDate }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 58,
       sortBy: 
         { name: "Date", inverse: true,
@@ -130,10 +130,9 @@ google.setOnLoadCallback( function(){
     </head>
   <body>
     <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span> This page uses data from
+    <div id="demoInfobox">
       <a href="http://www.bsee.gov/Inspection-and-Enforcement/Accidents-and-Incidents/Spills/" target="_blank">BSEE.gov</a>
-      oil spill summaries. <span class="fa fa-info-circle"></span>
+      oil spill summaries.
       </div>
     </body>
 </html>

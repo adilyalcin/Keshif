@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
       { name: "# Injured", panel: "left", catLabel: printPeopleIcons, catSortBy: 'id' },
       { name: "Date", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "# Killed",
       sortColWidth: 45,
       recordView: function(){ 
@@ -65,7 +65,7 @@ google.setOnLoadCallback(function(){
         <style>
 #chart_div {
   width: 1100px;
-  height: 750px;
+  height: 720px;
 }
 .kshfRecord{
   margin-top: 3px;
@@ -99,12 +99,10 @@ google.setOnLoadCallback(function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Mass shootings reported by 
       <a href="http://www.gunviolencearchive.org/mass-shooting" target="_blank">
           Gun Violance Archive</a>
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

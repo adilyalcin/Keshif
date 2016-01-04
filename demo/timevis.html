@@ -73,85 +73,85 @@ $(document).ready( function(){
     });
 
 	browser = new kshf.Browser({
-        domID: "#chart_div",
-        categoryTextWidth: 140,
-        itemName: "Time Visualization Techniques",
-        source: {
-            url: "http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html",
-            callback: loadData
-        },
-        summaries: [
-            {   name: "Data: Frame of Reference",
-                value: function(){
-                    var r=[];
-                    this.categories.forEach(function(cat){
-                        if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
-                    });
-                    return r;
-                }
-            },{ name: "Data: Number of Variables",
-                value: function(){
-                    var r=[];
-                    this.categories.forEach(function(cat){
-                        if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
-                    });
-                    return r;
-                }
-            },{ name: "Time: Arrangement",
-                value: function(){
-                    var r=[];
-                    this.categories.forEach(function(cat){
-                        if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
-                    });
-                    return r;
-                }
-            },{ name: "Time: Primitives",
-                value: function(){
-                    var r=[];
-                    this.categories.forEach(function(cat){
-                        if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
-                        if(cat==="interval") r.push("Interval <span class='fa fa-arrows-h'></span>");
-                    });
-                    return r;
-                }
-            },{ name: "Vis: Mapping",
-                value: function(){
-                    var r=[];
-                    this.categories.forEach(function(cat){
-                        if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
-                        if(cat==="dynamic") r.push("Dynamic <span class='fa fa-spinner fa-spin'></span>");
-                    });
-                    return r;
-                }
-            },{ name: "Vis: Dimensionality",
-                value: function(){
-                    var r=[];
-                    this.categories.forEach(function(cat){
-                        if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");
-                        if(cat==="3D") r.push("3D <span class='fa fa-cube'></span>");
-                    });
-                    return r;
-                }
-            }
-        ],
-        itemDisplay: {
-          sortBy: "Year",
-          displayType: 'grid',
-          textSearch: "Name",
-          recordView: function(){
-            var iconList="<div class='iconList'>";
-            this.categories.forEach(function(cat){
-                iconList+="<span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
-            });
-            iconList+="</div>";
-            return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Name+
-                "' class='thumbnail' title='"+this.Info+"'>"+
-                "<img class='thumbImg' src='"+this.imageURL_full+"'>"+
-                "</a><span class='title'>"+this.Name+"</span>"+
-                iconList;
+    domID: "#chart_div",
+    categoryTextWidth: 140,
+    itemName: "Techniques",
+    source: {
+      url: "http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html",
+      callback: loadData
+    },
+    summaries: [
+      {   name: "Data: Frame of Reference",
+          value: function(){
+              var r=[];
+              this.categories.forEach(function(cat){
+                  if(cat==="abstract" || cat==="spatial") r.push(getIt(cat));
+              });
+              return r;
           }
-        }
-    });
+      },{ name: "Data: Number of Variables",
+          value: function(){
+              var r=[];
+              this.categories.forEach(function(cat){
+                  if(cat==="multivariate" || cat==="univariate") r.push(getIt(cat));
+              });
+              return r;
+          }
+      },{ name: "Time: Arrangement",
+          value: function(){
+              var r=[];
+              this.categories.forEach(function(cat){
+                  if(cat==="linear" || cat==="cyclic") r.push(getIt(cat));
+              });
+              return r;
+          }
+      },{ name: "Time: Primitives",
+          value: function(){
+              var r=[];
+              this.categories.forEach(function(cat){
+                  if(cat==="instant") r.push("Instant <span class='fa fa-caret-right'></span>");
+                  if(cat==="interval") r.push("Interval <span class='fa fa-arrows-h'></span>");
+              });
+              return r;
+          }
+      },{ name: "Vis: Mapping",
+          value: function(){
+              var r=[];
+              this.categories.forEach(function(cat){
+                  if(cat==="static") r.push("Static <span class='fa fa-spinner'></span>");
+                  if(cat==="dynamic") r.push("Dynamic <span class='fa fa-spinner fa-spin'></span>");
+              });
+              return r;
+          }
+      },{ name: "Vis: Dimensionality",
+          value: function(){
+              var r=[];
+              this.categories.forEach(function(cat){
+                  if(cat==="2D") r.push("2D <span class='fa fa-square-o'></span>");
+                  if(cat==="3D") r.push("3D <span class='fa fa-cube'></span>");
+              });
+              return r;
+          }
+      }
+    ],
+    recordDisplay: {
+      sortBy: "Year",
+      displayType: 'grid',
+      textSearch: "Name",
+      recordView: function(){
+        var iconList="<div class='iconList'>";
+        this.categories.forEach(function(cat){
+          iconList+="<span class='fa fa-"+getSurveyIcon(cat)+"'></span>";
+        });
+        iconList+="</div>";
+        return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Name+
+          "' class='thumbnail' title='"+this.Info+"'>"+
+          "<img class='thumbImg' src='"+this.imageURL_full+"'>"+
+          "</a><span class='title'>"+this.Name+"</span>"+
+          iconList;
+      }
+    }
+  });
 });
         </script>
 <style>
@@ -184,23 +184,22 @@ $(document).ready( function(){
   margin: 0px 2px;
 }
 </style>
-    </head>
-    <body>
-<!--        <div class="pageTitle" align="center">Time Visualization Techniques</div>-->
+  </head>
+  <body>
+    <div class="contents">
+      <div class="pageTitle" align="center">Time Visualization Techniques</div>
+      <div id="chart_div"></div>
+      </div>
 
-        <div class="contents"><div id="chart_div"></div></div>
-
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data: <a href="http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html"
-                target='_blank'>survey.timeviz.net</a> The TimeViz Browser - 
-                A Visual Survey of Visualization Techniques for Time-Oriented Data
-                by 
-                <a href="http://www.informatik.uni-rostock.de/~ct" target='_blank'>Christian Tominski</a>
-                and
-                <a href="http://mc.fhstp.ac.at/people/wolfgang-aigner" target='_blank'>Wolfgang Aigner</a><br>
-            All rights for the technique images belong to their respective owners.
-            <span class="fa fa-info-circle"></span>
-            </div>
+    <div id="demoInfobox" align="center">
+      Data: <a href="http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html"
+        target='_blank'>survey.timeviz.net</a> The TimeViz Browser - 
+        A Visual Survey of Visualization Techniques for Time-Oriented Data
+        by 
+        <a href="http://www.informatik.uni-rostock.de/~ct" target='_blank'>Christian Tominski</a>
+        and
+        <a href="http://mc.fhstp.ac.at/people/wolfgang-aigner" target='_blank'>Wolfgang Aigner</a><br>
+      All rights for the technique images belong to their respective owners.
+      </div>
     </body>
 </html>

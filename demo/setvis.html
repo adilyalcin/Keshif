@@ -79,7 +79,7 @@ $(document).ready( function(){
       { name: "Journal", collapsed: false },
       { name: "Year", panel: "bottom" } //, value: function(){ return new Date(this.Year,1,1); }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Year",
       textSearch: "Title",
       displayType: 'grid',
@@ -107,11 +107,9 @@ $(document).ready( function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data provided by <a href="http://www.cvast.tuwien.ac.at/SetViz" target='_blank'>SetViz survey</a>.<br>
       All rights for the technique images belong to their respective owners.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

@@ -87,7 +87,7 @@ $(document).ready( function(){
   browser = new kshf.Browser({
     domID: "#chart_div",
     categoryTextWidth: 210,
-    itemName: "Multifaceted Scientific Data Visualization",
+    itemName: "Techniques",
     source: {
       url: "http://multivis.net/",
       callback: loadData
@@ -99,7 +99,7 @@ $(document).ready( function(){
       "Authors",
       { name: "Year", value: function(){ return new Date(this.Year,1,1); }, panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Year",
       displayType: 'grid',
       textSearch: "Title",
@@ -124,17 +124,18 @@ $(document).ready( function(){
 </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div class="contents">
+      <div class='pageTitle'>Visualization Techniques for Multifaceted Scientific Data</div>
+      <div id="chart_div"></div>
+      </div>
+    <div id="demoInfobox">
       Data: <a href="http://multivis.net/"
-        target='_blank'>multivis.net</a> A Visual Bibliography of Tree Visualization 2.0
+        target='_blank'>multivis.net</a> Visualization and Visual Analysis of Multifaceted Scientific Data
         by
         <a href="http://wwwcg.in.tum.de/group/persons/kehrer.html" target='_blank'>Johannes Kehrer</a>
         and 
         <a href="http://www.ii.uib.no/vis/team/hauser/index.html" target='_blank'>Helwig Hauser</a>.<br>
       All rights for the technique images belong to their respective owners.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

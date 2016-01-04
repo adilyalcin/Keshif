@@ -16,8 +16,6 @@
 
     <script type="text/javascript">
 
-var noRibbon = true;
-
 google.setOnLoadCallback(function(){
   resizeBrowser(120,80);
   $(window).resize(function() {
@@ -59,7 +57,7 @@ google.setOnLoadCallback(function(){
         },
       { name: "Year", layout: 'middle', value: function(){ return this.Date.getFullYear(); } }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Year',
       sortColWidth: 45,
       textSearch: {name: "Title and Abstract", value: function(){ return this['Title']+" "+this["Abstract"]; } },
@@ -186,12 +184,13 @@ google.setOnLoadCallback(function(){
       padding-bottom: 2px;
     }
     a.mainLink{
-        color: black !important;
-        text-decoration: none !important;
+      pointer-events: all;
+      text-decoration: none !important;
+      color: white;
     }
     a.mainLink:hover{
-        color: #005FA9 !important;
-        text-decoration: underline !important;
+      color: white !important;
+      text-decoration: underline !important;
     }
     .pageTitle{
       text-shadow: none;
@@ -212,12 +211,14 @@ google.setOnLoadCallback(function(){
       color: orangered;
     }
 </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">
-            <a href="http://www.umicra.com/" target="_blank" class="mainLink">
-                University of Maryland Inspection and Compliance Research Archive</a>
-            </div>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  </head>
+  <body>
+    <div class="contents">
+      <div class="pageTitle">
+          <a href="http://www.umicra.com/" target="_blank" class="mainLink">
+              University of Maryland Inspection and Compliance Research Archive</a>
+          </div>
+      <div id="chart_div"></div>
+      </div>
+  </body>
 </html>

@@ -95,7 +95,7 @@ $(document).ready( function(){
       { name: "Journal", value: function(){ return this.Fields.journal; } },
       { name: "Year", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: { name: "Year", label: function(){ return this.Year.getFullYear(); }, inverse: true },
       textSearch: { name: "title", value: function(){ return this.Fields.title;} },
       displayType: 'list',
@@ -235,15 +235,13 @@ $(document).ready( function(){
   padding-right: 40px;
 }
 </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            This page uses data from
-            <a href="https://www.cs.umd.edu/users/ben/publications.html" target="_blank">Ben Shneiderman's publications page</a>.
-            All data is parsed from Bibtex.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+  </head>
+  <body>
+    <div class="contents"><div id="chart_div"></div></div>
+    <div id="demoInfobox">
+      This page uses data from
+      <a href="https://www.cs.umd.edu/users/ben/publications.html" target="_blank">Ben Shneiderman's publications page</a>.
+      All data is parsed from Bibtex.
+      </div>
+  </body>
 </html>

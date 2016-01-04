@@ -16,8 +16,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 
 function getImageName(url){
@@ -59,15 +57,16 @@ function resizeBrowser(minWidth, minHeight){
 var book_browser=null;
 
 $(document).ready( function(){
-	resizeBrowser(100,130);
+	resizeBrowser(30,90);
 	$(window).resize(function(){
-	  resizeBrowser(100,130);
+	  resizeBrowser(30,90);
 	  tool_browser.updateLayout();
     if(book_browser) book_browser.updateLayout();
 	});
 
 	tool_browser = new kshf.Browser({
     domID: "#vistools_div",
+    itemName: "Data-Visualization Tools",
     categoryTextWidth: 170,
     source: {
       gdocId: '13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E',
@@ -215,7 +214,7 @@ $(document).ready( function(){
     	},
       { name: "Author", panel: "right", collapsed: true },
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: {
       	title:'★s', 
       	value: function(){
@@ -301,7 +300,7 @@ $(document).ready( function(){
         { name: "Publisher", collapsed: true},
         { name: "Year" },
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortBy: { 
           name: "★s, then Year", 
           value: function(){ 
@@ -486,21 +485,22 @@ $(document).ready( function(){
     border: solid 1px lightgray;
     border-radius: 10px;
     padding: 0px 4px;
-    color: gray;
+    color: white;
     cursor: pointer;
+    pointer-events: all;
   }
   .browser_select:hover{
     color: orangered;
   }
   body[show="tools"] .browser_select[show="tools"]{
     background-color: #EEEEEE;
-    color: black;
+    color: #706B62;
     cursor: default;
     pointer-events: none;
   }
   body[show="books"] .browser_select[show="books"]{
     background-color: #EEEEEE;
-    color: black;
+    color: #706B62;
     cursor: default;
     pointer-events: none;
   }
@@ -521,6 +521,10 @@ $(document).ready( function(){
     cursor: pointer;
   }
 
+  .showConfigButton{
+    display: none !important;
+  }
+
 </style>
 	</head>
   <body show="tools">
@@ -533,14 +537,12 @@ $(document).ready( function(){
       <div id="visbooks_div"></div>
       </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data is public at <a href="https://docs.google.com/spreadsheets/d/13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E/edit#gid=1230665440" target="_blank">Google Sheets</a>.
       <span style="color: orangered; font-weight: 700">Contribute to this open resource!</span> For info, contact 
       	<a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a><br>
       All rights for the images belong to their respective owners.
       <span class="attributions">Resources used</span>
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

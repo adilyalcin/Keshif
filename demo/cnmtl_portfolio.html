@@ -39,7 +39,7 @@ $(document).ready( function(){
       { name: "Released Year", panel: "middle", collapsed: true, 
         value: function(){ return dateFormat.parse(this.released); } },
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: {title:'Released Year', inverse: true},
       textSearch: 'title',
       displayType: 'grid',
@@ -67,13 +67,16 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">
-        <img src="http://s3.amazonaws.com/uploads.uservoice.com/logo/design_setting/1481/original/logo_withtag_big.gif" style="height:45px"> Project Portfolio</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">
+          CCNMTL Project Portfolio</div>
 
-    <div class="pageSubtitle">This page demonstrates the projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. The unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
-    </div>
+      <div class="pageSubtitle">This page demonstrates the projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. The unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
+
+      <div id="chart_div"></div>
+      </div>
 
   </body>
 </html>

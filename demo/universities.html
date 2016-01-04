@@ -138,9 +138,6 @@ var Unizin_Group = {
     "Pennsylvania State University-Main Campus": true,
 };
 
-socialShare = false;
-noRibbon = true;
-
 function loadData(browser){
   US_States.loadGeo();
   browser.loadCharts();
@@ -255,7 +252,7 @@ google.setOnLoadCallback(function(){
             description: "Graduation rate, women"
         }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy:
         { title:'Enrollment', 
           value: function(){
@@ -286,22 +283,20 @@ google.setOnLoadCallback(function(){
 }
 </style>
     </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div class="contents">
+      <div class="pageTitle">Universities in the U.S.</div>
+      <div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data from 
-            <a href="https://nces.ed.gov/ipeds/datacenter/" target='_blank'>
-                The Integrated Postsecondary Education Data System (IPEDS), National Center of Education Statistics, U.S. Dep. of Education.</a><br>
-            <b>770 Selected Institutions:</b>
-            Offering Doctorate Degree.
-            Instituion size > 1000.
-            U.S. Only.
-            Based on 2013 records.
-            <a href="https://docs.google.com/spreadsheets/d/1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM" target="_blank">
-                Data table</a>
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="demoInfobox" align="center">
+      Data from 
+      <a href="https://nces.ed.gov/ipeds/datacenter/" target='_blank'>
+          The Integrated Postsecondary Education Data System (IPEDS), National Center of Education Statistics, U.S. Dep. of Education.</a><br>
+      <b>770 Selected Institutions:</b>
+      Offering Doctorate Degree.
+      Instituion size > 1000.
+      U.S. Only.
+      Based on 2013 records.
+      </div>
+  </body>
 </html>

@@ -165,6 +165,11 @@ var ProvinceFeatures = {};
 
 
 $(document).ready( function(){
+  resizeBrowser(250,70);
+  $(window).resize(function() {
+    resizeBrowser(250,70);
+    browser.updateLayout();
+  });
 
   var dateFormat=d3.time.format("%Y-%m-%d");
 
@@ -218,22 +223,15 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
-#chart_div{
-  width: 950px;
-  height: 650px;
-}
-</style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Belgian Infectious Diseases Dataset</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Belgian Infectious Diseases Dataset</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
-      Orignally visualized by Mathias Leroy - <a href="https://epistat.wiv-isp.be/" target='_blank'>https://epistat.wiv-isp.be/</a>.
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
+      Data Re-Vis, from Mathias Leroy's <a href="https://epistat.wiv-isp.be/" target='_blank'>https://epistat.wiv-isp.be/</a>.
       </div>
   </body>
 </html>

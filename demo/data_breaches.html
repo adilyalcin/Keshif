@@ -63,7 +63,7 @@ google.setOnLoadCallback(function(){
         } },
       { name: "Date", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
       sortColWidth: 85,
       textSearch: {name: "Organization", value: "org" },
@@ -110,13 +110,11 @@ google.setOnLoadCallback(function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Original work by <a href="https://twitter.com/collinskeith" target='_blank'>Keith Collins</a> &amp; 
       <a href="https://twitter.com/jordanr1000" target="_blank"> Jordan Robertson</a>
       Also visualized at
       <a href="http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html" target="_blank">Data Breaches in the U.S.</a> by <a href="http://www.bloomberg.com/visual-data" target='_blank'>Bloomberg Visual Data</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

@@ -15,8 +15,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 function dataLoad(browser){
   $.ajax({
@@ -50,7 +48,7 @@ $(document).ready( function(){
       { name: "Day", panel: 'right', value: function(){ return this.downloadTime.day(); }, catSortBy: "id",        
         catLabel: _demo.DayOfWeek },
       { name: "Month", value: function(){ return this.downloadTime.month(); }, panel: 'middle', catSortBy: "id",
-        catLabel: _demo.Month,
+        catLabel: _demo.Month },
       { name: "Year", value: function(){ return this.downloadTime.year(); }, panel: 'right', catSortBy: "id" }
     ]
   });
@@ -64,14 +62,14 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       <a href="http://www.d3noob.org/2015/04/exploring-event-data-by-combination.html" target='_blank'>Original Blogpost</a> <a href="https://gist.github.com/d3noob/a0cbcddc6bf0eb9569fe" target='_blank'>Raw source</a>.
       <a href="http://bl.ocks.org/d3noob/raw/a0cbcddc6bf0eb9569fe/" target='_blank'>Original d3 visualization</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
 
   </body>

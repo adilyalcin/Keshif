@@ -64,9 +64,9 @@ function loadData(browser){
 };
 
 $(document).ready( function() {
-  resizeBrowser(300,80);
+  resizeBrowser(300,70);
   $(window).resize(function() {
-    resizeBrowser(300,80);
+    resizeBrowser(300,70);
     browser.updateLayout();
   });
 
@@ -88,7 +88,7 @@ $(document).ready( function() {
       {name: "Citation Count"},
       {name: "Year", panel: "bottom"}
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Citation Count",
       detailsToggle: "one",
       textSearch: "title",
@@ -122,17 +122,17 @@ $(document).ready( function() {
     </style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle">SIGGRAPH Papers</div>
+      <div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
-      Data from <a href='http://www.cs.utah.edu/~kwu/vis/sigvis.html' target='_blank'>SiggraphPubVis</a> project 
+    <div id="demoInfobox" align="center">
+      Re-Vis, from <a href='http://www.cs.utah.edu/~kwu/vis/sigvis.html' target='_blank'>SiggraphPubVis</a> project 
         by 
         <a href="http://www.cs.utah.edu/~kwu/" target='_blank'>Kui Wu</a>,
         <a href="http://www.hoangthaiduong.com/" target="_blank">Duong Hoang</a>, as part of 
         <a href='http://dataviscourse.net/2015/fame/' target='_blank'>Visualization CS-5630/CS-6630</a> course at 
         the University of Utah.
-        <span class="fa fa-info-circle"></span>
         </div>
   </body>
 </html>

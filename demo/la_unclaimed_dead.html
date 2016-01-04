@@ -56,7 +56,7 @@ $(document).ready( function(){
       { name: "After Story is Published...",
         value: function(){ if(this.claimed) return "Claimed"; } }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Age at Death",
       textSearch: { name: "name", value:function(){return this.Last+", "+this.Middle+" "+this.First;} },
       recordView: function(){
@@ -117,17 +117,16 @@ $(document).ready( function(){
 </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">L.A. County’s unclaimed remains of 2011</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">L.A. County’s Unclaimed Remains - 2011</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Orignally reported by L.A. Times - <a href="http://spreadsheets.latimes.com/unclaimed-dead/" target='_blank'>
           L.A. County’s unclaimed remains of 2011</a>. <span class='fa fa-arrow-circle-right'></span>
       <a href="http://www.latimes.com/local/great-reads/la-me-c1-unclaimed-dead-20141109-story.html" 
           target="_blank">Story</a> <span class='fa fa-arrow-circle-right'></span> <a href="http://www.latimes.com/local/lanow/la-me-c1-unclaimed-dead-reporting-20141108-story.html" target="_blank">Reporting</a>
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

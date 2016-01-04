@@ -26,6 +26,11 @@ function mileSort(v){
 };
 
 $(document).ready( function(){
+  resizeBrowser(250,80);
+  $(window).resize(function() {
+    resizeBrowser(250,80);
+    browser.updateLayout();
+  });
   browser = new kshf.Browser({
     domID: "#chart_div",
     categoryTextWidth: 180,
@@ -54,7 +59,7 @@ $(document).ready( function(){
       { name: "Update Date", panel: 'bottom', collapsed: true,
         value: function(){ return new Date(moment(this.updated)); }, },
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 90,
       sortBy: 
         { title:'Milestone-', 
@@ -73,10 +78,6 @@ $(document).ready( function(){
 });
         </script>
 <style>
-#chart_div{
-  width: 1150px;
-  height: 700px;
-}
 .content a{
   color: #496B86;
   font-size: 0.8em;
@@ -114,10 +115,14 @@ iframe{
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span> This page uses data from
-      <a href="http://www.chromestatus.com" target="_blank">ChromeStatus</a>, data licensed under a Creative Commons Attribution 2.5 license <span class="fa fa-info-circle"></span>
+    <div class="contents">
+      <div class='pageTitle'>Chrome Platform Status</div>
+      <div id="chart_div"></div>
+      </div>
+
+    <div id="demoInfobox">
+      This page uses data from
+      <a href="http://www.chromestatus.com" target="_blank">ChromeStatus</a>, data licensed under a Creative Commons Attribution 2.5 license 
       </div>
   </body>
 </html>

@@ -198,9 +198,9 @@ function loadData(browser){
 };
 
 google.setOnLoadCallback(function(){
-    resizeBrowser(100,170);
+    resizeBrowser(100,140);
     $(window).resize(function() {
-        resizeBrowser(100,170);
+        resizeBrowser(100,140);
         browser.updateLayout();
     });
 
@@ -247,7 +247,7 @@ google.setOnLoadCallback(function(){
             },{ name: "Author"
             }
         ],
-        itemDisplay: {
+        recordDisplay: {
           sortBy: {title: 'Year', inverse: true},
           maxVisibleItems_Default: 25,
           displayType: 'grid',
@@ -342,23 +342,24 @@ google.setOnLoadCallback(function(){
         </style>
     </head>
     <body>
+      <div class="contents" style='padding-top: 75px;'>
         <div class="pageTitle" align="center">
-            Milestones in the History of Thematic Cartography,<br> Statistical Graphics, and Data Visualization</div>
-        <div class="contents"><div id="chart_div"></div></div>
+          Milestones in the History of Thematic Cartography,<br>
+          <span style="color: #706B62">Statistical Graphics, and Data Visualization</span> </div>
+        <div id="chart_div"></div>
+        </div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            The dataset is originally curated and presented by Michael Friendly and Daniel J. Denis at their
-            <a href="http://www.datavis.ca/milestones/index.php" target='_blank'>webpage</a> and various reports, 2001.<br>
+      <div id="demoInfobox" align="center">
+        The dataset is curated by Michael Friendly and Daniel J. Denis, and presented at their
+        <a href="http://www.datavis.ca/milestones/index.php" target='_blank'>webpage</a> and various reports, 2001.
 
-            <b>Data sources</b>: Keywords from the
-            <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/milestone.pdf" target="_blank">original</a> report.
-            Highlights from
-            <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf" target="_blank">www.Infografe.com.br</a> report.<br>
-            Main milestone data from <a href="http://datavis.ca/milestones/index.php?page=home" target="_blank">the index page</a> and enriched by additional data from
-            <a href="http://datavis.ca/milestones/index.php?group=pre-1600" target="_blank">era listings</a>.<br>
-            The data used to create this webpage includes minor modifications to the original data sources.<br>
-            </div>
-
+        <b>Data sources</b>: Keywords are from the
+        <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/milestone.pdf" target="_blank">original</a> report.
+        Highlights from
+        <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf" target="_blank">www.Infografe.com.br</a> report.
+        Main milestone data from <a href="http://datavis.ca/milestones/index.php?page=home" target="_blank">the index page</a> and enriched by additional data from
+        <a href="http://datavis.ca/milestones/index.php?group=pre-1600" target="_blank">era listings</a>.
+        The data used to create this webpage includes minor modifications to the original data sources.
+        </div>
     </body>
 </html>

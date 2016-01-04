@@ -17,8 +17,6 @@
 
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 
 function loadData(browser){
@@ -111,7 +109,7 @@ var loadBrowser = function(){
       },{ name: "Access Restrictions", value: "accessRestrictions", collapsed: true,
       }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "id",
       displayType: 'grid',
       textSearch: "title",
@@ -210,11 +208,9 @@ $(document).ready(function(){
         <div class="pageTitle" align="center">National Archives Data Browser</div>
         <div class="contents"><div id="chart_div"></div></div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
+        <div id="demoInfobox">
             <a href="https://catalog.archives.gov" target='_blank'>Data</a>
                 is provided by the <b>National Archives</b>.
-            <span class="fa fa-info-circle"></span>
             </div>
     </body>
 </html>

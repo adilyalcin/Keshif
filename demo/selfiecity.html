@@ -57,7 +57,7 @@ $(document).ready( function(){
       { name: "Anger", value: "emotion_angry", collapsed: true, panel: 'right', },
       { name: "Disgust", value: "emotion_disgust", collapsed: true, panel: 'right', type: 'interval' }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Happyness",
       displayType: "grid",
       detailsToggle: "off",
@@ -124,15 +124,14 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-  <div class="pageTitle" align="center">Selfiecity - Self-portraits (selfies) in five cities across the world</div>
-  
-  <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Selfiecity - Self-portraits (selfies) in five cities across the world</div>
+      <div id="chart_div"></div>
+      </div>
 
-  <div id="infobox" align="center">
-    <span class="fa fa-info-circle"></span>
+  <div id="demoInfobox">
     <a href="http://selfiecity.net/" target='_blank'>Selfiecity</a> is a project by Dr. Lev Manovich, Moritz Stefaner, Mehrdad Yazdani, Dr. Dominikus Baur, Daniel Goddmeyer, Alise Tifentale, Nadov Hochman, Jay Chow.<br>
     You can also see their interactive visual <a href="http://selfiecity.net/selfiexploratory/" target='_blank'>selfie browser</a>.
-    <span class="fa fa-info-circle"></span>
     </div>
   </body>
 </html>

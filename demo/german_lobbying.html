@@ -50,7 +50,7 @@ google.setOnLoadCallback(function(){
       { name: "Lobbyist", panel: 'right', collapsed: true },
       { name: "Date", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 75,
       sortBy: { title: 'Date', label: function(){ return moment(this.Date).format("D MMM 'YY"); }, inverse: true },
       recordView: function(){
@@ -103,17 +103,17 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">German Lobbying Meetings</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">German Lobbying Meetings</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span> This page uses data compiled and published by
+    <div id="demoInfobox">
+      This page uses data compiled and published by
       <a href="http://christopherwarnow.com/lobbyingcomplex/" target="_blank">Christopher Warnow</a>. Sources: 
       <a href="http://dip21.bundestag.de/dip21/btd/17/123/1712332.pdf">Banking</a> <i class='fa fa-money'></i> - 
       <a href="http://dip21.bundestag.de/dip21/btd/17/146/1714698.pdf">Transportation</a> <i class='fa fa-car'></i> - 
       <a href="http://dip21.bundestag.de/dip21/btd/18/001/1800140.pdf">Energy <i class='fa fa-lightbulb-o'></i></a> - 
-
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

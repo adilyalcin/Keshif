@@ -38,7 +38,7 @@ $(document).ready( function(){
       { name: "Industry", layout: "left" },
       { name: "City", layout: "right" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 82,
       sortBy: 'Capital Raised',
       textSearch: "Company Name",
@@ -55,16 +55,15 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Start-ups in L.A. and Orange counties</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Start-ups in L.A. and Orange counties</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data from <a href="http://spreadsheets.latimes.com/start-ups-l-and-orange-counties/" target='_blank'> L.A. Times </a> - 
       News Story: <a href="http://www.latimes.com/business/la-fi-la-tech-startups-20141123-story.html" target="_blank">
           Hollywood is giving tech start-ups the star treatment</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

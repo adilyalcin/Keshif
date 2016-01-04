@@ -31,7 +31,7 @@ google.setOnLoadCallback(function(){
       { name: "Start-Date", panel: "bottom" },
       { name: "End-Date", panel: "bottom", collapsed: true }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 80,
       sortingOpts: ["CO2e (MT) Calculated", "Start-Date"],
       recordView: "Site Name"
@@ -49,10 +49,8 @@ google.setOnLoadCallback(function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       The City’s Long-Term Sustainability Plan, PlaNYC, calls for City government to reduce greenhouse gas emissions produced by municipal operations 30% by 2017. A large part of this effort is retrofitting municipal buildings to become more energy efficient. This dataset lists energy efficiency projects at City buildings that are complete or in progress. Projects are listed by address, building name, and agency, and the dataset includes the estimated reduction in tons of GHG emissions associated with the project.
-      <span class="fa fa-info-circle"></span>
       </div>
 
   </body>

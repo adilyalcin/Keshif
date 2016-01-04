@@ -16,9 +16,9 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  resizeBrowser(null,160);
+  resizeBrowser(250,100);
   $(window).resize(function() {
-    resizeBrowser(null,160);
+    resizeBrowser(250,100);
     browser.updateLayout();
   });
 
@@ -42,7 +42,7 @@ $(document).ready( function() {
       {name: "Tags", value: "tags", panel: "right"},
       {name: "Year", value: "year", panel: "bottom", intervalScale: "linear", collapsed: true},
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Year",
       sortColWidth: 70,
       detailsToggle: "off",
@@ -67,9 +67,6 @@ $(document).ready( function() {
 });
     </script>
     <style>
-#chart_div{
-  width: 1200px;
-}
 .speaker_name{
   font-size: 1.2em;
   font-weight: 700;
@@ -124,10 +121,13 @@ $(document).ready( function() {
       </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">The Best Commencement Speeches, Ever</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">The Best Commencement Speeches, Ever</div>
 
-    <div class="pageSubtitle">Compiled by <a href="http://apps.npr.org/commencement/">NPR</a></div>
-
-    <div class="contents"><div id="chart_div"></div></div>
+      <div class="pageSubtitle">Compiled by <a href="http://apps.npr.org/commencement/">
+        <img src="http://www.npr.org/about/images/press/Logos/npr_logo_rgb.JPG" style='height: 15px'>
+      </a></div>
+      <div id="chart_div"></div>
+      </div>
   </body>
 </html>

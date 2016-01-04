@@ -17,9 +17,9 @@
     <script type="text/javascript">
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(160,110);
+  resizeBrowser(160,90);
   $(window).resize(function() {
-    resizeBrowser(160,110);
+    resizeBrowser(160,90);
     browser.updateLayout();
   });
 
@@ -57,23 +57,23 @@ google.setOnLoadCallback(function(){
       { name: "Venue", panel: 'right',  },
       { name: "Date", panel: 'bottom', value: function(){return new Date(this.Year,1,1);} }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Date',
       textSearch: "Title",
       recordView: "Title"
     }
   });
 });
-        </script>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">References in "A Multi-Level Typology of Abstract Visualization Tasks"</div>
-        <div class="contents"><div id="chart_div"></div></div>
+      </script>
+  </head>
+  <body>
+    <div class="contents">
+      <div class="pageTitle" align="center">References in "A Multi-Level Typology of Abstract Visualization Tasks"</div>
+      <div id="chart_div"></div>
+      </div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Data from: M. Brehmer and T. Munzner. "A multi-level typology of abstract visualization tasks." <br>Visualization and Computer Graphics, IEEE Transactions on 19.12 (2013): 2376-2385.
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="demoInfobox" align="center">
+        Data from: M. Brehmer and T. Munzner. "A multi-level typology of abstract visualization tasks." <br>Visualization and Computer Graphics, IEEE Transactions on 19.12 (2013): 2376-2385.
+        </div>
+  </body>
 </html>

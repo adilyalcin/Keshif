@@ -50,7 +50,7 @@ google.setOnLoadCallback(function(){
       { name: "Value", value:function(){return (this['Cash ($B)']-this['Debt ($B)']);}, collapsed: true, description: "Cash - Debt"},
       { name: "Market Capitalization", collapsed: true }
     ],
-    itemDisplay: {
+    recordDisplay: {
       detailsToggle: "none",
       sortBy: "Value",
       displayType: 'grid',
@@ -100,7 +100,16 @@ google.setOnLoadCallback(function(){
       </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Top 50 US Companies - Cash &amp; Debt</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Top 50 US Companies - Cash &amp; Debt</div>
+      <div id="chart_div"></div>
+      </div>
+
+    <div id="demoInfobox">
+      Re-Vis, from 
+        <a href="http://public.tableau.com/profile/sadethesage#!/vizhome/CashonHand1/CashonHand" target='_blank'>sadethesage</a>, 
+      at Tableau Public.
+      </div>
+    
   </body>
 </html>

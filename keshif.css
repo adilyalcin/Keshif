@@ -2409,6 +2409,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary > .wrapper > .summaryCategorical .scroll_display_more {
   font-size: 0.7em;
   line-height: 1.4em;
+  position: absolute;
+  left: 0px;
   vertical-align: top;
   cursor: pointer;
   color: #b4b4b4;
@@ -2732,8 +2734,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .measurePercentControl {
   bottom: -1px;
-  left: 10px;
-  width: 12px;
+  left: -10px;
   text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
@@ -2755,6 +2756,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick {
   width: calc(100% - 21px);
   width: 100%;
+  left: 0px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .line {
   border-bottom: dotted 1px #b6b3b3;

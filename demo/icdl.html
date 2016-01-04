@@ -35,9 +35,9 @@ var getIndicesWithParent = function(book, parentId){
 $(document).ready( function(){
   var sortFormat = d3.time.format("%Y-%m-%d");
 
-  resizeBrowser(150,100);
+  resizeBrowser(150,70);
   $(window).resize(function() {
-    resizeBrowser(150,100);
+    resizeBrowser(150,70);
     browser.updateLayout();
   });
 
@@ -126,7 +126,7 @@ $(document).ready( function(){
       },{ name: "Date Added", panel: "bottom", collapsed: true
       }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Date Added',
       textSearchFunc: function(){ 
         var metadata = dt_metadata[this.id];
@@ -163,15 +163,17 @@ $(document).ready( function(){
 }
 </style>
     </head>
-    <body>
-        <div class="pageTitle" align="center">
-            <a href="http://en.childrenslibrary.org/" target="_blank">
+  <body>
+    <div class="contents">
+      <div class="pageTitle" align="center">
+        <a href="http://en.childrenslibrary.org/" target="_blank">
+        <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
+        International Children's Digital Library
+        <a href="http://en.childrenslibrary.org/" target="_blank">
             <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
-            International Children's Digital Library
-            <a href="http://en.childrenslibrary.org/" target="_blank">
-                <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
-            Collection
-            </div>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+        Collection
+        </div>
+      <div id="chart_div"></div>
+      </div>
+  </body>
 </html>

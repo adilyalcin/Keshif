@@ -3,8 +3,6 @@
 // turn on social share by default
 var socialShare = true;
 // turn on rubbon by default
-var noRibbon = false;
-var showLogo = true;
 var githubButton = false;
 
 function resizeBrowser(minWidth, minHeight){
@@ -576,49 +574,60 @@ var sendLog = function(actID, dt, ts){
     });
 };;
 
-$(window).load(function(){
+$(document).ready(function(){
 
     if(document.location.hostname!=="localhost"){
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
         ga('create', 'UA-54042831-2', 'auto');
         ga('send', 'pageview');
     }
-
-    if(showLogo){
-        var keshif_logo = d3.select("body").append("a").attr("class","keshif_logo")
-            .attr("href","http://www.keshif.me").attr("target","_blank");
-        keshif_logo.append("img").attr("class","keshif_logo_img").attr("src","./img/logo.png");
-        keshif_logo.append("span").attr("class","keshif_logo_content").html(
-            "<strong>Keshif</strong></br>Data Made Explorable"
-        );
-    }
-
-    if(!noRibbon){
-        var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
-        var pageName = window.location.pathname.split("/");
-        pageName = pageName[pageName.length-1];
-        if(pageName.indexOf("html")===-1) pageName+=".html";
-
-        d3.select("body").append("span").attr("class","forkongithub fork-bottom fork-right")
-            .append("a").attr("href","http://www.keshif.me").attr("target","_blank")
-            .attr("class","fork-ribbon").html("More <span class='fa fa-bar-chart'></span> ...");
-
-        d3.select("body").append("span").attr("class",'forkongithub fork-bottom fork-left').html(
-            "<a class='fork-ribbon' href='"+githubDemoRoot+pageName+"' target='_blank'>"+
-                //'<span class="github-button" href="https://github.com/adilyalcin/keshif" data-icon="octicon-star" aria-label="Star adilyalcin/keshif on GitHub"></span>'+
-                "<span class='fa fa-star' style='font-size: 1.5em'></span>"+
-                " Open Source "+
-                "<span class='fa fa-github fa' style='font-size: 1.5em'></span>"+
-            "</a>"
-        );
-    }
+    var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
+    var pageName = window.location.pathname.split("/");
+    pageName = pageName[pageName.length-1];
+    if(pageName.indexOf("html")===-1) pageName+=".html";
 
     if(socialShare===true){
-        var s = document.createElement("script");
-        s.type = "text/javascript";
-        s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
-        s.async = "async";
-        $("body").append(s);
+      var body = d3.select("body");
+      var demoHeader = body.append("div").attr("class","demoHeader");
+      
+      var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
+      keshif_logo.append("img").attr("class","keshif_logo_img").attr("src","./img/logo.png");
+      keshif_logo.append("span").attr("class","keshif_logo_content").html("<strong>Keshif</strong></br>Data Made Explorable");
+
+      demoHeader.append("div").attr("class","addthis_sharing_toolbox");
+
+      var openSource = demoHeader.append("div").attr("class","openSource")
+        ;
+      //openSource.append("span").attr("class","fa fa-github");
+      openSource.append("iframe")
+        .attr("src","http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small")
+        .attr("frameborder",0)
+        .attr("scrolling",0)
+        .attr("width","52px")
+        .attr("height","20px")
+        .style("position","relative")
+        .style("top","3px");
+      var y = openSource.append("a").attr("class","openSourceLabel")
+        .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code");
+        //y.append("span").attr("class","sdsdsds").html("Get<br>Code");
+          y.append("span").attr("class","fa fa-code");
+
+      var s = document.createElement("script");
+      s.type = "text/javascript";
+      s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
+      s.async = "async";
+      $("body").append(s);
+
+      WebFontConfig = {
+          google: { families: [ 'Montserrat:400,500,300,100,700:latin', ] }
+      };
+      var wf = document.createElement('script');
+      wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+      wf.type = 'text/javascript';
+      wf.async = 'true';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wf, s);
     }
 
     d3.select("head").append("link")
@@ -656,8 +665,7 @@ $(window).load(function(){
         s.async = "async";
         $("body").append(s);
     }
-
-
-
 });
+
+
 

@@ -83,15 +83,12 @@ google.setOnLoadCallback(function(){
         value: "NoRip",
         panel: "right" },
 /*
-
-
       { name: " <a target='_blank' class='rSite fa fa-external-link' href='http://www..com/'></a>",
         value: "",
         panel: "right" },
 */
-        
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 25,
       sortBy: { name: "AoTY", inverse: false},
       textSearch: { name: "Artist & Album", value: function(){return this["Artist"]+" "+this.Album; } },
@@ -170,16 +167,16 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-<!--    <div class="pageTitle" align="center">Music Album Reviews - 2015</div>-->
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Music Album Reviews - 2015</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data Re-Vis, from
       <a href='http://www.cs.ubc.ca/~brehmer/' target='_blank'>Matt Brehmer</a>'s 
       <a href='http://mattbrehmer.github.io/SoundConsensus/2015/' target='_blank'>SoundConsensus 2015</a>.
-      Original data from <a href='http://www.albumoftheyear.org/ratings/overall/2015/19' target='_blank'>albumoftheyear</a>.
-      <span class="fa fa-info-circle"></span>
+      Original data from <a href='http://www.albumoftheyear.org/ratings/overall/2015/19' target='_blank'>albumoftheyear</a>
       </div>
   </body>
 </html>

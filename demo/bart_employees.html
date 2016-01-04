@@ -16,9 +16,9 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  resizeBrowser(300,60);
+  resizeBrowser(300,70);
   $(window).resize(function() {
-    resizeBrowser(300,60);
+    resizeBrowser(300,70);
     browser.updateLayout();
   });
 
@@ -48,7 +48,7 @@ $(document).ready( function() {
       { name: "DC Salary", value:'DC', unitName:'$', intervalScale:'log', collapsed:true, panel:'right' },
       { name: "Source", panel: 'right' }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 70,
       sortBy: "Total Salary",
       textSearch: "Name",
@@ -75,6 +75,15 @@ $(document).ready( function() {
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle">Salary of Bay Area Rapid Transit (BART) Employees</div>
+      <div id="chart_div"></div>
+      </div>
+
+    <div id="demoInfobox">
+      Data Re-Vis, from
+      <a href='http://vctr.me/' target='_blank'>Victor Powrll</a>'s 
+      <a href='http://blog.vctr.me/bart/' target='_blank'>Visualization</a>.
+      </div>
   </body>
 </html>

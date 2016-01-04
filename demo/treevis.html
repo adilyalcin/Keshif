@@ -76,7 +76,7 @@ $(document).ready( function(){
 	browser = new kshf.Browser({
     domID: "#chart_div",
     categoryTextWidth: 140,
-    itemName: "Tree Visualization Techniques",
+    itemName: "Techniques",
     source: {
       url: "http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html",
       callback: loadData
@@ -88,7 +88,7 @@ $(document).ready( function(){
       { name: "Authors", collapsed: false },
       { name: "Year", value: function(){ return new Date(this.Year,1,1); }, panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Year",
       textSearch: "Title",
       displayType: 'grid',
@@ -116,16 +116,16 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle">Tree Visualization Techniques</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
-
+    <div id="demoInfobox" align="center">
       Data: <a href="http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html"
           target='_blank'>treevis.net</a> A Visual Bibliography of Tree Visualization 2.0 by 
           <a href="http://vcg.informatik.uni-rostock.de/~hs162/" target='_blank'>Hans-Jörg Schulz</a><br>
       All rights for the technique images belong to their respective owners.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

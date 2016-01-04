@@ -166,7 +166,7 @@ $(document).ready( function(){
         value: function(){ return moment(this.Date).day();  } },
       { name: "Date", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 90,
       sortBy: {
           name: 'Coming Up',
@@ -292,8 +292,8 @@ $(document).ready( function(){
             margin-top: 2px;
         }
         #div_screenings{
-            vertical-align: top;
-            margin: 0px auto;
+          padding-top: 50px;
+          margin: 0px auto;
         }
         img.film{
             position: absolute;
@@ -404,17 +404,16 @@ $(document).ready( function(){
     </style>
 	</head>
 	<body>
-        <div class="pageHeader">Washington D.C. Area Outdoor Summer Movies - 2015</div>
+    <div class="contents">
+      <div class="pageTitle">Washington D.C. Area Outdoor Summer Movies - 2015</div>
+      <div id="div_screenings"></div>
+      </div>
 
-        <div class="contents"><div id="div_screenings"></div></div>
-
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Most screenings are around sunset time. Movies and screening dates may change. 
-            Please check screening location pages for more information.<br>
-            <b>For feedback: <a href="http://www.twitter.com/adilyalcin" 
-                class='fa fa-twitter' style="text-decoration:none;" target='_blank'>/adilyalcin</a>.</b>
-            <span class="fa fa-info-circle"></span>
-            </div>
-    </body>
+    <div id="demoInfobox">
+      Most screenings are around sunset time. Movies and screening dates may change. 
+      Please check screening location pages for more information.
+      <b>Feedback: <a href="http://www.twitter.com/adilyalcin" 
+          class='fa fa-twitter' style="text-decoration:none;" target='_blank'>/adilyalcin</a>.</b>
+      </div>
+  </body>
 </html>

@@ -38,7 +38,7 @@ google.setOnLoadCallback(function(){
         // Adding the last ID part to make it unique per car
         value: function(){ return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>"; } }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "MPG",
       sortColWidth: 60,
       textSearch: "Name",
@@ -56,10 +56,8 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       <a href="http://lib.stat.cmu.edu/datasets/cars.data" target='_blank'>Data</a> from <a href="http://lib.stat.cmu.edu/datasets/" target='_blank'>StatLib @ CMU</a>
-      <span class="fa fa-info-circle"></span>
       </div>
 
     <script id="dsq-count-scr" src="//keshif.disqus.com/count.js" async></script>

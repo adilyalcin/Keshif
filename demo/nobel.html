@@ -27,7 +27,11 @@ function getGender(genderValue){
 };
 
 $(document).ready( function(){
-  logIf.Check = logIf.All();
+  resizeBrowser(50,50);
+  $(window).resize(function() {
+    resizeBrowser(50,50);
+    browser.updateLayout();
+  });
 
 	browser = new kshf.Browser({
     domID: "#chart_div",
@@ -51,7 +55,7 @@ $(document).ready( function(){
         catLabel: function(){ return this.id+" "+getIcon(this.id); } },
       { name: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }, }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: { name: "Year", inverse: true},
       textSearch: { name: "name", value: function () {
         var laureate = kshf.dt_id.Laureates[this.laureate_id];
@@ -79,10 +83,6 @@ $(document).ready( function(){
 });
     </script>
     <style>
-#chart_div {
-  height: 700px;
-  width: 1150px;
-}
 .attrib .fa{
   width: 15px;
   text-align: center;

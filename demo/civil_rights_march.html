@@ -17,8 +17,6 @@
 
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 
 $(document).ready( function(){
@@ -86,7 +84,7 @@ $(document).ready( function(){
           }*/
       }
     ],
-    itemDisplay: {
+    recordDisplay: {
       autoExpandMore: false,
       displayType: 'grid',
       textSearch: "title",
@@ -142,13 +140,13 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Civil Rights March on Washington 2 Photos - National Archives</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Civil Rights March on Washington 2 Photos - National Archives</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       <a href="https://catalog.archives.gov/search?q=*:*&rows=20&offset=0&tabType=all&facet=true&facet.fields=oldScope,level,materialsType,fileFormat,locationIds,dateRangeFacet&highlight=true&f.parentNaId=513498&sort=naIdSort%20asc" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

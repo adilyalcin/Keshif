@@ -21,9 +21,9 @@
 // TODO: Add citations
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(200,110);
+  resizeBrowser(200,90);
   $(window).resize(function() {
-    resizeBrowser(200,110);
+    resizeBrowser(200,90);
     browser.updateLayout();
   });
 
@@ -86,7 +86,7 @@ google.setOnLoadCallback(function(){
         description: "Only authors with at least two papers are shown",
         minAggrValue: 2 }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Year',
       sortColWidth: 45,
       detailsToggle: "one",
@@ -178,12 +178,11 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Visualization Publication Data Collection</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Visualization Publication Data Collection</div>
+      <div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
-      
+    <div id="demoInfobox" align="center">
       Data source: Visualization Publication Dataset, 
       <a href="http://www.vispubdata.org/site/vispubdata/" target="_blank">
           http://www.vispubdata.org/site/vispubdata/
@@ -191,7 +190,6 @@ google.setOnLoadCallback(function(){
       P. Isenberg, F. Heimerl, S. Koch, T. Isenberg, P. Xu, C. Stolper, M. Sedlmair, 
       J. Chen, T. Möller, J. Stasko,
       Published 2015, June
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

@@ -36,7 +36,7 @@ google.setOnLoadCallback(function(){
       { name: "Rank: Lyrics", panel: "right",
         description: "The ranking of a word by frequency of occurrence in the top 5000 words in Lyrics" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       maxVisibleItems_Default: 250,
       showRank: true,
       sortBy: "Happiness Avg.",
@@ -110,12 +110,10 @@ google.setOnLoadCallback(function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Word happiness data from labMT 1.0 = language assessment by Mechanical Turk 1.0.<br>
       <a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0026752" target='_blank'>Temporal Patterns of Happiness and Information in a Global Social Network: Hedonometrics and Twitter</a>.<br>
       The average word happiness was evaluated according to users on Mechanical Turk, and other information. 
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

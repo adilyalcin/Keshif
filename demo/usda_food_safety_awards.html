@@ -52,7 +52,7 @@ google.setOnLoadCallback(function(){
       { name: "Performing Department", panel: "right", collapsed: true,
       	value: function(){ return kshf.Util.toProperCase(this.performing_dept);}},
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 55,
       textSearch: "title",
       recordView: function(){ 
@@ -70,15 +70,15 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-  	<div class="pageTitle" align="center">USDA Food Safety Awards</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">USDA Food Safety Awards</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox" align="center">
       <a href="http://cris.csrees.usda.gov/search.html" target='_blank'>Data from 
         United States Department of Agriculture (USDA) -
         Current Research Information System (CRIS)</a>
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

@@ -36,7 +36,7 @@ google.setOnLoadCallback(function(){
       { name: "City", panel: 'middle', minAggrValue: 50,
         value: function(){ return this.City+", "+this.State; } }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Listed Time",
       textSearch: "Resource",
       recordView: function(){ return this.Resource; }
@@ -52,7 +52,9 @@ google.setOnLoadCallback(function(){
   </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">National Historic Landmarks on the National Register, U.S.</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">National Historic Landmarks on the National Register, U.S.</div>
+      <div id="chart_div"></div>
+      </div>
   </body>
 </html>

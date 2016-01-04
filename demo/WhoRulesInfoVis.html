@@ -120,9 +120,8 @@ google.setOnLoadCallback(function(){
         value: function(){ return this.Roles[0].Year; } },
       { name: "Year of Last Role", layout: "bottom", collapsed: true,
         value: function(){ return this.Roles[this.Roles.length-1].Year; } },
-
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 35,
       sortBy: "Number of Roles",
       textSearch: "Name",
@@ -181,16 +180,17 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        Data by Charles Perin and Sheelagh Carpendale.
-        Info:
-        <a href="http://innovis.cpsc.ucalgary.ca/Research/WhoRulesInfovis" target="_blank">
-          http://innovis.cpsc.ucalgary.ca/Research/WhoRulesInfovis</a>
-        <br>
-        Originally published at <b>"Who Rules Infovis? unwrapping the Conference Organization"</b>, IEEE Conference on Visualization, Poster.
-        <span class="fa fa-info-circle"></span>
-        </div>
+    <div class="contents">
+      <div class="pageTitle">Who Rules InfoVis?</div>
+      <div id="chart_div"></div>
+      </div>
+    <div id="demoInfobox" align="center">
+      Data by Charles Perin and Sheelagh Carpendale.
+      Info:
+      <a href="http://innovis.cpsc.ucalgary.ca/Research/WhoRulesInfovis" target="_blank">
+        http://innovis.cpsc.ucalgary.ca/Research/WhoRulesInfovis</a>
+      <br>
+      Originally published at <b>"Who Rules Infovis? unwrapping the Conference Organization"</b>, IEEE Conference on Visualization, Poster.
+      </div>
   </body>
 </html>

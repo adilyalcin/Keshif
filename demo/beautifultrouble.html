@@ -81,7 +81,7 @@ $(document).ready( function(){
       { name: "# Related Posts", value: function(){ return this.links.length; } },
       { name: "Related To", value: "links", catTableName: "Posts", catLabel: "title" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "# Related Posts",
       sortColWidth: 30,
       showRank: true,
@@ -171,10 +171,12 @@ $(document).ready( function(){
 </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span> This page uses data from
-      <a href="http://www.beautifultrouble.org" target="_blank">Beautiful Trouble</a>, by various authors. <span class="fa fa-info-circle"></span>
+    <div class="contents">
+      <div id="chart_div"></div>
+      </div>
+      
+    <div id="demoInfobox" align="center">
+      This page uses data from <a href="http://www.beautifultrouble.org" target="_blank">Beautiful Trouble</a>, by various authors. 
       </div>
   </body>
 </html>

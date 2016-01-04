@@ -15,8 +15,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 
 $(document).ready( function(){
@@ -43,7 +41,7 @@ $(document).ready( function(){
       { name: "Wikipedia Views", value: "TotalPageViews", panel: "middle", collapsed: true},
       { name: "Birth Year", value: "birthyear", panel: "middle"},
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'HPI Score',
       showRank: true,
       textSearch: "name",
@@ -71,15 +69,15 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Cultural Visionaries</div>
-    <div class="pageSubtitle" align="center">Mapping Historical Cultural Production</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Cultural Visionaries</div>
+      <div class="pageSubtitle" align="center">Mapping Historical Cultural Production</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        Data is curated and released by the Pantheon Project - 
-        <a href="http://pantheon.media.mit.edu/" target='_blank'>http://pantheon.media.mit.edu/</a>.
-        <span class="fa fa-info-circle"></span>
-        </div>
+    <div id="demoInfobox">
+      Data is curated and released by the Pantheon Project - 
+      <a href="http://pantheon.media.mit.edu/" target='_blank'>http://pantheon.media.mit.edu/</a>.
+      </div>
   </body>
 </html>

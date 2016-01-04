@@ -16,8 +16,6 @@
     <script type="text/javascript" src="./data/pub_sdrucker.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 
 function dataLoad(browser){
@@ -45,7 +43,7 @@ $(document).ready( function(){
       { name: "Collaborators", value: function(){ return this.tags.collaborators;}},
       { name: "Year", value: function(){ return 1*this.year;}, panel: "bottom"},
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Year",
       displayType: 'grid',
       textSearch: "caption",
@@ -127,7 +125,9 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Publications of Steve Drucker</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Publications of Steve Drucker</div>
+      <div id="chart_div"></div>
+      </div>
   </body>
 </html>

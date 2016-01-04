@@ -18,9 +18,9 @@
 var timeFormat = d3.time.format("%B %d, %Y");
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(100,100);
+  resizeBrowser(100,80);
   $(window).resize(function() {
-    resizeBrowser(100,100);
+    resizeBrowser(100,80);
     browser.updateLayout();
   });
 
@@ -43,7 +43,7 @@ google.setOnLoadCallback(function(){
         value: function(){ if(this.Date) return this.Date.getMonth(); } },
       { name: "Date",  panel: 'bottom' }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: { title: 'Date', label: function(){ return timeFormat(this.Date);} },
       sortColWidth: 120,
       displayType: 'grid',
@@ -104,15 +104,14 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Cover Pages of the Time Magazine (1923 - 2006)</div>
-    
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Cover Pages of the Time Magazine (1923 - 2006)</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox" align="center">
       Data from <a href="http://content.time.com/time/coversearch/" target='_blank'>Time Magazine Cover search</a> and
       <a href="http://www.coverbrowser.com/covers/time/" target='_blank'>Cover Browser</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

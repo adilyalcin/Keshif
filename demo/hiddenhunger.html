@@ -82,7 +82,7 @@ function showBrowsers(v){
         },
         summaries: [
           { name:"Region", value:"cq11"},
-          { name:"Is Rural?", value: "ur", catLabel: { 1: "Not-Rural", 2: "Rural" },
+          { name:"Is Rural?", value: "ur", catLabel: { 1: "Not-Rural", 2: "Rural" } },
           { name: "Diversity (Using Shannon Index)", value: "simpson", panel: "middle", 
             description: 
                 "The higher the Simpson index reported in the dataset, the more diverse is the diet of the individual" },
@@ -273,45 +273,45 @@ body[show="mwi_nutr"] .opt_mwi_nutr{ background-color: rgb(234, 227, 217); color
     border-color: orangered;
 }
         </style>
-    </head>
-    <body>
-        <div class="pageTitle" align="center">#HiddenHunger Vizathon - 2015</div>
+  </head>
+  <body  show="eth_anth">
+    <div class="pageTitle" align="center">#HiddenHunger Vizathon - 2015</div>
 
-        <body show="eth_anth">
+    <div class="contents">
 
-            <div class='chooseBrowser'>
-                <span class="browserOption opt_eth_anth" onClick="showBrowsers('eth_anth')">Show Ethiopia Anthropometrics</span>
-                <span class="browserOption opt_eth_nutr" onClick="showBrowsers('eth_nutr')">Show Ethiopia Nutrition</span>
-                <span class="browserOption opt_mwi_anth" onClick="showBrowsers('mwi_anth')">Show Malawi Anthropometrics</span>
-                <span class="browserOption opt_mwi_nutr" onClick="showBrowsers('mwi_nutr')">Show Malawi Nutrition</span>
-                </div>
+      <div class='chooseBrowser'>
+          <span class="browserOption opt_eth_anth" onClick="showBrowsers('eth_anth')">Show Ethiopia Anthropometrics</span>
+          <span class="browserOption opt_eth_nutr" onClick="showBrowsers('eth_nutr')">Show Ethiopia Nutrition</span>
+          <span class="browserOption opt_mwi_anth" onClick="showBrowsers('mwi_anth')">Show Malawi Anthropometrics</span>
+          <span class="browserOption opt_mwi_nutr" onClick="showBrowsers('mwi_nutr')">Show Malawi Nutrition</span>
+          </div>
 
-            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
-                <span id="browser_eth_anth"></span>
-                </div>
-            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
-                <span id="browser_eth_nutr"></span>
-                </div>
-            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
-                <span id="browser_mwi_anth"></span>
-                </div>
-            <div style='margin: 0 auto; width: 1200px; text-align: center;'>
-                <span id="browser_mwi_nutr"></span>
-                </div>
+      <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+          <span id="browser_eth_anth"></span>
+          </div>
+      <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+          <span id="browser_eth_nutr"></span>
+          </div>
+      <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+          <span id="browser_mwi_anth"></span>
+          </div>
+      <div style='margin: 0 auto; width: 1200px; text-align: center;'>
+          <span id="browser_mwi_nutr"></span>
+          </div>
 
-        <div class="contents"><div id="chart_div"></div></div>
+      <div id="chart_div"></div>
+      </div>
 
-        <div id="infobox" align="center">
-            <span class="fa fa-info-circle"></span>
-            Built for the #HiddenHunger vizathon in Washington D.C.
-            <a href="http://helpmeviz.com/2015/05/07/vizathon-with-bread-for-the-world-institute/" target='_blank'>Info</a> - 
-            <a href="Recap: http://notes.bread.org/2015/06/hidden-hunger-vizathon.html" target="_blank">Recap</a>
-            <span class="fa fa-info-circle"></span><br>
+    <div id="demoInfobox" align="center">
+      Built for the #HiddenHunger vizathon in Washington D.C.
+      <a href="http://helpmeviz.com/2015/05/07/vizathon-with-bread-for-the-world-institute/" target='_blank'>Info</a> - 
+      <a href="Recap: http://notes.bread.org/2015/06/hidden-hunger-vizathon.html" target="_blank">Recap</a>
+      <br>
 
-            <a href="http://www.bread.org/institute/" target="_blank">Bread for the World Institute</a> **
-            <a href="http://www.ifpri.org/" target="_blank">the International Food Policy Research Institute (IFPRI)</a> **
-            <a href="http://helpmeviz.com/" target="_blank">HelpMeViz.com</a><br>
-            Data source: https://github.com/harvestchoice/nutrition_indicators
-            </div>
-    </body>
+      <a href="http://www.bread.org/institute/" target="_blank">Bread for the World Institute</a> **
+      <a href="http://www.ifpri.org/" target="_blank">the International Food Policy Research Institute (IFPRI)</a> **
+      <a href="http://helpmeviz.com/" target="_blank">HelpMeViz.com</a><br>
+      Data source: https://github.com/harvestchoice/nutrition_indicators
+      </div>
+  </body>
 </html>

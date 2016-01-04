@@ -32,9 +32,9 @@ var episodeID = {
 var numFormat = d3.format(".2r");
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(300,160);
+  resizeBrowser(300,100);
   $(window).resize(function() {
-    resizeBrowser(300,160);
+    resizeBrowser(300,100);
     browser.updateLayout();
   });
 
@@ -62,7 +62,7 @@ google.setOnLoadCallback(function(){
       {name: "Word Count", panel: "left", collapsed: true},
       {name: "% of Film", panel: "bottom", unitName: "%"},
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 55,
       sortBy: { name: "% of Film", inverse: true,  label: function(){ return numFormat(this["% of Film"]);} },
       textSearch: "Line",
@@ -76,10 +76,6 @@ google.setOnLoadCallback(function(){
 });
     </script>
     <style>
-#chart_div {
-  width: 820px;
-  height: 680px;
-}
 .characterName{
   font-weight: 500;
 }
@@ -121,24 +117,21 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Star Wars - Quotes of the Original Trilogy</div>
-    <div class="pageSubtitle">
-      What are Yoda's wise teachings?
-      When does C3-PO share his worries?
-      Does the Empire or the Rebels talk most, and does it depend on the movie?
-      Explore it all!
-    </div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Star Wars - Quotes of the Original Trilogy</div>
+      <div class="pageSubtitle">
+        What are Yoda's wise teachings?
+        When does C3-PO share his worries?
+        Does the Empire or the Rebels talk most, and does it depend on the movie?
+        Explore it all!
+        </div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        Visualization remixed from
+    <div id="demoInfobox">
+        Re-Vis from
           <a href="https://twitter.com/Matt_Francis" target="_blank">Matt Francis'</a>
          <a href="https://public.tableau.com/profile/ugleymatt#!/vizhome/Starwars/StarWords" target="_blank"> Tableau vis</a>.
-        <span class="fa fa-info-circle"></span>
         </div>
-    
   </body>
 </html>

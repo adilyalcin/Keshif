@@ -42,7 +42,7 @@ google.setOnLoadCallback(function(){
         value: function(){ return this.Date.getMonth(); } },
       { name: "Date", panel: 'bottom' }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Date",
       displayType: 'grid',
       recordView: function(){
@@ -52,8 +52,6 @@ google.setOnLoadCallback(function(){
     }
   }
   );
-});
-
 });
         </script>
         <style>
@@ -77,13 +75,15 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">English Premier League Injury Table</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">English Premier League Injury Table</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
-      <a href="http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html" target='_blank'>Data</a> was curated by the <b>Andy Kriebel</b>. <a href="http://www.physioroom.com/news/english_premier_league/epl_injury_table.php" target='_blank'>Original source</a>.
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
+      Re-Vis, from 
+      <a href="http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html" target='_blank'>Andy Kriebel</a>.
+      <a href="http://www.physioroom.com/news/english_premier_league/epl_injury_table.php" target='_blank'>Original source</a>.
       </div>
   </body>
 </html>

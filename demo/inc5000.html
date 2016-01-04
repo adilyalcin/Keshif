@@ -15,15 +15,11 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
-
-
 $(document).ready( function(){
   var simpleFormat = d3.format(".2s");
   browser = new kshf.Browser({
@@ -52,7 +48,7 @@ $(document).ready( function(){
       { name: "<i class='fa fa-line-chart'></i> Growth", value: 'growth', panel: "right", unitName: "%"},
       { name: "<i class='fa fa-money'></i> Revenue", value: 'revenue', panel: "right", unitName: "$"},
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: {title: 'growth', label: function(){ return simpleFormat(this.growth); }},
       textSearch: "company",
       showRank: true,
@@ -105,17 +101,16 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">The 2014 Inc. 5000</div>
-    <div class="pageSubtitle" align="center">The fastest-growing private companies in America.</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">The 2014 Inc. 5000</div>
+      <div class="pageSubtitle" align="center">The fastest-growing private companies in America.</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
         <a href="http://www.inc.com/inc5000/" target="_blank">The Inc. 5000</a>
 		is Inc. Magazine’s annual list of the 5000 fastest growing private companies in the United States. <br>
         The list is compiled by measuring each company's percentage revenue growth over a four-year period.
-        <span class="fa fa-info-circle"></span>
         </div>
   </body>
 </html>

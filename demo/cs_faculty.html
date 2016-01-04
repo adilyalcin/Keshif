@@ -15,8 +15,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   resizeBrowser(160,90);
@@ -71,7 +69,7 @@ google.setOnLoadCallback(function(){
         value: function(){ if(this.JoinYear) return new Date(this.JoinYear,1,1); }
       }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 60,
       autoExpandMore: true,
       sortBy: {name: "Year", value: "JoinYear"},
@@ -126,13 +124,13 @@ google.setOnLoadCallback(function(){
 </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Faculty Members in top 50 US Computer Science Programs</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Faculty in top 50 US Computer Science Programs</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       <a href="http://cs.brown.edu/people/alexpap/faculty_dataset.html" target='_blank'>Data</a> made available by <b>Alexandra Papoutsaki*, Hua Guo, Danae Metaxa-Kakavouli, Connor Gramazio, Jeff Rasley, Wenting Xie, Guan Wang, Jeff Huang</b>, Brown University, Providence, RI, USA.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

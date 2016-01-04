@@ -100,7 +100,7 @@ google.setOnLoadCallback(function(){
       { name: "TextGroup", collapsed: true },
       { name: "ImageArea", collapsed: true }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Average Response",
       displayType: 'grid',
       detailsToggle: 'off',
@@ -160,19 +160,19 @@ function showBrowsers(v){
   display: inline-block;
   vertical-align: top;
   width: 800px;
-  height: 700px;
+  height: 640px;
 }
 #browser_participants{
   display: inline-block;
   vertical-align: top;
   width: 300px;
-  height: 700px;
+  height: 640px;
   margin-left: 20px;
 }
 #browser_responses{
   display: none;
   width: 1100px;
-  height: 700px;
+  height: 640px;
   margin: 0 auto;
 }
 
@@ -244,7 +244,9 @@ body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); col
     </style>
   </head>
   <body show="stim_part">
+    <div class="pageTitle">Infographic Aesthetics</div>
 
+    <div style="padding-top: 50px;">
     <div class='chooseBrowser'>
         <span class="browserOption opt_stim_part" onClick="showBrowsers('stim_part')">Show Stimulus &amp; Participants</span>
         <span class="browserOption opt_responses" onClick="showBrowsers('responses')">Show Responses</span>
@@ -256,20 +258,16 @@ body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); col
         </div>
 
     <div id="browser_responses" id="browserGroup2"></div>
+    </div>
 
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-
-        Data from
-        <a href="http://valt.cs.tufts.edu/papers/infographic-aesthetics/" target="_blank">
-            "Infographic Aesthetics: Designing for the First Impression"</a>,
-        by Lane Harrison, Katharina Reinecke, and Remco Chang, published CHI-2015.<br>
-        The data is originally hosted at <a href="https://github.com/TuftsVALT/infographic-aesthetics" target="_blank"
-            class='fa fa-github'> Github</a>.
-
-
-        <span class="fa fa-info-circle"></span>
-        </div>
+  <div id="demoInfobox">
+    Data from
+    <a href="http://valt.cs.tufts.edu/papers/infographic-aesthetics/" target="_blank">
+        "Infographic Aesthetics: Designing for the First Impression"</a>,
+    by Lane Harrison, Katharina Reinecke, and Remco Chang, published CHI-2015.<br>
+    The data is originally hosted at <a href="https://github.com/TuftsVALT/infographic-aesthetics" target="_blank"
+        class='fa fa-github'> Github</a>.
+    </div>
 
   </body>
 </html>

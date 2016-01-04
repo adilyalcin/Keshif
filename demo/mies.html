@@ -40,7 +40,7 @@ google.setOnLoadCallback(function(){
       { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,1,1); } },
       { name: "Type", panel: 'right' }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Year',
       textSearch: "Name",
       recordView: function(){
@@ -94,15 +94,15 @@ google.setOnLoadCallback(function(){
     </style>
     </head>
   <body>
-  <div class="pageTitle" align="center">Architecture Work of Mies van der Rohe</div>
-  <div class="contents"><div id="chart_div"></div></div>
+  <div class="contents">
+    <div class="pageTitle" align="center">Architecture Work of Mies van der Rohe</div>
+    <div id="chart_div"></div>
+    </div>
 
-  <div id="infobox" align="center">
-    <span class="fa fa-info-circle"></span>
+  <div id="demoInfobox">
     Data Credits:
     <a href="http://www.miessociety.org/legacy/projects/">Mies Society</a>
     <a href="http://library.iit.edu/grc/mies/mies_work_geo.html">IIT Library</a>
-    <span class="fa fa-info-circle"></span>
     </div>
   </body>
 </html>

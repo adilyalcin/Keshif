@@ -21,6 +21,7 @@
 google.setOnLoadCallback( function(){
   browser = new kshf.Browser({
     domID: "#chart_div",
+    itemName: "Presidents of the United States",
     categoryTextWidth: 160,
     source: {
       gdocId: '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
@@ -36,7 +37,7 @@ google.setOnLoadCallback( function(){
       { name: "Age at inaguration", panel: 'right' },
       { name: "Term Start", panel: 'bottom' }
     ],
-    itemDisplay: {
+    recordDisplay: {
       displayType: 'grid',
       textSearch: "Name",
       recordView: function(){ 

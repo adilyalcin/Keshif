@@ -16,9 +16,7 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
-<script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready( function(){
   browser = new kshf.Browser({
     domID: "#chart_div",
@@ -36,7 +34,7 @@ $(document).ready( function(){
       { name: "Drone Name", panel: "right" },
       { name: "Owner" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Estimated Damage',
       sortColWidth: 70,
       recordView: function(){ return this.Narrative +", "+this.Country; }
@@ -52,14 +50,14 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
+    <div class="contents">
       <div class="pageTitle">U.S. Military Drone Crashes, 2001-2013</div>
       <div class="pageSubtitle">"Class A" accidents that destroyed the aircraft or caused (under current standards) at least $2 million in damage.</div>
-      <div class="contents"><div id="chart_div"></div></div>
+      <div id="chart_div"></div>
+      </div>
 
-      <div id="infobox" align="center">
-          <span class="fa fa-info-circle"></span>
-          Data was curated by the <a href="http://www.washingtonpost.com/wp-srv/special/national/drone-crashes/database/" target='_blank'><b>Washington Post</b></a>.
-          <span class="fa fa-info-circle"></span>
-          </div>
-    </body>
+    <div id="demoInfobox">
+      Data was curated by the <a href="http://www.washingtonpost.com/wp-srv/special/national/drone-crashes/database/" target='_blank'><b>Washington Post</b></a>.
+      </div>
+  </body>
 </html>

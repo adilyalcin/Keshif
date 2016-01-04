@@ -39,14 +39,13 @@ google.setOnLoadCallback(function(){
       { name: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true },
       { name: "Vitamins", panel: 'middle', showPercentile: true,  collapsed: true, }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: { title: 'Rating', label: function(){ return this.Rating.toPrecision(4)} },
       textSearch: "Name",
       recordView: "Name"
     }
   });
 });
-
     </script>
   <style>
 #chart_div {

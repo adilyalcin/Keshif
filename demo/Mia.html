@@ -16,16 +16,16 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  resizeBrowser(200,120);
+  resizeBrowser(200,80);
   $(window).resize(function() {
-    resizeBrowser(200,120);
+    resizeBrowser(200,80);
     browser.updateLayout();
   });
 
   browser = new kshf.Browser({
     domID: "#chart_div",
     barChartWidth: 90,
-    itemName: "Items in Mia Collection",
+    itemName: "Items",
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 200,
     source: {
@@ -41,7 +41,7 @@ google.setOnLoadCallback(function(){
       { name: "Culture", catLabel: function(){ return Cultures[this.id]; } },
       { name: "Country", catLabel: function(){ return Countries[this.id]; } },
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 100,
       displayType: 'grid',
       detailsToggle: "off",
@@ -2383,17 +2383,17 @@ var Styles = [
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">
-      <a href="http://artsmia.org" target='_blank'><img src='http://new.artsmia.org/wp-content/uploads/2015/09/MIA_LOGO_ISOLATED-MARK_RGB-black.png' height="25px"></a>
-      - Minneapolis Institute of Art Collection
+
+    <div class="contents">
+      <div class="pageTitle" align="center">
+        <a href="http://artsmia.org" target='_blank'><img src='img/Mia_white.png' height="25px"></a>
+        - Minneapolis Institute of Art Collection
+        </div>
+      <div id="chart_div"></div>
       </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data from <a href="https://github.com/artsmia/collection" target="_blank">MIA Digital Collection on Github</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

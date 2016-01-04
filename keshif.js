@@ -344,7 +344,7 @@ var kshf = {
     loadFont: function(){
         if(this.fontLoaded===true) return;
         WebFontConfig = {
-            google: { families: [ 'Roboto:400,500,300,100,700:latin' ] }
+            google: { families: [ 'Roboto:400,500,300,100,700:latin', 'Montserrat:400,700:latin' ] }
         };
         var wf = document.createElement('script');
         wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
@@ -899,14 +899,14 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
       this.leafletMap = L.map(this.DOM.recordMap_Base[0][0], 
         {
-          maxBoundsViscosity: 1,
-          continuousWorld: true
+          //maxBoundsViscosity: 1,
+          //continuousWorld: true
         })
         // Using openstreetmap tiles
         .addLayer(new L.TileLayer(
           "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", 
           {
-            noWrap: true,
+            //noWrap: true,
             attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>'
           }
           )) 
@@ -2802,7 +2802,9 @@ kshf.Browser.prototype = {
 
         x = source_wrapper.append("div").attr("class","sourceOptions");
 
-        x.append("span").attr("class","sourceOption").text("Google Sheet").attr("source_type","GoogleSheet");
+        x.append("span").attr("class","sourceOption").html(
+          "<img src='https://lh3.ggpht.com/e3oZddUHSC6EcnxC80rl_6HbY94sM63dn6KrEXJ-C4GIUN-t1XM0uYA_WUwyhbIHmVMH=w300-rw' "+
+          " style='height: 12px;'> Google Sheet").attr("source_type","GoogleSheet");
         x.append("span").attr("class","sourceOption").html(
           "<img src='https://developers.google.com/drive/images/drive_icon.png' style='height:12px; position: relative; top: 2px'> "+
           "Google Drive Folder")
@@ -3672,7 +3674,7 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        this.recordDisplay = new kshf.RecordDisplay(this,this.options.itemDisplay||{}, this.DOM.root);
+        this.recordDisplay = new kshf.RecordDisplay(this,this.options.recordDisplay||{}, this.DOM.root);
 
         this.DOM.recordName.html(this.itemName);
 
@@ -7767,7 +7769,7 @@ var Summary_Interval_functions = {
       }
 
       this.insertChartAxis_Measure(this.DOM.histogram, 'w', 'nw');
-      this.DOM.chartAxis_Measure.style("padding-left",(this.width_vertAxisLabel-2)+"px")
+      this.DOM.chartAxis_Measure.style("margin-left",(this.width_vertAxisLabel-2)+"px")
 
       this.initDOM_Slider();
 

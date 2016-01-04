@@ -52,7 +52,7 @@ google.setOnLoadCallback(function(){
       { name: "Year", panel: 'right', catSortBy: "id",
         catLabel: function(){ return ((this.id%4===0)?"Winter ":"Summer ")+this.id; } }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 30,
       sortBy: 'Total Medals',
       textSearch: "Athlete",
@@ -104,7 +104,8 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Medals Won in Olympic Games, 2000-2012</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Medals Won in Olympic Games, 2000-2012</div>
+      <div id="chart_div"></div></div>
   </body>
 </html>

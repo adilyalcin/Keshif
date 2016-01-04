@@ -1987,6 +1987,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .scroll_display_more{
                   font-size: 0.7em;
                   line-height: 1.4em;
+                  position: absolute;
+                  left: 0px;
                   vertical-align: top;
                   cursor: pointer;
                   color: rgb(180, 180, 180);
@@ -2306,8 +2308,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         height: 100%;
                         > .measurePercentControl{
                             bottom: -1px;
-                            left: 10px;
-                            width: 12px;
+                            left: -10px;
                             text-align: right;
                         }
                         > .relativeModeControl{
@@ -2326,6 +2327,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         > .tick{
                             width: calc(~"100% - 21px");
                             width: 100%;
+                            left: 0px;
                             > .line{
                                 border-bottom: dotted 1px @color_axis_line;
                                 width: 100%;

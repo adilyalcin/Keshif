@@ -22,9 +22,9 @@ $(document).ready(function() {
     AL: "American League",
   };
 
-  resizeBrowser(null,90);
+  resizeBrowser(250,70);
   $(window).resize(function() {
-    resizeBrowser(null,90);
+    resizeBrowser(250,70);
     browser.updateLayout();
   });
 
@@ -43,7 +43,7 @@ $(document).ready(function() {
       ]
     },
     summaries: [
-      { name: "Trans. Type", 
+      { name: "Trans. Type", panel: 'middle',
         catLabel: {
           A: "assigned from one team to another without compensation",
           C: "conditional deal",
@@ -58,7 +58,7 @@ $(document).ready(function() {
           Dv: "amateur draft pick voided",
           F: "free agent signing",
           Fa: "amateur free agent signing",
-          Fb: "amateur free agent "bonus baby" signing under the 1953-57 rule requiring player to stay on ML roster",
+          Fb: "amateur free agent \"bonus baby\" signing under the 1953-57 rule requiring player to stay on ML roster",
           Fc: "free agent compensation pick",
           Fg: "free agent granted",
           Fo: "free agent signing with first ML team",
@@ -127,7 +127,7 @@ $(document).ready(function() {
         } },
       { name: "Player", value: "player", panel: "middle", minAggrValue: 2 }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 75,
       sortBy: [
         {   title: 'Date',
@@ -155,15 +155,15 @@ $(document).ready(function() {
 });
 
 </script>
-        <style>
-            .iteminfo a{
-                color:#606060;
-                font-style:italic;
-            }
-            #chart_div{
-                width: 900px;
-            }
-        </style>
+    <style>
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+#chart_div{
+  width: 900px;
+}
+    </style>
 	</head>
     <body>
         <div class="contents"><div id="chart_div"></div></div>

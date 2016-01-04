@@ -135,7 +135,7 @@ $(document).ready( function(){
         value: function(){ return this.References_External.length+this.References_Other.length; } },
       { name: "Date", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: [
         { name: "#Ref's", value: function(){ return this.References_To.length; } },
         'Year'
@@ -154,12 +154,13 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">InfoVis 2004 Contest - Papers</div>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div class="contents">
+      <div class="pageTitle" align="center">InfoVis 2004 Contest - Papers</div>
+      <div id="chart_div"></div>
+      </div>
+
+    <div id="demoInfobox">
       Fekete, J.-D., Grinstein, G., Plaisant, C., IEEE InfoVis 2004 Contest, the history of InfoVis, <a href="http://www.cs.umd.edu/hcil/iv04contest" target="_blank">www.cs.umd.edu/hcil/iv04contest</a> (2004)
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

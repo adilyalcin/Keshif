@@ -48,7 +48,7 @@ google.setOnLoadCallback(function(){
       {name: "Country", value: "country", panel: "right"},
       {name: "Source", value: function(){ return this.source.split(", "); }, minAggrValue: 2, collapsed: true },
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 40,
       sortBy: { name: "Worth", label: function(){
         return currencyFormat(this.Worth).replace("G","B");
@@ -113,12 +113,13 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class='pageTitle'>Billionaires - By Forbes</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data from <a href='http://www.forbes.com/billionaires/list' target='_blank'>"The World's Billionaires"</a> by Forbes.
-      <span class="fa fa-info-circle"></span>
       </div>
 
   </body>

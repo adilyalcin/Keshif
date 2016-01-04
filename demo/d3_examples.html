@@ -39,7 +39,7 @@ $(document).ready( function(){
       {name: "Visualization Type", value: function(){ return this.visualizationType.split("; "); }},
       {name: "Author", value: function(){ return this.author.split("; ");} }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: {name: "-", value: function(){ return ((this.thumbnail!=="")?10000:0)+this.id; }},
       textSearch: "Title",
       displayType: 'grid',
@@ -88,10 +88,8 @@ $(document).ready( function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data collected by <a href="http://christopheviau.com/d3list/gallery.html" target='_blank'>Christophe Viau</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

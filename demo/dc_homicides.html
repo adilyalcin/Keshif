@@ -15,8 +15,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 function dataLoad(browser){
     $.ajax({
@@ -66,7 +64,7 @@ $(document).ready( function(){
       { name: "Incident Date", value: "incident_date", panel: "bottom", },
       { name: "Full Name", value: function(){ return this.last_name +", "+this.first_name; }, panel: "none" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
       textSearch: "Full Name",
       recordView: "Full Name"
@@ -82,13 +80,14 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the <b>Washington Post</b>. <a href="http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json" target='_blank'>Raw source</a>.
-        <span class="fa fa-info-circle"></span>
-        </div>
+    <div id="demoInfobox">
+      <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the 
+        <b>Washington Post</b>.
+      </div>
   </body>
 </html>

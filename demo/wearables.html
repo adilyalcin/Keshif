@@ -16,9 +16,9 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  resizeBrowser(300,60);
+  resizeBrowser(300,80);
   $(window).resize(function() {
-    resizeBrowser(300,60);
+    resizeBrowser(300,80);
     browser.updateLayout();
   });
 
@@ -40,7 +40,7 @@ $(document).ready( function() {
       { name: "Company Name", value: "Company.Name", panel: "right", },
       { name: "Company Country", value: "Company...Country", panel: "right" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Price",
       sortColWidth: 40,
       displayType: 'grid',
@@ -69,11 +69,9 @@ $(document).ready( function() {
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox" align="center">
       Wearable technology database data by 
       <a href="http://www.crowdflower.com/data-for-everyone" target='_blank'>CrowdFlower</a>
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

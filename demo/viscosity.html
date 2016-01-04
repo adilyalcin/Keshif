@@ -29,7 +29,7 @@ google.setOnLoadCallback(function(){
       { name: "Type of Liquid" },
       { name: "Viscosity (cP)", catLabel: "id" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 45,
       textSearch: "Product Name",
       recordView: "Product Name"
@@ -42,14 +42,13 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Viscosity Levels for Oral and Enteral Feedings</div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Viscosity Levels for Oral and Enteral Feedings</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       <a href="http://www.nutrition411.com/content/viscosity-levels-oral-and-enteral-feedings" target='_blank'>Data</a> is from nutrition411.com.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

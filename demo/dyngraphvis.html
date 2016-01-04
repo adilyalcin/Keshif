@@ -262,7 +262,7 @@ $(document).ready( function(){
       { name: "Journal", panel: 'right', collapsed: false },
       { name: "Year", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Year",
       displayType: 'grid',
       textSearch: "Title",
@@ -290,13 +290,11 @@ $(document).ready( function(){
   <body>
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
       Data: The <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>digital library</a>
       for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf.<br>
       Raw source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
       <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>SurVis version</a>
-      <span class="fa fa-info-circle"></span>
       </div>
     </body>
 </html>

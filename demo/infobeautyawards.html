@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
       { name: "Year", value: "Award" },
       { name: "Credits", collapsed: true }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 45,
       sortBy: {title: 'id', inverse:false},
       textSearch: 'Title',
@@ -75,16 +75,14 @@ google.setOnLoadCallback(function(){
     </style>
   </head>
   <body>
-    <div class="pageTitle" align="center">kantar Information Is Beautiful Awards</div>
-    
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">kantar Information Is Beautiful Awards</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
-      Data shows the list of 
-      publicly available showcases, submitted between 2012-2014, to 
+    <div id="demoInfobox">
+      Data shows the list of publicly available showcases, submitted between 2012-2014, to 
       <a href="http://www.informationisbeautifulawards.com/" target='_blank'>Kantar Information is Beautiful Awards</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

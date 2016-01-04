@@ -248,7 +248,7 @@ $(document).ready( function(){
   
   browser = new kshf.Browser({
     domID: "#chart_div",
-    itemName: "Techniques for Visual Comparison",
+    itemName: "Techniques",
     categoryTextWidth: 200,
     source: {
         url: "http://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/",
@@ -274,7 +274,7 @@ $(document).ready( function(){
         } },
       { name: "Year", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'Year',
       textSearch: "System",
       recordView: function(){
@@ -297,14 +297,14 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle">Visual Comparison Techniques</div>
+      <div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox" align="center">
       Visualizing the survey <a href="http://dx.doi.org/10.1177/1473871611416549" target='_blank'>Visual Comparison for Information Visualization</a>,
-      by M. Gleicher, D. Albers, R. Walker, I. Jusufi, C. D. Hansen, J.C. Roberts, <br>published at the journal Information Visualization, 2011. <br><br>
+      by M. Gleicher, D. Albers, R. Walker, I. Jusufi, C. D. Hansen, J.C. Roberts, <br>published at the journal Information Visualization, 2011.
       Data collected from the <a href="http://graphics.cs.wisc.edu/Vis/CompIV/" target='_blank'>webpage report</a> and the references in the survey paper, converted to <a href="https://docs.google.com/spreadsheets/d/1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0/edit" target="_blank">Google Spreadsheet</a>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

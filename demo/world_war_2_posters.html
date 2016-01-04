@@ -74,7 +74,7 @@ $(document).ready( function(){
       { name: "Use Restrictions", value: "useRestrictions", collapsed: true, },
       { name: "Access Restrictions", value: "accessRestrictions", collapsed: true }
     ],
-    itemDisplay: {
+    recordDisplay: {
       displayType: 'grid',
       textSearch: "title",
       recordView: function(){
@@ -127,13 +127,13 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">World War 2 Posters - National Archives</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div class="pageTitle" align="center">World War 2 Posters - National Archives</div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox" align="center">
       <a href="https://catalog.archives.gov/search?q=*:*&rows=20&offset=0&tabType=all&facet=true&facet.fields=oldScope,level,materialsType,fileFormat,locationIds,dateRangeFacet&highlight=true&f.parentNaId=513498&sort=naIdSort%20asc" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
-      <span class="fa fa-info-circle"></span>
       </div>
   </body>
 </html>

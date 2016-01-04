@@ -16,13 +16,11 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 $(document).ready( function(){
-  resizeBrowser(300,140);
+  resizeBrowser(300,100);
   $(window).resize(function() {
-    resizeBrowser(300,140);
+    resizeBrowser(300,100);
     browser.updateLayout();
   });
 
@@ -46,7 +44,7 @@ $(document).ready( function(){
       { name: "State", catLabel: function(){return getStateName(this.id);}, panel: "right", collapsed: true },
       { name: "Date", panel: "bottom" }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortColWidth: 70,
       sortBy: [
         {title: 'Date', label: function(){ return timeFormat(this.Date); }, inverse: true},
@@ -66,19 +64,18 @@ $(document).ready( function(){
     </style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Film Set Accidents</div>
-    <div class="pageSubtitle">
-        A breakdown of 205 production accidents from 1990 through 2014 involving 251 catastrophic injuries and 44 deaths.
-        </div>
+    <div class="contents">
+      <div class="pageTitle" align="center">Film Set Accidents</div>
+      <div class="pageSubtitle">
+          A breakdown of 205 production accidents from 1990 through 2014 involving 251 catastrophic injuries and 44 deaths.
+          </div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="infobox" align="center">
-        <span class="fa fa-info-circle"></span>
-        Data from <a href="http://spreadsheets.latimes.com/film-set-accidents/" target="_blank">Los Angeles Times</a> - 
-        News story: <a href="http://www.latimes.com/entertainment/envelope/cotown/la-et-ct-film-set-accidents-deaths-20150311-story.html#page=1"
-        target="_blank">As deaths rise on reality TV, films sets, many blame need to get 'dramatic footage'</a>.
-        <span class="fa fa-info-circle"></span>
-        </div>
+    <div id="demoInfobox">
+      Data from <a href="http://spreadsheets.latimes.com/film-set-accidents/" target="_blank">Los Angeles Times</a> - 
+      News story: <a href="http://www.latimes.com/entertainment/envelope/cotown/la-et-ct-film-set-accidents-deaths-20150311-story.html#page=1"
+      target="_blank">As deaths rise on reality TV, films sets, many blame need to get 'dramatic footage'</a>.
+      </div>
   </body>
 </html>

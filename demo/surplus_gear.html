@@ -105,7 +105,7 @@ $(document).ready( function() {
       { name: "Night Vision", panel: 'right', collapsed: true },
       { name: "FIPS", value: "fips", panel: "none"}
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: "Machine Gun",
       textSearch: 'county',
       recordView: "CombinedName",
@@ -124,17 +124,17 @@ $(document).ready( function() {
 	</head>
   <body>
 
-  <div class="pageTitle" align="center">Mapping the Spread of the Military’s Surplus Gear</div>
-  
-  <div class="pageSubtitle">
-  "State and local police departments obtain some of their military-style equipment through a free Defense Department program created in the early 1990s. While the portion of their gear that comes from the program is relatively small, detailed data from the Pentagon illustrates how ubiquitous such equipment has become." - from <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">New York Times</a> </div>
+    <div class="contents">
 
+      <div class="pageTitle" align="center">Mapping the Spread of the Military’s Surplus Gear</div>      
+      <div class="pageSubtitle">
+      "State and local police departments obtain some of their military-style equipment through a free Defense Department program created in the early 1990s. <br>While the portion of their gear that comes from the program is relatively small, detailed data from the Pentagon illustrates how ubiquitous such equipment has become." - <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">New York Times</a> </div>
 
-    <div class="contents"><div id="chart_div"></div></div>
+      <div id="chart_div"></div>
+      </div>
 
-    <div id="infobox" align="center">
-      <span class="fa fa-info-circle"></span> This page uses data from
-      <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">Mapping the Spread of the Military’s Surplus Gear</a>, by Tom Giratikanon, Alicia Parlapiano and Jeremy White<br> Published at New York Times, 15 August 2014. Original source: Department of Defense <span class="fa fa-info-circle"></span>
+    <div id="demoInfobox">
+      <a href="http://www.nytimes.com/interactive/2014/08/15/us/surplus-military-equipment-map.html" target="_blank">Mapping the Spread of the Military’s Surplus Gear</a>, by Tom Giratikanon, Alicia Parlapiano and Jeremy White<br> Published at New York Times, 15 August 2014. Original source: Department of Defense.
       </div>
   </body>
 </html>

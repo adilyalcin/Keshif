@@ -15,8 +15,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet' type='text/css'>
-
     <script type="text/javascript">
 function loadData(browser){
   $.ajax({
@@ -68,7 +66,7 @@ $(document).ready( function(){
         } },
       { name: "In # Counties", value: "in_counties", collapsed: true }
     ],
-    itemDisplay: {
+    recordDisplay: {
       sortBy: 'value',
       displayType: 'grid',
       textSearch: 'text',
@@ -120,7 +118,7 @@ $(document).ready( function(){
 
     <div class="contents"><div id="chart_div"></div></div>
 
-    <div id="infobox" align="center">
+    <div id="demoInfobox" align="center">
       <span class="fa fa-info-circle"></span>
       <a href="http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r=0" target='_blank'>Data</a> was curated by the <b>New York Times</b>. <a href="hhttp://www.nytimes.com/2015/01/25/opinion/sunday/the-secrets-of-street-names-and-home-values.html" target='_blank'>Original Story</a>.
       <span class="fa fa-info-circle"></span>
