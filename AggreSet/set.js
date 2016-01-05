@@ -217,7 +217,7 @@ var Summary_Clique_functions = {
         var gridPan_x_init = me.gridPan_x;
 
         // scroll the setlist summary too...
-        var scrollDom = me.setListSummary.DOM.categoryGroup[0][0];
+        var scrollDom = me.setListSummary.DOM.aggrGroup[0][0];
         var initScrollPos = scrollDom.scrollTop;
         var w=me.getWidth();
         var h=me.getHeight();
