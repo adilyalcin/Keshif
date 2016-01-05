@@ -218,12 +218,12 @@ $(document).ready( function(){
       sortBy: {
       	title:'★s', 
       	value: function(){
-      		if(this['★']===null) return this.id;
-      		if(this['★']===undefined) return this.id;
-      		if(this['★']==="N") return this.id;
-          if(this['★']==='★★★') return this.id+60000;
-      		if(this['★']==='★★') return this.id+40000;
-      		if(this['★']==='★') return this.id+20000;
+      		if(this['★']===null) return (1500-this.id);
+      		if(this['★']===undefined) return (1500-this.id);
+      		if(this['★']==="N") return (1500-this.id);
+          if(this['★']==='★★★') return (1500-this.id)+60000;
+      		if(this['★']==='★★') return (1500-this.id)+40000;
+      		if(this['★']==='★') return (1500-this.id)+20000;
       		return this.id;
       	}
       },
