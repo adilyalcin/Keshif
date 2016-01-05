@@ -235,7 +235,6 @@ html, body {
   &:after{ .infobox_icon; }
 }
 
-
 .comment_popup{
     position: fixed;
     top: 5px;
@@ -267,71 +266,7 @@ html, body {
     }
 }
 
-.forkongithub {
-	position:fixed;
-	display:block;
-	z-index: 0;
-	a.fork-ribbon{
-	    background:#000;
-	    color:#fff;
-	    text-decoration:none;
-	    font-family:arial,sans-serif;
-	    text-align:center;
-	    font-weight:bold;
-	    padding:5px 40px;
-	    font-size:0.8rem;
-	    line-height:1.5rem;
-	    position:relative;
-	    transition:0.5s;
-	    &::before, &::after{
-	    	width:100%;
-	    	display:block;
-	    	position:absolute;
-	    	top:1px;
-	    	left:0;
-	    	height:1px;
-	    	background:#fff;
-	    	content:"";
-	    }
-	    &::after{
-			bottom:1px;
-			top:auto;
-		}
-	    &:hover{
-	    	background:orangered;
-	    	color:#fff;
-	    }
-	}
+.addthis-smartlayers-desktop{
+  display: none;
 }
 
-@media screen and (min-width:800px){
-    .forkongithub{
-        width: 0px;
-        height: 150px;
-    	&.fork-bottom{
-    		bottom:0;
-    	}
-    	&.fork-right{
-    		right:0;
-    		a.fork-ribbon{
-    			font-size: 1.1em;
-    			.transform(~'rotate(-45deg)');
-    		}
-    	}
-    	&.fork-left{
-    		left:-60px;
-	    	a.fork-ribbon{
-	    		.transform(~'rotate(45deg)');
-	    		right: auto;
-	    		left: 0px;
-	    	}
-    	}
-    }
-    .forkongithub a.fork-ribbon{
-        width:150px;
-        position:absolute;
-        top:80px;
-        right:-60px;
-        box-shadow:4px 4px 10px rgba(0,0,0,0.8);
-    }
-}
