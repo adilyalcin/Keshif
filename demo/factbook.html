@@ -18,16 +18,10 @@
 
         <script type="text/javascript">
 
-var demoID = 253;
 var factsXML;
-
-var factBrowser;
-
-noRibbon= true;
-socialShare = false;
+var browser;
 
 function loadData(browser){
-    factBrowser = browser;
     $.ajax( {
         url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/factbook.xml',
         type: "GET",
@@ -65,7 +59,7 @@ function cleanUpText(n){
 
 function loadFactbook(facts){
     factsXML = $(facts);
-    factBrowser.primaryTableName = "Countries";
+    browser.primaryTableName = "Countries";
     kshf.dt.Countries = [];
     kshf.dt.Category = [];
     var arr_cat = kshf.dt.Category;
@@ -219,7 +213,7 @@ function loadFactbook(facts){
             kshf.dt.Countries.push(new kshf.Item(cData,"id"));
         });
     });
-    factBrowser.loadCharts();   
+    browser.loadCharts();   
 };
 
 $(document).ready( function(){
@@ -320,5 +314,8 @@ $(document).ready( function(){
     </style>
 	</head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+        <div class="contents">
+          <div class='pageTitle'>FactBook : Facts about All Countries</div>
+          <div id="chart_div"></div>
+          </div>
     </body></html>
