@@ -2383,7 +2383,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical .scrollToTop {
-  margin-top: -13px;
+  margin-top: -14px;
   font-size: 0.8em;
   pointer-events: all;
   position: absolute;
@@ -2738,6 +2738,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
+  left: -21px;
   width: 21px;
   height: calc(100% - 12px);
   top: 0px;
