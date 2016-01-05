@@ -26,7 +26,7 @@ var browser_configs = {
         { name: "Characters", catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
         { name: "Volume", collapsed: true, catSortBy: "id", catLabel: function(){ return "Volume "+this.id;} }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 45,
         detailsToggle: "off",
         recordView: function(){
@@ -80,7 +80,7 @@ var browser_configs = {
         { name: "Release Year", panel: 'bottom', 
           value: function(){ return this.ReleaseDate; } }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 50,
         detailsToggle: "off",
         sortBy: ["Rating", "Watched"],
@@ -127,7 +127,7 @@ var browser_configs = {
           }},
         "Age"
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 45,
         sortBy: 'Age',
         displayType: 'grid',
@@ -262,7 +262,7 @@ var browser_configs = {
         }
       },
       summaries: [{ name: "HBO Shows", panel: "left" }],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 15,
         sortBy: { name: '# of Shows', value: function(){ return this['HBO Shows'].length; } },
         textSearch: "Name",
@@ -316,7 +316,7 @@ var browser_configs = {
         { name: "Source", panel: 'right' },
         { name: "Date", panel: "bottom" }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 65,
         sortBy: "# of Records",
         recordView: "org"
@@ -355,7 +355,7 @@ var browser_configs = {
         { name: "Feelings" },
         { name: "Views", panel: "bottom" }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 80,
         sortBy: 'Views',
         recordView: function(){ return this.Speaker+" - <b>"+this.Title+"</b>"; },
@@ -493,7 +493,7 @@ var browser_configs = {
           }
         }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 65,
         sortBy: [ {title: '#samples', value:function(){ return this[0].length; }} ],
         displayType: 'grid',
@@ -566,7 +566,7 @@ var browser_configs = {
           }
         }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 60,
         sortBy: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
         recordView: "Name"
@@ -603,7 +603,7 @@ var browser_configs = {
           }
         }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 60,
         sortBy: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
         recordView: "Name"
@@ -638,7 +638,7 @@ var browser_configs = {
         { name: "Border countries" },
         { name: "RegionID", panel: "left", collapsed: true }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 40,
         sortBy: 'Education Expenditures',
         recordView: "Name"
@@ -699,7 +699,7 @@ var browser_configs = {
                     }
                 }
             ],
-            itemDisplay: {
+            recordDisplay: {
                 sortColWidth: 65,
                 sortBy: [ {title: '# Votes', value:function(){ return this.Votes.length; }} ],
                 recordView: "Name"
@@ -732,7 +732,7 @@ var browser_configs = {
           }
         }
       ],
-      itemDisplay: {
+      recordDisplay: {
         sortColWidth: 45,
         recordView: "Identifier"
       }
@@ -837,7 +837,7 @@ var browser_configs = {
                     catTooltip: function(){ return this.first_names+" "+this.last_name; },
                 }
             ],
-            itemDisplay: {
+            recordDisplay: {
                 sortColWidth: 45,
                 sortBy: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
                 textSearch: 'title',
@@ -877,7 +877,7 @@ var browser_configs = {
                 //},{ name: "Release Year", value: function(){ return new Date(this.ReleaseDate,1,1); }, panel: 'bottom'
                 }
             ],
-            itemDisplay: {
+            recordDisplay: {
                 sortColWidth: 50,
                 detailsToggle: 'off',
                 sortBy: ['Rating', 'Watched'],
