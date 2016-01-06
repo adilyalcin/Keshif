@@ -177,6 +177,10 @@ body {
   width: 100%;
   pointer-events: none;
 }
+.pageTitle > a {
+  color: white;
+  pointer-events: all;
+}
 .pageSubtitle {
   text-align: center;
   font-family: sans-serif;

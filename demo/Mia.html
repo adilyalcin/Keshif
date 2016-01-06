@@ -15,6 +15,101 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
+/*
+
+// Node script to merge all mia files from their github repo.
+var fs = require('fs');
+
+var data = [];
+var maxId = 124124; // 124124
+var oldDir = -1;
+
+var departments = {
+  "Chinese, South and Southeast Asian Art": 1,
+  "Prints and Drawings": 2,
+  "Library": 3,
+  "Textiles": 5,
+  "Paintings": 6,
+  "Photography & New Media": 7,
+  "Art of Africa and the Americas": 8,
+  "Decorative Arts, Textiles & Sculpture": 4,
+  "Minnesota Artists Exhibition Program": 10,
+  "Japanese and Korean Art": 13,
+  "Contemporary Art": 14,
+};
+
+var rights = {
+  "Public Domain": 0,
+  "Need Permission": 1,
+  "Copyright Protected": 2,
+  "Full Permission": 3,
+  "Non-Commercial Use": 4,
+  "Orphaned Work": 5,
+  "Permission Denied": 2,
+};
+
+var continents = { data: {}, x: [], lastID: 0 };
+var styles = { data: {}, x: [], lastID: 0 };
+var countries = { data: {}, x: [], lastID: 0 };
+var mediums = { data: {}, x: [], lastID: 0 };
+var cultures = { data: {}, x: [], lastID: 0 };
+
+function convertToID(obj, id, table){
+  var a = obj[id];
+  if(a===undefined || a===null) return;
+  var x = table.data[a];
+  if(x){
+    obj[id] = x; // index exists, use it
+  } else{
+    table.data[a] = table.lastID; // create new index
+    table.x[table.lastID] = a;
+    obj[id] = table.lastID++;
+  }
+};
+
+for(i=0 ; i<=maxId; i++){
+  var dir = Math.floor(i/1000);
+  if(oldDir!==dir)
+    console.log("Directory "+dir);
+  oldDir = dir;
+  var fileName = dir+"/"+i+".json";
+  //console.log(fileName);
+  try {
+    var data_str = fs.readFileSync(fileName, {encoding: 'utf8'});
+    var p=JSON.parse(data_str);
+    var a={
+      id: i,
+      Artist: p.artist,
+      Continent: p.continent,
+      Culture: p.culture,
+      Country: p.country,
+      Department: p.department,
+      //image: p.image,
+      Style: p.style,
+      Title: p.title,
+    }
+    if(a.Culture===null) delete a.Culture;
+    // change department with ID.
+    if(a.Department) a.Department = departments[a.Department];
+    if(a.Artist) a.Artist = a.Artist.split("; ");
+    convertToID(a,'Continent',continents);
+    convertToID(a,'Style',styles);
+    convertToID(a,'Country',countries);
+    convertToID(a,'Culture',cultures);
+    data.push(a);
+  } catch(e){
+    // nothing
+  }
+}
+
+fs.writeFile("artsmia.json",JSON.stringify(data, null, ' '));
+
+fs.writeFile("continents.json",JSON.stringify(continents.x, null, ' '));
+fs.writeFile("styles.json",JSON.stringify(styles.x, null, ' '));
+fs.writeFile("countries.json",JSON.stringify(countries.x, null, ' '));
+fs.writeFile("cultures.json",JSON.stringify(cultures.x, null, ' '));
+*/
+
 google.setOnLoadCallback(function(){
   resizeBrowser(200,80);
   $(window).resize(function() {

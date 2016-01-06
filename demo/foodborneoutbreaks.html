@@ -4,6 +4,7 @@
     <title>Foodborne Outbreaks</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
@@ -18,74 +19,46 @@
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
-function loadData(browser){
-  US_States.loadGeo();
-  $.ajax( {
-    url:"https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/foodborneoutbreaks.xml",
-    dataType:"xml",
-    async: false,
-    success: function(collection){
-      browser.primaryTableName = "Outbreaks";
-      kshf.dt.Outbreaks = [];
-      $(collection).find("record").each(function(i){
-        var $this = $(this);
-        var cData = {};
-        cData.id = i;
-        cData.Year = parseInt($this.find("Year").text());
-        if(cData.Year){
-            cData.Year = new Date(cData.Year,1,1,1,1,1,1);
-        }
-        cData.Month = $this.find("Month").text();
-        cData.State = $this.find("State").text();
-        cData.Genus_Species = $this.find("Genus_Species").text().split("; ");
-        cData.Status = $this.find("Status").text().split("; ");
-        cData.LocationOfConsumption = $this.find("LocationOfConsumption").text().split("; ");
-        cData.TotalIll = parseInt($this.find("TotalIll").text());
-        cData.TotalHospitalizations = parseInt($this.find("TotalHospitalizations").text());
-        cData.TotalDeaths = parseInt($this.find("TotalDeaths").text());
-        cData.FoodVehicle = $this.find("FoodVehicle").text().split("; ");
-        cData.Contaminated_Ingredient = $this.find("Contaminated_Ingredient").text().split("; ");
-        
-        kshf.dt.Outbreaks.push(new kshf.Item(cData,"id"));
-      });
-    }
-  });
-  browser.loadCharts();
-};
 
 $(document).ready( function(){
-  resizeBrowser(300,70);
+  resizeBrowser(50,50);
   $(window).resize(function() {
-    resizeBrowser(300,70);
+    resizeBrowser(50,50);
     browser.updateLayout();
   });
 
   browser = new kshf.Browser({
     domID: "#chart_div",
-    leftPanelLabelWidth: 120,
-    barChartWidth: 125,
-    categoryTextWidth: 200,
+    barChartWidth: 150,
+    categoryTextWidth: 210,
+    rightPanelLabelWidth: 180,
     source: {
       url: 'http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx',
-      callback: loadData
+      gdocId: '1x73EFLhTr87zquJmdLkT4wjcZ0UyQl2i-h94Fc717eM',
+      tables: "Foodborne Outbreaks",
+      callback: function(browser){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
-      { name: "Year" },
-      { name: "Month", catSortBy: _demo.Month_id },
-      { name: "Contaminated Ingredient", value: "Contaminated_Ingredient", panel: 'middle' },
-      { name: "State",
+      { name: "Year", panel: 'bottom', optimumTickWidth: 60,
+        value: function(){ return new Date(this.Year,0,0); } }, // tick width used so that months, etc are not visible
+      { name: "State", panel: 'middle',
         catMap: function(){ 
           var x=US_States.index_name[this.id];
           if(x) return x.geo;
         },
         },
-      { name: "Location Of Consumption", value: "LocationOfConsumption", panel: 'middle' },
-      { name: "Food Vehicle", value: "FoodVehicle", panel: 'middle', minAggrValue: 5 },
-      { name: "Total Ill", value: "TotalIll", panel: 'right', intervalScale: 'log' },
-      { name: "TotalHospitalizations", panel: 'right', intervalScale: 'log' },
-      { name: "Total Deaths", value: "TotalDeaths", panel: 'right', intervalScale: 'log' },
-      { name: "Genus Species", value: "Genus_Species", panel: 'right' },
-      { name: "Status", panel: 'right' }
+      { name: "Month", value:function(){ return this.Month+1; }, catLabel: _demo.Month, catSortBy: _demo.Month_id, panel: 'right' },
+      { name: "Contaminated Ingredient", panel: 'left' },
+      { name: "Location of Preparation", panel: 'left' },
+      { name: "Food Vehicle", panel: 'left', minAggrValue: 5 },
+      { name: "Illnesses", panel: 'middle', intervalScale: 'log' },
+      { name: "Hospitalizations", panel: 'middle', intervalScale: 'log', collapsed: true },
+      { name: "Deaths", panel: 'middle', intervalScale: 'log', collapsed: true },
+      { name: "Genus Species", panel: 'right' },
+      { name: "Etiology Status", panel: 'right' }
     ]
   });
 });
@@ -93,7 +66,9 @@ $(document).ready( function(){
   </head>
   <body>
     <div class="pageTitle" align="center">
-      <a href="http://www.cdc.gov/" target='_blank'>CDC</a> Foodborne Outbreak Online Database</div>
+      <a href="http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx" target='_blank'
+        ><img src="https://upload.wikimedia.org/wikipedia/commons/7/71/US_CDC_logo.svg" style="height: 30px"></a>
+      Foodborne Outbreak Online Database</div>
     <div class="contents"><div id="chart_div"></div></div>
   </body>
 </html>
