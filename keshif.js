@@ -2010,11 +2010,6 @@ kshf.Panel.prototype = {
                 }
 
                 movedSummary.addToPanel(me,this.__data__);
-
-                if(movedSummary.type=="categorical"){
-                    movedSummary.refreshLabelWidth();
-                    movedSummary.updateBarPreviewScale2Active();
-                }
                 movedSummary.refreshWidth();
 
                 me.browser.updateLayout();
@@ -2050,10 +2045,6 @@ kshf.Panel.prototype = {
                     movedSummary.DOM.root[0][0].previousSibling.style.display = "";
                 }
                 movedSummary.addToPanel(me);
-                if(movedSummary.type=="categorical"){
-                    movedSummary.refreshLabelWidth();
-                    movedSummary.updateBarPreviewScale2Active();
-                }
                 movedSummary.refreshWidth();
                 me.browser.updateLayout();
             })
@@ -3981,34 +3972,25 @@ kshf.Browser.prototype = {
     },
     /** -- */
     autoAddSummary: function(summary){
-        if(summary.uniqueCategories()){
-            this.recordDisplay.setRecordViewSummary(summary);
-            if(this.recordDisplay.textSearchSummary===null) 
-                this.recordDisplay.setTextSearchSummary(summary);
-            return;
-        }
-
-        // If tithis, add to bottom panel
-        if(summary.hasTime!==undefined && summary.hasTime===true) {
-            summary.addToPanel(this.panels.bottom);
-            this.recordDisplay.addSortingOption(summary);
-        } else if(summary.type==='categorical') {
-            var target_panel = this.panels.left;
-            if(this.panels.left.summaries.length>Math.floor(this.panels.left.height/150)){
-                target_panel = this.panels.middle;
-            }
-            summary.addToPanel(target_panel);
-            summary.refreshLabelWidth();
-            summary.updateBarPreviewScale2Active();
-        } else if(summary.type==='interval') {
-            var target_panel = this.panels.right;
-            if(this.panels.right.summaries.length>Math.floor(this.panels.right.height/150)){
-                target_panel = this.panels.middle;
-            }
-            summary.addToPanel(target_panel);
-            this.recordDisplay.addSortingOption(summary);
-        }
-        summary.refreshWidth();
+      if(summary.uniqueCategories()){
+        this.recordDisplay.setRecordViewSummary(summary);
+        if(this.recordDisplay.textSearchSummary===null) 
+          this.recordDisplay.setTextSearchSummary(summary);
+        return;
+      }
+      // If tithis, add to bottom panel
+      var target_panel;
+      if(summary.hasTime!==undefined && summary.hasTime===true) {
+        target_panel = 'bottom';
+      } else if(summary.type==='categorical') {
+        target_panel = 'left';
+        if(this.panels.left.summaries.length>Math.floor(this.panels.left.height/150)) target_panel = 'middle';
+      } else if(summary.type==='interval') {
+        target_panel = 'right';
+        if(this.panels.right.summaries.length>Math.floor(this.panels.right.height/150)) target_panel = 'middle';
+      }
+      summary.addToPanel(this.panels[target_panel]);
+      summary.refreshWidth();
     },
     /** -- */
     clearFilters_All: function(force){
@@ -4658,6 +4640,15 @@ kshf.Summary_Base.prototype = {
         panel.addSummary(this,index);
         this.panel.refreshDropZoneIndex();
         this.refreshNuggetDisplay();
+
+        if(this.type=="categorical"){
+          this.refreshLabelWidth();
+          this.updateBarPreviewScale2Active();
+        }
+        if(this.type==='interval'){
+          if(this.browser.recordDisplay)
+            this.browser.recordDisplay.addSortingOption(this);
+        }
     },
     /** -- */
     refreshNuggetDisplay: function(){
