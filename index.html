@@ -521,6 +521,28 @@ h1, .h1 {
   float: right;
 }
 
+.h1{
+  cursor: default;
+}
+.asterix{
+  font-size: 0.7em;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 0em;
+  vertical-align: top;
+  display: inline-block;
+}
+.asterix:hover{
+  border-top: solid 1px #727365;
+  margin-top: -1px;
+}
+.asterix:hover .asterix_text{
+  display: inline-block;
+}
+.asterix_text{
+  display: none;
+}
+
 /*
     Colorbox Core Style:
     The following CSS is consistent between example themes and should not be altered.
@@ -607,7 +629,9 @@ h1, .h1 {
   <img src="./AggreSet/img/logo_hcil.gif" id="logo_hcil" 
     class="affilLogo affilLogoFilter" title="Human Computer Interaction Lab"></a>
 
-<span class='h1'><strong>Keshif</strong></br>
+<span class='h1'>
+<strong>Keshif</strong> <span class="asterix"><span class="asterix_label">*</span> <span class="asterix_text">Keşif (keshif) means <b>discovery and exploration</b> in Turkish.</span></span>
+</br>
 Data Made Explorable</span>
 
 
@@ -701,6 +725,9 @@ Visual Analysis and Dissemination of Scientific Literature Collections with SurV
 
 Undergrad thesis based on keshif
 - http://chunw.github.io/uploads/undergrad_thesis_technical.pdf
+
+Veri gazateciligi araclari - kaynaklar
+http://www.verigazeteciligi.com/turkiye-gazeteciler-sendikasinda-tgs-17-ekimde-veri-gazeteciligi-atolyesi-duzenlenecek/
 
 Course mentions
 - J. Stasko's course materials:
