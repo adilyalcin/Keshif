@@ -2010,7 +2010,6 @@ kshf.Panel.prototype = {
                 }
 
                 movedSummary.addToPanel(me,this.__data__);
-                movedSummary.refreshWidth();
 
                 me.browser.updateLayout();
             })
@@ -2045,7 +2044,6 @@ kshf.Panel.prototype = {
                     movedSummary.DOM.root[0][0].previousSibling.style.display = "";
                 }
                 movedSummary.addToPanel(me);
-                movedSummary.refreshWidth();
                 me.browser.updateLayout();
             })
             ;
@@ -3990,7 +3988,6 @@ kshf.Browser.prototype = {
         if(this.panels.right.summaries.length>Math.floor(this.panels.right.height/150)) target_panel = 'middle';
       }
       summary.addToPanel(this.panels[target_panel]);
-      summary.refreshWidth();
     },
     /** -- */
     clearFilters_All: function(force){
@@ -4613,42 +4610,41 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     addToPanel: function(panel, index){
-        if(index===undefined) index = panel.summaries.length;
-        if(this.panel===undefined){
-            this.panel = panel;
-        } else if(this.panel && this.panel!==panel){
-            this.panel.removeSummary(this);
-            this.panel = panel;
-        } else{ // this.panel === panel
-            var curIndex;
-            // this.panel is the same as panel...
-            this.panel.summaries.forEach(function(s,i){
-                if(s===this) curIndex = i;
-            },this);
-            // inserting the summary to the same index as current one
-            if(curIndex===index) return;
-            var toRemove=this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][curIndex];
-            toRemove.parentNode.removeChild(toRemove);
-        }
-        var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][index];
-        if(this.DOM.root){
-            this.DOM.root.style("display","");
-            panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
-        } else {
-            this.initDOM(beforeDOM);
-        }
-        panel.addSummary(this,index);
-        this.panel.refreshDropZoneIndex();
-        this.refreshNuggetDisplay();
+      if(index===undefined) index = panel.summaries.length; // add to end
+      if(this.panel===undefined){
+        this.panel = panel;
+      } else if(this.panel && this.panel!==panel){
+        this.panel.removeSummary(this);
+        this.panel = panel;
+      } else{ // this.panel === panel
+        var curIndex;
+        // this.panel is the same as panel...
+        this.panel.summaries.forEach(function(s,i){ if(s===this) curIndex = i; },this);
+        // inserting the summary to the same index as current one
+        if(curIndex===index) return;
+        var toRemove=this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][curIndex];
+        toRemove.parentNode.removeChild(toRemove);
+      }
+      var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][index];
+      if(this.DOM.root){
+          this.DOM.root.style("display","");
+          panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
+      } else {
+          this.initDOM(beforeDOM);
+      }
+      panel.addSummary(this,index);
+      this.panel.refreshDropZoneIndex();
+      this.refreshNuggetDisplay();
 
-        if(this.type=="categorical"){
-          this.refreshLabelWidth();
-          this.updateBarPreviewScale2Active();
-        }
-        if(this.type==='interval'){
-          if(this.browser.recordDisplay)
-            this.browser.recordDisplay.addSortingOption(this);
-        }
+      if(this.type=="categorical"){
+        this.refreshLabelWidth();
+        this.updateBarPreviewScale2Active();
+      }
+      if(this.type==='interval'){
+        if(this.browser.recordDisplay)
+          this.browser.recordDisplay.addSortingOption(this);
+      }
+      this.refreshWidth();
     },
     /** -- */
     refreshNuggetDisplay: function(){
