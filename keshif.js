@@ -1128,6 +1128,9 @@ kshf.RecordDisplay.prototype = {
         var feature = d.data[_geo_];
         if(feature===undefined) return;
         var b = d3.geo.bounds(feature);
+        // Change wrapping (US World wrap issue)
+        if(b[0][0]>170) b[0][0]-=360;
+        if(b[1][0]>170) b[1][0]-=360;
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
@@ -3622,7 +3625,7 @@ kshf.Browser.prototype = {
             summary.setCollapsed(true);
           }
           if(facetDescr.description) {
-            summary.summaryDescription = facetDescr.description;
+            summary.setDescription(facetDescr.description);
           }
 
           // THESE AFFECT HOW CATEGORICAL VALUES ARE MAPPED
@@ -4940,7 +4943,7 @@ kshf.Summary_Base.prototype = {
         .on("mouseover",function(d){ this.tipsy.show(); })
         .on("mouseout" ,function(d){ this.tipsy.hide(); });
 
-      this.setSummaryDescription(this.summaryDescription);
+      this.setDescription(this.description);
 
       this.DOM.summaryConfigControl = this.DOM.summaryIcons.append("span")
         .attr("class","summaryConfigControl fa fa-gear")
@@ -4957,7 +4960,7 @@ kshf.Summary_Base.prototype = {
       this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
     },
     /** -- */
-    setSummaryDescription: function(description){
+    setDescription: function(description){
         this.description = description;
         if(this.DOM.summaryDescription===undefined) return;
         this.DOM.summaryDescription.style("display",this.description===undefined?null:"inline");
@@ -7044,8 +7047,8 @@ var Summary_Categorical_functions = {
         if(feature===undefined) return;
         var b = d3.geo.bounds(feature);
         // Change wrapping
-        if(b[0][0]>0) b[0][0]-=360;
-        if(b[1][0]>0) b[1][0]-=360;
+        if(b[0][0]>170) b[0][0]-=360;
+        if(b[1][0]>170) b[1][0]-=360;
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
