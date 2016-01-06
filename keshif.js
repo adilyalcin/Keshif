@@ -932,6 +932,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
         d3.geo.transform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
+            if(x>160) x-=360;
             var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }
@@ -7136,7 +7137,7 @@ var Summary_Categorical_functions = {
         d3.geo.transform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
-            if(x>0) x-=360;
+            if(x>160) x-=360;
             var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }
