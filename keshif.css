@@ -122,74 +122,74 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block !important;
   border-left: solid lightgray 2px;
 }
-.kshf[attribsShown=true] {
+.kshf[authoringMode=true] {
   left: 120px;
 }
-.kshf[attribsShown=true] > .attributePanel {
+.kshf[authoringMode=true] > .attributePanel {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[attribsShown=true] .saveBrowserConfig {
+.kshf[authoringMode=true] .saveBrowserConfig {
   display: inline-block;
 }
-.kshf[attribsShown=true] .kshfSummary:hover .chartCatLabelResize {
+.kshf[authoringMode=true] .kshfSummary:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[attribsShown=true] .kshfSummary:hover .summaryConfigControl {
+.kshf[authoringMode=true] .kshfSummary:hover .summaryConfigControl {
   color: gray;
 }
-.kshf[attribsShown=true] .kshfSummary[collapsed=false][viewType='bar'] .summaryConfigControl {
+.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar'] .summaryConfigControl {
   display: inline-block !important;
 }
-.kshf[attribsShown=true] .kshfSummary[showConfig=true] .summaryConfig {
+.kshf[authoringMode=true] .kshfSummary[showConfig=true] .summaryConfig {
   top: 21px;
   opacity: 1;
   pointer-events: all;
 }
-.kshf[attribsShown=true] .kshfSummary[showConfig=true] .summaryConfigControl {
+.kshf[authoringMode=true] .kshfSummary[showConfig=true] .summaryConfigControl {
   color: black;
   -webkit-animation: fa-spin 4s infinite linear;
   animation: fa-spin 4s infinite linear;
 }
-.kshf[attribsShown=true] .recordDisplay:hover .buttonRecordViewRemove {
+.kshf[authoringMode=true] .recordDisplay:hover .buttonRecordViewRemove {
   display: block;
 }
-.kshf[attribsShown=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
+.kshf[authoringMode=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
   display: block;
 }
-.kshf[attribsShown=true] .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control {
+.kshf[authoringMode=true] .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control {
   display: inline-block;
 }
-.kshf[attribsShown=true] .panel:hover > .panelAdjustWidth {
+.kshf[authoringMode=true] .panel:hover > .panelAdjustWidth {
   display: block;
 }
-.kshf[attribsShown=true] .editableTextContainer > .editTextButton {
+.kshf[authoringMode=true] .editableTextContainer > .editTextButton {
   display: inline-block;
 }
-.kshf[attribsShown=true] .editableTextContainer:hover > .editTextButton {
+.kshf[authoringMode=true] .editableTextContainer:hover > .editTextButton {
   opacity: 1;
 }
-.kshf[attribsShown=true] .buttonSummaryRemove {
+.kshf[authoringMode=true] .buttonSummaryRemove {
   display: inline-block !important;
 }
-.kshf[attribsShown=true]:hover .chartCatLabelResize {
+.kshf[authoringMode=true]:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[attribsShown=true]:hover .summaryConfigControl {
+.kshf[authoringMode=true]:hover .summaryConfigControl {
   color: gray;
 }
-.kshf[attribsShown=true][collapsed=false][viewType='bar'] .summaryConfigControl {
+.kshf[authoringMode=true][collapsed=false][viewType='bar'] .summaryConfigControl {
   display: inline-block !important;
 }
-.kshf[attribsShown=true][showConfig=true] .summaryConfig {
+.kshf[authoringMode=true][showConfig=true] .summaryConfig {
   top: 21px;
   opacity: 1;
   pointer-events: all;
 }
-.kshf[attribsShown=true][showConfig=true] .summaryConfigControl {
+.kshf[authoringMode=true][showConfig=true] .summaryConfigControl {
   color: black;
   -webkit-animation: fa-spin 4s infinite linear;
   animation: fa-spin 4s infinite linear;

@@ -1276,7 +1276,6 @@ kshf.RecordDisplay.prototype = {
             } else {
               me.textFilter.clearFilter();
             }
-            if(sendLog) sendLog(kshf.LOG.FILTER_TEXTSEARCH, {id: me.textFilter.id, info: me.textFilter.filterStr});
             x.timer = null;
           }, 750);
         });
@@ -1383,7 +1382,6 @@ kshf.RecordDisplay.prototype = {
             .attr("class","listSortOptionSelect")
             .on("change", function(){
                 me.setSortingOpt_Active(this.selectedIndex);
-                if(sendLog) sendLog(kshf.LOG.LIST_SORT, {info: this.selectedIndex});
             });
 
         this.refreshSortingOptions();
@@ -1424,7 +1422,6 @@ kshf.RecordDisplay.prototype = {
                     .data(me.browser.items, function(record){ return record.id(); })
                     .order();
                 kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
-                if(sendLog) sendLog(kshf.LOG.LIST_SORT_INV);
             })
             .each(function(){
                 this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder });
@@ -2214,7 +2211,7 @@ kshf.Browser = function(options){
 
     this.filters = [];
 
-    this.attribsShown = false;
+    this.authoringMode = false;
 
     this.pauseResultPreview = false;
     this.vizPreviewActive = false;
@@ -2263,7 +2260,7 @@ kshf.Browser = function(options){
       .attr("percentview",false)
       .attr("noanim",true)
       .attr("ratiomode",false)
-      .attr("attribsShown",false)
+      .attr("authoringMode",false)
       .attr("showdropzone",false)
       .attr("previewcompare",false)
       .attr("resultpreview",false)
@@ -2580,7 +2577,7 @@ kshf.Browser.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",function(){ me.showAttributes(); })
+            .on("click",function(){ me.enableAuthoring(); })
             ;
         // Datasource
         this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
@@ -2590,9 +2587,6 @@ kshf.Browser.prototype = {
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){
-                if(sendLog) sendLog(kshf.LOG.DATASOURCE);
-            })
             ;
         // Info & Credits
         rightBoxes.append("i").attr("class","fa fa-info-circle credits")
@@ -3033,7 +3027,7 @@ kshf.Browser.prototype = {
             };
             var readyCb_pre = me.readyCb;
             me.readyCb = function(){
-              me.showAttributes();
+              me.enableAuthoring();
               if(readyCb_pre) readyCb_pre.call(this,this);
             }
             switch(source_type){
@@ -3081,14 +3075,14 @@ kshf.Browser.prototype = {
         .on("mouseout" ,function(){ this.tipsy.hide(); })
         .on("click",function(){
           me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
-          me.insertAttributeList();
+          me.insertNuggets();
         });
       xx.append("span").attr("class","hidePanel fa fa-times")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
         .on("click",function(){
-          me.showAttributes();
+          me.enableAuthoring();
         });
 
       var attributePanelControl = this.DOM.attributePanel.append("div").attr("class","attributePanelControl");
@@ -3169,24 +3163,28 @@ kshf.Browser.prototype = {
         this.panel_infobox.attr("show","itemZoom");
 //        this.DOM.infobox_itemZoom_content.html(item.data.toString());
     },
-    /** -- */
+    /** -- deprecated */
     showAttributes: function(v){
-        if(v===undefined) v = !this.attribsShown; // if undefined, invert
-        this.attribsShown = v;
-        this.DOM.root.attr("attribsShown",this.attribsShown);
+      return this.enableAuthoring();
+    },
+    /** -- */
+    enableAuthoring: function(v){
+      if(v===undefined) v = !this.authoringMode; // if undefined, invert
+      this.authoringMode = v;
+      this.DOM.root.attr("authoringMode",this.authoringMode);
 
-        var lastIndex = 0, me=this;
-        var initAttib = function(){
-            var start = Date.now();
-            me.summaries[lastIndex++].initializeAggregates();
-            var end = Date.now();
-            if(lastIndex!==me.summaries.length){
-                setTimeout(initAttib,end-start);
-            } else {
-                me.reorderAttributeList();
-            }
-        };
-        setTimeout(initAttib,150);
+      var lastIndex = 0, me=this;
+      var initAttib = function(){
+        var start = Date.now();
+        me.summaries[lastIndex++].initializeAggregates();
+        var end = Date.now();
+        if(lastIndex!==me.summaries.length){
+          setTimeout(initAttib,end-start);
+        } else {
+          me.reorderNuggetList();
+        }
+      };
+      setTimeout(initAttib,150);
     },
     /** -- */
     showFullscreen: function(){
@@ -3217,7 +3215,6 @@ kshf.Browser.prototype = {
     /** -- */
     showInfoBox: function(){
       this.panel_infobox.attr("show","credit");
-      if(sendLog) sendLog(kshf.LOG.INFOBOX);
     },
     /** -- */
     loadSource: function(v){
@@ -3717,9 +3714,9 @@ kshf.Browser.prototype = {
         // hide infobox
         this.panel_infobox.attr("show","none");
 
-        this.insertAttributeList();
+        this.insertNuggets();
 
-        this.reorderAttributeList();
+        this.reorderNuggetList();
 
         if(this.recordDisplay.displayType==="map") {
           this.recordDisplay.map_zoomToWanted();
@@ -3760,213 +3757,200 @@ kshf.Browser.prototype = {
       this.movedSummary = undefined;
     },
     /** -- */
-    reorderAttributeList: function(){
-        this.summaries = this.summaries.sort(function(a,b){
-            var a_cat = a instanceof kshf.Summary_Categorical;
-            var b_cat = b instanceof kshf.Summary_Categorical;
-            if(a_cat && !b_cat) return -1;
-            if(!a_cat && b_cat) return 1;
-            if(a_cat && b_cat && a._cats && b._cats){ 
-                return a._cats.length - b._cats.length;
-            }
-            return a.summaryName.localeCompare(b.summaryName, { sensitivity: 'base' });
-        });
+    reorderNuggetList: function(){
+      this.summaries = this.summaries.sort(function(a,b){
+        var a_cat = a instanceof kshf.Summary_Categorical;
+        var b_cat = b instanceof kshf.Summary_Categorical;
+        if(a_cat && !b_cat) return -1;
+        if(!a_cat && b_cat) return 1;
+        if(a_cat && b_cat && a._cats && b._cats){ 
+            return a._cats.length - b._cats.length;
+        }
+        return a.summaryName.localeCompare(b.summaryName, { sensitivity: 'base' });
+      });
 
-        var x=this.DOM.attributeList;
-        x.selectAll(".nugget").data(this.summaries, function(d,i){return d.id;}).order();
+      var x=this.DOM.attributeList;
+      x.selectAll(".nugget").data(this.summaries, function(d,i){return d.id;}).order();
+    },
+    insertAttributeList: function(){
+      return this.insertNuggets();
     },
     /** -- */
-    insertAttributeList: function(){
-        var me=this;
-        var x=this.DOM.attributeList;
+    insertNuggets: function(){
+      var me=this;
+      var newAttributes = this.DOM.attributeList.selectAll(".nugget")
+        .data(this.summaries, function(d,i){return d.id;}).enter();
 
-        var newAttributes = x.selectAll(".nugget").data(this.summaries, function(d,i){return d.id;}).enter();
+      this.attribMoved = false;
 
-        this.attribMoved = false;
+      var newNuggets = newAttributes
+        .append("div").attr("class","nugget editableTextContainer")
+        .each(function(summary){
+          summary.DOM.nugget = d3.select(this);
+          summary.refreshNuggetDisplay();
+        })
+        .attr("title",function(summary){
+          if(summary.summaryColumn!==undefined) return summary.summaryColumn;
+        })
+        .attr("state",function(summary){
+          if(summary.summaryColumn===null) return "custom"; // calculated
+          if(summary.summaryName===summary.summaryColumn) return "exact";
+          return "edited";
+        })
+        .attr("datatype",function(summary){
+          return summary.getDataType();
+        })
+        .attr("aggr_initialized",function(summary){
+          return summary.aggr_initialized;
+        })
+        .on("dblclick",function(summary){
+          me.autoAddSummary(summary);
+          me.updateLayout();
+        })
+        .on("mousedown",function(summary){
+          if(d3.event.which !== 1) return; // only respond to left-click
 
-        var newSummaries = newAttributes
-            .append("div").attr("class","nugget editableTextContainer")
-            .each(function(summary){
-                summary.DOM.nugget = d3.select(this);
-                summary.refreshNuggetDisplay();
+          var _this = this;
+          me.attribMoved = false;
+          d3.select("body")
+            .on("keydown", function(){
+              if(event.keyCode===27){ // Escape key
+                _this.removeAttribute("moved");
+                me.clearDropZones();
+              }
             })
-            .attr("title",function(summary){
-                if(summary.summaryColumn!==undefined) return summary.summaryColumn;
+            .on("mousemove", function(){
+              if(!me.attribMoved){
+                _this.setAttribute("moved","");
+                me.prepareDropZones(summary,"attributePanel");
+                me.attribMoved = true;
+              }
+              var mousePos = d3.mouse(me.DOM.root[0][0]);
+              kshf.Util.setTransform(me.DOM.attribDragBox[0][0],
+                  "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
+              d3.event.stopPropagation();
+              d3.event.preventDefault();
             })
-            .attr("state",function(summary){
-                if(summary.summaryColumn===null) return "custom"; // calculated
-                if(summary.summaryName===summary.summaryColumn) return "exact";
-                return "edited";
-            })
-            .attr("datatype",function(summary){
-                return summary.getDataType();
-            })
-            .attr("aggr_initialized",function(summary){
-                return summary.aggr_initialized;
-            })
-            .on("dblclick",function(summary){
-                // If unique, insert into record view
-                me.autoAddSummary(summary);
-                me.updateLayout();
-            })
-            .on("mousedown",function(summary){
-                if(d3.event.which !== 1) return; // only respond to left-click
-
-                var _this = this;
-                me.attribMoved = false;
-                d3.select("body")
-                    .on("keydown", function(){
-                        if(event.keyCode===27){ // Escape key
-                            _this.removeAttribute("moved");
-                            me.clearDropZones();
-                        }
-                    })
-                    .on("mousemove", function(){
-                        if(!me.attribMoved){
-                            _this.setAttribute("moved","");
-                            me.prepareDropZones(summary,"attributePanel");
-                            me.attribMoved = true;
-                        }
-                        var mousePos = d3.mouse(me.DOM.root[0][0]);
-                        kshf.Util.setTransform(me.DOM.attribDragBox[0][0],
-                            "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
-                        d3.event.stopPropagation();
-                        d3.event.preventDefault();
-                    })
-                    .on("mouseup", function(){
-                        if(!me.attribMoved) return;
-                        _this.removeAttribute("moved");
-                        me.DOM.root.attr("drag_cursor",null);
-                        me.clearDropZones();
-                        d3.event.preventDefault();
-                    });
-                d3.event.preventDefault();
-            })
-            .on("mouseup",function(summary){
-                if(me.attribMoved===false) me.unregisterBodyCallbacks();
-            })
-            ;
-
-        var nuggetViz = newSummaries.append("span").attr("class","nuggetViz")
-            .each(function(summary){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'e', title: function(){
-                        if(!summary.aggr_initialized){
-                            return "Click to initialize";
-                        }
-                        return summary.getDataType();
-                    }
-                })
-            })
-            .on("mousedown",function(summary){
-                if(!summary.aggr_initialized){
-                    // stop dragging event start
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                }
-            })
-            .on("click",function(summary){
-                if(!summary.aggr_initialized){
-                    summary.initializeAggregates();
-                }
+            .on("mouseup", function(){
+              if(!me.attribMoved) return;
+              _this.removeAttribute("moved");
+              me.DOM.root.attr("drag_cursor",null);
+              me.clearDropZones();
+              d3.event.preventDefault();
             });
-
-        nuggetViz.append("span").attr("class","nuggetInfo fa");
-        var nuggetChart = nuggetViz.append("span").attr("class","nuggetChart");
-        newSummaries.append("span").attr("class","summaryName editableText")
-            .attr("contenteditable",false)
-            .text(function(summary){ return summary.summaryName; })
-            .on("blur",function(summary){
-                this.parentNode.setAttribute("edittitle",false);
-                this.setAttribute("contenteditable",false);
-                me.changeSummaryName(summary.summaryName,this.textContent);
-                d3.event.preventDefault();
-                d3.event.stopPropagation();
-            })
-            .on("keydown",function(summary){
-                if(d3.event.keyCode===13){ // ENTER
-                    this.parentNode.setAttribute("edittitle",false);
-                    this.setAttribute("contenteditable",false);
-                    me.changeSummaryName(summary.summaryName,this.textContent);
-                    d3.event.preventDefault();
-                    d3.event.stopPropagation();
-                }
-            })
-            ;
-        newSummaries.append("div").attr("class","fa editTextButton")
-            .each(function(summary){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){
-                        var curState=this.parentNode.getAttribute("edittitle");
-                        if(curState===null || curState==="false"){
-                            return kshf.lang.cur.EditTitle;
-                        } else {
-                            return "OK";
-                        }
-                    }
-                })
-            })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("mousedown",function(summary){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            })
-            .on("click",function(summary){
-                this.tipsy.hide();
-                var parentDOM = d3.select(this.parentNode);
-                var summaryName = parentDOM.select(".summaryName");
-                var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
-
-                var curState=this.parentNode.getAttribute("edittitle");
-                if(curState===null || curState==="false"){
-                    this.parentNode.setAttribute("edittitle",true);
-                    summaryName_DOM.setAttribute("contenteditable",true);
-                    summaryName_DOM.focus();
-                } else {
-                    this.parentNode.setAttribute("edittitle",false);
-                    summaryName_DOM.setAttribute("contenteditable",false);
-                    me.changeSummaryName(summary.summaryName,summaryName_DOM.textContent);
-                }
-                // stop dragging event start
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            });
-
-        newSummaries.append("div").attr("class","fa fa-code editCodeButton")
-                .each(function(summary){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 'w', title: function(){ return "Edit Function"; }
-                    });
-                })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); })
-                .on("mousedown",function(summary){
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                })
-                .on("click",function(summary){
-                    alert("TODO: Edit this:\n"+summary.getFuncString());
-                    // stop dragging event start
-                    d3.event.stopPropagation();
-                    d3.event.preventDefault();
-                })
-                ;
-
-        this.summaries.forEach(function(summary){
-            if(summary.aggr_initialized) summary.refreshViz_Nugget();
+          d3.event.preventDefault();
+        })
+        .on("mouseup",function(summary){
+          if(me.attribMoved===false) me.unregisterBodyCallbacks();
         });
+
+      var nuggetViz = newNuggets.append("span").attr("class","nuggetViz")
+        .each(function(summary){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'e', title: function(){
+              return  (!summary.aggr_initialized) ? "Click to initialize" : summary.getDataType();
+            }
+          })
+        })
+        .on("mousedown",function(summary){
+          if(!summary.aggr_initialized){
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+          }
+        })
+        .on("click",function(summary){
+          if(!summary.aggr_initialized) summary.initializeAggregates();
+        });
+
+      nuggetViz.append("span").attr("class","nuggetInfo fa");
+      var nuggetChart = nuggetViz.append("span").attr("class","nuggetChart");
+      newNuggets.append("span").attr("class","summaryName editableText")
+        .attr("contenteditable",false)
+        .text(function(summary){ return summary.summaryName; })
+        .on("blur",function(summary){
+          this.parentNode.setAttribute("edittitle",false);
+          this.setAttribute("contenteditable",false);
+          me.changeSummaryName(summary.summaryName,this.textContent);
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("keydown",function(summary){
+          if(d3.event.keyCode===13){ // ENTER
+            this.parentNode.setAttribute("edittitle",false);
+            this.setAttribute("contenteditable",false);
+            me.changeSummaryName(summary.summaryName,this.textContent);
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+          }
+        })
+          ;
+      newNuggets.append("div").attr("class","fa editTextButton")
+        .each(function(summary){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'w', title: function(){
+              var curState=this.parentNode.getAttribute("edittitle");
+              return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
+            }
+          });
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mousedown",function(summary){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("click",function(summary){
+          this.tipsy.hide();
+          var parentDOM = d3.select(this.parentNode);
+          var summaryName = parentDOM.select(".summaryName");
+          var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
+
+          var curState=this.parentNode.getAttribute("edittitle");
+          if(curState===null || curState==="false"){
+            this.parentNode.setAttribute("edittitle",true);
+            summaryName_DOM.setAttribute("contenteditable",true);
+            summaryName_DOM.focus();
+          } else {
+            this.parentNode.setAttribute("edittitle",false);
+            summaryName_DOM.setAttribute("contenteditable",false);
+            me.changeSummaryName(summary.summaryName,summaryName_DOM.textContent);
+          }
+          // stop dragging event start
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        });
+
+      newNuggets.append("div").attr("class","fa fa-code editCodeButton")
+        .each(function(summary){
+          this.tipsy = new Tipsy(this, { gravity: 'w', title: function(){ return "Edit Function"; } });
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mousedown",function(summary){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("click",function(summary){
+          alert("TODO: Edit this:\n"+summary.getFuncString());
+          // stop dragging event start
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        });
+
+      this.summaries.forEach(function(summary){
+        if(summary.aggr_initialized) summary.refreshViz_Nugget();
+      });
     },
     /** -- */
     autoCreateBrowser: function(){
-        this.summaries.forEach(function(summary,i){
-            if(summary.uniqueCategories()) return;
-            if(summary.type==="categorical" && summary._cats.length>1000) return;
-            if(summary.panel) return;
-            this.autoAddSummary(summary);
-            this.updateLayout_Height();
-        },this);
-        this.updateLayout();
+      this.summaries.forEach(function(summary,i){
+        if(summary.uniqueCategories()) return;
+        if(summary.type==="categorical" && summary._cats.length>1000) return;
+        if(summary.panel) return;
+        this.autoAddSummary(summary);
+        this.updateLayout_Height();
+      },this);
+      this.updateLayout();
     },
     /** -- */
     autoAddSummary: function(summary){
@@ -3991,34 +3975,29 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearFilters_All: function(force){
-        var me=this;
-        if(this.skipSortingFacet){
-            // you can now sort the last filtered summary, attention is no longer there.
-            this.skipSortingFacet.dirtySort = false;
-            this.skipSortingFacet.DOM.catSortButton.attr("resort",false);
-        }
-        // clear all registered filters
-        this.filters.forEach(function(filter){
-            filter.clearFilter(false,false);
-        })
-        if(force!==false){
-            this.items.forEach(function(item){ item.updateWanted_More(true); });
-            this.update_Records_Wanted_Count();
-            this.refresh_filterClearAll();
-            this.updateAfterFilter(); // more results
-            if(sendLog){
-                sendLog(kshf.LOG.FILTER_CLEAR_ALL);
-            }
-        }
-        setTimeout( function(){ me.updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
+      var me=this;
+      if(this.skipSortingFacet){
+        // you can now sort the last filtered summary, attention is no longer there.
+        this.skipSortingFacet.dirtySort = false;
+        this.skipSortingFacet.DOM.catSortButton.attr("resort",false);
+      }
+      // clear all registered filters
+      this.filters.forEach(function(filter){ filter.clearFilter(false,false); })
+      if(force!==false){
+        this.items.forEach(function(item){ item.updateWanted_More(true); });
+        this.update_Records_Wanted_Count();
+        this.refresh_filterClearAll();
+        this.updateAfterFilter(); // more results
+      }
+      setTimeout( function(){ me.updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
     },
     /** -- */
     refresh_ActiveRecordCount: function(){
-        var noneSelected = (this.recordsWanted_Aggr_Total===0);
-        var numStr = this.recordsWanted_Aggr_Total.toLocaleString();
-        this.DOM.activeRecordCount
-            .text(noneSelected?"No":numStr)
-            .style("width",(noneSelected?"30":(numStr.length*11+5))+"px");
+      var noneSelected = (this.recordsWanted_Aggr_Total===0);
+      var numStr = this.recordsWanted_Aggr_Total.toLocaleString();
+      this.DOM.activeRecordCount
+        .text(noneSelected?"No":numStr)
+        .style("width",(noneSelected?"30":(numStr.length*11+5))+"px");
     },
     /** -- */
     update_Records_Wanted_Count: function(){
@@ -4036,15 +4015,15 @@ kshf.Browser.prototype = {
     },
     /** -- */
     updateAfterFilter: function () {
-        this.clearSelect_Compare();
-        this.clearSelect_Compare_Crumb();
-        // basically, propogate call under every summary and recordDisplay
-        this.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.updateAfterFilter();
-        });
-        this.recordDisplay.updateAfterFilter();
+      this.clearSelect_Compare();
+      this.clearSelect_Compare_Crumb();
+      // basically, propogate call under every summary and recordDisplay
+      this.summaries.forEach(function(summary){
+        if(summary.inBrowser()) summary.updateAfterFilter();
+      });
+      this.recordDisplay.updateAfterFilter();
 
-        if(this.updateCb) this.updateCb(this);
+      if(this.updateCb) this.updateCb(this);
     },
     /** -- */
     refresh_filterClearAll: function(){
@@ -4111,12 +4090,12 @@ kshf.Browser.prototype = {
     /** -- */
     setSelect_Compare: function(selSummary,selAggregate){
       if(this.comparedAggregate){
-          var reclick = selAggregate===this.comparedAggregate;
-          this.clearSelect_Compare();
-          if(reclick) {
-            this.clearSelect_Compare_Crumb();
-            return;
-          }
+        var reclick = selAggregate===this.comparedAggregate;
+        this.clearSelect_Compare();
+        if(reclick) {
+          this.clearSelect_Compare_Crumb();
+          return;
+        }
       }
 
       this.comparedAggregate = selAggregate;
@@ -4377,39 +4356,26 @@ kshf.Browser.prototype = {
     },
     /** -- */
     updateMiddlePanelWidth: function(){
-        // for some reason, on page load, this variable may be null. urgh.
-        var widthMiddlePanel = this.divWidth;
-        var marginLeft = 0;
-        var marginRight = 0;
-        if(this.panels.left.summaries.length>0){
-            marginLeft=2;
-            widthMiddlePanel-=this.panels.left.getWidth_Total()+2;
-        }
-        if(this.panels.right.summaries.length>0){
-            marginRight=2;
-            widthMiddlePanel-=this.panels.right.getWidth_Total()+2;
-        }
-        this.panels.left.DOM.root.style("margin-right",marginLeft+"px")
-        this.panels.right.DOM.root.style("margin-left",marginRight+"px")
-        this.panels.middle.setTotalWidth(widthMiddlePanel);
-        this.panels.middle.updateSummariesWidth();
-        this.panels.bottom.setTotalWidth(this.divWidth);
-        this.panels.bottom.updateSummariesWidth();
+      // for some reason, on page load, this variable may be null. urgh.
+      var widthMiddlePanel = this.divWidth;
+      var marginLeft = 0;
+      var marginRight = 0;
+      if(this.panels.left.summaries.length>0){
+        marginLeft=2;
+        widthMiddlePanel-=this.panels.left.getWidth_Total()+2;
+      }
+      if(this.panels.right.summaries.length>0){
+        marginRight=2;
+        widthMiddlePanel-=this.panels.right.getWidth_Total()+2;
+      }
+      this.panels.left.DOM.root.style("margin-right",marginLeft+"px")
+      this.panels.right.DOM.root.style("margin-left",marginRight+"px")
+      this.panels.middle.setTotalWidth(widthMiddlePanel);
+      this.panels.middle.updateSummariesWidth();
+      this.panels.bottom.setTotalWidth(this.divWidth);
+      this.panels.bottom.updateSummariesWidth();
     },
     /** -- */
-    getFilterSummary: function(){
-        var str="";
-        this.filters.forEach(function(filter,i){
-            if(!filter.isFiltered) return;
-            if(filter.filterView_Detail){
-                if(i!=0) str+=" & ";
-//                if(filter.summary_header) str+= filter.summary_header+": ";
-                str+=filter.filterView_Detail();
-            }
-        },this);
-        return str;
-    },
-    /** -- */ // measureLabel
     getMeasureLabel: function(aggr){
       if(!aggr.isVisible) return;
       var _val = this.vizPreviewActive?
@@ -4648,18 +4614,16 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     refreshNuggetDisplay: function(){
-        if(this.DOM.nugget===undefined) return;
-        var me=this;
-        var nuggetHidden = (this.panel||this.isRecordView);
-        if(nuggetHidden){
-            this.DOM.nugget.attr('anim','disappear');
-            this.DOM.nugget.attr("hidden",true);
-        } else {
-            this.DOM.nugget.attr("hidden",false);
-            setTimeout(function(){
-                me.DOM.nugget.attr('anim','appear');
-            },300);
-        }
+      if(this.DOM.nugget===undefined) return;
+      var me=this;
+      var nuggetHidden = (this.panel||this.isRecordView);
+      if(nuggetHidden){
+        this.DOM.nugget.attr('anim','disappear');
+        setTimeout(function(){ me.DOM.nugget.attr('hidden','true'); },700);
+      } else {
+        this.DOM.nugget.attr("hidden",false);
+        setTimeout(function(){ me.DOM.nugget.attr('anim','appear'); },300);
+      }
     },
     /** -- */
     removeFromPanel: function(){
@@ -4684,7 +4648,7 @@ kshf.Summary_Base.prototype = {
         this.DOM.headerGroup = this.DOM.root.append("div").attr("class","headerGroup")
             .on("mousedown", function(){
                 if(d3.event.which !== 1) return; // only respond to left-click
-                if(!me.browser.attribsShown) {
+                if(!me.browser.authoringMode) {
                     d3.event.preventDefault();
                     return;
                 }
@@ -4810,7 +4774,6 @@ kshf.Summary_Base.prototype = {
             .on("click", function(d,i){
                 this.tipsy.hide();
                 me.summaryFilter.clearFilter();
-                if(sendLog) sendLog(kshf.LOG.FILTER_CLEAR_X, {id:me.summaryFilter.id});
             })
             .append("span").attr("class","fa fa-times")
             ;
@@ -5009,7 +4972,6 @@ kshf.Summary_Base.prototype = {
     setCollapsedAndLayout: function(hide){
         this.setCollapsed(hide);
         this.browser.updateLayout_Height();
-        if(sendLog) sendLog( (hide===true?kshf.LOG.FACET_COLLAPSE:kshf.LOG.FACET_SHOW), {id:this.id} );
     },
     /** -- */
     setCollapsed: function(v){
@@ -5728,7 +5690,6 @@ var Summary_Categorical_functions = {
             .on("click",function(d){
                 this.tipsy.hide();
                 kshf.Util.scrollToPos_do(me.DOM.aggrGroup[0][0],0);
-                if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_TOP, {id:me.id} );
             })
             ;
 
@@ -5832,7 +5793,6 @@ var Summary_Categorical_functions = {
           .on("click",function(){
             kshf.Util.scrollToPos_do(
               me.DOM.aggrGroup[0][0],me.DOM.aggrGroup[0][0].scrollTop+me.heightRow_category);
-            if(sendLog) sendLog(kshf.LOG.FACET_SCROLL_MORE, {id:me.id});
           });
 
         this.insertCategories();
@@ -5875,7 +5835,6 @@ var Summary_Categorical_functions = {
           me.catSortBy_Active = me.catSortBy[this.selectedIndex];
           me.refreshSortButton();
           me.updateCatSorting(0,true);
-          if(sendLog) sendLog(kshf.LOG.FACET_SORT, {id:me.id, info:this.selectedIndex});
         })
 
       this.refreshSortOptions();
@@ -6521,7 +6480,6 @@ var Summary_Categorical_functions = {
                 this.dirtySort = false;
                 this.DOM.catSortButton.attr("resort",false);
             }
-            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_UNSELECT, {id:this.summaryFilter.id, info:ctgry.id()});
         }
         if(what==="NOT"){
             if(ctgry.is_NONE()){
@@ -6534,12 +6492,10 @@ var Summary_Categorical_functions = {
                 this.summaryFilter.how = "All";
             }
             ctgry.set_NOT(this.summaryFilter.selected_NOT);
-            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_NOT, {id:this.summaryFilter.id, info:ctgry.id()});
         }
         if(what==="AND"){
             ctgry.set_AND(this.summaryFilter.selected_AND);
             this.summaryFilter.how = "LessResults";
-            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_AND, {id:this.summaryFilter.id, info:ctgry.id()});
         }
         if(what==="OR"){
             if(!this.isMultiValued && this.summaryFilter.selected_NOT.length>0){
@@ -6555,7 +6511,6 @@ var Summary_Categorical_functions = {
             }
             ctgry.set_OR(this.summaryFilter.selected_OR);
             this.summaryFilter.how = "MoreResults";
-            if(sendLog) sendLog(kshf.LOG.FILTER_ATTR_ADD_OR, {id:this.summaryFilter.id, info:ctgry.id()});
         }
         if(how) this.summaryFilter.how = how;
 
@@ -8496,9 +8451,6 @@ var Summary_Interval_functions = {
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.summaryFilter.addFilter(true);
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE,
-                                    { id: me.summaryFilter.id,
-                                      info: me.summaryFilter.active.min+"x"+me.summaryFilter.active.m});
                             } else {
                                 me.summaryFilter.clearFilter();
                             }
@@ -8567,9 +8519,6 @@ var Summary_Interval_functions = {
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.summaryFilter.addFilter(true);
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE,
-                                    { id: me.summaryFilter.id,
-                                      info: me.summaryFilter.active.min+"x"+me.summaryFilter.active.max});
                             } else{
                                 me.summaryFilter.clearFilter();
                             }
@@ -8616,9 +8565,6 @@ var Summary_Interval_functions = {
                         me.summaryFilter.filteredBin=this;
                         this.timer = setTimeout( function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
-                                if(sendLog) sendLog(kshf.LOG.FILTER_INTRVL_HANDLE,
-                                    { id: me.summaryFilter.id,
-                                      info: me.summaryFilter.active.min+"x"+me.summaryFilter.active.max });
                                 me.summaryFilter.addFilter(true);
                             } else {
                                 me.summaryFilter.clearFilter();
