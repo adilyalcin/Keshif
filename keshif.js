@@ -384,7 +384,21 @@ var kshf = {
             d3.rgb('#80cdc1'),
             d3.rgb('#35978f'),
             d3.rgb('#01665e')]
-    }
+    },
+    /** -- */
+    getGistLogin: function(){
+      if(this.githubToken===undefined) return;
+      $.ajax( 'https://api.github.com/user',
+        { method: "GET",
+          async: true,
+          dataType: "json",
+          headers: {Authorization: "token "+kshf.githubToken},
+          success: function(response){ 
+            kshf.gistLogin = response.login;
+          }
+        }
+      );
+    },
 
 };
 
@@ -2599,12 +2613,14 @@ kshf.Browser.prototype = {
           .on("click",function(){ 
             if(this.getAttribute("auth")==="true"){
               // de-authorize
-              kshf.githubToken = null;
+              kshf.githubToken = undefined;
+              kshf.gistLogin = undefined;
               this.setAttribute("auth",false)
             } else {
               kshf.githubToken = window.prompt("Your Github token (only needs access to gist)", "");
               if(this.githubToken!==""){
                 this.setAttribute("auth",true);
+                kshf.getGistLogin();
               }
             }
           });
@@ -2614,55 +2630,110 @@ kshf.Browser.prototype = {
           .on("mouseout", function(){ this.tipsy.hide(); })
           .on("click",function(){
             if(!confirm("The browser will be saved "+
-                ((kshf.githubToken)?"to your gist profile.":"anonymously and public.")
+                ((kshf.gistLogin)?"to your gist profile.":"anonymously and public.")
               )){
               return;
             }
             var e = me.exportConfig();
             var c = JSON.stringify(e,null,'  ');
+
+            // Add authentication data if authentication token is set
+            var headers = {};
+            if(kshf.gistLogin) headers.Authorization = "token "+kshf.githubToken;
+
+            // Set description (from page title if it exists)
             var description = "Keshif Browser Configuration";
             // In demo pages, demo_PageTitle gives more context - use it as description
             if(d3.select("#demo_PageTitle")[0][0]){
               description = d3.select("#demo_PageTitle").html();
             }
 
-            // Add authentication data if authentication token is set
-            var headers = {};
-            if(kshf.githubToken) headers.Authorization = "token "+kshf.githubToken;
             var githubLoad = {
-                description: description,
-                public: true,
-                files: { "kshf_config.json": { content: c }, }
-              };
-
+              description: description,
+              public: true,
+              files: { "kshf_config.json": { content: c }, }
+            };
             // Add style file, if custom style exists
-            var badi = d3.select(document);
-            var badiStyle = badi.select("#kshfStyle");
+            var badiStyle = d3.select("#kshfStyle");
             if(badiStyle[0].length > 0 && badiStyle[0][0]!==null){
               githubLoad.files["kshf_style.css"] = { content: badiStyle.text()};
             }
 
-            $.ajax(
-              'https://api.github.com/gists', 
-              {
-                method: "POST",
-                dataType: 'json',
-                data: JSON.stringify(githubLoad),
-                headers: headers,
-                success: function(response){
-                  gistURL = response.html_url;
-                  gistID = gistURL.replace(/.*github.*\//g,'');
-                  var keshifGist = "keshif.me/gist?"+gistID;
-                  me.showWarning(
-                    "The browser is saved to "+
-                    "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
-                    "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
-                    )
+            function gist_createNew(){
+              $.ajax( 'https://api.github.com/gists',
+                { method: "POST",
+                  dataType: 'json',
+                  data: JSON.stringify(githubLoad),
+                  headers: headers,
+                  success: function(response){
+                    // Keep Gist Info (you may edit/fork it next)
+                    kshf.gistInfo = response;
+                    var gistURL = response.html_url;
+                    var gistID = gistURL.replace(/.*github.*\//g,'');
+                    var keshifGist = "keshif.me/gist?"+gistID;
+                    me.showWarning(
+                      "The browser is saved to "+
+                      "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
+                      "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
+                      )
+                  },
                 },
-              }
-              ,
-              'json'
-            );
+                'json'
+              );
+            };
+
+            // UNAUTHORIZED / ANONYMOUS
+            if(kshf.gistLogin===undefined){
+              // You cannot fork or edit a gist as anonymous user.
+              gist_createNew();
+              return;
+            }
+
+            // AUTHORIZED, NEW GIST
+            if(kshf.gistInfo===undefined){
+              gist_createNew(); // New gist
+              return;
+            }
+
+            // AUTHOIZED, EXISTING GIST, FROM ANOTHER USER
+            if(kshf.gistInfo.owner===undefined || kshf.gistInfo.owner.login !== kshf.gistLogin){
+              // Fork it
+              $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id+"/forks", 
+                { method: "POST",
+                  dataType: 'json',
+                  data: JSON.stringify(githubLoad),
+                  async: false,
+                  headers: headers,
+                  success: function(response){
+                    kshf.gistInfo = response; // ok, now my gist
+                  },
+                },
+                'json'
+              );
+            }
+
+            // AUTHORIZED, EXISTING GIST, MY GIST
+            if(kshf.gistInfo.owner.login === kshf.gistLogin){
+              // edit
+              $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id, 
+                { method: "PATCH",
+                  dataType: 'json',
+                  data: JSON.stringify(githubLoad),
+                  headers: headers,
+                  success: function(response){
+                    var gistURL = response.html_url;
+                    var gistID = gistURL.replace(/.*github.*\//g,'');
+                    var keshifGist = "keshif.me/gist?"+gistID;
+                    me.showWarning(
+                      "The browser is edited to "+
+                      "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
+                      "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
+                      )
+                  },
+                },
+                'json'
+              );
+            }
           });          
 
         rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
@@ -3109,7 +3180,6 @@ kshf.Browser.prototype = {
                 });
                 break;
             }
-            setTimeout(function(){ me.enableAuthoring(); }, 1000);
           });
     },
     /** -- */
@@ -7895,7 +7965,7 @@ var Summary_Interval_functions = {
         .append("span").attr("class",function(d){ return "configOption pos_"+d.toLowerCase();})
         .attr("active",function(d){ return d.toLowerCase()===me.scaleType; })
         .text(function(d){ return d; })
-        .on("click", function(d){ me.setScaleType(d.toLowerCase()); })
+        .on("click", function(d){ me.setScaleType(d.toLowerCase(),true); })
 
       var summaryConfig_Percentile = this.DOM.summaryConfig.append("div")
         .attr("class","summaryConfig_Percentile summaryConfig_Option");

@@ -29,12 +29,14 @@ google.setOnLoadCallback(function(){
       }
       d3.select("#demo_PageTitle").html(response.description);
       browser = new kshf.Browser(JSON.parse(response.files['kshf_config.json'].content));
+      kshf.gistInfo = response;
       if(response.files['kshf_style.css']){
         var _s = document.createElement("style");
         _s.textContent = response.files['kshf_style.css'].content
         _s.setAttribute("id","kshfStyle");
         document.getElementsByTagName("head")[0].appendChild(_s);
       }
+      if(kshf.githubToken) kshf.getGistLogin();
     },
     'json'
   );

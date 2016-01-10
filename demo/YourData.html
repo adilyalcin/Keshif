@@ -27,6 +27,7 @@ google.setOnLoadCallback(function(){
   		browser.summaries.forEach(function(summary){
   			if(summary.type==="interval") browser.recordDisplay.addSortingOption(summary);
   		});
+      setTimeout(function(){ me.enableAuthoring(); }, 1000);
   	}
   });
 });
