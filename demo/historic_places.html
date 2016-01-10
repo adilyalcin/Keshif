@@ -18,7 +18,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 120,
     leftPanelLabelWidth: 120,
     rightPanelLabelWidth: 190,
@@ -44,17 +44,17 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 990px;
   height: 650px;
 }
-  </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">National Historic Landmarks on the National Register, U.S.</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">National Historic Landmarks on the National Register, U.S.</div>
+      <div id="demo_Browser"></div>
       </div>
   </body>
 </html>

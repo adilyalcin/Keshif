@@ -18,7 +18,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 200,
@@ -62,20 +62,14 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1100px;
-  height: 700px;
-}
-    </style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">USDA Food Safety Awards</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">USDA Food Safety Awards</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       <a href="http://cris.csrees.usda.gov/search.html" target='_blank'>Data from 
         United States Department of Agriculture (USDA) -
         Current Research Information System (CRIS)</a>

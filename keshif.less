@@ -69,7 +69,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     //font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
 
-    .transition(~'left 300ms ease-in-out');
     .box-sizing(border-box);
     *{ .box-sizing(border-box); }
 
@@ -102,19 +101,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       border-left: solid lightgray 2px;
     }
     &[authoringMode=true]{
-      left: 120px;
+      //left: 120px;
       > .attributePanel{
           .display(flex);
+      }
+      > .panel_Wrapper{
+        margin-left: 220px;
       }
       .saveBrowserConfig{
         display: inline-block;
       }
+      .configUser{
+        display: inline-block;
+      }
       .kshfSummary{
-        &:hover {
+        &[collapsed=false][viewType='bar']:hover {
           .chartCatLabelResize{ display: block !important; }
-          .summaryConfigControl{ color: gray; }
+          .summaryConfigControl{ display: inline-block !important; }
         }
-        &[collapsed=false][viewType='bar'] .summaryConfigControl{ display: inline-block !important; }
         &[showConfig=true]{
           .summaryConfig{
             top: 21px;
@@ -213,13 +217,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[dropSource="browser"]{
         > .attributePanel > .attributeList > .dropZone_AttribList{ display: block; }
       }
-      &[dropattrtype~="unique"] {
+//      &[dropattrtype~="unique"] {
         .recordDisplay[hasRecordView="false"]{
           .flex(1);
           min-height: 50px;
         }
         .dropZone_recordView{ display: block !important; }
-      }
+//      }
       &[dropattrtype~="interval"] .dropZone_resultSort{
         display: block !important;
       }
@@ -235,6 +239,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     
     .saveBrowserConfig{
       display: none;
+    }
+    .configUser{
+      display: none;
+      &[auth="false"] { color: black; }
+      &[auth="true"] { color: orangered; }
     }
 
     .fa-dropbox{
@@ -262,6 +271,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &.AndOrNot_And{ background-color: @color_query_and; }
       &.AndOrNot_Or{ background-color: @color_query_or; }
       &.AndOrNot_Not{ background-color: @color_query_not; }
+    }
+
+    > .panel_Wrapper{
+      .transition(margin-left 700ms ease-in-out);
+      margin-left: 0px;
+      background-color: white;
+      z-index: 10;
     }
 
     .editableTextContainer{
@@ -299,7 +315,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .flex-direction(column);
       position: absolute;
 
-      left: -220px;
+      left: -0px;
       width: 215px;
       top: 0px;
       height: 100%;
@@ -369,6 +385,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           border: solid 1px rgb(211, 219, 226);
           box-shadow: 0px 0px 1px rgb(190, 200, 209);
           margin: 2px;
+        }
+      }
+
+      .newAttribute{
+        display: block;
+        text-align: center;
+        border-radius: 3px;
+        background-color: rgb(223, 215, 215);
+        border: solid 1px lightgray;
+        cursor: pointer;
+        color: #C0B1B1;
+        font-size: 0.8em;
+        &:hover{
+          background-color: #DBD4D4;
+          border-color: #B8B6B1;
+          color: #877676;
         }
       }
 
@@ -784,6 +816,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         pointer-events: none;
         .transition(~'opacity 500ms ease-in-out, top 500ms');
         > .warningBox{
+          display: inline-block;
             background-color: #F8EE82;
             border-radius: 5px;
             font-size: 0.8em;
@@ -1121,7 +1154,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         padding: 2px 4px;
                         border-radius: 7px;
                         font-weight: 300;
-                        margin: 0px 5px;
+                        margin: 0px 2px;
                         font-size: 0.8em;
                         cursor: pointer;
                         color: rgb(160, 160, 160);
@@ -1242,7 +1275,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .sheetColumn_Splitter{
                         width: 60px;
                     }
-                    .sheetName{
+                    .tableName{
                         width: 85px;
                     }
                     .sheetColumn_Seperator{
@@ -1610,7 +1643,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
           > .summaryConfigControl{
             display: none;
-            color: lightgray;
+            color: gray;
           }
         }
         > .header_display_control{
@@ -1738,8 +1771,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         } // .aggr
         > .lockButton{
           position: absolute;
-          width: 100%;
+          // width: 100%;
           text-align: center;
+          width: 16px;
+          left: calc(~"50% - 8px");
           &[inside]{ margin-top: 12px; }
         }
         > .measureLabel{
@@ -1826,6 +1861,95 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     } // .aggrGlyph
 
+
+    .kshfRecord{
+      opacity: 1;
+      cursor: default;
+      overflow: hidden;
+      vertical-align: top;
+      padding: 1px 0px;
+      position: relative;
+      .transition(~"opacity 500ms ease");
+
+      > .recordRank{
+        font-size: 0.6em;
+        color: gray;
+        font-weight: 300;
+        font-style: italic;
+        text-align: right;
+      }
+
+      > .content{
+        vertical-align: top;
+        border: solid 0px lightgray;
+        position: relative;
+
+        > .iteminfo{
+          float:none;
+          clear: left;
+          font-weight:normal;
+          margin-bottom: 2px;
+        }
+        > .iteminfo_0{
+          font-size:1.0em;
+          color: black;
+        }
+        > .iteminfo_1{
+          font-size:0.9em;
+          color: #555555;
+        }
+        > .iteminfo_2{
+          font-size:0.8em;
+          color: #555555;
+          font-style:italic;
+          font-weight:300;
+        }
+        > .iteminfo_3{
+          font-size:0.8em;
+          color: rgb(167, 31, 31);
+          font-style:italic;
+          font-weight:300;
+        }
+      }
+      > .recordToggleDetail{ // .kshfRecord's
+        display: none;
+        vertical-align: top;
+        width:18px; // includes the padding, using box model...
+        cursor: pointer;
+        font-weight: 700;
+        > .item_details_toggle{
+          .transition(~'transform 500ms');
+          color: gray;
+          position: relative;
+          &:hover{ color:black; }
+        }
+      }
+      &[details="true"]{
+        max-height: none;
+        .item_details_toggle{
+          display: inline-block;
+          .rotate(180deg);
+        }
+        .item_details{ display:block; }
+      }
+      &[details="false"]{
+        .item_details_toggle{ display: inline-block; }
+        .item_details{ display: none; }
+      }
+      &[highlight^="selected"]{
+        box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
+        &[selectedForLink=true]{
+          .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
+        }
+      }
+      &[highlight="true"]{
+        box-shadow: inset 0px 0px 5px #FF9973;
+        background-color: #FFFBF9;
+        //box-shadow: inset 0px 0px 5px #BBBBBB;
+        //background-color: #F8F8F8;
+      }
+    } // kshfRecord
+
     .summaryConfig{
       position: absolute;
       display: block;
@@ -1896,6 +2020,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           //opacity: 0;
           .transition(~'color 100ms linear');
           cursor: pointer;
+          z-index: 10;
           &:hover{ color: orangered !important; }
           &[filtered=true]{ color: black !important; }
         }
@@ -2786,7 +2911,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .lineTrend.preview{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
       &[ratiomode=false] .mapGlyph > .aggr.preview{
-        .animation(mapPreviewAnimation 2s infinite ease-in-out);
+        .animation(mapPreviewAnimation 800ms infinite ease-in-out);
       }
       &[ratiomode=true] .mapGlyph > .aggr.preview{
         opacity: 1;
@@ -2862,94 +2987,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               z-index: 200;
               height: 100%;
             }
-
-            > .kshfRecord{
-              opacity: 1;
-              cursor: default;
-              overflow: hidden;
-              vertical-align: top;
-              padding: 1px 0px;
-              position: relative;
-              .transition(~"opacity 500ms ease");
-
-              > .recordRank{
-                font-size: 0.6em;
-                color: gray;
-                font-weight: 300;
-                font-style: italic;
-                text-align: right;
-              }
-
-              > .content{
-                vertical-align: top;
-                border: solid 0px lightgray;
-                position: relative;
-
-                > .iteminfo{
-                  float:none;
-                  clear: left;
-                  font-weight:normal;
-                  margin-bottom: 2px;
-                }
-                > .iteminfo_0{
-                  font-size:1.0em;
-                  color: black;
-                }
-                > .iteminfo_1{
-                  font-size:0.9em;
-                  color: #555555;
-                }
-                > .iteminfo_2{
-                  font-size:0.8em;
-                  color: #555555;
-                  font-style:italic;
-                  font-weight:300;
-                }
-                > .iteminfo_3{
-                  font-size:0.8em;
-                  color: rgb(167, 31, 31);
-                  font-style:italic;
-                  font-weight:300;
-                }
-              }
-              > .recordToggleDetail{ // .kshfRecord's
-                display: none;
-                vertical-align: top;
-                width:18px; // includes the padding, using box model...
-                cursor: pointer;
-                font-weight: 700;
-                > .item_details_toggle{
-                  .transition(~'transform 500ms');
-                  color: gray;
-                  position: relative;
-                  &:hover{ color:black; }
-                }
-              }
-              &[details="true"]{
-                max-height: none;
-                .item_details_toggle{
-                  display: inline-block;
-                  .rotate(180deg);
-                }
-                .item_details{ display:block; }
-              }
-              &[details="false"]{
-                .item_details_toggle{ display: inline-block; }
-                .item_details{ display: none; }
-              }
-              &[highlight^="selected"]{
-                box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
-                &[selectedForLink=true]{
-                  .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
-                }
-              }
-              &[highlight="true"]{
-                box-shadow: inset 0px 0px 5px #FF9973;
-                background-color: #FFFBF9;
-                //box-shadow: inset 0px 0px 5px #BBBBBB;
-                //background-color: #F8F8F8;
-              }
-            } // kshfRecord
         } // recordGroup
 
         > .showMore{
@@ -3034,18 +3071,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
           .recordGroup{
             overflow: visible !important;
-            > .kshfRecord{
+          }
+          .kshfRecord{
+            stroke-width: 1px;
+            stroke: rgba(255,255,255,0.5);
+            cursor: pointer;
+            &:hover{
+              fill: orangered !important;
+            }
+            &[highlight="true"]{
+              stroke: orangered;
               stroke-width: 1px;
-              stroke: rgba(255,255,255,0.5);
-              cursor: pointer;
-              &:hover{
-                fill: orangered !important;
-              }
-              &[highlight="true"]{
-                stroke: orangered;
-                stroke-width: 1px;
-                opacity: 1 !important;
-              }
+              opacity: 1 !important;
             }
           }
         }
@@ -3057,58 +3094,62 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .flex-wrap(wrap);
             justify-content: space-around;
             -webkit-justify-content: space-around;
-            > .kshfRecord{
+          }
+          .kshfRecord{
+            display: block;
+            .align-self(flex-start);
+            > .recordRank{
+              vertical-align: top;
+              margin-right: 2px;
+            }
+            > .content{
               display: block;
-              .align-self(flex-start);
-              > .recordRank{
-                vertical-align: top;
-                margin-right: 2px;
-              }
-              > .content{
-                display: block;
-              }
-              > .recordToggleDetail{
-                position: absolute;
-                left: 0px;
-                z-index: 10;
-              }
+            }
+            > .recordToggleDetail{
+              position: absolute;
+              left: 0px;
+              z-index: 10;
+            }
+            &[recCompared="true"]{
+              background-color: #F0F0E8;
             }
           }
         }
         &[displaytype="list"][hasrecordview="true"] {
-            > .recordGroup{
-              > .kshfRecord{
-                .display(flex);
-                .flex-direction(row);
-                width: 100%;
-                > .recordSortCol{
-                  padding-right: 3px;
-                  padding-top: 2px;
-                  font-weight: 300;
-                  text-align: right;
-                  font-size: 0.8em;
-                  cursor: default;
-                  vertical-align: top;
+          .kshfRecord{
+            .display(flex);
+            .flex-direction(row);
+            width: 100%;
+            > .recordSortCol{
+              padding-right: 3px;
+              padding-top: 2px;
+              font-weight: 300;
+              text-align: right;
+              font-size: 0.8em;
+              cursor: default;
+              vertical-align: top;
 
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                }
-                > .recordRank{
-                  float: left;
-                  margin-top: 4px;
-                  width: 15px;
-                  padding-right: 2px;
-                }
-                > .recordToggleDetail{
-                  width: 18px;
-                  text-align: center;
-                }
-                > .content{
-                  .flex(1);
-                }
-              }
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
             }
+            > .recordRank{
+              float: left;
+              margin-top: 4px;
+              width: 15px;
+              padding-right: 2px;
+            }
+            > .recordToggleDetail{
+              width: 18px;
+              text-align: center;
+            }
+            > .content{
+              .flex(1);
+            }
+            &[recCompared="true"]{
+              background-color: #F0F0E8;
+            }
+          }
         }
         &[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail{
           display: inline-block;
@@ -3422,10 +3463,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .mapPreviewAnimation_do () {
-    0%, 20% {
+    0% {
       opacity: 0;
     }
-    80%, 100% {
+    90%, 100% {
       opacity: 1;
     }
 }

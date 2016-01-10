@@ -1,19 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>InfoVis 2014 Contest</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <title>InfoVis 2014 Contest</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 
 var loadData = function(browser){
   $.ajax( {
@@ -104,7 +104,7 @@ var loadData = function(browser){
 
 $(document).ready( function(){
   new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     leftPanelLabelWidth: 160,
     rightPanelLabelWidth: 200,
     barChartWidth: 80,
@@ -118,7 +118,7 @@ $(document).ready( function(){
       { name: "Keywords", panel: 'right' },
       { name: "# of Keywords", panel: 'right', collapsed: true,
         value: function(){ return this.Keywords.length; } },
-      { name: "Abstract", panel: 'right',
+      { name: "Abstract", panel: 'left',
         value: function(){ if(this.Abstract) return "Has Abstract"; } },
       { name: "# References To (Within)", panel: 'right',
         value: function(){ return this.References_To.length; }, 
@@ -136,30 +136,21 @@ $(document).ready( function(){
       { name: "Date", panel: "bottom" }
     ],
     recordDisplay: {
-      sortBy: [
-        { name: "#Ref's", value: function(){ return this.References_To.length; } },
-        'Year'
-      ],
+      sortBy: "# References To (Within)",
       textSearch: "Title",
       recordView: "Title"
     }
   });
 });
       </script>
-      <style>
-#chart_div {
-  height: 700px;
-  width: 1100px;
-}
-    </style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">InfoVis 2004 Contest - Papers</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">InfoVis 2004 Contest - Papers</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Fekete, J.-D., Grinstein, G., Plaisant, C., IEEE InfoVis 2004 Contest, the history of InfoVis, <a href="http://www.cs.umd.edu/hcil/iv04contest" target="_blank">www.cs.umd.edu/hcil/iv04contest</a> (2004)
       </div>
   </body>

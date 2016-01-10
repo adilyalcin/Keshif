@@ -145,7 +145,7 @@ function loadZotero(zoteroRDF, browser) {
 
 $(document).ready( function(){
   new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 190,
     source: {
       callback: loadData
@@ -173,14 +173,8 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1090px;
-  height: 750px;
-}
-    </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
     </body>
 </html>

@@ -18,16 +18,10 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-  resizeBrowser(300,100);
-  $(window).resize(function() {
-    resizeBrowser(300,100);
-    browser.updateLayout();
-  });
-
   var timeFormat = d3.time.format("%d %b, %y");
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
     source: {
       url: "http://spreadsheets.latimes.com/film-set-accidents/",
@@ -57,22 +51,25 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style type="text/css" media="screen">
+<style id="kshfStyle">
 .theLabel > .fa{
   margin-left: 2px;
 }
-    </style>
+#demo_Browser{
+  height: calc(100vh - 100px);
+}
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Film Set Accidents</div>
-      <div class="pageSubtitle">
+      <div id="demo_PageTitle" align="center">Film Set Accidents</div>
+      <div id="demo_PageSubtitle">
           A breakdown of 205 production accidents from 1990 through 2014 involving 251 catastrophic injuries and 44 deaths.
           </div>
-      <div id="chart_div"></div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data from <a href="http://spreadsheets.latimes.com/film-set-accidents/" target="_blank">Los Angeles Times</a> - 
       News story: <a href="http://www.latimes.com/entertainment/envelope/cotown/la-et-ct-film-set-accidents-deaths-20150311-story.html#page=1"
       target="_blank">As deaths rise on reality TV, films sets, many blame need to get 'dramatic footage'</a>.

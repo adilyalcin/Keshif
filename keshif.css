@@ -47,10 +47,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
-  -webkit-transition: left 300ms ease-in-out;
-  -moz-transition: left 300ms ease-in-out;
-  -o-transition: left 300ms ease-in-out;
-  transition: left 300ms ease-in-out;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -122,9 +118,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block !important;
   border-left: solid lightgray 2px;
 }
-.kshf[authoringMode=true] {
-  left: 120px;
-}
 .kshf[authoringMode=true] > .attributePanel {
   display: -webkit-box;
   display: -moz-box;
@@ -132,16 +125,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
+.kshf[authoringMode=true] > .panel_Wrapper {
+  margin-left: 220px;
+}
 .kshf[authoringMode=true] .saveBrowserConfig {
   display: inline-block;
 }
-.kshf[authoringMode=true] .kshfSummary:hover .chartCatLabelResize {
+.kshf[authoringMode=true] .configUser {
+  display: inline-block;
+}
+.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar']:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[authoringMode=true] .kshfSummary:hover .summaryConfigControl {
-  color: gray;
-}
-.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar'] .summaryConfigControl {
+.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
   display: inline-block !important;
 }
 .kshf[authoringMode=true] .kshfSummary[showConfig=true] .summaryConfig {
@@ -175,13 +171,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode=true] .buttonSummaryRemove {
   display: inline-block !important;
 }
-.kshf[authoringMode=true]:hover .chartCatLabelResize {
+.kshf[authoringMode=true][collapsed=false][viewType='bar']:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[authoringMode=true]:hover .summaryConfigControl {
-  color: gray;
-}
-.kshf[authoringMode=true][collapsed=false][viewType='bar'] .summaryConfigControl {
+.kshf[authoringMode=true][collapsed=false][viewType='bar']:hover .summaryConfigControl {
   display: inline-block !important;
 }
 .kshf[authoringMode=true][showConfig=true] .summaryConfig {
@@ -272,7 +265,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showdropzone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
-.kshf[showdropzone=true][dropattrtype~="unique"] .recordDisplay[hasRecordView="false"] {
+.kshf[showdropzone=true] .recordDisplay[hasRecordView="false"] {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -280,7 +273,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   min-height: 50px;
 }
-.kshf[showdropzone=true][dropattrtype~="unique"] .dropZone_recordView {
+.kshf[showdropzone=true] .dropZone_recordView {
   display: block !important;
 }
 .kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
@@ -295,6 +288,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .saveBrowserConfig {
   display: none;
+}
+.kshf .configUser {
+  display: none;
+}
+.kshf .configUser[auth="false"] {
+  color: black;
+}
+.kshf .configUser[auth="true"] {
+  color: orangered;
 }
 .kshf .fa-dropbox {
   color: #007EE5 !important;
@@ -330,6 +332,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .AndOrNot.AndOrNot_Not {
   background-color: #808080;
+}
+.kshf > .panel_Wrapper {
+  -webkit-transition: margin-left 700ms ease-in-out;
+  -moz-transition: margin-left 700ms ease-in-out;
+  -o-transition: margin-left 700ms ease-in-out;
+  transition: margin-left 700ms ease-in-out;
+  margin-left: 0px;
+  background-color: white;
+  z-index: 10;
 }
 .kshf .editableTextContainer > .editableText:focus {
   background-color: white;
@@ -371,7 +382,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
   position: absolute;
-  left: -220px;
+  left: 0px;
   width: 215px;
   top: 0px;
   height: 100%;
@@ -478,6 +489,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px #d3dbe2;
   box-shadow: 0px 0px 1px #bec8d1;
   margin: 2px;
+}
+.kshf > .attributePanel .newAttribute {
+  display: block;
+  text-align: center;
+  border-radius: 3px;
+  background-color: #dfd7d7;
+  border: solid 1px lightgray;
+  cursor: pointer;
+  color: #C0B1B1;
+  font-size: 0.8em;
+}
+.kshf > .attributePanel .newAttribute:hover {
+  background-color: #DBD4D4;
+  border-color: #B8B6B1;
+  color: #877676;
 }
 .kshf > .attributePanel .nugget {
   display: block;
@@ -1034,6 +1060,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: opacity 500ms ease-in-out, top 500ms;
 }
 .kshf > .warningBox_wrapper > .warningBox {
+  display: inline-block;
   background-color: #F8EE82;
   border-radius: 5px;
   font-size: 0.8em;
@@ -1416,7 +1443,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 2px 4px;
   border-radius: 7px;
   font-weight: 300;
-  margin: 0px 5px;
+  margin: 0px 2px;
   font-size: 0.8em;
   cursor: pointer;
   color: #a0a0a0;
@@ -1526,7 +1553,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Splitter {
   width: 60px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetName {
+.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .tableName {
   width: 85px;
 }
 .kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Seperator {
@@ -1935,7 +1962,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .summaryIcons > .summaryConfigControl {
   display: none;
-  color: lightgray;
+  color: gray;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -2102,8 +2129,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .aggrGlyph.rangeGlyph > .lockButton {
   position: absolute;
-  width: 100%;
   text-align: center;
+  width: 16px;
+  left: calc(50% - 8px);
 }
 .kshf .aggrGlyph.rangeGlyph > .lockButton[inside] {
   margin-top: 12px;
@@ -2206,6 +2234,108 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke: orangered;
   stroke-width: 2px;
 }
+.kshf .kshfRecord {
+  opacity: 1;
+  cursor: default;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 1px 0px;
+  position: relative;
+  -webkit-transition: opacity 500ms ease;
+  -moz-transition: opacity 500ms ease;
+  -o-transition: opacity 500ms ease;
+  transition: opacity 500ms ease;
+}
+.kshf .kshfRecord > .recordRank {
+  font-size: 0.6em;
+  color: gray;
+  font-weight: 300;
+  font-style: italic;
+  text-align: right;
+}
+.kshf .kshfRecord > .content {
+  vertical-align: top;
+  border: solid 0px lightgray;
+  position: relative;
+}
+.kshf .kshfRecord > .content > .iteminfo {
+  float: none;
+  clear: left;
+  font-weight: normal;
+  margin-bottom: 2px;
+}
+.kshf .kshfRecord > .content > .iteminfo_0 {
+  font-size: 1.0em;
+  color: black;
+}
+.kshf .kshfRecord > .content > .iteminfo_1 {
+  font-size: 0.9em;
+  color: #555555;
+}
+.kshf .kshfRecord > .content > .iteminfo_2 {
+  font-size: 0.8em;
+  color: #555555;
+  font-style: italic;
+  font-weight: 300;
+}
+.kshf .kshfRecord > .content > .iteminfo_3 {
+  font-size: 0.8em;
+  color: #a71f1f;
+  font-style: italic;
+  font-weight: 300;
+}
+.kshf .kshfRecord > .recordToggleDetail {
+  display: none;
+  vertical-align: top;
+  width: 18px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.kshf .kshfRecord > .recordToggleDetail > .item_details_toggle {
+  -webkit-transition: -webkit-transform 500ms;
+  -moz-transition: -moz-transform 500ms;
+  -o-transition: -o-transform 500ms;
+  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
+  color: gray;
+  position: relative;
+}
+.kshf .kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
+  color: black;
+}
+.kshf .kshfRecord[details="true"] {
+  max-height: none;
+}
+.kshf .kshfRecord[details="true"] .item_details_toggle {
+  display: inline-block;
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+.kshf .kshfRecord[details="true"] .item_details {
+  display: block;
+}
+.kshf .kshfRecord[details="false"] .item_details_toggle {
+  display: inline-block;
+}
+.kshf .kshfRecord[details="false"] .item_details {
+  display: none;
+}
+.kshf .kshfRecord[highlight^="selected"] {
+  box-shadow: inset 0px 0px 2px black;
+}
+.kshf .kshfRecord[highlight^="selected"][selectedForLink=true] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
+  background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+  background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
+}
+.kshf .kshfRecord[highlight="true"] {
+  box-shadow: inset 0px 0px 5px #FF9973;
+  background-color: #FFFBF9;
+}
 .kshf .summaryConfig {
   position: absolute;
   display: block;
@@ -2296,6 +2426,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: color 100ms linear;
   transition: color 100ms linear;
   cursor: pointer;
+  z-index: 10;
 }
 .kshf .kshfSummary .unmapped_records:hover {
   color: orangered !important;
@@ -3291,10 +3422,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1 !important;
 }
 .kshf[resultpreview="true"][ratiomode=false] .mapGlyph > .aggr.preview {
-  -webkit-animation: mapPreviewAnimation 2s infinite ease-in-out;
-  -moz-animation: mapPreviewAnimation 2s infinite ease-in-out;
-  -o-animation: mapPreviewAnimation 2s infinite ease-in-out;
-  animation: mapPreviewAnimation 2s infinite ease-in-out;
+  -webkit-animation: mapPreviewAnimation 800ms infinite ease-in-out;
+  -moz-animation: mapPreviewAnimation 800ms infinite ease-in-out;
+  -o-animation: mapPreviewAnimation 800ms infinite ease-in-out;
+  animation: mapPreviewAnimation 800ms infinite ease-in-out;
 }
 .kshf[resultpreview="true"][ratiomode=true] .mapGlyph > .aggr.preview {
   opacity: 1;
@@ -3394,108 +3525,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay > .recordGroup > .dragWidthHandle {
   z-index: 200;
   height: 100%;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord {
-  opacity: 1;
-  cursor: default;
-  overflow: hidden;
-  vertical-align: top;
-  padding: 1px 0px;
-  position: relative;
-  -webkit-transition: opacity 500ms ease;
-  -moz-transition: opacity 500ms ease;
-  -o-transition: opacity 500ms ease;
-  transition: opacity 500ms ease;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordRank {
-  font-size: 0.6em;
-  color: gray;
-  font-weight: 300;
-  font-style: italic;
-  text-align: right;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .content {
-  vertical-align: top;
-  border: solid 0px lightgray;
-  position: relative;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo {
-  float: none;
-  clear: left;
-  font-weight: normal;
-  margin-bottom: 2px;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_0 {
-  font-size: 1.0em;
-  color: black;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_1 {
-  font-size: 0.9em;
-  color: #555555;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_2 {
-  font-size: 0.8em;
-  color: #555555;
-  font-style: italic;
-  font-weight: 300;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .content > .iteminfo_3 {
-  font-size: 0.8em;
-  color: #a71f1f;
-  font-style: italic;
-  font-weight: 300;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail {
-  display: none;
-  vertical-align: top;
-  width: 18px;
-  cursor: pointer;
-  font-weight: 700;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle {
-  -webkit-transition: -webkit-transform 500ms;
-  -moz-transition: -moz-transform 500ms;
-  -o-transition: -o-transform 500ms;
-  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
-  color: gray;
-  position: relative;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
-  color: black;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] {
-  max-height: none;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] .item_details_toggle {
-  display: inline-block;
-  -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
-  -o-transform: rotate(180deg);
-  transform: rotate(180deg);
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[details="true"] .item_details {
-  display: block;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[details="false"] .item_details_toggle {
-  display: inline-block;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[details="false"] .item_details {
-  display: none;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"] {
-  box-shadow: inset 0px 0px 2px black;
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight^="selected"][selectedForLink=true] {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
-  background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-}
-.kshf .recordDisplay > .recordGroup > .kshfRecord[highlight="true"] {
-  box-shadow: inset 0px 0px 5px #FF9973;
-  background-color: #FFFBF9;
 }
 .kshf .recordDisplay > .showMore {
   display: block;
@@ -3605,15 +3634,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay[displaytype="map"] .recordGroup {
   overflow: visible !important;
 }
-.kshf .recordDisplay[displaytype="map"] .recordGroup > .kshfRecord {
+.kshf .recordDisplay[displaytype="map"] .kshfRecord {
   stroke-width: 1px;
   stroke: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
-.kshf .recordDisplay[displaytype="map"] .recordGroup > .kshfRecord:hover {
+.kshf .recordDisplay[displaytype="map"] .kshfRecord:hover {
   fill: orangered !important;
 }
-.kshf .recordDisplay[displaytype="map"] .recordGroup > .kshfRecord[highlight="true"] {
+.kshf .recordDisplay[displaytype="map"] .kshfRecord[highlight="true"] {
   stroke: orangered;
   stroke-width: 1px;
   opacity: 1 !important;
@@ -3637,25 +3666,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   justify-content: space-around;
   -webkit-justify-content: space-around;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord {
   display: block;
   -webkit-align-self: flex-start;
   -ms-flex-item-align: start;
   align-self: flex-start;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordRank {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .recordRank {
   vertical-align: top;
   margin-right: 2px;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .content {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .content {
   display: block;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
   position: absolute;
   left: 0px;
   z-index: 10;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord {
+.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord[recCompared="true"] {
+  background-color: #F0F0E8;
+}
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -3670,7 +3702,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: row;
   width: 100%;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordSortCol {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordSortCol {
   padding-right: 3px;
   padding-top: 2px;
   font-weight: 300;
@@ -3682,22 +3714,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordRank {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordRank {
   float: left;
   margin-top: 4px;
   width: 15px;
   padding-right: 2px;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
   width: 18px;
   text-align: center;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] > .recordGroup > .kshfRecord > .content {
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .content {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+}
+.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord[recCompared="true"] {
+  background-color: #F0F0E8;
 }
 .kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
@@ -4146,51 +4181,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
 }
 @-webkit-keyframes mapPreviewAnimation {
-  0%,
-  20% {
+  0% {
     opacity: 0;
   }
-  80%,
+  90%,
   100% {
     opacity: 1;
   }
 }
 @-moz-keyframes mapPreviewAnimation {
-  0%,
-  20% {
+  0% {
     opacity: 0;
   }
-  80%,
+  90%,
   100% {
     opacity: 1;
   }
 }
 @-ms-keyframes mapPreviewAnimation {
-  0%,
-  20% {
+  0% {
     opacity: 0;
   }
-  80%,
+  90%,
   100% {
     opacity: 1;
   }
 }
 @-o-keyframes mapPreviewAnimation {
-  0%,
-  20% {
+  0% {
     opacity: 0;
   }
-  80%,
+  90%,
   100% {
     opacity: 1;
   }
 }
 @keyframes mapPreviewAnimation {
-  0%,
-  20% {
+  0% {
     opacity: 0;
   }
-  80%,
+  90%,
   100% {
     opacity: 1;
   }

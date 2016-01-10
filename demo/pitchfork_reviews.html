@@ -16,14 +16,8 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  resizeBrowser(300,90);
-  $(window).resize(function() {
-    resizeBrowser(300,90);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 80,
     leftPanelLabelWidth: 200,
     rightPanelLabelWidth: 180,
@@ -40,7 +34,7 @@ $(document).ready( function() {
       { name: "Label", value: "label", minAggrValue: 3 },
       { name: "Release Year",  panel: "bottom", value: function(){ return new Date(this.release_year,1,1);} },
       { name: "Score", value:"score", panel:'right' },
-      { name: "reviewer", value: "reviewer", panel: "right" }
+      { name: "Reviewer", value: "reviewer", panel: "right" }
     ],
     recordDisplay: {
       sortColWidth: 70,
@@ -54,7 +48,7 @@ $(document).ready( function() {
   });
 });
         </script>
-        <style>
+<style id="kshfStyle">
 span.empTitle{
   display:inline-block;
   font-size: 0.9em;
@@ -67,20 +61,14 @@ span.empTitle > a{
 span.empTitle:before{
   content: " - ";
 }
-.listsortcolumn > .columnLabel:after{
-  content: "$";
-  color: gray;
-  margin-left: 3px;
-  font-size: 0.9em;
-}
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Album Reviews @ Pitchfork</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">Album Reviews @ Pitchfork</div>
+      <div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       15+ years of album reviews from <a href='http://www.pitchfork.com' target='_blank'>Pitchfork.com</a>.<br>
       Data collected &amp; curated by <a href="http://www.cs.ubc.ca/~brehmer/" target="_blank">Matt Brehmer</a>, 
           also analyzed at

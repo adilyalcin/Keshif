@@ -16,16 +16,9 @@
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
     
     <script type="text/javascript">
-
 $(document).ready( function(){
-  resizeBrowser(200,80);
-  $(window).resize(function() {
-    resizeBrowser(200,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
     barChartWidth: 100,
     itemName: "D3 Examples",
@@ -45,16 +38,16 @@ $(document).ready( function(){
       displayType: 'grid',
       detailsToggle: 'off',
       recordView: function(){
-          return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
-            "<img class='thumbImg' src='"+this.thumbnail  +"'></a>"+
-            "<span class='title'>"+this.title+"</span> <span class='author'>"+this.author+"</span> "+
-            "<span class='tags'>"+this.visualizationType+"</span>";
+        return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
+          "<img class='thumbImg' src='"+this.thumbnail  +"'></a>"+
+          "<span class='title'>"+this.title+"</span> <span class='author'>"+this.author+"</span> "+
+          "<span class='tags'>"+this.visualizationType+"</span>";
       }
     }
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 150px;
 }
@@ -83,12 +76,12 @@ $(document).ready( function(){
 .title{
   display: inline !important;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data collected by <a href="http://christopheviau.com/d3list/gallery.html" target='_blank'>Christophe Viau</a>.
       </div>
   </body>

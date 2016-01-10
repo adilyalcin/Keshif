@@ -325,7 +325,7 @@ function loadData(browser){
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 200,
     source: {
@@ -348,14 +348,14 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 820px;
   height: 600px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

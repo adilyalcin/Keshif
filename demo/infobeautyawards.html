@@ -15,16 +15,9 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 google.setOnLoadCallback(function(){
-  resizeBrowser(100,120);
-  $(window).resize(function() {
-      resizeBrowser(100,120);
-      browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 130,
     rightPanelLabelWidth: 90,
@@ -62,25 +55,19 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-.kshfRecord{
-  width: 150px;
-}
-.content{
-  padding: 3px;
-}
-.content .thumbnail{
-  height: 95px;
-}
-    </style>
+<style id="kshfStyle">
+.kshfRecord{ width: 150px; }
+.content{ padding: 3px; }
+.content .thumbnail{ height: 95px; }
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">kantar Information Is Beautiful Awards</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">kantar Information Is Beautiful Awards</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data shows the list of publicly available showcases, submitted between 2012-2014, to 
       <a href="http://www.informationisbeautifulawards.com/" target='_blank'>Kantar Information is Beautiful Awards</a>.
       </div>

@@ -17,16 +17,9 @@
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-
 google.setOnLoadCallback(function () {
-  resizeBrowser(200,50);
-  $(window).resize(function() {
-    resizeBrowser(200,50);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 300,
     rightPanelLabelWidth: 180,
     barChartWidth: 100,
@@ -47,10 +40,11 @@ google.setOnLoadCallback(function () {
     ]
   });
 });
-
 </script>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
 </html>

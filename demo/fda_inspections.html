@@ -17,13 +17,13 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     leftPanelLabelWidth: 150,
     middlePanelLabelWidth: 350,
     barChartWidth: 120,
     source: {
       gdocId: '1DH4wZHpYeZuk_f-EEJMq-8ne1_k_kcOQf1x4TFtGF3M',
-      tables: "Inspections"
+      tables: "FDA Inspections"
     },
     summaries: [
       { name: "Country/Area", catLabel: function(){ return getCountryName(this.id);}, collapsed: true },
@@ -38,14 +38,10 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1000px;
-  height: 700px;
-}
-    </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

@@ -23,7 +23,7 @@ function pad(num, size) {
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 230,
     source: {
@@ -94,8 +94,8 @@ google.setOnLoadCallback(function(){
   });
 });
         </script>
-      <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 1000px;
   height: 690px;
 }
@@ -159,9 +159,9 @@ google.setOnLoadCallback(function(){
 .act_4{
   background-color: rgba(255, 204, 204,1);
 }
-      </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

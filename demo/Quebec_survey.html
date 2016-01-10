@@ -18,24 +18,21 @@
     <script type="text/javascript" src="../demo/js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-
-var demoID = 899;
-
 $(document).ready(function() {
     // set div height accordingly 
-    $('#chart_div').height(800);
-    $('#chart_div').width (1200);
+    $('#demo_Browser').height(800);
+    $('#demo_Browser').width (1200);
 /*    // set resize callback
     $(window).resize(function() {
-        $('#chart_div').height($(window).height()-45);
-        $('#chart_div').width ($(window).width()*0.9);
+        $('#demo_Browser').height($(window).height()-45);
+        $('#demo_Browser').width ($(window).width()*0.9);
         browser.updateLayout();
     });*/
 
     var col_s;
 
     browser = new kshf.Browser({
-        domID: "#chart_div",
+        domID: "#demo_Browser",
         categoryTextWidth:250,
         leftPanelLabelWidth: 230,
         rightPanelLabelWidth: 270,
@@ -190,12 +187,12 @@ $(document).ready(function() {
 });
 
 </script>
-        <style>
+        <style id="kshfStyle">
             .iteminfo a{
                 color:#606060;
                 font-style:italic;
             }
-            #chart_div{
+            #demo_Browser{
                 margin-bottom: 30px;
             }
             body{ margin:2px; }
@@ -324,10 +321,10 @@ $(document).ready(function() {
             </span>
 
         <div class="contents">
-            <div id="chart_div"></div>
+            <div id="demo_Browser"></div>
             </div>
         <!--
-        <div id="demoInfobox" align="center">
+        <div id="demo_Infobox" align="center">
             <span class="fa fa-info-circle"></span> This page uses the survey data from
             <a href="http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711" target="_blank">Online collaboration: Scientists and the social network</a>, by Richard Van Noorden, published at Nature, 13 August 2014. <span class="fa fa-info-circle"></span>
             </div> -->

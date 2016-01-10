@@ -198,119 +198,113 @@ function loadData(browser){
 };
 
 google.setOnLoadCallback(function(){
-    resizeBrowser(100,140);
-    $(window).resize(function() {
-        resizeBrowser(100,140);
-        browser.updateLayout();
-    });
-
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 240,
-        rightPanelLabelWidth: 160,
-        itemName: "Milestones in Visualization",
-        source: {
-            url: 'http://www.datavis.ca/milestones/index.php',
-            callback: loadData
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 240,
+    rightPanelLabelWidth: 160,
+    itemName: "Milestones in Visualization",
+    source: {
+      url: 'http://www.datavis.ca/milestones/index.php',
+      callback: loadData
+    },
+    summaries: [
+      { name: "Era",
+        value: function(){
+          var year=this.Year;
+          if(year<1600) return 0;
+          if(year<1700) return 1;
+          if(year<1800) return 2;
+          if(year<1850) return 3;
+          if(year<1900) return 4;
+          if(year<1950) return 5;
+          if(year<1975) return 6;
+          return 7;
         },
-        summaries: [
-            {   name: "Era",
-                value: function(){
-                    var year=this.Year;
-                    if(year<1600) return 0;
-                    if(year<1700) return 1;
-                    if(year<1800) return 2;
-                    if(year<1850) return 3;
-                    if(year<1900) return 4;
-                    if(year<1950) return 5;
-                    if(year<1975) return 6;
-                    return 7;
-                },
-                catSortBy: "id",
-                catLabel: {
-                  0: "Maps and diagrams <b>Pre-1600</b>",
-                  1: "Measurements &amp; theories <b>1600s</b>",
-                  2: "New graphic forms <b>1700s</b>",
-                  3: "Beginning of modern infographics <b>1800+</b>",
-                  4: "Golden Age of data graphics <b>1850+</b>",
-                  5: "Modern Dark Ages <b>1900+</b>",
-                  6: "Re-birth of visualization <b>1950+</b>",
-                  7: "Computer as a new frontier <b>1975+</b>"
-                }
-            },{ name: "Year", panel: "bottom", collapsed: true
-            },{ name: "Highlights",
-                description: "Highlights are selected from the www.Infografe.com.br Milestones report"
-                // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
-            },{ name: "Main Category", value: "Category"
-            },{ name: "Keywords", panel: "right"
-            },{ name: "Author"
-            }
-        ],
-        recordDisplay: {
-          sortBy: {title: 'Year', inverse: true},
-          maxVisibleItems_Default: 25,
-          displayType: 'grid',
-          textSearch: "Title",
-          recordView: function(){
-            var imgIndex = undefined;
-            if(this.Images) {
-              if(this.Images.length>0){
-                imgIndex = 0;
-                // find first non-person image
-                for(var i=0; i<this.Images.length; i++){
-                  var img=this.Images[i];
-                  if(img.URL.indexOf("people")===-1 && img.URL.indexOf("portraits")===-1){
-                    imgIndex = i;
-                    break;
-                  }
-                }
+        catSortBy: "id",
+        catLabel: {
+          0: "Maps and diagrams <b>Pre-1600</b>",
+          1: "Measurements &amp; theories <b>1600s</b>",
+          2: "New graphic forms <b>1700s</b>",
+          3: "Beginning of modern infographics <b>1800+</b>",
+          4: "Golden Age of data graphics <b>1850+</b>",
+          5: "Modern Dark Ages <b>1900+</b>",
+          6: "Re-birth of visualization <b>1950+</b>",
+          7: "Computer as a new frontier <b>1975+</b>"
+        } },
+      { name: "Year", panel: "bottom", collapsed: true },
+      { name: "Highlights",
+        // http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf
+        description: "Highlights are selected from the www.Infografe.com.br Milestones report" },
+          
+      { name: "Main Category", value: "Category" },
+      { name: "Keywords", panel: "right" },
+      { name: "Author" }
+    ],
+    recordDisplay: {
+      sortBy: {title: 'Year', inverse: true},
+      maxVisibleItems_Default: 25,
+      displayType: 'grid',
+      textSearch: "Title",
+      recordView: function(){
+        var imgIndex = undefined;
+        if(this.Images) {
+          if(this.Images.length>0){
+            imgIndex = 0;
+            // find first non-person image
+            for(var i=0; i<this.Images.length; i++){
+              var img=this.Images[i];
+              if(img.URL.indexOf("people")===-1 && img.URL.indexOf("portraits")===-1){
+                imgIndex = i;
+                break;
               }
             }
-            var str="";
-            str+="<a target='_blank' href='http://datavis.ca/milestones/"+this.URL+"' class='thumbnail'>"+
-              "<img class='thumbImg' src='"+(imgIndex?this.Images[imgIndex].URL:"")+
-                  "' title='"+(imgIndex?this.Images[imgIndex].text:"")+"'></a>";
-            str+="<span class='title'>"+this.Title+"</span>";
-            str+="<span class='subTitle'>By: "+this.Author+" - "+this.Year+"</span>";
-            str+="<div class='references'>";
-            if(this.InfoLinks.length>0)
-              str+="Links: ";
-            this.InfoLinks.forEach(function(ref){
-              str+="<a href='"+ref.URL+"' target='_blank'><span class='fa fa-external-link'></span></a>";
-            })
-            str+="</div>";
-            return str;
           }
         }
-    });
+        var str="";
+        str+="<a target='_blank' href='http://datavis.ca/milestones/"+this.URL+"' class='thumbnail'>"+
+          "<img class='thumbImg' src='"+(imgIndex?this.Images[imgIndex].URL:"")+
+              "' title='"+(imgIndex?this.Images[imgIndex].text:"")+"'></a>";
+        str+="<span class='title'>"+this.Title+"</span>";
+        str+="<span class='subTitle'>By: "+this.Author+" - "+this.Year+"</span>";
+        str+="<div class='references'>";
+        if(this.InfoLinks.length>0)
+          str+="Links: ";
+        this.InfoLinks.forEach(function(ref){
+          str+="<a href='"+ref.URL+"' target='_blank'><span class='fa fa-external-link'></span></a>";
+        })
+        str+="</div>";
+        return str;
+      }
+    }
+  });
 });
         </script>
-        <style>
+<style id="kshfStyle">
 .thumbImg{
-    height: 100px;
-    width: auto !important;
+  height: 100px;
+  width: auto !important;
 }
 .kshfRecord{
-    margin: 3px;
+  margin: 3px;
 }
 .references{
-    text-align: center;
-    font-size: 0.8em;
-    color: lightgray;
+  text-align: center;
+  font-size: 0.8em;
+  color: lightgray;
 }
 .references .fa-external-link{
-    color: lightgray;
-    margin: 0px 2px;
+  color: lightgray;
+  margin: 0px 2px;
 }
 .references .fa-external-link:hover{
-    color: gray;
+  color: gray;
 }
 .kshf .listDiv > .recordGroup > .kshfRecord[highlight^="selected"]{
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 .thumbnail{
-    overflow: visible !important;
+  overflow: visible !important;
 }
 
 .kshfRecord:hover{
@@ -339,27 +333,27 @@ google.setOnLoadCallback(function(){
   -o-transition: all 200ms linear;
   -moz-transition: all 200ms linear;
 }
-        </style>
-    </head>
-    <body>
-      <div class="contents" style='padding-top: 75px;'>
-        <div class="pageTitle" align="center">
-          Milestones in the History of Thematic Cartography,<br>
-          <span style="color: #706B62">Statistical Graphics, and Data Visualization</span> </div>
-        <div id="chart_div"></div>
-        </div>
+</style>
+  </head>
+  <body>
+    <div class="contents" style='padding-top: 75px;'>
+      <div id="demo_PageTitle" align="center">
+        Milestones in the History of Thematic Cartography,<br>
+        <span style="color: #706B62">Statistical Graphics, and Data Visualization</span> </div>
+      <div id="demo_Browser"></div>
+      </div>
 
-      <div id="demoInfobox" align="center">
-        The dataset is curated by Michael Friendly and Daniel J. Denis, and presented at their
-        <a href="http://www.datavis.ca/milestones/index.php" target='_blank'>webpage</a> and various reports, 2001.
+    <div id="demo_Infobox" align="center">
+      The dataset is curated by Michael Friendly and Daniel J. Denis, and presented at their
+      <a href="http://www.datavis.ca/milestones/index.php" target='_blank'>webpage</a> and various reports, 2001.
 
-        <b>Data sources</b>: Keywords are from the
-        <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/milestone.pdf" target="_blank">original</a> report.
-        Highlights from
-        <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf" target="_blank">www.Infografe.com.br</a> report.
-        Main milestone data from <a href="http://datavis.ca/milestones/index.php?page=home" target="_blank">the index page</a> and enriched by additional data from
-        <a href="http://datavis.ca/milestones/index.php?group=pre-1600" target="_blank">era listings</a>.
-        The data used to create this webpage includes minor modifications to the original data sources.
-        </div>
-    </body>
+      <b>Data sources</b>: Keywords are from the
+      <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/milestone.pdf" target="_blank">original</a> report.
+      Highlights from
+      <a href="http://www.math.yorku.ca/SCS/Gallery/milestone/Visualization_Milestones.pdf" target="_blank">www.Infografe.com.br</a> report.
+      Main milestone data from <a href="http://datavis.ca/milestones/index.php?page=home" target="_blank">the index page</a> and enriched by additional data from
+      <a href="http://datavis.ca/milestones/index.php?group=pre-1600" target="_blank">era listings</a>.
+      The data used to create this webpage includes minor modifications to the original data sources.
+      </div>
+  </body>
 </html>

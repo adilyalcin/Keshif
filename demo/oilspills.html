@@ -17,9 +17,6 @@
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-
-var demoID = 15;
-
 function getDate(){
   var dt=this.Date;
   if(dt.getUTCFullYear) { return dt; }
@@ -42,16 +39,8 @@ function getMaterial(){
 }
 
 google.setOnLoadCallback( function(){
-  resizeBrowser(220,60);
-  $(window).resize(function() {
-    resizeBrowser(220,60);
-    browser.updateLayout();
-  });
-
-  logIf.Check = logIf.All();
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Oil Spills",
     categoryTextWidth: 200,
     leftPanelLabelWidth: 150,
@@ -129,9 +118,12 @@ google.setOnLoadCallback( function(){
     </script>
     </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="demoInfobox">
-      <a href="http://www.bsee.gov/Inspection-and-Enforcement/Accidents-and-Incidents/Spills/" target="_blank">BSEE.gov</a>
+    <div class="contents">
+      <div id="demo_PageTitle">Oil Spills in the U.S. Offshore</div>
+      <div id="demo_Browser"></div>
+      </div>
+    <div id="demo_Infobox">
+      Data from <a href="http://www.bsee.gov/Inspection-and-Enforcement/Accidents-and-Incidents/Spills/" target="_blank">BSEE.gov</a>
       oil spill summaries.
       </div>
     </body>

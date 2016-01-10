@@ -22,7 +22,7 @@ $(document).ready( function(){
   var dateFormat=d3.time.format("%Y-%m");
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 170,
     barChartWidth: 110,
     rightPanelLabelWidth: 100,
@@ -48,22 +48,16 @@ $(document).ready( function(){
     ],
   });
 });
-        </script>
-<style>
-#chart_div{
-  width: 950px;
-  height: 600px;
-}
-</style>
+    </script>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Photos from the Great Depression Era (1936-1945), California, United States</div>
-      <div class="pageSubtitle" align="center">Curated by the United States Farm Security Administration and Office of War Information (FSA-OWI).</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Photos from the Great Depression Era (1936-1945), California, United States</div>
+      <div id="demo_PageSubtitle">Curated by the United States Farm Security Administration and Office of War Information (FSA-OWI)</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Re-Vis, from <a href="http://photogrammar.yale.edu/labs/crossfilter/california/" target='_blank'>
         Photogrammar</a> project at Yale University.
       </div>

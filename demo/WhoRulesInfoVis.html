@@ -99,7 +99,7 @@ function loadData(browser){
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 150,
     itemName: "Commmittee Members in InfoVis, 1995 to 2015",
@@ -163,10 +163,9 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1000px;
-  height: 700px;
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 100px);
 }
 .roleCount{
   font-size: 0.8em;
@@ -177,14 +176,14 @@ google.setOnLoadCallback(function(){
 .roleYears{
   display: none;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Who Rules InfoVis?</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Who Rules InfoVis?</div>
+      <div id="demo_Browser"></div>
       </div>
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox" align="center">
       Data by Charles Perin and Sheelagh Carpendale.
       Info:
       <a href="http://innovis.cpsc.ucalgary.ca/Research/WhoRulesInfovis" target="_blank">

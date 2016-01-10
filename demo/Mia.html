@@ -111,14 +111,8 @@ fs.writeFile("cultures.json",JSON.stringify(cultures.x, null, ' '));
 */
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(200,80);
-  $(window).resize(function() {
-    resizeBrowser(200,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     itemName: "Items",
     leftPanelLabelWidth: 150,
@@ -2461,7 +2455,7 @@ var Styles = [
 "20th centruy"
 ];
     </script>
-    <style>
+<style id="kshfStyle">
 .content{
   padding: 0px;
 }
@@ -2475,19 +2469,19 @@ var Styles = [
 .kshfRecord{
   padding: 0px !important;
 }
-    </style>
+</style>
   </head>
   <body>
 
     <div class="contents">
-      <div class="pageTitle" align="center">
+      <div id="demo_PageTitle" align="center">
         <a href="http://artsmia.org" target='_blank'><img src='img/Mia_white.png' height="25px"></a>
         - Minneapolis Institute of Art Collection
         </div>
-      <div id="chart_div"></div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data from <a href="https://github.com/artsmia/collection" target="_blank">MIA Digital Collection on Github</a>.
       </div>
   </body>

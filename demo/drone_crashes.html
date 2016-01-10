@@ -19,7 +19,7 @@
     <script type="text/javascript">
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
     source: {
       url: "http://www.washingtonpost.com/wp-srv/special/national/drone-crashes/database/",
@@ -42,21 +42,15 @@ $(document).ready( function(){
   });
 });
 </script>
-    <style>
-#chart_div {
-  width:1100px;
-  height:650px;
-}
-    </style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">U.S. Military Drone Crashes, 2001-2013</div>
-      <div class="pageSubtitle">"Class A" accidents that destroyed the aircraft or caused (under current standards) at least $2 million in damage.</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">U.S. Military Drone Crashes, 2001-2013</div>
+      <div id="demo_PageSubtitle">"Class A" accidents that destroyed the aircraft or caused (under current standards) at least $2 million in damage.</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data was curated by the <a href="http://www.washingtonpost.com/wp-srv/special/national/drone-crashes/database/" target='_blank'><b>Washington Post</b></a>.
       </div>
   </body>

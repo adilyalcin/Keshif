@@ -16,17 +16,8 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  function resizeBrowser(){
-    $('#chart_div').height($(window).height()-100);
-  };
-  resizeBrowser();
-  $(window).resize(function() {
-    resizeBrowser();
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 30,
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 180,
@@ -52,8 +43,8 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style type="text/css" media="screen">
-#chart_div{
+<style type="text/css" media="screen" id="kshfStyle">
+#demo_Browser{
   width: 1100px;
 }
 .workTitle{
@@ -91,17 +82,17 @@ google.setOnLoadCallback(function(){
 .content{
   padding-bottom: 10px;
 }
-    </style>
+</style>
     </head>
   <body>
   <div class="contents">
-    <div class="pageTitle" align="center">Architecture Work of Mies van der Rohe</div>
-    <div id="chart_div"></div>
+    <div id="demo_PageTitle" align="center">Architecture Work of Mies van der Rohe</div>
+    <div id="demo_Browser"></div>
     </div>
 
-  <div id="demoInfobox">
+  <div id="demo_Infobox">
     Data Credits:
-    <a href="http://www.miessociety.org/legacy/projects/">Mies Society</a>
+    <a href="http://www.miessociety.org/legacy/projects/">Mies Society</a> and
     <a href="http://library.iit.edu/grc/mies/mies_work_geo.html">IIT Library</a>
     </div>
   </body>

@@ -16,14 +16,8 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  resizeBrowser(300,80);
-  $(window).resize(function() {
-    resizeBrowser(300,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 80,
     leftPanelLabelWidth: 200,
     rightPanelLabelWidth: 180,
@@ -54,7 +48,7 @@ $(document).ready( function() {
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 150px;
 }
@@ -64,12 +58,15 @@ $(document).ready( function() {
 .thumbnail{
   height: 165px;
 }
-      </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">Wearable Technlogoy Database</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox" align="center">
       Wearable technology database data by 
       <a href="http://www.crowdflower.com/data-for-everyone" target='_blank'>CrowdFlower</a>
       </div>

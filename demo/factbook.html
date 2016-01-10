@@ -19,19 +19,6 @@
         <script type="text/javascript">
 
 var factsXML;
-var browser;
-
-function loadData(browser){
-    $.ajax( {
-        url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/factbook.xml',
-        type: "GET",
-        dataType: "xml",
-        async: true,
-        success: loadFactbook
-    });
-};
-
-
 /*
 var r= [];
 kshf.dt.Countries.forEach(function(country){
@@ -48,6 +35,16 @@ kshf.dt.Countries.forEach(function(country){
   })
 });
 */
+
+function loadData(browser){
+  $.ajax( {
+    url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/factbook.xml',
+    type: "GET",
+    dataType: "xml",
+    async: true,
+    success: loadFactbook
+  });
+};
 
 function cleanUpText(n){
     n = n.replace(/( \d*\.*\d*\%)/g, ''); // Remove LANG 2.232% - percentage
@@ -218,104 +215,100 @@ function loadFactbook(facts){
 
 $(document).ready( function(){
 	browser = new kshf.Browser({
-        domID : "#chart_div",
-        categoryTextWidth: 180,
-        barChartWidth: 110,
-        source: { url: "http://jmatchparser.sourceforge.net/",
-            callback: loadData
-        },
-        facets : [
-            {   name: "Region"
-            },{ name: "Natural resources",
-                description: "This entry lists a country's mineral, petroleum, hydropower, and other resources of commercial importance, such as rare earth elements (REEs). In general, products appear only if they make a significant contribution to the economy, or are likely to do so in the future."
-            },{ name: "Religions", panel: "left",
-                description: "This entry is a listing of religions in a country."
-            },{ name: "Border countries", panel: "right"
+    domID : "#demo_Browser",
+    categoryTextWidth: 200,
+    barChartWidth: 120,
+    source: { url: "http://jmatchparser.sourceforge.net/",
+      callback: loadData
+    },
+    facets : [
+      { name: "Region" },
+      { name: "Natural resources",
+        description: "This entry lists a country's mineral, petroleum, hydropower, and other resources of commercial importance, such as rare earth elements (REEs). In general, products appear only if they make a significant contribution to the economy, or are likely to do so in the future." },
+      { name: "Religions", panel: "left",
+        description: "This entry is a listing of religions in a country." },
+      { name: "Border countries", panel: "right" },
 //            },{
 //                name: "Independence", panel: "right"
-            },{ name: "Education Expenditures", panel: "right", unitName: "%",
-                description: "This entry provides the public expenditure on education as a percent of GDP.",
-                value: "Education Expenditures"
-            },{ name: "Population", panel: "right",
-                description: "This entry gives an estimate from the US Bureau of the Census based on statistics from population censuses, vital statistics registration systems, or sample surveys pertaining to the recent past and on assumptions about future trends. The total population presents one overall measure of the potential impact of the country on the world and within its region. Note: Starting with the 1993 <italic>Factbook</italic>, demographic estimates for some countries (mostly African) have explicitly taken into account the effects of the growing impact of the HIV/AIDS epidemic. These countries are currently: The Bahamas, Benin, Botswana, Brazil, Burkina Faso, Burma, Burundi, Cambodia, Cameroon, Central African Republic, Democratic Republic of the Congo, Republic of the Congo, Cote d'Ivoire, Ethiopia, Gabon, Ghana, Guyana, Haiti, Honduras, Kenya, Lesotho, Malawi, Mozambique, Namibia, Nigeria, Rwanda, South Africa, Swaziland, Tanzania, Thailand, Togo, Uganda, Zambia, and Zimbabwe."
-//            },{
-//                name: "Languages"
-            },{ name: "Median Age", panel: "right",
-                description: "This entry is the age that divides a population into two numerically equal groups; that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. Currently, the median age ranges from a low of about 15 in Uganda and Gaza Strip to 40 or more in several European countries and Japan."
-            }
-        ],
-        recordDisplay: {
-            sortColWidth: 50,
-            sortBy: { 
-              title: 'Population',
-              label: function(){
-                var p=this.Population;
-                if(p===undefined) return "-";
-                return d3.format(".4s")(p);
-              }
-            },
-            showRank: true,
-            textSearch: "Name",
-            recordView : function(){
-                var str="";
-                // Country locator
-                str +="<img class='locator' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/locator/"
-                    +this.RegionID+"/"+this.id+"_large_locator.gif'/>"; 
-                // Country flag
-                str += "<img class='flag' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/flags/large/"+this.id+"-lgflag.gif'/>"; 
-                // Country name
-                str += "<div class='name'>"+this.Name+" <a target='_blank' href='"+
-                    "https://www.cia.gov/library/publications/the-world-factbook/geos/"+this.id+".html' class='fa fa-external-link'></a></div>";
-                // Country capital
-                str +="<div class='capital'> Capital: <span>"+this.Capital+"</span></div>";
-                
-                return str;
-            }
+      { name: "Education Expenditures", panel: "right", unitName: "%",
+        description: "This entry provides the public expenditure on education as a percent of GDP.",
+        value: "Education Expenditures" },
+      { name: "Population", panel: "right",
+        description: "This entry gives an estimate from the US Bureau of the Census based on statistics from population censuses, vital statistics registration systems, or sample surveys pertaining to the recent past and on assumptions about future trends. The total population presents one overall measure of the potential impact of the country on the world and within its region. Note: Starting with the 1993 <italic>Factbook</italic>, demographic estimates for some countries (mostly African) have explicitly taken into account the effects of the growing impact of the HIV/AIDS epidemic. These countries are currently: The Bahamas, Benin, Botswana, Brazil, Burkina Faso, Burma, Burundi, Cambodia, Cameroon, Central African Republic, Democratic Republic of the Congo, Republic of the Congo, Cote d'Ivoire, Ethiopia, Gabon, Ghana, Guyana, Haiti, Honduras, Kenya, Lesotho, Malawi, Mozambique, Namibia, Nigeria, Rwanda, South Africa, Swaziland, Tanzania, Thailand, Togo, Uganda, Zambia, and Zimbabwe."},
+//            { name: "Languages" },
+      { name: "Median Age", panel: "right",
+        description: "This entry is the age that divides a population into two numerically equal groups; that is, half the people are younger than this age and half are older. It is a single index that summarizes the age distribution of a population. Currently, the median age ranges from a low of about 15 in Uganda and Gaza Strip to 40 or more in several European countries and Japan."
+      }
+    ],
+    recordDisplay: {
+      sortColWidth: 50,
+      sortBy: { 
+        title: 'Population',
+        label: function(){
+          var p=this.Population;
+          if(p===undefined) return "-";
+          return d3.format(".4s")(p);
         }
-    });
+      },
+      showRank: true,
+      textSearch: "Name",
+      recordView : function(){
+        var str="";
+        // Country locator
+        str +="<img class='locator' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/locator/"
+            +this.RegionID+"/"+this.id+"_large_locator.gif'/>"; 
+        // Country flag
+        str += "<img class='flag' src='https://www.cia.gov/library/publications/the-world-factbook/graphics/flags/large/"+this.id+"-lgflag.gif'/>"; 
+        // Country name
+        str += "<div class='name'>"+this.Name+" <a target='_blank' href='"+
+            "https://www.cia.gov/library/publications/the-world-factbook/geos/"+this.id+".html' class='fa fa-external-link'></a></div>";
+        // Country capital
+        str +="<div class='capital'> Capital: <span>"+this.Capital+"</span></div>";
+        
+        return str;
+      }
+    }
+  });
 });
 
 </script>
-    <style>
-        #chart_div {
-            width:1100px;
-            height:700px;
-        }
-        .content .name{
-            font-weight: 700;
-        }
-        .content .name a{
-            text-decoration: none;
-            color: black;
-            font-weight: 300;
-            font-size: 0.8em;
-            vertical-align: middle;
-        }
-        .content .name a:hover{
-            color: red;
-            font-weight: 700;
-        }
-        .content .flag{
-            float: right;
-            width: 80px;
-        }
-        .content .locator{
-            float: left;
-            width: 60px;
-            margin-right: 5px;
-        }
-        .content .capital{
-            font-size: 0.9em;
-            margin-left: 10px;
-        }
-        .content .capital.span{
-            font-weight: 300;
-        }
-    </style>
+<style id="kshfStyle">
+.content .name{
+  font-weight: 700;
+}
+.content .name a{
+  text-decoration: none;
+  color: black;
+  font-weight: 300;
+  font-size: 0.8em;
+  vertical-align: middle;
+}
+.content .name a:hover{
+  color: red;
+  font-weight: 700;
+}
+.content .flag{
+  float: right;
+  width: 80px;
+}
+.content .locator{
+  float: left;
+  width: 60px;
+  margin-right: 5px;
+}
+.content .capital{
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+.content .capital.span{
+  font-weight: 300;
+}
+</style>
 	</head>
-    <body>
-        <div class="contents">
-          <div class='pageTitle'>FactBook : Facts about All Countries</div>
-          <div id="chart_div"></div>
-          </div>
-    </body></html>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">FactBook : Facts about All Countries</div>
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
+</html>

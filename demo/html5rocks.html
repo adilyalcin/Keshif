@@ -48,15 +48,9 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-  resizeBrowser(100,50);
-  $(window).resize(function(){
-    resizeBrowser(100,50);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
-    itemName: "HTML5 Rocks Tutorials",
+    domID: "#demo_Browser",
+    itemName: "Tutorials",
     categoryTextWidth: 120,
     source: {
       url: "http://www.html5rocks.com/en/tutorials/",
@@ -80,7 +74,7 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord {
   width: 200px;
   margin: 3px;
@@ -104,9 +98,12 @@ $(document).ready( function(){
 .content .title{
   color: black;
 }
-    </style>
+</style>
     </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">HTML Rocks Tutorials</div>
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

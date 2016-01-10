@@ -9,8 +9,10 @@ html, body {
 .contents {
 	padding-top: 45px;
 }
-#chart_div {
-    margin: 0 auto;
+#demo_Browser {
+  margin: 0 auto;
+  width: calc(~"100% - 20px");
+  height: calc(~"100vh - 70px");
 }
 
 .showConfigButton{
@@ -133,19 +135,19 @@ html, body {
 		> .kshfRecord{
 			> .content{
 				.thumbnail{
-	                display: block;
-	                overflow-y: hidden;
-	                overflow-x: hidden;
-	                position: relative;
-	                .transition(~'background-color 300ms linear');
-	                > .thumbImg{
-	                	display: block;
-	                	margin-left: auto;
-	                	margin-right: auto;
-	                	background-color: white;
-	                	width: 100%; //calc(100% - 10px);
-	                }
-	            }
+            display: block;
+            overflow-y: hidden;
+            overflow-x: hidden;
+            position: relative;
+            .transition(~'background-color 300ms linear');
+            > .thumbImg{
+            	display: block;
+            	margin-left: auto;
+            	margin-right: auto;
+            	background-color: white;
+            	width: 100%; //calc(100% - 10px);
+            }
+        }
 				.subTitle{
 					display: block;
 					font-family: Georgia,"Times New Roman",Times,serif;
@@ -177,7 +179,7 @@ html, body {
 }
 
 
-.pageTitle{
+#demo_PageTitle{
   text-align: center;
   padding-top: 3px;
   letter-spacing: -1px;
@@ -195,7 +197,7 @@ html, body {
   }
 }
 
-.pageSubtitle{
+#demo_PageSubtitle{
 	text-align: center;
 	font-family: sans-serif;
 	padding-bottom: 5px;
@@ -214,7 +216,7 @@ html, body {
   content: "\f05a";
   color: gray;
 }
-#demoInfobox{
+#demo_Infobox{
   position: fixed;
   left: 0px;
   right: 0px;
@@ -223,7 +225,7 @@ html, body {
   font-weight: 300;
   font-family: sans-serif;
   font-size: 0.8em;
-  padding: 3px 120px 3px 120px;
+  padding: 3px 40px 3px 40px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,0) 80%);
   background-image: -moz-linear-gradient(bottom, rgb(223, 210, 169) 0%, rgba(255,255,255,0) 80%);

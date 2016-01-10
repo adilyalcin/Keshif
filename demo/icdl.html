@@ -35,14 +35,8 @@ var getIndicesWithParent = function(book, parentId){
 $(document).ready( function(){
   var sortFormat = d3.time.format("%Y-%m-%d");
 
-  resizeBrowser(150,70);
-  $(window).resize(function() {
-    resizeBrowser(150,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth:175,
     // barChartWidth: 40,
     itemName: "Books in ICDL",
@@ -148,7 +142,7 @@ $(document).ready( function(){
 });
 
 </script>
-<style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 140px;
 }
@@ -165,7 +159,7 @@ $(document).ready( function(){
     </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">
+      <div id="demo_PageTitle" align="center">
         <a href="http://en.childrenslibrary.org/" target="_blank">
         <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
         International Children's Digital Library
@@ -173,7 +167,7 @@ $(document).ready( function(){
             <img src="http://en.childrenslibrary.org/images/logo.gif" style="height:25px"></a>
         Collection
         </div>
-      <div id="chart_div"></div>
+      <div id="demo_Browser"></div>
       </div>
   </body>
 </html>

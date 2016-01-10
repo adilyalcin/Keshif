@@ -27,7 +27,7 @@
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     itemName: "Data Breaches",
     leftPanelLabelWidth: 170,
@@ -82,8 +82,8 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 1100px;
   height: 650px;
 }
@@ -105,16 +105,14 @@ google.setOnLoadCallback(function(){
 .columnLabel{
   font-size: 0.9em;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox">
-      Original work by <a href="https://twitter.com/collinskeith" target='_blank'>Keith Collins</a> &amp; 
-      <a href="https://twitter.com/jordanr1000" target="_blank"> Jordan Robertson</a>
-      Also visualized at
-      <a href="http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html" target="_blank">Data Breaches in the U.S.</a> by <a href="http://www.bloomberg.com/visual-data" target='_blank'>Bloomberg Visual Data</a>.
+    <div id="demo_Infobox">
+      Data colled by 
+        <a href='http://www.breachlevelindex.com/#!breach-database' target='_blank'>Breach Level Index</a>.
       </div>
   </body>
 </html>

@@ -26,21 +26,21 @@ function mileSort(v){
 };
 
 $(document).ready( function(){
-  resizeBrowser(250,80);
-  $(window).resize(function() {
-    resizeBrowser(250,80);
-    browser.updateLayout();
-  });
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 180,
     barChartWidth: 80,
     itemName: "Chromium Features",
     source: {
       url: "http://www.chromestatus.com/features",
-      dirPath: "./data/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'json',
       tables: "chromefeatures"
+    },
+    loadedCb: function(){
+      this.items.forEach(function(d){
+        d.data.name = d.data.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      });
     },
     summaries: [
       { name: "Milestone", 
@@ -65,11 +65,10 @@ $(document).ready( function(){
         { title:'Milestone-', 
           value: function(){ return mileSort(this.meta["milestone_str"]); },
           label: function(){ return this.meta["milestone_str"]; } },
-      textSearch: 'title',
+      textSearch: 'name',
       displayType: 'list',
       recordView: function(){
-        var name = this.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return "<span class='title'>"+name+"</span>"+
+        return "<span class='title'>"+this.name+"</span>"+
         " <a target='_blank' href='http://www.chromestatus.com/feature/"+this.id+"' class='fa fa-external-link-square'></a>"+
         "<span class='summary'>"+this.summary+"</span>";
       }
@@ -77,7 +76,7 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
+<style id="kshfStyle">
 .content a{
   color: #496B86;
   font-size: 0.8em;
@@ -95,10 +94,10 @@ $(document).ready( function(){
   font-size: 1em;
   font-weight: 700;
 }
-canvas{
+.kshfRecord canvas{
   display: none;
 }
-iframe{
+.kshfRecord iframe{
   display: none;
 }
 .summary{
@@ -116,11 +115,11 @@ iframe{
   </head>
   <body>
     <div class="contents">
-      <div class='pageTitle'>Chrome Platform Status</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Chrome Platform Status</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       This page uses data from
       <a href="http://www.chromestatus.com" target="_blank">ChromeStatus</a>, data licensed under a Creative Commons Attribution 2.5 license 
       </div>

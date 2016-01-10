@@ -16,16 +16,9 @@
 
         <script type="text/javascript">
 
-function resetSize(){
-    $('#chart_div').height($(window).height()-40);
-    $('#chart_div').width(700);
-};
-
 $(document).ready( function(){
-    resetSize();
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 300,
     source: {
       gdocId: '0Ai6LdDWgaqgNdFoxeFJscUR6MEMtekpSRTh1aEk2aXc',
@@ -72,18 +65,20 @@ function getNumComments(v){
     if(v<21) return "11-20";
     return ">20";
 };
-        </script>
-        <style>
-            .kshfRecord{
-                padding-bottom: 4px;
-            }
-            .iteminfo a{
-                color:#606060;
-                font-style:italic;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  </script>
+<style>
+.kshfRecord{
+  padding-bottom: 4px;
+}
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
 </html>

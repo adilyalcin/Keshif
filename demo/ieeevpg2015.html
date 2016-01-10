@@ -17,7 +17,6 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  
   var skill_order = {
     Good     : 0,
     Moderate : 1,
@@ -25,7 +24,7 @@ google.setOnLoadCallback(function(){
   };
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Students",
     barChartWidth: 120,
     leftPanelLabelWidth: 100,
@@ -72,17 +71,13 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1000px;
-  height: 720px;
-}
-    </style>
     </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Submission for <a href="http://vacommunity.org/ieeevpg/2015/index.html" target="_blank">
           IEEE VGTC VPG International Data-Visualization Contest
           </a>

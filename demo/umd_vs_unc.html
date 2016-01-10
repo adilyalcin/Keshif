@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 120,
     leftPanelLabelWidth: 170,
     rightPanelLabelWidth: 170,
@@ -42,20 +42,20 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 1090px;
   height: 700px;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">UMD vs. UNC Basketball - March 16, 2013</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">UMD vs. UNC Basketball - March 16, 2013</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       Game events from
       <a href="http://www.bbstate.com/games/2013-03-16/UMD-UNC" target="_blank">UMD vs. UNC Basketball Game</a>,
       Saturday, March 16, 2013.

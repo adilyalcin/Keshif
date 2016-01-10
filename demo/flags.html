@@ -20,16 +20,8 @@
     <script type="text/javascript">
 
 $(document).ready( function(){
-  resizeBrowser(210,30);
-  $(window).resize(function() {
-    resizeBrowser(210,30);
-    browser.updateLayout();
-  });
-
-  logIf.Check = logIf.All();
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Flags",
     categoryTextWidth: 135,
     source: {
@@ -136,7 +128,7 @@ $(document).ready( function(){
   });
 });
         </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 120px;
   padding: 3px;
@@ -172,9 +164,11 @@ $(document).ready( function(){
   text-align: center;
   font-size: 0.8em;
 }
-    </style>
+</style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

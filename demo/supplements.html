@@ -16,19 +16,9 @@
     <link rel="stylesheet" href="./css/supplements.css"/ type="text/css">
 
     <script type="text/javascript">
-function resizeBrowser(){
-  $('#chart_div').height($(window).height()-80);
-};
-
 google.setOnLoadCallback(function(){
-  resizeBrowser();
-  $(window).resize(function() {
-    resizeBrowser();
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     itemName: "Supplements",
     leftPanelLabelWidth: 120,
@@ -98,13 +88,19 @@ google.setOnLoadCallback(function(){
   });
 });
       </script>
+<style id="kshfStyle">
+#demo_Browser{
+  width: 900px;
+}
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class='pageTitle'>Supplements: What works? What's popular?</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">Supplements: What works? What's popular?</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Re-Vis, from <a href="http://www.informationisbeautiful.net/play/snake-oil-supplements/" target="_blank">Snake Oil Supplements?</a> by <a href="http://www.informationisbeautiful.net" target='_blank'>Information is Beautiful</a>.
       Research: <b>Miriam Quick</b>
       Data source: <a href="http://bit.ly/snakeoilsupps" target='_blank'>Google Docs</a>

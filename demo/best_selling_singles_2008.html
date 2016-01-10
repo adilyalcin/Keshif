@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 100,
     rightPanelLabelWidth: 90,
@@ -27,11 +27,11 @@ google.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "Genre" },
-      { name: "Country", panel: 'left', description: "Country of origin" },
-      { name: "Sex", panel: 'left' },
-      { name: "Age", panel: 'left' },
-      { name: "Type", panel: 'left' },
-      { name: "Race", panel: 'left' },
+      { name: "Country", panel: 'right', description: "Country of origin" },
+      { name: "Sex", panel: 'right' },
+      { name: "Age", panel: 'right' },
+      { name: "Type", panel: 'right' },
+      { name: "Race", panel: 'right' },
       { name: "Label" }
     ],
     recordDisplay: {
@@ -43,14 +43,16 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 890px;
   height: 480px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

@@ -57,143 +57,130 @@ function drawCharts(){
 }
 
 google.setOnLoadCallback( function() {
-    // set div height accordingly
-    resizeBrowser(45,90);
-    // set resize callback
-    $(window).resize(function() {
-        resizeBrowser(45,90);
-        browser.updateLayout();
-    });
-    
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "publications",
-        categoryTextWidth: 180,
-        source: {
-            gdocId: '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
-            tables: [
-                {name:"trs",query:'select A,D,E,F,G,M,N,O,P'},
-                {name:"tr_people", query:"select A,B,D"}, //query:"select * where B = 84"},
-                {name:"tr_projects"},
-                {name:"tr_topics"},
-                {name:"people"},
-                {name:"member_types"},
-                {name:"departments"},
-                {name:"projects"},
-                {name:"topics"}
-            ]
-        },
-        loadedCb: drawCharts,
-        summaries: [
-            {   name: "Topic",
-                catTableName: "topics", catLabel: "topic",
-                visibleRows: 9
-            },{ name: "Author",
-                catTableName: "people",
-                catLabel: function() {
-                    var f_name = this.first_name;
-                    var l_name = this.last_name;
-                    var str="";
-                    if(f_name) str+=f_name+". ";
-                    if(f_name) str+=l_name;
-                    return str;
-                }
-            },{ name: "Member Type",
-                value: function(){
-                    var typeList = {};
-                    var r = [];
-                    var authors = this.Author;
-                    if(authors===undefined) { return undefined; }
-                    for(i=0; i<authors.length; i++){
-                        var autData=kshf.dt_id.people[authors[i]];
-                        var typeID = autData.data.member_type_id;
-                        if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
-                        if(!typeList[typeID]){
-                            typeList[typeID] = true;
-                            r.push(typeID);
-                        }
-                    }
-                    return r;
-                },
-                catTableName: "member_types", catLabel: "type",
-            },{ name: "Project", catTableName: "projects", catLabel: "project",
-            },{ name: "Date", value: function(){ return new Date(this.Date); }, layout: "middle",
-            }
-        ],
-        recordDisplay: {
-            sortColWidth: 50,
-            sortBy: { title: 'Year', value: function(){ return parseInt(this.Date.slice(0,4)); } }
-            textSearch: "title",
-            recordView: function(){
-                var j;
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    itemName: "publications",
+    categoryTextWidth: 180,
+    source: {
+      gdocId: '0Ai6LdDWgaqgNdE1ObU1wblVkUEdlTUtTMUhkNDZSeWc',
+      tables: [
+        {name:"trs",query:'select A,D,E,F,G,M,N,O,P'},
+        {name:"tr_people", query:"select A,B,D"}, //query:"select * where B = 84"},
+        {name:"tr_projects"},
+        {name:"tr_topics"},
+        {name:"people"},
+        {name:"member_types"},
+        {name:"departments"},
+        {name:"projects"},
+        {name:"topics"}
+      ]
+    },
+    loadedCb: drawCharts,
+    summaries: [
+        {   name: "Topic",
+            catTableName: "topics", catLabel: "topic",
+            visibleRows: 9
+        },{ name: "Author",
+            catTableName: "people",
+            catLabel: function() {
+                var f_name = this.first_name;
+                var l_name = this.last_name;
                 var str="";
-                // paper name
-                    str+="<div class=\"iteminfo iteminfo_0\">";
-                    var url=this.reference_url;
-                    if(url && url.trim()!==""){
-                        str+="<a target=\"_blank\" href=\""+this.reference_url+"\">"+this.title+"</a>";
-                    } else {
-                        str+=this.title;
-                    }
-                    str+="</div>";
-
-                str+="<span class=\"item_details\">";
-
-                // author names
+                if(f_name) str+=f_name+". ";
+                if(f_name) str+=l_name;
+                return str;
+            }
+        },{ name: "Member Type",
+            value: function(){
+                var typeList = {};
+                var r = [];
                 var authors = this.Author;
-                if(authors){
-                    str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
-                    for(j=0; j<authors.length; j++){
-                        var authData=kshf.dt_id.people[authors[j]].data;
-                        str+=authData.first_name+" "+authData.last_name;
-                        if(j!==authors.length-1) { str+=', '; }
+                if(authors===undefined) { return undefined; }
+                for(i=0; i<authors.length; i++){
+                    var autData=kshf.dt_id.people[authors[i]];
+                    var typeID = autData.data.member_type_id;
+                    if( kshf.dt_id.member_types[typeID]===undefined ) { continue; } 
+                    if(!typeList[typeID]){
+                        typeList[typeID] = true;
+                        r.push(typeID);
                     }
-                    str+="</div>";
                 }
-                // venue
-                    var ref=this.reference;
-                    str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
-                    if(ref && ref.trim()!==""){
-                        str+="<b>["+this.Date+"]</b> "+this.reference+"</a>";
-                    }
-                    str+="</div>";
-                // keywords
-                var topics = this.Topic;
-                if(topics){
-                    str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
-                    for(j=0; j<topics.length; j++){
-                        str+=kshf.dt_id.topics[topics[j]].data.topic;
-                        if(j!==topics.length-1) { str+=', '; }
-                    }
-                    str+="</div>";
-                }
-                // links
-                str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
-                var pdf=this.pdf;
-                var video=this.video;
-                if(pdf && pdf.trim()!==""){
-                    str+="<a target=\"_blank\" href=\""+this.pdf+"\"><img src=\"img/pdf-logo.gif\"></a>";
-                }
-                if(video && video.trim()!==""){
-                    str+=" [<a target=\"_blank\" href=\""+this.video+"\">Video</a>]";
+                return r;
+            },
+            catTableName: "member_types", catLabel: "type",
+        },{ name: "Project", catTableName: "projects", catLabel: "project",
+        },{ name: "Date", value: function(){ return new Date(this.Date); }, layout: "middle",
+        }
+    ],
+    recordDisplay: {
+        sortColWidth: 50,
+        sortBy: { title: 'Year', value: function(){ return parseInt(this.Date.slice(0,4)); } }
+        textSearch: "title",
+        recordView: function(){
+            var j;
+            var str="";
+            // paper name
+                str+="<div class=\"iteminfo iteminfo_0\">";
+                var url=this.reference_url;
+                if(url && url.trim()!==""){
+                    str+="<a target=\"_blank\" href=\""+this.reference_url+"\">"+this.title+"</a>";
+                } else {
+                    str+=this.title;
                 }
                 str+="</div>";
 
-                str+="</span>"; // item_details
-                
-                return str;
+            str+="<span class=\"item_details\">";
+
+            // author names
+            var authors = this.Author;
+            if(authors){
+                str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
+                for(j=0; j<authors.length; j++){
+                    var authData=kshf.dt_id.people[authors[j]].data;
+                    str+=authData.first_name+" "+authData.last_name;
+                    if(j!==authors.length-1) { str+=', '; }
+                }
+                str+="</div>";
             }
+            // venue
+                var ref=this.reference;
+                str+="<div class=\"iteminfo iteminfo_1\" style=\"padding-left: 2em;\">";
+                if(ref && ref.trim()!==""){
+                    str+="<b>["+this.Date+"]</b> "+this.reference+"</a>";
+                }
+                str+="</div>";
+            // keywords
+            var topics = this.Topic;
+            if(topics){
+                str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\"> About: ";
+                for(j=0; j<topics.length; j++){
+                    str+=kshf.dt_id.topics[topics[j]].data.topic;
+                    if(j!==topics.length-1) { str+=', '; }
+                }
+                str+="</div>";
+            }
+            // links
+            str+="<div class=\"iteminfo iteminfo_2\" style=\"padding-left: 2em;\">";
+            var pdf=this.pdf;
+            var video=this.video;
+            if(pdf && pdf.trim()!==""){
+                str+="<a target=\"_blank\" href=\""+this.pdf+"\"><img src=\"img/pdf-logo.gif\"></a>";
+            }
+            if(video && video.trim()!==""){
+                str+=" [<a target=\"_blank\" href=\""+this.video+"\">Video</a>]";
+            }
+            str+="</div>";
+
+            str+="</span>"; // item_details
+            
+            return str;
         }
-    });
+    }
+  });
 });
-        </script>
-        <style>
-            #chart_div {
-                width: 100%;
-            }
-		</style>
+    </script>
 	</head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+        <div class="contents"><div id="demo_Browser"></div></div>
     </body>
 </html>

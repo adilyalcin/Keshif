@@ -27,7 +27,7 @@ function loadData(browser){
       kshf.dt.Overflow = [];
       // Note: data.meta includes meta information (column names, types, etc)
       data.data.forEach(function(overflow){
-          kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
+        kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
       });
       browser.loadCharts();
     }
@@ -36,17 +36,17 @@ function loadData(browser){
 
 $(document).ready(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Sewer Overflows in Maryland, 2004-2016",
     categoryTextWidth: 200,
     source: { 
+      url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx',
       callback: loadData,
-      url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx'
     },
     summaries: [
       { name: "Overflow Type", value: function(){ return this[8]; } },
       { name: "Cause", value: function(){ return this[21]; } },
-      { name: "Date",  value: function(){ return new Date(moment(this[11])); } },
+      { name: "Date",  value: function(){ return new Date(moment(this[11])); }, panel: 'bottom' },
       { name: "Duration", value: getDuration_Human },
       { name: "Zip Code", value: function(){ return this[17]; }, panel: 'right' },
       { name: "County", value: function(){ return this[23]; }, panel: 'right' },
@@ -55,9 +55,7 @@ $(document).ready(function(){
     recordDisplay: {
       sortColWidth: 110,
       sortBy: { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
-      recordView: function(){
-        return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes";
-      }
+      recordView: function(){ return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes"; }
     }
   });
 });
@@ -91,14 +89,10 @@ var getDuration_Human = function(){
   return "< 15 minutes";
 };
     </script>
-    <style>
-#chart_div {
-  width:1200px;
-  height:700px;
-}
-    </style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

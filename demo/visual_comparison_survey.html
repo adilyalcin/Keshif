@@ -240,14 +240,8 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-  resizeBrowser(100,100);
-  $(window).resize(function(){
-    resizeBrowser(100,100);
-    browser.updateLayout();
-  });
-  
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Techniques",
     categoryTextWidth: 200,
     source: {
@@ -285,7 +279,10 @@ $(document).ready( function(){
   });
 });
         </script>
-    <style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .sysName{
   display: block;
   font-weight: 700;
@@ -294,14 +291,14 @@ $(document).ready( function(){
   font-weight: 300;
   font-size: 0.9em;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Visual Comparison Techniques</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">Visual Comparison Techniques</div>
+      <div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox" align="center">
       Visualizing the survey <a href="http://dx.doi.org/10.1177/1473871611416549" target='_blank'>Visual Comparison for Information Visualization</a>,
       by M. Gleicher, D. Albers, R. Walker, I. Jusufi, C. D. Hansen, J.C. Roberts, <br>published at the journal Information Visualization, 2011.
       Data collected from the <a href="http://graphics.cs.wisc.edu/Vis/CompIV/" target='_blank'>webpage report</a> and the references in the survey paper, converted to <a href="https://docs.google.com/spreadsheets/d/1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0/edit" target="_blank">Google Spreadsheet</a>.

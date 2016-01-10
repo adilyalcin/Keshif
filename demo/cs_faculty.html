@@ -17,18 +17,12 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  resizeBrowser(160,90);
-  $(window).resize(function() {
-    resizeBrowser(160,90);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     itemName: "CS Faculty",
-    leftPanelLabelWidth: 210,
-    rightPanelLabelWidth: 240,
+    leftPanelLabelWidth: 230,
+    rightPanelLabelWidth: 260,
     source: {
       url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
       //gdocId: '0AubxN1_iO2c-dElJVWFqaTFDeHBkRVFyUzJUWk9oRlE',
@@ -71,7 +65,6 @@ google.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortColWidth: 60,
-      autoExpandMore: true,
       sortBy: {name: "Year", value: "JoinYear"},
       textSearch: "Name",
       detailsToggle: "one",
@@ -105,7 +98,7 @@ google.setOnLoadCallback(function(){
   });
 });
 </script>
-<style>
+<style id="kshfStyle">
 .infoList .fa-info-circle{
   color:lightgray;
   text-decoration: none;
@@ -125,12 +118,12 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Faculty in top 50 US Computer Science Programs</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">Faculty in top 50 US Computer Science Programs</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
-      <a href="http://cs.brown.edu/people/alexpap/faculty_dataset.html" target='_blank'>Data</a> made available by <b>Alexandra Papoutsaki*, Hua Guo, Danae Metaxa-Kakavouli, Connor Gramazio, Jeff Rasley, Wenting Xie, Guan Wang, Jeff Huang</b>, Brown University, Providence, RI, USA.
+    <div id="demo_Infobox">
+      <a href="http://cs.brown.edu/people/alexpap/faculty_dataset.html" target='_blank'>Data</a> made available by Alexandra Papoutsaki*, Hua Guo, Danae Metaxa-Kakavouli, Connor Gramazio, Jeff Rasley, Wenting Xie, Guan Wang, Jeff Huang, Brown University, Providence, RI, USA.
       </div>
   </body>
 </html>

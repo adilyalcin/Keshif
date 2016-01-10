@@ -61,7 +61,7 @@ function loadData(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Artworks in SFMOMA",
     categoryTextWidth: 180,
     rightPanelLabelWidth: 280,
@@ -78,28 +78,23 @@ $(document).ready( function(){
       { name: "Year Born", panel: 'right' },
 
       { name: "Collection", collapsed: true },
-      { name: "Object Type" },
-//    { name: "Medium", },
+      { name: "Object Type", },
+      { name: "Medium", minAggrValue: 2},
       { name: "Creation Date", value: "Time", panel: 'bottom' },
       { name: "Department" },
-      { name: "On Display" }
-//            },{ name: "Key Words", collapsed: true
+      { name: "On Display" }, 
+      { name: "Key Words", minAggrValue: 10, collapsed: true }
     ],
     recordDisplay: {
+      sortBy: "Creation Date",
       textSearch: "Name",
       recordView: "Name"
     }
   });
 });
     </script>
-    <style>
-#chart_div {
-  height: 700px;
-  width: 1150px;
-}
-    </style>
     </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

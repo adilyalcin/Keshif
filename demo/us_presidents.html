@@ -11,16 +11,13 @@
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-    <script type="text/javascript" src="../js/FileSaver.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
-
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
 google.setOnLoadCallback( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Presidents of the United States",
     categoryTextWidth: 160,
     source: {
@@ -47,15 +44,17 @@ google.setOnLoadCallback( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 900px;
-  height: 700px;
 }
 .content img{ width: 100% }
-    </style>
+</style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">The Presidents of the United States</div>
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

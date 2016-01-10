@@ -17,7 +17,7 @@
         <script type="text/javascript">
 google.setOnLoadCallback(function () {
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 140,
     source: {
       gdocId: '0Ai6LdDWgaqgNdEgtRFNsNU9LNTNPanFSUjVyTHlOU2c',
@@ -37,9 +37,7 @@ google.setOnLoadCallback(function () {
       recordView: 'Name'
     }
   });
-});
-
-function performanceText(d){
+});function performanceText(d){
   switch(d){
     case 1: return "High";
     case 2: return "Medium";
@@ -48,14 +46,15 @@ function performanceText(d){
   }
 }
     </script>
-    <style>
-#chart_div{
+<style id="kshfStyle">
+#demo_Browser{
   width: 700px;
   height: 550px;
 }
-    </style>
+</style>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div></div>
+  </body>
 </html>

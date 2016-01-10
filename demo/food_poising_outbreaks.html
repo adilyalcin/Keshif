@@ -17,19 +17,19 @@
     <script type="text/javascript">
 
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex ;
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
+  var currentIndex = array.length, temporaryValue, randomIndex ;
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
 
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
-    return array;
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
 };
 
 function loaded(browser){
@@ -81,7 +81,7 @@ function loaded(browser){
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     leftPanelLabelWidth: 230,
     rightPanelLabelWidth: 250,
     barChartWidth: 150,
@@ -111,8 +111,8 @@ google.setOnLoadCallback(function(){
   });
 });
         </script>
-        <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 890px;
   height: 560px;
 }
@@ -120,23 +120,23 @@ google.setOnLoadCallback(function(){
   opacity: 0.5;
   height: 50px;
 }
-        </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">
+      <div id="demo_PageTitle" align="center">
         Restaurant Food Poisoning Outbreaks, '92-'09, England &amp; Wales</div>
 
-      <div class="pageSubtitle">Read <a href="https://medium.com/@adilyalcin/food-poisoning-outbreaks-a-rich-visual-exploratory-approach-c77734817182" target='_blank'>the story</a> to learn the highlights in this dataset.<br> In this page, explore the data freely and find more insights that are customized with your own <i>taste</i> (selections).
+      <div id="demo_PageSubtitle">Read <a href="https://medium.com/@adilyalcin/food-poisoning-outbreaks-a-rich-visual-exploratory-approach-c77734817182" target='_blank'>the story</a> to learn the highlights in this dataset.<br> In this page, explore the data freely and find more insights that are customized with your own <i>taste</i> (selections).
       </div>
 
       <div style="text-align: center"><img src="./img/restaurant.svg" class="exImg"></div>
 
 
-      <div id="chart_div"></div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox" align="center">
       Using data published at
       <a href="http://dx.doi.org/10.1017/S0950268811001567" target='_blank'>'Choose your menu wisely: cuisine-associated food-poisoning risks in restaurants in England and Wales' Gormley et al (2012), Epidemiology and Infection Journal, Vol. 140</a><br>
       An interactive visualization submitted to

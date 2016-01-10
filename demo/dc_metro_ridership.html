@@ -111,7 +111,7 @@ var stations = {
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Trips, Oct'14",
     barChartWidth: 120,
     leftPanelLabelWidth: 180,
@@ -139,26 +139,22 @@ google.setOnLoadCallback(function(){
       { name: "Line - To", panel: "middle",
         description: "The line information of the station-to. A station can be on multiple lines.",
         value: function(){ return stations[this["Station - To"]].line; } },
-      { name: "Average Travel Minutes", panel: "bottom",
+      { name: "Average Travel Minutes", panel: "bottom", unitname: "min",
         value: function(){ return this['Total Travel Minutes']/this['# Riders']; } }
     ]
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1150px;
-  height: 720px;
-}
-    </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle"><i class='fa fa-subway'></i>Metro Riders in Washington DC. Area, October 2014</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data from <a href="http://planitmetro.com/2015/01/26/metrorail-data-download-october-2014/#comments"
-          target="_blank">D.C. Metro Planning Blog.</a> 
-      Describing ridership in <b>October 2014</b>. The numbers shown are the number of total passangers.
+          target="_blank">D.C. Metro Planning Blog</a>, on <b>October 2014</b>. The numbers show the total number passangers.
       </div>
   </body>
 </html>

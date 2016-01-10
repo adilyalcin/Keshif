@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Bike Trips in New York City</title>
+    <title>Bike Trips in Washington DC, March 2015</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -19,7 +19,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 110,
     leftPanelLabelWidth: 250,
     rightPanelLabelWidth: 250,
@@ -29,7 +29,7 @@ google.setOnLoadCallback(function(){
       tables: "Trips"
     },
     readyCb: function(){
-      browser.summaries_by_name["Day of Month"].height_hist_max = 80; // total dur
+      browser.summaries_by_name["Day of Month"].height_hist_max = 80;
       browser.summaries_by_name["Total Duration"].height_hist_max = 80;
       browser.summaries_by_name["Trip Start Hour"].height_hist_max = 80;
       browser.updateLayout();
@@ -50,20 +50,18 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1100px;
-  height: 700px;
-}
-    </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">
+        <i class='fa fa-bicycle'></i> Bike Trips in Washington D.C. area, March 2015</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
-      Data shows Capital Bikeshare bike trips in Washington DC area, on March 2015.<br>
+    <div id="demo_Infobox">
+      Data shows Capital Bikeshare bike trips in Washington DC area on March 2015, released at 
       <a href="https://www.capitalbikeshare.com/trip-history-data" target="_blank">
-          https://www.capitalbikeshare.com/trip-history-data</a>
+          https://www.capitalbikeshare.com/trip-history-data</a>.
       </div>
   </body>
 </html>

@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-var loadData= function(browser){
+function loadData(browser){
   $.ajax({
     //url: "http://www.cloudred.com/labprojects/nyctrees/data/common.json",
     url: "./data/nyc_trees.json",
@@ -41,7 +41,7 @@ var loadData= function(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Tree Types",
     categoryTextWidth: 200,
     barChartWidth: 300,
@@ -58,7 +58,7 @@ $(document).ready( function(){
       { name: "Number of <span class='fa fa-tree'></span>s in Staten Island", value: "Staten Island", intervalScale: "log" }
     ],
     recordDisplay: {
-      sortBy: {title: '# Total Trees', value: function(){ return this.Total;} },
+      sortBy: {title: '# of Total Trees', value: "Total" },
       detailsToggle: "off",
       displayType: 'grid',
       textSearch: {title: 'Tree Name', value: "Common"},
@@ -74,11 +74,7 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width:1250px;
-  height:700px;
-}
+<style id="kshfStyle">
 .kshfRecord{
   width: 70px;
   padding-top: 0px !important;
@@ -87,15 +83,15 @@ $(document).ready( function(){
 .thumbImg{
   width: 100% !important;
 }
-    </style>
+</style>
 	</head>
   <body>
-    
     <div class="contents">
-      <div class="pageTitle" align="center">NYC Street Trees</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">NYC Street Trees</div>
+      <div id="demo_Browser"></div>
       </div>
-    <div id="demoInfobox">
+
+    <div id="demo_Infobox">
       Data provided by <a href="https://nycopendata.socrata.com/" target='_blank'>NYV Open Data</a> and curated by <a href="http://www.cloudred.com/labprojects/nyctrees/" target='_blank'>Cloudred Multimedia</a>. <a href="http://www.cloudred.com/labprojects/nyctrees/data/common.json" target='_blank'>Raw source</a>.
       </div>
   </body>

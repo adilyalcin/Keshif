@@ -58,14 +58,8 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-  resizeBrowser(100,80);
-  $(window).resize(function() {
-    resizeBrowser(100,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 250,
     itemName: "Set Visualization Techniques",
     source: {
@@ -92,7 +86,7 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 150px;
 }
@@ -102,14 +96,15 @@ $(document).ready( function(){
 .thumbnail{
   height: 165px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
-      Data provided by <a href="http://www.cvast.tuwien.ac.at/SetViz" target='_blank'>SetViz survey</a>.<br>
-      All rights for the technique images belong to their respective owners.
+    <div id="demo_Infobox">
+      Data provided by <a href="http://www.cvast.tuwien.ac.at/SetViz" target='_blank'>SetViz survey</a>. All rights for the technique images belong to their respective owners.
       </div>
   </body>
 </html>

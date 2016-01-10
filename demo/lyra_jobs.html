@@ -33,7 +33,7 @@ function loadData(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     categoryTextWidth: 180,
     rightPanelLabelWidth: 510,
@@ -49,15 +49,15 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style>
+#demo_Browser {
   width: 1000px;
   height: 450px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="pageTitle" align="center">Job Trends, 1850-2000</div>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div id="demo_PageTitle" align="center">Job Trends, 1850-2000</div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

@@ -22,7 +22,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 110,
     leftPanelLabelWidth: 220,
     middlePanelLabelWidth: 200,
@@ -62,8 +62,8 @@ google.setOnLoadCallback(function(){
   });
 });
         </script>
-        <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 1100px;
   height: 720px;
 }
@@ -94,12 +94,14 @@ google.setOnLoadCallback(function(){
 .time{
   font-weight: 300;
 }
-      </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Mass shootings reported by 
       <a href="http://www.gunviolencearchive.org/mass-shooting" target="_blank">
           Gun Violance Archive</a>

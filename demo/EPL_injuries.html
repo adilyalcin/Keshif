@@ -1,30 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>EPL Injuries</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
-        <script type="text/javascript" src="../js/FileSaver.min.js" charset="utf-8"></script>
+    <title>EPL Injuries</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
-
-        <script type="text/javascript">
+    <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  resizeBrowser(130,80);
-  $(window).resize(function() {
-    resizeBrowser(130,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 130,
     rightPanelLabelWidth: 120,
@@ -45,6 +38,7 @@ google.setOnLoadCallback(function(){
     recordDisplay: {
       sortBy: "Date",
       displayType: 'grid',
+      textSearch: "Player",
       recordView: function(){
         var img = "<img class='thumbImg' src='img/EPL/"+this.Team.replace(" ","_")+".svg'>";
         return "<span class='thumbnail'>"+img+"</span><span class='subTitle'>"+this.Player+"</span>";
@@ -53,8 +47,8 @@ google.setOnLoadCallback(function(){
   }
   );
 });
-        </script>
-        <style>
+    </script>
+<style id="kshfStyle">
 .kshfRecord{
   width: 70px;
 }
@@ -72,15 +66,15 @@ google.setOnLoadCallback(function(){
 .subTitle{
   text-align: center;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">English Premier League Injury Table</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">English Premier League Injury Table</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Re-Vis, from 
       <a href="http://vizwiz.blogspot.com/2014/10/arsenal-injuries.html" target='_blank'>Andy Kriebel</a>.
       <a href="http://www.physioroom.com/news/english_premier_league/epl_injury_table.php" target='_blank'>Original source</a>.

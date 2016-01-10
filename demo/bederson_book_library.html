@@ -1,22 +1,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>Ben Bederson's Book Library</title>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-        <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="../keshif.css"/ type="text/css">
-        <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+  <head>
+    <title>Ben Bederson's Book Library</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-        <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-        <link rel="stylesheet" href="./css/style.css"/ type="text/css">
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-        <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+    <script type="text/javascript">
 var loadData = function(browser){
     browser.primaryTableName = "Books";
     kshf.dt.Books = [];
@@ -108,28 +108,22 @@ var loadData = function(browser){
 };
 
 var getStars = function(n){
-    var str="";
-    if(n>0){
-        str+="<span class='ratings'>";
-        for(var s=0; s<5; s++){
-            str+="<span class='fa ratingStar fa-star"+(n<=s?"-o":"")+"'></span>";
-        }
-        str+="</span>";
+  var str="";
+  if(n>0){
+    str+="<span class='ratings'>";
+    for(var s=0; s<5; s++){
+      str+="<span class='fa ratingStar fa-star"+(n<=s?"-o":"")+"'></span>";
     }
-    return str;
+    str+="</span>";
+  }
+  return str;
 };
 
 // Google metadata at
 // https://docs.google.com/spreadsheets/d/1Qfgq9AM_Af54pkPKxMWSbiPj5xY8k-JybaJBE8Yt5pw/edit#gid=566794414
 $(document).ready( function(){
-  resizeBrowser(200,100);
-  $(window).resize(function() {
-      resizeBrowser(100,100);
-      browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
     itemName: "Books",
     source: {
@@ -163,7 +157,10 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .kshfRecord{
   width: 150px;
 }
@@ -196,16 +193,16 @@ $(document).ready( function(){
 .ratingStar.fa-star{
   color: rgb(234, 234, 124);
 }
-    </style>
-    </head>
+</style>
+  </head>
 
   <body>
     <div class="contents">
-      <div class='pageTitle'>Books Read by Ben Bederson</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Books Read by Ben Bederson</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Books that <a href="http://www.cs.umd.edu/~bederson/">Ben Bederson</a> has read since Oct 1991 (data from <a href="https://www.goodreads.com/review/list/14553051?shelf=read">GoodReads)</a>.<br>Book list is incomplete and includes primarily non-work-related books. Blog post relating to this browser is at
       <a href="http://hci-user-advocate.blogspot.com/2015/01/books-ive-read-visualization.html"
           target="_blank">HCI user advocate blog</a>.

@@ -8,8 +8,10 @@ body {
 .contents {
   padding-top: 45px;
 }
-#chart_div {
+#demo_Browser {
   margin: 0 auto;
+  width: calc(100% - 20px);
+  height: calc(100vh - 70px);
 }
 .showConfigButton {
   display: inline-block !important;
@@ -164,7 +166,7 @@ body {
 .recordDisplay[displaytype="grid"] > .recordGroup > .kshfRecord[highlight=true] > .content .thumbnail {
   background-color: orangered;
 }
-.pageTitle {
+#demo_PageTitle {
   text-align: center;
   padding-top: 3px;
   letter-spacing: -1px;
@@ -177,11 +179,11 @@ body {
   width: 100%;
   pointer-events: none;
 }
-.pageTitle > a {
+#demo_PageTitle > a {
   color: white;
   pointer-events: all;
 }
-.pageSubtitle {
+#demo_PageSubtitle {
   text-align: center;
   font-family: sans-serif;
   padding-bottom: 5px;
@@ -199,7 +201,7 @@ body {
   content: "\f05a";
   color: gray;
 }
-#demoInfobox {
+#demo_Infobox {
   position: fixed;
   left: 0px;
   right: 0px;
@@ -208,24 +210,24 @@ body {
   font-weight: 300;
   font-family: sans-serif;
   font-size: 0.8em;
-  padding: 3px 120px 3px 120px;
+  padding: 3px 40px 3px 40px;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0d…g9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
   background-image: -webkit-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
   background-image: -moz-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
   background-image: -o-linear-gradient(bottom, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
   background-image: linear-gradient(to top, #dfd2a9 0%, rgba(255, 255, 255, 0) 80%);
 }
-#demoInfobox a {
+#demo_Infobox a {
   color: black;
   font-weight: 500;
 }
-#demoInfobox a:hover {
+#demo_Infobox a:hover {
   color: orangered;
 }
-#demoInfobox .fa {
+#demo_Infobox .fa {
   color: gray;
 }
-#demoInfobox:before {
+#demo_Infobox:before {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;
@@ -235,7 +237,7 @@ body {
   content: "\f05a";
   color: gray;
 }
-#demoInfobox:after {
+#demo_Infobox:after {
   display: inline-block;
   font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;

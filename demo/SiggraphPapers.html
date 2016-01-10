@@ -13,12 +13,9 @@
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
     <script type="text/javascript">
-
 var docRoot = 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/sigvis/'
 var keywords;
 function loadData(browser){
@@ -30,7 +27,7 @@ function loadData(browser){
       for(year in data){
         data[year].forEach(function(paper){
           var kshfItem = table[paper.id];
-          kshfItem.data.Year = new Date(1*year,1,1);
+          kshfItem.data.Year = 1*year; //new Date(1*year,1,1);
           kshfItem.data.CitedBy = paper.cited_by;
           kshfItem.data["Citation Count"] = paper.cited_count;
           kshfItem.data.DOI = paper.link;
@@ -64,14 +61,8 @@ function loadData(browser){
 };
 
 $(document).ready( function() {
-  resizeBrowser(300,70);
-  $(window).resize(function() {
-    resizeBrowser(300,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 160,
     barChartWidth: 140,
     itemName: "SIGGRAPH Papers",
@@ -102,7 +93,7 @@ $(document).ready( function() {
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .iteminfo a{
   color:#606060;
   font-style:italic;
@@ -119,20 +110,20 @@ $(document).ready( function() {
   font-size: 1.1em;
   font-weight: 600;
 }
-    </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle">SIGGRAPH Papers</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">SIGGRAPH Papers</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox" align="center">
-      Re-Vis, from <a href='http://www.cs.utah.edu/~kwu/vis/sigvis.html' target='_blank'>SiggraphPubVis</a> project 
-        by 
-        <a href="http://www.cs.utah.edu/~kwu/" target='_blank'>Kui Wu</a>,
-        <a href="http://www.hoangthaiduong.com/" target="_blank">Duong Hoang</a>, as part of 
-        <a href='http://dataviscourse.net/2015/fame/' target='_blank'>Visualization CS-5630/CS-6630</a> course at 
-        the University of Utah.
-        </div>
+    <div id="demo_Infobox">
+      Re-Vis, from <a href='http://www.cs.utah.edu/~kwu/vis/sigvis.html' target='_blank'>SiggraphPubVis</a> project  by 
+      <a href="http://www.cs.utah.edu/~kwu/" target='_blank'>Kui Wu</a>,
+      <a href="http://www.hoangthaiduong.com/" target="_blank">Duong Hoang</a>, as part of 
+      <a href='http://dataviscourse.net/2015/fame/' target='_blank'>Visualization CS-5630/CS-6630</a> course at 
+      the University of Utah.
+      </div>
   </body>
 </html>

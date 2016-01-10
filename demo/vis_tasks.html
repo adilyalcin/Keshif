@@ -15,16 +15,9 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-
 google.setOnLoadCallback(function(){
-  resizeBrowser(160,90);
-  $(window).resize(function() {
-    resizeBrowser(160,90);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 200,
     rightPanelLabelWidth: 200,
@@ -68,12 +61,11 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">References in "A Multi-Level Typology of Abstract Visualization Tasks"</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">References in "A Multi-Level Typology of Abstract Visualization Tasks"</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
-        Data from: M. Brehmer and T. Munzner. "A multi-level typology of abstract visualization tasks." <br>Visualization and Computer Graphics, IEEE Transactions on 19.12 (2013): 2376-2385.
-        </div>
+    <div id="demo_Infobox">
+      Data from: M. Brehmer and T. Munzner. "A multi-level typology of abstract visualization tasks." <br>Visualization and Computer Graphics, IEEE Transactions on 19.12 (2013): 2376-2385.</div>
   </body>
 </html>

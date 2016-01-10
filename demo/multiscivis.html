@@ -17,7 +17,6 @@
     <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-
 var loadData = function(browser){
   browser.primaryTableName = "Visualizations";
 
@@ -78,14 +77,8 @@ var loadData = function(browser){
 };
 
 $(document).ready( function(){
-  resizeBrowser(100,80);
-  $(window).resize(function() {
-    resizeBrowser(100,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 210,
     itemName: "Techniques",
     source: {
@@ -111,7 +104,10 @@ $(document).ready( function(){
   });
 });
     </script>
-<style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .kshfRecord{
   width: 150px;
 }
@@ -125,12 +121,13 @@ $(document).ready( function(){
   </head>
   <body>
     <div class="contents">
-      <div class='pageTitle'>Visualization Techniques for Multifaceted Scientific Data</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Visualization Techniques for Multifaceted Scientific Data</div>
+      <div id="demo_Browser"></div>
       </div>
-    <div id="demoInfobox">
+
+    <div id="demo_Infobox">
       Data: <a href="http://multivis.net/"
-        target='_blank'>multivis.net</a> Visualization and Visual Analysis of Multifaceted Scientific Data
+        target='_blank'>multivis.net</a> - Visualization and Visual Analysis of Multifaceted Scientific Data,
         by
         <a href="http://wwwcg.in.tum.de/group/persons/kehrer.html" target='_blank'>Johannes Kehrer</a>
         and 

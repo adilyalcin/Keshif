@@ -19,7 +19,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Roll calls in the U.S. Senate",
     source: {
       gdocId: '0Ai6LdDWgaqgNdHBjOG9NT2RiLVo4dERlWFlEZktRbXc',
@@ -62,18 +62,20 @@ google.setOnLoadCallback( function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .iteminfo a{
   color:#606060;
   font-style:italic;
 }
-#chart_div{
+#demo_Browser{
   height: 750px;
   width: 1282.5px;
 }
-    </style>
+</style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

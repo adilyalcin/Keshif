@@ -145,9 +145,9 @@ function loadData(browser){
 
 google.setOnLoadCallback(function(){
 	browser = new kshf.Browser({
-    domID: "#chart_div",
-    categoryTextWidth: 210,
-    barChartWidth: 90,
+    domID: "#demo_Browser",
+    categoryTextWidth: 230,
+    barChartWidth: 100,
     source: {
       url: "https://nces.ed.gov/ipeds/datacenter/",
       gdocId: '1UsMPgGSTyaYj93CkGp7ez_q4bbNY6KAdZGvreYXJ_YM',
@@ -267,11 +267,10 @@ google.setOnLoadCallback(function(){
     }
   });
 });
-        </script>
-<style>
-#chart_div{
-  width: 1120px;
-  height: 700px;
+    </script>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
 }
 .kshfRecord a{
   color: black;
@@ -285,10 +284,10 @@ google.setOnLoadCallback(function(){
     </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Universities in the U.S.</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">Universities in the U.S.</div>
+      <div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       Data from 
       <a href="https://nces.ed.gov/ipeds/datacenter/" target='_blank'>
           The Integrated Postsecondary Education Data System (IPEDS), National Center of Education Statistics, U.S. Dep. of Education.</a><br>

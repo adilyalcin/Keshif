@@ -19,14 +19,8 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-  resizeBrowser(170,90);
-  $(window).resize(function() {
-    resizeBrowser(170,90);
-    browser.updateLayout();
-  });
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "World War 2 Posters",
     categoryTextWidth: 150,
     source: { 
@@ -93,7 +87,7 @@ $(document).ready( function(){
   });
 });
 </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 150px;
   overflow: visible !important;
@@ -124,15 +118,15 @@ $(document).ready( function(){
   -o-transition: all 150ms ease-in;
   -moz-transition: all 150ms ease-in;
 }
-    </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">World War 2 Posters - National Archives</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">World War 2 Posters - National Archives</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       <a href="https://catalog.archives.gov/search?q=*:*&rows=20&offset=0&tabType=all&facet=true&facet.fields=oldScope,level,materialsType,fileFormat,locationIds,dateRangeFacet&highlight=true&f.parentNaId=513498&sort=naIdSort%20asc" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
       </div>
   </body>

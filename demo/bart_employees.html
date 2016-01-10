@@ -16,14 +16,8 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  resizeBrowser(300,70);
-  $(window).resize(function() {
-    resizeBrowser(300,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 80,
     leftPanelLabelWidth: 200,
     rightPanelLabelWidth: 250,
@@ -41,8 +35,8 @@ $(document).ready( function() {
       { name: "Total Salary", value:"TCOE", unitName:'$', panel:'right' },
       { name: "Base Salary", value:"Base", unitName:'$', panel:'right' },
       { name: "Overtime Salary", value:"OT", unitName:'$', panel:'right' },
-      { name: "Other Salary", unitName:'$', panel:'right' },
       { name: "Medical, Dental, Vision", value:"MDV", unitName:'$', panel:'right' },
+      { name: "Other Salary", value: "Other", unitName:'$', collapsed: true, panel:'right' },
       { name: "ER Salary", value:'ER', unitName:'$', collapsed:true, panel:'right' },
       { name: "EE Salary", value:'EE', unitName:'$', collapsed:true, panel:'right' },
       { name: "DC Salary", value:'DC', unitName:'$', intervalScale:'log', collapsed:true, panel:'right' },
@@ -52,12 +46,12 @@ $(document).ready( function() {
       sortColWidth: 70,
       sortBy: "Total Salary",
       textSearch: "Name",
-      recordView: function(){ return this.Name+" <span class='empTitle'>"+this.Title+"</span>"; }
+      recordView: function(){ return this.Name+" <span class='empTitle' >"+this.Title+"</span>"; }
     }
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .empTitle{
   display:inline-block;
   font-size: 0.8em;
@@ -66,23 +60,17 @@ $(document).ready( function() {
 .empTitle:before{
   content: " - ";
 }
-.listsortcolumn > .columnLabel:after{
-  content: "$";
-  color: gray;
-  margin-left: 3px;
-  font-size: 0.9em;
-}
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Salary of Bay Area Rapid Transit (BART) Employees</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Salary of Bay Area Rapid Transit (BART) Employees</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data Re-Vis, from
-      <a href='http://vctr.me/' target='_blank'>Victor Powrll</a>'s 
+      <a href='http://vctr.me/' target='_blank'>Victor Powell</a>'s 
       <a href='http://blog.vctr.me/bart/' target='_blank'>Visualization</a>.
       </div>
   </body>

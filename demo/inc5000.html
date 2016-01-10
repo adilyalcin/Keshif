@@ -23,7 +23,7 @@
 $(document).ready( function(){
   var simpleFormat = d3.format(".2s");
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 200,
     itemName: "Companies",
     source: {
@@ -69,10 +69,10 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width:1100px;
-  height:650px;
+<style id="kshfStyle">
+#demo_Browser {
+  height: calc(100vh - 120px);
+  max-width: 1100px;
 }
 .companyName{
   font-size: 1.1em;
@@ -98,16 +98,16 @@ $(document).ready( function(){
   display: inline-block;
   width: 18px;
 }
-    </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">The 2014 Inc. 5000</div>
-      <div class="pageSubtitle" align="center">The fastest-growing private companies in America.</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">The 2014 Inc. 5000</div>
+      <div id="demo_PageSubtitle" align="center">The fastest-growing private companies in America.</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
         <a href="http://www.inc.com/inc5000/" target="_blank">The Inc. 5000</a>
 		is Inc. Magazine’s annual list of the 5000 fastest growing private companies in the United States. <br>
         The list is compiled by measuring each company's percentage revenue growth over a four-year period.

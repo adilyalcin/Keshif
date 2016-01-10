@@ -20,7 +20,6 @@
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
-
 var DiseaseMap = {
   "BORPER": "Bordetella pertussis",
   "BRRBUR": "Borrelia burgdorferi (Lyme)",
@@ -163,18 +162,11 @@ var ProvinceMap = {
 
 var ProvinceFeatures = {};
 
-
 $(document).ready( function(){
-  resizeBrowser(250,70);
-  $(window).resize(function() {
-    resizeBrowser(250,70);
-    browser.updateLayout();
-  });
-
   var dateFormat=d3.time.format("%Y-%m-%d");
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 200,
     barChartWidth: 200,
     itemName: "Cases",
@@ -198,7 +190,7 @@ $(document).ready( function(){
       }
     },
     summaries: [
-      { name: "Disease", value: "Subject", catLabel: function(){ return DiseaseMap[this.id]; } },
+      { name: "Disease", value: "Subject", catLabel: DiseaseMap },
       { name: "Province", 
         value: "NUTS2", 
         catLabel: ProvinceMap, 
@@ -226,11 +218,11 @@ $(document).ready( function(){
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Belgian Infectious Diseases Dataset</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">Belgian Infectious Diseases Dataset</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data Re-Vis, from Mathias Leroy's <a href="https://epistat.wiv-isp.be/" target='_blank'>https://epistat.wiv-isp.be/</a>.
       </div>
   </body>

@@ -17,18 +17,11 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600,700' rel='stylesheet' type='text/css'>
 
     <script type="text/javascript">
-
-// TODO: Add citations
-
 google.setOnLoadCallback(function(){
-  resizeBrowser(200,90);
-  $(window).resize(function() {
-    resizeBrowser(200,90);
-    browser.updateLayout();
-  });
+  // TODO: Add citations
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 210,
     rightPanelLabelWidth: 150,
@@ -37,9 +30,8 @@ google.setOnLoadCallback(function(){
       tables: {name:"Papers", id:"IEEE XPLORE Number"} // IEEE XPLORE Number is unique per paper
     },
     loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Papers, ['Deduped author names'], ";", false);
+      kshf.Util.cellToArray(kshf.dt.Papers, ['Deduped author names', 'First Author Affiliation'], ";", false);
       kshf.Util.cellToArray(kshf.dt.Papers, ['Citations'], ",", false);
-      kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";", false);
 
       // Remove whitespaces from author affiliation
       kshf.dt.Papers.forEach(function(paper){
@@ -74,17 +66,12 @@ google.setOnLoadCallback(function(){
       { name: "Type", 
         description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ..." },
       { name: "# Citations To...",
-        value: function(){
-          if(this.CitationsFrom.length===0) return;
-          return this.CitationsFrom.length;
-        } },
-      { name: "First Author Affiliation", collapsed: false,
-        description: "Only affiliations with at least two papers are shown",
-        minAggrValue: 2 },
+        value: function(){ if(this.CitationsFrom.length>0) return this.CitationsFrom.length; } },
+      { name: "First Author Affiliation", collapsed: false, minAggrValue: 2, 
+        description: "Only affiliations with at least two papers are shown" },
       { name: "Year", panel: 'bottom' }, // value: function(){ return new Date(this.Year,0,0);}
-      { name: "Authors", value: function(){ return this['Deduped author names']; }, panel: 'right',
-        description: "Only authors with at least two papers are shown",
-        minAggrValue: 2 }
+      { name: "Authors", value: function(){ return this['Deduped author names']; }, panel: 'right', minAggrValue: 2,
+        description: "Only authors with at least two papers are shown" }
     ],
     recordDisplay: {
       sortBy: 'Year',
@@ -116,7 +103,10 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .content{
   font-family: 'Open Sans', sans-serif;
 }
@@ -175,14 +165,14 @@ google.setOnLoadCallback(function(){
   display: block;
   font-size: 0.9em;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Visualization Publication Data Collection</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle" align="center">Visualization Publication Data Collection</div>
+      <div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox" align="center">
       Data source: Visualization Publication Dataset, 
       <a href="http://www.vispubdata.org/site/vispubdata/" target="_blank">
           http://www.vispubdata.org/site/vispubdata/

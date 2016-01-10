@@ -16,58 +16,47 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-function dataLoad(browser){
-  $.ajax({
-    url: "./data/bookdownloads.json",
-    success: function(data){
-      browser.primaryTableName = "Downloads";
-      kshf.dt.Downloads = [];
-      data.forEach(function(download,i){
-        kshf.dt.Downloads.push(new kshf.Item({
-          id:i,
-          downloadTime: moment(download, "YYYY-MM-DD HH:mm:ss")
-        },"id"));
-      });
-      browser.loadCharts();
-    }
-  });
-};
-
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
-    categoryTextWidth: 250,
-    barChartWidth: 100,
+    domID: "#demo_Browser",
+    itemName: "Book Downloads",
+    categoryTextWidth: 120,
+    barChartWidth: 200,
     source: {
       url: "http://bl.ocks.org/d3noob/a0cbcddc6bf0eb9569fe",
-      callback: dataLoad
+      dirPath: "./data/",
+      fileType: "json",
+      tables: "bookdownloads"
+    },
+    loadedCb: function(){
+      this.items.forEach(function(d){ d.data = moment(d.data, "YYYY-MM-DD HH:mm:ss"); });
     },
     summaries: [
-      { name: "Hour", unitName: ": 00", panel: 'bottom', value: function(){ return this.downloadTime.hour(); }, },
-      { name: "Time", panel: 'bottom', value: function(){ return new Date(this.downloadTime);} },
-      { name: "Day", panel: 'right', value: function(){ return this.downloadTime.day(); }, catSortBy: "id",        
+      { name: "Hour", unitName: ": 00", panel: 'bottom', value: function(){ return this.hour(); }, },
+      { name: "Time", panel: 'bottom', value: function(){ return new Date(this);} },
+      { name: "Day", panel: 'right', value: function(){ return this.day(); }, catSortBy: "id",        
         catLabel: _demo.DayOfWeek },
-      { name: "Month", value: function(){ return this.downloadTime.month(); }, panel: 'middle', catSortBy: "id",
+      { name: "Month", value: function(){ return this.month(); }, panel: 'middle', catSortBy: "id",
         catLabel: _demo.Month },
-      { name: "Year", value: function(){ return this.downloadTime.year(); }, panel: 'right', catSortBy: "id" }
+      { name: "Year", value: function(){ return this.year(); }, panel: 'right', catSortBy: "id" }
     ]
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width:850px;
   height:600px;
 }
-    </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">Download Times of the book D3 Tips and Tricks</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       <a href="http://www.d3noob.org/2015/04/exploring-event-data-by-combination.html" target='_blank'>Original Blogpost</a> <a href="https://gist.github.com/d3noob/a0cbcddc6bf0eb9569fe" target='_blank'>Raw source</a>.
       <a href="http://bl.ocks.org/d3noob/raw/a0cbcddc6bf0eb9569fe/" target='_blank'>Original d3 visualization</a>.
       </div>

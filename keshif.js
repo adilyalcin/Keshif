@@ -56,7 +56,9 @@ var kshf = {
     summaryCount: 0,
     maxVisibleItems_Default: 100,
     scrollWidth: 19,
+    attribPanelWidth: 220,
     previewTimeoutMS: 250,
+    browsers: [],
     dt: {},
     dt_id: {},
     lang: {
@@ -78,7 +80,7 @@ var kshf = {
             LockToCompare: "Lock to compare",
             Unlock: "Unlock",
             Search: "Search",
-            CreatingBrowser: "Creating browser",
+            CreatingBrowser: "Creating Keshif Browser",
             Rows: "Rows",
             More: "More",
             LoadingData: "Loading data sources",
@@ -115,7 +117,7 @@ var kshf = {
             Unlock: "Kilidi kaldır",
             Search: "Ara",
             LoadingData: "Veriler yükleniyor...",
-            CreatingBrowser: "Arayüz oluşturuluyor...",
+            CreatingBrowser: "Keşif arayüzü oluşturuluyor...",
             Rows: "Satır",
             More: "Daha",
             ShowAll: "Hepsi",
@@ -354,6 +356,11 @@ var kshf = {
         var s = document.getElementsByTagName('script')[0];
         s.parentNode.insertBefore(wf, s);
         this.fontLoaded = true;
+    },
+    handleResize: function(){
+      this.browsers.forEach(function(browser){
+        browser.updateLayout();
+      });
     },
     activeTipsy: undefined,
     colorScale : {
@@ -666,6 +673,7 @@ kshf.Item.prototype = {
         return;
       }
 
+      this.highlighted = true;
       if(this.DOM.record) this.DOM.record.setAttribute("highlight",true);
 
       this.mappedDataCache.forEach(function(m){
@@ -677,60 +685,58 @@ kshf.Item.prototype = {
       }
       },this);
     },
-    /**
-     * Called on mouse-over on a primary item type, then recursively on all summaries and their sub-summaries
-     * Higlights all relevant UI parts to this UI item
-     */
-    highlightAll: function(recurse){
-        if(this.DOM.record)    this.DOM.record.setAttribute("highlight",recurse?"selected":true);
-        if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.setAttribute("highlight",recurse?"selected":true);
-        if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight","selected");
-
-        if(this.DOM.record && !recurse) return;
-        this.mappedDataCache.forEach(function(d){
-            if(d===null) return; // no mapping for this index
-            if(d.h){ // interval summary
-                d.h.setRecordValue(d.v);
-            } else { // categorical summary
-                d.forEach(function(item){
-                    // skip going through main items that contain a link TO this item
-                    if(this.DOM.record && item.DOM.record) return;
-                    item.highlightAll(false);
-                },this);
+    /** Called on mouse-over on a primary item type */
+    highlightRecord: function(){
+      if(this.DOM.record) { // record display
+        this.DOM.record.setAttribute("highlight","selected");
+      }
+      // summaries that this item appears in
+      this.mappedDataCache.forEach(function(d){
+        if(d===null) return; // no mapping for this index
+        if(d.h){ // interval summary
+          d.h.setRecordValue(d.v);
+        } else { // categorical summary
+          d.forEach(function(item){ 
+            if(item.DOM.aggrGlyph) { // basic summary aggregate
+              item.DOM.aggrGlyph.setAttribute("highlight",true);
             }
-        },this);
+            if(item.DOM.matrixRow) { // set matrix
+              item.DOM.matrixRow.setAttribute("highlight","selected");
+            }
+          },this);
+        }
+      },this);
     },
-    /** Removes highlight from all relevant UI parts to this UI item */
-    nohighlightAll: function(recurse){
-        if(this.DOM.record)    this.DOM.record.setAttribute("highlight",false);
-        if(this.DOM.aggrGlyph) this.DOM.aggrGlyph .setAttribute("highlight",false);
-        if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight",false);
-
-        if(this.DOM.record && !recurse) return;
-        this.mappedDataCache.forEach(function(d,i){
-            if(d===null) return; // no mapping for this index
-            if(d.h){ // interval summary
-                d.h.hideRecordValue(d.v);
-            } else { // categorical summary
-                d.forEach(function(item){
-                    // skip going through main items that contain a link TO this item
-                    if(this.DOM.record && item.DOM.record) return;
-                    item.nohighlightAll(false);
-                },this);
-            }
-        },this);
+    /** -- */
+    nohighlightAggregate: function(){
+      if(this.DOM.record) {
+        this.highlighted = false;
+        this.DOM.record.setAttribute("highlight",false);
+      }
+      if(this.DOM.aggrGlyph) this.DOM.aggrGlyph .setAttribute("highlight",false);
+      if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight",false);
+    },
+    /** -- */
+    nohighlightRecord: function(){
+      if(this.DOM.record) {
+        this.highlighted = false;
+        this.DOM.record.setAttribute("highlight",false);
+      }
+      // summaries that this item appears in
+      this.mappedDataCache.forEach(function(d){
+        if(d===null) return; // no mapping for this index
+        if(d.h){ // interval summary
+          d.h.hideRecordValue();
+        } else { // categorical summary
+          d.forEach(function(item){ item.nohighlightAggregate(); },this);
+        }
+      },this);
     },
     /** -- */
     setRecordDetails: function(value){
       this.showDetails = value;
       if(this.DOM.record) this.DOM.record.setAttribute('details', this.showDetails);
     },
-    /** -- */
-    recordHighlight: function(){
-      this.highlightAll(true);
-      this.items.forEach(function(item){ item.highlightAll(false); });
-    },
-
 };
 
 kshf.Filter = function(id, opts){
@@ -1646,19 +1652,18 @@ kshf.RecordDisplay.prototype = {
             this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
           if(me.browser.mouseSpeed<0.2) {
-            d.recordHighlight(); return;
+            d.highlightRecord(); return;
           }
           // mouse is moving fast, should wait a while...
           this.highlightTimeout = window.setTimeout(
-            function(){ d.recordHighlight(); }, 
+            function(){ d.highlightRecord(); }, 
             me.browser.mouseSpeed*300);
         })
         .on("mouseleave",function(d){
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
           if(this.tipsy) this.tipsy.hide();
           this.setAttribute("highlight","false");
-          d.nohighlightAll(true);
-          d.items.forEach(function(item){ item.nohighlightAll(false); });
+          d.nohighlightRecord();
         })
         .on("mousedown", function(d){
           this._mousemove = false;
@@ -1910,7 +1915,16 @@ kshf.RecordDisplay.prototype = {
         c.sortBy.push(summary.summaryName);
       });
       if(c.sortBy.length===1) c.sortBy = c.sortBy[0];
+      c.sortColWidth = this.sortColWidth;
+      c.detailsToggle = this.detailsToggle;
       return c;
+    },
+    /** -- */
+    refresh_Compare: function(){
+      if(this.recordViewSummary===null) return;
+      this.DOM.kshfRecords.attr("compared",function(record){
+        return ;
+      });
     }
 };
 
@@ -1936,8 +1950,12 @@ kshf.Panel = function(options){
 kshf.Panel.prototype = {
     /** -- */
     getWidth_Total: function(){
-        if(this.name==="bottom") return this.browser.getWidth_Total();
-        return this.width_catLabel + this.width_catMeasureLabel + this.width_catBars + kshf.scrollWidth;
+      if(this.name==="bottom") {
+        var w = this.browser.getWidth_Total();
+        if(this.browser.authoringMode) w-=kshf.attribPanelWidth;
+        return w;
+      }
+      return this.width_catLabel + this.width_catMeasureLabel + this.width_catBars + kshf.scrollWidth;
     },
     /** -- */
     addSummary: function(summary,index){
@@ -2242,7 +2260,6 @@ kshf.Browser = function(options){
     this.domID = options.domID;
 
     // Callbacks
-    this.loadedCb = options.loadedCb;
     this.newSummaryCb = options.newSummaryCb;
     this.readyCb = options.readyCb;
     this.updateCb = options.updateCb;
@@ -2297,19 +2314,20 @@ kshf.Browser = function(options){
     this.insertDOM_Infobox();
     this.insertDOM_WarningBox();
 
+    this.DOM.panel_Wrapper = this.DOM.root.append("div").attr("class","panel_Wrapper");
+
     this.insertDOM_PanelBasic();
 
-    this.DOM.panelsTop = this.DOM.root.append("div").attr("class","panels_Above");
+    this.DOM.panelsTop = this.DOM.panel_Wrapper.append("div").attr("class","panels_Above");
 
     this.panels.left = new kshf.Panel({
-        width_catLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
-        browser: this,
-        name: 'left',
-        parentDOM: this.DOM.panelsTop
+      width_catLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
+      browser: this,
+      name: 'left',
+      parentDOM: this.DOM.panelsTop
     });
 
     this.DOM.middleColumn = this.DOM.panelsTop.append("div").attr("class","middleColumn");
-
     this.DOM.middleColumn.append("div").attr("class", "recordDisplay")
 
     this.panels.middle = new kshf.Panel({
@@ -2328,7 +2346,7 @@ kshf.Browser = function(options){
         width_catLabel : options.categoryTextWidth || 115,
         browser: this,
         name: 'bottom',
-        parentDOM: this.DOM.root
+        parentDOM: this.DOM.panel_Wrapper
     });
 
     this.insertDOM_AttributePanel();
@@ -2346,6 +2364,8 @@ kshf.Browser = function(options){
     } else {
         this.panel_infobox.attr("show","source");
     }
+    
+    kshf.browsers.push(this);
 };
 
 kshf.Browser.prototype = {
@@ -2393,39 +2413,39 @@ kshf.Browser.prototype = {
     },
     /** -- */
     createSummary: function(name,func,type){
-        if(this.summaries_by_name[name]!==undefined){
-            console.log("createSummary: The summary name["+name+"] is already used. It must be unique. Try again");
-            return;
-        }
-        if(typeof(func)==="string"){
-            var x=func;
-            func = function(){ return this[x]; }
-        }
+      if(this.summaries_by_name[name]!==undefined){
+        console.log("createSummary: The summary name["+name+"] is already used. It must be unique. Try again");
+        return;
+      }
+      if(typeof(func)==="string"){
+        var x=func;
+        func = function(){ return this[x]; }
+      }
 
-        var attribFunc=func || function(d){ return d.data[name]; }
-        if(type===undefined){
-            type = this.getAttribTypeFromFunc(attribFunc);
-        }
-        if(type===null){
-            console.log("Summary data type could not be detected for summary name:"+name);
-            return;
-        }
+      var attribFunc=func || function(d){ return d.data[name]; }
+      if(type===undefined){
+        type = this.getAttribTypeFromFunc(attribFunc);
+      }
+      if(type===null){
+        console.log("Summary data type could not be detected for summary name:"+name);
+        return;
+      }
 
-        var summary;
-        if(type==='categorical'){
-            summary = new kshf.Summary_Categorical();
-        }
-        if(type==='interval'){
-            summary = new kshf.Summary_Interval();
-        }
+      var summary;
+      if(type==='categorical'){
+        summary = new kshf.Summary_Categorical();
+      }
+      if(type==='interval'){
+        summary = new kshf.Summary_Interval();
+      }
 
-        summary.initialize(this,name,func);
+      summary.initialize(this,name,func);
 
-        this.summaries.push(summary);
-        this.summaries_by_name[name] = summary;
+      this.summaries.push(summary);
+      this.summaries_by_name[name] = summary;
 
-        if(this.newSummaryCb) this.newSummaryCb.call(this,summary);
-        return summary;
+      if(this.newSummaryCb) this.newSummaryCb.call(this,summary);
+      return summary;
     },
     /** -- */
     changeSummaryName: function(curName,newName){
@@ -2483,7 +2503,7 @@ kshf.Browser.prototype = {
     /** -- */
     showWarning: function(v){
         this.panel_warningBox.attr("shown",true);
-        this.DOM.warningText.text(v);
+        this.DOM.warningText.html(v);
     },
     /** -- */
     hideWarning: function(){
@@ -2493,7 +2513,7 @@ kshf.Browser.prototype = {
     insertDOM_PanelBasic: function(){
         var me=this;
 
-        this.DOM.panel_Basic = this.DOM.root.append("div").attr("class","panel_Basic");
+        this.DOM.panel_Basic = this.DOM.panel_Wrapper.append("div").attr("class","panel_Basic");
 
         var recordInfo = this.DOM.panel_Basic.append("span")
             .attr("class","recordInfo editableTextContainer")
@@ -2569,8 +2589,82 @@ kshf.Browser.prototype = {
               var c = JSON.stringify(me.exportConfig(),null,'  ');
               var blob = new Blob([c]);//, {type: "text/plain;charset=utf-8"});
               saveAs(blob, "kshf_config.json");
-            });          
+            });
         }
+        rightBoxes.append("i").attr("class","configUser fa fa-user")
+          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Authenticate your Gist" }); })
+          .attr("auth", false)
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout", function(){ this.tipsy.hide(); })
+          .on("click",function(){ 
+            if(this.getAttribute("auth")==="true"){
+              // de-authorize
+              kshf.githubToken = null;
+              this.setAttribute("auth",false)
+            } else {
+              kshf.githubToken = window.prompt("Your Github token (only needs access to gist)", "");
+              if(this.githubToken!==""){
+                this.setAttribute("auth",true);
+              }
+            }
+          });
+        rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-cloud-upload")
+          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Upload Browser Config to Cloud" }); })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout", function(){ this.tipsy.hide(); })
+          .on("click",function(){
+            if(!confirm("The browser will be saved "+
+                ((kshf.githubToken)?"to your gist profile.":"anonymously and public.")
+              )){
+              return;
+            }
+            var e = me.exportConfig();
+            var c = JSON.stringify(e,null,'  ');
+            var description = "Keshif Browser Configuration";
+            // In demo pages, demo_PageTitle gives more context - use it as description
+            if(d3.select("#demo_PageTitle")[0][0]){
+              description = d3.select("#demo_PageTitle").html();
+            }
+
+            // Add authentication data if authentication token is set
+            var headers = {};
+            if(kshf.githubToken) headers.Authorization = "token "+kshf.githubToken;
+            var githubLoad = {
+                description: description,
+                public: true,
+                files: { "kshf_config.json": { content: c }, }
+              };
+
+            // Add style file, if custom style exists
+            var badi = d3.select(document);
+            var badiStyle = badi.select("#kshfStyle");
+            if(badiStyle[0].length > 0 && badiStyle[0][0]!==null){
+              githubLoad.files["kshf_style.css"] = { content: badiStyle.text()};
+            }
+
+            $.ajax(
+              'https://api.github.com/gists', 
+              {
+                method: "POST",
+                dataType: 'json',
+                data: JSON.stringify(githubLoad),
+                headers: headers,
+                success: function(response){
+                  gistURL = response.html_url;
+                  gistID = gistURL.replace(/.*github.*\//g,'');
+                  var keshifGist = "keshif.me/gist?"+gistID;
+                  me.showWarning(
+                    "The browser is saved to "+
+                    "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
+                    "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
+                    )
+                },
+              }
+              ,
+              'json'
+            );
+          });          
+
         rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
             .each(function(d){
                 this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser });
@@ -2607,7 +2701,7 @@ kshf.Browser.prototype = {
             .on("click",function(){ me.showFullscreen();})
             ;
 
-        var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalViz");
+        var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalViz aggrGlyph");
         this.DOM.totalViz_total = adsdasda.append("span").attr("class","aggr total");
         this.DOM.totalViz_active = adsdasda.append("span").attr("class","aggr active");
         this.DOM.totalViz_preview = adsdasda.append("span").attr("class","aggr preview");
@@ -2802,126 +2896,125 @@ kshf.Browser.prototype = {
           .html("<i class='fa fa-file'></i> Local File").attr("source_type","LocalFile");
 
         x.selectAll(".sourceOption").on("click",function(){
-            source_type=this.getAttribute("source_type");
-            me.DOM.infobox_source.attr("selected_source_type",source_type);
-            var placeholder;
-            switch(source_type){
-                case "GoogleSheet": placeholder = 'https://docs.google.com/spreadsheets/d/**************'; break;
-                case "GoogleDrive": placeholder = 'https://******.googledrive.com/host/**************/'; break;
-                case "Dropbox": placeholder = "https://dl.dropboxusercontent.com/u/**************/";
-            }
-            
-            gdocLink.attr("placeholder",placeholder);
+          source_type=this.getAttribute("source_type");
+          me.DOM.infobox_source.attr("selected_source_type",source_type);
+          var placeholder;
+          switch(source_type){
+            case "GoogleSheet": placeholder = 'https://docs.google.com/spreadsheets/d/**************'; break;
+            case "GoogleDrive": placeholder = 'https://******.googledrive.com/host/**************/'; break;
+            case "Dropbox":     placeholder = "https://dl.dropboxusercontent.com/u/**************/";
+          }
+          gdocLink.attr("placeholder",placeholder);
         });
 
         x = source_wrapper.append("div");
         var gdocLink = x.append("input")
-            .attr("type","text")
-            .attr("class","gdocLink")
-            .attr("placeholder",'https://docs.google.com/spreadsheets/d/**************')
-            .on("keyup",function(){
-                gdocLink_ready.style("opacity",this.value===""?"0":"1");
-                var input = this.value;
-                if(source_type==="GoogleSheet"){
-                    var firstIndex = input.indexOf("docs.google.com/spreadsheets/d/");
-                    if(firstIndex!==-1){
-                        var input = input.substr(firstIndex+31); // focus after the base url
-                        if(input.indexOf("/")!==-1){
-                            input = input.substr(0,input.indexOf("/"));
-                        }
-                    }
-                    if(input.length===44){
-                        sourceURL = input;
-                        gdocLink_ready.attr("ready",true);
-                    } else {
-                        sourceURL = null;
-                        gdocLink_ready.attr("ready",false);
-                    }
-                }
-                if(source_type==="GoogleDrive"){
-                    var firstIndex = input.indexOf(".googledrive.com/host/");
-                    if(firstIndex!==-1){
-                        // Make sure last character is "/"
-                        if(input[input.length-1]!=="/") input+="/";
-                        sourceURL = input;
-                        gdocLink_ready.attr("ready",true);
-                    } else{
-                        sourceURL = null;
-                        gdocLink_ready.attr("ready",false);
-                    }
-                }
-                if(source_type==="Dropbox"){
-                    var firstIndex = input.indexOf("dl.dropboxusercontent.com/");
-                    if(firstIndex!==-1){
-                        // Make sure last character is "/"
-                        if(input[input.length-1]!=="/") input+="/";
-                        sourceURL = input;
-                        gdocLink_ready.attr("ready",true);
-                    } else{
-                        sourceURL = null;
-                        gdocLink_ready.attr("ready",false);
-                    }
-                }
-                actionButton.attr("disabled",!readyToLoad());
-            });
+          .attr("type","text")
+          .attr("class","gdocLink")
+          .attr("placeholder",'https://docs.google.com/spreadsheets/d/**************')
+          .on("keyup",function(){
+            gdocLink_ready.style("opacity",this.value===""?"0":"1");
+            var input = this.value;
+            if(source_type==="GoogleSheet"){
+              var firstIndex = input.indexOf("docs.google.com/spreadsheets/d/");
+              if(firstIndex!==-1){
+                  var input = input.substr(firstIndex+31); // focus after the base url
+                  if(input.indexOf("/")!==-1){
+                      input = input.substr(0,input.indexOf("/"));
+                  }
+              }
+              if(input.length===44){
+                  sourceURL = input;
+                  gdocLink_ready.attr("ready",true);
+              } else {
+                  sourceURL = null;
+                  gdocLink_ready.attr("ready",false);
+              }
+            }
+            if(source_type==="GoogleDrive"){
+              var firstIndex = input.indexOf(".googledrive.com/host/");
+              if(firstIndex!==-1){
+                  // Make sure last character is "/"
+                  if(input[input.length-1]!=="/") input+="/";
+                  sourceURL = input;
+                  gdocLink_ready.attr("ready",true);
+              } else {
+                  sourceURL = null;
+                  gdocLink_ready.attr("ready",false);
+              }
+            }
+            if(source_type==="Dropbox"){
+              var firstIndex = input.indexOf("dl.dropboxusercontent.com/");
+              if(firstIndex!==-1){
+                  // Make sure last character is "/"
+                  if(input[input.length-1]!=="/") input+="/";
+                  sourceURL = input;
+                  gdocLink_ready.attr("ready",true);
+              } else {
+                  sourceURL = null;
+                  gdocLink_ready.attr("ready",false);
+              }
+            }
+            actionButton.attr("disabled",!readyToLoad());
+          });
 
         var fileLink = x.append("input")
-            .attr("type","file")
-            .attr("class","fileLink")
-            .on("change",function(){
-                gdocLink_ready.style("opacity",0);
-                var files = d3.event.target.files; // FileList object
-                if(files.length>1){
-                    alert("Please select only one file.");
-                    return;
-                }
-                if(files.length===0){
-                    alert("Please select a file.");
-                    return;
-                }
-                localFile = files[0];
-                switch(localFile.type){
-                    case "application/json": // json
-                        localFile.fileType = "json";
-                        localFile.name = localFile.name.replace(".json","");
-                        break;
-                    case "text/csv": // csv
-                        localFile.fileType = "csv";
-                        localFile.name = localFile.name.replace(".csv","");
-                        break;
-                    case "text/tab-separated-values":  // tsv
-                        localFile.fileType = "tsv";
-                        localFile.name = localFile.name.replace(".tsv","");
-                        break;
-                    default:
-                        localFile = undefined;
-                        actionButton.attr("disabled",true);
-                        alert("The selected file type is not supported (csv, tsv, json)");
-                        return;
-                }
-                localFile.name = localFile.name.replace("_"," ");
-                gdocLink_ready.style("opacity",1);
-                gdocLink_ready.attr("ready",true);
-                actionButton.attr("disabled",false);
-            });
+          .attr("type","file")
+          .attr("class","fileLink")
+          .on("change",function(){
+            gdocLink_ready.style("opacity",0);
+            var files = d3.event.target.files; // FileList object
+            if(files.length>1){
+              alert("Please select only one file.");
+              return;
+            }
+            if(files.length===0){
+              alert("Please select a file.");
+              return;
+            }
+            localFile = files[0];
+            switch(localFile.type){
+              case "application/json": // json
+                localFile.fileType = "json";
+                localFile.name = localFile.name.replace(".json","");
+                break;
+              case "text/csv": // csv
+                localFile.fileType = "csv";
+                localFile.name = localFile.name.replace(".csv","");
+                break;
+              case "text/tab-separated-values":  // tsv
+                localFile.fileType = "tsv";
+                localFile.name = localFile.name.replace(".tsv","");
+                break;
+              default:
+                localFile = undefined;
+                actionButton.attr("disabled",true);
+                alert("The selected file type is not supported (csv, tsv, json)");
+                return;
+            }
+            localFile.name = localFile.name.replace("_"," ");
+            gdocLink_ready.style("opacity",1);
+            gdocLink_ready.attr("ready",true);
+            actionButton.attr("disabled",false);
+          });
 
         x.append("span").attr("class","fa fa-info-circle")
-                .each(function(summary){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){
-                            if(source_type==="GoogleSheet")
-                                return "The link to your Google Sheet";
-                            if(source_type==="GoogleDrive")
-                                return "The link to *hosted* Google Drive folder";
-                            if(source_type==="Dropbox")
-                                return "The link to your *Public* Dropbox folder";
-                            if(source_type==="LocalFile")
-                                return "Select your CSV/TSV/JSON file or drag-and-drop here.";
-                        }
-                    });
-                })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); });
+          .each(function(summary){
+            this.tipsy = new Tipsy(this, {
+              gravity: 's', title: function(){
+                if(source_type==="GoogleSheet")
+                  return "The link to your Google Sheet";
+                if(source_type==="GoogleDrive")
+                  return "The link to *hosted* Google Drive folder";
+                if(source_type==="Dropbox")
+                  return "The link to your *Public* Dropbox folder";
+                if(source_type==="LocalFile")
+                  return "Select your CSV/TSV/JSON file or drag-and-drop here.";
+              }
+            });
+          })
+          .on("mouseenter",function(){ this.tipsy.show(); })
+          .on("mouseleave",function(){ this.tipsy.hide(); });
 
         var gdocLink_ready = x.append("span").attr("class","gdocLink_ready fa").attr("ready",false);
 
@@ -2952,11 +3045,12 @@ kshf.Browser.prototype = {
                 .on("mouseenter",function(){ this.tipsy.show(); })
                 .on("mouseleave",function(){ this.tipsy.hide(); });
 
-            x.append("input").attr("type","text").attr("class","sheetName")
-                .on("keyup",function(){
-                    sourceSheet = this.value;
-                    actionButton.attr("disabled",!readyToLoad());
-                });
+        this.DOM.tableName = x.append("input").attr("type","text").attr("class","tableName")
+          .on("keyup",function(){
+            sourceSheet = this.value;
+            actionButton.attr("disabled",!readyToLoad());
+          });
+
             z=x.append("span").attr("class","fileType_wrapper");
             z.append("span").text(".");
             var DOMfileType = z.append("select").attr("class","fileType");
@@ -2967,44 +3061,14 @@ kshf.Browser.prototype = {
         x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_ID_wrapper")
             x.append("span").attr("class","subheading").text("ID column");
             x.append("span").attr("class","fa fa-info-circle")
-                .each(function(summary){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){ return "The column that uniquely identifies each item.<br><br>If no such column, skip."; }
-                    });
-                })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); });
-            x.append("input").attr("class","sheetColumn_ID").attr("type","text").attr("placeholder","id");
-
-        x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_Split_wrapper")
-            x.append("span").attr("class","subheading").text("Split column");
-            x.append("span").attr("class","fa fa-info-circle")
-                .each(function(summary){
-                    this.tipsy = new Tipsy(this, {
-                        gravity: 's', title: function(){
-                            return "If column has multi-values<br>(ex: action+drama),<br>split values using seperator";
-                        }
-                    });
-                })
-                .on("mouseenter",function(){ this.tipsy.show(); })
-                .on("mouseleave",function(){ this.tipsy.hide(); });
-            x.append("input").attr("type","text").attr("class","sheetColumn_Splitter")
-                .on("keyup",function(){
-                    sheetColumn_sep_wrapper.style("display",this.value!==""?"inline-block":"none");
+              .each(function(summary){
+                this.tipsy = new Tipsy(this, {
+                  gravity: 's', title: function(){ return "The column that uniquely identifies each item.<br><br>If no such column, skip."; }
                 });
-            var sheetColumn_sep_wrapper = x.append("span").attr("class","sheetColumn_sep_wrapper");
-                sheetColumn_sep_wrapper.append("span").text(" with")
-                sheetColumn_sep_wrapper.append("span").attr("class","fa fa-info-circle")
-                    .each(function(summary){
-                        this.tipsy = new Tipsy(this, {
-                            gravity: 's', title: function(){
-                                return "Seperator";
-                            }
-                        });
-                    })
-                    .on("mouseenter",function(){ this.tipsy.show(); })
-                    .on("mouseleave",function(){ this.tipsy.hide(); });;
-                sheetColumn_sep_wrapper.append("input").attr("class","sheetColumn_Seperator").attr("type","text").attr("placeholder","+");
+              })
+              .on("mouseenter",function(){ this.tipsy.show(); })
+              .on("mouseleave",function(){ this.tipsy.hide(); });
+        this.DOM.sheetColumn_ID = x.append("input").attr("class","sheetColumn_ID").attr("type","text").attr("placeholder","id");
 
         var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton")
           .text("Explore it with Keshif")
@@ -3014,22 +3078,8 @@ kshf.Browser.prototype = {
               alert("Please input your data source link and sheet name.");
               return;
             }
-            var sheetID = me.DOM.infobox_source.select(".sheetColumn_ID")[0][0].value;
+            var sheetID = me.DOM.sheetColumn_ID[0][0].value;
             if(sheetID==="") sheetID = "id";
-            var loadedCb_pre = me.loadedCb;
-            me.loadedCb = function(){
-              var splitColumnName = me.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
-              var splitSepName = me.DOM.infobox_source.select(".sheetColumn_Seperator")[0][0].value;
-              if(splitColumnName){
-                kshf.Util.cellToArray(this.items, [splitColumnName], splitSepName, false);
-              }
-              if(loadedCb_pre) loadedCb_pre.call(this,this);
-            };
-            var readyCb_pre = me.readyCb;
-            me.readyCb = function(){
-              me.enableAuthoring();
-              if(readyCb_pre) readyCb_pre.call(this,this);
-            }
             switch(source_type){
               case "GoogleSheet":
                 me.loadSource({
@@ -3059,13 +3109,14 @@ kshf.Browser.prototype = {
                 });
                 break;
             }
+            setTimeout(function(){ me.enableAuthoring(); }, 1000);
           });
     },
     /** -- */
     insertDOM_AttributePanel: function(){
       var me=this;
 
-      this.DOM.attributePanel = this.DOM.root.append("div").attr("class","panel attributePanel");
+      this.DOM.attributePanel = this.DOM.root.append("div").attr("class","attributePanel");
       
       var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
       xx.append("span").text("Available Attributes");
@@ -3074,8 +3125,7 @@ kshf.Browser.prototype = {
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
         .on("click",function(){
-          me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
-          me.insertNuggets();
+          summary = me.createSummary("[New]",function(){ return this.Name;}, 'categorical');
         });
       xx.append("span").attr("class","hidePanel fa fa-times")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
@@ -3150,6 +3200,21 @@ kshf.Browser.prototype = {
         });
       this.DOM.dropZone_AttribList.append("span").attr("class","dropIcon fa fa-angle-double-down");
       this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
+
+      this.DOM.attributeList.append("div").attr("class","newAttribute").html("<i class='fa fa-plus-square'></i>")
+        .on("click",function(){
+          var name = prompt("The summary name");
+          if(name===null) return; // cancel
+          var func = prompt("The summary function");
+          if(func===null) return; // cancel
+          var safeFunc = undefined;
+          eval("\"use strict\"; safeFunc = function(d){"+func+"}");
+          if(typeof safeFunc !== "function"){
+            alert("You did not specify a function with correct format. Cannot specify new attribute.");
+            return;
+          }
+          me.createSummary(name,safeFunc);
+        });
     },
     /** -- */
     updateItemZoomText: function(item){
@@ -3172,6 +3237,8 @@ kshf.Browser.prototype = {
       if(v===undefined) v = !this.authoringMode; // if undefined, invert
       this.authoringMode = v;
       this.DOM.root.attr("authoringMode",this.authoringMode);
+
+      this.updateLayout();
 
       var lastIndex = 0, me=this;
       var initAttib = function(){
@@ -3507,7 +3574,15 @@ kshf.Browser.prototype = {
     _loadCharts: function(){
         var me=this;
 
-        if(this.loadedCb!==undefined) this.loadedCb.call(this);
+        if(this.options.loadedCb){
+          if(typeof this.options.loadedCb === "string" && this.options.loadedCb.substr(0,8)==="function"){
+            // Evaluate string to a function!!
+            eval("\"use strict\"; this.options.loadedCb = "+this.options.loadedCb);
+          }
+          if(typeof this.options.loadedCb === "function") {
+            this.options.loadedCb.call(this);
+          }
+        }
 
         // Total
         this.itemsTotal_Aggregrate_Total = 0;
@@ -3620,6 +3695,10 @@ kshf.Browser.prototype = {
               summary.setCatTable(facetDescr.catTableName);
             }
             if(facetDescr.catLabel){
+              // if this is a function definition, evaluate it
+              if(typeof facetDescr.catLabel === "string" && facetDescr.catLabel.substr(0,8)==="function"){
+                eval("\"use strict\"; facetDescr.catLabel = "+facetDescr.catLabel);
+              }
               summary.setCatLabel(facetDescr.catLabel);
             }
             if(facetDescr.catTooltip){
@@ -3714,15 +3793,18 @@ kshf.Browser.prototype = {
         // hide infobox
         this.panel_infobox.attr("show","none");
 
-        this.insertNuggets();
-
         this.reorderNuggetList();
 
         if(this.recordDisplay.displayType==="map") {
           this.recordDisplay.map_zoomToWanted();
         }
 
-        if(this.readyCb!==undefined) this.readyCb(this);
+        if(typeof this.readyCb === "string" && this.readyCb.substr(0,8)==="function"){
+          eval("\"use strict\"; this.readyCb = "+this.readyCb);
+        }
+        if(typeof this.readyCb === "function") {
+          this.readyCb(this);
+        }
         this.finalized = true;
 
         setTimeout(function(){ me.setNoAnim(false); },1000);
@@ -3771,175 +3853,6 @@ kshf.Browser.prototype = {
 
       var x=this.DOM.attributeList;
       x.selectAll(".nugget").data(this.summaries, function(d,i){return d.id;}).order();
-    },
-    insertAttributeList: function(){
-      return this.insertNuggets();
-    },
-    /** -- */
-    insertNuggets: function(){
-      var me=this;
-      var newAttributes = this.DOM.attributeList.selectAll(".nugget")
-        .data(this.summaries, function(d,i){return d.id;}).enter();
-
-      this.attribMoved = false;
-
-      var newNuggets = newAttributes
-        .append("div").attr("class","nugget editableTextContainer")
-        .each(function(summary){
-          summary.DOM.nugget = d3.select(this);
-          summary.refreshNuggetDisplay();
-        })
-        .attr("title",function(summary){
-          if(summary.summaryColumn!==undefined) return summary.summaryColumn;
-        })
-        .attr("state",function(summary){
-          if(summary.summaryColumn===null) return "custom"; // calculated
-          if(summary.summaryName===summary.summaryColumn) return "exact";
-          return "edited";
-        })
-        .attr("datatype",function(summary){
-          return summary.getDataType();
-        })
-        .attr("aggr_initialized",function(summary){
-          return summary.aggr_initialized;
-        })
-        .on("dblclick",function(summary){
-          me.autoAddSummary(summary);
-          me.updateLayout();
-        })
-        .on("mousedown",function(summary){
-          if(d3.event.which !== 1) return; // only respond to left-click
-
-          var _this = this;
-          me.attribMoved = false;
-          d3.select("body")
-            .on("keydown", function(){
-              if(event.keyCode===27){ // Escape key
-                _this.removeAttribute("moved");
-                me.clearDropZones();
-              }
-            })
-            .on("mousemove", function(){
-              if(!me.attribMoved){
-                _this.setAttribute("moved","");
-                me.prepareDropZones(summary,"attributePanel");
-                me.attribMoved = true;
-              }
-              var mousePos = d3.mouse(me.DOM.root[0][0]);
-              kshf.Util.setTransform(me.DOM.attribDragBox[0][0],
-                  "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
-              d3.event.stopPropagation();
-              d3.event.preventDefault();
-            })
-            .on("mouseup", function(){
-              if(!me.attribMoved) return;
-              _this.removeAttribute("moved");
-              me.DOM.root.attr("drag_cursor",null);
-              me.clearDropZones();
-              d3.event.preventDefault();
-            });
-          d3.event.preventDefault();
-        })
-        .on("mouseup",function(summary){
-          if(me.attribMoved===false) me.unregisterBodyCallbacks();
-        });
-
-      var nuggetViz = newNuggets.append("span").attr("class","nuggetViz")
-        .each(function(summary){
-          this.tipsy = new Tipsy(this, {
-            gravity: 'e', title: function(){
-              return  (!summary.aggr_initialized) ? "Click to initialize" : summary.getDataType();
-            }
-          })
-        })
-        .on("mousedown",function(summary){
-          if(!summary.aggr_initialized){
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-          }
-        })
-        .on("click",function(summary){
-          if(!summary.aggr_initialized) summary.initializeAggregates();
-        });
-
-      nuggetViz.append("span").attr("class","nuggetInfo fa");
-      var nuggetChart = nuggetViz.append("span").attr("class","nuggetChart");
-      newNuggets.append("span").attr("class","summaryName editableText")
-        .attr("contenteditable",false)
-        .text(function(summary){ return summary.summaryName; })
-        .on("blur",function(summary){
-          this.parentNode.setAttribute("edittitle",false);
-          this.setAttribute("contenteditable",false);
-          me.changeSummaryName(summary.summaryName,this.textContent);
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        })
-        .on("keydown",function(summary){
-          if(d3.event.keyCode===13){ // ENTER
-            this.parentNode.setAttribute("edittitle",false);
-            this.setAttribute("contenteditable",false);
-            me.changeSummaryName(summary.summaryName,this.textContent);
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-          }
-        })
-          ;
-      newNuggets.append("div").attr("class","fa editTextButton")
-        .each(function(summary){
-          this.tipsy = new Tipsy(this, {
-            gravity: 'w', title: function(){
-              var curState=this.parentNode.getAttribute("edittitle");
-              return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
-            }
-          });
-        })
-        .on("mouseenter",function(){ this.tipsy.show(); })
-        .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("mousedown",function(summary){
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        })
-        .on("click",function(summary){
-          this.tipsy.hide();
-          var parentDOM = d3.select(this.parentNode);
-          var summaryName = parentDOM.select(".summaryName");
-          var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
-
-          var curState=this.parentNode.getAttribute("edittitle");
-          if(curState===null || curState==="false"){
-            this.parentNode.setAttribute("edittitle",true);
-            summaryName_DOM.setAttribute("contenteditable",true);
-            summaryName_DOM.focus();
-          } else {
-            this.parentNode.setAttribute("edittitle",false);
-            summaryName_DOM.setAttribute("contenteditable",false);
-            me.changeSummaryName(summary.summaryName,summaryName_DOM.textContent);
-          }
-          // stop dragging event start
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        });
-
-      newNuggets.append("div").attr("class","fa fa-code editCodeButton")
-        .each(function(summary){
-          this.tipsy = new Tipsy(this, { gravity: 'w', title: function(){ return "Edit Function"; } });
-        })
-        .on("mouseenter",function(){ this.tipsy.show(); })
-        .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("mousedown",function(summary){
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        })
-        .on("click",function(summary){
-          alert("TODO: Edit this:\n"+summary.getFuncString());
-          // stop dragging event start
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        });
-
-      this.summaries.forEach(function(summary){
-        if(summary.aggr_initialized) summary.refreshViz_Nugget();
-      });
     },
     /** -- */
     autoCreateBrowser: function(){
@@ -4083,17 +3996,21 @@ kshf.Browser.prototype = {
       });
       if(this.comparedAggregate){
         this.comparedAggregate.DOM.aggrGlyph.setAttribute("compare",false);
+        this.comparedAggregate.items.forEach(function(record){
+          if(record.DOM.record===undefined) return;
+          record.DOM.record.setAttribute("recCompared","false");
+        });
         this.comparedAggregate = null;
       }
       if(this.previewCompareCb) this.previewCompareCb.call(this,true);
     },
     /** -- */
     setSelect_Compare: function(selSummary,selAggregate){
-      if(this.comparedAggregate){
+      if(this.vizCompareActive){
         var reclick = selAggregate===this.comparedAggregate;
-        this.clearSelect_Compare();
+        this.clearSelect_Compare(); // unset compare selection in aggregates
         if(reclick) {
-          this.clearSelect_Compare_Crumb();
+          this.clearSelect_Compare_Crumb(); // remove selection compare selection fully
           return;
         }
       }
@@ -4108,6 +4025,15 @@ kshf.Browser.prototype = {
         summary.refreshViz_Compare();
       });
 
+      selAggregate.items.forEach(function(record){
+        if(record.DOM.record===undefined) return;
+        record.DOM.record.setAttribute("recCompared","true");
+      });
+
+      this.recordDisplay.refresh_Compare();
+
+      // **************************
+      // CRUMB
       if(this.compareSelectCrumb===null){
         this.compareSelectCrumb = this.insertDOM_crumb("compare");
       }
@@ -4121,6 +4047,7 @@ kshf.Browser.prototype = {
         valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
       }
       this.compareSelectCrumb.select(".filterDetails").html(valText);
+      // **************************
 
       if(this.previewCompareCb) this.previewCompareCb.call(this,false);
     },
@@ -4358,6 +4285,7 @@ kshf.Browser.prototype = {
     updateMiddlePanelWidth: function(){
       // for some reason, on page load, this variable may be null. urgh.
       var widthMiddlePanel = this.divWidth;
+      if(this.authoringMode) widthMiddlePanel-=kshf.attribPanelWidth;
       var marginLeft = 0;
       var marginRight = 0;
       if(this.panels.left.summaries.length>0){
@@ -4410,6 +4338,15 @@ kshf.Browser.prototype = {
       config.leftPanelLabelWidth = this.panels.left.width_catLabel;
       config.rightPanelLabelWidth = this.panels.right.width_catLabel;
       config.middlePanelLabelWidth = this.panels.middle.width_catLabel;
+
+      if(typeof this.options.loadedCb === "function"){
+        config.loadedCb = this.options.loadedCb.toString();
+      }
+
+      if(typeof this.readyCb === "function"){
+        config.readyCb = this.readyCb.toString();
+      }
+
       ['left', 'right', 'middle', 'bottom'].forEach(function(p){
         // Need to export summaries in-order of the panel appearance
         // TODO: Export summaries not within browser...
@@ -4432,33 +4369,35 @@ kshf.Browser.prototype = {
 kshf.Summary_Base = function(){}
 kshf.Summary_Base.prototype = {
     initialize: function(browser,name,attribFunc){
-        this.id = ++kshf.summaryCount;
-        this.browser = browser;
+      this.id = ++kshf.summaryCount;
+      this.browser = browser;
 
-        this.summaryName   = name;
-        this.summaryColumn = attribFunc?null:name;
-        this.summaryFunc   = attribFunc || function(){ return this[name]; };
+      this.summaryName   = name;
+      this.summaryColumn = attribFunc?null:name;
+      this.summaryFunc   = attribFunc || function(){ return this[name]; };
 
-        this.chartScale_Measure = d3.scale.linear().clamp(true);
+      this.chartScale_Measure = d3.scale.linear().clamp(true);
 
-        this.DOM = {};
-        this.DOM.inited = false;
+      this.DOM = {};
+      this.DOM.inited = false;
 
-        this.items = this.browser.items;
-        if(this.items===undefined||this.items===null||this.items.length===0){
-            alert("Error: Browser.items is not defined...");
-            return;
-        }
+      this.items = this.browser.items;
+      if(this.items===undefined||this.items===null||this.items.length===0){
+        alert("Error: Browser.items is not defined...");
+        return;
+      }
 
-        this.isRecordView = false;
+      this.isRecordView = false;
 
-        // Only used when summary is inserted into browser
-        this.collapsed_pre = false;
-        this.collapsed = false;
+      // Only used when summary is inserted into browser
+      this.collapsed_pre = false;
+      this.collapsed = false;
 
-        this.aggr_initialized = false;
+      this.aggr_initialized = false;
 
-        this.createSummaryFilter();
+      this.createSummaryFilter();
+
+      this.insertNugget();
     },
     /** -- */
     setSummaryName: function(name){
@@ -4513,28 +4452,32 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     destroy_full: function(){
-        this.destroy();
-        // TODO: Properly destroy this using nugget handlers...
-        this.DOM.nugget[0][0].parentNode.removeChild(this.DOM.nugget[0][0]);
+      this.destroy();
+      // TODO: Properly destroy this using nugget handlers...
+      var nuggetDOM = this.DOM.nugget[0][0];
+      if(nuggetDOM && nuggetDOM.parentNode) nuggetDOM.parentNode.removeChild(nuggetDOM);
     },
     /** -- */
     destroy: function(){
-        delete this.browser.summaries_by_name[this.summaryName];
-        if(this.summaryColumn)
-            delete this.browser.summaries_by_name[this.summaryColumn];
-        this.browser.removeSummary(this);
-        if(this.DOM.root){
-            this.DOM.root[0][0].parentNode.removeChild(this.DOM.root[0][0]);
-        }
+      delete this.browser.summaries_by_name[this.summaryName];
+      if(this.summaryColumn)
+        delete this.browser.summaries_by_name[this.summaryColumn];
+      this.browser.removeSummary(this);
+      if(this.DOM.root){
+        this.DOM.root[0][0].parentNode.removeChild(this.DOM.root[0][0]);
+      }
+      if(this.DOM.nugget){
+        this.DOM.nugget[0][0].parentNode.removeChild(this.DOM.nugget[0][0]);
+      }
     },
     /** -- */
     inBrowser: function(){
-        return this.panel!==undefined;
+      return this.panel!==undefined;
     },
     /** -- */
     clearDOM: function(){
-        var dom = this.DOM.root[0][0];
-        dom.parentNode.removeChild(dom);
+      var dom = this.DOM.root[0][0];
+      dom.parentNode.removeChild(dom);
     },
     /** -- */
     getWidth: function(){
@@ -4548,16 +4491,14 @@ kshf.Summary_Base.prototype = {
     /** -- */
     getHeight_Header: function(){
       if(this._height_header==undefined) {
-          this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
+        this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
       }
       return this._height_header;
     },
     /** -- */
     uniqueCategories: function(){
-        if(this.browser && this.browser.items[0].idIndex===this.summaryName){
-            return true;
-        }
-        return false;
+      if(this.browser && this.browser.items[0].idIndex===this.summaryName) return true;
+      return false;
     },
     /** -- */
     isFiltered: function(){
@@ -4570,9 +4511,9 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     getFuncString: function(){
-        var str=this.summaryFunc.toString();
-        // replace the beginning, and the end
-        return str.replace(/function\s*\(\w*\)\s*{\s*/,"").replace(/}$/,"");
+      var str=this.summaryFunc.toString();
+      // replace the beginning, and the end
+      return str.replace(/function\s*\(\w*\)\s*{\s*/,"").replace(/}$/,"");
     },
     /** -- */
     addToPanel: function(panel, index){
@@ -4613,16 +4554,182 @@ kshf.Summary_Base.prototype = {
       this.refreshWidth();
     },
     /** -- */
+    insertNugget: function(){
+      var me=this;
+      if(this.DOM.nugget) return;
+      this.attribMoved = false;
+
+      this.DOM.nugget = this.browser.DOM.attributeList
+        .append("div").attr("class","nugget editableTextContainer")
+        .each(function(){
+          this.__data__ = me;
+        })
+        .attr("title", (this.summaryColumn!==undefined) ? this.summaryColumn : undefined )
+        .attr("state",function(){
+          if(me.summaryColumn===null) return "custom"; // calculated
+          if(me.summaryName===me.summaryColumn) return "exact";
+          return "edited";
+        })
+        .attr("datatype", this.getDataType() )
+        .attr("aggr_initialized", this.aggr_initialized )
+        .on("dblclick",function(){
+          me.browser.autoAddSummary(me);
+          me.browser.updateLayout();
+        })
+        .on("mousedown",function(){
+          if(d3.event.which !== 1) return; // only respond to left-click
+
+          var _this = this;
+          me.attribMoved = false;
+          d3.select("body")
+            .on("keydown", function(){
+              if(event.keyCode===27){ // Escape key
+                _this.removeAttribute("moved");
+                me.browser.clearDropZones();
+              }
+            })
+            .on("mousemove", function(){
+              if(!me.attribMoved){
+                _this.setAttribute("moved","");
+                me.browser.prepareDropZones(me,"attributePanel");
+                me.attribMoved = true;
+              }
+              var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
+              kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
+                  "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
+              d3.event.stopPropagation();
+              d3.event.preventDefault();
+            })
+            .on("mouseup", function(){
+              if(!me.attribMoved) return;
+              _this.removeAttribute("moved");
+              me.browser.DOM.root.attr("drag_cursor",null);
+              me.browser.clearDropZones();
+              d3.event.preventDefault();
+            });
+          d3.event.preventDefault();
+        })
+        .on("mouseup",function(){
+          if(me.attribMoved===false) me.browser.unregisterBodyCallbacks();
+        });
+
+      this.DOM.nuggetViz = this.DOM.nugget.append("span").attr("class","nuggetViz")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'e', title: function(){
+              return  (!me.aggr_initialized) ? "Click to initialize" : me.getDataType();
+            }
+          })
+        })
+        .on("mousedown",function(){
+          if(!me.aggr_initialized){
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+          }
+        })
+        .on("click",function(){
+          if(!me.aggr_initialized) me.initializeAggregates();
+        });
+
+      this.DOM.nuggetViz.append("span").attr("class","nuggetInfo fa");
+      
+      this.DOM.nuggetViz.append("span").attr("class","nuggetChart");
+      this.DOM.nugget.append("span").attr("class","summaryName editableText")
+        .attr("contenteditable",false)
+        .text(function(){ return me.summaryName; })
+        .on("blur",function(){
+          this.parentNode.setAttribute("edittitle",false);
+          this.setAttribute("contenteditable",false);
+          me.browser.changeSummaryName(me.summaryName,this.textContent);
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("keydown",function(){
+          if(d3.event.keyCode===13){ // ENTER
+            this.parentNode.setAttribute("edittitle",false);
+            this.setAttribute("contenteditable",false);
+            me.browser.changeSummaryName(me.summaryName,this.textContent);
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+          }
+        });
+
+      this.DOM.nugget.append("div").attr("class","fa editTextButton")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'w', title: function(){
+              var curState=this.parentNode.getAttribute("edittitle");
+              return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
+            }
+          });
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mousedown",function(){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("click",function(){
+          this.tipsy.hide();
+          var parentDOM = d3.select(this.parentNode);
+          var summaryName = parentDOM.select(".summaryName");
+          var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
+
+          var curState=this.parentNode.getAttribute("edittitle");
+          if(curState===null || curState==="false"){
+            this.parentNode.setAttribute("edittitle",true);
+            summaryName_DOM.setAttribute("contenteditable",true);
+            summaryName_DOM.focus();
+          } else {
+            this.parentNode.setAttribute("edittitle",false);
+            summaryName_DOM.setAttribute("contenteditable",false);
+            me.browser.changeSummaryName(me.summaryName,summaryName_DOM.textContent);
+          }
+          // stop dragging event start
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        });
+
+      this.DOM.nugget.append("div").attr("class","fa fa-code editCodeButton")
+        .each(function(){
+          this.tipsy = new Tipsy(this, { gravity: 'w', title: function(){ return "Edit Function"; } });
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mousedown",function(){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("click",function(){
+          var safeFunc, func = window.prompt("Specify the function:", me.getFuncString());
+          if(func!==null){
+            var safeFunc;
+            eval("\"use strict\"; safeFunc = function(d){"+func+"}");
+            me.browser.createSummary(me.summaryName,safeFunc);
+          }
+          // stop dragging event start
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        });
+
+      this.refreshNuggetDisplay();
+      if(this.aggr_initialized) this.refreshViz_Nugget();
+    },
+    /** -- */
     refreshNuggetDisplay: function(){
       if(this.DOM.nugget===undefined) return;
       var me=this;
       var nuggetHidden = (this.panel||this.isRecordView);
       if(nuggetHidden){
         this.DOM.nugget.attr('anim','disappear');
-        setTimeout(function(){ me.DOM.nugget.attr('hidden','true'); },700);
+        setTimeout(function(){ 
+          me.DOM.nugget.attr('hidden','true');
+        },700);
       } else {
         this.DOM.nugget.attr("hidden",false);
-        setTimeout(function(){ me.DOM.nugget.attr('anim','appear'); },300);
+        setTimeout(function(){
+          me.DOM.nugget.attr('anim','appear');
+        },300);
       }
     },
     /** -- */
@@ -5049,6 +5156,9 @@ kshf.Summary_Base.prototype = {
         }
         // TODO: support 'inverse' option
       };
+      if(this.catTableName_custom){
+        config.catTableName = this.catTableName;
+      }
       return config;
     }
 };
@@ -5383,6 +5493,7 @@ var Summary_Categorical_functions = {
   /** -- */
   setCatTable: function(tableName){
     this.catTableName = tableName;
+    this.catTableName_custom = true;
     if(this.aggr_initialized){
       this.mapToAggregates();
       this.updateCats();
@@ -6621,7 +6732,7 @@ var Summary_Categorical_functions = {
       if(ctgry.DOM.matrixRow) ctgry.DOM.matrixRow.setAttribute("highlight",false);
 
       if(!this.isCatSelectable(ctgry)) return;
-      ctgry.nohighlightAll(true);
+      ctgry.nohighlightAggregate();
 
       if(!this.browser.pauseResultPreview){
         ctgry.DOM.aggrGlyph.setAttribute("showlock",false);
@@ -7323,7 +7434,6 @@ var Summary_Interval_functions = {
         this.detectScaleType();
 
         this.aggr_initialized = true;
-
         this.refreshViz_Nugget();
     },
     /** -- */
@@ -8226,6 +8336,7 @@ var Summary_Interval_functions = {
 
         var newBins=activeBins.enter().append("span").attr("class","aggrGlyph rangeGlyph")
             .each(function(aggr){
+              aggr.items = aggr;
               aggr.isVisible = true;
               aggr.aggregate_Preview=0;
               aggr.forEach(function(record){ record.mappedDataCache[filterId].b = aggr; },this);
@@ -8534,7 +8645,7 @@ var Summary_Interval_functions = {
         controlLine.selectAll(".handle").data(['min','max']).enter()
             .append("span").attr("class",function(d){ return "handle "+d; })
             .each(function(d,i){
-                this.tipsy = new Tipsy(this, { gravity: i==0?"e":"w", title: kshf.lang.cur.DragToFilter });
+                this.tipsy = new Tipsy(this, { gravity: i==0?"w":"e", title: kshf.lang.cur.DragToFilter });
             })
             .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); })

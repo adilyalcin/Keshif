@@ -18,20 +18,13 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  resizeBrowser(250,70);
-  $(window).resize(function() {
-    resizeBrowser(250,70);
-    browser.updateLayout();
-  });
-
-  var dateFormat = d3.time.format("%d %b, 2015");
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     itemName: "Music Album Reviews 2015",
-    leftPanelLabelWidth: 130,
-    rightPanelLabelWidth: 130,
+    leftPanelLabelWidth: 150,
+    rightPanelLabelWidth: 150,
+    barChartWidth: 150,
     source: {
       gdocId: '1NnL4D55nF-OlOWZBDkrTqP3vChAHTNEncmBJmaymgs8',
       tables: "Albums"
@@ -93,6 +86,7 @@ google.setOnLoadCallback(function(){
       sortBy: { name: "AoTY", inverse: false},
       textSearch: { name: "Artist & Album", value: function(){return this["Artist"]+" "+this.Album; } },
       recordView: function(){ 
+        var dateFormat = d3.time.format("%d %b, 2015");
         return ""+
           "<a target='_blank' href='"+this["Album_url"]+"''><img class='albumCover' src='"+this.Thumbnail+"'></a>"+
           "<a class='artistName' target='_blank' href='"+this["Artist Profile URL"]+"'>"+this["Artist"]+"</a> "+
@@ -111,7 +105,7 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .rSite{
   color: gray;
   text-decoration: none;
@@ -164,15 +158,15 @@ google.setOnLoadCallback(function(){
   font-size: 0.7em;
   margin: 2px;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Music Album Reviews - 2015</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Music Album Reviews - 2015</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data Re-Vis, from
       <a href='http://www.cs.ubc.ca/~brehmer/' target='_blank'>Matt Brehmer</a>'s 
       <a href='http://mattbrehmer.github.io/SoundConsensus/2015/' target='_blank'>SoundConsensus 2015</a>.

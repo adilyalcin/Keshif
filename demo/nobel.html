@@ -14,27 +14,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-
     <script type="text/javascript">
-
-function getGender(genderValue){
-  switch(genderValue){
-    case 1: return "Male";
-    case 2: return "Female";
-    case 3: return "Organization";
-  }
-};
-
 $(document).ready( function(){
-  resizeBrowser(50,50);
-  $(window).resize(function() {
-    resizeBrowser(50,50);
-    browser.updateLayout();
-  });
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Laureates",
     categoryTextWidth: 190,
     leftPanelLabelWidth: 120,
@@ -51,8 +34,12 @@ $(document).ready( function(){
         summaries: [{ name: "# of Winners", value: function(d){ return d.items.length; } }] },
       { name: "Joint Awards", catLabel: function() { return this.id+" awardee"+(this.id===1?"":"s"); } },
       { name: "Gender",
-        value: function(){ return getGender(kshf.dt_id.Laureates[this.laureate_id].data.gender); },
-        catLabel: function(){ return this.id+" "+getIcon(this.id); } },
+        value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.gender; },
+        catLabel: {
+          1: "Male <i class='fa fa-male'></i>",
+          2: "Female <i class='fa fa-female'></i>",
+          3: "Organization <i class='fa fa-university'></i>"
+        } },
       { name: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }, }
     ],
     recordDisplay: {
@@ -82,7 +69,7 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .attrib .fa{
   width: 15px;
   text-align: center;
@@ -100,12 +87,12 @@ $(document).ready( function(){
 .laureateName{
   font-weight: 700;
 }
-        </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Nobel Prize Winners</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Nobel Prize Winners</div>
+      <div id="demo_Browser"></div>
       </div>
   </body>
 </html>

@@ -16,14 +16,8 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  resizeBrowser(300,70);
-  $(window).resize(function() {
-    resizeBrowser(300,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 200,
@@ -64,7 +58,7 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 90px;
   box-shadow: none !important;
@@ -81,25 +75,27 @@ google.setOnLoadCallback(function(){
 .kshfRecord .content img:hover{
   transform: scale(1.5);
 }
-
 .subTitle{
   font-size: 0.7em !important;
 }
-
 .thumbnail{
   overflow: visible !important;
 }
-
 .content img.thumbImg{
   transition: all 200ms linear;
   -webkit-transition: all 200ms linear;
   -o-transition: all 200ms linear;
   -moz-transition: all 200ms linear;
 }
-
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from <a href="https://github.com/seankross/lego" target="_blank">https://github.com/seankross/lego</a>
+    </div>
   </body>
 </html>

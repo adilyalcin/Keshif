@@ -15,17 +15,11 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
     <script type="text/javascript">
 
-var timeFormat = d3.time.format("%B %d, %Y");
-
 google.setOnLoadCallback(function(){
-  resizeBrowser(100,80);
-  $(window).resize(function() {
-    resizeBrowser(100,80);
-    browser.updateLayout();
-  });
+  var timeFormat = d3.time.format("%B %d, %Y");
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 160,
     rightPanelLabelWidth: 120,
@@ -58,8 +52,8 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: calc(100% - 100px);
   height: 650px;
 }
@@ -101,15 +95,15 @@ google.setOnLoadCallback(function(){
   -o-transition: all 200ms linear;
   -moz-transition: all 200ms linear;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Cover Pages of the Time Magazine (1923 - 2006)</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Cover Pages of the Time Magazine (1923 - 2006)</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       Data from <a href="http://content.time.com/time/coversearch/" target='_blank'>Time Magazine Cover search</a> and
       <a href="http://www.coverbrowser.com/covers/time/" target='_blank'>Cover Browser</a>.
       </div>

@@ -20,15 +20,8 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-	resizeBrowser(280,60);
-	$(window).resize(function() {
-		resizeBrowser(280,60);
-		browser.updateLayout();
-	});
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
-    showResizeCorner: true,
+    domID: "#demo_Browser",
     categoryTextWidth: 160,
   	readyCb: function(browser){
   		browser.summaries.forEach(function(summary){
@@ -39,5 +32,8 @@ google.setOnLoadCallback(function(){
 });
     </script>
 	</head>
-  <body><div class="contents"><div id="chart_div"></div></div></body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div></div>
+      </body>
 </html>

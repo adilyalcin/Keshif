@@ -29,9 +29,9 @@ google.setOnLoadCallback(function() {
     h = Math.max(h,500);
     w = Math.max(w,700);
     w-=50;
-    if($('#chart_div').height()===h && $('#chart_div').width()===w) return false;
-    $('#chart_div').height(h);
-    $('#chart_div').width (w);
+    if($('#demo_Browser').height()===h && $('#demo_Browser').width()===w) return false;
+    $('#demo_Browser').height(h);
+    $('#demo_Browser').width (w);
     return true;
   }
 
@@ -41,7 +41,7 @@ google.setOnLoadCallback(function() {
   });
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth:185,
     source: {
       gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
@@ -159,7 +159,7 @@ google.setOnLoadCallback(function() {
   font-variant: small-caps;
 }
 
-#chart_div {
+#demo_Browser {
   background-color: white;
   margin: 0px 25px 20px 25px;
 }
@@ -297,7 +297,7 @@ body {
 <!--            <a href="http://www.cs.umd.edu/hcil"><img alt="" src="http://www.cs.umd.edu/~bederson/images/hcil-logo-small.gif" height="60" width="80" border="0"></a>-->
             </h2>
         </div>
-    	<div id="chart_div"></div>
+    	<div id="demo_Browser"></div>
     </div>
 </body>
 </html>

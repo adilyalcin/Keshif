@@ -17,26 +17,26 @@
 
     <script type="text/javascript">
 function dataLoad(browser){
-    $.ajax({
-        //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-        // url: "./data_private/dc_homicides.json", // original source
-        url: "./data/dc_homicides.json",
-        success: function(data){
-            browser.primaryTableName = "Victims";
-            kshf.dt.Victims = [];
-            data.objects.forEach(function(vic){
-                vic.id = 1*vic.id;
-                vic.incident_date = moment(vic.incident_date).toDate();
-                kshf.dt.Victims.push(new kshf.Item(vic,"id"));
-            });
-            browser.loadCharts();
-        }
-    });
+  $.ajax({
+    //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+    // url: "./data_private/dc_homicides.json", // original source
+    url: "./data/dc_homicides.json",
+    success: function(data){
+      browser.primaryTableName = "Victims";
+      kshf.dt.Victims = [];
+      data.objects.forEach(function(vic){
+        vic.id = 1*vic.id;
+        vic.incident_date = moment(vic.incident_date).toDate();
+        kshf.dt.Victims.push(new kshf.Item(vic,"id"));
+      });
+      browser.loadCharts();
+    }
+  });
 };
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
     source: {
       url: "http://apps.washingtonpost.com/investigative/homicides/",
@@ -72,20 +72,17 @@ $(document).ready( function(){
   });
 });
 </script>
-    <style>
-#chart_div {
-  width:800px;
-  height:700px;
-}
-    </style>
+<style id="kshfStyle">
+#demo_Browser{ max-width: 800px;  }
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">Homicides in Washington D.C. (2000-2011)</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the 
         <b>Washington Post</b>.
       </div>

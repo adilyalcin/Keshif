@@ -82,9 +82,9 @@ function loadData(browser){
 $(document).ready( function(){
 
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 200,
-    itemName: "Publications of Ben Shneiderman",
+    itemName: "Publications",
     source: {
       url: "https://www.cs.umd.edu/users/ben/publications.html",
       callback: loadData
@@ -149,12 +149,7 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
-#chart_div{
-  margin-top: 20px;
-  width:1150px;
-  height: 650px;
-}
+<style id="kshfStyle">
 .kshfRecord {
   max-height: 230px !important;
   vertical-align: top;
@@ -237,8 +232,11 @@ $(document).ready( function(){
 </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="demoInfobox">
+    <div class="contents">
+      <div id="demo_PageTitle">Publications of Ben Shneiderman</div>
+      <div id="demo_Browser"></div>
+      </div>
+    <div id="demo_Infobox">
       This page uses data from
       <a href="https://www.cs.umd.edu/users/ben/publications.html" target="_blank">Ben Shneiderman's publications page</a>.
       All data is parsed from Bibtex.

@@ -103,27 +103,18 @@ function dataLoad(browser){
 };
 
 $(document).ready(function(){
-    function resizeBrowser(){
-        $('#chart_div').height($(window).height()-130);
-    };
-    resizeBrowser();
-    $(window).resize(function() {
-        resizeBrowser();
-        browser.updateLayout();
-    });
-
     browser = new kshf.Browser({
-        domID: "#chart_div",
-        barChartWidth: 90,
-        leftPanelLabelWidth: 290,
+        domID: "#demo_Browser",
+        barChartWidth: 160,
         middlePanelLabelWidth: 290,
+        rightPanelLabelWidth: 290,
         source: {
             url: "http://visualizingbuffy.com/season1.html",
             // http://visualizingbuffy.com/data/season1_data.js
             callback: dataLoad
         },
         summaries: [
-            {   name: "Episode", panel: 'middle',
+            {   name: "Episode", panel: 'right',
                 catSortBy: "ep_id",
                 catTableName: "Episodes", catTooltip: "Synopsis",
                 catLabel: function(){ return this.Name+" <span class='episodeId'>[Ep."+this.ep_id+"]</span>"; },
@@ -140,8 +131,8 @@ $(document).ready(function(){
                         value: function(){ return this.bodycount.animals; },
                     }
                 ]*/
-            },{ name: "Location", panel: 'middle'
-            },{ name: "Characters",
+            },{ name: "Location", panel: 'right'
+            },{ name: "Characters", panel: 'middle',
                 value: "Appears",
                 catTableName: "Characters",
                 catLabel: function(){ 
@@ -169,10 +160,9 @@ $(document).ready(function(){
     });
 });
         </script>
-        <style>
-#chart_div {
-  width: 890px;
-  height: 690px;
+<style id="kshfStyle">
+#demo_Browser {
+  height: calc(100vh - 110px);
 }
 img.charImg{
   height: 21px;
@@ -210,20 +200,18 @@ z-index: 1000;
   width: 38px;
   text-align: left;
 }
-        </style>
-    </head>
-    <body>
-    <div class="contents">
-      <div class="pageTitle" align="center">Exploring <b>Buffy The Vampire Slayer</b> - Who? When? Where? </div>
-      <div class="pageSubtitle">Explore every second of the <b>12 Episodes</b> of <b>Season 1!</b>
-          Characters, Episode, Location and Time summaries show distributions of occurances per second.</div>
-      <div id="chart_div"></div>
-      </div>
+</style>
+  </head>
+  <body>
+  <div class="contents">
+    <div id="demo_PageTitle" align="center">Exploring Buffy The Vampire Slayer - Who? When? Where? </div>
+    <div id="demo_PageSubtitle">Explore who appears where and when for each second of the <b>12 Episodes</b> of <b>Season 1!</b>
+    <div id="demo_Browser"></div>
+    </div>
 
-    <div id="demoInfobox">
-        Data retrieved from <a href="http://visualizingbuffy.com/" target='_blank'>Visualizing Buffy</a> project.<br>
-        Data collected by <a href="https://twitter.com/esteboix" target="_blank">Esteve Boix</a>. Original visualization implemented by Esteve Boix, advised by <a
-            target="_blank" href="https://twitter.com/albertocairo">Alberto Cairo</a>
-        </div>
-    </body>
+  <div id="demo_Infobox">
+    Data collected by <a href="https://twitter.com/esteboix" target="_blank">Esteve Boix</a>, retrieved from
+      <a href="http://visualizingbuffy.com/" target='_blank'>Visualizing Buffy</a> project. Original visualization implemented by Esteve Boix, advised by <a target="_blank" href="https://twitter.com/albertocairo">Alberto Cairo</a>.
+    </div>
+  </body>
 </html>

@@ -15,31 +15,22 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-
 function getIcon(v){
   if(v==="Rebel Alliance")
     return "<span class='fa fa-rebel'></span>";
   if(v==="Galactic Empire")
     return "<span class='fa fa-empire'></span>";
 };
-
 var episodeID = {
   "Star Wars": 4,
   "Empire Strikes Back": 5,
   "Return of The Jedi": 6,
 };
-
 var numFormat = d3.format(".2r");
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(300,100);
-  $(window).resize(function() {
-    resizeBrowser(300,100);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 130,
     itemName: "Lines",
@@ -75,7 +66,10 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .characterName{
   font-weight: 500;
 }
@@ -114,24 +108,24 @@ google.setOnLoadCallback(function(){
 .kshfRecord{
   border-top: solid 1px lightgray !important;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Star Wars - Quotes of the Original Trilogy</div>
-      <div class="pageSubtitle">
+      <div id="demo_PageTitle">Star Wars - Quotes of the Original Trilogy</div>
+      <div id="demo_PageSubtitle">
         What are Yoda's wise teachings?
         When does C3-PO share his worries?
         Does the Empire or the Rebels talk most, and does it depend on the movie?
         Explore it all!
         </div>
-      <div id="chart_div"></div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
-        Re-Vis from
-          <a href="https://twitter.com/Matt_Francis" target="_blank">Matt Francis'</a>
-         <a href="https://public.tableau.com/profile/ugleymatt#!/vizhome/Starwars/StarWords" target="_blank"> Tableau vis</a>.
-        </div>
+    <div id="demo_Infobox">
+      Re-Vis from
+        <a href="https://twitter.com/Matt_Francis" target="_blank">Matt Francis'</a>
+       <a href="https://public.tableau.com/profile/ugleymatt#!/vizhome/Starwars/StarWords" target="_blank"> Tableau vis</a>.
+      </div>
   </body>
 </html>

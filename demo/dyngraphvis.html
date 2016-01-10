@@ -231,17 +231,11 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-    resizeBrowser(100,120);
-    $(window).resize(function() {
-        resizeBrowser(100,120);
-        browser.updateLayout();
-    });
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 250,
     leftPanelLabelWidth: 135,
-    itemName: "Dynamic Graph Vis. Papers",
+    itemName: "Publications",
     source: {
       url: "http://dynamicgraphs.fbeck.com/",
       callback: loadData
@@ -275,7 +269,7 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
+<style id="kshfStyle">
 .kshfRecord{
   width: 150px;
 }
@@ -288,12 +282,15 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">Dynamic Graph Visualization Papers</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data: The <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>digital library</a>
-      for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf.<br>
-      Raw source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
+      for <a href='http://www.visus.uni-stuttgart.de/uploads/tx_vispublications/eurovis14-star.pdf' target='_blank'> The State of the Art in Visualizing Dynamic Graphs</a>, Fabian Beck, Michael Burch, Stephan Diehl, Daniel Weiskopf. 
+      Source: <a href="./data/dyngraphviz.bib" target='_blank'>(bibtex)</a>.
       <a href="http://dynamicgraphs.fbeck.com/" target='_blank'>SurVis version</a>
       </div>
     </body>

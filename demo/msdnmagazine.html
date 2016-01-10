@@ -75,7 +75,7 @@ var loadData = function(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Articles on MSDN Magazine",
     categoryTextWidth: 180,
     leftPanelLabelWidth: 130,
@@ -109,11 +109,7 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  height: 700px;
-  width: 1100px;
-}
+<style id="kshfStyle">
 a.articleLink{
   color:black;
   text-decoration: none;
@@ -125,9 +121,11 @@ a.articleLink:hover{
 .fa-external-link{
   font-size: 0.8em;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

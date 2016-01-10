@@ -21,7 +21,7 @@ google.setOnLoadCallback( function () {
   logIf.Check = logIf.All();
   browser = new kshf.Browser({
     itemName: "Villains",
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 200,
     source: {
       gdocId: '0AonYZs4MzlZbdHJNSVh6clE4MVR4OHhqZWs4WGpSZlE',
@@ -51,14 +51,10 @@ google.setOnLoadCallback( function () {
   });
 });
     </script>
-    <style>
-#chart_div {
-  height: 700px;
-  width: 770px;
-}
-    </style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
     </body>
 </html>

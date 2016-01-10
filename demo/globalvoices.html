@@ -55,7 +55,7 @@ function loadData(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 130,
     source: {
         url: "http://globalvoicesonline.org/",
@@ -92,8 +92,8 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
-#chart_div{
+<style id="kshfStyle">
+#demo_Browser{
   height: 700px;
   width: 1000px;
 }
@@ -130,6 +130,6 @@ $(document).ready( function(){
 </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

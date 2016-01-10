@@ -11,32 +11,33 @@
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-var flightDateFormat = d3.time.format("%-m/%-d/%y");
-
 google.setOnLoadCallback(function(){
-  resizeBrowser(300,70);
-  $(window).resize(function() {
-    resizeBrowser(300,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 130,
     itemName: "Bird strikes near airports in the U.S.",
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 200,
     middlePanelLabelWidth: 200,
     source: {
-      dirPath: "./data/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'json', 
-      tables: "voyager_birdstrikes"
+      tables: "voyager_birdstrikes",
+      callback: function(browser){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     loadedCb: function(){
+      var flightDateFormat = d3.time.format("%-m/%-d/%y");
       kshf.dt.voyager_birdstrikes.forEach(function(d){
         d.data.Date = flightDateFormat.parse(d.data.Flight_Date.split(" ")[0]);
       });
@@ -52,7 +53,13 @@ google.setOnLoadCallback(function(){
       {name: "Time of Day", value: "When__Time_of_day"},
       {name: "Phase of Flight", value: "When__Phase_of_flight"},
 
-      {name: "State", value: "Origin_State", panel: "middle", collapsed: true},
+      { name: "State", value: "Origin_State", panel: "middle", collapsed: true,
+        catMap: function(){ 
+          var x=this.id;
+          if(x==="DC") x = "District of Columbia";
+          return US_States.index_name[x].geo;
+        },
+        },
       {name: "Airport", value: "Airport__Name", panel: "middle"},
 
       {name: "Airline", value: "Aircraft__Airline_Operator", panel: "middle"},
@@ -64,20 +71,14 @@ google.setOnLoadCallback(function(){
       {name: "Cost (Other)", value: "Cost__Other", unitName: "$", panel: "right", collapsed: true},
       {name: "Cost (Repair)", value: "Cost__Repair", unitName: "$", panel: "right", collapsed: true},
       {name: "Date", panel: "bottom"}
-//      {name: "", value: ""},
-//      {name: "", value: ""},
     ],
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 890px;
-  height: 480px;
-}
-    </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

@@ -15,28 +15,21 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-var docRoot = 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/BrazilCreditOperations/'
 google.setOnLoadCallback(function(){
-  resizeBrowser(300,60);
-  $(window).resize(function() {
-    resizeBrowser(300,60);
-    browser.updateLayout();
-  });
-  var dateFormat = d3.time.format("%m/%d/%Y");
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 110,
     rightPanelLabelWidth: 200,
     itemName: "Credit Operations in Brazil",
     source: {
       url: 'http://fredericosar.github.io/credit-operations/',
-      dirPath: docRoot,
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/BrazilCreditOperations/',
       fileType: 'json',
       tables: "Data"
     },
     loadedCb: function(){
+      var dateFormat = d3.time.format("%m/%d/%Y");
       kshf.dt.Data.forEach(function(d){
         d.data.Date = dateFormat.parse(d.data.Date);
       });
@@ -59,11 +52,11 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="contents">
-      <div class='pageTitle'></div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle"></div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Re-Vis, data from 
         <a href="http://fredericosar.github.io/credit-operations/visualization.html" target='_blank'>
           http://fredericosar.github.io/credit-operations/</a>
@@ -73,7 +66,5 @@ google.setOnLoadCallback(function(){
           the University of Utah.
         </a>
     </div>
-
-    
   </body>
 </html>

@@ -19,16 +19,9 @@
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
-
 $(document).ready( function(){
-  resizeBrowser(50,50);
-  $(window).resize(function() {
-    resizeBrowser(50,50);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 150,
     categoryTextWidth: 210,
     rightPanelLabelWidth: 180,
@@ -42,14 +35,13 @@ $(document).ready( function(){
       }
     },
     summaries: [
-      { name: "Year", panel: 'bottom', optimumTickWidth: 60,
-        value: function(){ return new Date(this.Year,0,0); } }, // tick width used so that months, etc are not visible
+      { name: "Year", panel: 'bottom', optimumTickWidth: 60, // tick width used so that months, etc are not visible
+        value: function(){ return new Date(this.Year,0,0); } }
       { name: "State", panel: 'middle',
         catMap: function(){ 
           var x=US_States.index_name[this.id];
           if(x) return x.geo;
-        },
-        },
+        } },
       { name: "Month", value:function(){ return this.Month-1; }, catLabel: _demo.Month, catSortBy: _demo.Month_id, panel: 'right' },
       { name: "Contaminated Ingredient", panel: 'left' },
       { name: "Location of Preparation", panel: 'left' },
@@ -58,19 +50,20 @@ $(document).ready( function(){
       { name: "Hospitalizations", panel: 'middle', intervalScale: 'log', collapsed: true },
       { name: "Deaths", panel: 'middle', intervalScale: 'log', collapsed: true },
       { name: "Genus Species", panel: 'right' },
-      { name: "Etiology Status", value: function(){ 
-        if(this["Etiology Status"]) return this["Etiology Status"].split("; ");
-      }, panel: 'right', collapsed: true }
+      { name: "Etiology Status", panel: 'right', collapsed: true, 
+        value: function(){ if(this["Etiology Status"]) return this["Etiology Status"].split("; "); } }
     ]
   });
 });
     </script>
   </head>
   <body>
-    <div class="pageTitle" align="center">
+    <div class="contents">
+    <div id="demo_PageTitle" align="center">
       <a href="http://wwwn.cdc.gov/foodborneoutbreaks/Default.aspx" target='_blank'
         ><img src="https://upload.wikimedia.org/wikipedia/commons/7/71/US_CDC_logo.svg" style="height: 30px"></a>
       Foodborne Outbreak Online Database</div>
-    <div class="contents"><div id="chart_div"></div></div>
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

@@ -19,7 +19,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function () {
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 220,
     rightPanelLabelWidth: 160,
     source: {
@@ -67,7 +67,7 @@ google.setOnLoadCallback(function () {
       sortColWidth: 35,
       sortBy : [
         { title: 'Year-', value: function(){ return this.time.getFullYear(); }, inverse: true },
-        { title: '# Cit.\'s To', value: function(d){ return d.items.length; } },
+        //{ title: '# Cit.\'s To', value: function(d){ return d.items.length; } },
         { title: '# Cit.\'s- Total', value: "num" } 
       ],
       detailsToggle : "one",
@@ -102,20 +102,17 @@ google.setOnLoadCallback(function () {
     }
   });
 });
-        </script>
-  <style type="text/css" media="screen">
-#chart_div{
-  width: 1250px;
-  height: 700px;
-  margin-top: 30px;
-}
+    </script>
+<style type="text/css" media="screen" id="kshfStyle">
 .content .fa{
   font-size: 0.8em;
-  color:gray;
+  color: gray;
 }
-  </style>
+</style>
 	</head>
     <body>
-      <div class="contents"><div id="chart_div"></div></div>
+      <div class="contents">
+        <div id="demo_Browser"></div>
+        </div>
     </body>
 </html>

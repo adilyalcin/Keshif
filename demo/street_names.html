@@ -37,14 +37,8 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-  resizeBrowser(150,100);
-  $(window).resize(function() {
-    resizeBrowser(150,100);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Street Names",
     categoryTextWidth: 150,
     source: { 
@@ -52,8 +46,8 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "<span class='fa fa-home'></span> # of Homes", value: "homes" },
-      { name: "<span class='fa fa-money'></span> Average Value", value: "value" },
+      { name: "<span class='fa fa-home'></span> # of Homes", value: "homes", unitName: "hm" },
+      { name: "<span class='fa fa-money'></span> Average Value", value: "value", unitName: "$" },
       { name: "Name Features",
         value: function(){
           var r=[];
@@ -64,7 +58,7 @@ $(document).ready( function(){
           if(parseInt(this.text)) r.push("Numbered");
           return r;
         } },
-      { name: "In # Counties", value: "in_counties", collapsed: true }
+      { name: "In # Counties", value: "in_counties", unitName: "c'y"}
     ],
     recordDisplay: {
       sortBy: 'value',
@@ -84,7 +78,7 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kshfRecord{
   padding: 4px 2px 0px 2px !important;
   border: solid 1px lightgray  !important;
@@ -111,18 +105,16 @@ $(document).ready( function(){
   background-color: #F8F8F8;
   color: orangered;
 }
-    </style>
+</style>
 	</head>
   <body>
-    <div class="pageTitle" align="center">Road Map - Street Names, # of Homes, Values, &amp; More</div>
-
-    <div class="contents"><div id="chart_div"></div></div>
-
-    <div id="demoInfobox" align="center">
-      <span class="fa fa-info-circle"></span>
-      <a href="http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r=0" target='_blank'>Data</a> was curated by the <b>New York Times</b>. <a href="hhttp://www.nytimes.com/2015/01/25/opinion/sunday/the-secrets-of-street-names-and-home-values.html" target='_blank'>Original Story</a>.
-      <span class="fa fa-info-circle"></span>
+    <div class="contents">
+      <div id="demo_PageTitle">Road Map - Street Names, # of Homes, Values, &amp; More</div>
+      <div id="demo_Browser"></div>
       </div>
 
+    <div id="demo_Infobox">
+      <a href="http://www.nytimes.com/interactive/2015/01/29/sunday-review/road-map-home-values-street-names.html?_r=0" target='_blank'>Data</a> was curated by the <b>New York Times</b>. <a href="hhttp://www.nytimes.com/2015/01/25/opinion/sunday/the-secrets-of-street-names-and-home-values.html" target='_blank'>Original Story</a>.
+      </div>
   </body>
 </html>

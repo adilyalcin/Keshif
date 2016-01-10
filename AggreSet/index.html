@@ -24,7 +24,7 @@
 
 var theSetSummary = undefined;
 
-function resizeBrowser(){
+function resizeAggresetBrowser(){
   $('#theBrowserDIV').height($(window).height()-40);
 };
 
@@ -103,9 +103,9 @@ function loadDemo(config){
 };
 
 $(document).ready( function(){
-  resizeBrowser();
+  resizeAggresetBrowser();
   $(window).resize(function(){
-    resizeBrowser();
+    resizeAggresetBrowser();
     if(browser) browser.updateLayout();
   });
 

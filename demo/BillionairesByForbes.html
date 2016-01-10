@@ -19,7 +19,7 @@ google.setOnLoadCallback(function(){
   var currencyFormat = d3.format("s");
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 130,
@@ -38,7 +38,7 @@ google.setOnLoadCallback(function(){
         } else {
           v.data.Worth = null;
         }
-      })
+      });
     },
     summaries: [
       {name: "Gender", value: "gender"},
@@ -75,8 +75,8 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 950px;
   height: 680px;
 }
@@ -110,15 +110,15 @@ google.setOnLoadCallback(function(){
   font-size: 0.8em;
   font-weight: 100;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class='pageTitle'>Billionaires - By Forbes</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Billionaires - By Forbes</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data from <a href='http://www.forbes.com/billionaires/list' target='_blank'>"The World's Billionaires"</a> by Forbes.
       </div>
 

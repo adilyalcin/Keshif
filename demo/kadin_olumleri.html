@@ -19,14 +19,8 @@
 google.setOnLoadCallback(function(){
   kshf.lang.cur = kshf.lang.tr;
 
-  resizeBrowser(190,90);
-  $(window).resize(function() {
-      resizeBrowser(190,90);
-      browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 100,
     leftPanelLabelWidth: 200,
     rightPanelLabelWidth: 250,
@@ -48,24 +42,24 @@ google.setOnLoadCallback(function(){
       detailsToggle: "zoom",
       textSearch: "İsim",
       recordView: function(){
-          var str=this['İsim'];
-          if(this['Kaynak-Foto'])
-              str+="<img class='kaynakFoto' src='http://www.anitsayac.com/"+this['Kaynak-Foto']+"'>";
-          return str;
+        var str=this['İsim'];
+        if(this['Kaynak-Foto'])
+            str+="<img class='kaynakFoto' src='http://www.anitsayac.com/"+this['Kaynak-Foto']+"'>";
+        return str;
       }
     }
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .kaynakFoto{
   display: block;
   width: 50%;
   margin: 0 auto;
 }
-      </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

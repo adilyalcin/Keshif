@@ -17,18 +17,9 @@
         <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-
-var postCols;
-
 $(document).ready( function(){
-  resizeBrowser(150,50);
-  $(window).resize(function() {
-    resizeBrowser(150,50);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 100,
     rightPanelLabelWidth: 90,
     source: {
@@ -57,11 +48,7 @@ $(document).ready( function(){
   });
 });
         </script>
-        <style>
-#chart_div{
-  width: 900px;
-  height: 600px;
-}
+<style id="kshfStyle">
 .kshfRecord{
   width: 20%;
 }
@@ -99,9 +86,11 @@ div.content span.title{
   text-align: center;
   font-size: 0.8em;
 }
-        </style>
-    </head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
 </html>

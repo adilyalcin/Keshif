@@ -30,7 +30,7 @@ function dataLoad(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
     source: { 
       url: "http://research.microsoft.com/en-us/um/people/sdrucker/research.html",
@@ -64,9 +64,8 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-    
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width:1000px;
   height:700px;
 }
@@ -89,7 +88,6 @@ $(document).ready( function(){
   color: orangered !important;
   text-decoration: underline !important;
 }
-
 .thumbImg{
   display: block;
   width: 70%;
@@ -122,12 +120,12 @@ $(document).ready( function(){
       -ms-filter: grayscale(0%);
           filter: grayscale(0%);
 }
-    </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Publications of Steve Drucker</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">Publications of Steve Drucker</div>
+      <div id="demo_Browser"></div>
       </div>
   </body>
 </html>

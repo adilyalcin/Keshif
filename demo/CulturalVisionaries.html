@@ -16,10 +16,9 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Globally Known People",
     categoryTextWidth: 150,
     barChartWidth: 100,
@@ -29,7 +28,6 @@ $(document).ready( function(){
       tables: { name: "people_1-6-2015", id:"un_curid" }
     },
     summaries: [
-      { name: "Gender", value: "gender"},
       { name: "Continent Name", value: "continentName"},
       { name: "Birth Country Name", value: "countryName"},
       { name: "Gender", value: "gender"},
@@ -53,10 +51,9 @@ $(document).ready( function(){
   });
 });
 </script>
-    <style>
-#chart_div {
-  width:1000px;
-  height: 650px;
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 100px);
 }
 .extLink{
   font-size: 0.8em;
@@ -66,16 +63,16 @@ $(document).ready( function(){
   color: black;
   text-shadow: 1px 1px 1px gray;
 }
-    </style>
+</style>
 	</head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Cultural Visionaries</div>
-      <div class="pageSubtitle" align="center">Mapping Historical Cultural Production</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">Cultural Visionaries</div>
+      <div id="demo_PageSubtitle" align="center">Mapping Historical Cultural Production</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data is curated and released by the Pantheon Project - 
       <a href="http://pantheon.media.mit.edu/" target='_blank'>http://pantheon.media.mit.edu/</a>.
       </div>

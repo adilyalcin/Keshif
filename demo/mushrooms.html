@@ -12,11 +12,9 @@
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
-    <script type="text/javascript" src="../js/FileSaver.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-
 var getName = {
     Class: {
       e: 'Edible',
@@ -125,7 +123,7 @@ var getName = {
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Mushroom Species",
     barChartWidth: 110,
     leftPanelLabelWidth: 148,
@@ -166,20 +164,22 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1020px;
-  height: 700px;
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+  max-width: 1100px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       <a href="http://archive.ics.uci.edu/ml/datasets/Mushroom" target='_blank'>Mushroom Data Set</a> from
-      UC Irvine Machine Learning Repository<br>
-      This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family (pp. 500-525).<br> The Guide clearly states that there is no simple rule for determining the edibility of a mushroom; no rule like ``leaflets three, let it be'' for Poisonous Oak and Ivy.
+      UC Irvine Machine Learning Repository. 
+      This data set includes descriptions of hypothetical samples corresponding to 23 species of gilled mushrooms in the Agaricus and Lepiota Family (pp. 500-525). The Guide states that there is no simple rule for determining the edibility of a mushroom; no rule like ``leaflets three, let it be'' for Poisonous Oak and Ivy.
       </div>
   </body>
 </html>

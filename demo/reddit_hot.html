@@ -35,7 +35,7 @@ function loadData(browser){
 
 $(document).ready( function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Reddit Hot Posts",
     categoryTextWidth: 150,
     source: { callback: loadData },
@@ -61,14 +61,16 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width:800px;
   height:700px;
 }
-    </style>
-	</head>
+</style>
+  </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

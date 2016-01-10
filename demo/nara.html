@@ -55,14 +55,8 @@ function loadData(browser){
 }
 
 var loadBrowser = function(){
-  resizeBrowser(100,160);
-  $(window).resize(function() {
-    resizeBrowser(100,160);
-    browser.updateLayout();
-  });
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Civil Rights March on Washington Photos",
     categoryTextWidth: 200,
     source: { 
@@ -143,19 +137,20 @@ $(document).ready(function(){
 });
 
 </script>
-    <style>
+
+<style id="kshfStyle">
 .kshfRecord{
-    width: 150px;
-    overflow: visible !important;
+  width: 150px;
+  overflow: visible !important;
 }
 .kshfRecord > .itemRow{
-    overflow: visible !important;
+  overflow: visible !important;
 }
 .content{
-    padding: 3px;
+  padding: 3px;
 }
 .thumbnail{
-    overflow: visible !important;
+  overflow: visible !important;
 }
 .kshfRecord:hover{
   z-index: 200 !important;
@@ -188,29 +183,27 @@ $(document).ready(function(){
 #naraRows{
     width: 50px;
 }
-
-    </style>
+</style>
 	</head>
-    <body>
-        <div style="text-align:center">
-            <span id="loadOptions">
-                <select id="naraPreset">
-                    <option value="">Choose Dataset :</option>
-                    <option value="541992">Civil Rights March</option>
-                    <option value="513498">World War 2 posters</option>
-                    </select>
-                parentID: <input type="number" id="naraParentID">
-                resultFields: <input type="text" id="naraResultFields" value="naId,publicContributions,objects">
-                rows: <input type="number" id="naraRows" value="200">
-                <input type="button" id="naraLoadButton" value="Load Collection">
-                </span>
-            </div>
-        <div class="pageTitle" align="center">National Archives Data Browser</div>
-        <div class="contents"><div id="chart_div"></div></div>
+  <body>
+    <div style="text-align:center">
+      <span id="loadOptions">
+        <select id="naraPreset">
+          <option value="">Choose Dataset :</option>
+          <option value="541992">Civil Rights March</option>
+          <option value="513498">World War 2 posters</option>
+          </select>
+        parentID: <input type="number" id="naraParentID">
+        resultFields: <input type="text" id="naraResultFields" value="naId,publicContributions,objects">
+        rows: <input type="number" id="naraRows" value="200">
+        <input type="button" id="naraLoadButton" value="Load Collection">
+        </span>
+      </div>
+    <div id="demo_PageTitle" align="center">National Archives Data Browser</div>
+    <div class="contents"><div id="demo_Browser"></div></div>
 
-        <div id="demoInfobox">
-            <a href="https://catalog.archives.gov" target='_blank'>Data</a>
-                is provided by the <b>National Archives</b>.
-            </div>
-    </body>
+    <div id="demo_Infobox">
+      <a href="https://catalog.archives.gov" target='_blank'>Data</a> is provided by the <b>National Archives</b>.
+      </div>
+  </body>
 </html>

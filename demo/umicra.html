@@ -17,14 +17,8 @@
     <script type="text/javascript">
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(120,80);
-  $(window).resize(function() {
-    resizeBrowser(120,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 200,
     barChartWidth: 120,
@@ -126,99 +120,96 @@ google.setOnLoadCallback(function(){
   });
 });
         </script>
-<style>
-  .showConfigButton{ display: none !important;}
-    .paperName{
-        cursor:pointer;
-    }
-    .paperName:hover{
-        color: orangered;
-    }
-    .authorNames{
-        font-weight: 300;
-        font-size: 0.9em;
-    }
-    .benb{
-        font-style: italic;
-    }
-    .pubInfo {
-      display: inline-block;
-      margin: 1px 3px;
-      font-size: 0.8em;
-      font-weight: 300;
-    }
-    .pubInfo > .header{
-      font-weight: 500;
-    }
-    .pdflink{
-        margin-left: 10px;
-        vertical-align: top;
-    }
-    .item_details{
-        margin-left: 5px;
-    }
-    .pubSummary{
-      font-weight: 300;
-      font-size: 0.9em;
-    }
+<style id="kshfStyle">
+.showConfigButton{ display: none !important;}
+.paperName{
+  cursor:pointer;
+}
+.paperName:hover{
+  color: orangered;
+}
+.authorNames{
+  font-weight: 300;
+  font-size: 0.9em;
+}
+.benb{
+  font-style: italic;
+}
+.pubInfo {
+display: inline-block;
+margin: 1px 3px;
+font-size: 0.8em;
+font-weight: 300;
+}
+.pubInfo > .header{
+font-weight: 500;
+}
+.pdflink{
+  margin-left: 10px;
+  vertical-align: top;
+}
+.item_details{
+  margin-left: 5px;
+}
+.pubSummary{
+  font-weight: 300;
+  font-size: 0.9em;
+}
 
-    .pubLink{
-      color: #005FA9;
-      display: inline-block;
-      text-decoration: none;
-      vertical-align: middle;
-      margin-left: 3px;
-      font-size: 0.7em;
-    }
-    .pubLink:hover {
-        color: orangered !important;
-        text-decoration: none;
-    }
+.pubLink{
+  color: #005FA9;
+  display: inline-block;
+  text-decoration: none;
+  vertical-align: middle;
+  margin-left: 3px;
+  font-size: 0.7em;
+}
+.pubLink:hover {
+  color: orangered !important;
+  text-decoration: none;
+}
 
-    .pdfImage{
-        position:absolute;
-        right: 0px;
-        height: 100%;
-    }
-    .content{
-      padding-bottom: 2px;
-    }
-    a.mainLink{
-      pointer-events: all;
-      text-decoration: none !important;
-      color: white;
-    }
-    a.mainLink:hover{
-      color: white !important;
-      text-decoration: underline !important;
-    }
-    .pageTitle{
-      text-shadow: none;
-    }
-    .viewSummary{
-      color: #005FA9;
-      font-weight: 300;
-      border-radius: 6px;
-      background-color: #DDE3E9;
-      font-size: 0.7em;
-      padding: 1px 3px;
-      display: inline-block;
-      cursor: pointer;
-      position: relative;
-      top: -2px;
-    }
-    .viewSummary:hover{
-      color: orangered;
-    }
+.pdfImage{
+  position:absolute;
+  right: 0px;
+  height: 100%;
+}
+.content{
+padding-bottom: 2px;
+}
+a.mainLink{
+  pointer-events: all;
+  text-decoration: none !important;
+  color: white;
+}
+a.mainLink:hover{
+  color: white !important;
+  text-decoration: underline !important;
+}
+.viewSummary{
+  color: #005FA9;
+  font-weight: 300;
+  border-radius: 6px;
+  background-color: #DDE3E9;
+  font-size: 0.7em;
+  padding: 1px 3px;
+  display: inline-block;
+  cursor: pointer;
+  position: relative;
+  top: -2px;
+}
+.viewSummary:hover{
+  color: orangered;
+}
 </style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">
-          <a href="http://www.umicra.com/" target="_blank" class="mainLink">
-              University of Maryland Inspection and Compliance Research Archive</a>
-          </div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">
+        <a href="http://www.umicra.com/" target="_blank" class="mainLink">
+            University of Maryland Inspection and Compliance Research Archive</a>
+        </div>
+      <div id="demo_Browser"></div>
       </div>
   </body>
 </html>

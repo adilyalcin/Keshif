@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     itemName: "Responses",
     leftPanelLabelWidth: 200,
@@ -27,25 +27,21 @@ google.setOnLoadCallback(function(){
       tables: "Form Responses 1"
     },
     summaries: [
-      { name: "Gender", value: function(){
+      { name: "Gender", 
+        value: function(){
           var v=this.Gender;
           if(v==="Male" || v==="Female") return v;
           return null;
-        }},
+        } },
       { name: "Race", value: function(){ return this.Race.split(","); } },
-      {
-        name: "Education Level",
+      { name: "Education Level",
         value: "What is your level of schooling?",
-        description: "What is your level of schooling?"
-      },
-      {
-        name: "First-generation in coding/tech?",
+        description: "What is your level of schooling?" },
+      { name: "First-generation in coding/tech?",
         collapsed: true,
         description: "Do one or more of your parents or older relatives know how to code or work in tech?",
-        value: "Do one or more of your parents or older relatives know how to code or work in tech?"
-      },
-      {
-        name: "Programming Experience",
+        value: "Do one or more of your parents or older relatives know how to code or work in tech?" },
+      { name: "Programming Experience",
         value: "How many years have you been programming?",
         description: "How many years have you been programming?",
         catSortBy: [
@@ -58,10 +54,8 @@ google.setOnLoadCallback(function(){
           "2 years",
           "1 year",
           "< 1 year"
-        ]
-      },
-      {
-        name: "First Programming Age",
+        ] },
+      { name: "First Programming Age",
         value: "What age did you start programming?",
         description: "What age did you start programming?",
         collapsed: true,
@@ -75,116 +69,78 @@ google.setOnLoadCallback(function(){
           "9-11 years old",
           "6-8 years old",
           "< 5 years old"
-        ]
-      },
-      {
-        name: "Tech Area",
+        ] },
+      { name: "Tech Area",
         value: function(){ return this["What area of tech do you work in?"].split(",");} ,
-        description: "What area of tech do you work in?"
-      },
-      {
-        name: "University", collapsed: true,
+        description: "What area of tech do you work in?" },
+      { name: "University", collapsed: true,
         value: "What university do/did you attend?",
-        description: "What university do/did you attend?"
-      },
-      {
-        name: "Challenge of: Artificial Intelligence",
+        description: "What university do/did you attend?" },
+      { name: "Challenge of: Artificial Intelligence",
         value: "In your personal opinion, how technically challenging is the following job: Artificial Intelligence",
         description: "In your personal opinion, how technically challenging is the following job: Artificial Intelligence",
-        panel: "middle"
-      },
-      {
-        name: "Challenge of: Security Engineering",
+        panel: "middle" },
+      { name: "Challenge of: Security Engineering",
         value: "In your personal opinion, how technically challenging is the following job: Security engineering",
         description: "In your personal opinion, how technically challenging is the following job: Security engineering",
-        panel: "middle"
-      },
-      {
-        name: "Challenge of: Image processing/VR",
+        panel: "middle" },
+      { name: "Challenge of: Image processing/VR",
         value: "In your personal opinion, how technically challenging is the following job: Image processing/VR",
         description: "In your personal opinion, how technically challenging is the following job: Image processing/VR",
-        panel: "middle"
-      },
-      {
-        name: "Challenge of: Data Science/ Machine Learning",
+        panel: "middle" },
+      { name: "Challenge of: Data Science/ Machine Learning",
         value: "In your personal opinion, how technically challenging is the following job: Data science/machine learning",
         description: "In your personal opinion, how technically challenging is the following job: Data science/machine learning",
-        panel: "middle"
-      },
-      {
-        name: "Challenge of: Hardware/Embedded Systems",
+        panel: "middle" },
+      { name: "Challenge of: Hardware/Embedded Systems",
         value: "In your personal opinion, how technically challenging is the following job: Hardware/embedded systems",
         description: "In your personal opinion, how technically challenging is the following job: Hardware/embedded systems",
-        panel: "middle"
-      },
-      {
-        name: "Challenge of: Systems Eng. / Infrastructure",
+        panel: "middle" },
+      { name: "Challenge of: Systems Eng. / Infrastructure",
         value: "In your personal opinion, how technically challenging is the following job: Systems engineering/infrastructure",
         description: "In your personal opinion, how technically challenging is the following job: Systems engineering/infrastructure",
-        panel: "middle"
-      },
-      {
-        name: "Challenge of: Web development (backend)",
+        panel: "middle" },
+      { name: "Challenge of: Web development (backend)",
         value: "In your personal opinion, how technically challenging is the following job: Web development (backend)",
         description: "In your personal opinion, how technically challenging is the following job: Web development (backend)",
-        panel: "right"
-      },
-      {
-        name: "Challenge of: Mobile development (backend)",
+        panel: "right" },
+      { name: "Challenge of: Mobile development (backend)",
         value: "In your personal opinion, how technically challenging is the following job: Mobile development (backend)",
         description: "In your personal opinion, how technically challenging is the following job: Mobile development (backend)",
-        panel: "right"
-      },
-      {
-        name: "Challenge of: Mobile development (frontend)",
+        panel: "right" },
+      { name: "Challenge of: Mobile development (frontend)",
         value: "In your personal opinion, how technically challenging is the following job: Mobile development (frontend)",
         description: "In your personal opinion, how technically challenging is the following job: Mobile development (frontend)",
-        panel: "right"
-      },
-      {
-        name: "Challenge of: Web development (frontend)",
+        panel: "right" },
+      { name: "Challenge of: Web development (frontend)",
         value: "In your personal opinion, how technically challenging is the following job: Web development (frontend)",
         description: "In your personal opinion, how technically challenging is the following job: Web development (frontend)",
-        panel: "right"
-      },
-      {
-        name: "Challenge of: Graphics/Design",
+        panel: "right" },
+      { name: "Challenge of: Graphics/Design",
         value: "In your personal opinion, how technically challenging is the following job: Graphics/Design",
         description: "In your personal opinion, how technically challenging is the following job: Graphics/Design",
-        panel: "right"
-      },
-      {
-        name: "Challenge of: Product Management",
+        panel: "right" },
+      { name: "Challenge of: Product Management",
         value: "In your personal opinion, how technically challenging is the following job: Product Management",
         description: "In your personal opinion, how technically challenging is the following job: Product Management",
-        panel: "right"
-      },
-      {
-        name: "Challenge of: Business Dev/Growth Hacking",
+        panel: "right" },
+      { name: "Challenge of: Business Dev/Growth Hacking",
         value: "In your personal opinion, how technically challenging is the following job: Business development/growth hacking",
         description: "In your personal opinion, how technically challenging is the following job: Business development/growth hacking",
-        panel: "right"
-      },
+        panel: "right" },
     ]
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1200px;
-  height: 700px;
-}
-    </style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Tech Industry Demographics Survey / Gender &amp; Challenge Bias</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">Tech Industry Demographics Survey / Gender &amp; Challenge Bias</div>
+      <div id="demo_Browser"></div>
+      </div>
 
-    <div id="demoInfobox">
-Data collected in a survey by <a target="_blank" href="http://ktsiegel.com/">Katie Siegel</a>.<br>
-Her analysis is available at
-<a target="_blank" href="https://medium.com/@kt_seagull/quantifying-impostor-syndrome-gender-imbalance-along-the-stack-f39ef27042bf#.afdgftgvk">Medium - Quantifying Impostor Syndrome: Gender Imbalance along the “Stack”</a>
-        </div>
+    <div id="demo_Infobox">
+      Data collected in a survey by <a target="_blank" href="http://ktsiegel.com/">Katie Siegel</a>. Her analysis is at Medium: <a target="_blank" href="https://medium.com/@kt_seagull/quantifying-impostor-syndrome-gender-imbalance-along-the-stack-f39ef27042bf#.afdgftgvk">Quantifying Impostor Syndrome: Gender Imbalance along the “Stack”</a>.
+      </div>
   </body>
 </html>

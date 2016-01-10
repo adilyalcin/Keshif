@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 350,
     leftPanelLabelWidth: 100,
     rightPanelLabelWidth: 100,
@@ -42,8 +42,8 @@ google.setOnLoadCallback(function(){
     });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 990px;
   height: 750px;
 }
@@ -53,9 +53,9 @@ google.setOnLoadCallback(function(){
 .kshfSummary[summary_id="13"] {
   background-color: #FCF9F1;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

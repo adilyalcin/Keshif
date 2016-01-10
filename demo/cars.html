@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 100,
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 150,
@@ -26,7 +26,7 @@ google.setOnLoadCallback(function(){
       tables: "Cars"
     },
     summaries: [
-      { name: "Origin", catLabel: { 1: "American", 2: "European", 3: "Japanese" },
+      { name: "Origin", catLabel: { 1: "American", 2: "European", 3: "Japanese" } },
       { name: "Cyclinders", catSortBy: "id" },
       { name: "MPG", unitName: "mpg"},
       { name: "Engine Displacement", unitName: "cu.\"", panel: 'right' },
@@ -47,16 +47,19 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 950px;
   height: 670px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
-    <div id="demoInfobox">
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+    
+    <div id="demo_Infobox">
       <a href="http://lib.stat.cmu.edu/datasets/cars.data" target='_blank'>Data</a> from <a href="http://lib.stat.cmu.edu/datasets/" target='_blank'>StatLib @ CMU</a>
       </div>
 

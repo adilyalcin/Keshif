@@ -17,7 +17,6 @@
     <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
     <script type="text/javascript">
-
 function loadData(browser){
   $.ajax({
     url: "./data/treevis.xml",
@@ -67,14 +66,8 @@ function loadData(browser){
 }
 
 $(document).ready( function(){
-  resizeBrowser(100,80);
-  $(window).resize(function() {
-    resizeBrowser(100,80);
-    browser.updateLayout();
-  });
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 140,
     itemName: "Techniques",
     source: {
@@ -103,6 +96,9 @@ $(document).ready( function(){
 });
     </script>
     <style>
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .kshfRecord{
   width: 140px;
 }
@@ -117,11 +113,11 @@ $(document).ready( function(){
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle">Tree Visualization Techniques</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Tree Visualization Techniques</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       Data: <a href="http://vcg.informatik.uni-rostock.de/~hs162/treeposter/poster.html"
           target='_blank'>treevis.net</a> A Visual Bibliography of Tree Visualization 2.0 by 
           <a href="http://vcg.informatik.uni-rostock.de/~hs162/" target='_blank'>Hans-Jörg Schulz</a><br>

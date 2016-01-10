@@ -18,13 +18,21 @@
 
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
     <script type="text/javascript">
-function loadData(browser){
-  browser.primaryTableName = "Smartphones";
-  kshf.dt.Smartphones = [];
-  $.ajax({
-    url: "./data/smartphones.json",
-    success: function(data){
-      data.forEach(function(phone){
+$(document).ready( function() {
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    categoryTextWidth: 130,
+    barChartWidth: 160,
+    itemName: "Smartphones",
+    source: {
+      url: "http://www.productchart.com/smartphones/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'json',
+      tables: 'smartphones'
+    },
+    loadedCb: function(){
+      this.items.forEach(function(phone){
+        phone = phone.data;
         // convert string to int...
         phone.id = 1*phone.id;
         phone['Has Dual SIM'] = 1*phone.att_dual_sim;
@@ -63,29 +71,7 @@ function loadData(browser){
 
         delete phone.status;
         delete phone.SaveDate;
-
-        kshf.dt.Smartphones.push(new kshf.Item(phone,"id"));
       });
-
-      browser.loadCharts();
-    }
-  });
-};
-
-$(document).ready( function() {
-  resizeBrowser(300,80);
-  $(window).resize(function() {
-    resizeBrowser(300,80);
-    browser.updateLayout();
-  });
-
-  browser = new kshf.Browser({
-    domID: "#chart_div",
-    categoryTextWidth: 110,
-    barChartWidth: 140,
-    source: {
-      url: "http://www.productchart.com/smartphones/",
-      callback: loadData
     },
     summaries: [
       { name: "Brand" },
@@ -113,7 +99,7 @@ $(document).ready( function() {
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .iteminfo a{
   color:#606060;
   font-style:italic;
@@ -149,9 +135,11 @@ $(document).ready( function() {
   -o-transition: all 200ms linear;
   -moz-transition: all 200ms linear;
 }
-    </style>
+</style>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

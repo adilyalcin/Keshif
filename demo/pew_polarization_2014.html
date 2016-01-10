@@ -18,14 +18,8 @@
         <script type="text/javascript">
 
 google.setOnLoadCallback(function(){
-    resizeBrowser(350,80);
-    $(window).resize(function() {
-        resizeBrowser(350,80);
-        browser.updateLayout();
-    });
-
     browser = new kshf.Browser({
-        domID: "#chart_div",
+        domID: "#demo_Browser",
         categoryTextWidth: 210,
         barChartWidth: 100,
         itemName: "Participants",
@@ -191,6 +185,6 @@ google.setOnLoadCallback(function(){
         </script>
     </head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+        <div class="contents"><div id="demo_Browser"></div></div>
     </body>
 </html>

@@ -22,14 +22,8 @@ $(document).ready(function() {
     AL: "American League",
   };
 
-  resizeBrowser(250,70);
-  $(window).resize(function() {
-    resizeBrowser(250,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "transactions",
     categoryTextWidth:160,
     source: {
@@ -37,10 +31,7 @@ $(document).ready(function() {
       url: 'http://www.infochimps.com/datasets/retrosheet-transactions-in-major-league-baseball-trade-signing-d',
       dirPath: 'data/',
       fileType: 'csv',
-      tables: [
-        {name:"baseball", id:"Transact.ID"},
-        "baseball_teams",
-      ]
+      tables: [ {name:"baseball", id:"Transact.ID"}, "baseball_teams" ]
     },
     summaries: [
       { name: "Trans. Type", panel: 'middle',
@@ -153,19 +144,15 @@ $(document).ready(function() {
     }
   });
 });
-
 </script>
-    <style>
+<style id="kshfStyle">
 .iteminfo a{
   color:#606060;
   font-style:italic;
 }
-#chart_div{
-  width: 900px;
-}
-    </style>
+</style>
 	</head>
     <body>
-        <div class="contents"><div id="chart_div"></div></div>
+      <div class="contents"><div id="demo_Browser"></div></div>
     </body>
 </html>

@@ -40,15 +40,15 @@ function loadData(browser){
 })
 
 function resetSize(){
-    $('#chart_div').height(700);
-    $('#chart_div').width (1000);
+    $('#demo_Browser').height(700);
+    $('#demo_Browser').width (1000);
 };
 
 $(document).ready( function(){
   resetSize();
 
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 300,
     itemName: "Locations",
     source: { callback: loadData },
@@ -69,6 +69,6 @@ $(document).ready( function(){
     </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

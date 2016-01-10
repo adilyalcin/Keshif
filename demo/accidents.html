@@ -15,50 +15,14 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-var QueryString = function () {
-  // This function is anonymous, is executed immediately and 
-  // the return value is assigned to QueryString!
-  var query_string = {};
-  var query = window.location.search.substring(1);
-  var vars = query.split("&");
-  for (var i=0;i<vars.length;i++) {
-    var pair = vars[i].split("=");
-        // If first entry with this name
-    if (typeof query_string[pair[0]] === "undefined") {
-      query_string[pair[0]] = pair[1];
-        // If second entry with this name
-    } else if (typeof query_string[pair[0]] === "string") {
-      var arr = [ query_string[pair[0]], pair[1] ];
-      query_string[pair[0]] = arr;
-        // If third or later entry with this name
-    } else {
-      query_string[pair[0]].push(pair[1]);
-    }
-  } 
-    return query_string;
-} ();
-
 google.setOnLoadCallback( function(){
-  
-  resizeBrowser(240,50);
-  $(window).resize(function() {
-    resizeBrowser(240,50);
-    browser.updateLayout();
-  });
-
-  var query = 'select *';
-  var sheetInfo = {name:"Accidents"};
-  if(QueryString.set==="small") {
-    sheetInfo.range = "A1:S100";
-  }
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth:170,
     barChartWidth: 120,
     source: {
       gdocId: '0Ai6LdDWgaqgNdFJlc0NzcHZFclMzakFkOUpiQVFXb1E',
-      tables: [ sheetInfo, "SpecCond", "LightCond", "WeatherCond" ]
+      tables: [ "Accidents", "SpecCond", "LightCond", "WeatherCond" ]
     },
     summaries: [
       { name: "Road Type",
@@ -70,14 +34,8 @@ google.setOnLoadCallback( function(){
           7: "Slip Road",
           9: "Unknown",
         } },
-      { name: "Severity",
-        catLabel: {
-          1: "Fatal",
-          2: "Serious",
-          3: "Slight",
-        } },
-      { name: "Area", 
-        catLabel: {1: "Urban", 2: "Rural"} },
+      { name: "Severity", catLabel: { 1: "Fatal", 2: "Serious", 3: "Slight" } },
+      { name: "Area", catLabel: {1: "Urban", 2: "Rural"} },
       { name: "Time of Day", panel: "middle", unitName: ":00", value: function(){return this['Time of Day'].getHours();} },
       { name: "# of Vehicles", panel: 'middle', unitName: "veh" },
       { name: "Speed Limit", panel: 'middle', catSortBy: "id", catLabel: function(){return this.id+"mph";} },
@@ -111,13 +69,16 @@ google.setOnLoadCallback( function(){
           3: "Stop sign",
           4: "Give way or uncontrolled",
         } },
-      { name: "Date", panel: 'bottom' }
+      { name: "Date", panel: 'bottom' },
+      { name: "Casualties", panel: 'middle'}
     ]
   });
 });
 </script>
 	</head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

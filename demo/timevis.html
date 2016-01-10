@@ -66,14 +66,8 @@ function loadData(browser){
 }
 
 $(document).ready( function(){
-    resizeBrowser(100,100);
-    $(window).resize(function() {
-        resizeBrowser(100,100);
-        browser.updateLayout();
-    });
-
 	browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 140,
     itemName: "Techniques",
     source: {
@@ -154,7 +148,10 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .kshfRecord{
   width: 140px;
 }
@@ -187,11 +184,11 @@ $(document).ready( function(){
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Time Visualization Techniques</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Time Visualization Techniques</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
+    <div id="demo_Infobox">
       Data: <a href="http://www.informatik.uni-rostock.de/~ct/timeviz/timeviz.html"
         target='_blank'>survey.timeviz.net</a> The TimeViz Browser - 
         A Visual Survey of Visualization Techniques for Time-Oriented Data

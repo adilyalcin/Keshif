@@ -18,8 +18,6 @@
         <script type="text/javascript" src="../demo/js/moment.min.js" charset="utf-8"></script>
 
         <script type="text/javascript">
-var demoID = 89;
-
 var likertSort = {
   "Strongly agree": 0,
   "Somewhat agree": 1,
@@ -88,248 +86,241 @@ var columns = [
 ];
 
 $(document).ready(function() {
-    resizeBrowser(150,50); 
-    $(window).resize(function() {
-        resizeBrowser(150,50);
-        browser.updateLayout();
-    });
-
-    browser = new kshf.Browser({
-        domID: "#chart_div",
-        itemName: "Participants",
-        categoryTextWidth:250,
-        leftPanelLabelWidth: 230,
-        rightPanelLabelWidth: 270,
-        source: {
-            gdocId: '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
-            tables: [ {name:"Participants", id:'Participants'}]
-        },
-        readyCb: function(browser){
-            $(".kshfRecord .content").click(function(){
-                browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
-            });
-        },
-        summaries: [
-            {   name: "Capture Link Source", collapsed: true, value: columns[7]
-            },{ name: "Area of Interest",
-                description: "Which of the following best describes your area of interest?",
-                value: function(){
-                    var r=[];
-                    if(this[columns[8]]!==null && this[columns[9]]===null && this[columns[10]]===null) r.push(this[columns[8]]);
-                    if(this[columns[9]]!==null) r.push("Other NaturalSci.: "+this[columns[9]]);
-                    if(this[columns[10]]!==null) r.push("Other SocialSci.: "+this[columns[10]]);
-                    return r;
-                }
-            },{ name: "Age", value: columns[12],
-                description: "What is your age?",
-                catSortBy: [ "18 - 24", "25 - 34", "35 - 44", "45 - 54", "55 - 64", "65 or over" ]
-            },{ name: "Continent", value: columns[13], collapsed: true,
-                description: "In which continent do you live?",
-            },{ name: "Country",
-                description: "In which country do you live?",
-                value: function(){
-                    var r=[];
-                    if(this[columns[14]]!==null) r.push(this[columns[14]]);
-                    if(this[columns[15]]!==null) r.push(this[columns[15]]);
-                    if(this[columns[16]]!==null) r.push(this[columns[16]]);
-                    if(this[columns[17]]!==null) r.push(this[columns[17]]);
-                    if(this[columns[18]]!==null) r.push(this[columns[18]]);
-                    if(this[columns[19]]!==null) r.push(this[columns[19]]);
-                    return r;
-                }
-            },{ name: "Industry",
-                description: "Which category best describes your industry?",
-                value: function(){
-                    var r=[];
-                    if(this[columns[20]]!==null && this[columns[21]]===null) r.push(this[columns[20]]);
-                    if(this[columns[21]]!==null) r.push("Other: "+this[columns[21]]);
-                    return r;
-                }
-            },{ name: "Job Title",
-                description: "Which job name best applies to you?",
-                value: function(){
-                    var r=[];
-                    if(this[columns[22]]!==null && this[columns[23]]===null) r.push(this[columns[22]]);
-                    if(this[columns[23]]!==null) r.push("Other: "+this[columns[23]]);
-                    return r;
-                }
-            },{ name: "Research Webpage", value: columns[24], collapsed: true, panel: 'right',
-                description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?"
-            },{ name: "Self-Maintained R. Webpage", value: columns[25], collapsed: true, panel: 'right',
-                description: "Do you personally edit/update this? (research webpage)"
-            },{ name: "Written online research posts", value: columns[26], panel: 'right',
-                description: "Do you write, or have you ever written, online posts of any type (e.g., blogs, social media comments, discussion groups, publisher websites) in which you discuss research or matters relating to it?",
-            },{ name: "Social Network - Awareness", panel: 'right',
-                description: "\"I am aware of this site.\"",
-                value: function(){
-                    var r=[];
-                    if(this[columns[27]]!=="NotAware") r.push("Twitter");
-                    if(this[columns[28]]!=="NotAware") r.push("Facebook");
-                    if(this[columns[29]]!=="NotAware") r.push("Frontiers");
-                    if(this[columns[30]]!=="NotAware") r.push("Academia.edu");
-                    if(this[columns[31]]!=="NotAware") r.push("ResearchGate");
-                    if(this[columns[32]]!=="NotAware") r.push("LinkedIn");
-                    if(this[columns[33]]!=="NotAware") r.push("BioMedExperts");
-                    if(this[columns[34]]!=="NotAware") r.push("Google+");
-                    if(this[columns[35]]!=="NotAware") r.push("Mendeley");
-                    if(this[columns[36]]!=="NotAware") r.push("Pubchase");
-                    if(this[columns[37]]!=="NotAware") r.push("My Science Work");
-                    if(this[columns[38]]!=="NotAware") r.push("Google Scholar");
-                    if(this[columns[39]]!=="NotAware") r.push("Microsofot Academic Search");
-                    if(this[columns[40]]!=="NotAware") r.push("ORCID");
-                    if(this[columns[41]]!=="NotAware") r.push("ResearcherID");
-                    if(this[columns[42]]!=="NotAware") r.push("Figshare");
-                    if(this[columns[43]]!=="NotAware") r.push("MLA Commons");
-                    return r;
-                }
-            },{ name: "Social Network - Regular Use", panel: 'right',
-                description: "\"I visit this site regularly.\"",
-                value: function(){
-                    var r=[];
-                    if(this[columns[27]]==="Aware,Regular") r.push("Twitter");
-                    if(this[columns[28]]==="Aware,Regular") r.push("Facebook");
-                    if(this[columns[29]]==="Aware,Regular") r.push("Frontiers");
-                    if(this[columns[30]]==="Aware,Regular") r.push("Academia.edu");
-                    if(this[columns[31]]==="Aware,Regular") r.push("ResearchGate");
-                    if(this[columns[32]]==="Aware,Regular") r.push("LinkedIn");
-                    if(this[columns[33]]==="Aware,Regular") r.push("BioMedExperts");
-                    if(this[columns[34]]==="Aware,Regular") r.push("Google+");
-                    if(this[columns[35]]==="Aware,Regular") r.push("Mendeley");
-                    if(this[columns[36]]==="Aware,Regular") r.push("Pubchase");
-                    if(this[columns[37]]==="Aware,Regular") r.push("My Science Work");
-                    if(this[columns[38]]==="Aware,Regular") r.push("Google Scholar");
-                    if(this[columns[39]]==="Aware,Regular") r.push("Microsofot Academic Search");
-                    if(this[columns[40]]==="Aware,Regular") r.push("ORCID");
-                    if(this[columns[41]]==="Aware,Regular") r.push("ResearcherID");
-                    if(this[columns[42]]==="Aware,Regular") r.push("Figshare");
-                    if(this[columns[43]]==="Aware,Regular") r.push("MLA Commons");
-                    return r;
-                }
-            },{ name: "Comment Length",
-                value: function(){ 
-                    if(this[columns[11]]===null) return;
-                    if(this[columns[11]].length===0) return;
-                    return this[columns[11]].length; 
-                },
-                unitName: "ch.",
-                panel: 'middle',
-                intervalScale: 'log'
-            },{ name: "Information Publicly Shared",
-                description: "What professional information do you make publicly available online?",
-                panel: 'right',
-                value: function(){
-                    var r=[];
-                    if(this[columns[44]]===1) r.push("Contact details");
-                    if(this[columns[45]]===1) r.push("Areas of expertise");
-                    if(this[columns[46]]===1) r.push("Publishing history");
-                    if(this[columns[47]]===1) r.push("Links to published articles");
-                    if(this[columns[48]]===1) r.push("Copies of published papers");
-                    if(this[columns[49]]===1) r.push("Dataset (Published Research)");
-                    if(this[columns[50]]===1) r.push("Dataset (Unpublised Research)");
-                    if(this[columns[51]]===1) {
-                        r.push("Other");
-                        r.push("<i>Other</i> - "+this[columns[52]]);
-                    }
-                    return r;
-                }
-            },{ name: "\"... Profiles are useful\"", collapsed: true,
-                description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
-                panel: 'right', value: columns[53], 
-                catSortBy: likertSort
-            },{ name: "\"... I need to promote more online\"", collapsed: true,
-                description: "\"I feel I should probably do more to promote my research using online networks\"",
-                panel: 'right', value: columns[54], 
-                catSortBy: likertSort
-            },{ name: "\"... Profiles are not important\"", value: columns[55], collapsed: true,
-                description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
-                panel: 'right',
-                catSortBy: likertSort
-            }
-        ],
-        recordDisplay: {
-            detailsToggle: "one",
-            textSearch: {name: "Comment", value: columns[11] },
-            sortBy: { 
-                name: "Comment length", 
-                value: function(){ if(this[columns[11]]!==null) return this[columns[11]].length;  }
-            },
-            recordView: function(){ 
-                if(this[columns[11]]===null) return "-";
-                return "<blockquote>" + this[columns[11]] + "</blockquote>";
-            }
-        }
-    });
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    itemName: "Participants",
+    categoryTextWidth:250,
+    leftPanelLabelWidth: 230,
+    rightPanelLabelWidth: 270,
+    source: {
+      gdocId: '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
+      tables: {name:"Participants", id:'Participants'}
+    },
+    readyCb: function(browser){
+      $(".kshfRecord .content").click(function(){
+        browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
+      });
+    },
+    summaries: [
+      {   name: "Capture Link Source", collapsed: true, value: columns[7]
+      },{ name: "Area of Interest",
+          description: "Which of the following best describes your area of interest?",
+          value: function(){
+              var r=[];
+              if(this[columns[8]]!==null && this[columns[9]]===null && this[columns[10]]===null) r.push(this[columns[8]]);
+              if(this[columns[9]]!==null) r.push("Other NaturalSci.: "+this[columns[9]]);
+              if(this[columns[10]]!==null) r.push("Other SocialSci.: "+this[columns[10]]);
+              return r;
+          }
+      },{ name: "Age", value: columns[12],
+          description: "What is your age?",
+          catSortBy: [ "18 - 24", "25 - 34", "35 - 44", "45 - 54", "55 - 64", "65 or over" ]
+      },{ name: "Continent", value: columns[13], collapsed: true,
+          description: "In which continent do you live?",
+      },{ name: "Country",
+          description: "In which country do you live?",
+          value: function(){
+              var r=[];
+              if(this[columns[14]]!==null) r.push(this[columns[14]]);
+              if(this[columns[15]]!==null) r.push(this[columns[15]]);
+              if(this[columns[16]]!==null) r.push(this[columns[16]]);
+              if(this[columns[17]]!==null) r.push(this[columns[17]]);
+              if(this[columns[18]]!==null) r.push(this[columns[18]]);
+              if(this[columns[19]]!==null) r.push(this[columns[19]]);
+              return r;
+          }
+      },{ name: "Industry",
+          description: "Which category best describes your industry?",
+          value: function(){
+              var r=[];
+              if(this[columns[20]]!==null && this[columns[21]]===null) r.push(this[columns[20]]);
+              if(this[columns[21]]!==null) r.push("Other: "+this[columns[21]]);
+              return r;
+          }
+      },{ name: "Job Title",
+          description: "Which job name best applies to you?",
+          value: function(){
+              var r=[];
+              if(this[columns[22]]!==null && this[columns[23]]===null) r.push(this[columns[22]]);
+              if(this[columns[23]]!==null) r.push("Other: "+this[columns[23]]);
+              return r;
+          }
+      },{ name: "Research Webpage", value: columns[24], collapsed: true, panel: 'right',
+          description: "Is there a web page maintained within your institution or organization which aims to update visitors on your research, or the research work of your group?"
+      },{ name: "Self-Maintained R. Webpage", value: columns[25], collapsed: true, panel: 'right',
+          description: "Do you personally edit/update this? (research webpage)"
+      },{ name: "Written online research posts", value: columns[26], panel: 'right',
+          description: "Do you write, or have you ever written, online posts of any type (e.g., blogs, social media comments, discussion groups, publisher websites) in which you discuss research or matters relating to it?",
+      },{ name: "Social Network - Awareness", panel: 'right',
+          description: "\"I am aware of this site.\"",
+          value: function(){
+              var r=[];
+              if(this[columns[27]]!=="NotAware") r.push("Twitter");
+              if(this[columns[28]]!=="NotAware") r.push("Facebook");
+              if(this[columns[29]]!=="NotAware") r.push("Frontiers");
+              if(this[columns[30]]!=="NotAware") r.push("Academia.edu");
+              if(this[columns[31]]!=="NotAware") r.push("ResearchGate");
+              if(this[columns[32]]!=="NotAware") r.push("LinkedIn");
+              if(this[columns[33]]!=="NotAware") r.push("BioMedExperts");
+              if(this[columns[34]]!=="NotAware") r.push("Google+");
+              if(this[columns[35]]!=="NotAware") r.push("Mendeley");
+              if(this[columns[36]]!=="NotAware") r.push("Pubchase");
+              if(this[columns[37]]!=="NotAware") r.push("My Science Work");
+              if(this[columns[38]]!=="NotAware") r.push("Google Scholar");
+              if(this[columns[39]]!=="NotAware") r.push("Microsofot Academic Search");
+              if(this[columns[40]]!=="NotAware") r.push("ORCID");
+              if(this[columns[41]]!=="NotAware") r.push("ResearcherID");
+              if(this[columns[42]]!=="NotAware") r.push("Figshare");
+              if(this[columns[43]]!=="NotAware") r.push("MLA Commons");
+              return r;
+          }
+      },{ name: "Social Network - Regular Use", panel: 'right',
+          description: "\"I visit this site regularly.\"",
+          value: function(){
+              var r=[];
+              if(this[columns[27]]==="Aware,Regular") r.push("Twitter");
+              if(this[columns[28]]==="Aware,Regular") r.push("Facebook");
+              if(this[columns[29]]==="Aware,Regular") r.push("Frontiers");
+              if(this[columns[30]]==="Aware,Regular") r.push("Academia.edu");
+              if(this[columns[31]]==="Aware,Regular") r.push("ResearchGate");
+              if(this[columns[32]]==="Aware,Regular") r.push("LinkedIn");
+              if(this[columns[33]]==="Aware,Regular") r.push("BioMedExperts");
+              if(this[columns[34]]==="Aware,Regular") r.push("Google+");
+              if(this[columns[35]]==="Aware,Regular") r.push("Mendeley");
+              if(this[columns[36]]==="Aware,Regular") r.push("Pubchase");
+              if(this[columns[37]]==="Aware,Regular") r.push("My Science Work");
+              if(this[columns[38]]==="Aware,Regular") r.push("Google Scholar");
+              if(this[columns[39]]==="Aware,Regular") r.push("Microsofot Academic Search");
+              if(this[columns[40]]==="Aware,Regular") r.push("ORCID");
+              if(this[columns[41]]==="Aware,Regular") r.push("ResearcherID");
+              if(this[columns[42]]==="Aware,Regular") r.push("Figshare");
+              if(this[columns[43]]==="Aware,Regular") r.push("MLA Commons");
+              return r;
+          }
+      },{ name: "Comment Length",
+          value: function(){ 
+              if(this[columns[11]]===null) return;
+              if(this[columns[11]].length===0) return;
+              return this[columns[11]].length; 
+          },
+          unitName: "ch.",
+          panel: 'middle',
+          intervalScale: 'log'
+      },{ name: "Information Publicly Shared",
+          description: "What professional information do you make publicly available online?",
+          panel: 'right',
+          value: function(){
+              var r=[];
+              if(this[columns[44]]===1) r.push("Contact details");
+              if(this[columns[45]]===1) r.push("Areas of expertise");
+              if(this[columns[46]]===1) r.push("Publishing history");
+              if(this[columns[47]]===1) r.push("Links to published articles");
+              if(this[columns[48]]===1) r.push("Copies of published papers");
+              if(this[columns[49]]===1) r.push("Dataset (Published Research)");
+              if(this[columns[50]]===1) r.push("Dataset (Unpublised Research)");
+              if(this[columns[51]]===1) {
+                  r.push("Other");
+                  r.push("<i>Other</i> - "+this[columns[52]]);
+              }
+              return r;
+          }
+      },{ name: "\"... Profiles are useful\"", collapsed: true,
+          description: "\"Viewing other researchers' professional profiles on online networks is a useful way of determining what research I should be reading\"",
+          panel: 'right', value: columns[53], 
+          catSortBy: likertSort
+      },{ name: "\"... I need to promote more online\"", collapsed: true,
+          description: "\"I feel I should probably do more to promote my research using online networks\"",
+          panel: 'right', value: columns[54], 
+          catSortBy: likertSort
+      },{ name: "\"... Profiles are not important\"", value: columns[55], collapsed: true,
+          description: "\"I don't think having a professional profile on an online network is very important for a researcher\"",
+          panel: 'right',
+          catSortBy: likertSort
+      }
+    ],
+    recordDisplay: {
+      detailsToggle: "one",
+      textSearch: {name: "Comment", value: columns[11] },
+      sortBy: { 
+        name: "Comment length", 
+        value: function(){ if(this[columns[11]]!==null) return this[columns[11]].length;  }
+      },
+      recordView: function(){ 
+        if(this[columns[11]]===null) return "-";
+        return "<blockquote>" + this[columns[11]] + "</blockquote>";
+      }
+    }
+  });
 });
 
 </script>
-        <style>
-            .iteminfo a{
-                color:#606060;
-                font-style:italic;
-            }
-            #chart_div{
-                margin-bottom: 30px;
-            }
-            blockquote {
-              /*background: #f9f9f9;
-              border-left: 10px solid #ccc;
-              margin: 1.5em 10px;
-              padding: 0.5em 10px;
-              quotes: "\201C""\201D""\2018""\2019";*/
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              overflow: hidden;
-              quotes: "\201C""\201D""\2018""\2019";
-              margin: 0px;
-              font-style: italic;
-              font-weight: 300;
-              text-align: justify;
-            }
-            blockquote:before {
-              color: #ccc;
-              content: open-quote;
-              font-size: 4em;
-              margin-right: 0.1em;
-              margin-left: -0.1em;
-              vertical-align: -0.5em;
-              line-height: 0px;
-            }
-            blockquote:hover:before {
-                color: gray;
-            }
-            blockquote:hover:after {
-                color: gray;
-            }
-            blockquote:after {
-              color: #ccc;
-              content: close-quote;
-              font-size: 4em;
-              margin-right: 0.1em;
-              margin-left: -0.1em;
-              vertical-align: -0.5em;
-              line-height: 0px;
-            }
-            .kshfRecord[details=true] blockquote{
-                overflow: visible;
-                white-space: normal;
-            }
-            .kshfRecord .content{
-                cursor: pointer;
-            }
-            .kshfRecord{
-                max-height: 500px !important;
-            }
-        </style>
+<style id="kshfStyle">
+.iteminfo a{
+  color:#606060;
+  font-style:italic;
+}
+#demo_Browser{
+  margin-bottom: 30px;
+}
+blockquote {
+  /*background: #f9f9f9;
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+  quotes: "\201C""\201D""\2018""\2019";*/
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  quotes: "\201C""\201D""\2018""\2019";
+  margin: 0px;
+  font-style: italic;
+  font-weight: 300;
+  text-align: justify;
+}
+blockquote:before {
+  color: #ccc;
+  content: open-quote;
+  font-size: 4em;
+  margin-right: 0.1em;
+  margin-left: -0.1em;
+  vertical-align: -0.5em;
+  line-height: 0px;
+}
+blockquote:hover:before {
+    color: gray;
+}
+blockquote:hover:after {
+    color: gray;
+}
+blockquote:after {
+  color: #ccc;
+  content: close-quote;
+  font-size: 4em;
+  margin-right: 0.1em;
+  margin-left: -0.1em;
+  vertical-align: -0.5em;
+  line-height: 0px;
+}
+.kshfRecord[details=true] blockquote{
+  overflow: visible;
+  white-space: normal;
+}
+.kshfRecord .content{
+  cursor: pointer;
+}
+.kshfRecord{
+  max-height: 500px !important;
+}
+</style>
 	</head>
-    <body>
-
-      <div class="contents">
-        <div id="chart_div"></div>
-        </div>
-      
-      <div id="demoInfobox" align="center">
-        This page uses the survey data from
-        <a href="http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711" target="_blank">Online collaboration: Scientists and the social network</a>, by Richard Van Noorden, published at Nature, 13 August 2014.
-        </div>
-    </body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+    
+    <div id="demo_Infobox" align="center">
+      This page uses the survey data from
+      <a href="http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711" target="_blank">Online collaboration: Scientists and the social network</a>, by Richard Van Noorden, published at Nature, 13 August 2014.
+      </div>
+  </body>
 </html>

@@ -148,7 +148,7 @@ function loadProceeding(xmlData) {
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 230,
     source: { callback: loadData },
     summaries: [
@@ -170,14 +170,8 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1090px;
-  height: 750px;
-}
-  </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
     </body>
 </html>

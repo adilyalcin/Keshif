@@ -18,11 +18,10 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-
-  var dateFormat=d3.time.format("%m/%d/%Y");
+  var dateFormat = d3.time.format("%m/%d/%Y");
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 250,
     barChartWidth: 200,
     itemName: "Unclaimed Deads",
@@ -79,8 +78,8 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
-#chart_div{
+<style id="kshfStyle">
+#demo_Browser{
   width: 950px;
   height: 500px;
 }
@@ -107,7 +106,7 @@ $(document).ready( function(){
 .mainTextSearch input{
   width: 73px;
 }
-#chart_div .gender-icon{
+#demo_Browser .gender-icon{
   width: 10px;
   text-align: center;
 }
@@ -118,11 +117,11 @@ $(document).ready( function(){
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">L.A. County’s Unclaimed Remains - 2011</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">L.A. County’s Unclaimed Remains - 2011</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Orignally reported by L.A. Times - <a href="http://spreadsheets.latimes.com/unclaimed-dead/" target='_blank'>
           L.A. County’s unclaimed remains of 2011</a>. <span class='fa fa-arrow-circle-right'></span>
       <a href="http://www.latimes.com/local/great-reads/la-me-c1-unclaimed-dead-20141109-story.html" 

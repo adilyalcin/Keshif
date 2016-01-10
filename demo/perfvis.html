@@ -50,14 +50,8 @@ function loadData(browser){
 };
 
 $(document).ready( function(){
-  resizeBrowser(100,120);
-  $(window).resize(function() {
-    resizeBrowser(100,120);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 250,
     itemName: "Performance Visualization Techniques",
     source: {
@@ -83,7 +77,10 @@ $(document).ready( function(){
   });
 });
         </script>
-<style>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
 .kshfRecord{
   width: 160px;
 }
@@ -96,9 +93,9 @@ $(document).ready( function(){
 </style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents"><div id="demo_Browser"></div></div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       Data provided by <a href="http://idav.ucdavis.edu/~ki/STAR/" target='_blank'>State of the Art of Performance Visualization</a> survey.<br>
       All rights for the technique images belong to their respective owners.
       </div>

@@ -17,9 +17,8 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 150,
-    itemName: "Titanic Passengers",
     source: {
       gdocId: '0Ai6LdDWgaqgNdDYwWXo4djNmOHk4b1pUUlZMTjltTHc',
       tables: "Passengers"
@@ -43,14 +42,17 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 750px;
   height: 700px;
 }
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">Passengers of Titanic</div>
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

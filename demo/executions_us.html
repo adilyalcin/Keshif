@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 110,
     leftPanelLabelWidth: 170,
     rightPanelLabelWidth: 180,
@@ -47,14 +47,11 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
-  width: 1000px;
-  height: 680px;
-}
-    </style>
     </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">Executions in the U.S.</div>
+      <div id="demo_Browser"></div>
+      </div>
     </body>
 </html>

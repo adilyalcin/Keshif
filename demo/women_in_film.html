@@ -16,14 +16,8 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-  resizeBrowser(150,120);
-  $(window).resize(function() {
-    resizeBrowser(150,120);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth:140,
     leftPanelLabelWidth: 250,
     itemName: "Movies",
@@ -74,34 +68,24 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-.kshfRecord{
-  width: 25%;
-}
-#chart_div {
-  width: 1100px;
-  height: 700px;
-}
-    </style>
+<style id="kshfStyle">
+.kshfRecord{ width: 25%; }
+.recordGroup{ background-color: #1A1A1A; }
+</style>
   </head>
   <body>
-    
     <div class="contents">
-      <div class="pageTitle" align="center">Gender Bias In Movies - Do Women Only Talk About Men? </div>
-      <div class="pageSubtitle">
-    To pass the <a href="http://bechdeltest.com/" target="_blank">Bechdel test</a>, a movie has to meet 3 criteria: (1) it has to have at least two women in it, (2) who talk to each other (3) about something besides a man.<br>
-    Surprisingly, <b>533 of the 1453 movies (37%)</b> in this dataset <b>fail this gender test</b>! Explore the data below.</div>
-    
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Gender Bias In Movies - Do Women Only Talk About Men? </div>
+      <div id="demo_PageSubtitle"> To pass the <a href="http://bechdeltest.com/" target="_blank">Bechdel test</a>, a movie has to meet 3 criteria: (1) it has to have at least two women in it, (2) who talk to each other (3) about something besides a man.<br> Surprisingly, <b>533 of the 1453 movies (37%)</b> in this dataset <b>fail this gender test</b>! Explore the data below.</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox" align="center">
-      Data Re-Vis, from 
-        the data curated by 
-        <a href="https://github.com/ali-ce/datasets/tree/master/Women-in-Film" target="_blank">Alice Corona</a>
-        (CC SA 4.0 Int <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank"><img src="http://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg" height="12"></a>),
-        and the story published at
-        <a href="http://women-in-film.silk.co/" target='_blank'>Silk</a>.
+    <div id="demo_Infobox">
+      Data Re-Vis, from the data curated by 
+      <a href="https://github.com/ali-ce/datasets/tree/master/Women-in-Film" target="_blank">Alice Corona</a>
+      (CC SA 4.0 Int <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank"><img src="http://mirrors.creativecommons.org/presskit/buttons/80x15/svg/by-sa.svg" height="12"></a>),
+      and the story published at
+      <a href="http://women-in-film.silk.co/" target='_blank'>Silk</a>.
       </div>
   </body>
 </html>

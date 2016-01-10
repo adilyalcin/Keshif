@@ -15,26 +15,25 @@
         <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
         <script type="text/javascript">
-
 function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
 google.setOnLoadCallback( function() {
   // set div height accordingly 
-  $('#chart_div').height($(window).height()-45);
-  $('#chart_div').width ($(window).width()*0.9);
+  $('#demo_Browser').height($(window).height()-45);
+  $('#demo_Browser').width ($(window).width()*0.9);
   // set resize callback
   $(window).resize(function() {
-    $('#chart_div').height($(window).height()-45);
-    $('#chart_div').width ($(window).width()*0.9);
+    $('#demo_Browser').height($(window).height()-45);
+    $('#demo_Browser').width ($(window).width()*0.9);
     browser.updateLayout();
   });
 
   var newsCol,peopleCol,topicsCol;
 
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "News stories",
     categoryTextWidth:150,
     source: {
@@ -107,7 +106,9 @@ google.setOnLoadCallback( function() {
 });
         </script>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
 </html>

@@ -15,16 +15,15 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-
-function getMedalIcons(v, _class){
-  var str="";
-  for(var i=0; i<v; i++) str+="<span class='fa fa-certificate "+_class+"'></span>";
-  return str;
-};
-
 google.setOnLoadCallback(function(){
+  function getMedalIcons(v, _class){
+    var str="";
+    for(var i=0; i<v; i++) str+="<span class='fa fa-certificate "+_class+"'></span>";
+    return str;
+  };
+
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 130,
     rightPanelLabelWidth: 120,
@@ -71,8 +70,8 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 890px;
   height: 650px;
 }
@@ -101,11 +100,12 @@ google.setOnLoadCallback(function(){
   color: rgb(205, 127, 50);
   text-shadow: 0px 0px 1px gray;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Medals Won in Olympic Games, 2000-2012</div>
-      <div id="chart_div"></div></div>
+      <div id="demo_PageTitle">Medals Won in Olympic Games, 2000-2012</div>
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>

@@ -20,7 +20,7 @@
 $(document).ready( function(){
   var dateFormat = d3.time.format("%Y-%m-%d");
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     categoryTextWidth: 160,
     itemName: "CNMTL Projects",
     source: {
@@ -53,10 +53,10 @@ $(document).ready( function(){
   });
 });
     </script>
-    <style>
-#chart_div{
+<style id="kshfStyle">
+#demo_Browser{
   width: 820px;
-  height: 630px;
+  height: calc(100vh - 130px);
 }
 .kshfRecord{
   width: 130px;
@@ -64,19 +64,14 @@ $(document).ready( function(){
 .thumbImg{
   border-radius: 9px;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">
-          CCNMTL Project Portfolio</div>
-
-      <div class="pageSubtitle">This page demonstrates the projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. The unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
+      <div id="demo_PageTitle">CCNMTL Project Portfolio</div>
+      <div id="demo_PageSubtitle">This page demonstrates the projects that <a href="http://ccnmtl.columbia.edu/" target="_blank">CCNMTL</a> has developed since its inception in early 1999. The unifying feature across these efforts is the innovative use of learning technologies and the high level of interaction among faculty and technologists as they share ideas and collaboratively design curricular resources and tools. Projects emphasize collaboration, interaction, and student activity.
       </div>
-
-
-      <div id="chart_div"></div>
+      <div id="demo_Browser"></div>
       </div>
-
   </body>
 </html>

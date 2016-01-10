@@ -26,7 +26,7 @@ var getIcon = function(d){
 
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     leftPanelLabelWidth: 280,
     rightPanelLabelWidth: 250,
     source: {
@@ -66,11 +66,7 @@ google.setOnLoadCallback(function(){
   });
 });
         </script>
-    <style>
-#chart_div {
-  width: 1260px;
-  height: 650px;
-}
+<style id="kshfStyle">
 .theLabel > .fa{
   width: 1.5em;
   text-align: center;
@@ -100,15 +96,15 @@ google.setOnLoadCallback(function(){
 .content:hover > .fa.catIcon{
   color: orangered;
 }
-    </style>
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">German Lobbying Meetings</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle" align="center">German Lobbying Meetings</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       This page uses data compiled and published by
       <a href="http://christopherwarnow.com/lobbyingcomplex/" target="_blank">Christopher Warnow</a>. Sources: 
       <a href="http://dip21.bundestag.de/dip21/btd/17/123/1712332.pdf">Banking</a> <i class='fa fa-money'></i> - 

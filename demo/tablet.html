@@ -13,20 +13,14 @@
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
     <link rel="stylesheet" href="./css/style.css" type="text/css">
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
     <script type="text/javascript">
-
 $(document).ready( function() {
-  resizeBrowser(160,60);
-  $(window).resize(function() {
-      resizeBrowser(160,60);
-      browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "Tablets",
     categoryTextWidth: 200,
     source: {
@@ -67,14 +61,16 @@ $(document).ready( function() {
   });
 });
     </script>
-    <style>
+<style id="kshfStyle">
 .iteminfo a{
   color:#606060;
   font-style:italic;
 }
-    </style>
+</style>
 	</head>
-    <body>
-      <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
 </html>

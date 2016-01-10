@@ -62,14 +62,8 @@ function loadData(browser){
 };
 
 google.setOnLoadCallback(function(){
-  resizeBrowser(150,80);
-  $(window).resize(function(){
-      resizeBrowser(150,80);
-      browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 180,
     rightPanelLabelWidth: 250,
@@ -140,15 +134,12 @@ google.setOnLoadCallback(function(){
     </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">CHI-2015 Papers &amp; Notes</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">CHI-2015 Papers &amp; Notes</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
-      This is just a quick experiment. Data is from 
-      <a href="http://confer.csail.mit.edu/chi2015/papers" target='_blank'>MIT's page</a>. 
-      All errors in this interface are mine. Feel free to bug me at 
-      <a href="http://www.twitter.com/adilyalcin" target="_blank">@adilyalcin</a>.
+    <div id="demo_Infobox">
+      Data is from <a href="http://confer.csail.mit.edu/chi2015/papers" target='_blank'>MIT's CHI2015 Confer</a>. 
       </div>
     </body>
 </html>

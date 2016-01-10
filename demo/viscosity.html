@@ -17,7 +17,7 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     barChartWidth: 150,
     leftPanelLabelWidth: 170,
     source: {
@@ -37,17 +37,17 @@ google.setOnLoadCallback(function(){
   });
 });
     </script>
-    <style>
-#chart_div { width: 800px; height: 550px; }
-    </style>
+<style id="kshfStyle">
+#demo_Browser { width: 800px; height: 550px; }
+</style>
   </head>
   <body>
     <div class="contents">
-      <div class="pageTitle" align="center">Viscosity Levels for Oral and Enteral Feedings</div>
-      <div id="chart_div"></div>
+      <div id="demo_PageTitle">Viscosity Levels for Oral and Enteral Feedings</div>
+      <div id="demo_Browser"></div>
       </div>
 
-    <div id="demoInfobox">
+    <div id="demo_Infobox">
       <a href="http://www.nutrition411.com/content/viscosity-levels-oral-and-enteral-feedings" target='_blank'>Data</a> is from nutrition411.com.
       </div>
   </body>

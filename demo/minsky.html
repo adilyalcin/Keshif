@@ -15,16 +15,9 @@
     <link rel="stylesheet" href="./css/style.css"/ type="text/css">
 
     <script type="text/javascript">
-
 google.setOnLoadCallback( function() {
-  resizeBrowser(100,80);
-  $(window).resize(function() {
-    resizeBrowser(100,80);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     itemName: "works",
     categoryTextWidth: 200,
     source: {
@@ -41,7 +34,7 @@ google.setOnLoadCallback( function() {
       { name: "Date", panel: 'middle' }
     ],
     recordDisplay: {
-      sortBy: {title: 'Date', label: function(){ return this.Date.getFullYear();} },
+      sortBy: 'Date',
       sortColWidth: 72,
       textSearch: 'Title',
       recordView: function(){
@@ -87,39 +80,11 @@ google.setOnLoadCallback( function() {
     }
   });
 });
-        </script>
-        <style>
-div.kshfRecord div.thumbnail{
-  float:right;
-  color:#666666;
-  display:none
-}
-div.kshfRecord:hover div.thumbnail{
-  display:inline-block;
-}
-div.thumbnail img{
-  max-height:80px;
-  border: solid 1px gray;
-}
-
-div.kshfRecord div.thumbnail2{
-  float:right;
-  display: inline-block;
-  color:#666666;
-}
-div.kshfRecord:hover div.thumbnail2{
-  display:none
-}
-div.thumbnail2 img{
-  max-height:70px;
-  border: solid 1px gray;
-}
-#chart_div {
-  width: 100%;
-}
-        </style>
+    </script>
 	</head>
-    <body>
-        <div class="contents"><div id="chart_div"></div></div>
-    </body>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
 </html>

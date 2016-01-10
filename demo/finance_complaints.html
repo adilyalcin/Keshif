@@ -32,14 +32,8 @@ function response(){
 }
 
 $(document).ready( function(){
-  resizeBrowser(300,70);
-  $(window).resize(function() {
-    resizeBrowser(300,70);
-    browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
     leftPanelLabelWidth: 170,
     barChartWidth: 125,
     itemName: "Complaints to Financial Institutions",
@@ -64,8 +58,8 @@ $(document).ready( function(){
           PC: "Prepaid card",
           MT: "Money transfers",
           O:  "Other financial service",
-        },
-      { name: "Sub-product"},
+        } },
+      { name: "Sub-product" },
       { name: "Submitted via", 
         catLabel: {
           W: "Web",
@@ -137,7 +131,7 @@ $(document).ready( function(){
           OTI: "Other transaction issues",
           CLID: "Credit line increase/decrease",
           PNC: "Payment to acct not credited",
-        },
+        } },
       { name: "Sub-issue", panel: "right"}
     ]
   });
@@ -145,9 +139,9 @@ $(document).ready( function(){
     </script>
   </head>
   <body>
-    <div class="pageTitle" align="center">
+    <div id="demo_PageTitle" align="center">
       <a href="http://www.consumerfinance.gov/complaintdatabase" target='_blank'>Consumer Complaint Database</a>
-       Data covering 01/01/2015 to 27/08/2015</div>
-    <div class="contents"><div id="chart_div"></div></div>
+       , 01/01/'15 ... 27/08/'15</div>
+    <div class="contents"><div id="demo_Browser"></div></div>
   </body>
 </html>

@@ -17,7 +17,8 @@
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
 new kshf.Browser({
-    domID: "#chart_div",
+    domID: "#demo_Browser",
+    itemName: "Öldürülen Gazeteci",
     categoryTextWidth: 130,
     rightPanelLabelWidth: 100,
     source: {
@@ -38,21 +39,16 @@ new kshf.Browser({
   });
 });
     </script>
-    <style>
-#chart_div {
+<style id="kshfStyle">
+#demo_Browser {
   width: 750px;
   height: 550px;
 }
-div.kshf.layout_header span.title{
-  font-size: 1em;
-  letter-spacing: 0em;
-}
-.bigTextSearch {
-  width: 120px;
-}
-    </style>
+</style>
   </head>
   <body>
-    <div class="contents"><div id="chart_div"></div></div>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
   </body>
 </html>
