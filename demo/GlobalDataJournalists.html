@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Global Data Journalists Directory</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    itemName: "Journalists",
+    leftPanelLabelWidth: 130,
+    rightPanelLabelWidth: 150,
+    source: {
+      url: "http://jplusplus.github.io/global-directory/",
+      callback: function(browser){
+        $.ajax({
+          url: "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/globaljournalists.json",
+          async: false,
+          success: function(data){
+            browser.primaryTableName = "Journalists";
+            kshf.dt.Journalists = [];
+            data.children.forEach(function(v){
+              if(v.institution==="N/A") delete v.institution;
+              if(v.city==="N/A") delete v.city;
+              kshf.dt.Journalists.push(new kshf.Item(v,'id'));
+            });
+            browser.loadCharts();
+          }
+          });
+      }
+    },
+    summaries: [
+      { name: "Country", value: "country" },
+      { name: "City", value: "city" },
+      { name: "Skills", value: "skills", layout: "right"},
+      { name: "Contact", layout: "right",
+        value: function(){
+          var r=[];
+          if(this.github==="YES") r.push("Github");
+          if(this.website==="YES") r.push("Personal Website");
+          if(this.email==="YES") r.push("Email");
+          if(this.pgp!=="N/A") r.push("Uses PGP");
+          if(this.twitter==="YES") r.push("Twitter");
+          return r;
+        } },
+      { name: "Institution", value: "institution", layout: "right"},
+
+    ],
+    recordDisplay: {
+      textSearch: "title",
+      displayType: "grid",
+      detailsToggle: "off",
+      recordView: function(){ 
+        var str="";
+        // add image
+        if(this.image_url.substr(0,3)==="res") this.image_url = "http://jplusplus.github.io/global-directory/"+this.image_url;
+        str+='<img src="'+this.image_url+'" class="jImg">';
+        str+="<span class='jContact'>";
+          if(this.website==="YES") 
+            str+="<a href='"+this.website_url+"' target='_blank' class='fa fa-home' title='Website'></a>";
+          if(this.email==="YES")  
+            str+="<a href='mailto:"+this.email_url+"' target='_blank' class='fa fa-envelope' title='Email'></a>";
+          if(this.twitter==="YES")  
+            str+="<a href='"+this.twitter_url+"' target='_blank' class='fa fa-twitter' title='Twitter'></a>";
+          if(this.github==="YES")  
+            str+="<a href='"+this.github_url+"' target='_blank' class='fa fa-github' title='Github'></a>";
+          if(this.pgp!=="N/A")
+            str+="<a href='"+this.pgp_url+"' target='_blank' class='fa fa-key' title='PGP Key URL'></a>";
+        str+="</span>";
+        str+='<span class="jName">'+this.title+"</span>";
+        str+="<span class='jPlace'>"+this.country+((this.city)?(", "+this.city):"")+"</span>";
+        str+="<span class='jIns'>"+((this.institution)?this.institution:"")+
+          " <i class='fa fa-magic' style='color: gray;'></i>"
+          "</span>";
+        // Skills
+        // Country, City
+        // Institution
+        return str;
+      },
+      domCb: function(d){
+        d3.select(d.DOM.record).select(".fa-magic")
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return d.data.skills.toString(); }}); })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); });
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.jName{
+  display: block;
+  font-weight: 500;
+  font-size: 0.9em;
+  text-align: center;
+}
+.jIns{
+  font-size: 0.7em;
+  font-weight: 100;
+  font-style: italic;
+  text-align: center;
+  display: block;
+}
+.jPlace{
+  font-size: 0.7em;
+  font-weight: 100;
+  text-align: center;
+  display: block;
+}
+.jImg{
+  height: 120px;
+  margin: 0 auto;
+  display: block;
+  border-radius: 15px;
+}
+.kshfRecord{
+  margin: 1px;
+  padding: 2px !important;
+  max-width: 170px;
+}
+.jContact{
+  display: block;
+  text-align: center;
+  margin-top: -18px;
+  height: 20px;
+}
+.jContact > .fa{
+  color: white;
+  text-decoration: none;
+  margin: 0px 2px;
+  text-shadow: 0px 0px 2px black;
+}
+.jContact > .fa:hover{
+  color: orangered;
+}
+.kshf .kshfRecord[highlight^="selected"]{
+  box-shadow: none !important;
+}
+.kshf .kshfRecord:hover .jImg{
+  box-shadow: 0px 0px 5px black;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">Global Data Journalists Directory</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from
+      <a href="http://jplusplus.github.io/global-directory/" target='_blank'>http://jplusplus.github.io/global-directory/</a>,
+      a <a href="www.jplusplus.org/" target='_blank'>JOURNALISM++</a> project.
+      </div>
+  </body>
+</html>
