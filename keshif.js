@@ -386,6 +386,7 @@ var kshf = {
             d3.rgb('#01665e')]
     },
     /** -- */
+    gistPublic: true,
     getGistLogin: function(){
       if(this.githubToken===undefined) return;
       $.ajax( 'https://api.github.com/user',
@@ -2509,10 +2510,10 @@ kshf.Browser.prototype = {
         this.panel_warningBox = this.DOM.root.append("div").attr("class", "warningBox_wrapper").attr("shown",false)
         var x = this.panel_warningBox.append("span").attr("class","warningBox");
         this.DOM.warningText = x.append("span").attr("class","warningText");
-        x.append("span").attr("class","dismiss").text("Dismiss")
-            .on("click",function(){
-                this.parentNode.parentNode.setAttribute("shown",false);
-            });
+        x.append("span").attr("class","dismiss").html("<i class='fa fa-times-circle' style='font-size: 1.3em;'></i>")
+          .on("click",function(){
+            this.parentNode.parentNode.setAttribute("shown",false);
+          });
     },
     /** -- */
     showWarning: function(v){
@@ -2605,13 +2606,27 @@ kshf.Browser.prototype = {
               saveAs(blob, "kshf_config.json");
             });
         }
-        rightBoxes.append("i").attr("class","configUser fa fa-user")
-          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Authenticate your Gist" }); })
+        rightBoxes.append("i").attr("class","configUser fa")
+          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', 
+            title: function(){ 
+              return kshf.gistLogin?
+                ("Welcome, <i class='fa fa-github'></i> <b>"+kshf.gistLogin+"</b>.<br><br>"+
+                    "Click to logout.<br><br>"+"Shift-click to set gist "+(kshf.gistPublic?"secret":"public")+"."):
+                "Sign-in using github";
+              }
+          });
+          })
           .attr("auth", false)
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout", function(){ this.tipsy.hide(); })
           .on("click",function(){ 
             if(this.getAttribute("auth")==="true"){
+              if (d3.event.shiftKey) {
+                kshf.gistPublic = !kshf.gistPublic; // invert public setting
+                this.setAttribute("public",kshf.gistPublic);
+                alert("Future uploads will be "+(kshf.gistPublic?"public":"secret")+".")
+                return;
+              }
               // de-authorize
               kshf.githubToken = undefined;
               kshf.gistLogin = undefined;
@@ -2619,8 +2634,8 @@ kshf.Browser.prototype = {
             } else {
               kshf.githubToken = window.prompt("Your Github token (only needs access to gist)", "");
               if(this.githubToken!==""){
-                this.setAttribute("auth",true);
                 kshf.getGistLogin();
+                this.setAttribute("auth",true);
               }
             }
           });
@@ -2630,7 +2645,9 @@ kshf.Browser.prototype = {
           .on("mouseout", function(){ this.tipsy.hide(); })
           .on("click",function(){
             if(!confirm("The browser will be saved "+
-                ((kshf.gistLogin)?"to your gist profile.":"anonymously and public.")
+                ((kshf.gistLogin)?
+                  "to your github as "+(kshf.gistPublic?"public":"secret")+" gist.":
+                  "anonymously and public.")
               )){
               return;
             }
@@ -2650,7 +2667,7 @@ kshf.Browser.prototype = {
 
             var githubLoad = {
               description: description,
-              public: true,
+              public: kshf.gistPublic,
               files: { "kshf_config.json": { content: c }, }
             };
             // Add style file, if custom style exists
@@ -2725,7 +2742,7 @@ kshf.Browser.prototype = {
                     var gistID = gistURL.replace(/.*github.*\//g,'');
                     var keshifGist = "keshif.me/gist?"+gistID;
                     me.showWarning(
-                      "The browser is edited to "+
+                      "The browser is edited in "+
                       "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
                       "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
                       )
@@ -3272,13 +3289,28 @@ kshf.Browser.prototype = {
       this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
 
       this.DOM.attributeList.append("div").attr("class","newAttribute").html("<i class='fa fa-plus-square'></i>")
+        .each(function(){
+          this.tipsy = new Tipsy(this, { gravity: 'n', title: 'Add new attribute' });
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
-          var name = prompt("The summary name");
+          var name = prompt("The attribute name");
           if(name===null) return; // cancel
-          var func = prompt("The summary function");
+          var func = prompt("The attribute function");
           if(func===null) return; // cancel
           var safeFunc = undefined;
-          eval("\"use strict\"; safeFunc = function(d){"+func+"}");
+          try {
+            eval("\"use strict\"; safeFunc = function(d){"+func+"}");
+          } catch (e){
+            console.log("Eval error:");
+            console.log(e.message);
+            console.log(e.name);
+            console.log(e.fileName);
+            console.log(e.lineNumber);
+            console.log(e.columnNumber);
+            console.log(e.stack);
+          }
           if(typeof safeFunc !== "function"){
             alert("You did not specify a function with correct format. Cannot specify new attribute.");
             return;
@@ -4219,7 +4251,6 @@ kshf.Browser.prototype = {
     /** -- */
     updateLayout: function(){
       if(this.loaded!==true) return;
-      this.checkBrowserZoomLevel();
       this.divWidth = this.domWidth();
       this.updateLayout_Height();
       this.updateMiddlePanelWidth();

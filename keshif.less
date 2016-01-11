@@ -242,8 +242,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .configUser{
       display: none;
-      &[auth="false"] { color: black; }
-      &[auth="true"] { color: orangered; }
+      &[auth="false"] {
+        &:before{ content: "\f090"; } // fa-sign-in
+      }
+      &[auth="true"] {
+        &:before{ content: "\f007"; } // fa-user
+        &[public="false"]:before { content: "\f21b"; } // fa-user-secret
+        &:hover:before { content: "\f08b"; } // fa-sign-out
+      }
     }
 
     .fa-dropbox{
@@ -825,17 +831,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border: solid 1px rgb(214, 206, 121);
             box-shadow: 1px 1px 3px gray;
             > .warningText{
-                cursor: default;
+              cursor: default;
+              > a{
+                color: #665F17;
+                font-weight: 500;
+              }
             }
             > .dismiss{
-                margin-left: 5px;
-                color: gray;
-                cursor: pointer;
-                text-decoration: underline;
-                font-size: 0.8em;
-                &:hover{
-                    color: orangered;
-                }
+              margin-left: 5px;
+              color: gray;
+              cursor: pointer;
+              text-decoration: underline;
+              font-size: 0.8em;
+              &:hover{ color: orangered; }
             }
         }
         &[shown=true]{

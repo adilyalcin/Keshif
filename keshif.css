@@ -292,11 +292,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .configUser {
   display: none;
 }
-.kshf .configUser[auth="false"] {
-  color: black;
+.kshf .configUser[auth="false"]:before {
+  content: "\f090";
 }
-.kshf .configUser[auth="true"] {
-  color: orangered;
+.kshf .configUser[auth="true"]:before {
+  content: "\f007";
+}
+.kshf .configUser[auth="true"][public="false"]:before {
+  content: "\f21b";
+}
+.kshf .configUser[auth="true"]:hover:before {
+  content: "\f08b";
 }
 .kshf .fa-dropbox {
   color: #007EE5 !important;
@@ -1071,6 +1077,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf > .warningBox_wrapper > .warningBox > .warningText {
   cursor: default;
+}
+.kshf > .warningBox_wrapper > .warningBox > .warningText > a {
+  color: #665F17;
+  font-weight: 500;
 }
 .kshf > .warningBox_wrapper > .warningBox > .dismiss {
   margin-left: 5px;
