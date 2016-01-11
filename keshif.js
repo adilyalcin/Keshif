@@ -2,7 +2,7 @@
 
 keshif library
 
-Copyright (c) 2014-2015, University of Maryland
+Copyright (c) 2014-2016, University of Maryland
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -3166,6 +3166,7 @@ kshf.Browser.prototype = {
               alert("Please input your data source link and sheet name.");
               return;
             }
+            me.options.enableAuthoring = true; // Enable authoring on data load
             var sheetID = me.DOM.sheetColumn_ID[0][0].value;
             if(sheetID==="") sheetID = "id";
             switch(source_type){
@@ -3909,7 +3910,10 @@ kshf.Browser.prototype = {
         }
         this.finalized = true;
 
-        setTimeout(function(){ me.setNoAnim(false); },1000);
+        setTimeout(function(){ 
+          if(this.options.enableAuthoring) me.enableAuthoring(true);
+          me.setNoAnim(false);
+        },1000);
     },
     /** -- */
     unregisterBodyCallbacks: function(){
