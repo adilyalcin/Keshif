@@ -2286,6 +2286,8 @@ kshf.Browser = function(options){
     this.itemName = options.itemName || "";
     if(options.itemDisplay) options.recordDisplay = options.itemDisplay;
 
+    if(typeof this.options.enableAuthoring === "undefined") this.options.enableAuthoring = false;
+
     this.DOM = {};
     this.DOM.root = d3.select(this.domID)
       .classed("kshf",true)
