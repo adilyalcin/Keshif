@@ -134,7 +134,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode=true] .configUser {
   display: inline-block;
 }
-.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar']:hover .chartCatLabelResize {
+.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='list']:hover .chartCatLabelResize {
   display: block !important;
 }
 .kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
@@ -171,7 +171,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode=true] .buttonSummaryRemove {
   display: inline-block !important;
 }
-.kshf[authoringMode=true][collapsed=false][viewType='bar']:hover .chartCatLabelResize {
+.kshf[authoringMode=true][collapsed=false][viewType='list']:hover .chartCatLabelResize {
   display: block !important;
 }
 .kshf[authoringMode=true][collapsed=false][viewType='bar']:hover .summaryConfigControl {

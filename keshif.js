@@ -3913,7 +3913,7 @@ kshf.Browser.prototype = {
         this.finalized = true;
 
         setTimeout(function(){ 
-          if(this.options.enableAuthoring) me.enableAuthoring(true);
+          if(me.options.enableAuthoring) me.enableAuthoring(true);
           me.setNoAnim(false);
         },1000);
     },

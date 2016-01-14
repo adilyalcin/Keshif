@@ -115,8 +115,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: inline-block;
       }
       .kshfSummary{
-        &[collapsed=false][viewType='bar']:hover {
+        &[collapsed=false][viewType='list']:hover {
           .chartCatLabelResize{ display: block !important; }
+        }
+        &[collapsed=false][viewType='bar']:hover {
           .summaryConfigControl{ display: inline-block !important; }
         }
         &[showConfig=true]{
