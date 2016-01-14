@@ -2921,9 +2921,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .lineTrend.preview{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
       &[ratiomode=false] .mapGlyph > .aggr.preview{
-        .animation(mapPreviewAnimation 800ms infinite ease-in-out);
+        opacity: 1;
+//        .animation(mapPreviewAnimation 800ms infinite ease-in-out);
       }
-      &[ratiomode=true] .mapGlyph > .aggr.preview{
+      .mapGlyph > .aggr.preview{
         opacity: 1;
       }
     }

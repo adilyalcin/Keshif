@@ -3432,12 +3432,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1 !important;
 }
 .kshf[resultpreview="true"][ratiomode=false] .mapGlyph > .aggr.preview {
-  -webkit-animation: mapPreviewAnimation 800ms infinite ease-in-out;
-  -moz-animation: mapPreviewAnimation 800ms infinite ease-in-out;
-  -o-animation: mapPreviewAnimation 800ms infinite ease-in-out;
-  animation: mapPreviewAnimation 800ms infinite ease-in-out;
+  opacity: 1;
 }
-.kshf[resultpreview="true"][ratiomode=true] .mapGlyph > .aggr.preview {
+.kshf[resultpreview="true"] .mapGlyph > .aggr.preview {
   opacity: 1;
 }
 .kshf .selectVertLine {

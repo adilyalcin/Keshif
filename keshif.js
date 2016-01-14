@@ -400,7 +400,8 @@ var kshf = {
         }
       );
     },
-
+    /** -- TEMP! Not a good design here! TODO change */
+    wrapLongitude: 170
 };
 
 // tipsy, facebook style tooltips for jquery
@@ -953,7 +954,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
         d3.geo.transform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
-            if(x>160) x-=360;
+            if(x>kshf.wrapLongitude) x-=360;
             var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }
@@ -1150,8 +1151,8 @@ kshf.RecordDisplay.prototype = {
         if(feature===undefined) return;
         var b = d3.geo.bounds(feature);
         // Change wrapping (US World wrap issue)
-        if(b[0][0]>170) b[0][0]-=360;
-        if(b[1][0]>170) b[1][0]-=360;
+        if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
+        if(b[1][0]>kshf.wrapLongitude) b[1][0]-=360;
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
@@ -1602,8 +1603,8 @@ kshf.RecordDisplay.prototype = {
         this.mapColorScale = d3.scale.linear();
         s_log = false;
       }
-      var min_v = this.sortingOpt_Active.intervalRange.min;
-      var max_v = this.sortingOpt_Active.intervalRange.max;
+      var min_v = this.sortingOpt_Active.intervalRange.active.min;
+      var max_v = this.sortingOpt_Active.intervalRange.active.max;
       if(min_v===undefined) min_v = d3.min(this.browser.items, function(d){ return s_f.call(d.data); });
       if(max_v===undefined) max_v = d3.max(this.browser.items, function(d){ return s_f.call(d.data); });
       this.mapColorScale
@@ -5083,6 +5084,7 @@ kshf.Summary_Base.prototype = {
             me.browser.recordDisplay.setSortingOpt_Active(me);
             me.browser.recordDisplay.refreshSortingOptions();
           }
+          me.browser.updateLayout();
         });
 
       this.DOM.summaryViewAs = this.DOM.summaryIcons.append("span")
@@ -6375,7 +6377,7 @@ var Summary_Categorical_functions = {
 
       if(this.viewType=='map'){
 
-        if(!isThisIt) {
+        if(!isThisIt || this.isMultiValued) {
           var boundMin = ratioMode ? 
             d3.min(this._cats, function(_cat){ 
               if(_cat.aggregate_Active===0 || _cat.aggregate_Preview===0) return null;
@@ -6384,8 +6386,12 @@ var Summary_Categorical_functions = {
           var boundMax = ratioMode ? 
             d3.max(this._cats, function(_cat){ 
               if(_cat.aggregate_Active===0) return null;
+//              if(_cat === me.browser.highlightedAggregate) return null;
               return 100*_cat.aggregate_Preview/_cat.aggregate_Active; }) : 
-            d3.max(this._cats, function(_cat){ return _cat.aggregate_Preview; });
+            d3.max(this._cats, function(_cat){ 
+//              if(_cat === me.browser.highlightedAggregate) return null;
+              return _cat.aggregate_Preview;
+            });
           
           this.DOM.catMapColorScale.select(".boundMin").text(Math.round(boundMin));
           this.DOM.catMapColorScale.select(".boundMax").text(Math.round(boundMax));
@@ -6398,7 +6404,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.aggr_Preview
           .attr("fill", function(_cat){ 
-            if(isThisIt) {
+            if(isThisIt && !me.isMultiValued) {
               if(_cat === me.browser.highlightedAggregate) return me.mapColorQuantize(9); 
               return "rgba(0,0,0,0)";
             }
@@ -7207,8 +7213,8 @@ var Summary_Categorical_functions = {
         if(feature===undefined) return;
         var b = d3.geo.bounds(feature);
         // Change wrapping
-        if(b[0][0]>170) b[0][0]-=360;
-        if(b[1][0]>170) b[1][0]-=360;
+        if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
+        if(b[1][0]>kshf.wrapLongitude) b[1][0]-=360;
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
@@ -7300,7 +7306,7 @@ var Summary_Categorical_functions = {
         d3.geo.transform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
-            if(x>160) x-=360;
+            if(x>kshf.wrapLongitude) x-=360;
             var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }
@@ -7754,6 +7760,7 @@ var Summary_Interval_functions = {
     /** -- */
     setScaleType: function(t,force){
       if(this.scaleType===t) return;
+      var me=this;
 
       this.viewType = t==='time'?'line':'bar';
       if(this.DOM.inited) {
@@ -7775,18 +7782,27 @@ var Summary_Interval_functions = {
       if(this.filteredItems === undefined) return;
 
       // remove items with value:0 (because log(0) is invalid)
-      if(this.scaleType==='log' && (this.intervalRange.min<=0)) {
-        var x=this.filteredItems.length;
-        this.filteredItems = this.filteredItems.filter(function(item){ 
-          var v=this.itemV(item)!==0;
-          if(v===false) this.unmappedRecords.push(item); // Add to unmapped records
-          return v;
-        },this);
-        if(x!==this.filteredItems.length){ // Some items are filtered bc they are 0.
-          this.updateIntervalRangeMinMax();
+      if(this.scaleType==='log'){
+        if(this.intervalRange.min<=0){
+          var x=this.filteredItems.length;
+          this.filteredItems = this.filteredItems.filter(function(item){ 
+            var v=this.itemV(item)!==0;
+            if(v===false) this.unmappedRecords.push(item); // Add to unmapped records
+            return v;
+          },this);
+          if(x!==this.filteredItems.length){ // Some items are filtered bc they are 0.
+            this.updateIntervalRangeMinMax();
+          }
         }
+        // cannot be zero.
+        var minnn = d3.min(this.filteredItems,function(item){ var v=me.itemV(item); if(v>0) return v; } );
+        this.intervalRange.active.min = Math.max(minnn, this.intervalRange.active.min);
+        this.summaryFilter.active.min = Math.max(minnn, this.summaryFilter.active.min);
       }
       this.updateScaleAndBins(true);
+      if(this.usedForSorting){
+        this.browser.recordDisplay.map_updateRecordColor();
+      }
     },
     /** -- */
     getHeight_MapColor: function(){
@@ -8215,9 +8231,12 @@ var Summary_Interval_functions = {
             this.valueScale.nice(optimalTickCount);
             ticks = this.valueScale.ticks(optimalTickCount);
 
-            if(!this.hasFloat) ticks = ticks.filter(function(d){return d===0||d%1===0;});
+            if(!this.hasFloat) ticks = ticks.filter(function(tick){return tick===0||tick%1===0;});
 
-            var d3Formating = d3.format(this.hasFloat?".2f":".2s");
+            // Does TICKS have a floating number
+            var ticksFloat = ticks.some(function(tick){ return tick%1!==0; });
+
+            var d3Formating = d3.format(ticksFloat?".2f":".2s");
             this.intervalTickFormat = function(d){
                 if(!me.hasFloat && d<10) return d;
                 if(!me.hasFloat && Math.abs(ticks[1]-ticks[0])<1000) return d;
@@ -8346,13 +8365,13 @@ var Summary_Interval_functions = {
         }
         if(this.DOM.root){
             if(this.DOM.aggrGlyphs===undefined){
-                this.insertVizDOM();
+              this.insertVizDOM();
             }
             this.refreshBins_Translate();
             this.refreshViz_Scale();
 
             this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
-                return (me.valueScale(d))+"px";
+              return (me.valueScale(d))+"px";
             });
             this.refreshIntervalSlider();
         }
@@ -8410,7 +8429,7 @@ var Summary_Interval_functions = {
       if(this.DOM.labelGroup===undefined) return;
       this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
         if(me.scaleType==='time'){
-           return me.intervalTickFormat(d);
+          return me.intervalTickFormat(d);
         }
         if(d<1 && d!==0) 
           return d.toFixed(1) + me.printUnitName();
@@ -8562,7 +8581,7 @@ var Summary_Interval_functions = {
       this.summaryFilter.active.max = Math.min(
         this.intervalTicks[this.intervalTicks.length-1], this.summaryFilter.active.max);
 
-      if(this.scaleType==='log' || this.scaleType==='step' || (!this.hasFloat) ){
+      if(this.scaleType==='step' || (!this.hasFloat) ){
         this.summaryFilter.active.min=Math.round(this.summaryFilter.active.min);
         this.summaryFilter.active.max=Math.round(this.summaryFilter.active.max);
       }
@@ -9294,6 +9313,7 @@ var Summary_Interval_functions = {
     setHeight: function(targetHeight){
       if(this.histBins===undefined) return;
       var c = targetHeight-this.getHeight_Header()-this.getHeight_Extra();
+      //c -= this.getHeight_MapColor();
       c = Math.min(c,100);
       if(this.height_hist===c) return;
       this.height_hist = c;
