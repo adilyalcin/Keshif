@@ -1603,8 +1603,12 @@ kshf.RecordDisplay.prototype = {
         this.mapColorScale = d3.scale.linear();
         s_log = false;
       }
-      var min_v = this.sortingOpt_Active.intervalRange.active.min;
-      var max_v = this.sortingOpt_Active.intervalRange.active.max;
+      var min_v = this.sortingOpt_Active.intervalRange.min;
+      var max_v = this.sortingOpt_Active.intervalRange.max;
+      if(this.sortingOpt_Active.intervalRange.active){
+        min_v = this.sortingOpt_Active.intervalRange.active.min;
+        max_v = this.sortingOpt_Active.intervalRange.active.max;
+      }
       if(min_v===undefined) min_v = d3.min(this.browser.items, function(d){ return s_f.call(d.data); });
       if(max_v===undefined) max_v = d3.max(this.browser.items, function(d){ return s_f.call(d.data); });
       this.mapColorScale
@@ -6400,7 +6404,6 @@ var Summary_Categorical_functions = {
             .range([0, 9])
             .domain( [boundMin,boundMax]);
         }
-
 
         this.DOM.aggr_Preview
           .attr("fill", function(_cat){ 
