@@ -23,11 +23,6 @@ google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 160,
-  	readyCb: function(browser){
-  		browser.summaries.forEach(function(summary){
-  			if(summary.type==="interval") browser.recordDisplay.addSortingOption(summary);
-  		});
-  	}
   });
 });
     </script>
