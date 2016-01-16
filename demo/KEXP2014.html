@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>KEXP Playlists - Which songs are played?</title><meta charset="utf-8">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css">
+
+    <script type="text/javascript">
+$(document).ready( function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 110,
+    leftPanelLabelWidth: 200,
+    rightPanelLabelWidth: 150,
+    middlePanelLabelWidth: 200,
+    itemName: "Songs",
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/KEXP/',
+      fileType: 'csv',
+      sheets : [ 
+        {name:"Songs", fastMode:true, dynamicTyping:false },
+        {name:"DJs", fastMode:true, dynamicTyping:false, id:"DJ"},
+        {name:"Shows", fastMode:true, dynamicTyping:false, id:"Show"},
+      ],
+    },
+    loadedCb: function(){
+      kshf.dt.Songs.forEach(function(song){
+        song.data.DJs = song.data.DJ.split("; ");
+        var m=moment(song.data.Date, "YYYY/MM/DD/hhA");
+        if(m.year()<1950) return;
+        song.data["Release Year"] = parseInt(song.data["Release Year"]);
+        song.data.PlayTime = new Date(m);
+      });
+    },
+    facets: [
+      { name: "Song", minAggrValue: 15 },
+      { name: "Album", minAggrValue: 30 },
+      { name: "Artist", panel: 'middle', minAggrValue: 30 },
+      { name: "Label", panel: 'middle', minAggrValue: 30 },
+      { name: "DJs", panel:"right", catTableName: "DJs",
+        catLabel: function(){ return this.DJ+"<img src='"+this.Image+"' class='charImg'>"; } },
+      { name: "Show", panel:"right" },
+      { name: "Release Year", panel:"bottom", type: 'interval' },
+      { name: "Play Time", value: "PlayTime", panel:"bottom", collapsed: true }
+    ],
+    /*
+    itemDisplay: {
+        sortColWidth: 60,
+        detailsToggle : "Zoom",
+        sortingOpts : [ 
+            {name: 'Release Year', inverse:true},
+            {name: 'Release Year', inverse:true}
+        ],
+        contentFunc: function(d){ return d.data[3]; }
+    }
+      */
+  });
+});
+        </script>
+<style>
+img.charImg{
+  height: 21px;
+  width: 19px;
+  margin-right: 3px;
+  margin-left: 3px;
+  border-radius: 4px;
+  vertical-align: middle;
+  position: relative;
+  transform-origin: 0% 50%;
+  -webkit-transform-origin: 0% 50%;
+  -o-transform-origin: 0% 50%;
+  -moz-transform-origin: 0% 50%;
+  transition: all 150ms ease-in;
+  -webkit-transition: all 150ms ease-in;
+  -o-transition: all 150ms ease-in;
+  -moz-transition: all 150ms ease-in;
+}
+.attrib[highlight="selected"]{
+  z-index: 800;
+}
+.attrib[highlight="selected"] .attribLabel {
+  z-index: 900;
+}
+.attrib[highlight="selected"] img.charImg{
+  transform: scale(2.5);
+  z-index: 1000;
+}
+</style>
+    </head>
+    <body>
+      <div class="contents">
+        <div id="demo_Browser"></div></div>
+    </body>
+</html>
