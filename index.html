@@ -107,16 +107,17 @@ var loadDemoBrowser = function(){
       sortBy: {name: 'Highlighted', value: "id", inverse: true},
       displayType: 'grid',
       maxVisibleItems_Default: 100,
+      detailsToggle: 'off',
       textSearch: 'Name',
       recordView: function(){
         var link=this["Link"];
         if(link==="../index") link = "index";
           var str='';
           str+="<span class='thumbnail'><a target='_blank' href='./demo/"
-              +this["Link"]+"'><img class='theImage' src='demo/demo_img/"+link+".jpg')></a></span>";
+              +this["Link"]+"'><img class='theImage' src='demo/demo_img/"+link+".png')></a></span>";
 //          str+="<div class=\"iteminfo iteminfo_0\">";
-          str+="<span class='title'>"+this["Name"]+"</span>";
-          str+="<span class='icons'>";
+          str+="<a target='_blank' href='./demo/"+this["Link"]+"'><span class='demoTitle'>"+this["Name"]+"</span></a>";
+          str+="<span class='demoIcons'>";
               if(this['Linked']) str+="<span class='fa fa-chain'></span>";
               if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
               if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
@@ -140,6 +141,13 @@ var loadDemoBrowser = function(){
 	</script>
 	<style>
 
+.kshf .kshfRecord[highlight^="selected"] {
+  box-shadow: none;
+  background-color: #EFEADF;
+}
+.kshfRecord[highlight="selected"] .demoIcons{
+  color: gray;
+}
 body{
     margin: 0;
     padding: 0;
@@ -346,20 +354,13 @@ h1, .h1 {
   padding: 3px;
   margin-bottom: 2px;
 }
-.content img.theImage{
+.content .theImage{
   display: block;
   margin-left: auto;
   margin-right: auto;
-  background-color: white;
-  width: calc(100% - 10px);
+  width: 100%;
 }
-.content img.theImage:hover{
-  box-shadow: 0px 0px 2px black;
-}
-.kshfRecord[highlight=true] .content .thumbnail a{
-  background-color: orangered;
-}
-.content .title{
+.demoTitle{
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -367,9 +368,12 @@ h1, .h1 {
   text-align: center;
   font-size: 0.8em;
 }
+.demoTitle:hover{
+  color: orangered;
+}
 .content .thumbnail{
   display: block;
-  height: 120px;
+  height: 127px;
   overflow-y: hidden;
   overflow-x: hidden;
   position: relative;
@@ -378,14 +382,7 @@ h1, .h1 {
   -o-transition: background-color 300ms linear;
   -moz-transition: background-color 300ms linear;
 }
-.content .thumbnail a{
-  display: block;
-  bottom: 2px;
-  display: block;
-  position: absolute;
-  width: 100%;
-}
-.content .icons{
+.demoIcons{
   display: block;
   text-align: center;
   color: lightgray;
@@ -394,13 +391,12 @@ h1, .h1 {
   border-top: solid 1px lightgray;
   padding-top: 2px;
 }
-
-.content .icons .fa{
+.content .demoIcons .fa{
   padding: 0px 2px;
 }
-.content .icons .fa:hover{
+.content .demoIcons .fa:hover{
   padding: 0px 2px;
-  color: gray;
+  color: black;
 }
 .content .codeLink{
   position: absolute;
