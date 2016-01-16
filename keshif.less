@@ -1879,7 +1879,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       vertical-align: top;
       padding: 1px 0px;
       position: relative;
-      .transition(~"opacity 500ms ease");
+      .transition(~"opacity 500ms ease, background-color 100ms linear");
 
       > .recordRank{
         font-size: 0.6em;
@@ -1947,7 +1947,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .item_details{ display: none; }
       }
       &[highlight^="selected"]{
-        box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
+        background-color: #EFEADF;
+        //box-shadow: inset 0px 0px 2px black; //@color_bars_selected;
         &[selectedForLink=true]{
           .background-image(~"linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%)");
         }
@@ -2292,27 +2293,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &[compare="true"] {
                       > .categoryLabel > .theLabel{ font-weight: 700; }
                     }
+                    
                     &:not([selected="0"]) {
                       > .categoryLabel > .theLabel{ font-weight: 700; }
                       .clickArea{ cursor: pointer; }
                     }
-                    &[selected="-1"] {
-                      > .categoryLabel > .theLabel{ text-decoration: line-through; }
-                    }
                     // AND
                     &[selected="1"]{
-                      > .categoryLabel > .theLabel{ color: @color_query_and; }
+                      > .categoryLabel {
+                        background-color: #DEE2E5;
+                        > .theLabel{ color: @color_query_and; }
+                      }
                     }
                     // OR
                     &[selected="2"]{
-                      > .categoryLabel > .theLabel{ color: @color_query_or; }
+                      > .categoryLabel {
+                        background-color: #D8ECEE;
+                        > .theLabel{ color: @color_query_or; }
+                      }
                       &[show-box=true]{
                         > .categoryLabel > .filterButtons > .orButton { display: inline; opacity: 1; }
                       }
                     }
                     // NOT
                     &[selected="-1"]{
-                      > .categoryLabel > .theLabel{ color: @color_query_not; }
+                      background-color: #E5E5E5;
+                      background-color: #D8ECEE;
+                      > .categoryLabel > .theLabel{ 
+                        color: @color_query_not;
+                        text-decoration: line-through;
+                      }
                       > .categoryLabel > .filterButtons > .notButton{
                         display: inline;
                         opacity: 1;
@@ -2326,15 +2336,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         // Not selected
                         &[selected="0"] {
                           .clickArea { cursor: pointer; }
-                          &[selecttype="and"] > .categoryLabel > .theLabel{
-                            color: @color_query_and;
+                          &[selecttype="and"] > .categoryLabel {
+                            > .theLabel{ color: @color_query_and; }
                           }
-                          &[selecttype="or"] > .categoryLabel > .theLabel{
-                            color: @color_query_or;
+                          &[selecttype="or"] > .categoryLabel {
+                            > .theLabel{ color: @color_query_or; }
                           }
-                          &[selecttype="not"] > .categoryLabel > .theLabel{
-                            color: @color_query_not;
-                            text-decoration: line-through;
+                          &[selecttype="not"] > .categoryLabel {
+                            > .theLabel{
+                              color: @color_query_not;
+                              text-decoration: line-through;
+                            }
                           }
                         }
                       }

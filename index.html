@@ -74,13 +74,6 @@ var loadDemoBrowser = function(){
             r.push("Time <span class='fa fa-clock-o'></span>");
           return r;
         } },
-/*        },{ name: "Data Structure",
-          value: function(){
-              var r = [];
-              if(this.Linked) r.push("Linked/Networked <span class='fa fa-chain'></span>");
-              if(this.Tables==="Multi") r.push("Multiple Tables <span class='fa fa-table'></span>");
-              return r;
-          }*/
       { name: "Record Display", panel: "right",
         value: function(){
           var r = [];
@@ -118,7 +111,6 @@ var loadDemoBrowser = function(){
 //          str+="<div class=\"iteminfo iteminfo_0\">";
           str+="<a target='_blank' href='./demo/"+this["Link"]+"'><span class='demoTitle'>"+this["Name"]+"</span></a>";
           str+="<span class='demoIcons'>";
-              if(this['Linked']) str+="<span class='fa fa-chain'></span>";
               if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
               if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
               //if(this['Facets - Hierarchical']) str+="<span class='fa fa-outdent'></span>";
@@ -129,7 +121,6 @@ var loadDemoBrowser = function(){
               if(this['Result Display']==="List") str+="<span class='fa fa-list'></span>";
               if(this['Highlighted']) str+="<span class='fa fa-star'></span>";
               if(this['Main Text Search']) str+="<span class='fa fa-search'></span>";
-              if(this['Dynamic Sizing']) str+="<span class='fa fa-arrows-alt'></span>";
           str+="</span>";
           str+="<span class='codeLink' style='right: 2px'><a target='_blank' href='https://github.com/adilyalcin/Keshif/blob/master/demo/"
                   +this["Link"]+".html' class='fa fa-code'></a></span>";
@@ -140,14 +131,6 @@ var loadDemoBrowser = function(){
 };
 	</script>
 	<style>
-
-.kshf .kshfRecord[highlight^="selected"] {
-  box-shadow: none;
-  background-color: #EFEADF;
-}
-.kshfRecord[highlight="selected"] .demoIcons{
-  color: gray;
-}
 body{
     margin: 0;
     padding: 0;

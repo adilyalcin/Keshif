@@ -250,11 +250,13 @@ var kshf = {
                 });
             });
         },
+        baseMeasureFormat: d3.format(".2s"),
         /** You should only display at most 3 digits + k/m/etc */
         formatForItemCount: function(n){
             if(n<1000) {
                 return n;
             }
+            return kshf.Util.baseMeasureFormat(n);
             if(n<1000000) {
                 // 1,000-999,999
                 var thousands=n/1000;
@@ -7665,7 +7667,7 @@ var Summary_Interval_functions = {
                     item.setFilterCache(this.id, (v!==null)?isFilteredCb(v):false);
                 },this);
 
-                if(summary.scaleType==="step"){
+                if(summary.scaleType==='step'){
                     if(summary.zoomed) summary.DOM.zoomControl.attr("sign", "minus");
                 } else {
                     summary.DOM.zoomControl.attr("sign", "plus");
@@ -7802,8 +7804,13 @@ var Summary_Interval_functions = {
         this.intervalRange.active.min = Math.max(minnn, this.intervalRange.active.min);
         this.summaryFilter.active.min = Math.max(minnn, this.summaryFilter.active.min);
       }
+      if(this.scaleType==="linear"){
+        if(!this.hasFloat){
+          this.intervalRange.active.max+=1;
+        }
+      }
       this.updateScaleAndBins(true);
-      if(this.usedForSorting){
+      if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
         this.browser.recordDisplay.map_updateRecordColor();
       }
     },

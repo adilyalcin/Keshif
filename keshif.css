@@ -2251,10 +2251,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   padding: 1px 0px;
   position: relative;
-  -webkit-transition: opacity 500ms ease;
-  -moz-transition: opacity 500ms ease;
-  -o-transition: opacity 500ms ease;
-  transition: opacity 500ms ease;
+  -webkit-transition: opacity 500ms ease, background-color 100ms linear;
+  -moz-transition: opacity 500ms ease, background-color 100ms linear;
+  -o-transition: opacity 500ms ease, background-color 100ms linear;
+  transition: opacity 500ms ease, background-color 100ms linear;
 }
 .kshf .kshfRecord > .recordRank {
   font-size: 0.6em;
@@ -2333,7 +2333,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfRecord[highlight^="selected"] {
-  box-shadow: inset 0px 0px 2px black;
+  background-color: #EFEADF;
 }
 .kshf .kshfRecord[highlight^="selected"][selectedForLink=true] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
@@ -2737,11 +2737,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([selected="0"]) .clickArea {
   cursor: pointer;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] > .categoryLabel > .theLabel {
-  text-decoration: line-through;
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="1"] > .categoryLabel {
+  background-color: #DEE2E5;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="1"] > .categoryLabel > .theLabel {
   color: #1d4870;
+}
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="2"] > .categoryLabel {
+  background-color: #D8ECEE;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="2"] > .categoryLabel > .theLabel {
   color: #1c737a;
@@ -2750,8 +2753,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   opacity: 1;
 }
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] {
+  background-color: #E5E5E5;
+  background-color: #D8ECEE;
+}
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] > .categoryLabel > .theLabel {
   color: #808080;
+  text-decoration: line-through;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="-1"] > .categoryLabel > .filterButtons > .notButton {
   display: inline;
