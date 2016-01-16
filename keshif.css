@@ -805,20 +805,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-bottom: 2px;
 }
 .kshf .panel_Basic > .recordInfo {
-  vertical-align: top;
   display: block;
   white-space: nowrap;
   cursor: default;
   font-size: 1.2em;
   font-weight: 700;
-  text-shadow: 1px 1px lightgray;
-  margin-bottom: -1px;
   z-index: 10;
 }
 .kshf .panel_Basic > .recordInfo > .activeRecordCount {
   display: inline-block;
   text-align: right;
   margin-right: 3px;
+}
+.kshf .panel_Basic > .recordInfo[editable] {
+  cursor: pointer;
+}
+.kshf .panel_Basic > .recordInfo[editable]:hover {
+  color: orangered;
 }
 .kshf .panel_Basic > .breadcrumbs {
   -webkit-box-flex: 1;
@@ -4266,6 +4269,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .tipsy .unitName {
   margin-left: 1px;
+  margin-right: 1px;
   color: lightgray;
 }
 .tipsy .mapItemName {

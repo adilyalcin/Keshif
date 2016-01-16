@@ -1468,8 +1468,9 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
       if(this.displayType!=="list") return; // Only list-view allows sorting
+      if(d3_selection===undefined) d3_selection = this.DOM.recordsSortCol;
+      var me=this;
       var labelFunc=this.sortingOpt_Active.sortLabel;
-      var unitName =this.sortingOpt_Active.unitName;
       var sortColformat = d3.format(".s");
       if(this.sortingOpt_Active.hasTime){
         sortColformat = d3.time.format("%Y");
@@ -1479,8 +1480,7 @@ kshf.RecordDisplay.prototype = {
         if(s===null || s===undefined) return "";
         this.setAttribute("title",s);
         if(typeof s!=="string") s = sortColformat(s);
-        if(unitName) s+="<span class='unitName'>"+unitName+"</span>";
-        return s;
+        return me.sortingOpt_Active.printWithUnitName(s);
       });
     },
     /** -- */
@@ -1499,42 +1499,41 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     prepSortingOpts: function(){
-        this.sortingOpts.forEach(function(sortOpt,i){
-            if(sortOpt.summaryName) return; // It already points to a summary
-            if(typeof(sortOpt)==="string"){
-                sortOpt = { title: sortOpt };
-            }
-            // Old API
-            if(sortOpt.title){
-                sortOpt.name = sortOpt.title;
-            }
+      this.sortingOpts.forEach(function(sortOpt,i){
+        if(sortOpt.summaryName) return; // It already points to a summary
+        if(typeof(sortOpt)==="string"){
+          sortOpt = { title: sortOpt };
+        }
+        // Old API
+        if(sortOpt.title){
+          sortOpt.name = sortOpt.title;
+        }
 
-            var summary = this.browser.summaries_by_name[sortOpt.name];
-            if(summary===undefined){
-                if(typeof(sortOpt.value)==="string"){
-                    summary = this.browser.changeSummaryName(sortOpt.value,sortOpt.name);
-                } else{
-                    summary = this.browser.createSummary(sortOpt.name,sortOpt.value, "interval");
-                    if(sortOpt.unitName){
-                        summary.setUnitName(sortOpt.unitName);
-                    }
-                }
-            }
+        var summary = this.browser.summaries_by_name[sortOpt.name];
+        if(summary===undefined){
+          if(typeof(sortOpt.value)==="string"){
+            summary = this.browser.changeSummaryName(sortOpt.value,sortOpt.name);
+          } else{
+            summary = this.browser.createSummary(sortOpt.name,sortOpt.value, "interval");
+            if(sortOpt.unitName){ summary.setUnitName(sortOpt.unitName); }
+          }
+        }
 
-            summary.sortingSummary  = true;
-            summary.sortLabel   = sortOpt.label || summary.summaryFunc;
-            summary.sortInverse = sortOpt.inverse  || false;
-            summary.sortFunc    = sortOpt.sortFunc || this.getSortFunc(summary.summaryFunc);
+        summary.sortingSummary  = true;
+        summary.sortLabel   = sortOpt.label || summary.summaryFunc;
+        summary.sortInverse = sortOpt.inverse  || false;
+        summary.sortFunc    = sortOpt.sortFunc || this.getSortFunc(summary.summaryFunc);
 
-            this.sortingOpts[i] = summary;
-        },this);
+        this.sortingOpts[i] = summary;
+      },this);
 
-        // Sort sorting options alphabetically
-        this.sortingOpts.sort(function(s1,s2){ 
-            return s1.summaryName.localeCompare(s2.summaryName, { sensitivity: 'base' });});
+      // Sort sorting options alphabetically
+      this.sortingOpts.sort(function(s1,s2){ 
+        return s1.summaryName.localeCompare(s2.summaryName, { sensitivity: 'base' });
+      });
 
-        if(this.DOM.removeSortOption)
-            this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
+      if(this.DOM.removeSortOption)
+        this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
     },
     /** -- */
     setSortingOpt_Active: function(index){
@@ -1570,7 +1569,7 @@ kshf.RecordDisplay.prototype = {
           .data(this.browser.items, function(record){ return record.id(); })
           .order();
 
-        this.refreshRecordSortLabels(this.DOM.recordsSortCol);
+        this.refreshRecordSortLabels();
       }
     },
     /** -- */
@@ -1656,13 +1655,11 @@ kshf.RecordDisplay.prototype = {
               gravity: 'e',
               title: function(){ 
                 var s="";
-                if(me.sortingOpt_Active.unitName) 
-                  s = "<span class='unitName'>"+me.sortingOpt_Active.unitName+"</span>";
                 return ""+
                   "<span class='mapItemName'>"+me.recordViewSummary.summaryFunc.call(d.data,d)+"</span>"+
                   "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryName+"</span>: "+
-                  "<span class='mapTooltipValue'>"+me.sortingOpt_Active.summaryFunc.call(d.data,d)+"</span>"+
-                  s;
+                  "<span class='mapTooltipValue'>"+me.sortingOpt_Active.printWithUnitName(
+                    me.sortingOpt_Active.summaryFunc.call(d.data,d))+"</span>";
               }
             });
           }
@@ -2541,7 +2538,8 @@ kshf.Browser.prototype = {
 
         var recordInfo = this.DOM.panel_Basic.append("span")
             .attr("class","recordInfo editableTextContainer")
-            .attr("edittitle",false);
+            .attr("edittitle",false)
+            .attr("editable",true);
 
         this.DOM.activeRecordCount = recordInfo.append("span").attr("class","activeRecordCount");
 
@@ -4158,8 +4156,8 @@ kshf.Browser.prototype = {
         valText = selSummary.catLabel_Func.call(selAggregate.data);
       }
       if(selSummary.type==="interval"){
-        var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
-        valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
+        valText = selSummary.printWithUnitName(selAggregate.x)+' to '+
+          selSummary.printWithUnitName(selAggregate.x+selAggregate.dx);
       }
       this.compareSelectCrumb.select(".filterDetails").html(valText);
       // **************************
@@ -4228,8 +4226,8 @@ kshf.Browser.prototype = {
         } else if(selSummary.type==="categorical"){
           valText = selSummary.catLabel_Func.call(selAggregate.data);
         } else if(selSummary.type==="interval"){
-          var unitName = "<span class='unitName'>"+(selSummary.unitName||"")+"</span>";
-          valText = selAggregate.x+unitName+' to '+(selAggregate.x+selAggregate.dx)+unitName;
+          valText = selSummary.printWithUnitName(selAggregate.x+unitName)+' to '+
+            selSummary.printWithUnitName(selAggregate.x+selAggregate.dx);
         }
         me.highlightSelectCrumb.select(".filterDetails").html(valText);
       };
@@ -5802,10 +5800,6 @@ var Summary_Categorical_functions = {
         // TODO: Fix!!!!
         // add degree filter if attrib has multi-value items and set-vis is enabled
         if(this.isMultiValued && this.enableSetVis){
-            var fscale;
-            if(maxDegree>100) fscale = 'log';
-            else if(maxDegree>10) fscale = 'linear';
-            else fscale = 'step';
             var facetDescr = {
                 name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
                 value: function(d){
@@ -5814,7 +5808,6 @@ var Summary_Categorical_functions = {
                 },
                 collapsed: true,
                 type: 'interval',
-                scaleType: fscale,
                 panel: this.panel
             };
             this.browser.addFacet(facetDescr,this.browser.primaryTableName);
@@ -5883,7 +5876,7 @@ var Summary_Categorical_functions = {
       .attr("isMultiValued",this.isMultiValued)
       .attr("summary_type","categorical")
       .attr("hasMap",this.catMap!==undefined)
-      ;
+      .attr("viewType",this.viewType);
 
     this.insertHeader();
 
@@ -7562,6 +7555,7 @@ var Summary_Interval_functions = {
     detectScaleType: function(){
       if(this.isEmpty()) return;
       var me = this;
+      this.stepTicks = false;
 
       // TIME SCALE
       if(this.hasTime) {
@@ -7585,7 +7579,8 @@ var Summary_Interval_functions = {
       // Apply step range before you check for log - it has higher precedence
       if(!this.hasFloat){
         if( (_width_ / this.getWidth_Tick()) >= stepRange){
-          this.setScaleType('step',false);
+          this.stepTicks = true;
+          this.setScaleType('linear',false); // converted to step on display
           return;
         }  
       }
@@ -7604,10 +7599,9 @@ var Summary_Interval_functions = {
         return;
       }
       if( (_width_ / this.getWidth_Tick()) >= stepRange){
-        this.setScaleType('step',false);
-      } else {
-        this.setScaleType('linear',false);
+        this.stepTicks = true;
       }
+      this.setScaleType('linear',false);
     },
     /** -- */
     createSummaryFilter: function(){
@@ -7655,10 +7649,8 @@ var Summary_Interval_functions = {
                     else
                         isFilteredCb = function(v){ return v<i_max; };
                 }
-                if(summary.scaleType==='step'){
-                    if(i_min===i_max){
-                        isFilteredCb = function(v){ return v===i_max; };
-                    }
+                if(summary.stepTicks){
+                  if(i_min===i_max){ isFilteredCb = function(v){ return v===i_max; }; }
                 }
 
                 // TODO: Optimize: Check if the interval scale is extending/shrinking or completely updated...
@@ -7667,10 +7659,11 @@ var Summary_Interval_functions = {
                     item.setFilterCache(this.id, (v!==null)?isFilteredCb(v):false);
                 },this);
 
-                if(summary.scaleType==='step'){
-                    if(summary.zoomed) summary.DOM.zoomControl.attr("sign", "minus");
+                if(summary.stepTicks){
+                  // You cannot zoom in. You can only zoom out.
+                  summary.DOM.zoomControl.attr("sign", "minus");
                 } else {
-                    summary.DOM.zoomControl.attr("sign", "plus");
+                  summary.DOM.zoomControl.attr("sign", "plus");
                 }
 
                 summary.refreshIntervalSlider();
@@ -7682,10 +7675,8 @@ var Summary_Interval_functions = {
 
                 var minValue = this.active.min;
                 var maxValue = this.active.max;
-                var unitNameStr = "";
-                if(me.unitName) unitNameStr = "<span class='unitName'>"+me.unitName+"</span>";
-                if(summary.scaleType==='step'){
-                    if(minValue===maxValue) return "<b>"+minValue+unitNameStr+"</b>";
+                if(summary.stepTicks){
+                    if(minValue===maxValue) return "<b>"+me.printWithUnitName(minValue)+"</b>";
                 }
                 if(summary.scaleType==='time'){
                     return "<b>"+summary.intervalTickFormat(this.active.min)+
@@ -7696,11 +7687,11 @@ var Summary_Interval_functions = {
                     maxValue = maxValue.toFixed(2);
                 }
                 if(summary.isFiltered_min() && summary.isFiltered_max()){
-                    return ""+minValue+unitNameStr+" to "+maxValue+unitNameStr+"";
+                    return ""+me.printWithUnitName(minValue)+" to "+me.printWithUnitName(maxValue)+"";
                 } else if(summary.isFiltered_min()){
-                    return "<b>at least "+minValue+unitNameStr+"</b>";
+                    return "<b>at least "+me.printWithUnitName(minValue)+"</b>";
                 } else {
-                    return "<b>at most "+maxValue+unitNameStr+"</b>";
+                    return "<b>at most "+me.printWithUnitName(maxValue)+"</b>";
                 }
             },
         });
@@ -7805,7 +7796,7 @@ var Summary_Interval_functions = {
         this.summaryFilter.active.min = Math.max(minnn, this.summaryFilter.active.min);
       }
       if(this.scaleType==="linear"){
-        if(!this.hasFloat){
+        if(!this.hasFloat && !this.stepTicks){
           this.intervalRange.active.max+=1;
         }
       }
@@ -7992,13 +7983,19 @@ var Summary_Interval_functions = {
     /** -- */
     setUnitName: function(v){
       this.unitName = v;
-      if(this.unitName)
-        this.DOM.unitNameInput[0][0].value = this.unitName;
+      if(this.unitName) this.DOM.unitNameInput[0][0].value = this.unitName;
       this.refreshTickLabels();
+      if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
+        this.browser.recordDisplay.refreshRecordSortLabels();
+      }
     },
     /** -- */
-    printUnitName: function(){
-      return this.unitName ? ("<span class='unitName'>"+this.unitName+"</span>") : "";
+    printWithUnitName: function(v){
+      if(this.unitName){
+        var s = "<span class='unitName'>"+this.unitName+"</span>";
+        return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s);
+      }
+      return v;
     },
     /** -- */
     initDOM_IntervalConfig: function(){
@@ -8114,6 +8111,7 @@ var Summary_Interval_functions = {
             } else if((timeRange_ms/(1000*60)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
                 timeIntervalStep = 1;
+                this.stepTicks = true;
                 this.intervalTickFormat = d3.time.format.utc("%-M");
             } else if((timeRange_ms/(1000*60*5)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
@@ -8125,6 +8123,7 @@ var Summary_Interval_functions = {
                 this.intervalTickFormat = d3.time.format.utc("%-M");
             } else if((timeRange_ms/(1000*60*60)) < optimalTickCount){
                 timeInterval = d3.time.hour.utc;
+                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-H");
             } else if((timeRange_ms/(1000*60*60*6)) < optimalTickCount){
@@ -8133,9 +8132,9 @@ var Summary_Interval_functions = {
                 this.intervalTickFormat = d3.time.format.utc("%-H");
             } else if((timeRange_ms/(1000*60*60*24)) < optimalTickCount){
                 timeInterval = d3.time.day.utc;
+                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-e");
-                // TODO: kshf.Util.ordinal_suffix_of();
             } else if((timeRange_ms/(1000*60*60*24*7)) < optimalTickCount){
                 timeInterval = d3.time.week.utc;
                 timeIntervalStep = 1;
@@ -8147,6 +8146,7 @@ var Summary_Interval_functions = {
                 this.height_labels = 28;
             } else if((timeRange_ms/(1000*60*60*24*30)) < optimalTickCount){
                 timeInterval = d3.time.month.utc;
+                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = function(v){
                     var threeMonthsLater = timeInterval.offset(v, 3);
@@ -8180,6 +8180,7 @@ var Summary_Interval_functions = {
                 this.height_labels = 28;
             } else if((timeRange_ms/(1000*60*60*24*365)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
+                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
             } else if((timeRange_ms/(1000*60*60*24*365*2)) < optimalTickCount){
@@ -8218,7 +8219,7 @@ var Summary_Interval_functions = {
 
             this.valueScale.nice(timeInterval, timeIntervalStep);
             ticks = this.valueScale.ticks(timeInterval, timeIntervalStep);
-        } else if(this.scaleType==='step'){
+        } else if(this.stepTicks){
             ticks = [];
             for(var i=this.intervalRange.active.min ; i<=this.intervalRange.active.max; i++){
                 ticks.push(i);
@@ -8293,7 +8294,7 @@ var Summary_Interval_functions = {
         var stepWidth=_width_/stepRange;
 
         switch(this.scaleType){
-            case 'linear': case 'step':
+            case 'linear':
                 this.valueScale = d3.scale.linear();      break;
             case 'log':
                 this.valueScale = d3.scale.log().base(2); break;
@@ -8303,26 +8304,25 @@ var Summary_Interval_functions = {
 
         this.valueScale
             .domain([this.intervalRange.active.min, this.intervalRange.active.max])
-            .range( (this.scaleType==='step') ? 
-                [stepWidth/2, _width_-stepWidth/2] :
-                [0, _width_]
-            );
+            .range( this.stepTicks ? [stepWidth/2, _width_-(stepWidth/2)] : [0, _width_] );
 
         var ticks = this.getValueTicks(optimalTickCount);
 
-        // Sometimes, the number of bins generated is larger than the optimal
-        // In some cases, the ticks become suitable for step-scale. Detect it here.
-        /*if(!this.hasFloat && this.scaleType==='linear'){
-            if(ticks.length===stepRange){
-                this.setScaleType('step');
-                this.valueScale.range([stepWidth/2, _width_-stepWidth/2]);
-            }
-        }*/
+        // Maybe the ticks still follow step-function
+        if(!this.stepTicks && this.scaleType==='linear' && ticks.length>2){
+          // Second: First+1, Last=BeforeLast+1
+          if( (ticks[1]===ticks[0]+1) && (ticks[ticks.length-1]===ticks[ticks.length-2]+1)) {
+            this.stepTicks = true;
+            this.valueScale.range( this.stepTicks ? [stepWidth/2, _width_-(stepWidth/2)] : [0, _width_] );
+            this.intervalRange.active.max = this.intervalRange.max; // get back the +1 added to the linear scale
+            //ticks.pop(); // remove last tick
+          }
+        }
 
-        if(this.scaleType!=='step'){
-            this.aggrWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
+        if(this.stepTicks){
+          this.aggrWidth = _width_/stepRange;
         } else {
-            this.aggrWidth = _width_/stepRange;
+          this.aggrWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
         }
 
         var ticksChanged = (this.intervalTicks.length!==ticks.length) ||
@@ -8338,30 +8338,29 @@ var Summary_Interval_functions = {
                 // if(item.isWanted)  // Include all items - Aggregate also shows the "total" viz
                     return item.mappedDataCache[filterId].v;
             };
-            if(this.zoomed===false){
-                itemV = this.itemV;
-            }
-            if(this.scaleType!=='step'){
-                this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(itemV)(this.filteredItems);
+            if(!this.zoomed) itemV = this.itemV;
+
+            this.histBins = [];
+            if(!this.stepTicks || this.scaleType==='time'){
+              this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(itemV)(this.filteredItems);
             } else {
-                // I'll do the bins myself
-                this.histBins = [];
-                for(var bin=this.intervalRange.active.min; bin<=this.intervalRange.active.max; bin++){
-                    var d = [];
-                    d.x = bin;
-                    d.y = 0;
-                    d.dx = 0;
-                    this.histBins.push(d);
-                }
-                this.filteredItems.forEach(function(item){
-                    var v = itemV(item);
-                    if(v===null || v===undefined) return;
-                    if(v<this.intervalRange.active.min) return;
-                    if(v>this.intervalRange.active.max) return;
-                    var bin = this.histBins[v-this.intervalRange.active.min];
-                    bin.push(item);
-                    bin.y++;
-                },this);
+              // I'll do the bins myself
+              for(var bin=this.intervalRange.active.min; bin<=this.intervalRange.active.max; bin++){
+                var d = [];
+                d.x = bin;
+                d.y = 0;
+                d.dx = 0;
+                this.histBins.push(d);
+              }
+              this.filteredItems.forEach(function(item){
+                var v = itemV(item);
+                if(v===null || v===undefined) return;
+                if(v<this.intervalRange.active.min) return;
+                if(v>this.intervalRange.active.max) return;
+                var bin = this.histBins[v-this.intervalRange.active.min];
+                bin.push(item);
+                bin.y++;
+              },this);
             }
 
             this.updateAggregate_Active();
@@ -8442,9 +8441,9 @@ var Summary_Interval_functions = {
           return me.intervalTickFormat(d);
         }
         if(d<1 && d!==0) 
-          return d.toFixed(1) + me.printUnitName();
+          return me.printWithUnitName( d.toFixed(1) );
         else 
-          return me.intervalTickFormat(d) + me.printUnitName();
+          return me.printWithUnitName( me.intervalTickFormat(d) );
       });
     },
     /** -- */
@@ -8505,7 +8504,7 @@ var Summary_Interval_functions = {
                 this.setAttribute("filtered","true");
 
                 // store histogram state
-                if(me.scaleType==='step'){
+                if(me.stepTicks){
                   me.summaryFilter.active = {
                       min: aggr.x,
                       max: aggr.x
@@ -8523,9 +8522,7 @@ var Summary_Interval_functions = {
                 }
                 // if we are filtering the last aggr, make max_score inclusive
                 me.summaryFilter.max_inclusive = (aggr.x+aggr.dx)===me.intervalRange.active.max;
-                if(me.scaleType==='step'){
-                    me.summaryFilter.max_inclusive = true;
-                }
+                if(me.stepTicks){ me.summaryFilter.max_inclusive = true; }
 
                 me.summaryFilter.filteredBin=this;
                 me.summaryFilter.addFilter(true);
@@ -8591,7 +8588,7 @@ var Summary_Interval_functions = {
       this.summaryFilter.active.max = Math.min(
         this.intervalTicks[this.intervalTicks.length-1], this.summaryFilter.active.max);
 
-      if(this.scaleType==='step' || (!this.hasFloat) ){
+      if(this.stepTicks || !this.hasFloat){
         this.summaryFilter.active.min=Math.round(this.summaryFilter.active.min);
         this.summaryFilter.active.max=Math.round(this.summaryFilter.active.max);
       }
@@ -8855,8 +8852,8 @@ var Summary_Interval_functions = {
     refreshBins_Translate: function(){
       var me=this;
       var offset = 0;
-      if(this.scaleType==='step') offset = this.width_barGap-this.aggrWidth/2;
-      if(this.scaleType==='time') offset = this.width_barGap;
+      if(this.stepTicks) offset = this.width_barGap-this.aggrWidth/2;
+      else if(this.scaleType==='time') offset = this.width_barGap;
       this.DOM.aggrGlyphs
         .style("width",this.getWidth_Bar()+"px")
         .each(function(aggr){
@@ -8912,275 +8909,256 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Active: function(){
-        if(this.isEmpty() || this.collapsed) return;
-        var me=this;
-        var width = this.getWidth_Bar();
+      if(this.isEmpty() || this.collapsed) return;
+      var me=this;
+      var width = this.getWidth_Bar();
 
-        var heightActive = function(aggr){
-            if(aggr.aggregate_Active===0) return 0;
-            if(me.browser.ratioModeActive) return me.height_hist;
-            return me.chartScale_Measure(aggr.aggregate_Active);
-        };
+      var heightActive = function(aggr){
+        if(aggr.aggregate_Active===0) return 0;
+        if(me.browser.ratioModeActive) return me.height_hist;
+        return me.chartScale_Measure(aggr.aggregate_Active);
+      };
 
-        if(!this.isFiltered() || this.scaleType==='step'){
-            this.DOM.aggr_Active.each(function(aggr){
-                kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) scale("+width+","+heightActive(aggr)+")");
-            });
-        } else {
-            // is filtered & not step scale
-            var filter_min = this.summaryFilter.active.min;
-            var filter_max = this.summaryFilter.active.max;
-            var minPos = this.valueScale(filter_min);
-            var maxPos = this.valueScale(filter_max);
-            this.DOM.aggr_Active.each(function(aggr){
-                var translateX = "";
-                var width_self=width;
-                var aggr_min = aggr.x;
-                var aggr_max = aggr.x + aggr.dx;
-                if(aggr.aggregate_Active>0){
-                    // it is within the filtered range
-                    if(aggr_min<filter_min){
-                        var lostWidth = minPos-me.valueScale(aggr_min);
-                        translateX = "translateX("+lostWidth+"px) ";
-                        width_self -= lostWidth;
-                    }
-                    if(aggr_max>filter_max){
-                        var lostWidth = me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
-                        //translateX = " translateX("+lostWidth+"px)";
-                        width_self -= lostWidth;
-                    }
-                }
-                kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) "+translateX+"scale("+width_self+","+heightActive(aggr)+")");
-            });
-        }
+      // Position the lock button
+      this.DOM.lockButton
+        .each(function(aggr){
+          kshf.Util.setTransform(this,"translateY("+(me.height_hist-heightActive(aggr)-9)+"px)");
+        })
+        .attr("inside",function(aggr){
+          if(me.browser.ratioModeActive) return "";
+          if(me.height_hist-heightActive(aggr)<6) return "";
+        });
 
-        this.DOM.lockButton
-            .each(function(aggr){
-                kshf.Util.setTransform(this,"translateY("+(me.height_hist-heightActive(aggr)-9)+"px)");
-            })
-            .attr("inside",function(aggr){
-                if(me.browser.ratioModeActive) return "";
-                if(me.height_hist-heightActive(aggr)<6) return "";
-            });
+      // Time (line chart) update
+      if(this.scaleType==='time'){
+        var durationTime = this.browser.noAnim ? 0 : 700;
+        this.timeSVGLine = d3.svg.area()
+          .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
+          .y0(me.height_hist+2)
+          .y1(function(aggr){
+              if(aggr.aggregate_Active===0) return me.height_hist+3;
+              return me.height_hist-heightActive(aggr);
+          });
 
-        if(this.scaleType==='time'){
-            var durationTime=this.browser.noAnim?0:700;
-            this.timeSVGLine = d3.svg.area()
-                .x(function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                })
-                .y0(me.height_hist+2)
-                .y1(function(aggr){
-                    if(aggr.aggregate_Active===0) return me.height_hist+3;
-                    return me.height_hist-heightActive(aggr);
-                });
+        this.DOM.lineTrend_Active .transition().duration(durationTime)
+          .attr("d", this.timeSVGLine);
 
-            this.DOM.lineTrend_Active
-              .transition().duration(durationTime)
-              .attr("d", this.timeSVGLine);
+        this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
+          .attr("y1",function(aggr){ return me.height_hist+3; })
+          .attr("y2",function(aggr){
+              if(aggr.aggregate_Active===0) return me.height_hist+3;
+              return me.height_hist-heightActive(aggr);
+          })
+          .attr("x1",function(aggr){
+              return me.valueScale(aggr.x)+width/2;
+          })
+          .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
+      }
 
-            this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
-                .attr("y1",function(aggr){ return me.height_hist+3; })
-                .attr("y2",function(aggr){
-                    if(aggr.aggregate_Active===0) return me.height_hist+3;
-                    return me.height_hist-heightActive(aggr);
-                })
-                .attr("x1",function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                })
-                .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2; });
-        }
+      if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
+        // No partial rendering
+        this.DOM.aggr_Active.each(function(aggr){
+          kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+heightActive(aggr)+")");
+        });
+      } else {
+        // Partial rendering
+        // is filtered & not step scale
+        var filter_min = this.summaryFilter.active.min;
+        var filter_max = this.summaryFilter.active.max;
+        var minPos = this.valueScale(filter_min);
+        var maxPos = this.valueScale(filter_max);
+        this.DOM.aggr_Active.each(function(aggr){
+          var translateX = "";
+          var width_self=width;
+          var aggr_min = aggr.x;
+          var aggr_max = aggr.x + aggr.dx;
+          if(aggr.aggregate_Active>0){
+            // it is within the filtered range
+            if(aggr_min<filter_min){
+              var lostWidth = minPos-me.valueScale(aggr_min);
+              translateX = "translateX("+lostWidth+"px) ";
+              width_self -= lostWidth;
+            }
+            if(aggr_max>filter_max){
+              width_self -= me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
+            }
+          }
+          kshf.Util.setTransform(this,
+            "translateY("+me.height_hist+"px) "+translateX+"scale("+width_self+","+heightActive(aggr)+")");
+        });
+      }
     },
     /** -- */
     refreshViz_Compare: function(){
-        if(this.isEmpty() || this.collapsed || !this.browser.vizCompareActive) return;
-        if(!this.browser.vizCompareActive) return;
+      if(this.isEmpty() || this.collapsed || !this.browser.vizCompareActive) return;
+      if(!this.browser.vizCompareActive) return;
 
-        var me=this;
-        var width = this.getWidth_Bar();
+      var me=this;
+      var width = this.getWidth_Bar();
 
-        var heightCompare = function(aggr){
-            if(aggr.aggregate_Compare===0) return 0;
-            if(me.browser.ratioModeActive)
-                return (aggr.aggregate_Compare/aggr.aggregate_Active)*me.height_hist;
-            return me.chartScale_Measure(aggr.aggregate_Compare);
-        };
+      var heightCompare = function(aggr){
+        if(aggr.aggregate_Compare===0) return 0;
+        if(me.browser.ratioModeActive)
+            return (aggr.aggregate_Compare/aggr.aggregate_Active)*me.height_hist;
+        return me.chartScale_Measure(aggr.aggregate_Compare);
+      };
 
-        if(!this.isFiltered() || this.scaleType==='step'){
-            this.DOM.aggr_Compare.each(function(aggr){
-                kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) scale("+(width/2)+","+heightCompare(aggr)+")");
-            });
-        } else {
-            // is filtered & not step scale
-            var filter_min = this.summaryFilter.active.min;
-            var filter_max = this.summaryFilter.active.max;
-            var minPos = this.valueScale(filter_min);
-            var maxPos = this.valueScale(filter_max);
-            this.DOM.aggr_Compare.each(function(aggr){
-                var translateX = "";
-                var width_self=width;
-                var aggr_min = aggr.x;
-                var aggr_max = aggr.x + aggr.dx;
-                if(aggr.aggregate_Active>0){
-                    // it is within the filtered range
-                    if(aggr_min<filter_min){
-                        var lostWidth = minPos-me.valueScale(aggr_min);
-                        translateX = "translateX("+lostWidth+"px) ";
-                        width_self -= lostWidth;
-                    }
-                    if(aggr_max>filter_max){
-                        var lostWidth = me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
-                        //translateX = " translateX("+lostWidth+"px)";
-                        width_self -= lostWidth;
-                    }
-                }
-                kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) "+translateX+"scale("+(width_self/2)+","+heightCompare(aggr)+")");
-            });
-        }
+      // Time (line chart) update
+      if(this.scaleType==='time'){
+        this.timeSVGLine = d3.svg.line()
+          .x(function(aggr){  return me.valueScale(aggr.x)+width/2; })
+          .y(function(aggr){
+            if(aggr.aggregate_Compare===0) return me.height_hist+3;
+            return me.height_hist-heightCompare(aggr);
+          });
 
-        if(this.scaleType==='time'){
-            this.timeSVGLine = d3.svg.line()
-                .x(function(aggr){  return me.valueScale(aggr.x)+width/2; })
-                .y(function(aggr){
-                    if(aggr.aggregate_Compare===0) return me.height_hist+3;
-                    return me.height_hist-heightCompare(aggr);
-                });
+        var durationTime = this.browser.vizCompareActive ? 200 : 0;
 
-            var durationTime=0;
-            if(this.browser.vizCompareActive){
-                durationTime=200;
+        this.DOM.lineTrend_Compare.transition().duration(durationTime)
+          .attr("d", this.timeSVGLine);
+
+        this.DOM.lineTrend_CompareLine.transition().duration(durationTime)
+          .attr("y1",function(aggr){ return me.height_hist+3; })
+          .attr("y2",function(aggr){
+            if(aggr.aggregate_Compare===0) return me.height_hist+3;
+            return me.height_hist-heightCompare(aggr);
+          })
+          .attr("x1",function(aggr){
+            return me.valueScale(aggr.x)+width/2+1;
+          })
+          .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2+1; });
+      }
+
+      if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
+        // No partial rendering
+        this.DOM.aggr_Compare.each(function(aggr){
+          kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+(width/2)+","+heightCompare(aggr)+")");
+        });
+      } else {
+        // partial rendering
+        var filter_min = this.summaryFilter.active.min;
+        var filter_max = this.summaryFilter.active.max;
+        var minPos = this.valueScale(filter_min);
+        var maxPos = this.valueScale(filter_max);
+        this.DOM.aggr_Compare.each(function(aggr){
+          var translateX = "";
+          var width_self=width;
+          var aggr_min = aggr.x;
+          var aggr_max = aggr.x + aggr.dx;
+          if(aggr.aggregate_Active>0){
+            // it is within the filtered range
+            if(aggr_min<filter_min){
+              var lostWidth = minPos-me.valueScale(aggr_min);
+              translateX = "translateX("+lostWidth+"px) ";
+              width_self -= lostWidth;
             }
-
-            this.DOM.lineTrend_Compare
-                .transition()
-                .duration(durationTime)
-                .attr("d", this.timeSVGLine);
-
-            this.DOM.lineTrend_CompareLine.transition().duration(durationTime)
-                .attr("y1",function(aggr){ return me.height_hist+3; })
-                .attr("y2",function(aggr){
-                    if(aggr.aggregate_Compare===0) return me.height_hist+3;
-                    return me.height_hist-heightCompare(aggr);
-                })
-                .attr("x1",function(aggr){
-                    return me.valueScale(aggr.x)+width/2+1;
-                })
-                .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2+1; });
-        }
+            if(aggr_max>filter_max){
+              width_self -= me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
+            }
+          }
+          kshf.Util.setTransform(this,
+            "translateY("+me.height_hist+"px) "+translateX+"scale("+(width_self/2)+","+heightCompare(aggr)+")");
+        });
+      }
     },
     /** -- */
     refreshViz_Highlight: function(){
-        if(this.isEmpty() || this.collapsed || !this.browser.vizPreviewActive) return;
-        var me=this;
-        var width = this.getWidth_Bar();
+      if(this.isEmpty() || this.collapsed || !this.browser.vizPreviewActive) return;
+      var me=this;
+      var width = this.getWidth_Bar();
 
-        var getAggrHeight_Preview = function(aggr){
-            var p=aggr.aggregate_Preview;
-            if(me.browser.preview_not) p = aggr.aggregate_Active-aggr.aggregate_Preview;
-            if(me.browser.ratioModeActive){
-                if(aggr.aggregate_Active===0) return 0;
-                return (p / aggr.aggregate_Active)*me.height_hist;
-            } else {
-                return me.chartScale_Measure(p);
-            }
-        };
-
-        if(!this.isFiltered() || this.scaleType==='step'){
-            this.DOM.aggr_Preview.each(function(aggr){
-                kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Preview(aggr)+")");
-            });
+      var getAggrHeight_Preview = function(aggr){
+        var p=aggr.aggregate_Preview;
+        if(me.browser.preview_not) p = aggr.aggregate_Active-aggr.aggregate_Preview;
+        if(me.browser.ratioModeActive){
+          if(aggr.aggregate_Active===0) return 0;
+          return (p / aggr.aggregate_Active)*me.height_hist;
         } else {
-            // is filtered & not step scale
-            var filter_min = this.summaryFilter.active.min;
-            var filter_max = this.summaryFilter.active.max;
-            var minPos = this.valueScale(filter_min);
-            var maxPos = this.valueScale(filter_max);
-            this.DOM.aggr_Preview.each(function(aggr){
-                var translateX = "";
-                var width_self=width;
-                var aggr_min = aggr.x;
-                var aggr_max = aggr.x + aggr.dx;
-                if(aggr.aggregate_Active>0){
-                    // it is within the filtered range
-                    if(aggr_min<filter_min){
-                        var lostWidth = minPos-me.valueScale(aggr_min);
-                        translateX = "translateX("+lostWidth+"px) ";
-                        width_self -= lostWidth;
-                    }
-                    if(aggr_max>filter_max){
-                        var lostWidth = me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
-                        //translateX = " translateX("+lostWidth+"px)";
-                        width_self -= lostWidth;
-                    }
-                }
-                kshf.Util.setTransform(this,
-                    "translateY("+me.height_hist+"px) "+translateX+"scale("+width_self+","+getAggrHeight_Preview(aggr)+")");
-            });
+          return me.chartScale_Measure(p);
         }
+      };
 
-        this.refreshMeasureLabel();
+      if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
+        // No partial rendering
+        this.DOM.aggr_Preview.each(function(aggr){
+          kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+getAggrHeight_Preview(aggr)+")");
+        });
+      } else {
+        // is filtered & not step scale
+        var filter_min = this.summaryFilter.active.min;
+        var filter_max = this.summaryFilter.active.max;
+        var minPos = this.valueScale(filter_min);
+        var maxPos = this.valueScale(filter_max);
+        this.DOM.aggr_Preview.each(function(aggr){
+          var translateX = "";
+          var width_self=width;
+          var aggr_min = aggr.x;
+          var aggr_max = aggr.x + aggr.dx;
+          if(aggr.aggregate_Active>0){
+            // it is within the filtered range
+            if(aggr_min<filter_min){
+              var lostWidth = minPos-me.valueScale(aggr_min);
+              translateX = "translateX("+lostWidth+"px) ";
+              width_self -= lostWidth;
+            }
+            if(aggr_max>filter_max){
+              width_self -= me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
+            }
+          }
+          kshf.Util.setTransform(this,
+              "translateY("+me.height_hist+"px) "+translateX+"scale("+width_self+","+getAggrHeight_Preview(aggr)+")");
+        });
+      }
 
-        if(this.scaleType==='time'){
-            var durationTime=200;
-            this.timeSVGLine = d3.svg.area()
-                .x(function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                })
-                .y0(me.height_hist+2)
-                .y1(function(aggr){
-                    if(aggr.aggregate_Preview===0) return me.height_hist+3;
-                    return me.height_hist-getAggrHeight_Preview(aggr);
-                });
+      this.refreshMeasureLabel();
 
-            this.DOM.lineTrend_Preview
-                .transition().duration(durationTime)
-                .attr("d", this.timeSVGLine);
+      if(this.scaleType==='time'){
+        var durationTime=200;
+        this.timeSVGLine = d3.svg.area()
+          .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
+          .y0(me.height_hist+2)
+          .y1(function(aggr){
+            if(aggr.aggregate_Preview===0) return me.height_hist+3;
+            return me.height_hist-getAggrHeight_Preview(aggr);
+          });
 
-            this.DOM.lineTrend_PreviewLine.transition().duration(durationTime)
-                .attr("y1",function(aggr){ return me.height_hist+3; })
-                .attr("y2",function(aggr){
-                    if(aggr.aggregate_Preview===0) return me.height_hist+3;
-                    return me.height_hist-getAggrHeight_Preview(aggr);
-                })
-                .attr("x1",function(aggr){
-                    return me.valueScale(aggr.x)+width/2-1;
-                })
-                .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2-1; });
-        }
+        this.DOM.lineTrend_Preview.transition().duration(durationTime)
+          .attr("d", this.timeSVGLine);
+
+        this.DOM.lineTrend_PreviewLine.transition().duration(durationTime)
+          .attr("y1",function(aggr){ return me.height_hist+3; })
+          .attr("y2",function(aggr){
+            if(aggr.aggregate_Preview===0) return me.height_hist+3;
+            return me.height_hist-getAggrHeight_Preview(aggr);
+          })
+          .attr("x1",function(aggr){
+            return me.valueScale(aggr.x)+width/2-1;
+          })
+          .attr("x2",function(aggr){ return me.valueScale(aggr.x)+width/2-1; });
+      }
     },
     /** -- */
     clearViz_Highlight: function(){
-        if(this.isEmpty() || this.collapsed) return;
-        if(this.DOM.aggr_Preview===undefined) return;
-        var me=this;
-        var width = this.getWidth_Bar();
-        var transform="translateY("+this.height_hist+"px) "+"scale("+this.getWidth_Bar()+",0)";
-        this.DOM.aggr_Preview.each(function(bar){
-            bar.aggregate_Preview=0;
-            kshf.Util.setTransform(this,transform);
-        });
-        this.refreshMeasureLabel();
-        this.DOM.highlightedAggrValue.style("opacity",0);
+      if(this.isEmpty() || this.collapsed) return;
+      if(this.DOM.aggr_Preview===undefined) return;
+      var me=this;
+      var width = this.getWidth_Bar();
+      var transform="translateY("+this.height_hist+"px) "+"scale("+this.getWidth_Bar()+",0)";
+      this.DOM.aggr_Preview.each(function(bar){
+          bar.aggregate_Preview=0;
+          kshf.Util.setTransform(this,transform);
+      });
+      this.refreshMeasureLabel();
+      this.DOM.highlightedAggrValue.style("opacity",0);
 
-        if(this.scaleType==='time'){
-            var durationTime=200;
-            this.timeSVGLine = d3.svg.line()
-                .x(function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                })
-                .y(function(aggr){
-                    return me.height_hist;
-                });
+      if(this.scaleType==='time'){
+        this.timeSVGLine = d3.svg.line()
+          .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
+          .y(function(aggr){ return me.height_hist; });
 
-            this.DOM.lineTrend_Preview
-                .transition().duration(durationTime)
-                .attr("d", this.timeSVGLine);
-        }
+        this.DOM.lineTrend_Preview.transition().duration(200)
+          .attr("d", this.timeSVGLine);
+      }
     },
     /** -- */
     refreshViz_Axis: function(){
@@ -9279,7 +9257,7 @@ var Summary_Interval_functions = {
       if(this.summaryFilter.active.max===this.intervalRange.max){
         maxPos = this.valueScale.range()[1];
       }
-      if(this.scaleType==='step'){
+      if(this.stepTicks){
         minPos-=this.aggrWidth/2;
         maxPos+=this.aggrWidth/2;
       }
@@ -9377,7 +9355,7 @@ var Summary_Interval_functions = {
         .each(function(){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(v))+"px)"); })
         .style("display","block");
 
-      this.DOM.selectedItemValueText.html( this.intervalTickFormat(v)+this.printUnitName() );
+      this.DOM.selectedItemValueText.html( this.intervalTickFormat(v)+this.printWithUnitName() );
     },
     /** -- */
     hideRecordValue: function(){

@@ -609,21 +609,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-bottom: 4px;
         padding-bottom: 2px; // the totalViz bar
         > .recordInfo{
-            vertical-align: top;
-            display: block;
-            white-space: nowrap;
-            cursor: default;
-            font-size: 1.2em;
-            font-weight: 700;
-            text-shadow: 1px 1px lightgray;
-            margin-bottom: -1px;
-            z-index: 10;
-            > .activeRecordCount{
-                display: inline-block;
-                text-align: right;
-                margin-right: 3px;
-            }
-            > .recordName{ }
+          display: block;
+          white-space: nowrap;
+          cursor: default;
+          font-size: 1.2em;
+          font-weight: 700;
+          z-index: 10;
+          > .activeRecordCount{
+            display: inline-block;
+            text-align: right;
+            margin-right: 3px;
+          }
+          > .recordName{ }
+          &[editable]{
+            cursor: pointer;
+            &:hover{ color: orangered; }
+          }
         }
         > .breadcrumbs{
             .flex(1);
@@ -2293,7 +2294,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &[compare="true"] {
                       > .categoryLabel > .theLabel{ font-weight: 700; }
                     }
-                    
+
                     &:not([selected="0"]) {
                       > .categoryLabel > .theLabel{ font-weight: 700; }
                       .clickArea{ cursor: pointer; }
@@ -3529,6 +3530,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .unitName{
       margin-left: 1px;
+      margin-right: 1px;
       color: lightgray;
     }
     .mapItemName{
