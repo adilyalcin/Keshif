@@ -36,7 +36,7 @@ $(document).ready( function(){
     summaries: [
       { name: "Photographer", value: "pname"},
       { name: "Category", value: "van0" },
-      { name: "County", value: "county", panel: "middle"},
+      { name: "County", value: "county", panel: "right"},
       { name: "Year", value: "year", panel: "right"},
       { name: "Month", value: "month", panel: "right"},
       { name: "Date", panel: "bottom",
@@ -46,10 +46,34 @@ $(document).ready( function(){
           if(x!==null) return new Date(x);
         } },
     ],
+    recordDisplay: {
+      displayType: 'grid',
+      detailsToggle: "off",
+      maxVisibleItems_Default: 40,
+      sortBy: {name: 'Date', inverse: true},
+      //textSearch: "Title",
+      recordView: function(){ 
+        return ""+
+          "<a href='http://photogrammar.yale.edu/records/index.php?record="+this.cnumber+"' target='_blank'>"+
+          //"<img src='http://api.artsmia.org/images/"+this.id+"/small.jpg' class='thumb'></a>";
+          "<img src='http://maps.library.yale.edu/images/public/photogrammar/"+this.tn+"' class='thumb'></a>";
+      },
+      domCb: function(d){
+        d3.select(d.DOM.record.childNodes[2].childNodes[0].childNodes[0])
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: d.data.title }); })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); })
+      }
+    }
   });
 });
     </script>
   </head>
+<style id="kshfStyle">
+  .recordGroup{
+    background-color: black !important;
+  }
+</style>
   <body>
     <div class="contents">
       <div id="demo_PageTitle">Photos from the Great Depression Era (1936-1945), California, United States</div>

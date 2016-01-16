@@ -51,8 +51,9 @@ google.setOnLoadCallback(function(){
       detailsToggle: "off",
 //      recordView: "Name",
       recordView : function(){
-        return "<img class='thumbImg' id='img_"+this.id+"' src='"+this.Image_URL.replace(/sets\/images/g,"sets\/small")+"'></a>"+
-          "<span class='subTitle'>"+this.Name+"</span>";
+        return "<a target='_blank' href='http://brickset.com/sets/"+this.Item_Number+"'>"+
+          "<img class='thumbImg' id='img_"+this.id+"' src='"+this.Image_URL.replace(/sets\/images/g,"sets\/small")+"'></a>"+
+          "<span class='subTitle'>"+this.Name+"</span></a>";
       }
     }
   });
