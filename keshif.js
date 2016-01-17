@@ -625,51 +625,64 @@ kshf.Item.prototype = {
       this.aggregate_Total+=item.aggregate_Self;
       this.aggregate_Active+=item.aggregate_Self;
     },
+
+    /** -- */
+    resetAggregateMeasures: function(){
+      this.aggregate_Active = 0;
+      this.aggregate_Preview = 0;
+      this.aggregate_Total = 0;
+      this.items.forEach(function(item){
+        this.aggregate_Total+=item.aggregate_Self;
+        this.aggregate_Active+=item.aggregate_Self;
+      },this);
+    },
+
     /**
      * Updates isWanted state, and notifies all related filter attributes of the change.
      */
     updateWanted: function(){
-        if(!this._filterCacheIsDirty) return false;
+      if(!this._filterCacheIsDirty) return false;
 
-        var me=this;
-        var oldWanted = this.isWanted;
+      var me=this;
+      var oldWanted = this.isWanted;
 
-        // Checks if all filter results are true. At first "false", breaks the loop
-        this.isWanted=true;
-        this.filterCache.every(function(f){
-            me.isWanted=me.isWanted&&f;
-            return me.isWanted;
-        });
+      // Checks if all filter results are true. At first "false", breaks the loop
+      this.isWanted=true;
+      this.filterCache.every(function(f){
+        me.isWanted=me.isWanted&&f;
+        return me.isWanted;
+      });
 
-        if(this.isWanted===true && oldWanted===false){
-            // wanted now
-            this.mappedDataCache.forEach(function(m){
-                if(m===null) return;
-                if(m.h){ // interval
-                    if(m.b) m.b.aggregate_Active+=this.aggregate_Self;
-                } else { // categorical
-                    m.forEach(function(_cat){
-                        var oldVal = _cat.aggregate_Active;
-                        _cat.aggregate_Active+=this.aggregate_Self;
-                    },this);
-                }
+      if(this.isWanted===true && oldWanted===false){
+        // wanted now
+        this.mappedDataCache.forEach(function(m){
+          if(m===null) return;
+          if(m.h){ // interval
+            if(m.b) {
+              m.b.aggregate_Active+=this.aggregate_Self;
+            }
+          } else { // categorical
+            m.forEach(function(_cat){
+              _cat.aggregate_Active+=this.aggregate_Self;
             },this);
-        } else if(this.isWanted===false && oldWanted===true){
-            // unwanted now
-            this.mappedDataCache.forEach(function(m){
-                if(m===null) return;
-                if(m.h){ // interval
-                    if(m.b) m.b.aggregate_Active-=this.aggregate_Self;
-                } else { // categorical
-                    m.forEach(function(_cat){
-                        _cat.aggregate_Active-=this.aggregate_Self;
-                    },this);
-                }
+          }
+        },this);
+      } else if(this.isWanted===false && oldWanted===true){
+        // unwanted now
+        this.mappedDataCache.forEach(function(m){
+          if(m===null) return;
+          if(m.h){ // interval
+            if(m.b) m.b.aggregate_Active-=this.aggregate_Self;
+          } else { // categorical
+            m.forEach(function(_cat){
+              _cat.aggregate_Active-=this.aggregate_Self;
             },this);
-        }
+          }
+        },this);
+      }
 
-        this._filterCacheIsDirty = false;
-        return this.isWanted !== oldWanted;
+      this._filterCacheIsDirty = false;
+      return this.isWanted !== oldWanted;
     },
     /** Only updates wanted state if it is currently not wanted (resulting in More wanted items) */
     updateWanted_More: function(){
@@ -2513,293 +2526,337 @@ kshf.Browser.prototype = {
     },
     /* -- */
     insertDOM_WarningBox: function(){
-        this.panel_warningBox = this.DOM.root.append("div").attr("class", "warningBox_wrapper").attr("shown",false)
-        var x = this.panel_warningBox.append("span").attr("class","warningBox");
-        this.DOM.warningText = x.append("span").attr("class","warningText");
-        x.append("span").attr("class","dismiss").html("<i class='fa fa-times-circle' style='font-size: 1.3em;'></i>")
-          .on("click",function(){
-            this.parentNode.parentNode.setAttribute("shown",false);
-          });
+      this.panel_warningBox = this.DOM.root.append("div").attr("class", "warningBox_wrapper").attr("shown",false)
+      var x = this.panel_warningBox.append("span").attr("class","warningBox");
+      this.DOM.warningText = x.append("span").attr("class","warningText");
+      x.append("span").attr("class","dismiss").html("<i class='fa fa-times-circle' style='font-size: 1.3em;'></i>")
+      .on("click",function(){ this.parentNode.parentNode.setAttribute("shown",false); });
     },
     /** -- */
     showWarning: function(v){
-        this.panel_warningBox.attr("shown",true);
-        this.DOM.warningText.html(v);
+      this.panel_warningBox.attr("shown",true);
+      this.DOM.warningText.html(v);
     },
     /** -- */
     hideWarning: function(){
-        this.panel_warningBox.attr("shown",false);
+      this.panel_warningBox.attr("shown",false);
+    },
+    /** -- */
+    insertDOM_measureSelect: function(){
+      var me=this;
+      if(this.DOM.measureTypeSelectBox) return;
+      this.DOM.measureTypeSelectBox = this.DOM.measureTypeSelectBoxWrapper.append("div").attr("class","measureTypeSelectBox");
+      this.DOM.measureTypeSelectBox.append("div").attr("class","measureBoxClose fa fa-times-circle")
+        .on("click",function(){ me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",false); });
+      this.DOM.measureTypeSelectBox.append("div").attr("class","measureHeader").text("Choose measure");
+      this.DOM.measureTypeSelectBox.append("div").attr("class","measureType")
+        .append("span").attr("class","measureType_").text("Count of "+this.itemName)
+        .on("click",function(){
+          me.closeMeasureSelectBox();
+          me.setMeasureSummary(); // no summary, will revert to count
+        });
+      this.DOM.measureTypeSelectBox.append("div").attr("class","measureType")
+        .on("click",function(){
+          if(this.___summariesProcessed) return;
+          var s = browser.summaries.filter(function(summary){ 
+            return summary.type==='interval' && summary.scaleType!=='time' && summary.intervalRange.min>0;
+          });
+          var d = d3.select(this);
+          var a = d.append("span").attr("class","measureType_summaryBox");
+          a.selectAll(".measureType_Summary").data(s).enter()
+            .append("div").attr("class","measureType_Summary") 
+            .text(function(summary){ return summary.summaryName; })
+            .on("click", function(d){
+              me.closeMeasureSelectBox();
+              me.setMeasureSummary(d);
+            });
+          this.___summariesProcessed = true;
+        })
+        .append("span").attr("class","measureType_").text("Sum (Total) of ... ")
+        ;
+    },
+    /** -- */
+    closeMeasureSelectBox: function(){
+      this.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",false); // Close box
+      this.DOM.measureTypeSelectBox = undefined;
+      var d = this.DOM.measureTypeSelectBoxWrapper[0][0];
+      while (d.hasChildNodes()) d.removeChild(d.lastChild);
     },
     /** -- */
     insertDOM_PanelBasic: function(){
-        var me=this;
+      var me=this;
 
-        this.DOM.panel_Basic = this.DOM.panel_Wrapper.append("div").attr("class","panel_Basic");
+      this.DOM.panel_Basic = this.DOM.panel_Wrapper.append("div").attr("class","panel_Basic");
 
-        var recordInfo = this.DOM.panel_Basic.append("span")
-            .attr("class","recordInfo editableTextContainer")
-            .attr("edittitle",false)
-            .attr("editable",true);
+      this.DOM.measureTypeSelectBoxWrapper = this.DOM.panel_Basic.append("span").attr("class","measureTypeSelectBoxWrapper")
+      .attr("showMeasureBox",false);
 
-        this.DOM.activeRecordCount = recordInfo.append("span").attr("class","activeRecordCount");
+      var recordInfo = this.DOM.panel_Basic.append("span")
+        .attr("class","recordInfo editableTextContainer")
+        .attr("edittitle",false)
+        .attr("editable",true)
+        .on("click",function(){
+          me.insertDOM_measureSelect();
+          me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",true);
+        });
 
-        this.DOM.recordName = recordInfo.append("span").attr("class","recordName editableText")
-            .attr("contenteditable",false)
-            .on("mousedown", function(){ d3.event.stopPropagation(); })
-            .on("blur",function(){
-                this.parentNode.setAttribute("edittitle",false);
-                this.setAttribute("contenteditable", false);
-                me.itemName = this.textContent;
-            })
-            .on("keydown",function(){
-                if(event.keyCode===13){ // ENTER
-                    this.parentNode.setAttribute("edittitle",false);
-                    this.setAttribute("contenteditable", false);
-                    me.itemName = this.textContent;
-                }
-            });
+      this.DOM.activeRecordCount = recordInfo.append("span").attr("class","activeRecordCount");
 
-        recordInfo.append("span")
-            .attr("class","editTextButton fa")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {
-                    gravity: 'w', title: function(){
-                        var curState=this.parentNode.getAttribute("edittitle");
-                        if(curState===null || curState==="false"){
-                            return kshf.lang.cur.EditTitle;
-                        } else {
-                            return "OK";
-                        }
-                    }
-                })
-            })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("mousedown", function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            })
-            .on("click",function(){
-                var curState=this.parentNode.getAttribute("edittitle");
-                if(curState===null || curState==="false"){
-                    this.parentNode.setAttribute("edittitle",true);
-                    var parentDOM = d3.select(this.parentNode);
-                    var v=parentDOM.select(".recordName")[0][0];
-                    v.setAttribute("contenteditable",true);
-                    v.focus();
-                } else {
-                    this.parentNode.setAttribute("edittitle",false);
-                    var parentDOM = d3.select(this.parentNode);
-                    var v=parentDOM.select(".recordName")[0][0];
-                    v.setAttribute("contenteditable",false);
-                    me.itemName = this.textContent;
-                }
-            });
+      this.DOM.measureAggrType = recordInfo.append("span").attr("class","measureAggrType");
 
-        this.DOM.breadcrumbs = this.DOM.panel_Basic.append("span").attr("class","breadcrumbs");
+      this.DOM.recordName = recordInfo.append("span").attr("class","recordName editableText")
+        .attr("contenteditable",false)
+        .on("mousedown", function(){ d3.event.stopPropagation(); })
+        .on("blur",function(){
+          this.parentNode.setAttribute("edittitle",false);
+          this.setAttribute("contenteditable", false);
+          me.itemName = this.textContent;
+        })
+        .on("keydown",function(){
+          if(event.keyCode===13){ // ENTER
+            this.parentNode.setAttribute("edittitle",false);
+            this.setAttribute("contenteditable", false);
+            me.itemName = this.textContent;
+          }
+        });
 
-        this.initDOM_ClearAllFilters();
-
-        var rightBoxes = this.DOM.panel_Basic.append("span").attr("class","rightBoxes");
-        // Attribute panel
-        if (typeof saveAs !== 'undefined') { // FileSaver.js is included
-          rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-download")
-            .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Download Browser Configuration" }); })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",function(){ 
-              var c = JSON.stringify(me.exportConfig(),null,'  ');
-              var blob = new Blob([c]);//, {type: "text/plain;charset=utf-8"});
-              saveAs(blob, "kshf_config.json");
-            });
-        }
-        rightBoxes.append("i").attr("class","configUser fa")
-          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', 
-            title: function(){ 
-              return kshf.gistLogin?
-                ("Welcome, <i class='fa fa-github'></i> <b>"+kshf.gistLogin+"</b>.<br><br>"+
-                    "Click to logout.<br><br>"+"Shift-click to set gist "+(kshf.gistPublic?"secret":"public")+"."):
-                "Sign-in using github";
-              }
-          });
+      recordInfo.append("span")
+        .attr("class","editTextButton fa")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'w', title: function(){
+              var curState=this.parentNode.getAttribute("edittitle");
+              return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
+            }
           })
-          .attr("auth", false)
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mousedown", function(){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("click",function(){
+          var curState=this.parentNode.getAttribute("edittitle");
+          if(curState===null || curState==="false"){
+            this.parentNode.setAttribute("edittitle",true);
+            var parentDOM = d3.select(this.parentNode);
+            var v=parentDOM.select(".recordName")[0][0];
+            v.setAttribute("contenteditable",true);
+            v.focus();
+          } else {
+            this.parentNode.setAttribute("edittitle",false);
+            var parentDOM = d3.select(this.parentNode);
+            var v=parentDOM.select(".recordName")[0][0];
+            v.setAttribute("contenteditable",false);
+            me.itemName = this.textContent;
+          }
+        });
+
+      this.DOM.breadcrumbs = this.DOM.panel_Basic.append("span").attr("class","breadcrumbs");
+
+      this.initDOM_ClearAllFilters();
+
+      var rightBoxes = this.DOM.panel_Basic.append("span").attr("class","rightBoxes");
+      // Attribute panel
+      if (typeof saveAs !== 'undefined') { // FileSaver.js is included
+        rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-download")
+          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Download Browser Configuration" }); })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout", function(){ this.tipsy.hide(); })
           .on("click",function(){ 
-            if(this.getAttribute("auth")==="true"){
-              if (d3.event.shiftKey) {
-                kshf.gistPublic = !kshf.gistPublic; // invert public setting
-                this.setAttribute("public",kshf.gistPublic);
-                alert("Future uploads will be "+(kshf.gistPublic?"public":"secret")+".")
-                return;
-              }
-              // de-authorize
-              kshf.githubToken = undefined;
-              kshf.gistLogin = undefined;
-              this.setAttribute("auth",false)
-            } else {
-              kshf.githubToken = window.prompt("Your Github token (only needs access to gist)", "");
-              if(this.githubToken!==""){
-                kshf.getGistLogin();
-                this.setAttribute("auth",true);
-              }
-            }
+            var c = JSON.stringify(me.exportConfig(),null,'  ');
+            var blob = new Blob([c]);//, {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "kshf_config.json");
           });
-        rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-cloud-upload")
-          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Upload Browser Config to Cloud" }); })
+      }
+      rightBoxes.append("i").attr("class","configUser fa")
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', 
+          title: function(){ 
+            return kshf.gistLogin?
+              ("Welcome, <i class='fa fa-github'></i> <b>"+kshf.gistLogin+"</b>.<br><br>"+
+                  "Click to logout.<br><br>"+"Shift-click to set gist "+(kshf.gistPublic?"secret":"public")+"."):
+              "Sign-in using github";
+            }
+        });
+        })
+        .attr("auth", false)
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(){ 
+          if(this.getAttribute("auth")==="true"){
+            if (d3.event.shiftKey) {
+              kshf.gistPublic = !kshf.gistPublic; // invert public setting
+              this.setAttribute("public",kshf.gistPublic);
+              alert("Future uploads will be "+(kshf.gistPublic?"public":"secret")+".")
+              return;
+            }
+            // de-authorize
+            kshf.githubToken = undefined;
+            kshf.gistLogin = undefined;
+            this.setAttribute("auth",false)
+          } else {
+            kshf.githubToken = window.prompt("Your Github token (only needs access to gist)", "");
+            if(this.githubToken!==""){
+              kshf.getGistLogin();
+              this.setAttribute("auth",true);
+            }
+          }
+        });
+      rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-cloud-upload")
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Upload Browser Config to Cloud" }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          if(!confirm("The browser will be saved "+
+              ((kshf.gistLogin)?
+                "to your github as "+(kshf.gistPublic?"public":"secret")+" gist.":
+                "anonymously and public.")
+            )){
+            return;
+          }
+          var e = me.exportConfig();
+          var c = JSON.stringify(e,null,'  ');
+
+          // Add authentication data if authentication token is set
+          var headers = {};
+          if(kshf.gistLogin) headers.Authorization = "token "+kshf.githubToken;
+
+          // Set description (from page title if it exists)
+          var description = "Keshif Browser Configuration";
+          // In demo pages, demo_PageTitle gives more context - use it as description
+          if(d3.select("#demo_PageTitle")[0][0]){
+            description = d3.select("#demo_PageTitle").html();
+          }
+
+          var githubLoad = {
+            description: description,
+            public: kshf.gistPublic,
+            files: { "kshf_config.json": { content: c }, }
+          };
+          // Add style file, if custom style exists
+          var badiStyle = d3.select("#kshfStyle");
+          if(badiStyle[0].length > 0 && badiStyle[0][0]!==null){
+            githubLoad.files["kshf_style.css"] = { content: badiStyle.text()};
+          }
+
+          function gist_createNew(){
+            $.ajax( 'https://api.github.com/gists',
+              { method: "POST",
+                dataType: 'json',
+                data: JSON.stringify(githubLoad),
+                headers: headers,
+                success: function(response){
+                  // Keep Gist Info (you may edit/fork it next)
+                  kshf.gistInfo = response;
+                  var gistURL = response.html_url;
+                  var gistID = gistURL.replace(/.*github.*\//g,'');
+                  var keshifGist = "keshif.me/gist?"+gistID;
+                  me.showWarning(
+                    "The browser is saved to "+
+                    "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
+                    "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
+                    )
+                },
+              },
+              'json'
+            );
+          };
+
+          // UNAUTHORIZED / ANONYMOUS
+          if(kshf.gistLogin===undefined){
+            // You cannot fork or edit a gist as anonymous user.
+            gist_createNew();
+            return;
+          }
+
+          // AUTHORIZED, NEW GIST
+          if(kshf.gistInfo===undefined){
+            gist_createNew(); // New gist
+            return;
+          }
+
+          // AUTHOIZED, EXISTING GIST, FROM ANOTHER USER
+          if(kshf.gistInfo.owner===undefined || kshf.gistInfo.owner.login !== kshf.gistLogin){
+            // Fork it
+            $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id+"/forks", 
+              { method: "POST",
+                dataType: 'json',
+                data: JSON.stringify(githubLoad),
+                async: false,
+                headers: headers,
+                success: function(response){
+                  kshf.gistInfo = response; // ok, now my gist
+                },
+              },
+              'json'
+            );
+          }
+
+          // AUTHORIZED, EXISTING GIST, MY GIST
+          if(kshf.gistInfo.owner.login === kshf.gistLogin){
+            // edit
+            $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id, 
+              { method: "PATCH",
+                dataType: 'json',
+                data: JSON.stringify(githubLoad),
+                headers: headers,
+                success: function(response){
+                  var gistURL = response.html_url;
+                  var gistID = gistURL.replace(/.*github.*\//g,'');
+                  var keshifGist = "keshif.me/gist?"+gistID;
+                  me.showWarning(
+                    "The browser is edited in "+
+                    "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
+                    "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
+                    )
+                },
+              },
+              'json'
+            );
+          }
+        });          
+
+      rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
+          .each(function(d){
+              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser });
+          })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout", function(){ this.tipsy.hide(); })
-          .on("click",function(){
-            if(!confirm("The browser will be saved "+
-                ((kshf.gistLogin)?
-                  "to your github as "+(kshf.gistPublic?"public":"secret")+" gist.":
-                  "anonymously and public.")
-              )){
-              return;
-            }
-            var e = me.exportConfig();
-            var c = JSON.stringify(e,null,'  ');
+          .on("click",function(){ me.enableAuthoring(); })
+          ;
+      // Datasource
+      this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
+          .attr("target","_blank")
+          .each(function(d){
+              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.OpenDataSource });
+          })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout",function(d,i){ this.tipsy.hide(); })
+          ;
+      // Info & Credits
+      rightBoxes.append("i").attr("class","fa fa-info-circle credits")
+          .each(function(d){
+              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits });
+          })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout",function(d,i){ this.tipsy.hide(); })
+          .on("click",function(){ me.showInfoBox();})
+          ;
+      // Info & Credits
+      rightBoxes.append("i").attr("class","fa fa-arrows-alt fullscreen")
+          .each(function(d){
+              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen });
+          })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout",function(d,i){ this.tipsy.hide(); })
+          .on("click",function(){ me.showFullscreen();})
+          ;
 
-            // Add authentication data if authentication token is set
-            var headers = {};
-            if(kshf.gistLogin) headers.Authorization = "token "+kshf.githubToken;
-
-            // Set description (from page title if it exists)
-            var description = "Keshif Browser Configuration";
-            // In demo pages, demo_PageTitle gives more context - use it as description
-            if(d3.select("#demo_PageTitle")[0][0]){
-              description = d3.select("#demo_PageTitle").html();
-            }
-
-            var githubLoad = {
-              description: description,
-              public: kshf.gistPublic,
-              files: { "kshf_config.json": { content: c }, }
-            };
-            // Add style file, if custom style exists
-            var badiStyle = d3.select("#kshfStyle");
-            if(badiStyle[0].length > 0 && badiStyle[0][0]!==null){
-              githubLoad.files["kshf_style.css"] = { content: badiStyle.text()};
-            }
-
-            function gist_createNew(){
-              $.ajax( 'https://api.github.com/gists',
-                { method: "POST",
-                  dataType: 'json',
-                  data: JSON.stringify(githubLoad),
-                  headers: headers,
-                  success: function(response){
-                    // Keep Gist Info (you may edit/fork it next)
-                    kshf.gistInfo = response;
-                    var gistURL = response.html_url;
-                    var gistID = gistURL.replace(/.*github.*\//g,'');
-                    var keshifGist = "keshif.me/gist?"+gistID;
-                    me.showWarning(
-                      "The browser is saved to "+
-                      "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
-                      "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
-                      )
-                  },
-                },
-                'json'
-              );
-            };
-
-            // UNAUTHORIZED / ANONYMOUS
-            if(kshf.gistLogin===undefined){
-              // You cannot fork or edit a gist as anonymous user.
-              gist_createNew();
-              return;
-            }
-
-            // AUTHORIZED, NEW GIST
-            if(kshf.gistInfo===undefined){
-              gist_createNew(); // New gist
-              return;
-            }
-
-            // AUTHOIZED, EXISTING GIST, FROM ANOTHER USER
-            if(kshf.gistInfo.owner===undefined || kshf.gistInfo.owner.login !== kshf.gistLogin){
-              // Fork it
-              $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id+"/forks", 
-                { method: "POST",
-                  dataType: 'json',
-                  data: JSON.stringify(githubLoad),
-                  async: false,
-                  headers: headers,
-                  success: function(response){
-                    kshf.gistInfo = response; // ok, now my gist
-                  },
-                },
-                'json'
-              );
-            }
-
-            // AUTHORIZED, EXISTING GIST, MY GIST
-            if(kshf.gistInfo.owner.login === kshf.gistLogin){
-              // edit
-              $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id, 
-                { method: "PATCH",
-                  dataType: 'json',
-                  data: JSON.stringify(githubLoad),
-                  headers: headers,
-                  success: function(response){
-                    var gistURL = response.html_url;
-                    var gistID = gistURL.replace(/.*github.*\//g,'');
-                    var keshifGist = "keshif.me/gist?"+gistID;
-                    me.showWarning(
-                      "The browser is edited in "+
-                      "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
-                      "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
-                      )
-                  },
-                },
-                'json'
-              );
-            }
-          });          
-
-        rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout", function(){ this.tipsy.hide(); })
-            .on("click",function(){ me.enableAuthoring(); })
-            ;
-        // Datasource
-        this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
-            .attr("target","_blank")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.OpenDataSource });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            ;
-        // Info & Credits
-        rightBoxes.append("i").attr("class","fa fa-info-circle credits")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){ me.showInfoBox();})
-            ;
-        // Info & Credits
-        rightBoxes.append("i").attr("class","fa fa-arrows-alt fullscreen")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){ me.showFullscreen();})
-            ;
-
-        var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalViz aggrGlyph");
-        this.DOM.totalViz_total = adsdasda.append("span").attr("class","aggr total");
-        this.DOM.totalViz_active = adsdasda.append("span").attr("class","aggr active");
-        this.DOM.totalViz_preview = adsdasda.append("span").attr("class","aggr preview");
+      var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalViz aggrGlyph");
+      this.DOM.totalViz_total = adsdasda.append("span").attr("class","aggr total");
+      this.DOM.totalViz_active = adsdasda.append("span").attr("class","aggr active");
+      this.DOM.totalViz_preview = adsdasda.append("span").attr("class","aggr preview");
     },
     /** Inserts a summary block to the list breadcrumb DOM */
     /** Don't call this directly */
@@ -3694,16 +3751,18 @@ kshf.Browser.prototype = {
           }
         }
 
-        // Total
-        this.itemsTotal_Aggregrate_Total = 0;
-        this.items.forEach(function(item){
-            this.itemsTotal_Aggregrate_Total+=item.aggregate_Self;
-        },this);
-
         // Create a summary for each existing column in the data
         for(var column in this.items[0].data){
-            if(typeof(column)==="string") this.createSummary(column);
+          if(typeof(column)==="string") this.createSummary(column);
         }
+
+        if(this.options.measure){
+          var summary = this.summaries_by_name[this.options.measure];
+          this.setMeasureSummary(summary);
+        }
+
+        // Total
+        this.refresh_Measure_Total();
 
         // Should do this here, because bottom panel width calls for browser width, and this reads the browser width...
         this.divWidth = this.domWidth();
@@ -4021,9 +4080,10 @@ kshf.Browser.prototype = {
     refresh_ActiveRecordCount: function(){
       var noneSelected = (this.recordsWanted_Aggr_Total===0);
       var numStr = this.recordsWanted_Aggr_Total.toLocaleString();
-      this.DOM.activeRecordCount
-        .text(noneSelected?"No":numStr)
-        .style("width",(noneSelected?"30":(numStr.length*11+5))+"px");
+      if(this.measureSummary){
+        numStr = this.measureSummary.printWithUnitName(numStr);
+      }
+      this.DOM.activeRecordCount.html(noneSelected?"No":numStr);
     },
     /** -- */
     update_Records_Wanted_Count: function(){
@@ -4226,7 +4286,7 @@ kshf.Browser.prototype = {
         } else if(selSummary.type==="categorical"){
           valText = selSummary.catLabel_Func.call(selAggregate.data);
         } else if(selSummary.type==="interval"){
-          valText = selSummary.printWithUnitName(selAggregate.x+unitName)+' to '+
+          valText = selSummary.printWithUnitName(selAggregate.x)+' to '+
             selSummary.printWithUnitName(selAggregate.x+selAggregate.dx);
         }
         me.highlightSelectCrumb.select(".filterDetails").html(valText);
@@ -4241,6 +4301,48 @@ kshf.Browser.prototype = {
       }
 
       if(this.previewCb) this.previewCb.call(this,false);
+    },
+    /** -- */
+    setMeasureSummary: function(summary){
+      if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
+        if(this.measureSummary===undefined) return; // No update
+        this.measureSummary = undefined;
+        this.items.forEach(function(record){
+          record.aggregate_Self = 1; // COUNT FUNCTION (NUMBER OF RECORDS)
+        });
+        this.DOM.measureAggrType.text("");
+      } else {
+        if(this.measureSummary===summary) returnl // No update
+        this.measureSummary = summary;
+        summary.initializeAggregates();
+        this.items.forEach(function(record){
+          record.aggregate_Self = summary.itemV(record);
+        });
+        this.DOM.measureAggrType.text("Total "+summary.summaryName+" of ");
+      }
+      this.summaries.forEach(function(summary){
+        if(!summary.aggr_initialized) return;
+        if(summary.type==='categorical'){
+          summary._cats.forEach(function(category){
+            category.resetAggregateMeasures();
+          });
+        }
+        if(summary.type==='interval'){
+          summary.histBins.forEach(function(bin){
+            // bin.resetAggregateMeasures();
+          });
+        }
+        summary.updateAfterFilter();
+      });
+      this.refresh_Measure_Total();
+      this.update_Records_Wanted_Count();
+    },
+    /** -- */
+    refresh_Measure_Total: function(){
+      this.itemsTotal_Aggregrate_Total = 0;
+      this.items.forEach(function(item){
+        this.itemsTotal_Aggregrate_Total+=item.aggregate_Self;
+      },this);
     },
     /** -- */
     checkBrowserZoomLevel: function(){
@@ -6215,6 +6317,7 @@ var Summary_Categorical_functions = {
     /** -- */
     updateAfterFilter: function(){
       if(this.isEmpty() || this.collapsed) return;
+      if(this.panel===undefined) return;
       var me=this;
       
       if(this.viewType==='map'){
@@ -6252,8 +6355,9 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshMeasureLabel: function(){
       if(this.isEmpty() || this.collapsed) return;
+      if(this.panel===undefined) return;
       //if(this.viewType!=='list') return;
-      if(this.browser.highlightSelectedSummary===this && !this.isMultiValued) return;
+//      if(this.browser.highlightSelectedSummary===this && !this.isMultiValued) return;
       var me=this;
       this.DOM.aggrGlyphs.attr("noitems",function(aggr){ return !me.isCatSelectable(aggr); });
       this.DOM.measureLabel.text(function(aggr){ return me.browser.getMeasureLabel(aggr); });
@@ -7094,6 +7198,7 @@ var Summary_Categorical_functions = {
       // always scrolls to top row automatically when re-sorted
       if(this.scrollTop_cache!==0) kshf.Util.scrollToPos_do(attribGroupScroll,0);
       this.refreshScrollDisplayMore(this.firstCatIndexInView+this.catCount_InDisplay);
+      this.refreshMeasureLabel();
 
       if(noAnim){
         this.DOM.aggrGlyphs.each(function(ctgry){
@@ -8874,7 +8979,7 @@ var Summary_Interval_functions = {
         var heightTotal = function(aggr){
             if(aggr.length===0) return 0;
             if(me.browser.ratioModeActive) return me.height_hist;
-            return me.chartScale_Measure(aggr.length);
+            return me.chartScale_Measure(aggr.aggregate_Total);
         };
 
         if(this.scaleType==='time'){
@@ -9322,6 +9427,7 @@ var Summary_Interval_functions = {
     /** -- */
     updateAfterFilter: function(){
       if(this.isEmpty() || this.collapsed) return;
+      if(this.panel===undefined) return;
       this.updateAggregate_Active();
       this.refreshMeasureLabel();
       this.updateBarPreviewScale2Active();
@@ -9355,7 +9461,7 @@ var Summary_Interval_functions = {
         .each(function(){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(v))+"px)"); })
         .style("display","block");
 
-      this.DOM.selectedItemValueText.html( this.intervalTickFormat(v)+this.printWithUnitName() );
+      this.DOM.selectedItemValueText.html( this.printWithUnitName(this.intervalTickFormat(v)) );
     },
     /** -- */
     hideRecordValue: function(){

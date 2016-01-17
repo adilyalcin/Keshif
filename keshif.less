@@ -609,7 +609,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-bottom: 4px;
         padding-bottom: 2px; // the totalViz bar
         > .recordInfo{
+          .user-select(none);
           display: block;
+          position: relative;
           white-space: nowrap;
           cursor: default;
           font-size: 1.2em;
@@ -624,6 +626,69 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[editable]{
             cursor: pointer;
             &:hover{ color: orangered; }
+          }
+        }
+        > .measureTypeSelectBoxWrapper{
+          position: relative;
+          > .measureTypeSelectBox{
+            display: none;
+            position: absolute;
+            left: 5px;
+            top: 1.6em;
+            z-index: 200;
+            background-color: #EFEADF;
+            font-size: 0.9em;
+            font-weight: 400;
+            border-radius: 4px;
+            border: solid 1px gray;
+            color: black;
+            > .measureBoxClose{
+              position: absolute;
+              top: 2px;
+              right: 2px;
+              cursor: pointer;
+              &:hover{ color: orangered; }
+            }
+            > .measureHeader{
+              font-weight: 700;
+              padding: 3px;
+              background-color: #DDD9D0;
+              border-radius: 4px 4px 0px 0px;
+              border-bottom: solid 1px gray;
+              white-space: nowrap;
+            }
+            > .measureType{
+              padding: 1px 6px;
+              white-space: nowrap;
+              cursor: pointer;
+              > .measureType_{
+                display: inline-block;
+                vertical-align: top;
+                &:hover{ 
+                  color: orangered;
+                  background-color: #E1DDD3;
+                }
+              }
+              > .measureType_summaryBox{
+                display: inline-block;
+                border-left: solid 1px gray;
+                margin-left: 2px;
+                > .measureType_Summary{
+                  cursor: pointer;
+                  display: block;
+                  margin-left: 2px;
+                  &:hover{ 
+                    color: orangered;
+                    background-color: #E1DDD3;
+                  }
+                }
+              }
+            }
+          }
+          &[showMeasureBox="true"]{
+            > .measureTypeSelectBox{
+              display: block;
+            }
           }
         }
         > .breadcrumbs{
@@ -1011,7 +1076,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.panel_side{
             .display(flex);
             .flex-direction(column);
-            z-index: 100;
+            z-index: 9;
             vertical-align: top;
             position: relative;
             height: 100%;
@@ -1573,8 +1638,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);");
         background-color: rgb(235, 235, 235);
-        z-index: 111; // So that header shadow appears on top of the scrollbar / content below.
-
         .summaryName {
           display: block;
           font-weight: 700;

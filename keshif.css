@@ -805,7 +805,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-bottom: 2px;
 }
 .kshf .panel_Basic > .recordInfo {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   display: block;
+  position: relative;
   white-space: nowrap;
   cursor: default;
   font-size: 1.2em;
@@ -822,6 +827,69 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .recordInfo[editable]:hover {
   color: orangered;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper {
+  position: relative;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox {
+  display: none;
+  position: absolute;
+  left: 5px;
+  top: 1.6em;
+  z-index: 200;
+  background-color: #EFEADF;
+  font-size: 0.9em;
+  font-weight: 400;
+  border-radius: 4px;
+  border: solid 1px gray;
+  color: black;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureBoxClose {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  cursor: pointer;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureBoxClose:hover {
+  color: orangered;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureHeader {
+  font-weight: 700;
+  padding: 3px;
+  background-color: #DDD9D0;
+  border-radius: 4px 4px 0px 0px;
+  border-bottom: solid 1px gray;
+  white-space: nowrap;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType {
+  padding: 1px 6px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_ {
+  display: inline-block;
+  vertical-align: top;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_:hover {
+  color: orangered;
+  background-color: #E1DDD3;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_summaryBox {
+  display: inline-block;
+  border-left: solid 1px gray;
+  margin-left: 2px;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_summaryBox > .measureType_Summary {
+  cursor: pointer;
+  display: block;
+  margin-left: 2px;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_summaryBox > .measureType_Summary:hover {
+  color: orangered;
+  background-color: #E1DDD3;
+}
+.kshf .panel_Basic > .measureTypeSelectBoxWrapper[showMeasureBox="true"] > .measureTypeSelectBox {
+  display: block;
 }
 .kshf .panel_Basic > .breadcrumbs {
   -webkit-box-flex: 1;
@@ -1278,7 +1346,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  z-index: 100;
+  z-index: 9;
   vertical-align: top;
   position: relative;
   height: 100%;
@@ -1885,7 +1953,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 3px;
   box-shadow: 0px 0px 2px #9b9b9b;
   background-color: #ebebeb;
-  z-index: 111;
 }
 .kshf .headerGroup .summaryName {
   display: block;
