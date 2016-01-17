@@ -68,8 +68,6 @@ var loadDemoBrowser = function(){
           var r = [];
           if(this['Facets - Histogram']>0)
             r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
-/*          if(this['Facets - Hierarchical'])
-            r.push("Hierarchical <span class='fa fa-outdent'></span>");*/
           if(this['Has Time'])
             r.push("Time <span class='fa fa-clock-o'></span>");
           return r;
@@ -95,6 +93,7 @@ var loadDemoBrowser = function(){
               return r;
           }*/
       { name: "Created At", panel: "right", value: function(){ return this.Authored.getFullYear(); } }
+      //{ name: "Authored", panel: "right" }
     ],
     itemDisplay: {
       sortBy: {name: 'Highlighted', value: "id", inverse: true},

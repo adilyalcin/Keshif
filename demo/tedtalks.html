@@ -19,7 +19,7 @@ google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
-    leftPanelLabelWidth: 100,
+    leftPanelLabelWidth: 120,
     rightPanelLabelWidth: 140,
     itemName: "TED Talks",
     source: {
@@ -41,7 +41,7 @@ google.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "Feelings", },
-      { name: "Talk Duration", value: function(){ return this.Duration[0]; } },
+      { name: "Talk Duration", value: function(){ return this.Duration[0]; }, unitName: "min" },
       { name: "Views" },
       { name: "Speaker", layout: 'right' },
       { name: "Date", layout: 'bottom' }

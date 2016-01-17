@@ -42,13 +42,13 @@ $(document).ready( function(){
           var x=US_States.index_name[this.id];
           if(x) return x.geo;
         } },
-      { name: "Month", value:function(){ return this.Month-1; }, catLabel: _demo.Month, catSortBy: _demo.Month_id, panel: 'right' },
+      { name: "Month", value:function(){ return this.Month-1; }, catLabel: _demo.Month, catSortBy: "id", panel: 'right' },
       { name: "Contaminated Ingredient", panel: 'left' },
       { name: "Location of Preparation", panel: 'left' },
       { name: "Food Vehicle", panel: 'left', minAggrValue: 5 },
-      { name: "Illnesses", panel: 'middle', intervalScale: 'log' },
-      { name: "Hospitalizations", panel: 'middle', intervalScale: 'log', collapsed: true },
-      { name: "Deaths", panel: 'middle', intervalScale: 'log', collapsed: true },
+      { name: "Ill People", value: "Illnesses", panel: 'middle', intervalScale: 'log' },
+      { name: "Hospitalized People", value: "Hospitalizations", panel: 'middle', intervalScale: 'log', collapsed: true },
+      { name: "Dead People", value: "Deaths", panel: 'middle', intervalScale: 'log', collapsed: true },
       { name: "Genus Species", panel: 'right' },
       { name: "Etiology Status", panel: 'right', collapsed: true, 
         value: function(){ if(this["Etiology Status"]) return this["Etiology Status"].split("; "); } }
