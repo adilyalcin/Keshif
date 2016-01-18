@@ -30,7 +30,7 @@ function loadData(browser){
         treeType.Total = treeType.Bronx + treeType.Brooklyn + treeType.Queens
             + treeType.Manhattan + treeType['Staten Island'];
 
-        kshf.dt.TreeTypes.push(new kshf.Item(treeType, "Common"));
+        kshf.dt.TreeTypes.push(new kshf.Record(treeType, "Common"));
       });
       browser.loadCharts();
     }

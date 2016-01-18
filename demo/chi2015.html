@@ -36,7 +36,7 @@ function loadData(browser){
         if(paper.subtype===undefined) continue;
         if(paper.subtype!=="Paper" && paper.subtype!=="Note") continue;
         paper.key = key;
-        var item = new kshf.Item(paper,"key");
+        var item = new kshf.Record(paper,"key");
         kshf.dt.Papers.push(item);
         kshf.dt_id.Papers[key] = item;
       }

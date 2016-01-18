@@ -64,7 +64,7 @@ var loadData = function(browser){
         d.URL = $this.find("url")[0].textContent.trim();
         d.Title = $this.find("title")[0].textContent.trim();
         d.Venue = $this.find("publication")[0].textContent.trim();
-        var kshfItem = new kshf.Item(d,'id');
+        var kshfItem = new kshf.Record(d,'id');
         kshf.dt.Visualizations.push(kshfItem);
       });
 

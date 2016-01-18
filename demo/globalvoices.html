@@ -33,7 +33,7 @@ function loadData(browser){
 
       // create the categories list
       data.counts.t.forEach(function(cat,i){
-          var kshfItem = new kshf.Item([i,cat[1]],0);
+          var kshfItem = new kshf.Record([i,cat[1]],0);
           kshf.dt.Types.push(kshfItem);
           kshf.dt_id.Types[kshfItem.id()] = kshfItem;
       });
@@ -43,7 +43,7 @@ function loadData(browser){
           if(i<5000) return;
           // convert string timestamp to integer
           article[7] = parseInt(article[7])*1000;
-          var kshfItem = new kshf.Item(article,0);
+          var kshfItem = new kshf.Record(article,0);
           kshf.dt.Articles.push(kshfItem);
           kshf.dt_id.Articles[kshfItem.id()] = kshfItem;
       });

@@ -22,9 +22,7 @@ function loadData(browser){
       kshf.dt.Jobs = [];
       data.forEach(function(job,i){
         job.id = i;
-        var job_item = new kshf.Item(job,"id");
-        job_item.aggregate_Self = job.count;
-        kshf.dt.Jobs.push(job_item);
+        kshf.dt.Jobs.push(new kshf.Record(job,"id"));
       });
       browser.loadCharts();
     }
@@ -41,10 +39,12 @@ $(document).ready( function(){
       url: "http://idl.cs.washington.edu/projects/lyra/app/data/jobs.json",
       callback: loadData
     },
+    measure: "count",
     summaries: [
       { name: "job", },
       { name: "sex", panel: 'middle' },
-      { name: "year", panel: 'middle' }
+      { name: "year", panel: 'middle' },
+      { name: "count", panel: 'middle', collapsed: true}
     ]
   });
 });

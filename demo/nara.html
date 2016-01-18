@@ -47,7 +47,7 @@ function loadData(browser){
     success: function(data){
       data.opaResponse.results.result.forEach(function(poster){
         poster.id = 1*poster.naId;
-        arr.push(new kshf.Item(poster,"id"))
+        arr.push(new kshf.Record(poster,"id"))
       });
       browser.loadCharts();
     }

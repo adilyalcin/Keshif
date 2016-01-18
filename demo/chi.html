@@ -74,7 +74,7 @@ function loadProceeding(xmlData) {
         proceedingData.year = xml_proceeding_rec.find('> copyright_year').text()*1;
         proceedingData.descr = xml_proceeding_rec.find('> proc_desc').text();
 
-    var proceedingItem = new kshf.Item(proceedingData,"id");
+    var proceedingItem = new kshf.Record(proceedingData,"id");
     kshf.dt.Proceedings.push(proceedingItem);
 
     // add articles
@@ -114,7 +114,7 @@ function loadProceeding(xmlData) {
                         authorData.middle_name = xml_author.find("> middle_name").text();
                         authorData.last_name = xml_author.find("> last_name").text();
                         authorData.Affiliation = xml_author.find("> affiliation").text();
-                    var authorItem = new kshf.Item(authorData,"id");
+                    var authorItem = new kshf.Record(authorData,"id");
                     kshf.dt.People.push(authorItem);
                     kshf.dt_id.People[authorID] = authorItem;
                 }
@@ -138,7 +138,7 @@ function loadProceeding(xmlData) {
                 if(_id!=="") articleData.CitedBy.push(_id);
             });
 
-        var articleItem = new kshf.Item(articleData,"id");
+        var articleItem = new kshf.Record(articleData,"id");
         kshf.dt.Articles.push(articleItem);
         kshf.dt_id.Articles[articleItem.id()] = articleItem;
     });

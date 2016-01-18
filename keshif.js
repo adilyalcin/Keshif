@@ -241,7 +241,7 @@ var kshf = {
                     }
                     var list2 = list.split(splitExpr);
                     list = [];
-                    // remove empty "" items
+                    // remove empty "" records
                     for(j=0; j<list2.length; j++){
                         list2[j] = list2[j].trim();
                         if(list2[j]!=="") list.push(list2[j]);
@@ -514,354 +514,340 @@ Tipsy.prototype = {
   }
 };
 
+
 /**
  * @constructor
  */
-kshf.Item = function(d, idIndex){
-    // the main data within item
-    this.data = d;
-    this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough??
-    // Selection state
-    //  1: selected for inclusion (AND)
-    //  2: selected for inclusion (OR)
-    // -1: selected for removal (NOT query)
-    //  0: not selected
-    this.selected = 0;
-    // Items which are mapped/related to this item
-    this.items = [];
+kshf.Record = function(d, idIndex){
+  // the main data within item
+  this.data = d;
+  this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough??
 
-    // By default, each item is aggregated as 1
-    // You can modify this with a non-negative value
-    // Note that the aggregation currently works by summation only.
-    this.aggregate_Self = 1;
+  // By default, each item is aggregated as 1
+  // You can modify this with a non-negative value
+  // Note that the aggregation currently works by summation only.
+  this.aggregate_Self = 1;
 
-    this.aggregate_Active = 0;  // Active aggregate value
-    this.aggregate_Preview = 0; // Previewed aggregate value
-    this.aggregate_Total = 0;   // Total aggregate value
+  // Wanted item / not filtered out
+  this.isWanted = true;
+  // Used by recordDisplay to adjust animations. Only used by primary entity type for now.
+  this.visibleOrder = 0;
+  this.visibleOrder_pre = -1;
+  // The data that's used for mapping this item, used as a cache.
+  // This is accessed by filterID
+  // Through this, you can also reach DOM of aggregates
+      // DOM elements that this item is mapped to
+      // - If this is a paper, it can be paper type. If this is author, it can be author affiliation.
+  this.cachedAggrValues = []; // caching the values this item was mapped to
 
-    // If true, filter/wanted state is dirty and needs to be updated.
-    this._filterCacheIsDirty = true;
-    // Cacheing filter state per each summary
-    this.filterCache = [];
-    // Wanted item / not filtered out
-    this.isWanted = true;
-    // Used by recordDisplay to adjust animations. Only used by primary entity type for now.
-    this.visibleOrder = 0;
-    this.visibleOrder_pre = -1;
-    // The data that's used for mapping this item, used as a cache.
-    // This is accessed by filterID
-    // Through this, you can also reach mapped DOM items
-        // DOM elements that this item is mapped to
-        // - If this is a paper, it can be paper type. If this is author, it can be author affiliation.
-    this.mappedDataCache = []; // caching the values this item was mapped to
+  this.DOM = {};
+  // If item is primary type, this will be set
+  this.DOM.record = undefined;
+  // If true, updatePreview has propogated changes above
+  this.updatePreview_Cache = false;
 
-    this.DOM = {};
-    // If item is primary type, this will be set
-    this.DOM.record = undefined;
-    // If item is used as a filter (can be primary if looking at links), this will be set
-    this.DOM.aggrGlyph  = undefined;
-    // If true, updatePreview has propogated changes above
-    this.updatePreview_Cache = false;
+  // Internal variable
+
+  // If true, filter/wanted state is dirty and needs to be updated.
+  this._filterCacheIsDirty = true;
+  // Cacheing filter state per each summary
+  this._filterCache = [];
 };
-kshf.Item.prototype = {
-    /** Returns unique ID of the item. */
-    id: function(){
-        return this.data[this.idIndex];
-    },
-    /** -- */
-    setFilterCache: function(index,v){
-        if(this.filterCache[index]===v) return;
-        this.filterCache[index] = v;
-        this._filterCacheIsDirty = true;
-    },
+kshf.Record.prototype = {
+  /** Returns unique ID of the item. */
+  id: function(){
+    return this.data[this.idIndex];
+  },
+  /** -- */
+  setFilterCache: function(index,v){
+    if(this._filterCache[index]===v) return;
+    this._filterCache[index] = v;
+    this._filterCacheIsDirty = true;
+  },
+  /** Updates isWanted state, and notifies all related filter attributes of the change */
+  updateWanted: function(){
+    if(!this._filterCacheIsDirty) return false;
+    var me = this;
 
-    /** -- */
-    f_selected: function(){ return this.selected!==0; },
-    f_included: function(){ return this.selected>0; },
+    var oldWanted = this.isWanted;
+    this.isWanted = this._filterCache.every(function(f){ return f; });
 
-    is_NONE:function(){ return this.selected===0; },
-    is_NOT: function(){ return this.selected===-1; },
-    is_AND: function(){ return this.selected===1; },
-    is_OR : function(){ return this.selected===2; },
-
-    set_NONE: function(){
-      if(this.inList!==undefined) {
-        this.inList.splice(this.inList.indexOf(this),1);
-      }
-      this.inList = undefined;
-      this.selected = 0; this.refreshFacetDOMSelected();
-    },
-    set_NOT: function(l){
-      if(this.is_NOT()) return;
-      this._insertToList(l);
-      this.selected =-1; this.refreshFacetDOMSelected();
-    },
-    set_AND: function(l){
-      if(this.is_AND()) return;
-      this._insertToList(l);
-      this.selected = 1; this.refreshFacetDOMSelected();
-    },
-    set_OR: function(l){
-      if(this.is_OR()) return;
-      this._insertToList(l);
-      this.selected = 2; this.refreshFacetDOMSelected();
-    },
-
-    _insertToList: function(l){
-      if(this.inList!==undefined) {
-        this.inList.splice(this.inList.indexOf(this),1);
-      }
-      this.inList = l;
-      l.push(this);
-    },
-
-    refreshFacetDOMSelected: function(){
-      if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.setAttribute("selected",this.selected);
-    },
-
-    /** -- */
-    addItem: function(item){
-      this.items.push(item);
-      this.aggregate_Total+=item.aggregate_Self;
-      this.aggregate_Active+=item.aggregate_Self;
-    },
-
-    /** -- */
-    resetAggregateMeasures: function(){
-      this.aggregate_Active = 0;
-      this.aggregate_Preview = 0;
-      this.aggregate_Total = 0;
-      this.items.forEach(function(item){
-        this.aggregate_Total+=item.aggregate_Self;
-        this.aggregate_Active+=item.aggregate_Self;
+    var valToAdd = null;
+    if(this.isWanted===true && oldWanted===false){ // wanted now    
+      valToAdd = this.aggregate_Self;
+    } else if(this.isWanted===false && oldWanted===true){ // unwanted now
+      valToAdd = -this.aggregate_Self;
+    }
+    if(valToAdd){
+      this.cachedAggrValues.forEach(function(mappedAggrs){
+        if(mappedAggrs===null) return;
+        if(mappedAggrs.b) { // interval
+          mappedAggrs.b.aggregate_Active += valToAdd;
+        } else if(!mappedAggrs.h){ // categorical (can map to multiple aggregates)
+          mappedAggrs.forEach(function(aggr){ aggr.aggregate_Active += valToAdd; },this);
+        }
       },this);
-    },
+    }
 
-    /**
-     * Updates isWanted state, and notifies all related filter attributes of the change.
-     */
-    updateWanted: function(){
-      if(!this._filterCacheIsDirty) return false;
-
-      var me=this;
-      var oldWanted = this.isWanted;
-
-      // Checks if all filter results are true. At first "false", breaks the loop
-      this.isWanted=true;
-      this.filterCache.every(function(f){
-        me.isWanted=me.isWanted&&f;
-        return me.isWanted;
-      });
-
-      if(this.isWanted===true && oldWanted===false){
-        // wanted now
-        this.mappedDataCache.forEach(function(m){
-          if(m===null) return;
-          if(m.h){ // interval
-            if(m.b) {
-              m.b.aggregate_Active+=this.aggregate_Self;
-            }
-          } else { // categorical
-            m.forEach(function(_cat){
-              _cat.aggregate_Active+=this.aggregate_Self;
-            },this);
+    this._filterCacheIsDirty = false;
+    return this.isWanted !== oldWanted;
+  },
+  /** -- */
+  setRecordDetails: function(value){
+    this.showDetails = value;
+    if(this.DOM.record) this.DOM.record.setAttribute('details', this.showDetails);
+  },
+  /** Called on mouse-over on a primary item type */
+  highlightRecord: function(){
+    if(this.DOM.record) { // record display
+      this.DOM.record.setAttribute("highlight","selected");
+    }
+    // summaries that this item appears in
+    this.cachedAggrValues.forEach(function(mappedAggrs){
+      if(mappedAggrs===null) return; // no mapping for this index
+      if(mappedAggrs.b){ // interval summary
+        mappedAggrs.h.setRecordValue(mappedAggrs.v);
+      } else if(!mappedAggrs.h){ // categorical summary
+        mappedAggrs.forEach(function(record){ 
+          if(record.DOM.aggrGlyph) { // basic summary aggregate
+            record.DOM.aggrGlyph.setAttribute("highlight",true);
           }
-        },this);
-      } else if(this.isWanted===false && oldWanted===true){
-        // unwanted now
-        this.mappedDataCache.forEach(function(m){
-          if(m===null) return;
-          if(m.h){ // interval
-            if(m.b) m.b.aggregate_Active-=this.aggregate_Self;
-          } else { // categorical
-            m.forEach(function(_cat){
-              _cat.aggregate_Active-=this.aggregate_Self;
-            },this);
+          if(record.DOM.matrixRow) { // set matrix
+            record.DOM.matrixRow.setAttribute("highlight","selected");
           }
         },this);
       }
+    },this);
+  },
+  /** -- */
+  nohighlightRecord: function(){
+    if(this.DOM.record) {
+      this.highlighted = false;
+      this.DOM.record.setAttribute("highlight",false);
+    }
+    // summaries that this item appears in
+    this.cachedAggrValues.forEach(function(mappedAggrs){
+      if(mappedAggrs===null) return; // no mapping for this index
+      if(mappedAggrs.h){ // interval summary
+        mappedAggrs.h.hideRecordValue();
+      } else if(!mappedAggrs.h){ // categorical summary
+        mappedAggrs.forEach(function(aggr){ aggr.nohighlightAggregate(); },this);
+      }
+    },this);
+  },
+  /** -- */
+  updatePreview: function(){
+    if(!this.isWanted) return;
 
-      this._filterCacheIsDirty = false;
-      return this.isWanted !== oldWanted;
-    },
-    /** Only updates wanted state if it is currently not wanted (resulting in More wanted items) */
-    updateWanted_More: function(){
-        if(this.isWanted) return false;
-        return this.updateWanted();
-    },
-    /** Only updates wanted state if it is currently wanted (resulting in Less wanted items) */
-    updateWanted_Less: function(){
-        if(!this.isWanted) return false;
-        return this.updateWanted();
-    },
-    /** -- */
-    updatePreview: function(){
-      if(!this.isWanted) return;
+    if(this.updatePreview_Cache) return;
+    this.updatePreview_Cache = true; // Cannot updatePreview twice
 
-      if(this.updatePreview_Cache===false){
-        this.updatePreview_Cache = true; // Cannot updatePreview twice
-      } else {
-        return;
-      }
+    this.highlighted = true;
+    if(this.DOM.record) this.DOM.record.setAttribute("highlight",true);
 
-      this.highlighted = true;
-      if(this.DOM.record) this.DOM.record.setAttribute("highlight",true);
+    this.cachedAggrValues.forEach(function(mappedAggrs){
+      if(mappedAggrs===null) return;
+      if( mappedAggrs.b && mappedAggrs.b.aggregate_Active>0) {
+        mappedAggrs.b.aggregate_Preview+=this.aggregate_Self;
+      } else if(!mappedAggrs.h){ // Categorical
+        mappedAggrs.forEach(function(aggr){ aggr.aggregate_Preview+=this.aggregate_Self; },this);
+      }
+    },this);
+  },
+};
 
-      this.mappedDataCache.forEach(function(m){
-        if(m===null) return;
-        if(m.h) {
-          if(m.b && m.b.aggregate_Active>0) m.b.aggregate_Preview+=this.aggregate_Self;
-        } else {
-          m.forEach(function(item){ item.aggregate_Preview+=this.aggregate_Self; },this);
-      }
-      },this);
-    },
-    /** Called on mouse-over on a primary item type */
-    highlightRecord: function(){
-      if(this.DOM.record) { // record display
-        this.DOM.record.setAttribute("highlight","selected");
-      }
-      // summaries that this item appears in
-      this.mappedDataCache.forEach(function(d){
-        if(d===null) return; // no mapping for this index
-        if(d.h){ // interval summary
-          d.h.setRecordValue(d.v);
-        } else { // categorical summary
-          d.forEach(function(item){ 
-            if(item.DOM.aggrGlyph) { // basic summary aggregate
-              item.DOM.aggrGlyph.setAttribute("highlight",true);
-            }
-            if(item.DOM.matrixRow) { // set matrix
-              item.DOM.matrixRow.setAttribute("highlight","selected");
-            }
-          },this);
-        }
-      },this);
-    },
-    /** -- */
-    nohighlightAggregate: function(){
-      if(this.DOM.record) {
-        this.highlighted = false;
-        this.DOM.record.setAttribute("highlight",false);
-      }
-      if(this.DOM.aggrGlyph) this.DOM.aggrGlyph .setAttribute("highlight",false);
-      if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight",false);
-    },
-    /** -- */
-    nohighlightRecord: function(){
-      if(this.DOM.record) {
-        this.highlighted = false;
-        this.DOM.record.setAttribute("highlight",false);
-      }
-      // summaries that this item appears in
-      this.mappedDataCache.forEach(function(d){
-        if(d===null) return; // no mapping for this index
-        if(d.h){ // interval summary
-          d.h.hideRecordValue();
-        } else { // categorical summary
-          d.forEach(function(item){ item.nohighlightAggregate(); },this);
-        }
-      },this);
-    },
-    /** -- */
-    setRecordDetails: function(value){
-      this.showDetails = value;
-      if(this.DOM.record) this.DOM.record.setAttribute('details', this.showDetails);
-    },
+
+/**
+ * @constructor
+ */
+kshf.Aggregate = function(d, idIndex){
+  // the main data within item
+  this.data = d;
+  this.idIndex = idIndex; // TODO: Items don't need to have ID index, only one per table is enough??
+  // Selection state
+  //  1: selected for inclusion (AND)
+  //  2: selected for inclusion (OR)
+  // -1: selected for removal (NOT query)
+  //  0: not selected
+  this.selected = 0;
+  // Items which are mapped/related to this item
+  this.records = [];
+
+  this.aggregate_Active = 0;  // Active aggregate value
+  this.aggregate_Preview = 0; // Previewed aggregate value
+  this.aggregate_Total = 0;   // Total aggregate value
+
+  this.DOM = {};
+  // If item is used as a filter (can be primary if looking at links), this will be set
+  this.DOM.aggrGlyph  = undefined;
+};
+kshf.Aggregate.prototype = {
+  /** Returns unique ID of the item. */
+  id: function(){
+    return this.data[this.idIndex];
+  },
+  /** -- */
+  addRecord: function(record){
+    this.records.push(record);
+    this.aggregate_Total  += record.aggregate_Self;
+    if(record.isWanted) this.aggregate_Active += record.aggregate_Self;
+  },
+  /** -- */
+  resetAggregateMeasures: function(){
+    this.aggregate_Active = 0;
+    this.aggregate_Preview = 0;
+    this.aggregate_Total = 0;
+    this.records.forEach(function(record){
+      this.aggregate_Total  += record.aggregate_Self;
+      this.aggregate_Active += record.aggregate_Self;
+    },this);
+  },
+  /** -- */
+  nohighlightAggregate: function(){
+    if(this.DOM.record) {
+      this.highlighted = false;
+      this.DOM.record.setAttribute("highlight",false);
+    }
+    if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.setAttribute("highlight",false);
+    if(this.DOM.matrixRow) this.DOM.matrixRow.setAttribute("highlight",false);
+  },
+
+  // CATEGORICAL AGGREGATES
+  /** -- */
+  f_selected: function(){ return this.selected!==0; },
+  f_included: function(){ return this.selected>0; },
+
+  is_NONE:function(){ return this.selected===0; },
+  is_NOT: function(){ return this.selected===-1; },
+  is_AND: function(){ return this.selected===1; },
+  is_OR : function(){ return this.selected===2; },
+
+  set_NONE: function(){
+    if(this.inList!==undefined) {
+      this.inList.splice(this.inList.indexOf(this),1);
+    }
+    this.inList = undefined;
+    this.selected = 0; this._refreshFacetDOMSelected();
+  },
+  set_NOT: function(l){
+    if(this.is_NOT()) return;
+    this._insertToList(l);
+    this.selected =-1; this._refreshFacetDOMSelected();
+  },
+  set_AND: function(l){
+    if(this.is_AND()) return;
+    this._insertToList(l);
+    this.selected = 1; this._refreshFacetDOMSelected();
+  },
+  set_OR: function(l){
+    if(this.is_OR()) return;
+    this._insertToList(l);
+    this.selected = 2; this._refreshFacetDOMSelected();
+  },
+
+  /** Internal */
+  _insertToList: function(l){
+    if(this.inList!==undefined) {
+      this.inList.splice(this.inList.indexOf(this),1);
+    }
+    this.inList = l;
+    l.push(this);
+  },
+  /** Internal */
+  _refreshFacetDOMSelected: function(){
+    if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.setAttribute("selected",this.selected);
+  },
 };
 
 kshf.Filter = function(id, opts){
-    this.isFiltered = false;
+  this.isFiltered = false;
 
-    this.browser = opts.browser;
-    this.parentSummary = opts.parentSummary;
+  this.browser = opts.browser;
+  this.parentSummary = opts.parentSummary;
 
-    this.onClear = opts.onClear;
-    this.onFilter = opts.onFilter;
-    this.hideCrumb = opts.hideCrumb || false;
-    this.filterView_Detail = opts.filterView_Detail; // must be a function
+  this.onClear = opts.onClear;
+  this.onFilter = opts.onFilter;
+  this.hideCrumb = opts.hideCrumb || false;
+  this.filterView_Detail = opts.filterView_Detail; // must be a function
 
-    this.id = id;
-    this.parentSummary.items.forEach(function(item){
-        item.setFilterCache(this.id,true);
-    },this);
-    this.how = "All";
-    this.filterCrumb = null;
+  this.id = id;
+  this.parentSummary.records.forEach(function(record){ record.setFilterCache(this.id,true); },this);
+  this.how = "All";
+  this.filterCrumb = null;
 };
 kshf.Filter.prototype = {
-    addFilter: function(forceUpdate){
-        this.isFiltered = true;
+  addFilter: function(forceUpdate){
+    this.isFiltered = true;
 
-        if(this.onFilter) this.onFilter.call(this,this.parentSummary);
+    if(this.onFilter) this.onFilter.call(this,this.parentSummary);
 
-        var stateChanged = false;
+    var stateChanged = false;
 
-        var how=0;
-        if(this.how==="LessResults") how = -1;
-        if(this.how==="MoreResults") how = 1;
+    var how=0;
+    if(this.how==="LessResults") how = -1;
+    if(this.how==="MoreResults") how = 1;
 
-        this.parentSummary.items.forEach(function(item){
-            // if you will show LESS results and item is not wanted, skip
-            // if you will show MORE results and item is wanted, skip
-            if(!(how<0 && !item.isWanted) && !(how>0 && item.isWanted)){
-                var changed = item.updateWanted();
-                stateChanged = stateChanged || changed;
-            }
-        },this);
+    this.parentSummary.records.forEach(function(record){
+      // if you will show LESS results and record is not wanted, skip
+      // if you will show MORE results and record is wanted, skip
+      if(!(how<0 && !record.isWanted) && !(how>0 && record.isWanted)){
+        stateChanged = record.updateWanted() || stateChanged;
+      }
+    },this);
 
-        this._refreshFilterSummary();
+    this._refreshFilterSummary();
 
-        if(forceUpdate===true){
-            this.browser.update_Records_Wanted_Count();
-            this.browser.refresh_filterClearAll();
-            this.browser.clearSelect_Highlight();
-            if(stateChanged) this.browser.updateAfterFilter();
-        }
-    },
-    /** -- */
-    clearFilter: function(forceUpdate, updateWanted){
-        if(!this.isFiltered) return;
+    if(forceUpdate===true){
+      this.browser.update_Records_Wanted_Count();
+      this.browser.refresh_filterClearAll();
+      this.browser.clearSelect_Highlight();
+      if(stateChanged) this.browser.updateAfterFilter();
+    }
+  },
+  /** -- */
+  clearFilter: function(forceUpdate, updateWanted){
+    if(!this.isFiltered) return;
 
-        this.isFiltered = false;
+    this.isFiltered = false;
 
-        // clear filter cache - no other logic is necessary
-        this.parentSummary.items.forEach(function(item){ item.setFilterCache(this.id,true); },this);
+    // clear filter cache - no other logic is necessary
+    this.parentSummary.records.forEach(function(record){ record.setFilterCache(this.id,true); },this);
 
-        if(updateWanted!==false){
-            this.parentSummary.items.forEach(function(item){
-                if(!item.isWanted) item.updateWanted();
-            });
-        }
+    if(updateWanted!==false){
+      this.parentSummary.records.forEach(function(record){
+        if(!record.isWanted) record.updateWanted();
+      });
+    }
 
-        this._refreshFilterSummary();
+    this._refreshFilterSummary();
 
-        if(this.onClear) this.onClear.call(this,this.parentSummary);
+    if(this.onClear) this.onClear.call(this,this.parentSummary);
 
-        if(forceUpdate!==false){
-            this.browser.update_Records_Wanted_Count();
-            this.browser.refresh_filterClearAll();
-            this.browser.updateAfterFilter();
-        }
-    },
+    if(forceUpdate!==false){
+      this.browser.update_Records_Wanted_Count();
+      this.browser.refresh_filterClearAll();
+      this.browser.updateAfterFilter();
+    }
+  },
 
-    /** Don't call this directly */
-    _refreshFilterSummary: function(){
-        if(this.hideCrumb===true) return;
-        if(!this.isFiltered){
-            var root = this.filterCrumb;
-            if(root===null || root===undefined) return;
-            root.attr("ready",false);
-            setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
-            this.filterCrumb = null;
-        } else {
-            // insert DOM
-            if(this.filterCrumb===null) {
-                this.filterCrumb = this.browser.insertDOM_crumb("filter",this);
-            }
-            this.filterCrumb.select(".crumbHeader").html(this.parentSummary.summaryName);
-            this.filterCrumb.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
-        }
-    },
+  /** Don't call this directly */
+  _refreshFilterSummary: function(){
+    if(this.hideCrumb===true) return;
+    if(!this.isFiltered){
+      var root = this.filterCrumb;
+      if(root===null || root===undefined) return;
+      root.attr("ready",false);
+      setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
+      this.filterCrumb = null;
+    } else {
+      // insert DOM
+      if(this.filterCrumb===null) {
+        this.filterCrumb = this.browser.insertDOM_crumb("filter",this);
+      }
+      this.filterCrumb.select(".crumbHeader").html(this.parentSummary.summaryName);
+      this.filterCrumb.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
+    }
+  },
 };
 
 /** -- */
@@ -892,7 +878,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
      *************************************************************************/
     config.sortingOpts = config.sortBy; // depracated option (sortingOpts)
 
-    this.sortingOpts = config.sortingOpts || [ {title:this.browser.items[0].idIndex} ]; // Sort by id by default
+    this.sortingOpts = config.sortingOpts || [ {title:this.browser.records[0].idIndex} ]; // Sort by id by default
     if(!Array.isArray(this.sortingOpts)) this.sortingOpts = [this.sortingOpts];
 
     this.prepSortingOpts();
@@ -1160,9 +1146,9 @@ kshf.RecordDisplay.prototype = {
       // Insert the bounds for each record path into the bs
       var bs = [];
       var _geo_ = this.config.geo;
-      this.browser.items.forEach(function(d){
-        if(!d.isWanted) return;
-        var feature = d.data[_geo_];
+      this.browser.records.forEach(function(record){
+        if(!record.isWanted) return;
+        var feature = record.data[_geo_];
         if(feature===undefined) return;
         var b = d3.geo.bounds(feature);
         // Change wrapping (US World wrap issue)
@@ -1237,7 +1223,7 @@ kshf.RecordDisplay.prototype = {
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",function(d){ kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0); });
+        .on("click",function(){ kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0); });
     },
     /* -- */
     initDOM_GlobalTextSearch: function(){
@@ -1271,23 +1257,23 @@ kshf.RecordDisplay.prototype = {
 
           me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",query.length>1?"inline-block":"none"); 
 
-          // go over all the items in the list, search each keyword separately
+          // go over all the records in the list, search each keyword separately
           // If some search matches, return true (any function)
           var summaryFunc = me.textSearchSummary.summaryFunc;
-          me.browser.items.forEach(function(item){
+          me.browser.records.forEach(function(record){
             var f;
             if(me.textFilter.multiMode==='or') 
               f = ! query.every(function(v_i){
-                var v = summaryFunc.call(item.data,item);
+                var v = summaryFunc.call(record.data,record);
                 if(v===null || v===undefined) return true;
                 return (""+v).toLowerCase().indexOf(v_i)===-1;
               });
             if(me.textFilter.multiMode==='and')
               f = query.every(function(v_i){
-                var v = summaryFunc.call(item.data,item);
+                var v = summaryFunc.call(record.data,record);
                 return (""+v).toLowerCase().indexOf(v_i)!==-1;
               });
-            item.setFilterCache(this.id,f);
+            record.setFilterCache(this.id,f);
           },this);
         },
       });
@@ -1449,14 +1435,14 @@ kshf.RecordDisplay.prototype = {
             .on("click",function(d){
                 me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
                 this.setAttribute("inverse",me.sortingOpt_Active.inverse);
-                me.browser.items.reverse();
+                me.browser.records.reverse();
 
                 me.updateVisibleIndex();
                 me.refreshRecordDOM();
                 me.refreshRecordRanks(me.DOM.recordRanks);
 
                 me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
-                    .data(me.browser.items, function(record){ return record.id(); })
+                    .data(me.browser.records, function(record){ return record.id(); })
                     .order();
                 kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
             })
@@ -1469,7 +1455,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordRanks: function(d3_selection){
       if(!this.showRank) return; // Do not refresh if not shown...
-      d3_selection.text(function(d){ return (d.visibleOrder<0)?"":d.visibleOrder+1; });
+      d3_selection.text(function(record){ return (record.visibleOrder<0)?"":record.visibleOrder+1; });
     },
     /** -- */
     setSortColumnWidth: function(v){
@@ -1579,7 +1565,7 @@ kshf.RecordDisplay.prototype = {
         kshf.Util.scrollToPos_do(this.DOM.recordGroup[0][0],0);
 
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
-          .data(this.browser.items, function(record){ return record.id(); })
+          .data(this.browser.records, function(record){ return record.id(); })
           .order();
 
         this.refreshRecordSortLabels();
@@ -1623,16 +1609,13 @@ kshf.RecordDisplay.prototype = {
         min_v = this.sortingOpt_Active.intervalRange.active.min;
         max_v = this.sortingOpt_Active.intervalRange.active.max;
       }
-      if(min_v===undefined) min_v = d3.min(this.browser.items, function(d){ return s_f.call(d.data); });
-      if(max_v===undefined) max_v = d3.max(this.browser.items, function(d){ return s_f.call(d.data); });
+      if(min_v===undefined) min_v = d3.min(this.browser.records, function(d){ return s_f.call(d.data); });
+      if(max_v===undefined) max_v = d3.max(this.browser.records, function(d){ return s_f.call(d.data); });
       this.mapColorScale
         .range([0, 9])
-        //.range([d3.rgb("rgb(247,251,255)"), d3.rgb("rgb(8,48,107)")])
-//            .interpolate(d3.interpolateHcl)
         .domain( [min_v, max_v] );
 
       this.DOM.kshfRecords.attr("fill", function(d){ 
-        //var v = d.mappedDataCache[s_id];
         var v = s_f.call(d.data);
         if(s_log && v<=0) v=undefined;
         if(v===undefined) return "url(#diagonalHatch)";
@@ -1641,12 +1624,12 @@ kshf.RecordDisplay.prototype = {
         return me.colorQuantize(vv); 
       });
     },
-    /** Insert items into the UI, called once on load */
+    /** Insert records into the UI, called once on load */
     refreshRecordDOM: function(){
       var me=this, x;
       var records = (this.displayType==="map")?
-        this.browser.items :
-        this.browser.items.filter(function(record){
+        this.browser.records :
+        this.browser.records.filter(function(record){
           if(!record.isWanted) return false;
           return record.visibleOrder<me.maxVisibleItems;
         });
@@ -1660,47 +1643,47 @@ kshf.RecordDisplay.prototype = {
         .attr('class','kshfRecord')
         .attr('details',false)
         .attr('highlight',false)
-        .attr("id",function(d){ return d.id(); }) // can be used to apply custom CSS
-        .each(function(d){ 
-          d.DOM.record = this;
+        .attr("id",function(record){ return record.id(); }) // can be used to apply custom CSS
+        .each(function(record){ 
+          record.DOM.record = this;
           if(me.displayType==="map"){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
               title: function(){ 
                 var s="";
                 return ""+
-                  "<span class='mapItemName'>"+me.recordViewSummary.summaryFunc.call(d.data,d)+"</span>"+
+                  "<span class='mapItemName'>"+me.recordViewSummary.summaryFunc.call(record.data,record)+"</span>"+
                   "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryName+"</span>: "+
                   "<span class='mapTooltipValue'>"+me.sortingOpt_Active.printWithUnitName(
-                    me.sortingOpt_Active.summaryFunc.call(d.data,d))+"</span>";
+                    me.sortingOpt_Active.summaryFunc.call(record.data,record))+"</span>";
               }
             });
           }
         })
-        .on("mouseenter",function(d){
+        .on("mouseenter",function(record){
           if(this.tipsy) {
             this.tipsy.show();
             this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
             this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
           if(me.browser.mouseSpeed<0.2) {
-            d.highlightRecord(); return;
+            record.highlightRecord(); return;
           }
           // mouse is moving fast, should wait a while...
           this.highlightTimeout = window.setTimeout(
-            function(){ d.highlightRecord(); }, 
+            function(){ record.highlightRecord(); }, 
             me.browser.mouseSpeed*300);
         })
-        .on("mouseleave",function(d){
+        .on("mouseleave",function(record){
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
           if(this.tipsy) this.tipsy.hide();
           this.setAttribute("highlight","false");
-          d.nohighlightRecord();
+          record.nohighlightRecord();
         })
-        .on("mousedown", function(d){
+        .on("mousedown", function(){
           this._mousemove = false;
         })
-        .on("mousemove", function(d){
+        .on("mousemove", function(){
           this._mousemove = true;
           if(this.tipsy){
             this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
@@ -1746,13 +1729,13 @@ kshf.RecordDisplay.prototype = {
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout" ,function(){ this.tipsy.hide(); })
           .append("span").attr("class","item_details_toggle fa")
-            .on("click", function(d){
+            .on("click", function(record){
               this.parentNode.tipsy.hide();
               if(me.detailsToggle==="one" && me.displayType==='list'){
-                d.setRecordDetails(!d.showDetails);
+                record.setRecordDetails(!record.showDetails);
               }
               if(me.detailsToggle==="zoom"){
-                me.browser.updateItemZoomText(d);
+                me.browser.updateItemZoomText(record);
               }
             });
 
@@ -1760,7 +1743,6 @@ kshf.RecordDisplay.prototype = {
         // Note: the value was already evaluated and stored in the record object
         var recordViewID = this.recordViewSummary.id;
         newRecords.append("div").attr("class","content")
-          //.html(function(record){ return record.mappedDataCache[recordViewID][0].data.id; })
           .html(function(record){ 
             return me.recordViewSummary.summaryFunc.call(record.data, record);
           })
@@ -1803,13 +1785,13 @@ kshf.RecordDisplay.prototype = {
       var sortValueFunc = this.sortingOpt_Active.summaryFunc;
       var sortFunc = this.sortingOpt_Active.sortFunc;
       var inverse = this.sortingOpt_Active.sortInverse;
-      this.browser.items.sort(
-        function(a,b){
+      this.browser.records.sort(
+        function(record_A,record_B){
           // Put filtered/remove data to later position
           // !! Don't do above!! Then, when you filter set, you'd need to re-order
-          // Now, you don't need to re-order after filtering, which is a nice property to have.
-          var v_a = sortValueFunc.call(a.data,a);
-          var v_b = sortValueFunc.call(b.data,b);
+          // Now, you don't need to re-order after filtering, which is record_A nice property to have.
+          var v_a = sortValueFunc.call(record_A.data,record_A);
+          var v_b = sortValueFunc.call(record_B.data,record_B);
 
           if(isNaN(v_a)) v_a = undefined;
           if(isNaN(v_b)) v_b = undefined;
@@ -1821,7 +1803,7 @@ kshf.RecordDisplay.prototype = {
           if(v_b===undefined && v_a===undefined) return 0;
 
           var dif=sortFunc(v_a,v_b);
-          if(dif===0) dif=b.id()-a.id();
+          if(dif===0) dif=record_B.id()-record_A.id();
           if(inverse) return -dif;
           return dif; // use unique IDs to add sorting order as the last option
         }
@@ -1834,8 +1816,8 @@ kshf.RecordDisplay.prototype = {
 
       // find appropriate sortvalue type
       for(var k=0, same=0; true ; k++){
-        if(same===3 || k===this.browser.items.length) break;
-        var item = this.browser.items[k];
+        if(same===3 || k===this.browser.records.length) break;
+        var item = this.browser.records[k];
         var f = sortValueFunc.call(item.data,item);
         var sortValueType_temp2;
         switch(typeof f){
@@ -1859,7 +1841,7 @@ kshf.RecordDisplay.prototype = {
       }
       return sortValueFunction;
     },
-    /** Updates visibility of list items */
+    /** Updates visibility of list records */
     updateItemVisibility: function(){
       var me = this;
       var visibleItemCount=0;
@@ -1918,13 +1900,13 @@ kshf.RecordDisplay.prototype = {
     updateVisibleIndex: function(){
       var wantedCount = 0;
       var unwantedCount = 1;
-      this.browser.items.forEach(function(item){
-        item.visibleOrder_pre = item.visibleOrder;
-        if(item.isWanted){
-          item.visibleOrder = wantedCount;
+      this.browser.records.forEach(function(record){
+        record.visibleOrder_pre = record.visibleOrder;
+        if(record.isWanted){
+          record.visibleOrder = wantedCount;
           wantedCount++;
         } else {
-          item.visibleOrder = -unwantedCount;
+          record.visibleOrder = -unwantedCount;
           unwantedCount++;
         }
       });
@@ -2405,26 +2387,26 @@ kshf.Browser = function(options){
 kshf.Browser.prototype = {
     /** -- */
     setNoAnim: function(v){
-        if(v===this.noAnim) return;
-        if(this.finalized===undefined) return;
-        this.noAnim=v;
-        this.DOM.root.attr("noanim",this.noAnim);
+      if(v===this.noAnim) return;
+      if(this.finalized===undefined) return;
+      this.noAnim=v;
+      this.DOM.root.attr("noanim",this.noAnim);
     },
     /** -- */
     removeSummary: function(summary){
-        var indexFrom = -1;
-        this.summaries.forEach(function(s,i){
-            if(s===summary) indexFrom = i;
-        });
-        if(indexFrom===-1) return; // given summary is not within this panel
-        this.summaries.splice(indexFrom,1);
+      var indexFrom = -1;
+      this.summaries.forEach(function(s,i){
+        if(s===summary) indexFrom = i;
+      });
+      if(indexFrom===-1) return; // given summary is not within this panel
+      this.summaries.splice(indexFrom,1);
 
-        summary.removeFromPanel();
+      summary.removeFromPanel();
     },
     /** -- */
     getAttribTypeFromFunc: function(attribFunc){
         var type = null;
-        this.items.some(function(item,i){
+        this.records.some(function(item,i){
             var item=attribFunc.call(item.data,item);
             if(item===null) return false;
             if(item===undefined) return false;
@@ -2542,6 +2524,17 @@ kshf.Browser.prototype = {
       this.panel_warningBox.attr("shown",false);
     },
     /** -- */
+    getMeasurableSummaries: function(){
+      return this.summaries.filter(function(summary){ 
+        return (summary.type==='interval') 
+          && summary.scaleType!=='time' 
+          && summary.panel!==undefined
+          && summary.intervalRange.min>=0
+          && summary.summaryName !== this.records[0].idIndex
+          ;
+      },this);
+    },
+    /** -- */
     insertDOM_measureSelect: function(){
       var me=this;
       if(this.DOM.measureTypeSelectBox) return;
@@ -2550,30 +2543,21 @@ kshf.Browser.prototype = {
         .on("click",function(){ me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",false); });
       this.DOM.measureTypeSelectBox.append("div").attr("class","measureHeader").text("Choose measure");
       this.DOM.measureTypeSelectBox.append("div").attr("class","measureType")
-        .append("span").attr("class","measureType_").text("Count of "+this.itemName)
+        .append("span").attr("class","measureType_").text("Number of "+this.itemName)
         .on("click",function(){
           me.closeMeasureSelectBox();
           me.setMeasureSummary(); // no summary, will revert to count
         });
-      this.DOM.measureTypeSelectBox.append("div").attr("class","measureType")
-        .on("click",function(){
-          if(this.___summariesProcessed) return;
-          var s = browser.summaries.filter(function(summary){ 
-            return summary.type==='interval' && summary.scaleType!=='time' && summary.intervalRange.min>0;
-          });
-          var d = d3.select(this);
-          var a = d.append("span").attr("class","measureType_summaryBox");
-          a.selectAll(".measureType_Summary").data(s).enter()
-            .append("div").attr("class","measureType_Summary") 
-            .text(function(summary){ return summary.summaryName; })
-            .on("click", function(d){
-              me.closeMeasureSelectBox();
-              me.setMeasureSummary(d);
-            });
-          this.___summariesProcessed = true;
-        })
-        .append("span").attr("class","measureType_").text("Sum (Total) of ... ")
-        ;
+      var x = this.DOM.measureTypeSelectBox.append("div").attr("class","measureType");
+      x.append("span").attr("class","measureType_").text("Sum (Total) of ... ");
+      x.append("span").attr("class","measureType_summaryBox")
+        .selectAll(".measureType_Summary").data(me.getMeasurableSummaries()).enter()
+        .append("div").attr("class","measureType_Summary") 
+        .html(function(summary){ return summary.summaryName; })
+        .on("click", function(d){
+          me.closeMeasureSelectBox();
+          me.setMeasureSummary(d);
+        });
     },
     /** -- */
     closeMeasureSelectBox: function(){
@@ -2583,6 +2567,10 @@ kshf.Browser.prototype = {
       while (d.hasChildNodes()) d.removeChild(d.lastChild);
     },
     /** -- */
+    refreshMeasureSelectAction: function(){
+      this.DOM.recordInfo.style('pointer-events', (this.getMeasurableSummaries().length===0)? 'none' : 'all');
+    },
+    /** -- */
     insertDOM_PanelBasic: function(){
       var me=this;
 
@@ -2590,21 +2578,25 @@ kshf.Browser.prototype = {
 
       this.DOM.measureTypeSelectBoxWrapper = this.DOM.panel_Basic.append("span").attr("class","measureTypeSelectBoxWrapper")
       .attr("showMeasureBox",false);
-
-      var recordInfo = this.DOM.panel_Basic.append("span")
+      
+      this.DOM.recordInfo = this.DOM.panel_Basic.append("span")
         .attr("class","recordInfo editableTextContainer")
         .attr("edittitle",false)
         .attr("editable",true)
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "Change measure" }); })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
+          this.tipsy.hide();
           me.insertDOM_measureSelect();
           me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",true);
         });
 
-      this.DOM.activeRecordCount = recordInfo.append("span").attr("class","activeRecordCount");
+      this.DOM.activeRecordCount = this.DOM.recordInfo.append("span").attr("class","activeRecordCount");
 
-      this.DOM.measureAggrType = recordInfo.append("span").attr("class","measureAggrType");
+      this.DOM.measureAggrType = this.DOM.recordInfo.append("span").attr("class","measureAggrType");
 
-      this.DOM.recordName = recordInfo.append("span").attr("class","recordName editableText")
+      this.DOM.recordName = this.DOM.recordInfo.append("span").attr("class","recordName editableText")
         .attr("contenteditable",false)
         .on("mousedown", function(){ d3.event.stopPropagation(); })
         .on("blur",function(){
@@ -2620,7 +2612,7 @@ kshf.Browser.prototype = {
           }
         });
 
-      recordInfo.append("span")
+      this.DOM.recordInfo.append("span")
         .attr("class","editTextButton fa")
         .each(function(){
           this.tipsy = new Tipsy(this, {
@@ -2917,10 +2909,10 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refreshTotalViz: function(){
-        this.DOM.totalViz_active .style("width",
-            (100*this.recordsWanted_Aggr_Total/this.itemsTotal_Aggregrate_Total)+"%");
-        this.DOM.totalViz_preview.style("width",
-            (100*this.itemCount_Previewed/this.itemsTotal_Aggregrate_Total)+"%");
+      this.DOM.totalViz_active .style("width",
+        (100*this.recordsWanted_Aggr_Total/this.records_Aggregrate_Total)+"%");
+      this.DOM.totalViz_preview.style("width",
+        (100*this.itemCount_Previewed/this.records_Aggregrate_Total)+"%");
     },
     /** --- */
     initDOM_ClearAllFilters: function(){
@@ -3560,7 +3552,7 @@ kshf.Browser.prototype = {
                 }
                 // push unique id as the last column if necessary
                 if(c[sheet.id]===undefined) c[sheet.id] = itemId++;
-                arr[r] = new kshf.Item(c,sheet.id);
+                arr[r] = new kshf.Record(c,sheet.id);
             }
 
             me.finishDataLoad(sheet,arr);
@@ -3591,7 +3583,7 @@ kshf.Browser.prototype = {
 
             parsedData.data.forEach(function(row,i){
                 if(row[idColumn]===undefined) row[idColumn] = i;
-                arr.push(new kshf.Item(row,idColumn));
+                arr.push(new kshf.Record(row,idColumn));
             })
 
             me.finishDataLoad(tableDescr, arr);
@@ -3634,7 +3626,7 @@ kshf.Browser.prototype = {
 
           data.forEach(function(dataItem,i){
             if(dataItem[idColumn]===undefined) dataItem[idColumn] = i;
-            arr.push(new kshf.Item(dataItem, idColumn));
+            arr.push(new kshf.Record(dataItem, idColumn));
           });
 
           me.finishDataLoad(tableDescr, arr);
@@ -3675,7 +3667,7 @@ kshf.Browser.prototype = {
                     if(!dstTable_Id[v2]){
                         if(typeof(v2)==="string") hasString=true;
                         var itemData = {id: v2};
-                        var item = new kshf.Item(itemData,'id');
+                        var item = new kshf.Aggregate(itemData,'id');
                         dstTable_Id[v2] = item;
                         dstTable.push(item);
                     }
@@ -3684,7 +3676,7 @@ kshf.Browser.prototype = {
                 if(!dstTable_Id[mapping]){
                     if(typeof(mapping)==="string") hasString=true;
                     var itemData = {id: mapping};
-                    var item = new kshf.Item(itemData,'id');
+                    var item = new kshf.Aggregate(itemData,'id');
                     dstTable_Id[mapping] = item;
                     dstTable.push(item);
                 }
@@ -3723,19 +3715,19 @@ kshf.Browser.prototype = {
     },
     /** -- */
     loadCharts: function(){
-        if(this.primaryTableName===undefined){
-            alert("Cannot load keshif. Please define browser.primaryTableName.");
-            return;
-        }
-        this.items = kshf.dt[this.primaryTableName];
-        if(this.itemName==="") {
-            this.itemName = this.primaryTableName;
-        }
+      if(this.primaryTableName===undefined){
+        alert("Cannot load keshif. Please define browser.primaryTableName.");
+        return;
+      }
+      this.records = kshf.dt[this.primaryTableName];
+      if(this.itemName==="") {
+        this.itemName = this.primaryTableName;
+      }
 
-        var me=this;
-        this.panel_infobox.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
-        this.panel_infobox.select("div.status_text .dynamic").text("");
-        window.setTimeout(function(){ me._loadCharts(); }, 50);
+      var me=this;
+      this.panel_infobox.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
+      this.panel_infobox.select("div.status_text .dynamic").text("");
+      window.setTimeout(function(){ me._loadCharts(); }, 50);
     },
     /** -- */
     _loadCharts: function(){
@@ -3752,13 +3744,8 @@ kshf.Browser.prototype = {
         }
 
         // Create a summary for each existing column in the data
-        for(var column in this.items[0].data){
+        for(var column in this.records[0].data){
           if(typeof(column)==="string") this.createSummary(column);
-        }
-
-        if(this.options.measure){
-          var summary = this.summaries_by_name[this.options.measure];
-          this.setMeasureSummary(summary);
         }
 
         // Total
@@ -3914,6 +3901,12 @@ kshf.Browser.prototype = {
 
         this.recordDisplay = new kshf.RecordDisplay(this,this.options.recordDisplay||{}, this.DOM.root);
 
+        if(this.options.measure){
+          var summary = this.summaries_by_name[this.options.measure];
+          this.setMeasureSummary(summary);
+        }
+        this.refreshMeasureSelectAction();
+
         this.DOM.recordName.html(this.itemName);
 
         if(this.source.url){
@@ -3952,7 +3945,7 @@ kshf.Browser.prototype = {
 
         this.refresh_filterClearAll();
 
-        this.items.forEach(function(item){item.updateWanted();});
+        this.records.forEach(function(record){ record.updateWanted(); });
         this.update_Records_Wanted_Count();
 
         this.updateAfterFilter();
@@ -4069,7 +4062,9 @@ kshf.Browser.prototype = {
       // clear all registered filters
       this.filters.forEach(function(filter){ filter.clearFilter(false,false); })
       if(force!==false){
-        this.items.forEach(function(item){ item.updateWanted_More(true); });
+        this.records.forEach(function(record){ 
+          if(!record.isWanted) record.updateWanted(); // Only update records which were not wanted before.
+        });
         this.update_Records_Wanted_Count();
         this.refresh_filterClearAll();
         this.updateAfterFilter(); // more results
@@ -4089,10 +4084,10 @@ kshf.Browser.prototype = {
     update_Records_Wanted_Count: function(){
       this.recordsWantedCount = 0;
       this.recordsWanted_Aggr_Total = 0;
-      this.items.forEach(function(record){
+      this.records.forEach(function(record){
         if(record.isWanted){
           this.recordsWantedCount++;
-          this.recordsWanted_Aggr_Total+=record.aggregate_Self;
+          this.recordsWanted_Aggr_Total += record.aggregate_Self;
         }
       },this);
 
@@ -4169,7 +4164,7 @@ kshf.Browser.prototype = {
       });
       if(this.comparedAggregate){
         this.comparedAggregate.DOM.aggrGlyph.setAttribute("compare",false);
-        this.comparedAggregate.items.forEach(function(record){
+        this.comparedAggregate.records.forEach(function(record){
           if(record.DOM.record===undefined) return;
           record.DOM.record.setAttribute("recCompared","false");
         });
@@ -4198,7 +4193,7 @@ kshf.Browser.prototype = {
         summary.refreshViz_Compare();
       });
 
-      selAggregate.items.forEach(function(record){
+      selAggregate.records.forEach(function(record){
         if(record.DOM.record===undefined) return;
         record.DOM.record.setAttribute("recCompared","true");
       });
@@ -4216,8 +4211,7 @@ kshf.Browser.prototype = {
         valText = selSummary.catLabel_Func.call(selAggregate.data);
       }
       if(selSummary.type==="interval"){
-        valText = selSummary.printWithUnitName(selAggregate.x)+' to '+
-          selSummary.printWithUnitName(selAggregate.x+selAggregate.dx);
+        valText = selSummary.printSelectedRange(selAggregate);
       }
       this.compareSelectCrumb.select(".filterDetails").html(valText);
       // **************************
@@ -4246,10 +4240,10 @@ kshf.Browser.prototype = {
         },1000);
       }
 
-      // unhighlight items in the record display
+      // unhighlight records in the record display
       if(this.recordDisplay) this.recordDisplay.unhighlightRecords();
 
-      this.items.forEach(function(item){ item.updatePreview_Cache = false; });
+      this.records.forEach(function(record){ record.updatePreview_Cache = false; });
 
       this.itemCount_Previewed = 0;
       // Clear highlight visualization in all summaries within the browser
@@ -4286,8 +4280,7 @@ kshf.Browser.prototype = {
         } else if(selSummary.type==="categorical"){
           valText = selSummary.catLabel_Func.call(selAggregate.data);
         } else if(selSummary.type==="interval"){
-          valText = selSummary.printWithUnitName(selAggregate.x)+' to '+
-            selSummary.printWithUnitName(selAggregate.x+selAggregate.dx);
+          valText = selSummary.printSelectedRange(selAggregate);
         }
         me.highlightSelectCrumb.select(".filterDetails").html(valText);
       };
@@ -4307,7 +4300,7 @@ kshf.Browser.prototype = {
       if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
         if(this.measureSummary===undefined) return; // No update
         this.measureSummary = undefined;
-        this.items.forEach(function(record){
+        this.records.forEach(function(record){
           record.aggregate_Self = 1; // COUNT FUNCTION (NUMBER OF RECORDS)
         });
         this.DOM.measureAggrType.text("");
@@ -4315,10 +4308,10 @@ kshf.Browser.prototype = {
         if(this.measureSummary===summary) returnl // No update
         this.measureSummary = summary;
         summary.initializeAggregates();
-        this.items.forEach(function(record){
+        this.records.forEach(function(record){
           record.aggregate_Self = summary.itemV(record);
         });
-        this.DOM.measureAggrType.text("Total "+summary.summaryName+" of ");
+        this.DOM.measureAggrType.html("Total "+summary.summaryName+" of ");
       }
       this.summaries.forEach(function(summary){
         if(!summary.aggr_initialized) return;
@@ -4328,8 +4321,8 @@ kshf.Browser.prototype = {
           });
         }
         if(summary.type==='interval'){
-          summary.histBins.forEach(function(bin){
-            // bin.resetAggregateMeasures();
+          summary.histBins.forEach(function(aggr){
+            aggr.resetAggregateMeasures();
           });
         }
         summary.updateAfterFilter();
@@ -4339,9 +4332,9 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refresh_Measure_Total: function(){
-      this.itemsTotal_Aggregrate_Total = 0;
-      this.items.forEach(function(item){
-        this.itemsTotal_Aggregrate_Total+=item.aggregate_Self;
+      this.records_Aggregrate_Total = 0;
+      this.records.forEach(function(record){
+        this.records_Aggregrate_Total += record.aggregate_Self;
       },this);
     },
     /** -- */
@@ -4595,9 +4588,9 @@ kshf.Summary_Base.prototype = {
       this.DOM = {};
       this.DOM.inited = false;
 
-      this.items = this.browser.items;
-      if(this.items===undefined||this.items===null||this.items.length===0){
-        alert("Error: Browser.items is not defined...");
+      this.records = this.browser.records;
+      if(this.records===undefined||this.records===null||this.records.length===0){
+        alert("Error: Browser.records is not defined...");
         return;
       }
 
@@ -4711,7 +4704,7 @@ kshf.Summary_Base.prototype = {
     },
     /** -- */
     uniqueCategories: function(){
-      if(this.browser && this.browser.items[0].idIndex===this.summaryName) return true;
+      if(this.browser && this.browser.records[0].idIndex===this.summaryName) return true;
       return false;
     },
     /** -- */
@@ -4766,6 +4759,7 @@ kshf.Summary_Base.prototype = {
           this.browser.recordDisplay.addSortingOption(this);
       }
       this.refreshWidth();
+      this.browser.refreshMeasureSelectAction();
     },
     /** -- */
     insertNugget: function(){
@@ -5397,7 +5391,7 @@ var Summary_Categorical_functions = {
 
     this.setCatLabel("id");
 
-    if(this.items.length<=1000) this.initializeAggregates();
+    if(this.records.length<=1000) this.initializeAggregates();
   },
   /** -- */
   initializeAggregates: function(){
@@ -5405,7 +5399,7 @@ var Summary_Categorical_functions = {
     if(this.catTableName===undefined){
       // Create new table
       this.catTableName = this.summaryName+"_h_"+this.id;
-      this.browser.createTableFromTable(this.items, this.catTableName, this.summaryFunc);
+      this.browser.createTableFromTable(this.records, this.catTableName, this.summaryFunc);
     }
     if(kshf.dt[this.catTableName]===undefined){
       return false; // Cannot initialize, table not defined.
@@ -5437,7 +5431,7 @@ var Summary_Categorical_functions = {
     var maxAggregate_Total = this.getMaxAggr_Total();
     nuggetChart.selectAll(".nuggetBar").data(this._cats).enter()
       .append("span").attr("class","nuggetBar")
-        .style("width",function(cat){ return totalWidth*(cat.items.length/maxAggregate_Total)+"px"; });
+        .style("width",function(cat){ return totalWidth*(cat.records.length/maxAggregate_Total)+"px"; });
 
     this.DOM.nugget.select(".nuggetInfo").html(
       "<span class='fa fa-tag"+(this.isMultiValued?"s":"")+"'></span><br>"+
@@ -5731,35 +5725,35 @@ var Summary_Categorical_functions = {
 
                 var filterId = this.id;
 
-                summary.items.forEach(function(item){
-                    var recordVal_s=item.mappedDataCache[filterId];
+                summary.records.forEach(function(record){
+                    var recordVal_s=record.cachedAggrValues[filterId];
 
                     if(this.unmapped===true){
-                        item.setFilterCache(filterId, recordVal_s===null);
+                        record.setFilterCache(filterId, recordVal_s===null);
                         return;
                     }
 
                     if(recordVal_s===null){
                         // survives if AND and OR is not selected
-                        item.setFilterCache(filterId, this.selected_AND.length===0 && this.selected_OR.length===0 );
+                        record.setFilterCache(filterId, this.selected_AND.length===0 && this.selected_OR.length===0 );
                         return;
                     }
 
-                    // Check NOT selections - If any mapped item is NOT, return false
+                    // Check NOT selections - If any mapped record is NOT, return false
                     // Note: no other filtering depends on NOT state.
                     // This is for ,multi-level filtering using not query
         /*            if(this.selected_NOT.length>0){
-                        if(!recordVal_s.every(function(item){
-                            return !item.is_NOT() && item.isWanted;
+                        if(!recordVal_s.every(function(record){
+                            return !record.is_NOT() && record.isWanted;
                         })){
-                            item.setFilterCache(filterId,false); return;
+                            record.setFilterCache(filterId,false); return;
                         }
                     }*/
 
-                    // If any of the record values are selected with NOT, the item will be removed
+                    // If any of the record values are selected with NOT, the record will be removed
                     if(this.selected_NOT.length>0){
                         if(!recordVal_s.every(function(val){ return !val.is_NOT(); })){
-                            item.setFilterCache(filterId,false); return;
+                            record.setFilterCache(filterId,false); return;
                         }
                     }
                     // All AND selections must be among the record values
@@ -5768,25 +5762,23 @@ var Summary_Categorical_functions = {
                         var t=0;
                         recordVal_s.forEach(function(m){ if(m.is_AND()) t++; })
                         if(t!==this.selected_AND.length){
-                            item.setFilterCache(filterId,false); return;
+                            record.setFilterCache(filterId,false); return;
                         }
                     }
-                    // One of the OR selections must be among the item values
-                    // Check OR selections - If any mapped item is OR, return true
+                    // One of the OR selections must be among the record values
+                    // Check OR selections - If any mapped record is OR, return true
                     if(this.selected_OR.length>0){
-                        item.setFilterCache(filterId, recordVal_s.some(function(d){return (d.is_OR());}) );
+                        record.setFilterCache(filterId, recordVal_s.some(function(d){return (d.is_OR());}) );
                         return;
                     }
                     // only NOT selection
-                    item.setFilterCache(filterId,true);
+                    record.setFilterCache(filterId,true);
                 }, this);
             },
             filterView_Detail: function(){
-                if(this.unmapped===true){
-                    return "(no data)";
-                }
+                if(this.unmapped===true) return "(no data)";
                 // 'this' is the Filter
-                // go over all items and prepare the list
+                // go over all records and prepare the list
                 var selectedItemsText="";
 
                 var catTooltip = me.catTooltip;
@@ -5857,62 +5849,63 @@ var Summary_Categorical_functions = {
         var targetTable_id = {};
         var targetTable = [];
         kshf.dt[this.catTableName].forEach(function(srcI){
-            var i = new kshf.Item(srcI.data,srcI.idIndex);
-            targetTable_id[i.id()] = i;
-            targetTable.push(i);
+          var i = new kshf.Aggregate(srcI.data,srcI.idIndex);
+          targetTable_id[i.id()] = i;
+          targetTable.push(i);
         });
         this.catTable = targetTable;
         this._cats = this.catTable;
         var maxDegree = 0;
-        this.items.forEach(function(item){
-            item.mappedDataCache[filterId] = null; // default mapping to null
+        this.records.forEach(function(record){
+          record.cachedAggrValues[filterId] = null; // default mapping to null
 
-            var mapping = this.summaryFunc.call(item.data,item);
-            if(mapping===undefined || mapping==="" || mapping===null){
-                this.unmappedRecords.push(item);
-                return;
-            }
-            if(mapping instanceof Array){
-                var found = {};
-                mapping = mapping.filter(function(e){
-                    if(e===undefined || e==="" || e===null) return false; // remove invalid values
-                    if(found[e]===undefined){ found[e] = true;  return true; } // remove duplicate values
-                    return false;
-                });
-                if(mapping.length===0) { // empty array - checked after removing invalid/duplicates
-                    this.unmappedRecords.push(item);
-                    return; 
-                }
-            } else {
-                mapping = [mapping];
-            }
-            maxDegree = Math.max(maxDegree, mapping.length);
+          var mapping = this.summaryFunc.call(record.data,record);
+          if(mapping===undefined || mapping==="" || mapping===null){
+              this.unmappedRecords.push(record);
+              return;
+          }
+          if(mapping instanceof Array){
+              var found = {};
+              mapping = mapping.filter(function(e){
+                  if(e===undefined || e==="" || e===null) return false; // remove invalid values
+                  if(found[e]===undefined){ found[e] = true;  return true; } // remove duplicate values
+                  return false;
+              });
+              if(mapping.length===0) { // empty array - checked after removing invalid/duplicates
+                  this.unmappedRecords.push(record);
+                  return; 
+              }
+          } else {
+              mapping = [mapping];
+          }
+          maxDegree = Math.max(maxDegree, mapping.length);
 
-            item.mappedDataCache[filterId] = [];
-            mapping.forEach(function(a){
-                var m=targetTable_id[a];
-                if(m==undefined) return;
-                item.mappedDataCache[filterId].push(m);
-                m.addItem(item);
-            });
+          record.cachedAggrValues[filterId] = [];
+          mapping.forEach(function(a){
+              var m=targetTable_id[a];
+              if(m==undefined) return;
+              record.cachedAggrValues[filterId].push(m);
+              m.addRecord(record);
+          });
         }, this);
 
         this.isMultiValued = maxDegree>1;
 
         // TODO: Fix!!!!
-        // add degree filter if attrib has multi-value items and set-vis is enabled
+        // add degree filter if attrib has multi-value records and set-vis is enabled
         if(this.isMultiValued && this.enableSetVis){
-            var facetDescr = {
-                name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
-                value: function(d){
-                    var arr=d.mappedDataCache[filterId];
-                    return (arr==null) ? 0 : arr.length;
-                },
-                collapsed: true,
-                type: 'interval',
-                panel: this.panel
-            };
-            this.browser.addFacet(facetDescr,this.browser.primaryTableName);
+          // DEGREE SUMMARY
+          var facetDescr = {
+            name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
+            value: function(record){
+                var arr=record.cachedAggrValues[filterId];
+                return (arr==null) ? 0 : arr.length;
+            },
+            collapsed: true,
+            type: 'interval',
+            panel: this.panel
+          };
+          this.browser.addFacet(facetDescr,this.browser.primaryTableName);
         }
 
         this.updateCats();
@@ -5927,7 +5920,7 @@ var Summary_Categorical_functions = {
   // Modified internal dataMap function - Skip rows with 0 active item count
   setMinAggrValue: function(v){
     this.minAggrValue = Math.max(1,v);
-    this._cats = this.catTable.filter(function(cat){ return cat.items.length>=this.minAggrValue; },this);
+    this._cats = this.catTable.filter(function(cat){ return cat.records.length>=this.minAggrValue; },this);
     this.updateCats();
   },
   /** -- */
@@ -6084,7 +6077,7 @@ var Summary_Categorical_functions = {
             if(!me.browser.pauseResultPreview &&
               (me.isMultiValued || me.summaryFilter.selected_AND.length===0)){
                 // calculate the preview
-                me.unmappedRecords.forEach(function(record){record.updatePreview();});
+                me.unmappedRecords.forEach(function(record){ record.updatePreview(); });
                 me.browser.itemCount_Previewed = me.unmappedRecords.length;
                 me.browser.setSelect_Highlight(me,"(no data)");
             }
@@ -6104,7 +6097,7 @@ var Summary_Categorical_functions = {
             me.summaryFilter.how = "All";
             this.setAttribute("filtered",true);
             me.summaryFilter.clearFilter();
-            me.summaryFilter.unmapped = true; // filter to unmapped items only
+            me.summaryFilter.unmapped = true; // filter to unmapped records only
             me.summaryFilter.addFilter(true);
           })
           ;
@@ -6267,9 +6260,9 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     unselectAllCategories: function(){
-      this._cats.forEach(function(cat){
-        if(cat.f_selected() && cat.DOM.aggrGlyph) cat.DOM.aggrGlyph.setAttribute("highlight",false);
-        cat.set_NONE();
+      this._cats.forEach(function(aggr){
+        if(aggr.f_selected() && aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.setAttribute("highlight",false);
+        aggr.set_NONE();
       });
       this.summaryFilter.selected_All_clear();
       if(this.DOM.inited) this.DOM.unmapped_records.attr("filtered",false);
@@ -6746,7 +6739,7 @@ var Summary_Categorical_functions = {
     isCatActive: function(category){
       if(category.f_selected()) return true;
       if(category.aggregate_Active!==0) return true;
-      // summary is not filtered yet, don't show categories with no items
+      // summary is not filtered yet, don't show categories with no records
       if(!this.isFiltered()) return category.aggregate_Active!==0;
       if(this.viewType==='map') return category.aggregate_Active!==0;
       // Hide if multiple options are selected and selection is and
@@ -6758,7 +6751,7 @@ var Summary_Categorical_functions = {
     isCatSelectable: function(category){
       if(category.f_selected()) return true;
       if(category.aggregate_Active!==0) return true;
-      // Show if multiple attributes are selected and the summary does not include multi value items
+      // Show if multiple attributes are selected and the summary does not include multi value records
       if(this.isFiltered() && !this.isMultiValued) return true;
       // Hide
       return false;
@@ -6922,7 +6915,7 @@ var Summary_Categorical_functions = {
       if(this.browser.pauseResultPreview) return;
       if(aggr.is_NOT()) return;
       if(this.isMultiValued || this.summaryFilter.selected_AND.length===0){
-        aggr.items.forEach(function(item){item.updatePreview();});
+        aggr.records.forEach(function(record){ record.updatePreview(); });
         this.browser.itemCount_Previewed = aggr.aggregate_Preview;
         aggr.DOM.aggrGlyph.setAttribute("showlock",true);
         this.browser.setSelect_Highlight(this,aggr);
@@ -7599,58 +7592,58 @@ var Summary_Interval_functions = {
           return d3.format(".2f")(v);
       };
 
-      if(this.items.length<=1000) this.initializeAggregates();
+      if(this.records.length<=1000) this.initializeAggregates();
     },
     /** -- */
     initializeAggregates: function(){
-        if(this.aggr_initialized) return;
-        var me = this;
-        var filterId = this.summaryFilter.id;
-        this.itemV = function(item){ return item.mappedDataCache[filterId].v; };
+      if(this.aggr_initialized) return;
+      var me = this;
+      var filterId = this.summaryFilter.id;
+      this.itemV = function(record){ return record.cachedAggrValues[filterId].v; };
 
-        this.unmappedRecords = [];
+      this.unmappedRecords = [];
 
-        this.items.forEach(function(item){
-            var v=this.summaryFunc.call(item.data,item);
-            if(isNaN(v)) v=null;
-            if(v===undefined) v=null;
-            if(v!==null){
-                if(v instanceof Date){
-                    this.hasTime = true;
-                } else {
-                    if(typeof v!=='number'){
-                        v = null;
-                    } else{
-                        this.hasFloat = this.hasFloat || v%1!==0;
-                    }
-                }
+      this.records.forEach(function(record){
+        var v=this.summaryFunc.call(record.data,record);
+        if(isNaN(v)) v=null;
+        if(v===undefined) v=null;
+        if(v!==null){
+            if(v instanceof Date){
+                this.hasTime = true;
             } else {
-                this.unmappedRecords.push(item);
+                if(typeof v!=='number'){
+                    v = null;
+                } else{
+                    this.hasFloat = this.hasFloat || v%1!==0;
+                }
             }
-            item.mappedDataCache[filterId] = {
-                v: v,
-                h: this,
-            };
-        },this);
+        } else {
+            this.unmappedRecords.push(record);
+        }
+        record.cachedAggrValues[filterId] = {
+          v: v,
+          h: this,
+        };
+      },this);
 
-        // remove items that map to null / undefined
-        this.filteredItems = this.items.filter(function(item){
-            var v = me.itemV(item);
-            return (v!==undefined && v!==null);
-        });
+      // remove records that map to null / undefined
+      this.filteredItems = this.records.filter(function(record){
+          var v = me.itemV(record);
+          return (v!==undefined && v!==null);
+      });
 
-        // Sort the items by their attribute value
-        var sortValue = this.hasTime?
-            function(a){ return me.itemV(a).getTime(); }:
-            function(a){ return me.itemV(a); };
-        this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
+      // Sort the items by their attribute value
+      var sortValue = this.hasTime?
+          function(a){ return me.itemV(a).getTime(); }:
+          function(a){ return me.itemV(a); };
+      this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
 
-        this.updateIntervalRangeMinMax();
+      this.updateIntervalRangeMinMax();
 
-        this.detectScaleType();
+      this.detectScaleType();
 
-        this.aggr_initialized = true;
-        this.refreshViz_Nugget();
+      this.aggr_initialized = true;
+      this.refreshViz_Nugget();
     },
     /** -- */
     isEmpty: function(){
@@ -7671,8 +7664,8 @@ var Summary_Interval_functions = {
       var filterId = this.summaryFilter.id;
 
       // decide scale type based on the filtered records
-      var activeItemV = function(item){
-        var v = item.mappedDataCache[filterId].v;
+      var activeItemV = function(record){
+        var v = record.cachedAggrValues[filterId].v;
         if(v>=me.intervalRange.active.min && v <= me.intervalRange.active.max) return v; // value is within filtered range
       };
       var deviation   = d3.deviation(this.filteredItems, activeItemV);
@@ -7683,7 +7676,7 @@ var Summary_Interval_functions = {
 
       // Apply step range before you check for log - it has higher precedence
       if(!this.hasFloat){
-        if( (_width_ / this.getWidth_Tick()) >= stepRange){
+        if( (_width_ / this.getWidth_OptimumTick()) >= stepRange){
           this.stepTicks = true;
           this.setScaleType('linear',false); // converted to step on display
           return;
@@ -7703,7 +7696,7 @@ var Summary_Interval_functions = {
         this.setScaleType('linear',false);
         return;
       }
-      if( (_width_ / this.getWidth_Tick()) >= stepRange){
+      if( (_width_ / this.getWidth_OptimumTick()) >= stepRange){
         this.stepTicks = true;
       }
       this.setScaleType('linear',false);
@@ -7731,10 +7724,10 @@ var Summary_Interval_functions = {
                 var filterId = this.id;
 
                 if(this.unmapped===true){
-                    summary.items.forEach(function(item){
-                        item.setFilterCache(filterId, item.mappedDataCache[filterId].v===null);
-                    },this);
-                    return;
+                  summary.records.forEach(function(record){
+                    record.setFilterCache(filterId, record.cachedAggrValues[filterId].v===null);
+                  },this);
+                  return;
                 }
 
                 var i_min = this.active.min;
@@ -7759,14 +7752,14 @@ var Summary_Interval_functions = {
                 }
 
                 // TODO: Optimize: Check if the interval scale is extending/shrinking or completely updated...
-                summary.items.forEach(function(item){
-                    var v = item.mappedDataCache[this.id].v;
-                    item.setFilterCache(this.id, (v!==null)?isFilteredCb(v):false);
+                summary.records.forEach(function(record){
+                  var v = record.cachedAggrValues[this.id].v;
+                  record.setFilterCache(this.id, (v!==null)?isFilteredCb(v):false);
                 },this);
 
-                if(summary.stepTicks){
+                if(summary.stepTicks && summary.scaleType==="linear"){ // date can zoom...
                   // You cannot zoom in. You can only zoom out.
-                  summary.DOM.zoomControl.attr("sign", "minus");
+                  summary.DOM.zoomControl.attr("sign", this.zoomed?"minus":"");
                 } else {
                   summary.DOM.zoomControl.attr("sign", "plus");
                 }
@@ -7774,32 +7767,41 @@ var Summary_Interval_functions = {
                 summary.refreshIntervalSlider();
             },
             filterView_Detail: function(summary){
-                if(this.unmapped===true){
-                    return "(not defined)";
-                }
-
-                var minValue = this.active.min;
-                var maxValue = this.active.max;
-                if(summary.stepTicks){
-                    if(minValue===maxValue) return "<b>"+me.printWithUnitName(minValue)+"</b>";
-                }
-                if(summary.scaleType==='time'){
-                    return "<b>"+summary.intervalTickFormat(this.active.min)+
-                        "</b> to <b>"+summary.intervalTickFormat(this.active.max)+"</b>";
-                }
-                if(summary.hasFloat){
-                    minValue = minValue.toFixed(2);
-                    maxValue = maxValue.toFixed(2);
-                }
-                if(summary.isFiltered_min() && summary.isFiltered_max()){
-                    return ""+me.printWithUnitName(minValue)+" to "+me.printWithUnitName(maxValue)+"";
-                } else if(summary.isFiltered_min()){
-                    return "<b>at least "+me.printWithUnitName(minValue)+"</b>";
-                } else {
-                    return "<b>at most "+me.printWithUnitName(maxValue)+"</b>";
-                }
+              if(this.unmapped===true) return "(not defined)";
+              return summary.printSelectedRange();
             },
         });
+    },
+    /** -- */
+    printSelectedRange: function(aggr){
+      var minValue, maxValue;
+      if(aggr){
+        minValue = aggr.x;
+        maxValue = aggr.maxX;
+      } else {
+        minValue = this.summaryFilter.active.min;
+        maxValue = this.summaryFilter.active.max;
+      }
+      if(this.stepTicks){
+        if(minValue+1===maxValue || aggr) {
+          return "<b>"+this.printWithUnitName(minValue)+"</b>";
+        }
+      }
+      if(this.scaleType==='time'){
+        return "<b>"+this.intervalTickFormat(minValue)+
+            "</b> to <b>"+this.intervalTickFormat(maxValue)+"</b>";
+      }
+      if(this.hasFloat){
+        minValue = minValue.toFixed(2);
+        maxValue = maxValue.toFixed(2);
+      }
+      if(this.isFiltered_min() && this.isFiltered_max()){
+        return ""+this.printWithUnitName(minValue)+" to "+this.printWithUnitName(maxValue)+"";
+      } else if(this.isFiltered_min()){
+        return "<b>at least "+this.printWithUnitName(minValue)+"</b>";
+      } else {
+        return "<b>at most "+this.printWithUnitName(maxValue)+"</b>";
+      }
     },
     /** -- */
     refreshViz_Nugget: function(){
@@ -7831,7 +7833,7 @@ var Summary_Interval_functions = {
       nuggetChart.selectAll(".nuggetBar").data(this.histBins).enter()
         .append("span").attr("class","nuggetBar")
         .style("height",function(aggr){
-            return totalHeight*(aggr.length/maxAggregate_Total)+"px";
+          return totalHeight*(aggr.records.length/maxAggregate_Total)+"px";
         });
 
       this.DOM.nugget.select(".nuggetInfo").html(
@@ -7882,7 +7884,7 @@ var Summary_Interval_functions = {
 
       if(this.filteredItems === undefined) return;
 
-      // remove items with value:0 (because log(0) is invalid)
+      // remove records with value:0 (because log(0) is invalid)
       if(this.scaleType==='log'){
         if(this.intervalRange.min<=0){
           var x=this.filteredItems.length;
@@ -7891,7 +7893,7 @@ var Summary_Interval_functions = {
             if(v===false) this.unmappedRecords.push(item); // Add to unmapped records
             return v;
           },this);
-          if(x!==this.filteredItems.length){ // Some items are filtered bc they are 0.
+          if(x!==this.filteredItems.length){ // Some records are filtered bc they are 0.
             this.updateIntervalRangeMinMax();
           }
         }
@@ -7939,13 +7941,13 @@ var Summary_Interval_functions = {
       return this.getWidth()-this.width_histMargin-this.width_vertAxisLabel;
     },
     /** -- */
-    getWidth_Tick: function(){
+    getWidth_OptimumTick: function(){
       if(this.panel===undefined) return 10;
       return this.optimumTickWidth;
     },
     /** -- */
     getWidth_Bar: function(){
-      return this.aggrWidth - this.width_barGap*2;
+      return this.aggrWidth-this.width_barGap*2;
     },
     /** -- */
     isFiltered_min: function(){
@@ -7961,7 +7963,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getMaxAggr_Total: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.length; });
+      return d3.max(this.histBins,function(aggr){ return aggr.records.length; });
     },
     /** -- */
     getMaxAggr_Active: function(){
@@ -8023,7 +8025,7 @@ var Summary_Interval_functions = {
           .on("mouseover",function(){
               this.tipsy.show();
 
-              me.unmappedRecords.forEach(function(record){record.updatePreview();});
+              me.unmappedRecords.forEach(function(record){ record.updatePreview(); });
               me.browser.itemCount_Previewed = me.unmappedRecords.length;
               me.browser.setSelect_Highlight(me,"(no data)");
           })
@@ -8042,7 +8044,7 @@ var Summary_Interval_functions = {
               me.summaryFilter.how = "All";
               this.setAttribute("filtered",true);
               me.summaryFilter.clearFilter();
-              me.summaryFilter.unmapped = true; // filter to unmapped items only
+              me.summaryFilter.unmapped = true; // filter to unmapped records only
               me.summaryFilter.addFilter(true);
           })
           ;
@@ -8096,6 +8098,8 @@ var Summary_Interval_functions = {
     },
     /** -- */
     printWithUnitName: function(v){
+      if(v instanceof Date) 
+        return this.intervalTickFormat(v);
       if(this.unitName){
         var s = "<span class='unitName'>"+this.unitName+"</span>";
         return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s);
@@ -8122,15 +8126,18 @@ var Summary_Interval_functions = {
           }, 750);
         });;
 
-      var summaryConfig_ScaleType = this.DOM.summaryConfig.append("div")
-        .attr("class","summaryConfig_ScaleType summaryConfig_Option");
-      summaryConfig_ScaleType.append("span").text("Scale: ");
-      x = summaryConfig_ScaleType.append("span").attr("class","optionGroup");
-      x.selectAll(".configOption").data(["Linear","Log"]).enter()
-        .append("span").attr("class",function(d){ return "configOption pos_"+d.toLowerCase();})
-        .attr("active",function(d){ return d.toLowerCase()===me.scaleType; })
-        .text(function(d){ return d; })
-        .on("click", function(d){ me.setScaleType(d.toLowerCase(),true); })
+      // Show the linear/log scale transformation only if...
+      if(this.scaleType!=='time' && !this.stepTicks && this.intervalRange.min>=0){
+        this.DOM.summaryConfig_ScaleType = this.DOM.summaryConfig.append("div")
+          .attr("class","summaryConfig_ScaleType summaryConfig_Option");
+        this.DOM.summaryConfig_ScaleType.append("span").text("Scale: ");
+        x = this.DOM.summaryConfig_ScaleType.append("span").attr("class","optionGroup");
+        x.selectAll(".configOption").data(["Linear","Log"]).enter()
+          .append("span").attr("class",function(d){ return "configOption pos_"+d.toLowerCase();})
+          .attr("active",function(d){ return d.toLowerCase()===me.scaleType; })
+          .text(function(d){ return d; })
+          .on("click", function(d){ me.setScaleType(d.toLowerCase(),true); })
+      }
 
       var summaryConfig_Percentile = this.DOM.summaryConfig.append("div")
         .attr("class","summaryConfig_Percentile summaryConfig_Option");
@@ -8216,7 +8223,6 @@ var Summary_Interval_functions = {
             } else if((timeRange_ms/(1000*60)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
                 timeIntervalStep = 1;
-                this.stepTicks = true;
                 this.intervalTickFormat = d3.time.format.utc("%-M");
             } else if((timeRange_ms/(1000*60*5)) < optimalTickCount){
                 timeInterval = d3.time.minute.utc;
@@ -8228,7 +8234,6 @@ var Summary_Interval_functions = {
                 this.intervalTickFormat = d3.time.format.utc("%-M");
             } else if((timeRange_ms/(1000*60*60)) < optimalTickCount){
                 timeInterval = d3.time.hour.utc;
-                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-H");
             } else if((timeRange_ms/(1000*60*60*6)) < optimalTickCount){
@@ -8237,12 +8242,10 @@ var Summary_Interval_functions = {
                 this.intervalTickFormat = d3.time.format.utc("%-H");
             } else if((timeRange_ms/(1000*60*60*24)) < optimalTickCount){
                 timeInterval = d3.time.day.utc;
-                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%-e");
             } else if((timeRange_ms/(1000*60*60*24*7)) < optimalTickCount){
                 timeInterval = d3.time.week.utc;
-                timeIntervalStep = 1;
                 this.intervalTickFormat = function(v){
                     var suffix = kshf.Util.ordinal_suffix_of(v.getUTCDate());
                     var first=d3.time.format.utc("%-b")(v);
@@ -8251,7 +8254,6 @@ var Summary_Interval_functions = {
                 this.height_labels = 28;
             } else if((timeRange_ms/(1000*60*60*24*30)) < optimalTickCount){
                 timeInterval = d3.time.month.utc;
-                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = function(v){
                     var threeMonthsLater = timeInterval.offset(v, 3);
@@ -8285,7 +8287,6 @@ var Summary_Interval_functions = {
                 this.height_labels = 28;
             } else if((timeRange_ms/(1000*60*60*24*365)) < optimalTickCount){
                 timeInterval = d3.time.year.utc;
-                this.stepTicks = true;
                 timeIntervalStep = 1;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
             } else if((timeRange_ms/(1000*60*60*24*365*2)) < optimalTickCount){
@@ -8321,9 +8322,13 @@ var Summary_Interval_functions = {
                 timeIntervalStep = 500;
                 this.intervalTickFormat = d3.time.format.utc("%Y");
             }
+            this.stepTicks = timeIntervalStep===1;
 
             this.valueScale.nice(timeInterval, timeIntervalStep);
             ticks = this.valueScale.ticks(timeInterval, timeIntervalStep);
+            if(this.stepTicks){
+              ticks.pop(); // remove last tick
+            }
         } else if(this.stepTicks){
             ticks = [];
             for(var i=this.intervalRange.active.min ; i<=this.intervalRange.active.max; i++){
@@ -8378,6 +8383,12 @@ var Summary_Interval_functions = {
 
         return ticks;
     },
+    /** -- */
+    getStepWidth: function(){
+      var _width_ = this.getWidth_Chart();
+      var stepRange = (this.intervalRange.active.max-this.intervalRange.active.min)+1;
+      return _width_/stepRange;
+    },
     /**
       Uses
       - optimumTickWidth
@@ -8388,163 +8399,167 @@ var Summary_Interval_functions = {
       - intervalTickFormat
       */
     updateScaleAndBins: function(force){
-        if(this.isEmpty()) return;
+      var me=this;
+      if(this.isEmpty()) return;
 
-        var me=this;
+      switch(this.scaleType){
+        case 'linear': this.valueScale = d3.scale.linear();      break;
+        case 'log':    this.valueScale = d3.scale.log().base(2); break;
+        case 'time':   this.valueScale = d3.time.scale.utc();    break;
+      }
 
-        var _width_ = this.getWidth_Chart();
-        var optimalTickCount = _width_ / this.getWidth_Tick();
+      var _width_ = this.getWidth_Chart();
+      var stepWidth = this.getStepWidth();
 
-        var stepRange=(this.intervalRange.active.max-this.intervalRange.active.min)+1;
-        var stepWidth=_width_/stepRange;
+      this.valueScale
+        .domain([this.intervalRange.active.min, this.intervalRange.active.max])
+        .range( this.stepTicks ? [0, _width_-stepWidth] : [0, _width_] );
 
-        switch(this.scaleType){
-            case 'linear':
-                this.valueScale = d3.scale.linear();      break;
-            case 'log':
-                this.valueScale = d3.scale.log().base(2); break;
-            case 'time':
-                this.valueScale = d3.time.scale.utc();    break;
-        }
+      var ticks = this.getValueTicks( _width_/this.getWidth_OptimumTick() );
 
-        this.valueScale
-            .domain([this.intervalRange.active.min, this.intervalRange.active.max])
-            .range( this.stepTicks ? [stepWidth/2, _width_-(stepWidth/2)] : [0, _width_] );
-
-        var ticks = this.getValueTicks(optimalTickCount);
-
-        // Maybe the ticks still follow step-function
-        if(!this.stepTicks && this.scaleType==='linear' && ticks.length>2){
-          // Second: First+1, Last=BeforeLast+1
-          if( (ticks[1]===ticks[0]+1) && (ticks[ticks.length-1]===ticks[ticks.length-2]+1)) {
-            this.stepTicks = true;
-            this.valueScale.range( this.stepTicks ? [stepWidth/2, _width_-(stepWidth/2)] : [0, _width_] );
-            this.intervalRange.active.max = this.intervalRange.max; // get back the +1 added to the linear scale
-            //ticks.pop(); // remove last tick
+      // Maybe the ticks still follow step-function ([3,4,5] or [12,13,14,15,16,17] or [2010,2011,2012,2013,2014])
+      if(!this.stepTicks && !this.hasFloat && this.scaleType==='linear' && ticks.length>2){
+        // Second: First+1, Last=BeforeLast+1
+        if( (ticks[1]===ticks[0]+1) && (ticks[ticks.length-1]===ticks[ticks.length-2]+1)) {
+          this.stepTicks = true;
+          if(this.intervalRange.max<ticks[ticks.length-1]){
+            ticks.pop(); // remove last tick
+            this.intervalRange.active.max = this.intervalRange.max;
           }
+          this.valueScale
+            .domain([this.intervalRange.active.min, this.intervalRange.active.max])
+            .range([0, _width_-stepWidth]);
         }
+      }
 
-        if(this.stepTicks){
-          this.aggrWidth = _width_/stepRange;
-        } else {
-          this.aggrWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
+      this.aggrWidth = this.valueScale(ticks[1])-this.valueScale(ticks[0]);
+
+      if(this.stepTicks && this.scaleType==='time'){
+        this.valueScale
+          .range([-this.aggrWidth/2+3, _width_-(this.aggrWidth/2)]);
+      }
+
+      var ticksChanged = (this.intervalTicks.length!==ticks.length) ||
+        this.intervalTicks[0]!==ticks[0] ||
+        this.intervalTicks[this.intervalTicks.length-1] !== ticks[ticks.length-1]
+        ;
+
+      if(ticksChanged || force){
+        this.intervalTicks = ticks;
+        var filterId = this.summaryFilter.id;
+
+        var itemV = this.itemV;
+
+        this.histBins = [];
+        // Create histBins as kshf.Aggregate
+        this.intervalTicks.forEach(function(tick,i){
+          var d = new kshf.Aggregate({},'id');
+          d.x = tick;
+          d.maxX = this.intervalTicks[i+1];
+          this.histBins.push(d);
+        }, this);
+        if(!this.stepTicks){
+          this.histBins.pop(); // remove last bin
         }
-
-        var ticksChanged = (this.intervalTicks.length!==ticks.length) ||
-            this.intervalTicks[0]!==ticks[0] ||
-            this.intervalTicks[this.intervalTicks.length-1] !== ticks[ticks.length-1]
-            ;
-
-        if(ticksChanged || force){
-            this.intervalTicks = ticks;
-            var filterId = this.summaryFilter.id;
-
-            var itemV = function(item){
-                // if(item.isWanted)  // Include all items - Aggregate also shows the "total" viz
-                    return item.mappedDataCache[filterId].v;
-            };
-            if(!this.zoomed) itemV = this.itemV;
-
-            this.histBins = [];
-            if(!this.stepTicks || this.scaleType==='time'){
-              this.histBins = d3.layout.histogram().bins(this.intervalTicks).value(itemV)(this.filteredItems);
-            } else {
-              // I'll do the bins myself
-              for(var bin=this.intervalRange.active.min; bin<=this.intervalRange.active.max; bin++){
-                var d = [];
-                d.x = bin;
-                d.y = 0;
-                d.dx = 0;
-                this.histBins.push(d);
-              }
-              this.filteredItems.forEach(function(item){
-                var v = itemV(item);
-                if(v===null || v===undefined) return;
-                if(v<this.intervalRange.active.min) return;
-                if(v>this.intervalRange.active.max) return;
-                var bin = this.histBins[v-this.intervalRange.active.min];
-                bin.push(item);
-                bin.y++;
-              },this);
+        // distribute records across bins
+        this.filteredItems.forEach(function(record){
+          var v = itemV(record);
+          if(v===null || v===undefined) return;
+          if(v<this.intervalRange.active.min) return;
+          if(v>this.intervalRange.active.max) return;
+          var binI = null;
+          this.intervalTicks.every(function(tick,i){ 
+            if(v>=tick) {
+              binI = i;
+              return true; // keep going
             }
+            return false; // stop iteration
+          });
+          if(this.stepTicks)
+            binI = Math.min(binI, this.intervalTicks.length-1);
+          else 
+            binI = Math.min(binI, this.intervalTicks.length-2);
+          var bin = this.histBins[binI];
+          record.cachedAggrValues[filterId].b = bin;
+          bin.addRecord(record);
+        },this);
 
-            this.updateAggregate_Active();
-            this.updateBarScale2Active();
+        this.updateBarScale2Active();
 
-            if(this.DOM.root){
-                this.insertVizDOM();
-            }
+        if(this.DOM.root) this.insertVizDOM();
 
-            if(this.percentileChartVisible) this.updatePercentiles();
-        }
-        if(this.DOM.root){
-            if(this.DOM.aggrGlyphs===undefined){
-              this.insertVizDOM();
-            }
-            this.refreshBins_Translate();
-            this.refreshViz_Scale();
+        if(this.percentileChartVisible) this.updatePercentiles();
+      }
 
-            this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
-              return (me.valueScale(d))+"px";
-            });
-            this.refreshIntervalSlider();
-        }
+      if(this.DOM.root){
+        if(this.DOM.aggrGlyphs===undefined) this.insertVizDOM();
+
+        this.refreshBins_Translate();
+        this.refreshViz_Scale();
+
+        var offset=this.getTickOffset();
+        this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
+          return (me.valueScale(d)+offset)+"px";
+        });
+        this.refreshIntervalSlider();
+      }
+    },
+    /** -- */
+    getTickOffset: function(){
+      return (!this.stepTicks) ? 0 : (this.aggrWidth/2);
     },
     /** -- */
     insertVizDOM: function(){
-        if(this.scaleType==='time' && this.DOM.root) {
-            // delete existing DOM:
-            // TODO: Find  a way to avoid this?
-            this.DOM.timeSVG.select(".lineTrend.total").remove();
-            this.DOM.timeSVG.select(".lineTrend.active").remove();
-            this.DOM.timeSVG.select(".lineTrend.preview").remove();
-            this.DOM.timeSVG.select(".lineTrend.compare").remove();
-            this.DOM.timeSVG.selectAll("line.activeLine").remove();
-            this.DOM.timeSVG.selectAll("line.previewLine").remove();
-            this.DOM.timeSVG.selectAll("line.compareLine").remove();
+      if(this.scaleType==='time' && this.DOM.root) {
+        // delete existing DOM:
+        // TODO: Find  a way to avoid this?
+        this.DOM.timeSVG.select(".lineTrend.total").remove();
+        this.DOM.timeSVG.select(".lineTrend.active").remove();
+        this.DOM.timeSVG.select(".lineTrend.preview").remove();
+        this.DOM.timeSVG.select(".lineTrend.compare").remove();
+        this.DOM.timeSVG.selectAll("line.activeLine").remove();
+        this.DOM.timeSVG.selectAll("line.previewLine").remove();
+        this.DOM.timeSVG.selectAll("line.compareLine").remove();
 
-            this.DOM.lineTrend_Total = this.DOM.timeSVG.append("path").attr("class","lineTrend total")
-                .datum(this.histBins);
-            this.DOM.lineTrend_Active = this.DOM.timeSVG.append("path").attr("class","lineTrend active")
-                .datum(this.histBins);
-            this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll("line.activeLine")
-                .data(this.histBins, function(d,i){ return i; })
-                .enter().append("line").attr("class","lineTrend activeLine");
-            this.DOM.lineTrend_Preview = this.DOM.timeSVG.append("path").attr("class","lineTrend preview")
-                .datum(this.histBins);
-            this.DOM.lineTrend_PreviewLine = this.DOM.timeSVG.selectAll("line.previewLine")
-                .data(this.histBins, function(d,i){ return i; })
-                .enter().append("line").attr("class","lineTrend previewLine");
-            this.DOM.lineTrend_Compare = this.DOM.timeSVG.append("path").attr("class","lineTrend compare")
-                .datum(this.histBins);
-            this.DOM.lineTrend_CompareLine = this.DOM.timeSVG.selectAll("line.compareLine")
-                .data(this.histBins, function(d,i){ return i; })
-                .enter().append("line").attr("class","lineTrend compareLine");
-        }
+        this.DOM.lineTrend_Total = this.DOM.timeSVG.append("path").attr("class","lineTrend total")
+          .datum(this.histBins);
+        this.DOM.lineTrend_Active = this.DOM.timeSVG.append("path").attr("class","lineTrend active")
+          .datum(this.histBins);
+        this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll("line.activeLine")
+          .data(this.histBins, function(d,i){ return i; })
+          .enter().append("line").attr("class","lineTrend activeLine");
+        this.DOM.lineTrend_Preview = this.DOM.timeSVG.append("path").attr("class","lineTrend preview")
+          .datum(this.histBins);
+        this.DOM.lineTrend_PreviewLine = this.DOM.timeSVG.selectAll("line.previewLine")
+          .data(this.histBins, function(d,i){ return i; })
+          .enter().append("line").attr("class","lineTrend previewLine");
+        this.DOM.lineTrend_Compare = this.DOM.timeSVG.append("path").attr("class","lineTrend compare")
+          .datum(this.histBins);
+        this.DOM.lineTrend_CompareLine = this.DOM.timeSVG.selectAll("line.compareLine")
+          .data(this.histBins, function(d,i){ return i; })
+          .enter().append("line").attr("class","lineTrend compareLine");
+      }
 
-        this.insertBins();
-        this.refreshViz_Axis();
-        //this.refreshViz_Highlight();
-        this.refreshMeasureLabel();
-        this.updateTicks();
+      this.insertBins();
+      this.refreshViz_Axis();
+      this.refreshMeasureLabel();
+      this.updateTicks();
     },
     /** -- */
     updateTicks: function(){
-        this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove(); // remove all existing ticks
-        var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
-        var ddd_enter = ddd.enter().append("span").attr("class","tick");
-            ddd_enter.append("span").attr("class","line");
-            ddd_enter.append("span").attr("class","text");
-        this.refreshTickLabels();
+      this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove(); // remove all existing ticks
+      var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
+      var ddd_enter = ddd.enter().append("span").attr("class","tick");
+          ddd_enter.append("span").attr("class","line");
+          ddd_enter.append("span").attr("class","text");
+      this.refreshTickLabels();
     },
     /** -- */
     refreshTickLabels: function(){
       var me=this;
       if(this.DOM.labelGroup===undefined) return;
       this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
-        if(me.scaleType==='time'){
-          return me.intervalTickFormat(d);
-        }
+        if(me.scaleType==='time') return me.intervalTickFormat(d);
         if(d<1 && d!==0) 
           return me.printWithUnitName( d.toFixed(1) );
         else 
@@ -8554,7 +8569,7 @@ var Summary_Interval_functions = {
     /** -- */
     onBinMouseOver: function(aggr){
       if(this.browser.pauseResultPreview) return;
-      aggr.forEach(function(record){record.updatePreview();});
+      aggr.records.forEach(function(record){ record.updatePreview(); });
       this.browser.itemCount_Previewed = aggr.aggregate_Preview;
       aggr.DOM.aggrGlyph.setAttribute("highlight","selected");
       aggr.DOM.aggrGlyph.setAttribute("showlock",true);
@@ -8576,11 +8591,7 @@ var Summary_Interval_functions = {
 
         var newBins=activeBins.enter().append("span").attr("class","aggrGlyph rangeGlyph")
             .each(function(aggr){
-              aggr.items = aggr;
               aggr.isVisible = true;
-              aggr.aggregate_Preview=0;
-              aggr.forEach(function(record){ record.mappedDataCache[filterId].b = aggr; },this);
-              aggr.DOM = {}
               aggr.DOM.aggrGlyph = this;
             })
             .on("mouseenter",function(aggr){
@@ -8609,24 +8620,19 @@ var Summary_Interval_functions = {
                 this.setAttribute("filtered","true");
 
                 // store histogram state
-                if(me.stepTicks){
+                if(me.scaleType==='time'){
                   me.summaryFilter.active = {
-                      min: aggr.x,
-                      max: aggr.x
+                    min: aggr.x,
+                    max: aggr.maxX
                   };
-                } else if(me.scaleType!=='time'){
-                    me.summaryFilter.active = {
-                        min: aggr.x,
-                        max: aggr.x+aggr.dx
-                    };
                 } else {
-                    me.summaryFilter.active = {
-                        min: aggr.x,
-                        max: new Date(aggr.x.getTime()+aggr.dx)
-                    };
+                  me.summaryFilter.active = {
+                    min: aggr.x,
+                    max: aggr.maxX
+                  };
                 }
                 // if we are filtering the last aggr, make max_score inclusive
-                me.summaryFilter.max_inclusive = (aggr.x+aggr.dx)===me.intervalRange.active.max;
+                me.summaryFilter.max_inclusive = aggr.maxX===me.intervalRange.active.max;
                 if(me.stepTicks){ me.summaryFilter.max_inclusive = true; }
 
                 me.summaryFilter.filteredBin=this;
@@ -8945,20 +8951,9 @@ var Summary_Interval_functions = {
         .range ([0, this.height_hist]);
     },
     /** -- */
-    updateAggregate_Active: function(){
-      this.histBins.forEach(function(aggr){ 
-        aggr.aggregate_Active = 0;
-        aggr.forEach(function(record){ 
-          if(record.isWanted) aggr.aggregate_Active+=record.aggregate_Self; 
-        });
-      });
-    },
-    /** -- */
     refreshBins_Translate: function(){
       var me=this;
-      var offset = 0;
-      if(this.stepTicks) offset = this.width_barGap-this.aggrWidth/2;
-      else if(this.scaleType==='time') offset = this.width_barGap;
+      var offset = (this.stepTicks)? this.width_barGap : 0;
       this.DOM.aggrGlyphs
         .style("width",this.getWidth_Bar()+"px")
         .each(function(aggr){
@@ -8977,22 +8972,20 @@ var Summary_Interval_functions = {
         var width=this.getWidth_Bar();
 
         var heightTotal = function(aggr){
-            if(aggr.length===0) return 0;
+            if(aggr.aggregate_Total===0) return 0;
             if(me.browser.ratioModeActive) return me.height_hist;
             return me.chartScale_Measure(aggr.aggregate_Total);
         };
 
         if(this.scaleType==='time'){
             var durationTime=this.browser.noAnim?0:700;
-            this.timeSVGLine = d3.svg.area()
-                .x(function(aggr){
-                    return me.valueScale(aggr.x)+width/2;
-                })
-                .y0(me.height_hist)
-                .y1(function(aggr){
-                    if(aggr.aggregate_Total===0) return me.height_hist+3;
-                    return me.height_hist-heightTotal(aggr);
-                });
+            this.timeSVGLine = d3.svg.area().interpolate("cardinal")
+              .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
+              .y0(me.height_hist)
+              .y1(function(aggr){
+                  if(aggr.aggregate_Total===0) return me.height_hist+3;
+                  return me.height_hist-heightTotal(aggr);
+              });
             this.DOM.lineTrend_Total
                 .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
@@ -9004,7 +8997,7 @@ var Summary_Interval_functions = {
             if(!this.browser.ratioModeActive){
                 this.DOM.aggr_TotalTip
                     .style("opacity",function(aggr){
-                        return (aggr.length>me.chartScale_Measure.domain()[1])?1:0;
+                        return (aggr.aggregate_Total>me.chartScale_Measure.domain()[1])?1:0;
                     })
                     .style("width",width+"px");
             } else {
@@ -9037,7 +9030,7 @@ var Summary_Interval_functions = {
       // Time (line chart) update
       if(this.scaleType==='time'){
         var durationTime = this.browser.noAnim ? 0 : 700;
-        this.timeSVGLine = d3.svg.area()
+        this.timeSVGLine = d3.svg.area().interpolate("cardinal")
           .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
           .y0(me.height_hist+2)
           .y1(function(aggr){
@@ -9076,7 +9069,7 @@ var Summary_Interval_functions = {
           var translateX = "";
           var width_self=width;
           var aggr_min = aggr.x;
-          var aggr_max = aggr.x + aggr.dx;
+          var aggr_max = aggr.maxX;
           if(aggr.aggregate_Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
@@ -9110,7 +9103,7 @@ var Summary_Interval_functions = {
 
       // Time (line chart) update
       if(this.scaleType==='time'){
-        this.timeSVGLine = d3.svg.line()
+        this.timeSVGLine = d3.svg.line().interpolate("cardinal")
           .x(function(aggr){  return me.valueScale(aggr.x)+width/2; })
           .y(function(aggr){
             if(aggr.aggregate_Compare===0) return me.height_hist+3;
@@ -9149,7 +9142,7 @@ var Summary_Interval_functions = {
           var translateX = "";
           var width_self=width;
           var aggr_min = aggr.x;
-          var aggr_max = aggr.x + aggr.dx;
+          var aggr_max = aggr.maxX;
           if(aggr.aggregate_Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
@@ -9198,7 +9191,7 @@ var Summary_Interval_functions = {
           var translateX = "";
           var width_self=width;
           var aggr_min = aggr.x;
-          var aggr_max = aggr.x + aggr.dx;
+          var aggr_max = aggr.maxX;
           if(aggr.aggregate_Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
@@ -9219,7 +9212,7 @@ var Summary_Interval_functions = {
 
       if(this.scaleType==='time'){
         var durationTime=200;
-        this.timeSVGLine = d3.svg.area()
+        this.timeSVGLine = d3.svg.area().interpolate("cardinal")
           .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
           .y0(me.height_hist+2)
           .y1(function(aggr){
@@ -9257,7 +9250,7 @@ var Summary_Interval_functions = {
       this.DOM.highlightedAggrValue.style("opacity",0);
 
       if(this.scaleType==='time'){
-        this.timeSVGLine = d3.svg.line()
+        this.timeSVGLine = d3.svg.line().interpolate("cardinal")
           .x(function(aggr){ return me.valueScale(aggr.x)+width/2; })
           .y(function(aggr){ return me.height_hist; });
 
@@ -9361,10 +9354,9 @@ var Summary_Interval_functions = {
       }
       if(this.summaryFilter.active.max===this.intervalRange.max){
         maxPos = this.valueScale.range()[1];
-      }
-      if(this.stepTicks){
-        minPos-=this.aggrWidth/2;
-        maxPos+=this.aggrWidth/2;
+        if(this.stepTicks){
+          maxPos += this.getWidth_Bar();
+        }
       }
 
       this.DOM.intervalSlider.select(".base.active")
@@ -9428,7 +9420,6 @@ var Summary_Interval_functions = {
     updateAfterFilter: function(){
       if(this.isEmpty() || this.collapsed) return;
       if(this.panel===undefined) return;
-      this.updateAggregate_Active();
       this.refreshMeasureLabel();
       this.updateBarPreviewScale2Active();
       if(this.percentileChartVisible) this.updatePercentiles();
@@ -9457,8 +9448,9 @@ var Summary_Interval_functions = {
 
       var me=this;
 
+      var offset=this.getTickOffset();
       this.DOM.recordValue
-        .each(function(){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(v))+"px)"); })
+        .each(function(){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(v)+offset)+"px)"); })
         .style("display","block");
 
       this.DOM.selectedItemValueText.html( this.printWithUnitName(this.intervalTickFormat(v)) );

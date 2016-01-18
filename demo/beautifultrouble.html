@@ -46,7 +46,7 @@ var loadData = function(browser){
             });
             item.Contributors = cc;
         }*/
-        var item=new kshf.Item(item,"id");
+        var item=new kshf.Record(item,"id");
         kshf.dt.Posts.push(item);
         kshf.dt_id.Posts[item.id] = item;
       });

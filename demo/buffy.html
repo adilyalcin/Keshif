@@ -24,7 +24,7 @@ function dataLoad(browser){
     kshf.dt.Episodes = [];
     kshf.dt_id.Episodes = {};
     g_episodes.forEach(function(ep){
-        var c=new kshf.Item(ep,"ep_id");
+        var c=new kshf.Record(ep,"ep_id");
         kshf.dt.Episodes.push(c);
         kshf.dt_id.Episodes[c.id()] = c;
     });
@@ -33,7 +33,7 @@ function dataLoad(browser){
     kshf.dt.Characters = [];
     kshf.dt_id.Characters = {};
     g_characters.forEach(function(character){
-        var c=new kshf.Item(character,"char_id");
+        var c=new kshf.Record(character,"char_id");
         kshf.dt.Characters.push(c);
         kshf.dt_id.Characters[c.id()] = c;
     });
@@ -56,7 +56,7 @@ function dataLoad(browser){
                 for(var second=t.ts; second<=t.te ; second++){
                     var who = index[epNo][second];
                     if(who===undefined){
-                        var i= new kshf.Item({
+                        var i= new kshf.Record({
                                 'Episode': epNo+1,
                                 'Appears':[],
                                 'second':second,
@@ -82,7 +82,7 @@ function dataLoad(browser){
             for(var second=t.ts; second<=t.te ; second++){
                 var who = index[epNo][second];
                 if(who===undefined){
-                    var i= new kshf.Item({
+                    var i= new kshf.Record({
                             'Episode': epNo+1,
                             'Appears':[],
                             'second':second,

@@ -65,7 +65,7 @@ function loadData(browser){
             Roles: [],
             RoleNames: {}
           };
-          var Member = new kshf.Item(memberData,"Name");
+          var Member = new kshf.Record(memberData,"Name");
           kshf.dt_id["Commmittee Members"][row.name] = Member;
           kshf.dt["Commmittee Members"].push(Member);
         }

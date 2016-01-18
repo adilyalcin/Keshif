@@ -40,14 +40,20 @@ google.setOnLoadCallback(function(){
       gdocId: '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
       tables: {name:"Companies", id:'Stock'}
     },
+    loadedCb: function(){
+      this.records.forEach(function(record){
+        record.data.Cash *= 1000000000;
+        record.data.Debt *= 1000000000;
+      });
+    },
     summaries: [
       { name: "Industry", value: function(){ return this.Industry+" "+getIcon(this.Industry); } },
       { name: "Cash vs. Debt", panel: 'left',
-        value: function(){ return "More "+(((this['Cash ($B)']-this['Debt ($B)'])>0)?"cash":"debt"); } },
-      { name: "Cash", value: 'Cash ($B)', unitName: 'B$', intervalScale: 'log' },
-      { name: "Debt", value: 'Debt ($B)', unitName: 'B$', intervalScale: 'log' },
+        value: function(){ return "More "+(((this.Cash-this.Debt)>0)?"cash":"debt"); } },
+      { name: "Cash", unitName: '$', intervalScale: 'log', panel: 'bottom' },
+      { name: "Debt", unitName: '$', intervalScale: 'log', panel: 'bottom' },
       { name: "Profit Margin", collapsed: true },
-      { name: "Value", value:function(){return (this['Cash ($B)']-this['Debt ($B)']);}, collapsed: true, description: "Cash - Debt"},
+      { name: "Value", value:function(){ return this.Cash-this.Debt; }, collapsed: true, description: "Cash - Debt"},
       { name: "Market Capitalization", collapsed: true }
     ],
     recordDisplay: {
@@ -57,7 +63,7 @@ google.setOnLoadCallback(function(){
       textSearch: 'Stock',
       recordView: function(){
         var str=getIcon(this.Industry)+" "+this.Stock;
-        var cash = this['Cash ($B)']-this['Debt ($B)'];
+        var cash = this.Cash-this.Debt;
         if(cash>0){
           str+="<div class='cashdebt positive'>+"+cash.toFixed(2)+"B$</div>";
         } else {
@@ -72,7 +78,7 @@ google.setOnLoadCallback(function(){
 <style id="kshfStyle">
 #demo_Browser {
   width: 700px;
-  height: 580px;
+  height: 680px;
 }
 .content{
   width: 130px;

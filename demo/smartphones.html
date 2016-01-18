@@ -31,7 +31,7 @@ $(document).ready( function() {
       tables: 'smartphones'
     },
     loadedCb: function(){
-      this.items.forEach(function(phone){
+      this.records.forEach(function(phone){
         phone = phone.data;
         // convert string to int...
         phone.id = 1*phone.id;
@@ -76,14 +76,14 @@ $(document).ready( function() {
     summaries: [
       { name: "Brand" },
       { name: "Model", collapsed: true },
-      { name: "Price", unitName: "$" },
-      { name: "Screen Size", unitName: "″" },
-      { name: "Weight", unitName: "oz." },
-      { name: "Storage", panel: 'right', unitName: "GB" },
-      { name: "SDCard", panel: 'right', unitName: "GB" },
-      { name: "RAM", panel: 'right', unitName: "GB" },
-      { name: "Pixels - Width", value: "att_pixels_x", panel: 'right' },
-      { name: "Pixels - Height", value: "att_pixels_y", panel: 'right' },
+      { name: "Price", unitName: "$", panel: "right" },
+      { name: "Screen Size", unitName: "″", panel: "right" },
+      { name: "Weight", unitName: "oz.", panel: "right" },
+      { name: "Storage", panel: 'left', unitName: "GB" },
+      { name: "SDCard", panel: 'left', unitName: "GB" },
+      { name: "RAM", panel: 'left', unitName: "GB" },
+      { name: "Width", value: "att_pixels_x", panel: 'right', unitName: "px" },
+      { name: "Height", value: "att_pixels_y", panel: 'right', unitName: "px" },
       { name: "Has Dual SIM", type: 'categorical', collapsed: true }
     ],
     recordDisplay: {

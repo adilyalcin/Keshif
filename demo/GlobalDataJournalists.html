@@ -34,7 +34,7 @@ google.setOnLoadCallback(function(){
             data.children.forEach(function(v){
               if(v.institution==="N/A") delete v.institution;
               if(v.city==="N/A") delete v.city;
-              kshf.dt.Journalists.push(new kshf.Item(v,'id'));
+              kshf.dt.Journalists.push(new kshf.Record(v,'id'));
             });
             browser.loadCharts();
           }

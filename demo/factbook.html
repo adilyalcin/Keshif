@@ -71,7 +71,7 @@ function loadFactbook(facts){
             catData.Description = $(this).find("description").text();
             // TODO: some categories include fields, and store info per each country! like population, etc
 
-            var item = new kshf.Item(catData,"id");
+            var item = new kshf.Record(catData,"id");
             arr_cat.push(item);
             arr_cat_id[catData.id] = item;
         });
@@ -205,7 +205,7 @@ function loadFactbook(facts){
 //                var fieldName = 232;
             });
 
-            kshf.dt.Countries.push(new kshf.Item(cData,"id"));
+            kshf.dt.Countries.push(new kshf.Record(cData,"id"));
         });
     });
     browser.loadCharts();   

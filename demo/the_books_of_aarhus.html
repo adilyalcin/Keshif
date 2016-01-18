@@ -28,12 +28,7 @@ $(document).ready( function() {
       fileType: 'csv',
       tables: "20150202_inventoryLargeCompress_loan"
     },
-    loadedCb: function(browser){
-      this.items.forEach(function(item){
-        item.aggregate_Self = item.data.count;
-        if(isNaN(item.aggregate_Self)) item.aggregate_Self = 1;
-      });
-    },
+    measure: "count",
     summaries: [
       { name: "Location", value: "location" },
       { name: "Day of Week", value: "weekday", catSortBy: function(){ return 1*this.id.substr(0,1);} },

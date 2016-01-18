@@ -123,7 +123,7 @@ var Summary_Clique_functions = {
     this._sets = this.setListSummary._cats; // sorted already
     this._sets.forEach(function(set){ set.setPairs = []; });
 
-    this.createSetPairs(this.setListSummary.items);
+    this.createSetPairs();
 
     // Inserts the DOM root under the setListSummary so that the matrix view is attached...
     this.DOM.root = this.setListSummary.DOM.root.insert("div",":first-child")
@@ -186,7 +186,7 @@ var Summary_Clique_functions = {
     this.insertControls();
 
     this.setMappingID = this.browser.maxFilterID++;
-    this.browser.items.forEach(function(item){ item.mappedDataCache[me.setMappingID] = []; });
+    this.browser.records.forEach(function(record){ record.cachedAggrValues[me.setMappingID] = []; });
 
     this.DOM.setMatrixSVG = this.DOM.chartRoot.append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","setMatrix");
 
@@ -441,7 +441,7 @@ var Summary_Clique_functions = {
     .enter().append("g").attr("class","aggrGlyph setPairGlyph")
       .each(function(d){
         d.DOM.setPairGlyph = this;
-        d.items.forEach(function(item){ item.mappedDataCache[me.setMappingID].push(d); });
+        d.records.forEach(function(item){ item.cachedAggrValues[me.setMappingID].push(d); });
       })
       .on("mouseenter",function(d){
         var set_1 = d.set_1;
@@ -460,7 +460,7 @@ var Summary_Clique_functions = {
         var timeoutTime = 500;
         if(me.browser.vizCompareActive) timeoutTime = 0;
         this.resultPreviewShowTimeout = setTimeout(function(){
-          d.items.forEach(function(item){item.updatePreview();});
+          d.records.forEach(function(item){item.updatePreview();});
           me.browser.setSelect_Highlight(me);
         },timeoutTime);
       })
@@ -479,7 +479,7 @@ var Summary_Clique_functions = {
         set_1.DOM.aggrGlyph.setAttribute("highlight",false);
         set_2.DOM.aggrGlyph.setAttribute("highlight",false);
 
-        me.browser.items.forEach(function(item){
+        me.browser.records.forEach(function(item){
           if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
         })
 
@@ -802,27 +802,22 @@ var Summary_Clique_functions = {
     var filterID = this.setListSummary.summaryFilter.id;
     this._sets.forEach(function(set){
       var totalDegree = 0;
-      set.items.forEach(function(item){
-        var setsOfItem=item.mappedDataCache[filterID];
+      set.records.forEach(function(item){
+        var setsOfItem=item.cachedAggrValues[filterID];
         if(setsOfItem) totalDegree+=setsOfItem.length;
       });
-      set.avgDegree = totalDegree/set.items.length;
+      set.avgDegree = totalDegree/set.records.length;
     });
   },
   /** For each element in the given list, checks the set membership and adds setPairs */
-  createSetPairs: function(elementList,mustSet){
+  createSetPairs: function(){
     var me=this;
     var filterID = this.setListSummary.summaryFilter.id;
 
-    var insertToClique = function(set_1,set_2,dataItem){
+    var insertToClique = function(set_1,set_2,record){
       // avoid self reference and adding the same data item twice, once for A-B, once for B-A
       // set_2.id() must be bigger than set1_.id()
       if(set_2.id()<=set_1.id()) return;
-      // If only adding set-Pairs for a specific set...
-      if(mustSet){
-        // one of the sets must be the given set
-        if(mustSet.id()!==set_2.id() && mustSet.id()!==set_1.id()) return;
-      }
 
       if(me._setPairs_ID[set_1.id()]===undefined){
         me._setPairs_ID[set_1.id()] = {};
@@ -830,7 +825,7 @@ var Summary_Clique_functions = {
       var targetClique = me._setPairs_ID[set_1.id()][set_2.id()];
 
       if(targetClique===undefined){
-        targetClique = new kshf.Item([me._setPairs.length],0);
+        targetClique = new kshf.Aggregate([me._setPairs.length],0);
         targetClique.set_1 = set_1;
         targetClique.set_2 = set_2;
         set_1.setPairs.push(targetClique);
@@ -839,19 +834,19 @@ var Summary_Clique_functions = {
         me._setPairs.push(targetClique);
         me._setPairs_ID[set_1.id()][set_2.id()] = targetClique;
       }
-      targetClique.addItem(dataItem);
+      targetClique.addRecord(record);
     };
 
     // AND
-    elementList.forEach(function(dataItem){
-      var setsOfItem = dataItem.mappedDataCache[filterID];
+    this.setListSummary.records.forEach(function(record){
+      var setsOfItem = record.cachedAggrValues[filterID];
       if(setsOfItem===null || setsOfItem===undefined) return;
       setsOfItem.forEach(function(set_1){
         // make sure set_1 has an attrib on c display
         if(set_1.setPairs===undefined) return;
         setsOfItem.forEach(function(set_2){
           if(set_2.setPairs===undefined) return;
-          insertToClique(set_1,set_2,dataItem);
+          insertToClique(set_1,set_2,record);
         });
       });
     });

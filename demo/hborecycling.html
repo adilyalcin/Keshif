@@ -316,9 +316,7 @@ function loadData(browser){
   browser.primaryTableName = "Actors";
   kshf.dt.Actors = [];
   for(var actorName in HBO_data){
-    kshf.dt.Actors.push(
-      new kshf.Item( {'Name':actorName, "HBO_Shows":HBO_data[actorName]}, 'Name')
-    );
+    kshf.dt.Actors.push( new kshf.Record( {'Name':actorName, "HBO_Shows":HBO_data[actorName]}, 'Name') );
   }
   browser.loadCharts();
 };

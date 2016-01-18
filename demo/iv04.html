@@ -81,7 +81,7 @@ var loadData = function(browser){
           }
         });
 
-        var item = new kshf.Item(cData,"id");
+        var item = new kshf.Record(cData,"id");
         kshf.dt.Papers.push(item);
         kshf.dt_id.Papers[item.id()] = item;
       });
@@ -103,7 +103,7 @@ var loadData = function(browser){
 };
 
 $(document).ready( function(){
-  new kshf.Browser({
+  browser = new kshf.Browser({
     domID: "#demo_Browser",
     leftPanelLabelWidth: 160,
     rightPanelLabelWidth: 200,

@@ -95,7 +95,7 @@ google.setOnLoadCallback(function(){
                     kshf.dt[tableName] = [];
                     var arr = kshf.dt[tableName];
                     arr.forEach(function(o){
-                        arr.push(new kshf.Item(0,"id"));
+                        arr.push(new kshf.Record(0,"id"));
                     });
                 };
 
@@ -144,7 +144,7 @@ google.setOnLoadCallback(function(){
                         parsedData.data.forEach(function(row,i){
                             row.id = i;
                             row.int_date = parseDate.parse(""+row.int_date);
-                            arr.push(new kshf.Item(row,'id'));
+                            arr.push(new kshf.Record(row,'id'));
                         });
 
                         browser.loadCharts();

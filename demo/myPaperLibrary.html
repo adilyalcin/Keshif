@@ -49,7 +49,7 @@ function readBasic(c,item, $item){
         c.Subject.push($(this).text().trim().toProperCase());
     });
 
-    var item = new kshf.Item(c,"about");
+    var item = new kshf.Record(c,"about");
     return item;
 };
 

@@ -97,7 +97,7 @@ var loadData = function(browser){
                 if (rating > 0) {
                     d.Rating = rating;
                 }
-                kshf.dt.Books.push(new kshf.Item(d,'id'));
+                kshf.dt.Books.push(new kshf.Record(d,'id'));
             });
             browser.loadCharts();
         }

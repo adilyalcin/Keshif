@@ -23,7 +23,7 @@ google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 130,
-    itemName: "Bird strikes near airports in the U.S.",
+    itemName: "Bird strikes",
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 200,
     middlePanelLabelWidth: 200,
@@ -38,13 +38,9 @@ google.setOnLoadCallback(function(){
     },
     loadedCb: function(){
       var flightDateFormat = d3.time.format("%-m/%-d/%y");
-      kshf.dt.voyager_birdstrikes.forEach(function(d){
-        d.data.Date = flightDateFormat.parse(d.data.Flight_Date.split(" ")[0]);
+      this.records.forEach(function(record){
+        record.data.Date = flightDateFormat.parse(record.data.Flight_Date.split(" ")[0]);
       });
-    },
-    readyCb: function(){
-      browser.summaries_by_name.Flight_Date.destroy_full();
-      browser.summaries_by_name.id.destroy_full();
     },
     summaries: [
       {name: "Wildlife Size", value: "Wildlife__Size"},
@@ -78,6 +74,7 @@ google.setOnLoadCallback(function(){
   </head>
   <body>
     <div class="contents">
+      <div id="demo_PageTitle">Bird strikes near airports in the U.S.</div>
       <div id="demo_Browser"></div>
       </div>
   </body>

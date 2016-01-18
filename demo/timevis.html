@@ -53,7 +53,7 @@ function loadData(browser){
                 d.imageURL = $this.find("img")[0].getAttribute("src");
                 d.imageURL_full = "http://www.informatik.uni-rostock.de/~ct/timeviz/"+d.imageURL;
                 d.Info = $this.find(".tec-source")[0].textContent.trim();
-                kshf.dt.Visualizations.push(new kshf.Item(d,'id'));
+                kshf.dt.Visualizations.push(new kshf.Record(d,'id'));
             });
 
             browser.loadCharts();

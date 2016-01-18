@@ -65,7 +65,7 @@ var loadData = function(browser){
         else if(cData['Popularity'][0]==='Viewed Often') p=3;
         cData['Popularity'] = p;
 
-        arr.push(new kshf.Item(cData,"id"));
+        arr.push(new kshf.Record(cData,"id"));
       });
 
       browser.loadCharts();   

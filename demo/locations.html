@@ -29,7 +29,7 @@ function loadData(browser){
         if(location.l_type==="city") return;
         location.id = location.path.substring(location.path.lastIndexOf("/")+1);
         location.pos = i;
-        kshf.dt.Locations.push(new kshf.Item(location,"id"));
+        kshf.dt.Locations.push(new kshf.Record(location,"id"));
       });
 
       browser.loadCharts();

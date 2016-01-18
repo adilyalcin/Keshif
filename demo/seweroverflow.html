@@ -27,7 +27,7 @@ function loadData(browser){
       kshf.dt.Overflow = [];
       // Note: data.meta includes meta information (column names, types, etc)
       data.data.forEach(function(overflow){
-        kshf.dt.Overflow.push(new kshf.Item(overflow,0)); // 0 is the column that stores uniqu item ID
+        kshf.dt.Overflow.push(new kshf.Record(overflow,0)); // 0 is the column that stores uniqu item ID
       });
       browser.loadCharts();
     }
@@ -47,14 +47,14 @@ $(document).ready(function(){
       { name: "Overflow Type", value: function(){ return this[8]; } },
       { name: "Cause", value: function(){ return this[21]; } },
       { name: "Date",  value: function(){ return new Date(moment(this[11])); }, panel: 'bottom' },
-      { name: "Duration", value: getDuration_Human },
+      { name: "Duration", value: getDuration_TotalMinutes, unitName: "min" },
       { name: "Zip Code", value: function(){ return this[17]; }, panel: 'right' },
       { name: "County", value: function(){ return this[23]; }, panel: 'right' },
       { name: "Municipality/Facility", value: function(){ return this[9]; }, panel: 'right' }
     ],
     recordDisplay: {
       sortColWidth: 110,
-      sortBy: { title: 'Duration', value: getDuration_TotalMinutes, label: getDuration_Human },
+      sortBy: { title: 'Duration ', value: getDuration_TotalMinutes, label: getDuration_Human },
       recordView: function(){ return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes"; }
     }
   });

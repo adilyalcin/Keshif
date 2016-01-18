@@ -28,7 +28,7 @@ function loadData(browser){
         async: false,
         success: function(data){
             data.forEach(function(v){
-                var kshfItem = new kshf.Item(v,'id');
+                var kshfItem = new kshf.Record(v,'id');
                 kshf.dt.Visualizations.push(kshfItem);
                 kshf.dt_id.Visualizations[kshfItem.id()] = kshfItem;
             });
@@ -39,7 +39,7 @@ function loadData(browser){
         async: false,
         success: function(data){
             data.forEach(function(c){
-                var kshfItem = new kshf.Item(c,'title');
+                var kshfItem = new kshf.Record(c,'title');
                 kshf.dt.Categories.push(kshfItem);
                 kshf.dt_id.Categories[kshfItem.id()] = kshfItem;
             });

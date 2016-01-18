@@ -33,7 +33,7 @@ function dataLoad(browser){
         });
         dt.Location = v['/location/location/geolocation'][0];
         dt.img_url = v['/common/topic/image'][0].id[0];
-        kshf.dt.Architectures.push(new kshf.Item(dt,'id'));
+        kshf.dt.Architectures.push(new kshf.Record(dt,'id'));
       });
       browser.loadCharts();
     }

@@ -29,7 +29,7 @@ $(document).ready( function(){
       tables: "bookdownloads"
     },
     loadedCb: function(){
-      this.items.forEach(function(d){ d.data = moment(d.data, "YYYY-MM-DD HH:mm:ss"); });
+      this.records.forEach(function(record){ record.data = moment(record.data, "YYYY-MM-DD HH:mm:ss"); });
     },
     summaries: [
       { name: "Hour", unitName: ": 00", panel: 'bottom', value: function(){ return this.hour(); }, },
@@ -60,6 +60,5 @@ $(document).ready( function(){
       <a href="http://www.d3noob.org/2015/04/exploring-event-data-by-combination.html" target='_blank'>Original Blogpost</a> <a href="https://gist.github.com/d3noob/a0cbcddc6bf0eb9569fe" target='_blank'>Raw source</a>.
       <a href="http://bl.ocks.org/d3noob/raw/a0cbcddc6bf0eb9569fe/" target='_blank'>Original d3 visualization</a>.
       </div>
-
   </body>
 </html>

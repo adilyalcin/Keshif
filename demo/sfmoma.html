@@ -51,7 +51,7 @@ function loadData(browser){
         cData.Time = new Date(cData['Creation Date'], 0);
         cData['Year Born'] = new Date(cData['Year Born'], 0);
 
-        kshf.dt.Artworks.push(new kshf.Item(cData,"id"));
+        kshf.dt.Artworks.push(new kshf.Record(cData,"id"));
       });
 
       browser.loadCharts();   

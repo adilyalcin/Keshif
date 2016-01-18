@@ -40,7 +40,7 @@ function loadData(browser){
         $(this).find(">a > .right > .tag").each(function(){
           d.Tags.push(this.textContent.trim());
         })
-        kshf.dt.Tutorials.push(new kshf.Item(d,"id"));
+        kshf.dt.Tutorials.push(new kshf.Record(d,"id"));
       });
       browser.loadCharts();   
     }

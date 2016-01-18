@@ -75,7 +75,7 @@ function loadDemo(config){
       var setDegreeSummary = browser.createSummary(
         "<i class='fa fa-hand-o-up'></i> # of "+setListSummary.summaryName,
         function(d){
-          var arr=d.mappedDataCache[filterID];
+          var arr=d.cachedAggrValues[filterID];
           if(arr==null) return 0;
           return arr.length;
         }

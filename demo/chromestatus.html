@@ -38,8 +38,8 @@ $(document).ready( function(){
       tables: "chromefeatures"
     },
     loadedCb: function(){
-      this.items.forEach(function(d){
-        d.data.name = d.data.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      this.records.forEach(function(record){
+        record.data.name = record.data.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       });
     },
     summaries: [

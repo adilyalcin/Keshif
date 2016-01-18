@@ -41,7 +41,7 @@ function loadData(browser){
         else if(entry.Fields.booktitle)
           entryData.Journal = entry.Fields.booktitle;
 
-        kshf.dt.Visualizations.push(new kshf.Item(entryData,'Key'));
+        kshf.dt.Visualizations.push(new kshf.Record(entryData,'Key'));
       });
       browser.loadCharts();
     }

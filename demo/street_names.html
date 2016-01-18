@@ -27,7 +27,7 @@ function loadData(browser){
         nameRegistry[n] = true;
         streetName.text = n;
         streetName.id = i;
-        kshf.dt.StreetNames.push(new kshf.Item(streetName,"id"));
+        kshf.dt.StreetNames.push(new kshf.Record(streetName,"id"));
       });
       browser.loadCharts();
     }
@@ -56,7 +56,7 @@ $(document).ready( function(){
           if(parseInt(this.text)) r.push("Numbered");
           return r;
         } },
-      { name: "In # Counties", value: "in_counties", unitName: "c'y"}
+      { name: "In # Counties", value: "in_counties", unitName: "cty"}
     ],
     recordDisplay: {
       sortBy: 'value',

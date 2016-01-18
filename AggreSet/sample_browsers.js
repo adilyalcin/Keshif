@@ -253,11 +253,10 @@ var browser_configs = {
           };
 
           for(var actorName in HBO_data){
-              var kshfItem = new kshf.Item( {'Name':actorName, "HBO Shows":HBO_data[actorName]},'Name');
+              var kshfItem = new kshf.Record( {'Name':actorName, "HBO Shows":HBO_data[actorName]},'Name');
               kshf.dt.Actors.push(kshfItem);
           }
 
-          browser.items = kshf.dt.Actors;
           browser.loadCharts();
         }
       },
@@ -469,14 +468,13 @@ var browser_configs = {
                   if(chemName==="") continue;
                   var theChem = kshf.dt_id.Compounds[chemName];
                   if(theChem===undefined){
-                    theChem = new kshf.Item([[],chemName],1);
+                    theChem = new kshf.Record([[],chemName],1);
                     kshf.dt_id.Compounds[chemName] = theChem;
                     kshf.dt.Compounds.push(theChem);
                   }
                   theChem.data[0].push(sampleName);
                 }
               });
-              browser.items = kshf.dt.Compounds;
               browser.loadCharts();
             }
           });
@@ -679,10 +677,9 @@ var browser_configs = {
                                     if(s[k]==="") continue;
                                     d.Votes.push(s[k]);
                                 }
-                                var item = new kshf.Item(d,"id");
+                                var item = new kshf.Record(d,"id");
                                 arr.push(item);
                             });
-                            browser.items = arr;
                             browser.loadCharts();
                         }
                     });
@@ -928,7 +925,7 @@ var browser_configs = {
             catData.Description = $(this).find("description").text();
             // TODO: some categories include fields, and store info per each country! like population, etc
 
-            var item = new kshf.Item(catData,"id");
+            var item = new kshf.Record(catData,"id");
             arr_cat.push(item);
             arr_cat_id[catData.id] = item;
         });
@@ -1036,10 +1033,8 @@ var browser_configs = {
     //                var fieldName = 232;
             });
 
-            arr.push(new kshf.Item(cData,"id"));
+            arr.push(new kshf.Record(cData,"id"));
         });
     });
-
-    factBrowser.items = kshf.dt[factBrowser.primaryTableName];
     factBrowser.loadCharts();
 };

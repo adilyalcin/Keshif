@@ -118,22 +118,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[collapsed=false][viewType='list']:hover {
           .chartCatLabelResize{ display: block !important; }
         }
-        &[collapsed=false][viewType='bar']:hover {
-          .summaryConfigControl{ display: inline-block !important; }
-        }
-        &[showConfig=true]{
-          .summaryConfig{
-            top: 21px;
-            opacity: 1;
-            pointer-events: all;
-          }
-          .summaryConfigControl{ 
-            color: black;
-            -webkit-animation: fa-spin 4s infinite linear;
-            animation: fa-spin 4s infinite linear;
-          }
-        }
       }
+      .summaryConfig_UnitName{ display: block;}
       .recordDisplay{
         &:hover .buttonRecordViewRemove{ display: block; }
         &[displaytype="list"]:hover > .recordGroup > .dragWidthHandle{ display: block; }
@@ -149,7 +135,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover > .editTextButton{ opacity: 1; }// Do not use display none-vs-inlineblock, because it changes layout
       }
       .buttonSummaryRemove{ display: inline-block !important; }
-      .kshfSummary
     }
     &[percentview=true]{
       .measurePercentControl{
@@ -658,9 +643,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               white-space: nowrap;
             }
             > .measureType{
-              padding: 1px 6px;
+              margin: 1px 6px;
               white-space: nowrap;
               cursor: pointer;
+              border-bottom: solid 1px #CBC5B9;
               > .measureType_{
                 display: inline-block;
                 vertical-align: top;
@@ -1629,6 +1615,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
+    .summaryConfigControl{
+      display: none;
+      color: gray;
+    }
+
     .headerGroup{
         position: relative;
         text-align: center;
@@ -1714,10 +1705,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .useForRecordDisplay{
             display: none;
             &:hover{ color: orangered; }
-          }
-          > .summaryConfigControl{
-            display: none;
-            color: gray;
           }
         }
         > .header_display_control{
@@ -2018,8 +2005,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
       &[highlight="true"]{
-        box-shadow: inset 0px 0px 5px #FF9973;
-        background-color: #FFFBF9;
+        //box-shadow: inset 0px 0px 5px #FF9973;
+        //background-color: #FFFBF9;
+        background-color: #F4E5E1;
         //box-shadow: inset 0px 0px 5px #BBBBBB;
         //background-color: #F8F8F8;
       }
@@ -2032,7 +2020,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       opacity: 0;
       .transition(all 400ms ease-in-out);
       pointer-events: none;
-      background-color: rgba(235, 235, 235, 0.9);
+      background-color: rgba(235, 235, 235, 0.8);
       border-radius: 0px 0px 10px 10px;
       box-shadow: 0px 0px 1px black;
       padding: 1px 5px;
@@ -2463,6 +2451,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    overflow-y: visible;
                     .transition(~'height 700ms ease-in-out');
                     > .timeSVG{
+                      //overflow: visible;
                       .activeLine{
                         stroke: @color_bars;
                         stroke-width: 2px;
@@ -2881,7 +2870,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[viewType="line"]{
         .summaryConfig_UnitName{ display: none;}
       }
+
+      &[collapsed=false][viewType='bar']:hover {
+        .summaryConfigControl{ display: inline-block !important; }
+      }
+      &[showConfig=true]{
+        .summaryConfig{
+          top: 21px;
+          opacity: 1;
+          pointer-events: all;
+        }
+        .summaryConfigControl{ 
+          display: inline-block;
+          color: black;
+          -webkit-animation: fa-spin 4s infinite linear;
+          animation: fa-spin 4s infinite linear;
+        }
+      }
     }// kshfSummary
+
+    .summaryConfig_UnitName{
+      display: none;
+    }
 
     .belowCatChart{
       position:relative;

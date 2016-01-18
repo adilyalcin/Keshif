@@ -21,7 +21,7 @@ function dataLoad(browser){
   kshf.dt.Publications = [];
   myData.data.forEach(function(publication,id){
     publication.id = id;
-    kshf.dt.Publications.push(new kshf.Item(publication,"id"));
+    kshf.dt.Publications.push(new kshf.Record(publication,"id"));
   });
   browser.loadCharts();
 };

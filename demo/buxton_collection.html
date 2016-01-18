@@ -156,7 +156,7 @@ function dataLoad(browser){
 
         if(imageFix[cData.id]) cData['Related Images'] = [imageFix[cData.id]];
 
-        kshf.dt.Devices.push(new kshf.Item(cData,"id"));
+        kshf.dt.Devices.push(new kshf.Record(cData,"id"));
       });
       browser.loadCharts();   
     }

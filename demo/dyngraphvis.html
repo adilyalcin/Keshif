@@ -219,7 +219,7 @@ function loadData(browser){
                 else if(entry.Fields.booktitle)
                     entryData.Journal = entry.Fields.booktitle;
 
-                var kshfItem = new kshf.Item(entryData,'Key');
+                var kshfItem = new kshf.Record(entryData,'Key');
                 kshf.dt.Publications.push(kshfItem);
                 kshf.dt_id.Publications[kshfItem.id()] = kshfItem;
             });

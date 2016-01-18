@@ -54,7 +54,7 @@ function loadData(browser){
         d.URL = $this.find("url")[0].textContent.trim();
         d.Title = $this.find("title")[0].textContent.trim();
         d.Venue = $this.find("publication")[0].textContent.trim();
-        kshf.dt.Visualizations.push(new kshf.Item(d,'id'));
+        kshf.dt.Visualizations.push(new kshf.Record(d,'id'));
       });
 
       browser.loadCharts();

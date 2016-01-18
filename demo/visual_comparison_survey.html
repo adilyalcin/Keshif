@@ -229,7 +229,7 @@ function loadData(browser){
                         d.Authors = paper.data.Authors.split(", ");
                     }
                 }
-                kshf.dt.Projects.push(new kshf.Item(d,"id"));
+                kshf.dt.Projects.push(new kshf.Record(d,"id"));
             });
 
             browser.loadCharts();   

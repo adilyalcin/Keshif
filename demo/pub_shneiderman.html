@@ -64,7 +64,7 @@ function loadData(browser){
               });
           }
 
-          kshf.dt.Publications.push(new kshf.Item(entry,"EntryKey"));
+          kshf.dt.Publications.push(new kshf.Record(entry,"EntryKey"));
       });
 
       $$doc.find('#qs_table tr.bibtex pre').each(function(){

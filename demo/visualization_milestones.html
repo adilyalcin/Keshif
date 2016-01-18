@@ -76,7 +76,7 @@ function loadData(browser){
                 cData.Description = $el.find("span.tl_bubble_description").text().trim();
                 cData.URL = $el.find("span.tl_bubble_link > a").attr("href").trim();
                 cData.id = parseInt(cData.URL.substr(cData.URL.indexOf("mid=ms")+6));
-                var milestoneItem = new kshf.Item(cData,"id");
+                var milestoneItem = new kshf.Record(cData,"id");
                 arr.push(milestoneItem);
 
                 highlightIDs.forEach(function(id){
@@ -102,7 +102,7 @@ function loadData(browser){
                 cData.id = $this.attr("id");
                 cData.Author = $this.find("strong").text();
                 cData.FullText = $this.text();
-                arr.push(new kshf.Item(cData,"id"));
+                arr.push(new kshf.Record(cData,"id"));
             });
         }
     });

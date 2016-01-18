@@ -45,7 +45,7 @@ function loadMovies(browser){
             kshf.dt_id.Movies = {};
             data.forEach(function(movie){
                 moviesByTitle[movie.Title] = movie;
-                var item=new kshf.Item(movie,"imdbID");
+                var item = new kshf.Record(movie,"imdbID");
                 kshf.dt.Movies.push(item);
                 kshf.dt_id.Movies[item.id()] = item;
             });

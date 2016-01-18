@@ -137,18 +137,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='list']:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
-  display: inline-block !important;
-}
-.kshf[authoringMode=true] .kshfSummary[showConfig=true] .summaryConfig {
-  top: 21px;
-  opacity: 1;
-  pointer-events: all;
-}
-.kshf[authoringMode=true] .kshfSummary[showConfig=true] .summaryConfigControl {
-  color: black;
-  -webkit-animation: fa-spin 4s infinite linear;
-  animation: fa-spin 4s infinite linear;
+.kshf[authoringMode=true] .summaryConfig_UnitName {
+  display: block;
 }
 .kshf[authoringMode=true] .recordDisplay:hover .buttonRecordViewRemove {
   display: block;
@@ -170,22 +160,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[authoringMode=true] .buttonSummaryRemove {
   display: inline-block !important;
-}
-.kshf[authoringMode=true][collapsed=false][viewType='list']:hover .chartCatLabelResize {
-  display: block !important;
-}
-.kshf[authoringMode=true][collapsed=false][viewType='bar']:hover .summaryConfigControl {
-  display: inline-block !important;
-}
-.kshf[authoringMode=true][showConfig=true] .summaryConfig {
-  top: 21px;
-  opacity: 1;
-  pointer-events: all;
-}
-.kshf[authoringMode=true][showConfig=true] .summaryConfigControl {
-  color: black;
-  -webkit-animation: fa-spin 4s infinite linear;
-  animation: fa-spin 4s infinite linear;
 }
 .kshf[percentview=true] .measurePercentControl::after {
   content: "%";
@@ -862,9 +836,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   white-space: nowrap;
 }
 .kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType {
-  padding: 1px 6px;
+  margin: 1px 6px;
   white-space: nowrap;
   cursor: pointer;
+  border-bottom: solid 1px #CBC5B9;
 }
 .kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_ {
   display: inline-block;
@@ -1946,6 +1921,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top: none;
   border-bottom: none;
 }
+.kshf .summaryConfigControl {
+  display: none;
+  color: gray;
+}
 .kshf .headerGroup {
   position: relative;
   text-align: center;
@@ -2039,10 +2018,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .summaryIcons > .useForRecordDisplay:hover {
   color: orangered;
-}
-.kshf .headerGroup .summaryIcons > .summaryConfigControl {
-  display: none;
-  color: gray;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -2413,8 +2388,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
 .kshf .kshfRecord[highlight="true"] {
-  box-shadow: inset 0px 0px 5px #FF9973;
-  background-color: #FFFBF9;
+  background-color: #F4E5E1;
 }
 .kshf .summaryConfig {
   position: absolute;
@@ -2426,7 +2400,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 400ms ease-in-out;
   transition: all 400ms ease-in-out;
   pointer-events: none;
-  background-color: rgba(235, 235, 235, 0.9);
+  background-color: rgba(235, 235, 235, 0.8);
   border-radius: 0px 0px 10px 10px;
   box-shadow: 0px 0px 1px black;
   padding: 1px 5px;
@@ -3372,6 +3346,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
 }
 .kshf .kshfSummary[viewType="line"] .summaryConfig_UnitName {
+  display: none;
+}
+.kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
+  display: inline-block !important;
+}
+.kshf .kshfSummary[showConfig=true] .summaryConfig {
+  top: 21px;
+  opacity: 1;
+  pointer-events: all;
+}
+.kshf .kshfSummary[showConfig=true] .summaryConfigControl {
+  display: inline-block;
+  color: black;
+  -webkit-animation: fa-spin 4s infinite linear;
+  animation: fa-spin 4s infinite linear;
+}
+.kshf .summaryConfig_UnitName {
   display: none;
 }
 .kshf .belowCatChart {

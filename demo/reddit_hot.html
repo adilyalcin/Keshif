@@ -26,7 +26,7 @@ function loadData(browser){
       browser.primaryTableName = "Posts";
       kshf.dt.Posts = [];
       data.data.children.forEach(function(p){
-        kshf.dt.Posts.push(new kshf.Item(p.data,'id'));
+        kshf.dt.Posts.push(new kshf.Record(p.data,'id'));
       });
       browser.loadCharts();
     }
