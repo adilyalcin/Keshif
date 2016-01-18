@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Venture Capital Landscape 2011</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    itemName: "Investments",
+    leftPanelLabelWidth: 250,
+    rightPanelLabelWidth: 160,
+    middlePanelLabelWidth: 160,
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: "csv",
+      tables: "VentureCapitalLandscape2011",
+      callback: function(){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
+    }, 
+    loadedCb: function(){
+      kshf.dt.VentureCapitalLandscape2011.forEach(function(item){
+        item.data.Raised = parseInt(item.data.Raised);
+        if(isNaN(item.data.Raised) || item.data.Raised===undefined || item.data.Raised===null){
+          item.data.Raised = 0;
+        } else {
+          item.data.Raised *= 1000000;
+        }
+      });
+    },
+    //measure: "Raised",
+    summaries: [
+      { name: "Industry Group" },
+      { name: "Industry Segment" },
+      { name: "IndustryCode", collapsed: true },
+      { name: "PrimaryRegion" },
+      { name: "Subregion", collapsed: true },
+      { name: "City" },
+      { name: "State", panel: "middle", 
+        catLabel: function(){ return US_States.index_code[this.id].name; },
+        catMap: function(){ return US_States.index_code[this.id].geo; },
+        },
+      { name: "RoundBusStat", panel: "right" },
+      { name: "RoundClassDescr", panel: "right" },
+      { name: "Raised", panel: "right", unitName: "$" }
+    ],
+  });
+});
+    </script>
+<style id="kshfStyle">
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">Money Raised in Venture Capital Investments, 2011</div>
+      <div id="demo_Browser"></div>
+      <div id="demo_Infobox">
+        Re-Vis from <a href='https://dc-js.github.io/dc.js/vc/index.html' target='_blank'>dc-js</a>. Public data from 
+        <a href='http://buzzdata.com/azad2002/the-united-states-of-venture-capital-2011#!/data' target='_blank'>BuzzData.com</a>
+        </div>
+      </div>
+  </body>
+</html>
