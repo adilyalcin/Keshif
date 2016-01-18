@@ -21,8 +21,8 @@ google.setOnLoadCallback(function(){
     domID: "#demo_Browser",
     itemName: "Grants",
     barChartWidth: 90,
-    leftPanelLabelWidth: 300,
-    rightPanelLabelWidth: 90,
+    leftPanelLabelWidth: 250,
+    rightPanelLabelWidth: 200,
     source: {
       url: 'https://www.moore.org/grants',
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
@@ -39,10 +39,11 @@ google.setOnLoadCallback(function(){
       { name: "Amount", unitName: "$", showPercentile: true },
       { name: "Duration (Months)", collapsed: true,
         value: function(){ return parseInt(this.Term.replace(' months')); }, panel: 'middle' },
-      { name: "Date", panel: "bottom"}
+      { name: "Organization", value: function(){ return this.Organization.name}, panel: 'right' },
+      { name: "Date", panel: "bottom"},
     ],
     recordDisplay: {
-      sortColWidth: 75,
+      sortColWidth: 65,
       sortBy: "Amount",
       textSearch: {name: "Title and Summary", value: function(){ return this.Title+' '+this.Summary}},
       recordView: function(){ 
@@ -53,10 +54,13 @@ google.setOnLoadCallback(function(){
           "<a href='https://www.moore.org/grants/list/"+this.id+"' target='_blank' class='grantTitle'>"+this.Title+
             " <i class='fa fa-external-link'></i></a>"+
           "<span class='grantSummary'>"+this.Summary+"</span>"+
-          "<span class='grantNote grantAmmount'>"+this.Amount+"$</span> - "+
-          "<span class='grantNote grantDate'>"+dateFormat(this.Date)+"</span> - "+
-          (this.Area?("<span class='grantNote grantArea'>"+this.Area.join(",")+"</span> - "):"")+
-          "<span class='grantNote grantTerm'>"+this.Term+"</span>"
+          "<span class='grantNotes'>"+
+          "<span class='grantNote grantAmmount'>$"+this.Amount+"</span> - "+
+          "<span class='grantNote grantDate'>"+dateFormat(this.Date)+",</span>"+
+          "<span class='grantNote grantTerm'>"+this.Term+"</span> - "+
+          (this.Area?("<span class='grantNote grantArea'>"+this.Area.join(", ")+"</span> - "):"")+
+          "<span class='grantNote grantOrganization'>" +this.Organization.name+"</span>"+
+          "</span>"
           ; 
       }
     }
@@ -2122,7 +2126,8 @@ grantIDs.forEach(function(grantID,i){
   border-radius: 7px;
   box-shadow: 0px 0px 3px black;
 }
-.grantAmmount{
+.grantNotes{
+  display: block;
   margin-left: 10px;
 }
 .grantNote{
