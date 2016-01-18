@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>New Zealand Youth Court Data</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 130,
+    itemName: "Court Cases",
+    leftPanelLabelWidth: 150,
+    middlePanelLabelWidth: 350,
+    source: {
+      url: "http://nzyouthcourt.meteor.com/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: "csv",
+      tables: "NewZealandYouthCourtData"
+    },
+    summaries: [
+      { name: "Offence", value: "offence", panel: "middle", catLabel:
+        {
+          1:"Homicide And Related Offences",
+          2:"Acts Intended To Cause Injury",
+          3:"Sexual Assault And Related Offences",
+          4:"Dangerous Or Negligent Acts Endangering Persons",
+          5:"Abduction, Harassment And Other Offences Against The Person",
+          6:"Robbery, Extortion And Related Offences",
+          7:"Unlawful Entry With Intent/Burglary, Break And Enter",
+          8:"Theft And Related Offences",
+          9:"Fraud, Deception And Related Offences",
+         10:"Illicit Drug Offences",
+         11:"Prohibited And Regulated Weapons And Explosives Offences",
+         12:"Property Damage And Environmental Pollution",
+         13:"Public Order Offences",
+         14:"Traffic And Vehicle Regulatory Offences",
+         15:"Offences Against Justice Procedures, Government Security And Government Operations",
+         16:"Miscellaneous Offences"
+        } },
+      { name: "Year", value: "year", panel: "middle" },
+      { name: "Gender", value: "gender", catLabel: {F:"Female",M:"Male",X:"Unknown"} },
+      { name: "Ethnicity", value: "ethnicity", 
+        catLabel:{
+          C:"European",
+          M:"Maori",
+          O:"Other",
+          P:"Pacific People",
+          X:"Unknown"
+        }
+      },
+      { name: "Outcome", value: "outcome", 
+        catLabel: {1:"Conviction", A:"Youth Court Proved", B:"Youth Court Discharge", C:"Withdrawn, not proved, other" } },
+      { name: "Age", value: "age", panel: "left" },
+    ],
+  });
+});
+    </script>
+  </head>
+  <style id="kshfStyle">
+    #demo_Browser{ max-width: 1100px;}
+  </style>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">New Zealand Youth Court Data</div>
+      <div id="demo_Browser"></div>
+      <div id="demo_Infobox">Re-Vis from<a href='http://nzyouthcourt.meteor.com' target='_blank'>nzyouthcourt.meteor.com</a>.</div>
+      </div>
+  </body>
+</html>
