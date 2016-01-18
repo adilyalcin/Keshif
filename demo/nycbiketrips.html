@@ -54,7 +54,7 @@ google.setOnLoadCallback(function(){
       { name: "Day of Week", panel: 'right', collapsed: true,
         value: function(){ return this.TimeStart.day(); },
         catSortBy: "id", catLabel: _demo.DayOfWeek },
-      { name: "Hour of Day", panel: 'bottom', optimumTickWidth: 40, unitName: ": 00",
+      { name: "Hour of Day", panel: 'bottom', optimumTickWidth: 40, unitName: ":00",
         value: function(){ return this.TimeStart.hour(); } },
       { name: "Duration", panel: 'bottom', intervalScale: "log", unitName: "min",
         value: function(){ return Math.round(this.Duration/60); } },

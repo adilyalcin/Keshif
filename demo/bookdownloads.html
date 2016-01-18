@@ -32,7 +32,7 @@ $(document).ready( function(){
       this.records.forEach(function(record){ record.data = moment(record.data, "YYYY-MM-DD HH:mm:ss"); });
     },
     summaries: [
-      { name: "Hour", unitName: ": 00", panel: 'bottom', value: function(){ return this.hour(); }, },
+      { name: "Hour", unitName: ":00", panel: 'bottom', value: function(){ return this.hour(); }, },
       { name: "Time", panel: 'bottom', value: function(){ return new Date(this);} },
       { name: "Day", panel: 'right', value: function(){ return this.day(); }, catSortBy: "id",        
         catLabel: _demo.DayOfWeek },
