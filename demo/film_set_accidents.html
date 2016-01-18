@@ -18,6 +18,12 @@
 $(document).ready( function(){
   var timeFormat = d3.time.format("%d %b, %y");
 
+  var printPeopleIcons = function(v){
+      var str="";
+      for(var i=0; i<v; i++) str+="<i class='fa fa-male'></i>";
+      return str;
+  };
+
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 150,
@@ -30,8 +36,8 @@ $(document).ready( function(){
       { name: "Injury type" },
       { name: "Injury source" },
       { name: "Company" },
-      { name: "Injuries", catLabel: printPeopleIcons, catSortBy: "id", panel: "right" },
-      { name: "Fatalities", catLabel: printPeopleIcons, catSortBy: "id", panel: "right" },
+      { name: "Injuries", unitName: "ppl", panel: "right" },
+      { name: "Fatalities", unitName: "ppl", panel: "right" },
       { name: "Fine", intervalScale: "log", unitName: "$", panel: "right" },
       { name: "State", catLabel: function(){return getStateName(this.id);}, panel: "right", collapsed: true },
       { name: "Date", panel: "bottom" }
@@ -44,7 +50,11 @@ $(document).ready( function(){
         'Injuries',
         'Fatalities',
       ],
-      recordView: "Description"
+      recordView: function(){
+        return "<span style='color: red'>"+printPeopleIcons(this.Fatalities) +"</span>"+
+          "<span>"+printPeopleIcons(this.Injuries)+"</span>"+  
+          " " + this.Description;
+      }
     }
   });
 });

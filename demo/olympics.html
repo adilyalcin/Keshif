@@ -26,7 +26,7 @@ google.setOnLoadCallback(function(){
     domID: "#demo_Browser",
     barChartWidth: 90,
     leftPanelLabelWidth: 130,
-    rightPanelLabelWidth: 120,
+    rightPanelLabelWidth: 160,
     itemName: "Winners",
     source: {
       gdocId: '14pTPhd44ic_ppJhBEsk0o1-5bVh0l1RAT5tYf17X7-8',
@@ -36,19 +36,18 @@ google.setOnLoadCallback(function(){
       { name: "Sport" },
       { name: "Country" },
       { name: "Age", panel: 'bottom', intervalScale: 'linear' },
-      { name: "Total Medals", panel: 'right', panel: "none", catSortBy: "id",
-        value: function(){ if(this["Total Medals"]>0) return this["Total Medals"]; },
-        catLabel: function(){ return getMedalIcons(this.id, 'total'); } },
-      { name: "Gold Medals", panel: 'right', catSortBy: "id",
+      { name: "Total Medals", panel: "right" },
+      { name: getMedalIcons(1,'gold')+" Gold Medals "+getMedalIcons(1,'gold'), panel: 'right', 
         value: function(){ if(this["Gold Medals"]>0) return this["Gold Medals"]; },
-        catLabel: function(){ return getMedalIcons(this.id, 'gold'); } },
-      { name: "Silver Medals", panel: 'right', catSortBy: "id",
+      },
+      { name: getMedalIcons(1,'silver')+" Silver Medals "+getMedalIcons(1,'silver'), panel: 'right', 
         value: function(){ if(this["Silver Medals"]>0) return this["Silver Medals"]; },
-        catLabel: function(){ return getMedalIcons(this.id, 'silver'); } },
-      { name: "Bronze Medals", panel: 'right', catSortBy: "id",
+        },
+      { name: getMedalIcons(1,'bronze')+" Bronze Medals "+getMedalIcons(1,'bronze'), panel: 'right', 
         value: function(){ if(this["Bronze Medals"]>0) return this["Bronze Medals"]; },
-        catLabel: function(){ return getMedalIcons(this.id, 'bronze'); } },
-      { name: "Year", panel: 'right', catSortBy: "id",
+        },
+      { name: "Year", panel: 'right', 
+        catSortBy: "id",
         catLabel: function(){ return ((this.id%4===0)?"Winter ":"Summer ")+this.id; } }
     ],
     recordDisplay: {
@@ -72,7 +71,7 @@ google.setOnLoadCallback(function(){
     </script>
 <style id="kshfStyle">
 #demo_Browser {
-  max-width: 920px;
+  max-width: 1000px;
 }
 .athleteName{
   font-weight: 700;

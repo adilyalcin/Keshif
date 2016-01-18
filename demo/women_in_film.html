@@ -52,7 +52,7 @@ $(document).ready( function(){
       { name: "Genre", panel: 'right' },
       { name: "Main Actors", minAggrValue: 3, panel: 'right' },
       { name: "Language", panel: 'right' },
-      { name: "Runtime (min)", panel: 'right', collapsed: true },
+      { name: "Runtime", value: "Runtime (min)", panel: 'right', collapsed: true, unitName: "min" },
       { name: "Year", panel: "middle", collapsed: true }
     ],
     recordDisplay: {
@@ -69,8 +69,11 @@ $(document).ready( function(){
 });
     </script>
 <style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 120px);
+}
 .kshfRecord{ width: 25%; }
-.recordGroup{ background-color: #1A1A1A; }
+.recordGroup{ background-color: #1A1A1A !important; }
 </style>
   </head>
   <body>

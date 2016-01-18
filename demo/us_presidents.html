@@ -38,7 +38,8 @@ google.setOnLoadCallback( function(){
       displayType: 'grid',
       textSearch: "Name",
       recordView: function(){ 
-        return "<a href='http://www.whitehouse.gov/about/presidents/"+this.Link+"' target='_blank'><img src='"+this.Image+"'></a>";
+        return "<a href='http://www.whitehouse.gov/about/presidents/"+this.Link+"' target='_blank'>"+
+          "<img src='"+this.Image+"' style='display: block; width: 100%'></a>";
       }
     }
   });
@@ -46,9 +47,8 @@ google.setOnLoadCallback( function(){
     </script>
 <style id="kshfStyle">
 #demo_Browser {
-  width: 900px;
+  max-width: 900px;
 }
-.content img{ width: 100% }
 </style>
 	</head>
   <body>

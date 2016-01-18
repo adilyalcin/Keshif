@@ -40,11 +40,9 @@ google.setOnLoadCallback(function(){
           var x=US_States.index_name[this.id];
           if(x) return x.geo;
         }},
-      { name: "# Killed", panel: "left", catSortBy: 'id', 
-        value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; },
-        catLabel: printPeopleIcons },
-      { name: "# Injured", panel: "left", catLabel: printPeopleIcons, catSortBy: 'id' },
-      { name: "Date", panel: "bottom" }
+      { name: "# Killed", value: function(){ if(this["# Killed"]!==0) return this["# Killed"]; }, panel: "left", unitName: "ppl" },
+      //{ name: "# Injured", panel: "left" },
+      // { name: "Date", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "# Killed",

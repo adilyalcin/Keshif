@@ -25,7 +25,7 @@ google.setOnLoadCallback(function(){
 
   browser = new kshf.Browser({
     domID: "#demo_Browser",
-    itemName: "Students",
+    itemName: "Records",
     barChartWidth: 120,
     leftPanelLabelWidth: 100,
     rightPanelLabelWidth: 210,
@@ -37,36 +37,21 @@ google.setOnLoadCallback(function(){
       tables: "student_flow_aggregated_file",
       fileType: 'csv',
     },
-    loadedCb: function(){
-      kshf.dt.student_flow_aggregated_file.forEach(function(item){
-        item.aggregate_Self = item.data.count;
-        if(isNaN(item.aggregate_Self)){
-          alert('sdsds');
-        }
-      });
-    },
+    measure: "Students",
     summaries: [
       { name: "Gender" },
-      { name: "Age Group", value: "actcat",
-        catSortBy: [
-          '16-19',
-          '20-23',
-          '24-27',
-          '28-32',
-          '33-36',
-        ] },
+      { name: "Age Group", value: "actcat", catSortBy: ['16-19','20-23','24-27','28-32','33-36'] },
       { name: "T1_Level2", panel: "middle" },
       { name: "T2_Level2", panel: "middle" },
       { name: "T3_Level2", panel: "middle" },
-
       { name: "T1_IMFIT", panel: "right", catSortBy: skill_order },
       { name: "T2_IMFIT", panel: "right", catSortBy: skill_order },
       { name: "T3_IMFIT", panel: "right", catSortBy: skill_order },
-
       { name: "YR1"},
       { name: "YR2"},
-      { name: "Transfer", value: "transfer", catLabel: function(){ return this.transfer===1?"Yes":"No"; }},
-      { name: "Highest Level", value: "HighestLevel2", panel: "right" }
+      { name: "Transfer", value: "transfer", catLabel: {1:"Yes", 0:"No"} },
+      { name: "Highest Level", value: "HighestLevel2", panel: "right" },
+      { name: "Students", value: "count"}
     ]
   });
 });
@@ -78,9 +63,8 @@ google.setOnLoadCallback(function(){
       </div>
 
     <div id="demo_Infobox">
-      Submission for <a href="http://vacommunity.org/ieeevpg/2015/index.html" target="_blank">
-          IEEE VGTC VPG International Data-Visualization Contest
-          </a>
+      Un-submission for <a href="http://vacommunity.org/ieeevpg/2015/index.html" target="_blank">
+        IEEE VGTC VPG International Data-Visualization contest</a>.
       </div>
   </body>
 </html>

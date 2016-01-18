@@ -31,7 +31,8 @@ $(document).ready( function(){
         value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.bornCountry; }, },
       { name: "Affiliation", layout: 'right',
         value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.name; },
-        summaries: [{ name: "# of Winners", value: function(d){ return d.items.length; } }] },
+        // summaries: [{ name: "# of Winners", value: function(d){ return d.records.length; } }] 
+        },
       { name: "Joint Awards", catLabel: function() { return this.id+" awardee"+(this.id===1?"":"s"); } },
       { name: "Gender",
         value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.gender; },
