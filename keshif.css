@@ -2388,7 +2388,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
 }
 .kshf .kshfRecord[highlight="true"] {
-  background-color: #F4E5E1;
+  background-color: #F2E9E7;
 }
 .kshf .summaryConfig {
   position: absolute;
