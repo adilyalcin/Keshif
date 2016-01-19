@@ -227,14 +227,15 @@ $(document).ready( function(){
       },
       textSearch: "Title",
       displayType: 'grid',
+      detailsToggle: 'off',
       maxVisibleItems_Default: 50,
       recordView: function(){
         var _this = this;
         var url="";
+        var str="";
         if(this.ImageURL) url = "http://www.cs.umd.edu/~yalcin/keshif_res/vis_resources/"+this.ImageURL;
 
-        var str="<a target='_blank' href='"+this.URL+"' class='thumbnail'>" + 
-          "<img class='thumbImg' src='"+url+"'></a>";
+        if(url!=="") str+="<a target='_blank' href='"+this.URL+"' class='thumbnail'><img class='thumbImg' src='"+url+"'></a>";
         if(this.Description)
         	str+="<span><span class='fa fa-info toolIcon toolInfo'></span></span>"
         str+="<a target='_blank' href='"+this.URL+"' class='tool_title'>"+this.Title+"</a>";
