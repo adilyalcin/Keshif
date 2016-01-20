@@ -48,7 +48,7 @@ google.setOnLoadCallback(function(){
           return r;
         } },
       { name: "Venue", panel: 'right',  },
-      { name: "Date", panel: 'bottom', value: function(){return new Date(this.Year,1,1);} }
+      { name: "Year", panel: 'bottom', value: function(){return new Date(this.Year,0);} }
     ],
     recordDisplay: {
       sortBy: 'Date',

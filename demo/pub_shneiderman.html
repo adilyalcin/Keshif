@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
     <script type="text/javascript">
@@ -40,7 +41,7 @@ function loadData(browser){
               if(entry.Fields.month){
                   console.log("month: " + entry.Fields.month);
               }
-              entry.Year = new Date(moment(year+"01-01","YYYY-MM-DD"));
+              entry.Year = new Date(moment(year,0));
           } else {
               var asd=2323232;
           }

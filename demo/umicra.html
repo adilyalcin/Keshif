@@ -49,10 +49,10 @@ google.setOnLoadCallback(function(){
           return "Summarized by MCEP";
         }
         },
-      { name: "Year", layout: 'middle', value: function(){ return this.Date.getFullYear(); } }
+      { name: "Date", layout: 'middle', optimumTickWidth: 25 }
     ],
     recordDisplay: {
-      sortBy: 'Year',
+      sortBy: 'Date',
       sortColWidth: 45,
       textSearch: {name: "Title and Abstract", value: function(){ return this['Title']+" "+this["Abstract"]; } },
       detailsToggle: "one",

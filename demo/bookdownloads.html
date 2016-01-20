@@ -32,21 +32,19 @@ $(document).ready( function(){
       this.records.forEach(function(record){ record.data = moment(record.data, "YYYY-MM-DD HH:mm:ss"); });
     },
     summaries: [
-      { name: "Hour", unitName: ":00", panel: 'bottom', value: function(){ return this.hour(); }, },
-      { name: "Time", panel: 'bottom', value: function(){ return new Date(this);} },
-      { name: "Day", panel: 'right', value: function(){ return this.day(); }, catSortBy: "id",        
-        catLabel: _demo.DayOfWeek },
-      { name: "Month", value: function(){ return this.month(); }, panel: 'middle', catSortBy: "id",
-        catLabel: _demo.Month },
-      { name: "Year", value: function(){ return this.year(); }, panel: 'right', catSortBy: "id" }
+      { name: "Hour",  value: function(){ return this.hour();   }, panel: 'bottom', unitName: ":00" },
+      { name: "Time",  value: function(){ return new Date(this);}, panel: 'bottom' },
+      { name: "Day",   value: function(){ return this.day();    }, panel: 'right' , catSortBy: "id", catLabel: _demo.DayOfWeek },
+      { name: "Month", value: function(){ return this.month();  }, panel: 'middle', catSortBy: "id", catLabel: _demo.Month },
+      { name: "Year",  value: function(){ return this.year();   }, panel: 'right' , catSortBy: "id" }
     ]
   });
 });
     </script>
 <style id="kshfStyle">
 #demo_Browser {
-  width:850px;
-  height:600px;
+  max-width:850px;
+  max-height:600px;
 }
 </style>
 	</head>

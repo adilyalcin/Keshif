@@ -133,7 +133,7 @@ $(document).ready( function(){
             return c==="radial" || c==="linear" || c==="metric";
           });
         } },
-      { name: "Year", panel: 'bottom',  value: function(){ return new Date(this.year,1,1); }, }
+      { name: "Year", panel: 'bottom',  value: function(){ return new Date(this.year,0); }, }
     ],
     recordDisplay: {
       sortBy: "year",

@@ -59,7 +59,7 @@ google.setOnLoadCallback(function(){
       { name: "Duration", panel: 'bottom', intervalScale: "log", unitName: "min",
         value: function(){ return Math.round(this.Duration/60); } },
       { name: "Birth Year", panel: 'bottom', collapsed: true,
-        value: function(){ return new Date(this.BirthYear,1,1); } }
+        value: function(){ return new Date(this.BirthYear,0); } }
     ]
   });
 });

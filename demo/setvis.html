@@ -66,7 +66,7 @@ $(document).ready( function(){
       { name: "Type", collapsed: true },
       { name: "Authors" },
       { name: "Journal", collapsed: false },
-      { name: "Year", panel: "bottom" } //, value: function(){ return new Date(this.Year,1,1); }
+      { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,0); } }
     ],
     recordDisplay: {
       sortBy: "Year",

@@ -608,12 +608,12 @@ kshf.Record.prototype = {
       if(mappedAggrs.b){ // interval summary
         mappedAggrs.h.setRecordValue(mappedAggrs.v);
       } else if(!mappedAggrs.h){ // categorical summary
-        mappedAggrs.forEach(function(record){ 
-          if(record.DOM.aggrGlyph) { // basic summary aggregate
-            record.DOM.aggrGlyph.setAttribute("highlight",true);
+        mappedAggrs.forEach(function(aggr){ 
+          if(aggr.DOM.aggrGlyph) { // basic summary aggregate
+            aggr.DOM.aggrGlyph.setAttribute("highlight",true);
           }
-          if(record.DOM.matrixRow) { // set matrix
-            record.DOM.matrixRow.setAttribute("highlight","selected");
+          if(aggr.DOM.matrixRow) { // set matrix
+            aggr.DOM.matrixRow.setAttribute("highlight","selected");
           }
         },this);
       }
@@ -698,8 +698,10 @@ kshf.Aggregate.prototype = {
     this.aggregate_Preview = 0;
     this.aggregate_Total = 0;
     this.records.forEach(function(record){
-      this.aggregate_Total  += record.aggregate_Self;
-      this.aggregate_Active += record.aggregate_Self;
+      if(record.isWanted) {
+        this.aggregate_Total  += record.aggregate_Self;
+        this.aggregate_Active += record.aggregate_Self;
+      }
     },this);
   },
   /** -- */

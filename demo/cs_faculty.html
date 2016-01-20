@@ -60,7 +60,7 @@ google.setOnLoadCallback(function(){
         } },
       { name: "<span class='fa fa-calendar'></span> Joined Year", panel: "bottom",
         description: "When they joined that department of Computer Science as faculty",
-        value: function(){ if(this.JoinYear) return new Date(this.JoinYear,1,1); }
+        value: function(){ if(this.JoinYear) return new Date(this.JoinYear,0); }
       }
     ],
     recordDisplay: {

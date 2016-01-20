@@ -125,6 +125,12 @@ var loadDemoBrowser = function(){
                   +this["Link"]+".html' class='fa fa-code'></a></span>";
           return str;
       },
+      domCb: function(d){
+        d3.select(d.DOM.record).select(".content")
+          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "Explore this" }); })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout", function(){ this.tipsy.hide(); })
+      }
     }
   });
 };
