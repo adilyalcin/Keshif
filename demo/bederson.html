@@ -21,27 +21,9 @@ var showLogo = false;
 var BEDERSON_ID = 3;
 
 google.setOnLoadCallback(function() {
-  function resizeChart(){
-    var h=$(window).height()-90;
-    h = 700; // temp
-    var w=$(window).width()-29;
-    h = Math.max(h,500);
-    w = Math.max(w,700);
-    w-=50;
-    if($('#demo_Browser').height()===h && $('#demo_Browser').width()===w) return false;
-    $('#demo_Browser').height(h);
-    $('#demo_Browser').width (w);
-    return true;
-  }
-
-  resizeChart();
-  $(window).resize(function() {
-      if(resizeChart()) browser.updateLayout();
-  });
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
-    categoryTextWidth:185,
+    categoryTextWidth:165,
     source: {
       gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
       tables: [ "Publications", "Venues", "Authors", "Keywords", "VenueTypes", "AuthorTypes" ]
@@ -51,9 +33,9 @@ google.setOnLoadCallback(function() {
     },
     readyCb: function(){
       $(".paperName").click(function(d){
-        browser.recordDisplay.showListItemDetails(d.currentTarget.parentNode.parentNode.parentNode.__data__);
+        d.currentTarget.parentNode.parentNode.parentNode.__data__.setRecordDetails();
       });
-      browser.recordDisplay.showListItemDetails(kshf.dt.Publications[0]);
+      kshf.dt.Publications[0].setRecordDetails(true);
     },
     summaries: [
       { name: "Topics", catTableName: "Keywords", catLabel: "keyword" },
@@ -77,7 +59,7 @@ google.setOnLoadCallback(function() {
       { name: "Publication Type", value: "type",
         catLabel: function(){ return kshf.dt_id.VenueTypes[this.id].data.keyword; } },
       { name: "Venue", catTableName: "Venues", catLabel: "venue", collapsed: true },
-      { name: "Date", panel: 'middle' }
+      { name: "Date", panel: 'middle', optimumTickWidth: 35 }
     ],
     recordDisplay: {
       sortBy: {name: "Date", inverse: true},
@@ -160,7 +142,9 @@ google.setOnLoadCallback(function() {
 
 #demo_Browser {
   background-color: white;
-  margin: 0px 25px 20px 25px;
+  margin: 0px 15px 20px 15px;
+  height: calc(100vh - 85px);
+  width: calc(100vw - 50px);
 }
 
 #pagecell{

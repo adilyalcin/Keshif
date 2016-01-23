@@ -11,7 +11,7 @@ body {
 #demo_Browser {
   margin: 0 auto;
   width: calc(100% - 20px);
-  height: calc(100vh - 70px);
+  height: calc(100vh - 73px);
 }
 .showConfigButton {
   display: inline-block !important;
