@@ -105,10 +105,11 @@ var loadDemoBrowser = function(){
         var link=this["Link"];
         if(link==="../index") link = "index";
           var str='';
-          str+="<span class='thumbnail'><a target='_blank' href='./demo/"
-              +this["Link"]+"'><img class='theImage' src='demo/demo_img/"+link+".png')></a></span>";
-//          str+="<div class=\"iteminfo iteminfo_0\">";
-          str+="<a target='_blank' href='./demo/"+this["Link"]+"'><span class='demoTitle'>"+this["Name"]+"</span></a>";
+          str+="<a target='_blank' href='./demo/"+this["Link"]+"'>";
+            str+="<span class='thumbnail'><img class='theImage' src='demo/demo_img/"+link+".png')></span>";
+  //          str+="<div class=\"iteminfo iteminfo_0\">";
+            str+="<span class='demoTitle'>"+this["Name"]+"</span>";
+            str+="</a>";
           str+="<span class='demoIcons'>";
               if(this['Tables']==="Multi") str+="<span class='fa fa-table'></span>";
               if(this['Facets - Histogram']) str+="<span class='fa fa-bar-chart-o'></span>";
@@ -356,7 +357,7 @@ h1, .h1 {
   text-align: center;
   font-size: 0.8em;
 }
-.demoTitle:hover{
+a:hover > .demoTitle{
   color: orangered;
 }
 .content .thumbnail{

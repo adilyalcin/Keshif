@@ -247,7 +247,7 @@ google.setOnLoadCallback(function(){
       displayType: 'grid',
       textSearch: "Title",
       recordView: function(){
-        var imgIndex = undefined;
+        var imgIndex = -1;
         if(this.Images) {
           if(this.Images.length>0){
             imgIndex = 0;
@@ -263,8 +263,8 @@ google.setOnLoadCallback(function(){
         }
         var str="";
         str+="<a target='_blank' href='http://datavis.ca/milestones/"+this.URL+"' class='thumbnail'>"+
-          "<img class='thumbImg' src='"+(imgIndex?this.Images[imgIndex].URL:"")+
-              "' title='"+(imgIndex?this.Images[imgIndex].text:"")+"'></a>";
+          "<img class='thumbImg' src='"+((imgIndex>-1)?this.Images[imgIndex].URL:"")+
+              "' title='"+((imgIndex>-1)?this.Images[imgIndex].text:"")+"'></a>";
         str+="<span class='title'>"+this.Title+"</span>";
         str+="<span class='subTitle'>By: "+this.Author+" - "+this.Year+"</span>";
         str+="<div class='references'>";
@@ -281,52 +281,27 @@ google.setOnLoadCallback(function(){
 });
         </script>
 <style id="kshfStyle">
-.thumbImg{
-  height: 100px;
-  width: auto !important;
-}
-.kshfRecord{
-  margin: 3px;
-}
+.thumbnail{ overflow: visible !important; }
 .references{
   text-align: center;
   font-size: 0.8em;
   color: lightgray;
 }
-.references .fa-external-link{
+.fa-external-link{
   color: lightgray;
   margin: 0px 2px;
 }
-.references .fa-external-link:hover{
-  color: gray;
-}
-.kshf .listDiv > .recordGroup > .kshfRecord[highlight^="selected"]{
-  box-shadow: none !important;
-}
-.thumbnail{
-  overflow: visible !important;
-}
+.fa-external-link:hover{ color: gray; }
 
-.kshfRecord:hover{
-  z-index: 200 !important;
-}
-.kshfRecord:hover .thumbnail{
-  z-index: 200 !important;
-}
+.kshfRecord{ overflow: visible !important; }
+.kshfRecord:hover{ z-index: 200 !important; }
+.kshfRecord:hover .thumbnail{ z-index: 200 !important; }
 
-.kshfRecord .content img:hover{
-  transform: scale(1.5);
-}
-.kshfRecord > .itemRow{
-  overflow: visible !important;
-}
-.content{
-  position: relative;
-}
-.kshfRecord{
-  overflow: visible !important;
-}
+.kshfRecord .content img:hover{ transform: scale(1.5); }
+.content{ position: relative; }
 .content img.thumbImg{
+  height: 100px;
+  width: auto !important;
   z-index: 20;
   transition: all 200ms linear;
   -webkit-transition: all 200ms linear;

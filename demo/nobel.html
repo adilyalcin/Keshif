@@ -60,9 +60,9 @@ $(document).ready( function(){
           imgUrl = "http://www.cs.umd.edu/~yalcin/keshif_res/nobel_photo/"+surname_short+".jpg";
         }
         return "<span class='thumbnail'><img class='thumbImg' src='"+imgUrl+"'></span>"+
-            "<span class='laureateName'>"+fullname+"</span>"+
+            "<b>"+fullname+"</b>"+
             "<div style='text-align: center;'>"+
-            "<span class='prizeCategory'>"+getIcon(this.Category)+" "+this.Category+"</span> "+
+            "<span styke='font-size: 0.8em;'>"+getIcon(this.Category)+" "+this.Category+"</span> "+
             //getIcon(getGender(laureate.data.gender))+
             "</div>";
       }
@@ -75,18 +75,10 @@ $(document).ready( function(){
   width: 15px;
   text-align: center;
 }
-.kshfRecord{
-  width: 130px;
-}
+.kshfRecord{ width: 130px; }
 .content{
   padding: 3px;
   text-align: center;
-}
-.prizeCategory{
-  font-size: 0.8em;
-}
-.laureateName{
-  font-weight: 700;
 }
 </style>
 	</head>

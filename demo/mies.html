@@ -18,7 +18,6 @@
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
-    barChartWidth: 30,
     leftPanelLabelWidth: 150,
     rightPanelLabelWidth: 180,
     source: {
@@ -28,7 +27,7 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Continent" },
       { name: "City / Location", value: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; } },
-      { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,0; } },
+      { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,0); } },
       { name: "Type", panel: 'right' }
     ],
     recordDisplay: {
@@ -44,9 +43,7 @@ google.setOnLoadCallback(function(){
 });
     </script>
 <style type="text/css" media="screen" id="kshfStyle">
-#demo_Browser{
-  width: 1100px;
-}
+.content{ padding-bottom: 3px; }
 .workTitle{
   display: block;
   text-align: center;
@@ -75,12 +72,6 @@ google.setOnLoadCallback(function(){
        -o-filter: grayscale(0%);
       -ms-filter: grayscale(0%);
           filter: grayscale(0%);
-}
-.kshfRecord{
-  max-height: initial !important;
-}
-.content{
-  padding-bottom: 10px;
 }
 </style>
     </head>

@@ -35,7 +35,7 @@ google.setOnLoadCallback(function(){
       }
     },
     summaries: [
-      { name: "State", panel: 'right',
+      { name: "State",
         catMap: function(){ 
           var x=US_States.index_name[this.id];
           if(x) return x.geo;
@@ -60,21 +60,13 @@ google.setOnLoadCallback(function(){
 });
         </script>
 <style id="kshfStyle">
-#demo_Browser {
-  width: 1100px;
-  height: 720px;
-}
-.kshfRecord{
-  margin-top: 3px;
-}
+#demo_Browser { max-width: 900px; }
 .kshfSummary[summary_id="9"] .theLabel .fa{
   font-size: 1.4em;
   color: red;
   margin: 0px 2px;
 }
-.kshfSummary[summary_id="10"] .theLabel .fa{
-  margin: 0px 2px;
-}
+.kshfSummary[summary_id="10"] .theLabel .fa{ margin: 0px 2px; }
 .fwidth{
   font-weight: 300;
   display: inline-block;
@@ -88,9 +80,7 @@ google.setOnLoadCallback(function(){
 .injured .fa{
   margin: 0px 2px;
 }
-.time{
-  font-weight: 300;
-}
+.time{ font-weight: 300; }
 </style>
   </head>
   <body>

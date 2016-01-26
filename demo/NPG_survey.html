@@ -13,17 +13,9 @@
 
     <!-- Demos - shared -->
     <script type="text/javascript" src="../demo/js/demo.js" charset="utf-8"></script>
-    <link rel="stylesheet" href="../demo/css/style.css"/ type="text/css">
+    <link rel="stylesheet" href="../demo/css/demo.css"/ type="text/css">
 
     <script type="text/javascript">
-var likertSort = {
-  "Strongly agree": 0,
-  "Somewhat agree": 1,
-  "Neutral": 2,
-  "Somewhat disagree": 3,
-  "Strongly disagree": 4,
-};
-
 var columns = [
     "responseid",
     "-filler-",
@@ -83,6 +75,8 @@ var columns = [
     "q33_2 : \"I don't think having a professional profile on an online network is very important for a researcher\" (Agreement statements - Please indicate the extent to which you agree with the following statements:)"
 ];
 
+var likertSort = [ "Strongly agree", "Somewhat agree", "Neutral", "Somewhat disagree", "Strongly disagree", ];
+
 $(document).ready(function() {
   browser = new kshf.Browser({
     domID: "#demo_Browser",
@@ -96,7 +90,7 @@ $(document).ready(function() {
     },
     readyCb: function(browser){
       $(".kshfRecord .content").click(function(){
-        browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
+        this.parentNode.__data__.setRecordDetails(true);
       });
     },
     summaries: [
@@ -253,13 +247,6 @@ $(document).ready(function() {
 
 </script>
 <style id="kshfStyle">
-.iteminfo a{
-  color:#606060;
-  font-style:italic;
-}
-#demo_Browser{
-  margin-bottom: 30px;
-}
 blockquote {
   /*background: #f9f9f9;
   border-left: 10px solid #ccc;
@@ -305,9 +292,6 @@ blockquote:after {
 }
 .kshfRecord .content{
   cursor: pointer;
-}
-.kshfRecord{
-  max-height: 500px !important;
 }
 </style>
 	</head>
