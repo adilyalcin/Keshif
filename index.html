@@ -127,9 +127,9 @@ var loadDemoBrowser = function(){
       },
       domCb: function(d){
         d3.select(d.DOM.record).select(".content")
-          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "Explore this" }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout", function(){ this.tipsy.hide(); })
+          .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 's', title: "Explore now!" }); })
+          .on("mouseenter",function(){ this.tipsy.show(); })
+          .on("mouseleave", function(){ this.tipsy.hide(); })
       }
     }
   });
