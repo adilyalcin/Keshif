@@ -35,11 +35,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 kshf.Summary_Set = function(){};
 kshf.Summary_Set.prototype = new kshf.Summary_Base();
 var Summary_Clique_functions = {
-  initialize: function(browser,setListSummary){
+  initialize: function(browser,setListSummary,side){
     kshf.Summary_Base.prototype.initialize.call(this,browser,"Relations in "+setListSummary.summaryName);
     var me = this;
     this.setListSummary = setListSummary;
     this.panel = this.setListSummary.panel;
+
+    if(side) this.position = side;
+    else{
+      this.position = (this.panel.name==="left") ? "right" : "left";
+    }
 
     this.pausePanning=false;
     this.gridPan_x=0;
@@ -54,28 +59,12 @@ var Summary_Clique_functions = {
     this.setListSummary.refreshSortOptions();
     this.setListSummary.DOM.optionSelect.attr("dir","rtl"); // quick hack: right-align the sorting label
 
-    this.browser.ratioModeCb = function(cleared){
-      me.show_subsets = this.ratioModeActive;
-      me.refreshViz_All();
-      me.refreshViz_Axis();
-      me.refreshSetPair_Strength();
-    };
-
     this.setListSummary.cbFacetSort = function(){
-      me.updateSetPairSimilarity();
-      me.refreshSetPair_Containment();
-      me.refreshSetPair_Strength();
       me.refreshWindowSize();
-      me.refreshRow_Position();
-      me.refreshRow_LineWidths();
+      me.refreshRow();
       me.DOM.setPairGroup.attr("animate_position",false);
       me.refreshSetPair_Position();
-      setTimeout(function(){
-        me.DOM.setPairGroup.attr("animate_position",true);
-      },1000);
-      me.updateMaxAggr_Active();
-      me.refreshViz_Active();
-      me.refreshRow_Opacity();
+      setTimeout(function(){ me.DOM.setPairGroup.attr("animate_position",true); },1000);
     };
     this.setListSummary.onCategoryCull = function(){
       if(me.pausePanning) return;
@@ -90,19 +79,15 @@ var Summary_Clique_functions = {
       // do not show number labels if the row height is small
       me.DOM.chartRoot.attr("showNumberLabels",me.getRowHeight()>=30);
       
-      me.DOM.root.attr('noanim',true);
       me.DOM.setPairGroup.attr("animate_position",false);
-        me.refreshRow_LineWidths();
-        me.refreshRow_Position();
-        me.refreshSetPair_Background();
-        me.refreshSetPair_Position();
-        me.refreshViz_All();
-        me.refreshViz_Axis();
-        me.refreshWindowSize();
+      me.refreshRow();
+      me.refreshSetPair_Background();
+      me.refreshSetPair_Position();
+      me.refreshViz_All();
+      me.refreshWindowSize();
       setTimeout(function(){
-        me.DOM.root.attr('noanim',false);
         me.DOM.setPairGroup.attr("animate_position",true);
-      },100);
+      },1000);
     };
 
     this._setPairs = [];
@@ -112,10 +97,13 @@ var Summary_Clique_functions = {
 
     this.createSetPairs();
 
+    this.position = "left";
+
     // Inserts the DOM root under the setListSummary so that the matrix view is attached...
     this.DOM.root = this.setListSummary.DOM.root.insert("div",":first-child")
       .attr("class","kshfSummary setPairSummary")
-      .attr("filtered",false);
+      .attr("filtered",false)
+      .attr("position",this.position);
 
     // Use keshif's standard header
     this.insertHeader();
@@ -123,7 +111,7 @@ var Summary_Clique_functions = {
 
     this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
     this.DOM.chartRoot = this.DOM.wrapper.append("span")
-      .attr("class","Summary_Set noselect")
+      .attr("class","Summary_Set")
       .attr("noanim",false)
       .attr("show_gridlines",true);
 
@@ -178,7 +166,7 @@ var Summary_Clique_functions = {
     this.DOM.pairCount = this.DOM.belowMatrix.append("span").attr("class","pairCount matrixInfo");
     this.DOM.pairCount.append("span").attr("class","circleeee");
     this.DOM.pairCount_Text = this.DOM.pairCount.append("span").attr("class","pairCount_Text")
-      .text(""+this._setPairs.length+" pairs( "+Math.round(100*this._setPairs.length/this.getSetPairCount_Total())+"%)");
+      .text(""+this._setPairs.length+" pairs ("+Math.round(100*this._setPairs.length/this.getSetPairCount_Total())+"%)");
 
     this.DOM.subsetCount = this.DOM.belowMatrix.append("span").attr("class","subsetCount matrixInfo");
     this.DOM.subsetCount.append("span").attr("class","circleeee borrderr");
@@ -212,17 +200,27 @@ var Summary_Clique_functions = {
             var difX = mouseMovePos[0]-mouseInitPos[0];
             var difY = mouseMovePos[1]-mouseInitPos[1];
 
+            if(me.position==="right") {
+              difX *= -1;
+            }
+
             me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
+            if(me.position==="right") {
+              // gridPan will be negatiev
+              //me.gridPan_x = -me.gridPan_x;
+            }
             me.checkPan();
 
             var maxHeight = me.setListSummary.heightRow_category*me.setListSummary._cats.length - h;
 
             var t = initT-difY;
-            t = Math.min(maxHeight,Math.max(0,t));
+                t = Math.min(maxHeight,Math.max(0,t));
             var r = initR-difX;
-            r = Math.min(0,Math.max(r,-t));
+                r = Math.min(0,Math.max(r,-t));
 
-            me.panSVGViewBox(w,h,t,r);
+            if(me.position==="right") r = -r;
+
+            me.DOM.setMatrixSVG.attr("viewBox",r+" "+t+" "+w+" "+h);
 
             scrollDom.scrollTop = Math.max(0,initScrollPos-difY);
 
@@ -251,14 +249,13 @@ var Summary_Clique_functions = {
     this.updateWidthFromHeight();
     this.updateSetPairScale();
 
-    this.refreshRow_Position();
-    this.refreshRow_LineWidths();
+    this.refreshRow();
 
     this.refreshSetPair_Background();
     this.refreshSetPair_Position();
+    this.refreshSetPair_Containment();
 
     this.refreshViz_Axis();
-    this.refreshSetPair_Containment();
     this.refreshViz_Active();
 
     this.refreshWindowSize();
@@ -313,40 +310,35 @@ var Summary_Clique_functions = {
   },
   /** -- */
   checkPan: function(){
-    var maxv = 0;
-    var minv = -this.setListSummary.scrollTop_cache;
-    this.gridPan_x = Math.round(Math.min(maxv,Math.max(minv,this.gridPan_x)));
+    var maxV, minV;
+    maxV = 0;
+    minV = -this.setListSummary.scrollTop_cache;
+    this.gridPan_x = Math.round(Math.min(maxV,Math.max(minV,this.gridPan_x)));
   },
   /** -- */
   insertControls: function(){
     var me=this;
-    this.DOM.summaryControls = this.DOM.chartRoot.append("div").attr("class","summaryControls noselect")
+    this.DOM.summaryControls = this.DOM.chartRoot.append("div").attr("class","summaryControls")
       .style("height",(this.setListSummary.getHeight_Config())+"px"); // TODO: remove
 
     var buttonTop = (this.setListSummary.getHeight_Config()-18)/2;
     this.DOM.strengthControl = this.DOM.summaryControls.append("span").attr("class","strengthControl")
-      .on("click",function(){
-        me.browser.setRatioMode(me.browser.ratioModeActive!==true);
-      })
-      .style("margin-top",buttonTop+"px")
-      ;
+      .on("click",function(){ me.browser.setRatioMode(me.browser.ratioModeActive!==true); })
+      .style("margin-top",buttonTop+"px");
 
-    this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Weak")
-      .style("text-align","left");
-    this.DOM.strengthControl.append("span").text("Strength").style("padding","0px 2px");
-    this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Strong")
-      .style("text-align","right");
+    // ******************* STRENGTH CONFIG
+    this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Weak");
+    this.DOM.strengthControl.append("span").attr("class","strengthText").text("Strength");
+    this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Strong");
 
-    var dom_xxxx=this.DOM.summaryControls.append("span").attr("class","heyooo");
-    
     this.DOM.scaleLegend_SVG = this.DOM.summaryControls.append("svg").attr("xmlns","http://www.w3.org/2000/svg")
-      .attr("class","sizeLegend noselect");
+      .attr("class","sizeLegend");
 
     this.DOM.legendHeader = this.DOM.scaleLegend_SVG.append("text").attr("class","legendHeader").text("#");
     this.DOM.legend_Group = this.DOM.scaleLegend_SVG.append("g");
 
-    // ******************* ROW HEIGHT
-    var domRowHeightControl = dom_xxxx.append("span").attr("class","configRowHeight configOpt");
+    // ******************* ROW HEIGHT CONFIG
+    var domRowHeightControl = this.DOM.summaryControls.append("span").attr("class","configRowHeight configOpt");
     var sdad = domRowHeightControl.append("span").attr("class","configOpt_label")
     domRowHeightControl.append("span").attr("class","configOpt_icon")
       .append("span").attr("class","fa fa-search-plus");
@@ -383,18 +375,9 @@ var Summary_Clique_functions = {
     var newRows = this.DOM.setMatrixSVG.select("g.rows").selectAll("g.row")
       .data(this._sets, function(d,i){ return d.id(); })
     .enter().append("g").attr("class","row")
-      .attr("highlight",false)
-      .each(function(d){
-        d.DOM.matrixRow = this;
-      })
-      .on("mouseenter",function(d,i){
-        this.setAttribute("highlight","selected");
-        me.setListSummary.onCatEnter(d);
-      })
-      .on("mouseleave",function(d,i){
-        this.setAttribute("highlight",false);
-        me.setListSummary.onCatLeave(d);
-      });
+      .each(function(d){ d.DOM.matrixRow = this; })
+      .on("mouseenter",function(d){ me.setListSummary.onCatEnter(d); })
+      .on("mouseleave",function(d){ me.setListSummary.onCatLeave(d); });
 
     // tmp is used to parse html text. TODO: delete the temporary DOM
     var tmp = document.createElement("div");
@@ -421,78 +404,58 @@ var Summary_Clique_functions = {
     this.DOM.line_vert_label = this.DOM.setMatrixSVG.selectAll("g.rows > g.row > text.label_vert");
   },
   /** -- */
+  onSetPairEnter: function(aggr){
+    aggr.set_1.DOM.matrixRow.setAttribute("selection","selected");
+    aggr.set_2.DOM.matrixRow.setAttribute("selection","selected");
+    aggr.set_1.DOM.aggrGlyph.setAttribute("selectType","and");
+    aggr.set_2.DOM.aggrGlyph.setAttribute("selectType","and");
+    aggr.set_1.DOM.aggrGlyph.setAttribute("selection","selected");
+    aggr.set_2.DOM.aggrGlyph.setAttribute("selection","selected");
+
+    aggr.records.forEach(function(record){ record.addForHighlight(); });
+    this.browser.setSelect_Highlight(this,aggr);
+  },
+  /** -- */
+  onSetPairLeave: function(aggr){
+    aggr.set_1.DOM.matrixRow.removeAttribute("selection");
+    aggr.set_2.DOM.matrixRow.removeAttribute("selection");
+    aggr.set_1.DOM.aggrGlyph.removeAttribute("selection");
+    aggr.set_2.DOM.aggrGlyph.removeAttribute("selection");
+    this.browser.clearSelect_Highlight();
+  },
+  /** -- */
   insertSetPairs: function(){
     var me=this;
     var newCliques = this.DOM.setMatrixSVG.select("g.setPairGroup").selectAll("g.setPairGlyph")
       .data(this._setPairs,function(d,i){ return i; })
     .enter().append("g").attr("class","aggrGlyph setPairGlyph")
-      .each(function(d){
-        d.DOM.aggrGlyph = this;
-      })
-      .on("mouseenter",function(d){
-        var set_1 = d.set_1;
-        var set_2 = d.set_2;
-        
-        set_1.DOM.matrixRow.setAttribute("highlight","selected");
-        set_2.DOM.matrixRow.setAttribute("highlight","selected");
-
-        set_1.DOM.aggrGlyph.setAttribute("selectType","and");
-        set_2.DOM.aggrGlyph.setAttribute("selectType","and");
-
-        // modify the attribute so that the and/or blocks are not shown per set name
-        set_1.DOM.aggrGlyph.setAttribute("highlight","selected-2");
-        set_2.DOM.aggrGlyph.setAttribute("highlight","selected-2");
-
-        var timeoutTime = 500;
-        if(me.browser.vizCompareActive) timeoutTime = 0;
-        this.resultPreviewShowTimeout = setTimeout(function(){
-          d.records.forEach(function(record){ record.addForHighlight(); });
-          me.browser.setSelect_Highlight(me,d);
-        },timeoutTime);
-      })
-      .on("mouseleave",function(d){
-        if(this.resultPreviewShowTimeout){
-            clearTimeout(this.resultPreviewShowTimeout);
-            this.resultPreviewShowTimeout = null;
+      .each(function(d){ d.DOM.aggrGlyph = this; })
+      .on("mouseenter",function(aggr){
+        if(me.browser.mouseSpeed<0.2) {
+          me.onSetPairEnter(aggr);
+          return;
         }
-
-        var set_1 = d.set_1;
-        var set_2 = d.set_2;
-
-        set_1.DOM.matrixRow.setAttribute("highlight",false);
-        set_2.DOM.matrixRow.setAttribute("highlight",false);
-
-        set_1.DOM.aggrGlyph.setAttribute("highlight",false);
-        set_2.DOM.aggrGlyph.setAttribute("highlight",false);
-
-        me.browser.records.forEach(function(item){
-          if(item.DOM.result) item.DOM.result.setAttribute("highlight",false);
-        })
-
-        me.browser.clearSelect_Highlight();
+        this.highlightTimeout = window.setTimeout( function(){ me.onSetPairEnter(aggr) }, me.browser.mouseSpeed*500);
       })
-      .on("click",function(d){
-        var set_1 = d.set_1;
-        var set_2 = d.set_2;
-
-        if(set_1.DOM.aggrGlyph.tipsy_active) set_1.DOM.aggrGlyph.tipsy_active.hide();
-        if(set_2.DOM.aggrGlyph.tipsy_active) set_2.DOM.aggrGlyph.tipsy_active.hide();
-          me.setListSummary.filterCategory(set_1,"AND");
-          me.setListSummary.filterCategory(set_2,"AND");
+      .on("mouseleave",function(aggr){
+        if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
+        me.onSetPairLeave(aggr);
       })
-      ;
+      .on("click",function(aggr){
+        me.setListSummary.filterCategory(aggr.set_1,"AND");
+        me.setListSummary.filterCategory(aggr.set_2,"AND");
+      });
 
     newCliques.append("rect").attr("class","setPairBackground").attr("rx",3).attr("ry",3);
     newCliques.append("circle").attr("class","aggr active").attr("cx",0).attr("cy",0).attr("r",0);
-    newCliques.append("path").attr("class","aggr preview")
-      .each(function(aggr){aggr.currentPreviewAngle=-Math.PI/2;});
+    newCliques.append("path").attr("class","aggr preview").each(function(aggr){ aggr.currentPreviewAngle=-Math.PI/2; });
     newCliques.append("path").attr("class","aggr compare");
 
-    this.DOM.aggrGlyphs          = this.DOM.setPairGroup.selectAll("g.aggrGlyph");
-    this.DOM.setPairBackground    = this.DOM.setPairGroup.selectAll("g.aggrGlyph > rect.setPairBackground");
-    this.DOM.setPairGlyph_Active  = this.DOM.setPairGroup.selectAll("g.aggrGlyph > .aggr.active");
-    this.DOM.setPairGlyph_Preview = this.DOM.setPairGroup.selectAll("g.aggrGlyph > .aggr.preview");
-    this.DOM.setPairGlyph_Compare = this.DOM.setPairGroup.selectAll("g.aggrGlyph > .aggr.compare");
+    this.DOM.aggrGlyphs           = this.DOM.setPairGroup.selectAll("g.setPairGlyph");
+    this.DOM.setPairBackground    = this.DOM.setPairGroup.selectAll("g.setPairGlyph > rect.setPairBackground");
+    this.DOM.setPairGlyph_Active  = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.active");
+    this.DOM.setPairGlyph_Preview = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.preview");
+    this.DOM.setPairGlyph_Compare = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.compare");
   },
   /** -- */
   printAggrSelection: function(aggr){
@@ -519,19 +482,17 @@ var Summary_Clique_functions = {
         return "translate("+x+" "+y+") rotate(-90)";//" rotate(45) ";
       });
   },
-  /** 
-   * Notes:
-   * - We can have multiple trees (there can be sub-groups disconnected from each other) 
-   */
+  /** --*/
   updatePerceptualOrder: function(){
     var me=this;
     
     // Edges are set-pairs with at least one element inside (based on the filtering state)
     var edges = this._setPairs.filter(function(setPair){ return setPair.aggregate_Active>0; });
-    // Notes are the set-categories
+    // Nodes are the set-categories
     var nodes = this.setListSummary._cats;
 
     // Initialize per-node (per-set) data structures
+
     nodes.forEach(function(node){
       node.MST = {
         tree: new Object(), // Some unqiue identifier, to check if two nodes are in the same tree.
@@ -611,6 +572,8 @@ var Summary_Clique_functions = {
     // Identify the root-nodes of resulting MSTs
     var treeRootNodes = nodes.filter(function(node){ return node.MST.parentNode===null; });
 
+    // We can have multiple trees (there can be sub-groups disconnected from each other) 
+
     // Update tree size recursively by starting at the root nodes
     var updateTreeSize = function(node){
       node.MST.treeSize=1;
@@ -637,6 +600,8 @@ var Summary_Clique_functions = {
   refreshViz_Axis: function(){
     var me=this;
 
+    this.refreshSetPair_Strength();
+
     if(this.browser.ratioModeActive){
       this.DOM.scaleLegend_SVG.style("display","none");
       return;
@@ -648,10 +613,8 @@ var Summary_Clique_functions = {
       .attr("height",this.setPairDiameter+10)
       .attr("viewBox","0 0 "+(this.setPairDiameter+50)+" "+(this.setPairDiameter+10));
 
-    this.DOM.legend_Group
-      .attr("transform", "translate("+(this.setPairRadius)+","+(this.setPairRadius+18)+")");
-    this.DOM.legendHeader
-      .attr("transform", "translate("+(2*this.setPairRadius+3)+",6)");
+    this.DOM.legend_Group.attr("transform", "translate("+(this.setPairRadius)+","+(this.setPairRadius+18)+")");
+    this.DOM.legendHeader.attr("transform", "translate("+(2*this.setPairRadius+3)+",6)");
 
     var maxVal = this._maxSetPairAggr_Active;
     
@@ -660,8 +623,7 @@ var Summary_Clique_functions = {
 
     this.DOM.legend_Group.selectAll("g.legendMark").remove();
 
-    var tickDoms = this.DOM.legend_Group.selectAll("g.legendMark")
-      .data(tickValues,function(i){return i;});
+    var tickDoms = this.DOM.legend_Group.selectAll("g.legendMark").data(tickValues,function(i){return i;});
 
     this.DOM.legendCircleMarks = tickDoms.enter().append("g").attr("class","legendMark");
 
@@ -733,41 +695,42 @@ var Summary_Clique_functions = {
   refreshWindowSize: function(){
     var w=this.getWidth();
     var h=this.getHeight();
-    this.DOM.wrapper.style("height",(
-      this.setListSummary.getHeight()-this.setListSummary.getHeight_Header())+"px");
+    this.DOM.wrapper.style("height",( this.setListSummary.getHeight()-this.setListSummary.getHeight_Header())+"px");
     this.DOM.setMatrixBackground
       .attr("x",-w*24)
       .attr("y",-h*24)
       .attr("width",w*50)
       .attr("height",h*50);
     this.DOM.root
-      .style("left",(-w)+"px")
-
+      .style(this.position,(-w)+"px")
+      .style(this.position==="left"?"right":"left","initial");
+      ;
     if(!this.pausePanning) this.refreshSVGViewBox();
   },
   /** -- */
-  panSVGViewBox: function(w,h,t,r){
-    this.DOM.setMatrixSVG.attr("viewBox",r+" "+t+" "+w+" "+h);
+  setPosition: function(p){
+    if(p===this.position) return;
+    this.position = p;
+    this.DOM.root.attr("position",this.position);
+    this.refreshWindowSize();
+    this.refreshRow_LineWidths();
+    this.refreshSetPair_Position();
   },
   /** -- */
   refreshSVGViewBox: function(){
     var w=this.getWidth();
     var h=this.getHeight();
     var t=this.setListSummary.scrollTop_cache;
-    var r=Math.min(-t-this.gridPan_x,0);  // r cannot be positive
-    this.DOM.setMatrixSVG
-      .attr("width",w)
-      .attr("height",h)
-      .attr("viewBox",r+" "+t+" "+w+" "+h);
-
+    var r;
+    if(this.position==="left"){
+      r=Math.min(-t-this.gridPan_x,0); // r cannot be positive
+    }
+    if(this.position==="right"){
+      r=Math.max(t+this.gridPan_x,0);
+    }
+    console.log("gridPan_x: "+this.gridPan_x);
+    this.DOM.setMatrixSVG.attr("width",w).attr("height",h).attr("viewBox",r+" "+t+" "+w+" "+h);
     this.refreshLabel_Vert_Show();
-  },
-  /** -- */
-  refreshViz_All: function(){
-    this.updateMaxAggr_Active();
-    this.refreshViz_Active();
-    this.refreshViz_Highlight();
-    this.refreshViz_Compare();
   },
   /** -- */
   refreshSetPair_Background: function(){
@@ -792,15 +755,12 @@ var Summary_Clique_functions = {
     var me=this;
 
     var insertToClique = function(set_1,set_2,record){
-      // avoid self reference and adding the same data item twice, once for A-B, once for B-A
-      // set_2.id() must be bigger than set1_.id()
+      // avoid self reference and adding the same data item twice (insert only A-B, not B-A or A-A/B-B)
       if(set_2.id()<=set_1.id()) return;
 
-      if(me._setPairs_ID[set_1.id()]===undefined){
-        me._setPairs_ID[set_1.id()] = {};
-      }
-      var targetClique = me._setPairs_ID[set_1.id()][set_2.id()];
+      if(me._setPairs_ID[set_1.id()]===undefined) me._setPairs_ID[set_1.id()] = {};
 
+      var targetClique = me._setPairs_ID[set_1.id()][set_2.id()];
       if(targetClique===undefined){
         targetClique = new kshf.Aggregate();
         targetClique.init([me._setPairs.length],0);
@@ -848,26 +808,34 @@ var Summary_Clique_functions = {
       var i=d.orderIndex;
       var height=((me.setListSummary.catCount_Visible-i-1)*setPairDiameter);
       var right=((i+0.5)*setPairDiameter);
-      this.setAttribute("x1",totalWidth-right);
-      this.setAttribute("x2",totalWidth-right);
+      var m=totalWidth-right;
+      if(me.position==="right") m = right;
+      this.setAttribute("x1",m);
+      this.setAttribute("x2",m);
       this.setAttribute("y2",height);
     });
     // horizontal
-    this.DOM.line_horz.attr("x2",totalWidth).attr("x1",function(d){
-      return totalWidth-((d.orderIndex+0.5)*setPairDiameter)
-    });
+    this.DOM.line_horz
+      .attr("x2",(this.position==="left")?totalWidth : 0)
+      .attr("x1",function(d){
+        var m = ((d.orderIndex+0.5)*setPairDiameter);
+        return (me.position==="left") ? (totalWidth-m) : m;
+      });
     this.DOM.line_horz_label.attr("transform",function(d){
-      return "translate("+(totalWidth-((d.orderIndex+0.5)*setPairDiameter)-2)+" 0)";
+      var m=((d.orderIndex+0.5)*setPairDiameter)+2;
+      if(me.position==="left") m = totalWidth-m;
+      return "translate("+m+" 0)";
     });
-  },
-  /** -- */
-  refreshRow_Opacity: function(){
-    this.DOM.setRows.style("opacity",function(setRow){ return (setRow.aggregate_Active>0)?1:0.3; });
   },
   /** -- */
   refreshRow_Position: function(){
     var rowHeight = this.setPairDiameter;
     this.DOM.setRows.attr("transform",function(set){ return "translate(0,"+((set.orderIndex+0.5)*rowHeight)+")"; });
+  },
+  /** -- */
+  refreshRow: function(){
+    this.refreshRow_Position();
+    this.refreshRow_LineWidths();
   },
   /** -- */
   refreshSetPair_Position: function(){
@@ -876,7 +844,8 @@ var Summary_Clique_functions = {
     this.DOM.aggrGlyphs.each(function(setPair){
       var i1 = setPair.set_1.orderIndex;
       var i2 = setPair.set_2.orderIndex;
-      var left = w-(Math.min(i1,i2)+0.5)*me.setPairDiameter;
+      var left = (Math.min(i1,i2)+0.5)*me.setPairDiameter;
+      if(me.position==="left") left = w-left;
       var top  = (Math.max(i1,i2)+0.5)*me.setPairDiameter;
       kshf.Util.setTransform(this,"translate("+left+"px,"+top+"px)");
     });
@@ -904,9 +873,8 @@ var Summary_Clique_functions = {
     var largeArcFlag = (endAngleRad>Math.PI/2)?1:0;
     return "M 0,"+(-r)+" A "+r+","+r+" "+largeArcFlag+" "+largeArcFlag+" 1 "+endX+","+endY+" L0,0";
   },
-  /** -- */
+  /** setPairGlyph do not have a total component */
   refreshViz_Total: function(){
-    // setPairGlyph do not have a total component
   },
   /** -- */
   refreshViz_Active: function(){
@@ -930,9 +898,6 @@ var Summary_Clique_functions = {
           d.currentPreviewAngle = newAngle;
           return me.getPiePath(newAngle,(d.subset!=='' && me.browser.ratioModeActive)?2:0,ratio);
         };
-      })
-      .each(function(d){
-        this.parentNode.setAttribute("highlight",d.aggregate_Preview>0);
       });
   },
   /** -- */
@@ -968,7 +933,7 @@ var Summary_Clique_functions = {
           setPair.subset = '';
         }
       })
-      .attr("subset",function(setPair){ return setPair.subset!==''; });
+      .attr("subset",function(setPair){ return (setPair.subset!=='')?true:null; });
 
     this.DOM.subsetCount.style("display",(numOfSubsets===0)?"none":null);
     this.DOM.subsetCount_Text.text(numOfSubsets);
@@ -979,8 +944,6 @@ var Summary_Clique_functions = {
   refreshSetPair_Strength: function(){
     var me=this;
     
-    this.DOM.chartRoot.attr("showStrength",this.browser.ratioModeActive);
-
     var strengthColor = d3.interpolateHsl(d3.rgb(230, 230, 247),d3.rgb(159, 159, 223));
     this.DOM.setPairGlyph_Active.style("fill",function(setPair){
       if(!me.browser.ratioModeActive) return null;
@@ -1003,21 +966,22 @@ var Summary_Clique_functions = {
         var i2 = setPair.set_2.orderIndex;
         var c1 = setPair.set_1.aggregate_Active;
         var c2 = setPair.set_2.aggregate_Active;
-        if((i1<i2 && c1<c2) || (i1>i2 && c1>c2)) {
-          halfCircle = halfCircle/2;
-        }
+        if((i1<i2 && c1<c2) || (i1>i2 && c1>c2)) halfCircle = halfCircle/2;
         this.style.strokeDashoffset = halfCircle+"px";
       });
     }
   },
   /** -- */
   updateAfterFilter: function () {
-    // return
-    // TODO??
+    if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
+    this.updateMaxAggr_Active();
+    this.refreshViz_All();
+
+    this.DOM.setRows.style("opacity",function(setRow){ return (setRow.aggregate_Active>0)?1:0.3; });
+    this.updateSetPairSimilarity();
+    this.refreshSetPair_Containment();
   },
-
 };
-
 for(var index in Summary_Clique_functions){
-    kshf.Summary_Set.prototype[index] = Summary_Clique_functions[index];
+  kshf.Summary_Set.prototype[index] = Summary_Clique_functions[index];
 }

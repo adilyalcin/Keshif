@@ -2271,11 +2271,9 @@ kshf.Browser = function(options){
     // Callbacks
     this.newSummaryCb = options.newSummaryCb;
     this.readyCb = options.readyCb;
-    this.updateCb = options.updateCb;
     this.previewCb = options.previewCb;
     this.previewCompareCb = options.previewCompareCb;
     this.preview_not = false;
-    this.ratioModeCb = options.ratioModeCb;
 
     this.itemName = options.itemName || "";
     if(options.itemDisplay) options.recordDisplay = options.itemDisplay;
@@ -4102,13 +4100,8 @@ kshf.Browser.prototype = {
     updateAfterFilter: function () {
       this.clearSelect_Compare();
       this.clearSelect_Compare_Crumb();
-      // basically, propogate call under every summary and recordDisplay
-      this.summaries.forEach(function(summary){
-        if(summary.inBrowser()) summary.updateAfterFilter();
-      });
+      this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
-
-      if(this.updateCb) this.updateCb(this);
     },
     /** -- */
     refresh_filterClearAll: function(){
@@ -4123,7 +4116,6 @@ kshf.Browser.prototype = {
         summary.refreshViz_All();
         summary.refreshMeasureLabel();
       });
-      if(this.ratioModeCb) this.ratioModeCb.call(this,!how);
     },
     /** -- */
     setPercentMode: function(how){
@@ -4290,19 +4282,16 @@ kshf.Browser.prototype = {
     /** -- */
     setMeasureSummary: function(summary){
       if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
+        // Clearing measure summary (defaulting to count)
         if(this.measureSummary===undefined) return; // No update
         this.measureSummary = undefined;
-        this.records.forEach(function(record){
-          record.aggregate_Self = 1; // COUNT FUNCTION (NUMBER OF RECORDS)
-        });
+        this.records.forEach(function(record){ record.aggregate_Self = 1; });
         this.DOM.measureAggrType.text("");
       } else {
-        if(this.measureSummary===summary) returnl // No update
+        if(this.measureSummary===summary) return; // No update
         this.measureSummary = summary;
         summary.initializeAggregates();
-        this.records.forEach(function(record){
-          record.aggregate_Self = summary.itemV(record);
-        });
+        this.records.forEach(function(record){ record.aggregate_Self = summary.getRecordValue(record); });
         this.DOM.measureAggrType.html("Total "+summary.summaryName+" of ");
       }
       this.allAggregates.forEach(function(aggr){ aggr.resetAggregateMeasures(); });
@@ -4504,6 +4493,16 @@ kshf.Browser.prototype = {
       }
 
       if(_val<0) _val=0; // TODO? There is it, again... Just sanity I guess
+
+      if(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g"){
+        // MAP - cannot insert % as an inline tag
+        if(this.percentModeActive){
+          return _val.toFixed(0)+"%";
+        } else {
+          return kshf.Util.formatForItemCount(_val);
+        }
+      }
+
       if(this.percentModeActive){
         return _val.toFixed(0)+"<span class='unitName'>%</span>";
       } else {
@@ -5298,8 +5297,8 @@ kshf.Summary_Base.prototype = {
     if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
     this.refreshViz_Total();
     this.refreshViz_Active();
-    this.refreshViz_Compare();
     this.refreshViz_Highlight();
+    this.refreshViz_Compare();
     this.refreshViz_Axis();
   },
   /** -- */
@@ -6327,7 +6326,8 @@ var Summary_Categorical_functions = {
       this.DOM.chartCatLabelResize.style("height",this.getHeight_VisibleAttrib()+"px");
 
       setTimeout(function(){ me.browser.setNoAnim(false); },100);
-    },    /** -- */
+    },
+    /** -- */
     updateAfterFilter: function(){
       if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
       var me=this;
@@ -7591,7 +7591,7 @@ var Summary_Interval_functions = {
     initializeAggregates: function(){
       if(this.aggr_initialized) return;
       var me = this;
-      this.itemV = function(record){ return record._valueCache[me.summaryID]; };
+      this.getRecordValue = function(record){ return record._valueCache[me.summaryID]; };
 
       this.records.forEach(function(record){
         var v=this.summaryFunc.call(record.data,record);
@@ -7614,14 +7614,14 @@ var Summary_Interval_functions = {
 
       // remove records that map to null / undefined
       this.filteredItems = this.records.filter(function(record){
-        var v = me.itemV(record);
+        var v = me.getRecordValue(record);
         return (v!==undefined && v!==null);
       });
 
       // Sort the items by their attribute value
       var sortValue = this.hasTime?
-          function(a){ return me.itemV(a).getTime(); }:
-          function(a){ return me.itemV(a); };
+          function(a){ return me.getRecordValue(a).getTime(); }:
+          function(a){ return me.getRecordValue(a); };
       this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
 
       this.updateIntervalRangeMinMax();
@@ -7824,8 +7824,8 @@ var Summary_Interval_functions = {
     },
     /** -- */
     updateIntervalRangeMinMax: function(){
-      this.intervalRange.min = d3.min(this.filteredItems,this.itemV);
-      this.intervalRange.max = d3.max(this.filteredItems,this.itemV);
+      this.intervalRange.min = d3.min(this.filteredItems,this.getRecordValue);
+      this.intervalRange.max = d3.max(this.filteredItems,this.getRecordValue);
       this.intervalRange.active = {
         min: this.intervalRange.min,
         max: this.intervalRange.max
@@ -7871,7 +7871,7 @@ var Summary_Interval_functions = {
         if(this.intervalRange.min<=0){
           var x=this.filteredItems.length;
           this.filteredItems = this.filteredItems.filter(function(record){ 
-            var v=this.itemV(record)!==0;
+            var v=this.getRecordValue(record)!==0;
             if(v===false) {
               record._valueCache[this.summaryID] = null;
               // TODO: Remove from existing aggregate for this summary
@@ -7884,7 +7884,7 @@ var Summary_Interval_functions = {
           }
         }
         // cannot be zero.
-        var minnn = d3.min(this.filteredItems,function(record){ var v=me.itemV(record); if(v>0) return v; } );
+        var minnn = d3.min(this.filteredItems,function(record){ var v=me.getRecordValue(record); if(v>0) return v; } );
         this.intervalRange.active.min = Math.max(minnn, this.intervalRange.active.min);
         this.summaryFilter.active.min = Math.max(minnn, this.summaryFilter.active.min);
       }
@@ -8126,7 +8126,7 @@ var Summary_Interval_functions = {
           .on("mouseover",function(){ 
             this.tipsy.show();
             me.filteredItems.forEach(function(record){ 
-              var v = me.itemV(record);
+              var v = me.getRecordValue(record);
               if(v<me.quantile_val[qb[0]] || v>me.quantile_val[qb[1]]) return;
               record.addForHighlight();
             });
@@ -8422,7 +8422,7 @@ var Summary_Interval_functions = {
 
       if(ticksChanged || force){
         this.intervalTicks = ticks;
-        var itemV = this.itemV;
+        var getRecordValue = this.getRecordValue;
 
         // Remove existing aggregates from browser
         if(this.histBins){
@@ -8446,7 +8446,7 @@ var Summary_Interval_functions = {
         }
         // distribute records across bins
         this.filteredItems.forEach(function(record){
-          var v = itemV(record);
+          var v = getRecordValue(record);
           if(v===null || v===undefined) return;
           if(v<this.intervalRange.active.min) return;
           if(v>this.intervalRange.active.max) return;
@@ -9397,8 +9397,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     updateAfterFilter: function(){
-      if(this.isEmpty() || this.collapsed) return;
-      if(this.panel===undefined) return;
+      if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
       this.updateBarPreviewScale2Active();
       this.refreshMeasureLabel();
       if(this.percentileChartVisible) this.updatePercentiles();
@@ -9409,16 +9408,15 @@ var Summary_Interval_functions = {
       this.updateBarScale2Active();
       this.refreshBins_Translate();
       this.refreshViz_Scale();
-      this.refreshViz_Compare();
-
       this.refreshViz_Highlight();
+      this.refreshViz_Compare();
       this.refreshViz_Axis();
     },
     /** -- */
     setRecordValue: function(record){
       if(!this.inBrowser()) return;
       if(this.DOM.inited===false) return;
-      var v = this.itemV(record);
+      var v = this.getRecordValue(record);
       if(v===null) {
         this.DOM.unmapped_records.attr("selection","onRecord");
         return;
@@ -9448,7 +9446,7 @@ var Summary_Interval_functions = {
       // the items are already sorted by their numeric value, it's just a linear pass.
       var values = [];
       this.filteredItems.forEach(function(record){
-        if(record.isWanted) values.push(me.itemV(record));
+        if(record.isWanted) values.push(me.getRecordValue(record));
       });
 
       this.quantile_val = {};

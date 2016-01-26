@@ -149,6 +149,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .chartAxis_Measure > .tick > .text::after{ content: "%"; }
       .scaleBound::after{ content: "%"; }
       .highlightedAggrValuePointer{ display: block; }
+      .aggr.active[subset]{ // setPair
+        stroke-width: 2px;
+        stroke: @color_set_containment;
+      }
     }
     &[previewcompare="true"]{
       .compare    { opacity: 1 !important; }
@@ -449,12 +453,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
           > .fa{ color: gray; }
         }
-        &[filtered=true]{
-          display: none;
-        }
-        &[hidden=true]{
-          display: none;
-        }
+        &[filtered='true']{ display: none; }
+        &[hidden='true']{ display: none; }
         &[aggr_initialized=false]{
           > .nuggetViz {
             > .nuggetInfo{
@@ -1870,7 +1870,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .aggr{
           cursor: pointer;
-          .transition(@reorder_animation);
+          .transition(~'all 500ms linear');
           &.active{ fill: @color_bars; }
           &.preview{ fill: @color_bar_preview; }
           &.compare{
@@ -1947,7 +1947,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &.compare{ height: 3px; }
         }
       }
-    } // .  h
+    } // aggrGlyph
 
 
     .kshfRecord{
@@ -2026,18 +2026,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[selection^="onRecord"]  { 
         padding: 0px;
-        background-color: @color_onRecord_back !important; // High priority
-        border: solid 1px darken(@color_onRecord_back,20%) !important; // High priority
+        background-color: @color_onRecord_back !important;
+        border: solid 1px darken(@color_onRecord_back,20%) !important;
       }
       &[selection="highlighted"]{ 
         padding: 0px;
         background-color: #F2E9E7;
-        border: solid 1px darken(#F2E9E7,20%);
+        border: solid 1px darken(#F2E9E7,20%) !important;
       }
       &[recCompared="true"]{
         padding: 0px;
         background-color: #EBF0F0;
-        border: solid 1px darken(#EBF0F0,20%);
+        border: solid 1px darken(#EBF0F0,20%) !important;
       }
     } // kshfRecord
 
@@ -3212,6 +3212,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             .display(flex);
             .flex-direction(row);
             width: 100%;
+            padding-top: 0px;
+            border-top: solid 1px lightgray;
             > .recordSortCol{
               padding-right: 3px;
               padding-top: 2px;

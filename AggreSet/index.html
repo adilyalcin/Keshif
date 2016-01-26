@@ -76,15 +76,15 @@ function loadDemo(config){
       setDegreeSummary.addToPanel(browser.panels[degreePanel],1);
     }
     theSetSummary = new kshf.Summary_Set();
-    theSetSummary.initialize(browser,setListSummary);
+    theSetSummary.initialize(browser,setListSummary,"left");
 
     browser.summaries.push(theSetSummary);
 
     if(config.id==="socialgraph" || config.id==="CpdsVsProteinFam" || config.id==="tedTalks" || config.id==="simpsons"){
-      theSetSummary.setListSummary.setHeightRow_attrib(40);
+      theSetSummary.setListSummary.setHeight_Category(40);
       theSetSummary.DOM.chartRoot.attr("show_gridlines",false);
       theSetSummary.setListSummary.cbSetHeight();
-      theSetSummary.refreshClique_Strength();
+      theSetSummary.refreshSetPair_Strength();
     }
 
     setListSummary.setShowSetMatrix(true);

@@ -23,9 +23,38 @@
       display: none;
       position: absolute;
       top: 0px;
+      background-color: white;
+      &[position="left"]{
+        .configOpt{ right: 2px; }
+        .sizeLegend{ left: 10px; }
+        .belowMatrix{ text-align: right; }
+        .rows > .row > .label{ text-anchor: end; }
+      }
+      &[position="right"]{
+        .configOpt{ left: 2px; }
+        .sizeLegend{ right: 0px; }
+        .belowMatrix{ text-align: left; }
+        .rows > .row > .label{ text-anchor: start; }
+      }
     }
 		&[show_set_matrix=true] > .kshfSummary.setPairSummary{ display: block; }
 	}
+
+  &[ratiomode='true']{
+    .Summary_Set > .summaryControls > .strengthControl {
+      background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e6e6f7), color-stop(100%,#9595db)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* IE10+ */
+      background: linear-gradient(to right, #e6e6f7 0%,#9595db 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6f7', endColorstr='#9595db',GradientType=1 ); /* IE6-9 */
+      border-right-color: @color_set_containment;
+      color: black;
+      text-shadow: 0px 0px 2px #FFFFFF;
+      > .strengthLabel{ display: inline-block; }
+    }
+  }
 
 	.Summary_Set{
 		display: block;
@@ -33,12 +62,11 @@
 		width: 100%;
 		height: 100%;
 		box-sizing: border-box;
+    .user-select(none);
 		&[noanim="false"]{
 			.rows > .row {
 				.transition(@reorder_animation);
-				> .line{
-					.transition(~'all 200ms ease-in-out');
-				}
+				> .line{ .transition(~'all 200ms ease-in-out'); }
 			}
 		}
 		> .summaryControls {
@@ -60,30 +88,30 @@
 				padding: 1px 3px;
 				color: #474747;
 				cursor: pointer;
-				&:hover{
-					border-color: gray;
-				}
+        .user-select(none);
+				&:hover{ border-color: gray; }
 				>.strengthLabel{
 					display: none;
 					width: 36px;
 					font-style: italic;
 					font-size: 0.8em;
+          &:nth-child(0){
+            text-align: left;
+          }
+          &:nth-child(1){
+            text-align: right;
+          }
 				}
+        >.strengthText{ padding: 0px 2px; }
 			}
-			> .heyooo{
-				display: block;
-				position: absolute;
-				right: 3px;
-				top: 0px;
-				font-size: 0.8em;
-			}
-			.configOpt{
+			> .configOpt{
 				display: inline-block;
+        position: absolute;
+        top: 0px;
+        font-size: 0.8em;
 				background-color: rgb(234, 234, 234);
 				cursor: pointer;
-				border-width: 0px;
-				border-style: solid;
-				border-color: rgb(234, 234, 234);
+				border: 0px solid rgb(234, 234, 234);
 				border-radius: 15px;
 				cursor: default;
 				.sdsdssds{
@@ -111,9 +139,7 @@
 					font-size: 0.9em;
 					padding-left: 3px;
 					height: 15px;
-					> .fa{
-						margin-right: 3px;
-					}
+					> .fa{ margin-right: 3px; }
 				}
 				&.configRowHeight{
 					.fa:hover{
@@ -121,19 +147,15 @@
 						cursor: pointer;
 					}
 				}
-				&:hover{
-					> .configOpt_label{
-						display: inline;
-					}
-				}
+				&:hover > .configOpt_label{ display: inline; }
 			}
 
 			svg.sizeLegend{
 				position: absolute;
-				left: 10px;
 				margin-top: 4px;
 				overflow: visible;
 				cursor: default;
+        .user-select(none);
 				> .legendHeader{
 					font-size: 0.7em;
 					alignment-baseline: central;
@@ -207,7 +229,6 @@
 					font-size: 13px;
 					font-weight: 300;
 					font-size: 0.8em;
-					text-anchor: end;
 					alignment-baseline: middle;
 					&.label_vert{
 						text-anchor: start;
@@ -220,9 +241,7 @@
             font-weight: 700;
             &.label_vert[show=true]{ display: block; }
           }
-          > .line{
-            stroke-width: 2px;
-          }
+          > .line{ stroke-width: 2px; }
         }
 				&[selection="selected"] {
 					> .label{ fill: @color_preview; }
@@ -235,48 +254,14 @@
 			}
 		} // .rows
 
-		g.setPairGroup{
-			&[animate_position="true"]> .setPairGlyph {
-				.transition(@reorder_animation);
-			}
-		} //.setPairGroup
+		g.setPairGroup[animate_position="true"]> .setPairGlyph { .transition(~'all 500ms linear'); }
+    g.setPairGroup[animate_position="false"]> .setPairGlyph { .transition(none); }
 
-		&[showStrength='true']{
-			.summaryControls > .strengthControl {
-				background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%); /* FF3.6+ */
-				background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e6e6f7), color-stop(100%,#9595db)); /* Chrome,Safari4+ */
-				background: -webkit-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Chrome10+,Safari5.1+ */
-				background: -o-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Opera 11.10+ */
-				background: -ms-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* IE10+ */
-				background: linear-gradient(to right, #e6e6f7 0%,#9595db 100%); /* W3C */
-				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6f7', endColorstr='#9595db',GradientType=1 ); /* IE6-9 */
-				border-right-color: @color_set_containment;
-				color: black;
-				text-shadow: 0px 0px 2px #FFFFFF;
-				> .strengthLabel{
-					display: inline-block;
-				}
-			}
-			.setPairGlyph[subset=true]{
-				stroke-width: 2px;
-				stroke: @color_set_containment;
-			}
-		}
-		&[show_gridlines='false']{
-			.rows > .row > .line{
-				opacity: 0.3;
-			}
-		}
-		&[show_gridlines='true']{
-			.configGridLine >.configOpt_icon{
-				background-color: #E5E5E5;
-			}
-		}
+		&[show_gridlines='false'] .rows > .row > .line{ opacity: 0.3; }
 
 		> .belowMatrix{
 			position: relative;
 			height: 18px;
-			text-align: right;
 			>.matrixInfo{
 				font-size: 0.7em;
 				color: #919191;
@@ -297,9 +282,7 @@
 						border-bottom: solid 2px @color_set_containment;
 					}
 				}
-        &.subsetCount > .subsetCount_Text:after{
-          content: " Subsets ⊆";
-        }
+        .subsetCount_Text:after{ content: " Subsets ⊆"; }
 			}
 		}
 	} // Summary_Set

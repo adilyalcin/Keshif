@@ -182,6 +182,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[ratiomode=true] .highlightedAggrValuePointer {
   display: block;
 }
+.kshf[ratiomode=true] .aggr.active[subset] {
+  stroke-width: 2px;
+  stroke: #4000ff;
+}
 .kshf[previewcompare="true"] .compare {
   opacity: 1 !important;
 }
@@ -555,10 +559,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf > .attributePanel .nugget .nuggetInfo > .fa {
   color: gray;
 }
-.kshf > .attributePanel .nugget[filtered=true] {
+.kshf > .attributePanel .nugget[filtered='true'] {
   display: none;
 }
-.kshf > .attributePanel .nugget[hidden=true] {
+.kshf > .attributePanel .nugget[hidden='true'] {
   display: none;
 }
 .kshf > .attributePanel .nugget[aggr_initialized=false] > .nuggetViz > .nuggetInfo {
@@ -2220,10 +2224,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .aggrGlyph.setPairGlyph > .aggr {
   cursor: pointer;
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
+  -webkit-transition: all 500ms linear;
+  -moz-transition: all 500ms linear;
+  -o-transition: all 500ms linear;
+  transition: all 500ms linear;
 }
 .kshf .aggrGlyph.setPairGlyph > .aggr.active {
   fill: #b8c7d2;
@@ -2420,12 +2424,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfRecord[selection="highlighted"] {
   padding: 0px;
   background-color: #F2E9E7;
-  border: solid 1px #ceaca5;
+  border: solid 1px #ceaca5 !important;
 }
 .kshf .kshfRecord[recCompared="true"] {
   padding: 0px;
   background-color: #EBF0F0;
-  border: solid 1px #b1c4c4;
+  border: solid 1px #b1c4c4 !important;
 }
 .kshf .summaryConfig {
   position: absolute;
@@ -3793,6 +3797,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: row;
   flex-direction: row;
   width: 100%;
+  padding-top: 0px;
+  border-top: solid 1px lightgray;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordSortCol {
   padding-right: 3px;

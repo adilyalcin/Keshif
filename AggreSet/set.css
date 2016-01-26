@@ -2,9 +2,56 @@
   display: none;
   position: absolute;
   top: 0px;
+  background-color: white;
+}
+.kshf .kshfSummary.setPairSummary[position="left"] .configOpt {
+  right: 2px;
+}
+.kshf .kshfSummary.setPairSummary[position="left"] .sizeLegend {
+  left: 10px;
+}
+.kshf .kshfSummary.setPairSummary[position="left"] .belowMatrix {
+  text-align: right;
+}
+.kshf .kshfSummary.setPairSummary[position="left"] .rows > .row > .label {
+  text-anchor: end;
+}
+.kshf .kshfSummary.setPairSummary[position="right"] .configOpt {
+  left: 2px;
+}
+.kshf .kshfSummary.setPairSummary[position="right"] .sizeLegend {
+  right: 0px;
+}
+.kshf .kshfSummary.setPairSummary[position="right"] .belowMatrix {
+  text-align: left;
+}
+.kshf .kshfSummary.setPairSummary[position="right"] .rows > .row > .label {
+  text-anchor: start;
 }
 .kshf .kshfSummary[show_set_matrix=true] > .kshfSummary.setPairSummary {
   display: block;
+}
+.kshf[ratiomode='true'] .Summary_Set > .summaryControls > .strengthControl {
+  background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #e6e6f7), color-stop(100%, #9595db));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
+  /* IE10+ */
+  background: linear-gradient(to right, #e6e6f7 0%, #9595db 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e6e6f7', endColorstr='#9595db', GradientType=1);
+  /* IE6-9 */
+  border-right-color: #4000ff;
+  color: black;
+  text-shadow: 0px 0px 2px #FFFFFF;
+}
+.kshf[ratiomode='true'] .Summary_Set > .summaryControls > .strengthControl > .strengthLabel {
+  display: inline-block;
 }
 .kshf .Summary_Set {
   display: block;
@@ -12,6 +59,10 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .Summary_Set[noanim="false"] .rows > .row {
   -webkit-transition: all 500ms ease-in-out;
@@ -44,6 +95,10 @@
   padding: 1px 3px;
   color: #474747;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .Summary_Set > .summaryControls > .strengthControl:hover {
   border-color: gray;
@@ -54,29 +109,32 @@
   font-style: italic;
   font-size: 0.8em;
 }
-.kshf .Summary_Set > .summaryControls > .heyooo {
-  display: block;
+.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel:nth-child(0) {
+  text-align: left;
+}
+.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel:nth-child(1) {
+  text-align: right;
+}
+.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthText {
+  padding: 0px 2px;
+}
+.kshf .Summary_Set > .summaryControls > .configOpt {
+  display: inline-block;
   position: absolute;
-  right: 3px;
   top: 0px;
   font-size: 0.8em;
-}
-.kshf .Summary_Set > .summaryControls .configOpt {
-  display: inline-block;
   background-color: #eaeaea;
   cursor: pointer;
-  border-width: 0px;
-  border-style: solid;
-  border-color: #eaeaea;
+  border: 0px solid #eaeaea;
   border-radius: 15px;
   cursor: default;
 }
-.kshf .Summary_Set > .summaryControls .configOpt .sdsdssds {
+.kshf .Summary_Set > .summaryControls > .configOpt .sdsdssds {
   color: gray;
   font-size: 0.9em;
   margin-right: 2px;
 }
-.kshf .Summary_Set > .summaryControls .configOpt > .configOpt_icon {
+.kshf .Summary_Set > .summaryControls > .configOpt > .configOpt_icon {
   font-size: 1em;
   vertical-align: middle;
   background-color: white;
@@ -90,29 +148,32 @@
   border-width: 0px;
   margin: 1px;
 }
-.kshf .Summary_Set > .summaryControls .configOpt > .configOpt_label {
+.kshf .Summary_Set > .summaryControls > .configOpt > .configOpt_label {
   color: #474747;
   display: none;
   font-size: 0.9em;
   padding-left: 3px;
   height: 15px;
 }
-.kshf .Summary_Set > .summaryControls .configOpt > .configOpt_label > .fa {
+.kshf .Summary_Set > .summaryControls > .configOpt > .configOpt_label > .fa {
   margin-right: 3px;
 }
-.kshf .Summary_Set > .summaryControls .configOpt.configRowHeight .fa:hover {
+.kshf .Summary_Set > .summaryControls > .configOpt.configRowHeight .fa:hover {
   color: orangered;
   cursor: pointer;
 }
-.kshf .Summary_Set > .summaryControls .configOpt:hover > .configOpt_label {
+.kshf .Summary_Set > .summaryControls > .configOpt:hover > .configOpt_label {
   display: inline;
 }
 .kshf .Summary_Set > .summaryControls svg.sizeLegend {
   position: absolute;
-  left: 10px;
   margin-top: 4px;
   overflow: visible;
   cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .Summary_Set > .summaryControls svg.sizeLegend > .legendHeader {
   font-size: 0.7em;
@@ -182,7 +243,6 @@
   font-size: 13px;
   font-weight: 300;
   font-size: 0.8em;
-  text-anchor: end;
   alignment-baseline: middle;
 }
 .kshf .Summary_Set .rows > .row > .label.label_vert {
@@ -212,47 +272,23 @@
   stroke: #8a7445;
 }
 .kshf .Summary_Set g.setPairGroup[animate_position="true"] > .setPairGlyph {
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
+  -webkit-transition: all 500ms linear;
+  -moz-transition: all 500ms linear;
+  -o-transition: all 500ms linear;
+  transition: all 500ms linear;
 }
-.kshf .Summary_Set[showStrength='true'] .summaryControls > .strengthControl {
-  background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
-  /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #e6e6f7), color-stop(100%, #9595db));
-  /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
-  /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
-  /* Opera 11.10+ */
-  background: -ms-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
-  /* IE10+ */
-  background: linear-gradient(to right, #e6e6f7 0%, #9595db 100%);
-  /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e6e6f7', endColorstr='#9595db', GradientType=1);
-  /* IE6-9 */
-  border-right-color: #4000ff;
-  color: black;
-  text-shadow: 0px 0px 2px #FFFFFF;
-}
-.kshf .Summary_Set[showStrength='true'] .summaryControls > .strengthControl > .strengthLabel {
-  display: inline-block;
-}
-.kshf .Summary_Set[showStrength='true'] .setPairGlyph[subset=true] {
-  stroke-width: 2px;
-  stroke: #4000ff;
+.kshf .Summary_Set g.setPairGroup[animate_position="false"] > .setPairGlyph {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 .kshf .Summary_Set[show_gridlines='false'] .rows > .row > .line {
   opacity: 0.3;
 }
-.kshf .Summary_Set[show_gridlines='true'] .configGridLine > .configOpt_icon {
-  background-color: #E5E5E5;
-}
 .kshf .Summary_Set > .belowMatrix {
   position: relative;
   height: 18px;
-  text-align: right;
 }
 .kshf .Summary_Set > .belowMatrix > .matrixInfo {
   font-size: 0.7em;
@@ -275,6 +311,6 @@
   border-right: solid 2px #4000ff;
   border-bottom: solid 2px #4000ff;
 }
-.kshf .Summary_Set > .belowMatrix > .matrixInfo.subsetCount > .subsetCount_Text:after {
+.kshf .Summary_Set > .belowMatrix > .matrixInfo .subsetCount_Text:after {
   content: " Subsets ⊆";
 }
