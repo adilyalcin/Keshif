@@ -2087,6 +2087,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #969da3;
   font-size: 0.7em;
 }
+.kshf .aggrGlyph > .measureLabel > .unitName {
+  margin-left: 0px;
+}
 .kshf .aggrGlyph > .lockButton {
   display: block;
   position: absolute;
@@ -3007,6 +3010,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
+  cursor: pointer;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_pos {
   background-color: #1b6f61;

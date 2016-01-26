@@ -1756,6 +1756,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       > .measureLabel{ 
         color: @color_item_count;
         font-size: 0.7em;
+        > .unitName{
+          margin-left: 0px; // no need extra spacing.
+        }
       }
       > .lockButton{
         display: block;
@@ -2564,6 +2567,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     width:1px;
                     .transition(~'transform 700ms ease-in-out');
                     .transform-origin(0% 0%);
+                    cursor: pointer;
                     &.q_pos{
                       background-color: rgb(27, 111, 97);
                       margin-left: -0.5px;

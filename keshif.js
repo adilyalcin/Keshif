@@ -4305,20 +4305,8 @@ kshf.Browser.prototype = {
         });
         this.DOM.measureAggrType.html("Total "+summary.summaryName+" of ");
       }
-      this.summaries.forEach(function(summary){
-        if(!summary.aggr_initialized) return;
-        if(summary.type==='categorical'){
-          summary._cats.forEach(function(category){
-            category.resetAggregateMeasures();
-          });
-        }
-        if(summary.type==='interval'){
-          summary.histBins.forEach(function(aggr){
-            aggr.resetAggregateMeasures();
-          });
-        }
-        summary.updateAfterFilter();
-      });
+      this.allAggregates.forEach(function(aggr){ aggr.resetAggregateMeasures(); });
+      this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.update_Records_Wanted_Count();
     },
     /** -- */
@@ -4496,24 +4484,31 @@ kshf.Browser.prototype = {
     },
     /** -- */
     getMeasureLabel: function(aggr){
-      if(!aggr.isVisible) return;
-      var _val = this.vizPreviewActive?
-        (this.preview_not? aggr.aggregate_Active - aggr.aggregate_Preview : aggr.aggregate_Preview ) :
-        aggr.aggregate_Active;
-
-      if(this.percentModeActive){
-        if(aggr.aggregate_Active===0) return "";
-        if(this.ratioModeActive){
-          if(!this.vizPreviewActive) return "";
-          _val = 100*_val/aggr.aggregate_Active;
-        } else {
-          _val = 100*_val/this.allRecordsAggr.aggregate_Active;
+      var _val;
+      if(!(aggr instanceof kshf.Aggregate)){
+        _val = aggr;
+      } else {
+        if(!aggr.isVisible) return "";
+        _val = this.vizPreviewActive?
+          (this.preview_not? aggr.aggregate_Active - aggr.aggregate_Preview : aggr.aggregate_Preview ) :
+          aggr.aggregate_Active;
+        if(this.percentModeActive){
+          if(aggr.aggregate_Active===0) return "";
+          if(this.ratioModeActive){
+            if(!this.vizPreviewActive) return "";
+            _val = 100*_val/aggr.aggregate_Active;
+          } else {
+            _val = 100*_val/this.allRecordsAggr.aggregate_Active;
+          }
         }
-        if(_val<0) _val=0; //TODO? How's this case possible? Why di I insert that check?
-        return _val.toFixed(0)+"%";
       }
+
       if(_val<0) _val=0; // TODO? There is it, again... Just sanity I guess
-      return kshf.Util.formatForItemCount(_val);
+      if(this.percentModeActive){
+        return _val.toFixed(0)+"<span class='unitName'>%</span>";
+      } else {
+        return kshf.Util.formatForItemCount(_val);
+      }
     },
     /** -- */
     exportConfig: function(){
@@ -6334,8 +6329,7 @@ var Summary_Categorical_functions = {
       setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },    /** -- */
     updateAfterFilter: function(){
-      if(this.isEmpty() || this.collapsed) return;
-      if(this.panel===undefined) return;
+      if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
       var me=this;
       
       if(this.viewType==='map'){
@@ -6656,24 +6650,17 @@ var Summary_Categorical_functions = {
             .style("top","-"+(this.categoriesHeight+3)+"px")
             .style("height",(this.categoriesHeight-1)+"px");
 
-        if(this.browser.ratioModeActive){
-            tickData_new.append("span").attr("class","text").text(function(d){return d;});
-        } else {
-            tickData_new.append("span").attr("class","text").text(function(d){return d3.format("s")(d);});
-        }
+        tickData_new.append("span").attr("class","text");
         if(this.configRowCount>0){
             var h=this.categoriesHeight;
             var hm=tickData_new.append("span").attr("class","text text_upper").style("top",(-h-21)+"px");
-            if(this.browser.ratioModeActive){
-                hm.text(function(d){return d;});
-            } else {
-                hm.text(function(d){return d3.format("s")(d);});
-            }
             this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background_2").style("display","block");
         }
 
+        this.DOM.chartAxis_Measure_TickGroup.selectAll(".text").html(function(d){ return me.browser.getMeasureLabel(d); });
+
         setTimeout(function(){
-            me.DOM.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
+          me.DOM.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
         });
 
         tickDoms.exit().remove();
@@ -8114,8 +8101,9 @@ var Summary_Interval_functions = {
     },
     /** -- */
     initDOM_Percentile: function(){
-      var me=this;
       if(this.DOM.summaryInterval===undefined) return;
+
+      var me=this;
       this.DOM.percentileChart = this.DOM.summaryInterval.append("div").attr("class","percentileChart")
         .style('margin-left',this.width_vertAxisLabel+"px")
         .style("display",this.percentileChartVisible?"block":"none");
@@ -8135,8 +8123,33 @@ var Summary_Interval_functions = {
               }
             })
           })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); });
+          .on("mouseover",function(){ 
+            this.tipsy.show();
+            me.filteredItems.forEach(function(record){ 
+              var v = me.itemV(record);
+              if(v<me.quantile_val[qb[0]] || v>me.quantile_val[qb[1]]) return;
+              record.addForHighlight();
+            });
+            var tempAggr = new kshf.Aggregate();
+            tempAggr.init({});
+            tempAggr.x = me.quantile_val[qb[0]];
+            tempAggr.maxX = me.quantile_val[qb[1]];
+            tempAggr.summary = me;
+            me.browser.setSelect_Highlight(me,tempAggr);
+          })
+          .on("mouseout" ,function(){
+            this.tipsy.hide();
+            me.browser.clearSelect_Highlight();
+          })
+          .on("click", function(){
+            me.summaryFilter.active = {
+              min: me.quantile_val[qb[0]],
+              max: me.quantile_val[qb[1]]
+            };
+            me.summaryFilter.filteredBin = undefined;
+            me.summaryFilter.addFilter(true);
+          })
+          ;
       },this);
 
       [10,20,30,40,50,60,70,80,90].forEach(function(q){
@@ -8593,30 +8606,26 @@ var Summary_Interval_functions = {
               me.browser.clearSelect_Highlight();
             })
             .on("click",function(aggr){
-                if(me.summaryFilter.filteredBin===this){
-                    me.summaryFilter.clearFilter();
-                    return;
-                }
-                this.setAttribute("filtered","true");
+              if(me.summaryFilter.filteredBin===this){
+                me.summaryFilter.clearFilter();
+                return;
+              }
+              this.setAttribute("filtered","true");
 
-                // store histogram state
-                if(me.scaleType==='time'){
-                  me.summaryFilter.active = {
-                    min: aggr.x,
-                    max: aggr.maxX
-                  };
-                } else {
-                  me.summaryFilter.active = {
-                    min: aggr.x,
-                    max: aggr.maxX
-                  };
-                }
-                // if we are filtering the last aggr, make max_score inclusive
-                me.summaryFilter.max_inclusive = aggr.maxX===me.intervalRange.active.max;
-                if(me.stepTicks){ me.summaryFilter.max_inclusive = true; }
-
-                me.summaryFilter.filteredBin=this;
-                me.summaryFilter.addFilter(true);
+              // store histogram state
+              if(me.scaleType==='time'){
+                me.summaryFilter.active = {
+                  min: aggr.x,
+                  max: aggr.maxX
+                };
+              } else {
+                me.summaryFilter.active = {
+                  min: aggr.x,
+                  max: aggr.maxX
+                };
+              }
+              me.summaryFilter.filteredBin = null;
+              me.summaryFilter.addFilter(true);
             });
 
         newBins.append("span").attr("class","aggr total");
@@ -8780,7 +8789,7 @@ var Summary_Interval_functions = {
                         me.refreshIntervalSlider();
                         // wait half second to update
                         if(this.timer) clearTimeout(this.timer);
-                        me.summaryFilter.filteredBin=this;
+                        me.summaryFilter.filteredBin = this;
                         this.timer = setTimeout(function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                               me.summaryFilter.addFilter(true);
@@ -8891,7 +8900,7 @@ var Summary_Interval_functions = {
                         me.refreshIntervalSlider();
                         // wait half second to update
                         if(this.timer) clearTimeout(this.timer);
-                        me.summaryFilter.filteredBin=this;
+                        me.summaryFilter.filteredBin = this;
                         this.timer = setTimeout( function(){
                             if(me.isFiltered_min() || me.isFiltered_max()){
                                 me.summaryFilter.addFilter(true);
