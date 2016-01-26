@@ -18,7 +18,7 @@
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
-    barChartWidth: 80,
+    barChartWidth: 110,
     categoryTextWidth: 200,
     source: {
       gdocId: '1I4bdQdr9_byWMxLUTXwIG8W3Pqe_AjVYnUqpxL5I8Gc',
@@ -48,13 +48,12 @@ google.setOnLoadCallback(function(){
 });
     </script>
 <style id="kshfStyle">
-#demo_Browser {
-  width: 1000px;
-  height: 700px;
-}
+#demo_Browser { max-width: 1100px; }
 </style>
   </head>
     <body>
-      <div class="contents"><div id="demo_Browser"></div></div>
+      <div class="contents">
+        <div id="demo_Browser"></div>
+        </div>
     </body>
 </html>
