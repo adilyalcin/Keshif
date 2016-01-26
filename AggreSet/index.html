@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>AggreSet Set Visualization Technique</title><meta charset="utf-8">
+    <title>AggreSet Visualization Technique</title><meta charset="utf-8">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
@@ -24,17 +24,11 @@
 
 var theSetSummary = undefined;
 
-function resizeAggresetBrowser(){
-  $('#theBrowserDIV').height($(window).height()-40);
-};
-
 function loadDemo(config){
   d3.select("#aboutBox").style("display", "none");
   config.width = config.width || 760; // default is 760 pixel wide
   
-  $('#theBrowserDIV')
-    .width(config.width)
-    .attr("name",config.id); // Allows customizing the style per-demo
+  $('#theBrowserDIV').width(config.width).attr("name",config.id); // Allows customizing the browser style per demo/dataset
 
   config.browser.domID= "#theBrowserDIV";
   if(config.browser.barChartWidth===undefined) 
@@ -71,13 +65,11 @@ function loadDemo(config){
     }
     
     {  // Add the degree sumary
-      var filterID = setListSummary.summaryFilter.id;
       var setDegreeSummary = browser.createSummary(
-        "<i class='fa fa-hand-o-up'></i> # of "+setListSummary.summaryName,
+        "# of "+setListSummary.summaryName,
         function(d){
-          var arr=d.cachedAggrValues[filterID];
-          if(arr==null) return 0;
-          return arr.length;
+          var arr=d._valueCache[setListSummary.summaryID];
+          return (arr===null) ? null : arr.length;
         }
       );
       if(config.id==="teaser") degreePanel = "right";
@@ -85,6 +77,8 @@ function loadDemo(config){
     }
     theSetSummary = new kshf.Summary_Set();
     theSetSummary.initialize(browser,setListSummary);
+
+    browser.summaries.push(theSetSummary);
 
     if(config.id==="socialgraph" || config.id==="CpdsVsProteinFam" || config.id==="tedTalks" || config.id==="simpsons"){
       theSetSummary.setListSummary.setHeightRow_attrib(40);
@@ -103,9 +97,7 @@ function loadDemo(config){
 };
 
 $(document).ready( function(){
-  resizeAggresetBrowser();
   $(window).resize(function(){
-    resizeAggresetBrowser();
     if(browser) browser.updateLayout();
   });
 
@@ -212,6 +204,7 @@ html, body{
   left: auto !important;
   overflow-y: visible !important;
   z-index: 400;
+  height: calc(100vh - 40px);
 }
 #theBrowserDIV[name="sharks"] .kshfRecord{
   width: 10px;

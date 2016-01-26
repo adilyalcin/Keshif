@@ -36,11 +36,10 @@ kshf.Summary_Set = function(){};
 kshf.Summary_Set.prototype = new kshf.Summary_Base();
 var Summary_Clique_functions = {
   initialize: function(browser,setListSummary){
+    kshf.Summary_Base.prototype.initialize.call(this,browser,"Relations in "+setListSummary.summaryName);
     var me = this;
-    this.browser = browser;
     this.setListSummary = setListSummary;
-
-    this.DOM = {};
+    this.panel = this.setListSummary.panel;
 
     this.pausePanning=false;
     this.gridPan_x=0;
@@ -55,18 +54,6 @@ var Summary_Clique_functions = {
     this.setListSummary.refreshSortOptions();
     this.setListSummary.DOM.optionSelect.attr("dir","rtl"); // quick hack: right-align the sorting label
 
-    this.browser.updateCb = function(){
-      me.refreshViz_All();
-    };
-    this.browser.previewCb = function(cleared){
-      if(cleared){
-        me._setPairs.forEach(function(d){ d.aggregate_Preview = 0; });
-      }
-      me.refreshViz_Preview();
-    };
-    this.browser.previewCompareCb = function(browser){
-      me.refreshViz_Compare();
-    };
     this.browser.ratioModeCb = function(cleared){
       me.show_subsets = this.ratioModeActive;
       me.refreshViz_All();
@@ -88,7 +75,7 @@ var Summary_Clique_functions = {
       },1000);
       me.updateMaxAggr_Active();
       me.refreshViz_Active();
-      me.refreshRow_SetPairCount();
+      me.refreshRow_Opacity();
     };
     this.setListSummary.onCategoryCull = function(){
       if(me.pausePanning) return;
@@ -134,14 +121,11 @@ var Summary_Clique_functions = {
     this.insertHeader();
     this.DOM.headerGroup.style("height",(this.setListSummary.getHeight_Header())+"px");
 
-    this.DOM.summaryName_text.html("Relations in "+this.setListSummary.summaryName);
-
     this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
     this.DOM.chartRoot = this.DOM.wrapper.append("span")
       .attr("class","Summary_Set noselect")
       .attr("noanim",false)
-      .attr("show_gridlines",true)
-      ;
+      .attr("show_gridlines",true);
 
     var body=d3.select("body");
     this.DOM.chartRoot.append("span").attr("class","widthAdjust")
@@ -184,9 +168,6 @@ var Summary_Clique_functions = {
       });
 
     this.insertControls();
-
-    this.setMappingID = this.browser.maxFilterID++;
-    this.browser.records.forEach(function(record){ record.cachedAggrValues[me.setMappingID] = []; });
 
     this.DOM.setMatrixSVG = this.DOM.chartRoot.append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","setMatrix");
 
@@ -283,6 +264,14 @@ var Summary_Clique_functions = {
     this.refreshWindowSize();
   },
   /** -- */
+  refreshHeight: function(){
+    // TODO: Added just because the browser calls this automatically
+  },
+  /** -- */
+  isEmpty: function(){
+    return false; // TODO Temp?
+  },
+  /** -- */
   getHeight: function(){
     return this.setListSummary.categoriesHeight;
   },
@@ -314,7 +303,7 @@ var Summary_Clique_functions = {
   },
   /** -- */
   updateMaxAggr_Active: function(){
-    this._maxSetPairAggr_Active = d3.max(this._setPairs, function(d){ return d.aggregate_Active; });
+    this._maxSetPairAggr_Active = d3.max(this._setPairs, function(aggr){ return aggr.aggregate_Active; });
   },
   /** -- */
   checkWidth: function(){
@@ -397,7 +386,6 @@ var Summary_Clique_functions = {
       .attr("highlight",false)
       .each(function(d){
         d.DOM.matrixRow = this;
-        this.setAttribute("setPairCount",d.setPairs.length)
       })
       .on("mouseenter",function(d,i){
         this.setAttribute("highlight","selected");
@@ -406,8 +394,7 @@ var Summary_Clique_functions = {
       .on("mouseleave",function(d,i){
         this.setAttribute("highlight",false);
         me.setListSummary.onCatLeave(d);
-      })
-      ;
+      });
 
     // tmp is used to parse html text. TODO: delete the temporary DOM
     var tmp = document.createElement("div");
@@ -440,8 +427,7 @@ var Summary_Clique_functions = {
       .data(this._setPairs,function(d,i){ return i; })
     .enter().append("g").attr("class","aggrGlyph setPairGlyph")
       .each(function(d){
-        d.DOM.setPairGlyph = this;
-        d.records.forEach(function(item){ item.cachedAggrValues[me.setMappingID].push(d); });
+        d.DOM.aggrGlyph = this;
       })
       .on("mouseenter",function(d){
         var set_1 = d.set_1;
@@ -460,8 +446,8 @@ var Summary_Clique_functions = {
         var timeoutTime = 500;
         if(me.browser.vizCompareActive) timeoutTime = 0;
         this.resultPreviewShowTimeout = setTimeout(function(){
-          d.records.forEach(function(item){item.updatePreview();});
-          me.browser.setSelect_Highlight(me);
+          d.records.forEach(function(record){ record.addForHighlight(); });
+          me.browser.setSelect_Highlight(me,d);
         },timeoutTime);
       })
       .on("mouseleave",function(d){
@@ -499,14 +485,19 @@ var Summary_Clique_functions = {
     newCliques.append("rect").attr("class","setPairBackground").attr("rx",3).attr("ry",3);
     newCliques.append("circle").attr("class","aggr active").attr("cx",0).attr("cy",0).attr("r",0);
     newCliques.append("path").attr("class","aggr preview")
-      .each(function(d){d.currentPreviewAngle=-Math.PI/2;});
+      .each(function(aggr){aggr.currentPreviewAngle=-Math.PI/2;});
     newCliques.append("path").attr("class","aggr compare");
 
-    this.DOM.setPairGlyph          = this.DOM.setPairGroup.selectAll("g.setPairGlyph");
-    this.DOM.setPairBackground    = this.DOM.setPairGroup.selectAll("g.setPairGlyph > rect.setPairBackground");
-    this.DOM.setPairGlyph_Active  = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.active");
-    this.DOM.setPairGlyph_Preview = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.preview");
-    this.DOM.setPairGlyph_Compare = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.compare");
+    this.DOM.aggrGlyphs          = this.DOM.setPairGroup.selectAll("g.aggrGlyph");
+    this.DOM.setPairBackground    = this.DOM.setPairGroup.selectAll("g.aggrGlyph > rect.setPairBackground");
+    this.DOM.setPairGlyph_Active  = this.DOM.setPairGroup.selectAll("g.aggrGlyph > .aggr.active");
+    this.DOM.setPairGlyph_Preview = this.DOM.setPairGroup.selectAll("g.aggrGlyph > .aggr.preview");
+    this.DOM.setPairGlyph_Compare = this.DOM.setPairGroup.selectAll("g.aggrGlyph > .aggr.compare");
+  },
+  /** -- */
+  printAggrSelection: function(aggr){
+    return this.setListSummary.printAggrSelection(aggr.set_1)+ " and "+
+      this.setListSummary.printAggrSelection(aggr.set_2);
   },
   /** -- */
   refreshLabel_Vert_Show: function(){
@@ -519,7 +510,7 @@ var Summary_Clique_functions = {
     var t=this.setListSummary.scrollTop_cache;
     var r=(t)*-1;
     this.DOM.line_vert_label // points up/right
-      .attr("show",function(d){ return d.isVisible; })
+      .attr("show",function(d){ return !d.isVisible; })
       .attr("transform",function(d){
         var i=d.orderIndex;
         var x=totalWidth-((i+0.5)*me.setPairDiameter)-2;
@@ -775,7 +766,7 @@ var Summary_Clique_functions = {
   refreshViz_All: function(){
     this.updateMaxAggr_Active();
     this.refreshViz_Active();
-    this.refreshViz_Preview();
+    this.refreshViz_Highlight();
     this.refreshViz_Compare();
   },
   /** -- */
@@ -786,9 +777,8 @@ var Summary_Clique_functions = {
       .attr("width",this.setPairDiameter)
       .attr("height",this.setPairDiameter);
   },
-  /** Call when aggregate_Active is updated -> After filtering */
+  /** Call when aggregate_Active is updated */
   updateSetPairSimilarity: function(){
-    var me=this;
     this._setPairs.forEach(function(setPair){
       var size_A = setPair.set_1.aggregate_Active;
       var size_B = setPair.set_2.aggregate_Active;
@@ -797,22 +787,9 @@ var Summary_Clique_functions = {
     });
     this._maxSimilarity = d3.max(this._setPairs, function(d){ return d.Similarity; });
   },
-  /** -- */
-  updateSetAvgDegree: function(){
-    var filterID = this.setListSummary.summaryFilter.id;
-    this._sets.forEach(function(set){
-      var totalDegree = 0;
-      set.records.forEach(function(item){
-        var setsOfItem=item.cachedAggrValues[filterID];
-        if(setsOfItem) totalDegree+=setsOfItem.length;
-      });
-      set.avgDegree = totalDegree/set.records.length;
-    });
-  },
   /** For each element in the given list, checks the set membership and adds setPairs */
   createSetPairs: function(){
     var me=this;
-    var filterID = this.setListSummary.summaryFilter.id;
 
     var insertToClique = function(set_1,set_2,record){
       // avoid self reference and adding the same data item twice, once for A-B, once for B-A
@@ -825,7 +802,9 @@ var Summary_Clique_functions = {
       var targetClique = me._setPairs_ID[set_1.id()][set_2.id()];
 
       if(targetClique===undefined){
-        targetClique = new kshf.Aggregate([me._setPairs.length],0);
+        targetClique = new kshf.Aggregate();
+        targetClique.init([me._setPairs.length],0);
+        me.browser.allAggregates.push(targetClique);
         targetClique.set_1 = set_1;
         targetClique.set_2 = set_2;
         set_1.setPairs.push(targetClique);
@@ -838,13 +817,17 @@ var Summary_Clique_functions = {
     };
 
     // AND
+    var filterID = this.setListSummary.summaryID;
+    function getAggr(v){ return me.setListSummary.catTable_id[v]; };
     this.setListSummary.records.forEach(function(record){
-      var setsOfItem = record.cachedAggrValues[filterID];
-      if(setsOfItem===null || setsOfItem===undefined) return;
-      setsOfItem.forEach(function(set_1){
+      var values = record._valueCache[filterID];
+      if(values===null) return; // maps to no value
+      values.forEach(function(v_1){
+        set_1 = getAggr(v_1);
         // make sure set_1 has an attrib on c display
         if(set_1.setPairs===undefined) return;
-        setsOfItem.forEach(function(set_2){
+        values.forEach(function(v_2){
+          set_2 = getAggr(v_2);
           if(set_2.setPairs===undefined) return;
           insertToClique(set_1,set_2,record);
         });
@@ -853,7 +836,6 @@ var Summary_Clique_functions = {
 
     this.updateMaxAggr_Active();
     this.updateSetPairSimilarity();
-    this.updateSetAvgDegree();
   },
   /** -- */
   refreshRow_LineWidths: function(){
@@ -879,26 +861,19 @@ var Summary_Clique_functions = {
     });
   },
   /** -- */
-  refreshRow_SetPairCount: function(){
-    this.DOM.setRows
-      .attr("setPairCount",function(d){
-        var i=0;
-        d.setPairs.forEach(function(setPair){ i+=(setPair.aggregate_Active>0); });
-        return i;
-      })
-      .style("opacity",function(d){ return (d.aggregate_Active>0)?1:0.3; })
-      ;
+  refreshRow_Opacity: function(){
+    this.DOM.setRows.style("opacity",function(setRow){ return (setRow.aggregate_Active>0)?1:0.3; });
   },
   /** -- */
   refreshRow_Position: function(){
-    var rowHeight=this.setPairDiameter;
+    var rowHeight = this.setPairDiameter;
     this.DOM.setRows.attr("transform",function(set){ return "translate(0,"+((set.orderIndex+0.5)*rowHeight)+")"; });
   },
   /** -- */
   refreshSetPair_Position: function(){
     var me=this;
     var w=this.getWidth();
-    this.DOM.setPairGlyph.each(function(setPair){
+    this.DOM.aggrGlyphs.each(function(setPair){
       var i1 = setPair.set_1.orderIndex;
       var i2 = setPair.set_2.orderIndex;
       var left = w-(Math.min(i1,i2)+0.5)*me.setPairDiameter;
@@ -913,7 +888,7 @@ var Summary_Clique_functions = {
   // Given a setPair, return the angle for preview
   getPreviewAngle_rad: function(setPair){
     if(setPair.aggregate_Active===0) return 0;
-    var ratio=setPair.aggregate_Preview/setPair.aggregate_Active;
+    var ratio=setPair.previewRatioToActive();
     if(this.browser.preview_not) ratio = 1-ratio;
     if(ratio===1) ratio=0.999;
     return ((360*ratio-90) * Math.PI) / 180;
@@ -936,7 +911,7 @@ var Summary_Clique_functions = {
   /** -- */
   refreshViz_Active: function(){
     var me=this;
-    this.DOM.setPairGlyph.attr("activesize",function(setPair){ return setPair.aggregate_Active; });
+    this.DOM.aggrGlyphs.attr("activesize",function(setPair){ return setPair.aggregate_Active; });
     this.DOM.setPairGlyph_Active.transition().duration(this.noanim?0:700)
       .attr("r",this.browser.ratioModeActive ?
         function(setPair){ return (setPair.subset!=='') ? me.setPairRadius-1 : me.setPairRadius; } :
@@ -944,7 +919,7 @@ var Summary_Clique_functions = {
       );
   },
   /** -- */
-  refreshViz_Preview: function(){
+  refreshViz_Highlight: function(){
     var me=this;
     this.DOM.setPairGlyph_Preview
       .transition().duration(500).attrTween("d",function(d) {
@@ -958,22 +933,24 @@ var Summary_Clique_functions = {
       })
       .each(function(d){
         this.parentNode.setAttribute("highlight",d.aggregate_Preview>0);
-      })
-    ;
+      });
+  },
+  /** -- */
+  clearViz_Highlight: function(){
+    this.refreshViz_Highlight();
   },
   /** -- */
   refreshViz_Compare: function(){
     var me=this;
-      if(this.browser.vizCompareActive===false){
-        this.DOM.setPairGlyph_Compare.attr("hidden",true);
-      } else {
-        this.DOM.setPairGlyph_Compare
-          .attr("d",function(setPair){
-            var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
-            this.setAttribute('hidden',setPair.aggregate_Preview===0);
-            return me.getPiePath(setPair.currentPreviewAngle,1,ratio);
-          });
-      }
+    if(this.browser.vizCompareActive===false){
+      this.DOM.setPairGlyph_Compare.attr("hidden",true);
+    } else {
+      this.DOM.setPairGlyph_Compare.attr("d",function(setPair){
+        var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
+        this.setAttribute('hidden',setPair.aggregate_Preview===0);
+        return me.getPiePath(setPair.currentPreviewAngle,1,ratio);
+      });
+    }
   },
   /** -- */
   refreshSetPair_Containment: function(){
@@ -1033,6 +1010,12 @@ var Summary_Clique_functions = {
       });
     }
   },
+  /** -- */
+  updateAfterFilter: function () {
+    // return
+    // TODO??
+  },
+
 };
 
 for(var index in Summary_Clique_functions){

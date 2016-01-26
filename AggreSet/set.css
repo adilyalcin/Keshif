@@ -190,16 +190,26 @@
   background-color: white;
   display: none;
 }
-.kshf .Summary_Set .rows > .row[highlight=selected] > .label {
-  fill: #ff6a33;
+.kshf .Summary_Set .rows > .row[selection] > .label {
   font-weight: 700;
 }
-.kshf .Summary_Set .rows > .row[highlight=selected] > .label.label_vert[show=true] {
+.kshf .Summary_Set .rows > .row[selection] > .label.label_vert[show=true] {
   display: block;
 }
-.kshf .Summary_Set .rows > .row[highlight=selected] > .line {
-  stroke: #ff6a33;
+.kshf .Summary_Set .rows > .row[selection] > .line {
   stroke-width: 2px;
+}
+.kshf .Summary_Set .rows > .row[selection="selected"] > .label {
+  fill: #ff6a33;
+}
+.kshf .Summary_Set .rows > .row[selection="selected"] > .line {
+  stroke: #ff6a33;
+}
+.kshf .Summary_Set .rows > .row[selection="onRecord"] > .label {
+  fill: #685834;
+}
+.kshf .Summary_Set .rows > .row[selection="onRecord"] > .line {
+  stroke: #8a7445;
 }
 .kshf .Summary_Set g.setPairGroup[animate_position="true"] > .setPairGlyph {
   -webkit-transition: all 500ms ease-in-out;

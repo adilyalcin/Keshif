@@ -179,6 +179,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[ratiomode=true] .scaleBound::after {
   content: "%";
 }
+.kshf[ratiomode=true] .highlightedAggrValuePointer {
+  display: block;
+}
 .kshf[previewcompare="true"] .compare {
   opacity: 1 !important;
 }
@@ -258,7 +261,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .unitName {
   margin-left: 1px;
-  color: gray;
+  opacity: 0.6;
 }
 .kshf .saveBrowserConfig {
   display: none;
@@ -790,6 +793,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 1.2em;
   font-weight: 700;
   z-index: 10;
+  margin-bottom: 2px;
 }
 .kshf .panel_Basic > .recordInfo > .activeRecordCount {
   display: inline-block;
@@ -1035,30 +1039,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   text-decoration: none;
   color: #635d46;
-}
-.kshf .panel_Basic > .totalViz {
-  height: 3px;
-  margin-top: 1px;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-}
-.kshf .panel_Basic > .totalViz > .aggr {
-  cursor: default !important;
-  left: 0px;
-  top: 0px;
-  height: 100%;
-  -webkit-transition: all 200ms ease-in-out;
-  -moz-transition: all 200ms ease-in-out;
-  -o-transition: all 200ms ease-in-out;
-  transition: all 200ms ease-in-out;
-}
-.kshf .panel_Basic > .totalViz > .aggr.total {
-  width: 100%;
-}
-.kshf .panel_Basic > .totalViz > .aggr.preview {
-  transform: inherit;
 }
 .kshf .panels_Above {
   display: -webkit-box;
@@ -1862,11 +1842,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 2;
   top: 0px;
 }
-.kshf .chartAxis_Measure > .tick {
+.kshf .chartAxis_Measure > .tickGroup > .tick {
   opacity: 0;
   position: absolute;
 }
-.kshf .chartAxis_Measure > .tick > .text {
+.kshf .chartAxis_Measure > .tickGroup > .tick > .text {
   display: block;
   position: relative;
   text-align: center;
@@ -1876,7 +1856,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: default;
   color: gray;
 }
-.kshf .chartAxis_Measure > .tick > .line {
+.kshf .chartAxis_Measure > .tickGroup > .tick > .line {
   display: block;
   position: absolute;
 }
@@ -1928,7 +1908,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup {
   position: relative;
   text-align: center;
-  padding-top: 1px;
+  margin: 1px 0px;
   border-radius: 3px;
   box-shadow: 0px 0px 2px #9b9b9b;
   background-color: #ebebeb;
@@ -2090,12 +2070,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform: scaleX(0);
   -o-transform: scaleX(0);
   transform: scaleX(0);
-}
-.kshf .aggrGlyph > span.aggr.preview[fast] {
-  -webkit-transition: -webkit-transform 200ms ease-in-out;
-  -moz-transition: -moz-transform 200ms ease-in-out;
-  -o-transition: -o-transform 200ms ease-in-out;
-  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out;
+  -webkit-transition: -webkit-transform 250ms ease-in-out;
+  -moz-transition: -moz-transform 250ms ease-in-out;
+  -o-transition: -o-transform 250ms ease-in-out;
+  transition: -webkit-transform 250ms ease-in-out,-moz-transform 250ms ease-in-out,-o-transform 250ms ease-in-out,transform 250ms ease-in-out;
 }
 .kshf .aggrGlyph > span.aggr.compare {
   background-color: #2f4f4f;
@@ -2149,11 +2127,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggrGlyph[compare="true"] > .lockButton:hover:after {
   content: "\f13e";
 }
-.kshf .aggrGlyph[noitems=true] {
-  color: gray;
+.kshf .aggrGlyph.catGlyph {
+  top: 0px;
+  height: 16px;
 }
-.kshf .aggrGlyph[noitems=true] > .measureLabel {
-  display: none;
+.kshf .aggrGlyph.catGlyph > .aggr {
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  top: 4px;
+  width: 1px;
+  height: 10px;
+}
+.kshf .aggrGlyph.catGlyph > .aggr.total_tip {
+  right: -5px;
+  /* right arrow */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #dee2e6;
+  background-color: initial;
+  /*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
+            linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
+            background-position: top left, top left;
+            background-repeat: repeat;
+            background-size: 8px 8px; */
+}
+.kshf .aggrGlyph.catGlyph > .aggr.compare {
+  width: 1px;
+  height: 5px;
 }
 .kshf .aggrGlyph.rangeGlyph {
   height: 100%;
@@ -2271,7 +2274,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-anchor: middle;
   alignment-baseline: middle;
 }
-.kshf .aggrGlyph.mapGlyph[highlight="selected"] > .aggr.active {
+.kshf .aggrGlyph.mapGlyph[selection="selected"] > .aggr.active {
   cursor: pointer;
   stroke: orangered;
   stroke-width: 1px;
@@ -2282,19 +2285,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: fill 200ms ease-in-out;
   transition: fill 200ms ease-in-out;
 }
-.kshf .aggrGlyph.mapGlyph[highlight="selected"] > .aggr.preview {
+.kshf .aggrGlyph.mapGlyph[selection="selected"] > .aggr.preview {
   display: none;
 }
-.kshf .aggrGlyph.mapGlyph[highlight="true"] > .aggr.active {
-  stroke: orangered;
+.kshf .aggrGlyph.mapGlyph[selection="onRecord"] > .aggr.active {
+  -webkit-transition: fill 200ms ease-in-out;
+  -moz-transition: fill 200ms ease-in-out;
+  -o-transition: fill 200ms ease-in-out;
+  transition: fill 200ms ease-in-out;
+  stroke: #241e12;
   stroke-width: 2px;
+  fill: #ab9157;
+}
+.kshf .aggrGlyph.totalGlyph {
+  height: 4px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+}
+.kshf .aggrGlyph.totalGlyph > .aggr {
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  cursor: default !important;
+  left: 0px;
+  top: 0px;
+  width: 1px;
+  height: 5px;
+}
+.kshf .aggrGlyph.totalGlyph > .aggr.preview {
+  transform: inherit;
+}
+.kshf .aggrGlyph.totalGlyph > .aggr.compare {
+  height: 3px;
 }
 .kshf .kshfRecord {
   opacity: 1;
   cursor: default;
   overflow: hidden;
   vertical-align: top;
-  padding: 1px 0px;
+  padding: 1px;
   position: relative;
   -webkit-transition: opacity 500ms ease, background-color 100ms linear;
   -moz-transition: opacity 500ms ease, background-color 100ms linear;
@@ -2377,18 +2409,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfRecord[details="false"] .item_details {
   display: none;
 }
-.kshf .kshfRecord[highlight^="selected"] {
-  background-color: #EFEADF;
+.kshf .kshfRecord[selection^="onRecord"] {
+  padding: 0px;
+  background-color: #efeadf !important;
+  border: solid 1px #cdbd9b !important;
 }
-.kshf .kshfRecord[highlight^="selected"][selectedForLink=true] {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjEwMCUiIHkxPSIwJSIgeDI9IjAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iNTAlIiBzdG9wLWNvbG9yPSJyZ2IoMjU1LDE5MywxNTcpIiBzdG9wLW9wYWNpdHk9IjAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9InJnYigyNTUsMTkzLDE1NykiIHN0b3Atb3BhY2l0eT0iMCIvPjwvbGluZWFyR3JhZGllbnQ+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNsZXNzaGF0LWdlbmVyYXRlZCkiIC8+PC9zdmc+);
-  background-image: -webkit-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: -moz-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: -o-linear-gradient(right, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-  background-image: linear-gradient(to left, rgba(255,193,157,1), rgba(255,193,157,0) 30px, rgba(255,193,157,0) 100%);
-}
-.kshf .kshfRecord[highlight="true"] {
+.kshf .kshfRecord[selection="highlighted"] {
+  padding: 0px;
   background-color: #F2E9E7;
+  border: solid 1px #ceaca5;
+}
+.kshf .kshfRecord[recCompared="true"] {
+  padding: 0px;
+  background-color: #EBF0F0;
+  border: solid 1px #b1c4c4;
 }
 .kshf .summaryConfig {
   position: absolute;
@@ -2455,6 +2489,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .summaryConfig_UnitName > .unitNameInput:hover {
   border-color: #cb5454;
 }
+.kshf .unmapped_records {
+  display: none;
+  position: absolute;
+  left: 0px;
+  bottom: 2px;
+  padding: 1px;
+  font-size: 0.8em;
+  color: lightgray;
+  -webkit-transition: color 100ms linear;
+  -moz-transition: color 100ms linear;
+  -o-transition: color 100ms linear;
+  transition: color 100ms linear;
+  cursor: pointer;
+  z-index: 10;
+}
+.kshf .unmapped_records[filtered=true] {
+  color: black !important;
+}
+.kshf .unmapped_records[selection="onRecord"] {
+  color: black;
+  border: solid 1px #cdbd9b;
+  border-radius: 4px;
+  padding: 0px;
+  background-color: #efeadf;
+}
 .kshf .kshfSummary {
   display: block;
   position: relative;
@@ -2467,26 +2526,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position:absolute; top:0; left:0;
             pointer-events:none;
         }*/
-}
-.kshf .kshfSummary .unmapped_records {
-  display: none;
-  color: lightgray;
-  left: 0px;
-  position: absolute;
-  font-size: 0.8em;
-  padding: 1px;
-  -webkit-transition: color 100ms linear;
-  -moz-transition: color 100ms linear;
-  -o-transition: color 100ms linear;
-  transition: color 100ms linear;
-  cursor: pointer;
-  z-index: 10;
-}
-.kshf .kshfSummary .unmapped_records:hover {
-  color: orangered !important;
-}
-.kshf .kshfSummary .unmapped_records[filtered=true] {
-  color: black !important;
 }
 .kshf .kshfSummary > .wrapper {
   position: relative;
@@ -2633,8 +2672,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph {
   white-space: nowrap;
-  top: 0px;
-  height: 16px;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .clickArea {
   z-index: 20;
@@ -2666,6 +2703,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 18px;
   pointer-events: none;
   z-index: 21;
+  padding-right: 2px;
   font-size: 0.8em;
   font-weight: 300;
   cursor: default;
@@ -2695,43 +2733,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   vertical-align: top;
   text-align: right;
   line-height: 19px;
-}
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .aggr {
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
-  top: 4px;
-  width: 1px;
-  height: 10px;
-}
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .aggr.total_tip {
-  right: -5px;
-  /* right arrow */
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 5px solid #dee2e6;
-  background-color: initial;
-  /*
-                        // The sawtooth pattern
-                        width: 8px;
-                        left: 0px;
-                        height: 10px;
-                        top: 4px;
-                        opacity: 0px;
-
-                        background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-                        linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
-
-                        background-position: top left, top left;
-                        background-repeat: repeat;
-                        background-size: 8px 8px;
-                        */
-}
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .aggr.compare {
-  width: 1px;
-  height: 5px;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons {
   white-space: nowrap;
@@ -2810,25 +2811,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1;
   background-color: #808080;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection^="selected"] > .categoryLabel > .theLabel {
   font-weight: 700 !important;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"] .clickArea {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection^="selected"][selected="0"] .clickArea {
   cursor: pointer;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"][selecttype="and"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection^="selected"][selected="0"][selecttype="and"] > .categoryLabel > .theLabel {
   color: #1d4870;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"][selecttype="or"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection^="selected"][selected="0"][selecttype="or"] > .categoryLabel > .theLabel {
   color: #1c737a;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight^="selected"][selected="0"][selecttype="not"] > .categoryLabel > .theLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection^="selected"][selected="0"][selecttype="not"] > .categoryLabel > .theLabel {
   color: #808080;
   text-decoration: line-through;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[noitems=false][highlight="true"] > .categoryLabel > .theLabel {
-  color: #ff6a33;
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection="onRecord"] > .categoryLabel {
   font-weight: 700;
+  background-color: #efeadf;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical:hover > .summaryControls > .catSortButton {
   opacity: 1;
@@ -2847,9 +2848,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary > .wrapper > .summaryInterval {
   padding: 7px 11px 0px 6px;
   overflow: hidden;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval .unmapped_records {
-  margin-top: 7px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="time"] .aggr {
   opacity: 0 !important;
@@ -2940,25 +2938,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   width: calc(100% - 21px);
   height: 2px;
-  border-bottom: dotted 1px orangered;
+  border-bottom: solid 1px #ffb599;
   opacity: 0;
   -webkit-transition: opacity 200ms linear;
   -moz-transition: opacity 200ms linear;
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedAggrValue > .highlightedAggrValuePointer {
+  left: -10px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick {
   width: calc(100% - 21px);
   width: 100%;
   left: 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .line {
   border-bottom: dotted 1px #b6b3b3;
   width: 100%;
   left: 0px;
   pointer-events: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tick > .text {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text {
   position: relative;
   width: 25px;
   left: -25px;
@@ -3113,29 +3114,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: all 450ms ease-in-out;
   transition: all 450ms ease-in-out;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .circlee {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .recordValueScaleMark {
   display: block;
-  border-radius: 1px;
+  border-radius: 2px;
   width: 4px;
   height: 8px;
-  background-color: orangered;
+  background-color: #ab9157;
   left: -2px;
   z-index: 2;
   position: relative;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .selected-item-value-text {
-  color: #ff6a33;
-  font-size: 0.8em;
-  white-space: nowrap;
-  top: 7px;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .recordValueText {
   position: absolute;
+  top: 7px;
+  color: black;
+  font-size: 0.8em;
+  font-weight: 700;
+  white-space: nowrap;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .selected-item-value-text > .selected-item-value-text-v {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue > .recordValueText > .recordValueText-v {
   position: relative;
   left: -50%;
-  background-color: white;
+  background-color: #efeadf;
   border-radius: 4px;
-  border: solid 1px #DDDDDD;
+  border: solid 1px #cdbd9b;
   padding: 0px 1px;
   font-size: 0.9em;
 }
@@ -3276,11 +3278,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
   display: block;
 }
-.kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[highlight="selected"][selected="0"] .notButton {
+.kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection="selected"][selected="0"] .notButton {
   display: inline;
   opacity: 1;
 }
-.kshf .kshfSummary[isMultiValued=false][filtered_or="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[highlight="selected"][selected="-1"] {
+.kshf .kshfSummary[isMultiValued=false][filtered_or="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection="selected"][selected="-1"] {
   cursor: pointer;
 }
 .kshf .kshfSummary:not([filtered_or="0"]) > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"]:hover .orButton {
@@ -3291,7 +3293,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline;
   opacity: 1;
 }
-.kshf .kshfSummary[isMultiValued=true] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"][highlight="selected"] .notButton {
+.kshf .kshfSummary[isMultiValued=true] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"][selection="selected"] .notButton {
   display: inline;
   opacity: 1;
 }
@@ -3304,7 +3306,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
 }
-.kshf .kshfSummary:hover > .wrapper .unmapped_records {
+.kshf .kshfSummary:hover .unmapped_records {
   color: #808080;
 }
 .kshf .kshfSummary:hover[isMultiValued=true] > .headerGroup .hasMultiMappings {
@@ -3365,6 +3367,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .summaryConfig_UnitName {
   display: none;
 }
+.kshf .highlightedAggrValuePointer {
+  display: block;
+  position: absolute;
+  font-size: 0.7em;
+  color: #ffdacc;
+  text-shadow: 0px 0px 1px #ff6a33, 0px 0px 1px #ff6a33;
+  opacity: 0.8;
+}
 .kshf .belowCatChart {
   position: relative;
   height: 18px;
@@ -3380,14 +3390,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .belowCatChart > .chartAxis_Measure > .highlightedAggrValue {
   position: absolute;
-  border-left: dotted 1px orangered;
+  border-left: solid 1px #ffb599;
+  margin-left: -1px;
   opacity: 0;
   -webkit-transition: opacity 200ms linear;
   -moz-transition: opacity 200ms linear;
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
 }
-.kshf .belowCatChart > .chartAxis_Measure > .tick > .text {
+.kshf .belowCatChart > .chartAxis_Measure > .highlightedAggrValue > .highlightedAggrValuePointer {
+  bottom: -14px;
+  left: -3px;
+}
+.kshf .belowCatChart > .chartAxis_Measure > .tickGroup > .tick > .text {
   width: 20px;
   left: -10px;
   top: 2px;
@@ -3396,7 +3411,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: top 700ms ease-in-out;
   transition: top 700ms ease-in-out;
 }
-.kshf .belowCatChart > .chartAxis_Measure > .tick > .line {
+.kshf .belowCatChart > .chartAxis_Measure > .tickGroup > .tick > .line {
   width: 0px;
   border-left: dotted 1px #b6b3b3;
   -webkit-transition: top 700ms ease-in-out, height 700ms ease-in-out;
@@ -3490,7 +3505,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: orangered;
   fill: orangered;
 }
-.kshf[resultpreview="true"] .kshfSummary:not([isMultiValued="true"]):hover .aggrGlyph:not([highlight="selected"]) > .measureLabel {
+.kshf[resultpreview="true"] .kshfSummary:not([isMultiValued="true"]):hover .aggrGlyph:not([selection="selected"]) > .measureLabel {
   color: #969da3;
   fill: black;
 }
@@ -3715,13 +3730,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord:hover {
-  fill: orangered !important;
+.kshf .recordDisplay[displaytype="map"] .kshfRecord[selection="onRecord"] {
+  stroke: #463b23;
+  stroke-width: 2px;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord[highlight="true"] {
+.kshf .recordDisplay[displaytype="map"] .kshfRecord[selection="highlighted"] {
   stroke: orangered;
   stroke-width: 1px;
-  opacity: 1 !important;
 }
 .kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup {
   display: -webkit-box;
@@ -3759,9 +3774,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   left: 0px;
   z-index: 10;
-}
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord[recCompared="true"] {
-  background-color: #F0F0E8;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord {
   display: -webkit-box;
@@ -3806,9 +3818,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-}
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord[recCompared="true"] {
-  background-color: #F0F0E8;
 }
 .kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
@@ -4099,10 +4108,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode:hover {
   opacity: 1;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[active="true"] {
-  opacity: 1;
-  box-shadow: 0px 0px 2px black;
-}
 .kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="and"] {
   background-color: #1d4870;
   right: 20px;
@@ -4122,6 +4127,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .recordDisplay--Header > .recordTextSearch[isActive="true"] > .searchIcon {
   display: inline-block;
+}
+.kshf .recordDisplay--Header > .recordTextSearch[mode="and"] > .textSearchMode[mode="and"] {
+  opacity: 1;
+  box-shadow: 0px 0px 2px black;
+}
+.kshf .recordDisplay--Header > .recordTextSearch[mode="or"] > .textSearchMode[mode="or"] {
+  opacity: 1;
+  box-shadow: 0px 0px 2px black;
 }
 .kshf .boxinbox {
   margin-top: 10px;

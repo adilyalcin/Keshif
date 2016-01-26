@@ -263,7 +263,7 @@ var browser_configs = {
       summaries: [{ name: "HBO Shows", panel: "left" }],
       recordDisplay: {
         sortColWidth: 15,
-        sortBy: { name: '# of Shows', value: function(){ return this['HBO Shows'].length; } },
+        sortBy: { name: '# of HBO Shows', value: function(){ return this["HBO Shows"].length } },
         textSearch: "Name",
         recordView: function(d){
             if(d.DOM.record) d.DOM.record.style.fontSize = (0.8+(d.data['HBO Shows'].length*0.1))+"em";

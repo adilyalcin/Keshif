@@ -8,6 +8,7 @@
 @color_preview: lighten(orangered, 10%); //#B2B227;
 @color_preview_compare: darkslategray; //#222222;
 @color_chart_background_highlight: rgba(211, 217, 197, 1);
+@color_onRecord_back: #EFEADF;
 
 // END - FROM KESHIF.LESS ******************************
 
@@ -214,17 +215,23 @@
 						display:none;
 					}
 				}
-				&[highlight=selected] {
-					> .label{
-						fill: @color_preview;
-						font-weight: 700;
-						&.label_vert[show=true]{ display: block; }
-					}
-					> .line{
-						stroke: @color_preview;
-						stroke-width: 2px;
-					}
+        &[selection]{
+          > .label{
+            font-weight: 700;
+            &.label_vert[show=true]{ display: block; }
+          }
+          > .line{
+            stroke-width: 2px;
+          }
+        }
+				&[selection="selected"] {
+					> .label{ fill: @color_preview; }
+					> .line{ stroke: @color_preview; }
 				}
+        &[selection="onRecord"] {
+          > .label{ fill: darken(@color_onRecord_back, 60%); }
+          > .line{ stroke: darken(@color_onRecord_back, 50%); }
+        }
 			}
 		} // .rows
 
