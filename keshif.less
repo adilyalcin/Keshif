@@ -153,6 +153,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         stroke-width: 2px;
         stroke: @color_set_containment;
       }
+      .Summary_Set > .summaryControls > .strengthControl {
+        background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e6e6f7), color-stop(100%,#9595db)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(left, #e6e6f7 0%,#9595db 100%); /* IE10+ */
+        background: linear-gradient(to right, #e6e6f7 0%,#9595db 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6f7', endColorstr='#9595db',GradientType=1 ); /* IE6-9 */
+        border-right-color: @color_set_containment;
+        color: black;
+        text-shadow: 0px 0px 2px #FFFFFF;
+        > .strengthLabel{ display: inline-block; }
+      }
     }
     &[previewcompare="true"]{
       .compare    { opacity: 1 !important; }
@@ -2876,7 +2889,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           animation: fa-spin 4s infinite linear;
         }
       }
+
+      &.setPairSummary{ 
+        display: none;
+        position: absolute;
+        top: 0px;
+        background-color: white;
+        &[position="left"]{
+          .configOpt{ right: 2px; }
+          .sizeLegend{ left: 10px; }
+          .belowMatrix{ text-align: right; }
+          .rows > .row > .label{ text-anchor: end; }
+          .setMatrixWidthAdjust{ left: 0px;}
+        }
+        &[position="right"]{
+          .configOpt{ left: 2px; }
+          .sizeLegend{ right: 0px; }
+          .belowMatrix{ text-align: left; }
+          .rows > .row > .label{ text-anchor: start; }
+          .setMatrixWidthAdjust{ right: 0px;}
+        }
+      }
+      &[show_set_matrix=true] > .kshfSummary.setPairSummary{ display: block; }
+
     }// kshfSummary
+
 
     .summaryConfig_UnitName{
       display: none;
@@ -3274,6 +3311,232 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .viewFit{ font-size: 1em; }
       }
     } // .recordDisplay
+
+    .Summary_Set{
+      display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      .user-select(none);
+      &[noanim="false"]{
+        .rows > .row {
+          .transition(@reorder_animation);
+          > .line{ .transition(~'all 200ms ease-in-out'); }
+        }
+      }
+      > .summaryControls {
+        display: block;
+        position: relative;
+        text-align: center;
+        border-bottom: dotted 1px lightgray;
+        margin-bottom: -1px;
+        > .strengthControl{
+          font-size: 0.7em;
+          display: inline-block;
+          background-color: #eaeaea;
+          cursor: pointer;
+          border-width: 1px 2px 1px 1px;
+          border-style: solid;
+          border-color: #DFDFDF;
+          border-radius: 15px;
+          cursor: default;
+          padding: 1px 3px;
+          color: #474747;
+          cursor: pointer;
+          .user-select(none);
+          &:hover{ border-color: gray; }
+          >.strengthLabel{
+            display: none;
+            width: 36px;
+            font-style: italic;
+            font-size: 0.8em;
+            &:nth-child(0){ text-align: left; }
+            &:nth-child(1){ text-align: right; }
+          }
+          >.strengthText{ padding: 0px 2px; }
+        }
+        > .configOpt{
+          display: inline-block;
+          position: absolute;
+          top: 0px;
+          font-size: 0.8em;
+          background-color: rgb(234, 234, 234);
+          cursor: pointer;
+          border: 0px solid rgb(234, 234, 234);
+          border-radius: 15px;
+          cursor: default;
+          .sdsdssds{
+            color: gray;
+            font-size: 0.9em;
+            margin-right: 2px;
+          }
+          > .configOpt_icon{
+            font-size: 1em;
+            vertical-align: middle;
+            background-color: white;
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            text-align: center;
+            border-style: solid;
+            border-radius: 20px;
+            border-color: white;
+            border-width: 0px;
+            margin: 1px;
+          }
+          > .configOpt_label{
+            color: rgb(71, 71, 71);
+            display: none;
+            font-size: 0.9em;
+            padding-left: 3px;
+            height: 15px;
+            > .fa{ margin-right: 3px; }
+          }
+          &.configRowHeight{
+            .fa:hover{
+              color: orangered;
+              cursor: pointer;
+            }
+          }
+          &:hover > .configOpt_label{ display: inline; }
+        }
+
+        svg.sizeLegend{
+          position: absolute;
+          margin-top: 4px;
+          overflow: visible;
+          cursor: default;
+          .user-select(none);
+          > .legendHeader{
+            font-size: 0.7em;
+            alignment-baseline: central;
+            fill: #969da3;
+            text-anchor: start;
+          }
+          .legendMark{
+            > .legendCircle{
+              stroke: gray;
+              stroke-width: 1;
+              fill: none;
+            }
+            > .legendLine{
+              stroke: gray;
+              stroke-width: 1;
+              stroke-dasharray: 0.8;
+            }
+            > .legendLabel{
+              font-size: 0.7em;
+              alignment-baseline: central;
+              fill: gray;
+            }
+          }
+        }
+      } // summaryControls
+      
+      > .setMatrixWidthAdjust{
+        display: block;
+        position: absolute;
+        width: 0px;
+        height: 100%;
+        pointer-events: all;
+        border-width: 0px 2px 0px 0px;
+        border-style: dotted;
+        border-color: lightgray;
+        cursor: col-resize;
+        opacity: 0.5;
+        z-index: 10;
+        &:hover{
+          border-style: solid;
+          border-color: gray;
+        }
+      }
+
+      > svg.setMatrix{
+        display: block;
+        border-right: dotted 1px lightgray;
+      }
+
+      .rows{
+        position: relative;
+        display: block;
+        width: 100%;
+        height: 100%;
+        > .row{
+          position: absolute;
+          left: 0px;
+          width: 100%;
+          display: block;
+          cursor: default;
+          > .line{
+            display: block;
+            stroke: #DADADA;
+            stroke-width: 1px;
+            stroke-linecap: round;
+            pointer-events: none;
+          }
+          > .label{
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 300;
+            font-size: 0.8em;
+            alignment-baseline: middle;
+            &.label_vert{
+              text-anchor: start;
+              background-color: white;
+              display:none;
+            }
+          }
+          &[selection]{
+            > .label{
+              font-weight: 700;
+              &.label_vert[show=true]{ display: block; }
+            }
+            > .line{ stroke-width: 2px; }
+          }
+          &[selection="selected"] {
+            > .label{ fill: @color_preview; }
+            > .line{ stroke: @color_preview; }
+          }
+          &[selection="onRecord"] {
+            > .label{ fill: darken(@color_onRecord_back, 60%); }
+            > .line{ stroke: darken(@color_onRecord_back, 50%); }
+          }
+        }
+      } // .rows
+
+      g.setPairGroup[animate_position="true"]> .setPairGlyph { .transition(~'all 500ms linear'); }
+      g.setPairGroup[animate_position="false"]> .setPairGlyph { .transition(none); }
+
+      &[show_gridlines='false'] .rows > .row > .line{ opacity: 0.3; }
+
+      > .belowMatrix{
+        position: relative;
+        height: 18px;
+        >.matrixInfo{
+          font-size: 0.7em;
+          color: #919191;
+          margin: 0px 3px;
+          display: inline-block;
+          cursor: default;
+          font-style: italic;
+          >.circleeee{
+            width:10px;
+            height: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-right: 2px;
+            background-color: @color_bars;
+            &.borrderr{
+              border-top: solid 2px @color_set_containment;
+              border-right: solid 2px @color_set_containment;
+              border-bottom: solid 2px @color_set_containment;
+            }
+          }
+          .subsetCount_Text:after{ content: " Subsets ⊆"; }
+        }
+      }
+    } // Summary_Set
 
     .scrollToTop{
       display: inline-block;
