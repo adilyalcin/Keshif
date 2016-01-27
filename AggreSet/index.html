@@ -72,10 +72,8 @@ function loadDemo(config){
       if(config.id==="teaser") degreePanel = "right";
       setDegreeSummary.addToPanel(browser.panels[degreePanel],1);
     }
-    theSetSummary = new kshf.Summary_Set();
-    theSetSummary.initialize(browser,setListSummary,"left");
-
-    browser.summaries.push(theSetSummary);
+    setListSummary.setShowSetMatrix(true);
+    setListSummary.setSummary.setPosition("left");
 
     if(config.id==="socialgraph" || config.id==="CpdsVsProteinFam" || config.id==="tedTalks" || config.id==="simpsons"){
       theSetSummary.setListSummary.setHeight_Category(40);

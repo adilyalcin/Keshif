@@ -9651,10 +9651,6 @@ var Summary_Clique_functions = {
             }
 
             me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
-            if(me.position==="right") {
-              // gridPan will be negatiev
-              //me.gridPan_x = -me.gridPan_x;
-            }
             me.checkPan();
 
             var maxHeight = me.setListSummary.heightRow_category*me.setListSummary._cats.length - h;
@@ -10174,7 +10170,6 @@ var Summary_Clique_functions = {
     if(this.position==="right"){
       r=Math.max(t+this.gridPan_x,0);
     }
-    console.log("gridPan_x: "+this.gridPan_x);
     this.DOM.setMatrixSVG.attr("width",w).attr("height",h).attr("viewBox",r+" "+t+" "+w+" "+h);
     this.refreshLabel_Vert_Show();
   },

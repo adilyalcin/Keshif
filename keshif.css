@@ -4194,8 +4194,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .Summary_Set > .belowMatrix > .matrixInfo > .circleeee.borrderr {
   border-top: solid 2px #4000ff;
-  border-right: solid 2px #4000ff;
+  border-left: solid 2px #4000ff;
   border-bottom: solid 2px #4000ff;
+  border-radius: 5px 0px 0px 5px;
+  width: 8px;
 }
 .kshf .Summary_Set > .belowMatrix > .matrixInfo .subsetCount_Text:after {
   content: " Subsets ⊆";
