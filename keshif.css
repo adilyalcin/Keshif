@@ -2091,11 +2091,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .aggrGlyph > span.aggr.preview {
   background-color: #ff6a33;
-  -webkit-transform: scaleX(0);
-  -moz-transform: scaleX(0);
-  -ms-transform: scaleX(0);
-  -o-transform: scaleX(0);
-  transform: scaleX(0);
   -webkit-transition: -webkit-transform 250ms ease-in-out;
   -moz-transition: -moz-transform 250ms ease-in-out;
   -o-transition: -o-transform 250ms ease-in-out;
@@ -2103,10 +2098,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .aggrGlyph > span.aggr.compare {
   background-color: #2f4f4f;
-  -webkit-transition: -webkit-transform 700ms ease-in-out, opacity 400ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out, opacity 400ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out, opacity 400ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, opacity 400ms ease-in-out;
+  -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 300ms ease-in-out;
+  -moz-transition: -moz-transform 500ms ease-in-out, opacity 300ms ease-in-out;
+  -o-transition: -o-transform 500ms ease-in-out, opacity 300ms ease-in-out;
+  transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 300ms ease-in-out;
   opacity: 0;
 }
 .kshf .aggrGlyph > .measureLabel {
@@ -2946,6 +2941,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .aggrGroup > .highlightRangeLimits {
+  display: none;
+  width: 1px;
+  background-color: orangered;
+  position: absolute;
+  z-index: 100;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure {
   top: 0px;

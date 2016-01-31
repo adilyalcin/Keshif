@@ -1757,12 +1757,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.total{ background-color: @color_bars_background; }
         &.preview{
           background-color: @color_bar_preview;
-          .transform(~'scaleX(0)');
           .transition(~'transform 250ms ease-in-out');
         }
         &.compare{
           background-color: @color_preview_compare;
-          .transition(~'transform 700ms ease-in-out, opacity 400ms ease-in-out');
+          .transition(~'transform 500ms ease-in-out, opacity 300ms ease-in-out');
           opacity: 0;
         }
       }      
@@ -2501,6 +2500,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       z-index: 3;
                       height: 100%;
                       .transition(@layout_animation);
+                      > .highlightRangeLimits{
+                        display: none;
+                        width: 1px;
+                        background-color: orangered;
+                        position: absolute;
+                        z-index: 100;
+                      }
                     }
                     > .chartAxis_Measure{
                         top: 0px;
