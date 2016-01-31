@@ -104,7 +104,7 @@ google.setOnLoadCallback(function(){
       sortBy: "Average Response",
       displayType: 'grid',
       detailsToggle: 'off',
-      maxVisibleItems_Default: 20,
+      maxVisibleItems_Default: 50,
       recordView: function(){ 
         return "<a href='"+this['Image Link']+"' target='_blank'><img src='"+this['Image Link']+"'></a>";
       }
@@ -159,20 +159,20 @@ function showBrowsers(v){
 #browser_stimulus {
   display: inline-block;
   vertical-align: top;
-  width: 800px;
-  height: 640px;
+  width: calc(100vw - 400px);
+  height: calc(100vh - 120px);
 }
 #browser_participants{
   display: inline-block;
   vertical-align: top;
   width: 300px;
-  height: 640px;
+  height: calc(100vh - 120px);
   margin-left: 20px;
 }
 #browser_responses{
   display: none;
   width: 1100px;
-  height: 640px;
+  height: calc(100vh - 120px);
   margin: 0 auto;
 }
 
@@ -183,7 +183,7 @@ body[show="responses"] .opt_responses{ background-color: rgb(234, 227, 217); col
 body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); color: black; font-weight: 700; }
 
 .kshfRecord{
-  width: 220px;
+  width: 120px;
   padding-top: 0px !important;
   margin: 2px !important;
   background-color: black !important;
@@ -229,8 +229,8 @@ body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); col
   display: inline-block;
   border: solid 2px gray;
   border-radius: 10px;
-  margin-top: 5px;
   margin-bottom: 10px;
+  margin-top: -5px;
   cursor: pointer;
   color: gray;
   font-family: Helvetica, Arial, sans-serif;
@@ -252,7 +252,7 @@ body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); col
         <span class="browserOption opt_responses" onClick="showBrowsers('responses')">Show Responses</span>
         </div>
 
-    <div style='margin: 0 auto; width: 1200px; text-align: center;' id="browserGroup1">
+    <div style='margin: 0 auto; text-align: center;' id="browserGroup1">
         <span id="browser_stimulus"></span>
         <span id="browser_participants"></span>
         </div>
@@ -261,11 +261,11 @@ body[show="stim_part"] .opt_stim_part{ background-color: rgb(234, 227, 217); col
     </div>
 
   <div id="demo_Infobox">
-    Data from
+    Data from the paper
     <a href="http://valt.cs.tufts.edu/papers/infographic-aesthetics/" target="_blank">
         "Infographic Aesthetics: Designing for the First Impression"</a>,
-    by Lane Harrison, Katharina Reinecke, and Remco Chang, published CHI-2015.<br>
-    The data is originally hosted at <a href="https://github.com/TuftsVALT/infographic-aesthetics" target="_blank"
+    by Lane Harrison, Katharina Reinecke, Remco Chang, published at CHI-2015. 
+    Originally hosted at <a href="https://github.com/TuftsVALT/infographic-aesthetics" target="_blank"
         class='fa fa-github'> Github</a>.
     </div>
 

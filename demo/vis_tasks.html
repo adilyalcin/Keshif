@@ -32,18 +32,19 @@ google.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "Tasks",
-        catTableName: "Keywords",
+        /*catTableName: "Keywords",
         catLabel: "Task",
         summaries: [
             {   name: "Categories", value: "Category"
             },{ name: "Levels", value: function(){ return kshf.dt_id.Levels[this.Category].data.Level; }
             }
-        ] },
+        ] */
+        },
       { name: "Authors", panel: 'right',  },
       { name: "Features", panel: 'right', 
         value: function(){
           var r=[];
-          if(this.H==="*") r.push("Highlighted");
+          if(this.H==="*") r.push("Highlighted Work");
           if(this.Tasks && this.Tasks.length>0) r.push("Presents Taxonomy");
           return r;
         } },
@@ -51,13 +52,19 @@ google.setOnLoadCallback(function(){
       { name: "Year", panel: 'bottom', value: function(){return new Date(this.Year,0);} }
     ],
     recordDisplay: {
-      sortBy: 'Date',
+      sortBy: {name 'Year', inverse: true},
       textSearch: "Title",
       recordView: "Title"
     }
   });
 });
       </script>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 90px);
+}
+</style>
+
   </head>
   <body>
     <div class="contents">
