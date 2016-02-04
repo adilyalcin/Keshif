@@ -496,6 +496,7 @@ var browser_configs = {
         sortBy: [ {title: '#samples', value:function(){ return this[0].length; }} ],
         displayType: 'grid',
         maxVisibleItems_Default: 2000,
+        detailsToggle: "off",
         recordView: function(d){ d.DOM.record.setAttribute("title",d.data[1]); }
       }
     }

@@ -48,7 +48,7 @@ $(document).ready( function(){
       { name: "Location of Preparation", panel: 'left', 
         value: function(){ var x=this["Location of Preparation"]; if(x) return x.split(";"); } },
       { name: "Food Vehicle", panel: 'left', minAggrValue: 5 },
-      { name: "Ill People", value: "Illnesses", panel: 'middle', intervalScale: 'log', unitName: "ppl" },
+      { name: "Ill People", value: "Illnesses", panel: 'middle', intervalScale: 'log', unitName: "ppl", showPercentile: true },
       { name: "Hospitalized People", value: "Hospitalizations", panel: 'middle', collapsed: true, unitName: "ppl" },
       { name: "Dead People", value: "Deaths", panel: 'middle', collapsed: true, unitName: "ppl" },
       { name: "Genus Species", panel: 'right' },

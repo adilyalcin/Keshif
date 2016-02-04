@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Data Breaches in the U.S.</title>
+    <title>Data Breaches</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -40,9 +40,9 @@ google.setOnLoadCallback(function(){
       kshf.Util.cellToArray(kshf.dt.Breaches,['Record Types'], /\,/, false);
     },
     summaries: [
-      { name: "Type", panel: 'left' },
-      { name: "Industry" },
-      { name: "# of Records" },
+      { name: "Type", panel: 'left', collapsed: true },
+      { name: "Industry", collapsed: true },
+      { name: "# of Records", showPercentile: true },
       { name: "Source", panel: 'right'},
 //      { name: "Data Source", panel: 'right' },
       { name: "Record Types", panel: 'right', 
@@ -103,7 +103,10 @@ google.setOnLoadCallback(function(){
 </style>
   </head>
   <body>
-    <div class="contents"><div id="demo_Browser"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">Data Breaches Around the Globe, 2013-2015</div>
+      <div id="demo_Browser"></div>
+      </div>
 
     <div id="demo_Infobox">
       Data collected by 
