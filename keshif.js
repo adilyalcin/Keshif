@@ -524,7 +524,7 @@ kshf.Record = function(d, idIndex){
   // By default, each item is aggregated as 1
   // You can modify this with a non-negative value
   // Note that the aggregation currently works by summation only.
-  this.aggregate_Self = 1;
+  this.measure_Self = 1;
 
   // Wanted item / not filtered out
   this.isWanted = true;
@@ -570,9 +570,9 @@ kshf.Record.prototype = {
     var oldWanted = this.isWanted;
     this.isWanted = this._filterCache.every(function(f){ return f; });
 
-    if(this.aggregate_Self!==0 && this.isWanted !== oldWanted){ // There is some change that affects computation
-      var valToAdd = (this.isWanted && !oldWanted) ? this.aggregate_Self /*add*/ : -this.aggregate_Self /*remove*/;
-      this._aggrCache.forEach(function(aggr){ aggr.aggregate_Active += valToAdd; });
+    if(this.measure_Self!==0 && this.isWanted !== oldWanted){ // There is some change that affects computation
+      var valToAdd = (this.isWanted && !oldWanted) ? this.measure_Self /*add*/ : -this.measure_Self /*remove*/;
+      this._aggrCache.forEach(function(aggr){ aggr.measure.Active += valToAdd; });
     }
 
     this._filterCacheIsDirty = false;
@@ -606,14 +606,14 @@ kshf.Record.prototype = {
   addForHighlight: function(){
     if(!this.isWanted || this.highlighted) return;
     if(this.DOM.record) this.DOM.record.setAttribute("selection","highlighted");
-    this._aggrCache.forEach(function(aggr){ aggr.aggregate_Preview += this.aggregate_Self; }, this);
+    this._aggrCache.forEach(function(aggr){ aggr.measure.Highlighted += this.measure_Self; }, this);
     this.highlighted = true;
   },
   /** -- */
   remForHighlight: function(distribute){
     if(!this.isWanted || !this.highlighted) return;
     if(this.DOM.record) this.DOM.record.removeAttribute("selection");
-    if(distribute) this._aggrCache.forEach(function(aggr){ aggr.aggregate_Preview -= this.aggregate_Self; }, this);
+    if(distribute) this._aggrCache.forEach(function(aggr){ aggr.measure.Highlighted -= this.measure_Self; }, this);
     this.highlighted = false;
   },
   /** -- */
@@ -639,12 +639,14 @@ kshf.Aggregate.prototype = {
     // Items which are mapped/related to this item
     this.records = [];
 
-    this.aggregate_Active = 0;   // Active aggregate value
-    this.aggregate_Preview = 0;  // Previewed aggregate value
-    this.aggregate_Total = 0;    // Total aggregate value
-    this.aggregate_Compare = 0;  // Compared value (A)
-    this.aggregate_CompareB = 0; // Compared value (B)
-    this.aggregate_CompareC = 0; // Compared value (C)
+    this.measure = {
+      Active: 0,
+      Highlighted: 0,
+      Total: 0,
+      Compared_A: 0,
+      Compared_B: 0,
+      Compared_C: 0
+    }
 
     // the main data within item
     this.data = d;
@@ -669,46 +671,44 @@ kshf.Aggregate.prototype = {
   addRecord: function(record){
     this.records.push(record);
     record._aggrCache.push(this);
-    this.aggregate_Total  += record.aggregate_Self;
-    if(record.isWanted) this.aggregate_Active += record.aggregate_Self;
+    this.measure.Total  += record.measure_Self;
+    if(record.isWanted) this.measure.Active += record.measure_Self;
   },
   /** -- */
   resetAggregateMeasures: function(){
-    this.aggregate_Active = 0;
-    this.aggregate_Preview = 0;
-    this.aggregate_Total = 0;
-    this.aggregate_Compare = 0;
+    this.measure = {
+      Active: 0,
+      Highlighted: 0,
+      Total: 0,
+      Compared_A: 0,
+      Compared_B: 0,
+      Compared_C: 0
+    }
     this.records.forEach(function(record){
-      if(record.isWanted) {
-        this.aggregate_Total  += record.aggregate_Self;
-        this.aggregate_Active += record.aggregate_Self;
-      }
+      if(!record.isWanted) return;
+      this.measure.Total  += record.measure_Self;
+      this.measure.Active += record.measure_Self;
     },this);
   },
   /** -- */
-  previewRatioToActive: function(){
-    return this.aggregate_Preview / this.aggregate_Total;
+  ratioHighlightToTotal: function(){
+    return this.measure.Highlighted / this.measure.Active;
   },
   /** -- */
-  previewRatioToTotal: function(){
-    return this.aggregate_Preview / this.aggregate_Active;
+  ratioHighlightToActive: function(){
+    return this.measure.Highlighted / this.measure.Total;
   },
   /** -- */
-  activeRatioToTotal: function(){
-    return this.aggregate_Active / this.aggregate_Total;
-  },
-  /** -- */
-  compareRatioToActive: function(){
-    return this.aggregate_Compare / this.aggregate_Active;
-  },
-  /** -- */
-  compareRatioToTotal: function(){
-    return this.aggregate_Compare / this.aggregate_Total;
+  ratioCompareToActive: function(cT){
+    return this.measure["Compared_"+cT] / this.measure.Active;
   },
 
   /** -- */
   unselectAggregate: function(){
-    if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.removeAttribute("selection").removeAttribute("showlock");
+    if(this.DOM.aggrGlyph) {
+      this.DOM.aggrGlyph.removeAttribute("selection");
+      this.DOM.aggrGlyph.removeAttribute("showlock");
+    }
     if(this.DOM.matrixRow) this.DOM.matrixRow.removeAttribute("selection");
   },
 
@@ -787,7 +787,7 @@ var Aggregate_EmptyRecords_functions = {
   }
 }
 for(var index in Aggregate_EmptyRecords_functions){
-    kshf.Aggregate_EmptyRecords.prototype[index] = Aggregate_EmptyRecords_functions[index];
+  kshf.Aggregate_EmptyRecords.prototype[index] = Aggregate_EmptyRecords_functions[index];
 }
 
 
@@ -878,7 +878,7 @@ kshf.Filter.prototype = {
     } else {
       // insert DOM
       if(this.filterCrumb===null) {
-        this.filterCrumb = this.browser.insertDOM_crumb("filter",this);
+        this.filterCrumb = this.browser.insertDOM_crumb("Filtered",this);
       }
       this.filterCrumb.select(".crumbHeader").html(this.parentSummary.summaryName);
       this.filterCrumb.select(".filterDetails").html(this.filterView_Detail.call(this, this.parentSummary));
@@ -2271,13 +2271,14 @@ kshf.Browser = function(options){
 
     this.highlightSelectedSummary = null;
 
-    this.comparedAggregate = undefined;
-    this.highlightedAggregate = undefined;
+    this.selectedAggr = {
+      Compared_A: null,
+      Compared_B: null,
+      Compared_C: null,
+      Highlighted:null
+    }
 
     this.highlightCrumbTimeout_Hide = undefined;
-
-    this.compareSelectCrumb = null;
-    this.highlightSelectCrumb = null;
 
     this.showDropZones = false;
 
@@ -2826,46 +2827,34 @@ kshf.Browser.prototype = {
         });          
 
       rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
-          .each(function(d){
-              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser });
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout", function(){ this.tipsy.hide(); })
-          .on("click",function(){ me.enableAuthoring(); })
-          ;
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(){ me.enableAuthoring(); });
       // Datasource
       this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
-          .attr("target","_blank")
-          .each(function(d){
-              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.OpenDataSource });
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(d,i){ this.tipsy.hide(); })
-          ;
+        .attr("target","_blank")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.OpenDataSource }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); });
       // Info & Credits
       rightBoxes.append("i").attr("class","fa fa-info-circle credits")
-          .each(function(d){
-              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits });
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(d,i){ this.tipsy.hide(); })
-          .on("click",function(){ me.showInfoBox();})
-          ;
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); })
+        .on("click",function(){ me.showInfoBox();});
       // Info & Credits
       rightBoxes.append("i").attr("class","fa fa-arrows-alt fullscreen")
-          .each(function(d){
-              this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen });
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(d,i){ this.tipsy.hide(); })
-          .on("click",function(){ me.showFullscreen();})
-          ;
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); })
+        .on("click",function(){ me.showFullscreen();});
 
       var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalGlyph aggrGlyph");
-      this.DOM.totalGlyph_total = adsdasda.append("span").attr("class","aggr total");
-      this.DOM.totalGlyph_active = adsdasda.append("span").attr("class","aggr active");
-      this.DOM.totalGlyph_preview = adsdasda.append("span").attr("class","aggr preview");
-      this.DOM.totalGlyph_compare = adsdasda.append("span").attr("class","aggr compare");
+      this.DOM.totalGlyph = adsdasda.selectAll("[class*='measure_']")
+        .data(["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"])
+        .enter()
+        .append("span").attr("class", function(d){ return "measure_"+d;})
     },
     /** Inserts a summary block to the list breadcrumb DOM */
     /** Don't call this directly */
@@ -2876,7 +2865,7 @@ kshf.Browser.prototype = {
       x = this.DOM.breadcrumbs.append("span")
         .attr("class","crumb crumbMode_"+_className)
         .each(function(){
-          if(_className==="compare" || _className==='filter'){
+          if(_className!=="Highlighted"){
             // Move the node to a sibling before
             var l=this.parentNode.childNodes.length;
             if(l>1){
@@ -2887,32 +2876,30 @@ kshf.Browser.prototype = {
           this.tipsy = new Tipsy(this, {
             gravity: 'n',
             title: function(){ 
-              if(_className==="filter") return kshf.lang.cur.RemoveFilter;
-              if(_className==="compare") return kshf.lang.cur.Unlock;
-              if(_className==="highlight") return "Remove Highligh";
+              switch(_className){
+                case "Filtered": return kshf.lang.cur.RemoveFilter;
+                case "Highlighted": return "Remove Highlight";
+                case "Compared_A":
+                case "Compared_B":
+                case "Compared_B": return kshf.lang.cur.Unlock;
+              }
             }
-          })
+          });
         })
-        .on("mouseenter",function(){
-          if(_className!=='highlight') this.tipsy.show();
-        })
-        .on("mouseleave",function(){
-          this.tipsy.hide();
-        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
           this.tipsy.hide();
-          if(_className==="filter") {
+          if(_className==="Filtered") {
             _filter.clearFilter();
             // delay layout height update
             setTimeout( function(){ me.updateLayout_Height();}, 1000);
-          }
-          if(_className==="highlight") {
+          } else if(_className==="Highlighted") {
             me.clearSelect_Highlight();
-            me.clearSelect_Highlight_Crumb();
-          }
-          if(_className==="compare") {
-            me.clearSelect_Compare();
-            me.clearSelect_Compare_Crumb();
+            me.clearCrumbAggr("Highlighted");
+          } else {
+            me.clearSelect_Compare('A'); // TODO: _className Compared_A / className, etc
+            me.clearCrumbAggr(_className);
           }
         });
       x.append("span").attr("class","clearCrumbButton inCrumb").append("span").attr("class","fa");
@@ -2926,41 +2913,29 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refreshTotalViz: function(){
+      var me=this;
       var totalScale = d3.scale.linear()
-        .domain([0, 
-          this.ratioModeActive? 
-            this.allRecordsAggr.aggregate_Active:
-            this.allRecordsAggr.aggregate_Total
-            ])
+        .domain([0, this.allRecordsAggr.measure[this.ratioModeActive ? 'Active' : 'Total']])
         .range([0, this.getWidth_Browser()]);
 
-      kshf.Util.setTransform(this.DOM.totalGlyph_total[0][0],
-        "scaleX("+totalScale(this.allRecordsAggr.aggregate_Total)+")");
-      kshf.Util.setTransform(this.DOM.totalGlyph_active[0][0],
-        "scaleX("+totalScale(this.allRecordsAggr.aggregate_Active)+")");
-      kshf.Util.setTransform(this.DOM.totalGlyph_preview[0][0],
-        "scaleX("+totalScale(this.allRecordsAggr.aggregate_Preview)+")");
-      kshf.Util.setTransform(this.DOM.totalGlyph_compare[0][0],
-        "scaleX("+totalScale(this.allRecordsAggr.aggregate_Compare)+")");
+      this.DOM.totalGlyph.each(function(d){
+        kshf.Util.setTransform(this, "scaleX("+totalScale(me.allRecordsAggr.measure[d])+")");
+      });
     },
     /** --- */
     initDOM_ClearAllFilters: function(){
-        var me=this;
-        this.DOM.filterClearAll = this.DOM.panel_Basic.append("span").attr("class","filterClearAll")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.RemoveAllFilters });
-            })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("click",function(){
-                this.tipsy.hide();
-                me.clearFilters_All();
-            })
-            ;
-        this.DOM.filterClearAll.append("span").attr("class","title").text(kshf.lang.cur.ShowAll);
-        this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter")
-            .append("span").attr("class","fa fa-times")
-            ;
+      var me=this;
+      this.DOM.filterClearAll = this.DOM.panel_Basic.append("span").attr("class","filterClearAll")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.RemoveAllFilters }); })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          this.tipsy.hide();
+          me.clearFilters_All();
+        });
+      this.DOM.filterClearAll.append("span").attr("class","title").text(kshf.lang.cur.ShowAll);
+      this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter")
+          .append("span").attr("class","fa fa-times");
     },
     /* -- */
     insertDOM_Infobox: function(){
@@ -4095,8 +4070,8 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refresh_ActiveRecordCount: function(){
-      var noneSelected = this.allRecordsAggr.aggregate_Active===0;
-      var numStr = this.allRecordsAggr.aggregate_Active.toLocaleString();
+      var noneSelected = this.allRecordsAggr.measure.Active===0;
+      var numStr = this.allRecordsAggr.measure.Active.toLocaleString();
       if(this.measureSummary){
         numStr = this.measureSummary.printWithUnitName(numStr);
       }
@@ -4113,8 +4088,8 @@ kshf.Browser.prototype = {
     },
     /** -- */
     updateAfterFilter: function () {
-      this.clearSelect_Compare();
-      this.clearSelect_Compare_Crumb();
+      this.clearSelect_Compare('A');
+      this.clearCrumbAggr('Compared_A');
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
     },
@@ -4147,62 +4122,56 @@ kshf.Browser.prototype = {
       });
     },
     /** -- */
-    clearSelect_Compare_Crumb: function(){
-      var root = this.compareSelectCrumb;
-      if(root===null || root===undefined) return;
-      root.attr("ready",false);
-      setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
-      this.compareSelectCrumb = null;
-    },
-    /** -- */
-    clearSelect_Highlight_Crumb: function(){
-      clearTimeout(this.highlightCrumbTimeout_Hide);
-        this.highlightCrumbTimeout_Hide = undefined;
-      var root = this.highlightSelectCrumb;
-      if(root===null || root===undefined) return;
-      root.attr("ready",false);
-      setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
-      this.highlightSelectCrumb = null;
-    },
-    /** -- */
-    clearSelect_Compare: function(){
+    clearSelect_Compare: function(cT){
       this.vizCompareActive = false;
       this.DOM.root.attr("selectCompare",null);
-      if(this.comparedAggregate){
-        this.comparedAggregate.clearCompare();
-        this.comparedAggregate = null;
+      if(this.selectedAggr["Compared_"+cT]){
+        this.selectedAggr["Compared_"+cT].clearCompare();
+        this.selectedAggr["Compared_"+cT] = null;
       }
-      this.allAggregates.forEach(function(aggr){ aggr.aggregate_Compare = 0; });
+      this.allAggregates.forEach(function(aggr){ aggr.measure["Compared_"+cT] = 0; });
       this.summaries.forEach(function(summary){ summary.refreshViz_Compare(); });
     },
     /** -- */
     setSelect_Compare: function(selSummary,selAggregate, noReclick){
       if(this.vizCompareActive){
-        var reclick = selAggregate===this.comparedAggregate;
-        this.clearSelect_Compare();
+        var reclick = selAggregate===this.selectedAggr["Compared_A"];
+        this.clearSelect_Compare('A');
         if(reclick && noReclick) {
-          this.clearSelect_Compare_Crumb(); // remove selection compare selection fully
+          this.clearCrumbAggr('Compared_A'); // remove selection compare selection fully
           return;
         }
       }
 
       this.vizCompareActive = true;
       this.DOM.root.attr("selectCompare",true);
-      this.comparedAggregate = selAggregate;
-      this.comparedAggregate.selectCompare();
+      this.selectedAggr["Compared_A"] = selAggregate;
+      this.selectedAggr["Compared_A"].selectCompare();
 
       this.allAggregates.forEach(function(aggr){
-        aggr.aggregate_Compare = this.preview_not ? (aggr.aggregate_Active-aggr.aggregate_Preview) : aggr.aggregate_Preview;
+        aggr.measure.Compared_A = this.preview_not ? (aggr.measure.Active-aggr.measure.Highlighted) : aggr.measure.Highlighted;
       },this);
 
       this.summaries.forEach(function(summary){ summary.refreshViz_Compare(); });
       this.refreshTotalViz();
 
-      if(this.compareSelectCrumb===null) this.compareSelectCrumb = this.insertDOM_crumb("compare");
-      this.compareSelectCrumb.select(".crumbHeader"  ).html(selSummary.summaryName);
-      this.compareSelectCrumb.select(".filterDetails").html(
-        (this.highlightedAggregate instanceof kshf.Aggregate_EmptyRecords) ? "(none)" :
-          selSummary.printAggrSelection(this.highlightedAggregate) );
+      this.setCrumbAggr("Compared_A",selSummary);
+    },
+    /** -- */
+    setCrumbAggr: function(selectType, selectedSummary){
+      var crumb = this.DOM.breadcrumbs.select(".crumbMode_"+selectType);
+      if(crumb[0][0]===null) crumb = this.insertDOM_crumb(selectType);
+      crumb.select(".crumbHeader"  ).html(selectedSummary.summaryName);
+      crumb.select(".filterDetails").html(
+        (this.selectedAggr[selectType] instanceof kshf.Aggregate_EmptyRecords) ? "(none)" :
+          selectedSummary.printAggrSelection(this.selectedAggr[selectType]) );
+    },
+    /** -- */
+    clearCrumbAggr: function(selectType){
+      var crumb = this.DOM.breadcrumbs.select(".crumbMode_"+selectType);
+      if(crumb[0][0]===null) return;
+      crumb.attr("ready",false);
+      setTimeout(function(){ crumb[0][0].parentNode.removeChild(crumb[0][0]); }, 350);
     },
     /** -- */
     clearSelect_Highlight: function(){
@@ -4210,18 +4179,21 @@ kshf.Browser.prototype = {
       this.vizPreviewActive = false;
       this.DOM.root.attr("selectHighlight",null);
       this.highlightSelectedSummary = null;
-      if(this.highlightedAggregate){
-        this.highlightedAggregate.clearHighlight();
-        this.highlightedAggregate = undefined;
+      if(this.selectedAggr.Highlighted){
+        this.selectedAggr.Highlighted.clearHighlight();
+        this.selectedAggr.Highlighted = undefined;
       }
 
-      this.allAggregates.forEach(function(aggr){ aggr.aggregate_Preview = 0; });
+      this.allAggregates.forEach(function(aggr){ aggr.measure.Highlighted = 0; });
       this.summaries.forEach(function(summary){ summary.refreshViz_Highlight(); });
       this.refreshTotalViz();
 
       // if the crumb is shown, start the hide timeout
       if(this.highlightCrumbTimeout_Hide) clearTimeout(this.highlightCrumbTimeout_Hide);
-      this.highlightCrumbTimeout_Hide = setTimeout(function(){ me.clearSelect_Highlight_Crumb(); },1000);
+      this.highlightCrumbTimeout_Hide = setTimeout(function(){ 
+        me.clearCrumbAggr("Highlighted");
+        this.highlightCrumbTimeout_Hide = undefined;
+      },1000);
     },
     /** -- */
     setSelect_Highlight: function(selSummary,selAggregate){
@@ -4229,20 +4201,16 @@ kshf.Browser.prototype = {
       this.vizPreviewActive = true;
       this.DOM.root.attr("selectHighlight",true);
       this.highlightSelectedSummary = selSummary;
-      this.highlightedAggregate = selAggregate;
-      this.highlightedAggregate.selectHighlight();
+      this.selectedAggr.Highlighted = selAggregate;
+      this.selectedAggr.Highlighted.selectHighlight();
 
       this.summaries.forEach(function(summary){ summary.refreshViz_Highlight(); });
       this.refreshTotalViz();
 
       clearTimeout(this.highlightCrumbTimeout_Hide);
       this.highlightCrumbTimeout_Hide = undefined;
-      
-      if(this.highlightSelectCrumb===null) this.highlightSelectCrumb = this.insertDOM_crumb("highlight");
-      this.highlightSelectCrumb.select(".crumbHeader").html(selSummary.summaryName);
-      this.highlightSelectCrumb.select(".filterDetails").html(
-        (this.highlightedAggregate instanceof kshf.Aggregate_EmptyRecords) ? "(none)" :
-            selSummary.printAggrSelection(this.highlightedAggregate));
+
+      this.setCrumbAggr("Highlighted",selSummary);
     },
     /** -- */
     setMeasureSummary: function(summary){
@@ -4250,13 +4218,13 @@ kshf.Browser.prototype = {
         // Clearing measure summary (defaulting to count)
         if(this.measureSummary===undefined) return; // No update
         this.measureSummary = undefined;
-        this.records.forEach(function(record){ record.aggregate_Self = 1; });
+        this.records.forEach(function(record){ record.measure_Self = 1; });
         this.DOM.measureAggrType.text("");
       } else {
         if(this.measureSummary===summary) return; // No update
         this.measureSummary = summary;
         summary.initializeAggregates();
-        this.records.forEach(function(record){ record.aggregate_Self = summary.getRecordValue(record); });
+        this.records.forEach(function(record){ record.measure_Self = summary.getRecordValue(record); });
         this.DOM.measureAggrType.html("Total "+summary.summaryName+" of ");
       }
       this.allAggregates.forEach(function(aggr){ aggr.resetAggregateMeasures(); });
@@ -4444,15 +4412,15 @@ kshf.Browser.prototype = {
       } else {
         if(!aggr.isVisible) return "";
         _val = this.vizPreviewActive?
-          (this.preview_not? aggr.aggregate_Active - aggr.aggregate_Preview : aggr.aggregate_Preview ) :
-          aggr.aggregate_Active;
+          (this.preview_not? aggr.measure.Active - aggr.measure.Highlighted : aggr.measure.Highlighted ) :
+          aggr.measure.Active;
         if(this.percentModeActive){
-          if(aggr.aggregate_Active===0) return "";
+          if(aggr.measure.Active===0) return "";
           if(this.ratioModeActive){
             if(!this.vizPreviewActive) return "";
-            _val = 100*_val/aggr.aggregate_Active;
+            _val = 100*_val/aggr.measure.Active;
           } else {
-            _val = 100*_val/this.allRecordsAggr.aggregate_Active;
+            _val = 100*_val/this.allRecordsAggr.measure.Active;
           }
         }
       }
@@ -5278,7 +5246,7 @@ kshf.Summary_Base.prototype = {
       .each(function(){
         me.emptyRecordsAggr.DOM.aggrGlyph = this;
         this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
-          var x = me.emptyRecordsAggr.aggregate_Active;
+          var x = me.emptyRecordsAggr.measure.Active;
           // TODO: Number should depend on filtering state, and also reflect percentage-mode
           return "<b>"+x+"</b> "+me.browser.itemName+" (none)"; 
         }});
@@ -5318,11 +5286,11 @@ kshf.Summary_Base.prototype = {
     var interp = d3.interpolateHsl(d3.rgb(211,211,211)/*lightgray*/, d3.rgb(255,69,0));
 
     this.DOM.unmapped_records
-      .style("display",this.emptyRecordsAggr.aggregate_Active>0?"block":"none")
+      .style("display",this.emptyRecordsAggr.measure.Active>0?"block":"none")
       .style("color", function(){
         if(!me.browser.vizCompareActive) return;
-        if(me.emptyRecordsAggr.aggregate_Total===0) return;
-        return interp(me.emptyRecordsAggr.previewRatioToActive());
+        if(me.emptyRecordsAggr.measure.Total===0) return;
+        return interp(me.emptyRecordsAggr.ratioHighlightToActive());
       });
   },
   /** -- */
@@ -5638,8 +5606,8 @@ var Summary_Categorical_functions = {
         if(!a.f_selected() &&  b.f_selected()) return  1;
         if( a.f_selected() && !b.f_selected()) return -1;
         // Rest
-        var x = b.aggregate_Active - a.aggregate_Active;
-        if(x===0) x = b.aggregate_Total - a.aggregate_Total;
+        var x = b.measure.Active - a.measure.Active;
+        if(x===0) x = b.measure.Total - a.measure.Total;
         if(x===0) x = idCompareFunc(a,b); // stable sorting. ID's would be string most probably.
         if(inverse) x=-x;
         return x;
@@ -6193,14 +6161,14 @@ var Summary_Categorical_functions = {
 
     /** returns the maximum active aggregate value per row in chart data */
     getMaxAggr_Active: function(){
-      return d3.max(this._cats, function(cat){ return cat.aggregate_Active; });
+      return d3.max(this._cats, function(cat){ return cat.measure.Active; });
     },
     /** returns the maximum total aggregate value stored per row in chart data */
     getMaxAggr_Total: function(){
       if(this._cats===undefined) return 0;
       if(this.isEmpty()) return 0;
       if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
-      this._maxBarValueMaxPerAttrib = d3.max(this._cats, function(d){ return d.aggregate_Total; });
+      this._maxBarValueMaxPerAttrib = d3.max(this._cats, function(d){ return d.measure.Total; });
       return this._maxBarValueMaxPerAttrib;
     },
     /** -- */
@@ -6336,24 +6304,21 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshViz_Total: function(){
       if(this.isEmpty() || this.collapsed) return;
-      var me = this;
-      var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
-
-      // Do not need to update total. Total value is invisible. Percent view is based on active count.
       if(this.browser.ratioModeActive){
-        this.DOM.aggr_TotalTip.style("opacity",0);
+        // Do not need to update total. Total value is invisible. Percent view is based on active count.
+        this.DOM.measureTotalTip.style("opacity",0);
       } else {
-        this.DOM.aggr_Total.each(function(_cat){
-          kshf.Util.setTransform(this,
-            "translateX("+width_Text+"px) scaleX("+me.chartScale_Measure(_cat.aggregate_Total)+")");
+        var me = this;
+        var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
+        this.DOM.measure_Total.each(function(_cat){
+          kshf.Util.setTransform(this, "translateX("+width_Text+"px) scaleX("+me.chartScale_Measure(_cat.measure.Total)+")");
         });
-        this.DOM.aggr_TotalTip
+        this.DOM.measureTotalTip
           .each(function(_cat){
-            kshf.Util.setTransform(this,
-              "translateX("+(me.chartScale_Measure(_cat.aggregate_Total)+width_Text)+"px)");
+            kshf.Util.setTransform(this, "translateX("+(me.chartScale_Measure(_cat.measure.Total)+width_Text)+"px)");
           })
           .style("opacity",function(_cat){
-            return (_cat.aggregate_Total>me.chartScale_Measure.domain()[1])?1:0;
+            return (_cat.measure.Total>me.chartScale_Measure.domain()[1])?1:0;
           });
       }
     },
@@ -6361,10 +6326,10 @@ var Summary_Categorical_functions = {
     temp_refreshMapColorScale: function(){
       var boundMin = this.browser.percentModeActive?
         0 :
-        1; //d3.min(this._cats, function(_cat){ return _cat.aggregate_Active; }), 
+        1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
       var maxAggr_Active = this.getMaxAggr_Active();
       var boundMax = this.browser.percentModeActive?
-        100*maxAggr_Active/this.browser.allRecordsAggr.aggregate_Active :
+        100*maxAggr_Active/this.browser.allRecordsAggr.measure.Active :
         maxAggr_Active ;
       
       this.mapColorScale = d3.scale.linear()
@@ -6383,10 +6348,10 @@ var Summary_Categorical_functions = {
       if(this.viewType==='map') {
         var boundMin = this.browser.percentModeActive?
           0 :
-          1; //d3.min(this._cats, function(_cat){ return _cat.aggregate_Active; }), 
+          1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
         var maxAggr_Active = this.getMaxAggr_Active();
         var boundMax = this.browser.percentModeActive?
-          100*maxAggr_Active/this.browser.allRecordsAggr.aggregate_Active :
+          100*maxAggr_Active/this.browser.allRecordsAggr.measure.Active :
           maxAggr_Active ;
         
         this.mapColorScale = d3.scale.linear()
@@ -6396,9 +6361,9 @@ var Summary_Categorical_functions = {
         this.DOM.catMapColorScale.select(".boundMin").text(boundMin);
         this.DOM.catMapColorScale.select(".boundMax").text(boundMax);
 
-        this.DOM.aggr_Active
+        this.DOM.measure_Active
           .attr("fill", function(_cat){ 
-            var v = _cat.aggregate_Active;
+            var v = _cat.measure.Active;
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
             var vv = me.mapColorScale(v);
             if(ratioMode) vv=0;
@@ -6406,7 +6371,7 @@ var Summary_Categorical_functions = {
             return me.mapColorQuantize(vv); 
           })
           .attr("stroke", function(_cat){ 
-            var v = _cat.aggregate_Active;
+            var v = _cat.measure.Active;
             var vv = 9-me.mapColorScale(v);
             if(ratioMode) vv=8;
             //if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
@@ -6418,16 +6383,16 @@ var Summary_Categorical_functions = {
       var maxWidth = this.chartScale_Measure.range()[1];
       var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
 
-      this.DOM.aggr_Active.each(function(_cat){
+      this.DOM.measure_Active.each(function(_cat){
         kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX("+(ratioMode?
-          ((_cat.aggregate_Active===0)?0:maxWidth):
-          me.chartScale_Measure(_cat.aggregate_Active)
+          ((_cat.measure.Active===0)?0:maxWidth):
+          me.chartScale_Measure(_cat.measure.Active)
         )+")");
       });
       var func_clickAreaScale = function(_cat){
         return width_Text+(ratioMode?
-          ((_cat.aggregate_Active===0)?0:maxWidth):
-          me.chartScale_Measure(_cat.aggregate_Active)
+          ((_cat.measure.Active===0)?0:maxWidth):
+          me.chartScale_Measure(_cat.measure.Active)
         )+"px";
       };
       this.DOM.attribClickArea.style("width",func_clickAreaScale);
@@ -6435,7 +6400,7 @@ var Summary_Categorical_functions = {
         .style("left",func_clickAreaScale)
         .attr("inside",function(_cat){
           if(ratioMode) return "";
-          if(maxWidth-me.chartScale_Measure(_cat.aggregate_Active)<10) return "";
+          if(maxWidth-me.chartScale_Measure(_cat.measure.Active)<10) return "";
         });
     },
     /** -- */
@@ -6449,11 +6414,11 @@ var Summary_Categorical_functions = {
       if(this.browser.vizPreviewActive){
         if(this.browser.ratioModeActive) {
           if(this.viewType==="map"){
-            //this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.aggregate_Preview)/9))+"%");
+            //this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlighted)/9))+"%");
           } else {
             this.DOM.highlightedMeasureValue
               .style("opacity",1)
-              .style("left",(this.browser.allRecordsAggr.previewRatioToTotal()*maxWidth)+"px");
+              .style("left",(this.browser.allRecordsAggr.ratioHighlightToTotal()*maxWidth)+"px");
           }
         }
       } else {
@@ -6473,15 +6438,15 @@ var Summary_Categorical_functions = {
         if(!isThisIt || this.isMultiValued) {
           var boundMin = ratioMode ? 
             d3.min(this._cats, function(_cat){ 
-              if(_cat.aggregate_Active===0 || _cat.aggregate_Preview===0) return null;
-              return 100*_cat.previewRatioToActive(); }) :
-            1; //d3.min(this._cats, function(_cat){ return _cat.aggregate_Active; }), 
+              if(_cat.measure.Active===0 || _cat.measure.Highlighted===0) return null;
+              return 100*_cat.ratioHighlightToActive(); }) :
+            1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
           var boundMax = ratioMode ? 
             d3.max(this._cats, function(_cat){ 
-              if(_cat.aggregate_Active===0) return null;
-              return 100*_cat.previewRatioToActive(); }) : 
+              if(_cat.measure.Active===0) return null;
+              return 100*_cat.ratioHighlightToActive(); }) : 
             d3.max(this._cats, function(_cat){ 
-              return _cat.aggregate_Preview;
+              return _cat.measure.Highlighted;
             });
           
           this.DOM.catMapColorScale.select(".boundMin").text(Math.round(boundMin));
@@ -6492,30 +6457,30 @@ var Summary_Categorical_functions = {
             .domain([boundMin,boundMax]);
         }
 
-        this.DOM.aggr_Preview
+        this.DOM.measure_Highlighted
           .attr("fill", function(_cat){ 
             if(isThisIt && !me.isMultiValued) {
-              return (_cat === me.browser.highlightedAggregate) ? me.mapColorQuantize(9) : "rgba(0,0,0,0)";
+              return (_cat === me.browser.selectedAggr.Highlighted) ? me.mapColorQuantize(9) : "rgba(0,0,0,0)";
             }
-            var _v = _cat.aggregate_Active;
+            var _v = _cat.measure.Active;
             if(_v<=0 || _v===undefined ) return "url(#diagonalHatch)";
-            v = _cat.aggregate_Preview;
+            v = _cat.measure.Highlighted;
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
             if(ratioMode) {
-              v = 100*v/_cat.aggregate_Active;
+              v = 100*v/_cat.measure.Active;
             }
             return me.mapColorQuantize(me.mapColorScale(v)); 
           })
-          .attr("stroke", function(_cat){ return (_cat.aggregate_Preview!==0) ? "orangered" : null; });
+          .attr("stroke", function(_cat){ return (_cat.measure.Highlighted!==0) ? "orangered" : null; });
         return;
       }
 
       if(this.viewType==='list'){
-        this.DOM.aggr_Preview.each(function(_cat){
-          var p=_cat.aggregate_Preview;
-          if(me.browser.preview_not) p = _cat.aggregate_Active-p;
+        this.DOM.measure_Highlighted.each(function(_cat){
+          var p=_cat.measure.Highlighted;
+          if(me.browser.preview_not) p = _cat.measure.Active-p;
           kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX("+(
-              ratioMode ? ((p/_cat.aggregate_Active)*maxWidth ) : me.chartScale_Measure(p)
+              ratioMode ? ((p/_cat.measure.Active)*maxWidth ) : me.chartScale_Measure(p)
           )+")");
         });
       }
@@ -6526,9 +6491,9 @@ var Summary_Categorical_functions = {
       var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
       var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
       var _translateX = "translateX("+width_Text+"px) ";
-      this.DOM.aggr_Compare.each(function(aggr){
+      this.DOM.measure_Compared_A.each(function(aggr){
         var sx = (me.browser.vizCompareActive)?
-          ( ratioMode ? (aggr.compareRatioToActive()*maxWidth) : me.chartScale_Measure(aggr.aggregate_Compare) ) : 0;
+          ( ratioMode ? (aggr.ratioCompareToActive('A')*maxWidth) : me.chartScale_Measure(aggr.measure.Compared_A) ) : 0;
         kshf.Util.setTransform(this,_translateX+"scaleX("+sx+")");
       });
     },
@@ -6554,7 +6519,7 @@ var Summary_Categorical_functions = {
                 .ticks(this.chartAxis_Measure_TickSkip());
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.aggregate_Active);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure.Active);
                 tickValues = d3.scale.linear()
                     .rangeRound([0, chartWidth])
                     .nice(this.chartAxis_Measure_TickSkip())
@@ -6692,10 +6657,10 @@ var Summary_Categorical_functions = {
     /** -- */
     isCatActive: function(category){
       if(category.f_selected()) return true;
-      if(category.aggregate_Active!==0) return true;
+      if(category.measure.Active!==0) return true;
       // summary is not filtered yet, don't show categories with no records
-      if(!this.isFiltered()) return category.aggregate_Active!==0;
-      if(this.viewType==='map') return category.aggregate_Active!==0;
+      if(!this.isFiltered()) return category.measure.Active!==0;
+      if(this.viewType==='map') return category.measure.Active!==0;
       // Hide if multiple options are selected and selection is and
 //        if(this.summaryFilter.selecttype==="SelectAnd") return false;
       // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
@@ -6704,7 +6669,7 @@ var Summary_Categorical_functions = {
     /** -- */
     isCatSelectable: function(category){
       if(category.f_selected()) return true;
-      if(category.aggregate_Active!==0) return true;
+      if(category.measure.Active!==0) return true;
       // Show if multiple attributes are selected and the summary does not include multi value records
       if(this.isFiltered() && !this.isMultiValued) return true;
       // Hide
@@ -6756,7 +6721,7 @@ var Summary_Categorical_functions = {
         }
         if(what==="NOT"){
             if(ctgry.is_NONE()){
-                if(ctgry.aggregate_Active===this.browser.allRecordsAggr.aggregate_Active){
+                if(ctgry.measure.Active===this.browser.allRecordsAggr.measure.Active){
                     alert("Removing this category will create an empty result list, so it is not allowed.");
                     return;
                 }
@@ -6877,9 +6842,9 @@ var Summary_Categorical_functions = {
         this.browser.setSelect_Highlight(this,aggr);
         if(!this.browser.ratioModeActive) {
           if(this.viewType==="map"){
-            this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.aggregate_Preview)/9))+"%");
+            this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlighted)/9))+"%");
           } else {
-            this.DOM.highlightedMeasureValue.style("left",this.chartScale_Measure(aggr.aggregate_Active)+"px");
+            this.DOM.highlightedMeasureValue.style("left",this.chartScale_Measure(aggr.measure.Active)+"px");
           }
           this.DOM.highlightedMeasureValue.style("opacity",1);
         }
@@ -7014,20 +6979,19 @@ var Summary_Categorical_functions = {
         });
         DOM_cats_new.append("span").attr("class", "measureLabel");
 
-        DOM_cats_new.append("span").attr("class", "aggr total");
-        DOM_cats_new.append("span").attr("class", "aggr total_tip");
-        DOM_cats_new.append("span").attr("class", "aggr active");
-        DOM_cats_new.append("span").attr("class", "aggr preview");
-        DOM_cats_new.append("span").attr("class", "aggr compare").attr("hidden",true);
+        ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+          DOM_cats_new.append("span").attr("class", "measure_"+m);
+        });
 
-        DOM_cats_new.append("span").attr("class", "clickArea")
-          .on("click", function(d){ me.onCatClick(d); });
+        DOM_cats_new.append("span").attr("class", "total_tip");
+
+        DOM_cats_new.append("span").attr("class", "clickArea").on("click", function(d){ me.onCatClick(d); });
 
         DOM_cats_new.append("span").attr("class","lockButton fa")
           .each(function(aggr){
             this.tipsy = new Tipsy(this, {
               gravity: me.panel.name==='right'?'se':'w',
-              title: function(){ return kshf.lang.cur[ me.browser.comparedAggregate!==aggr ? 'LockToCompare' : 'Unlock']; }
+              title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compared_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
             });
           })
           .on("mouseenter",function(){ this.tipsy.show(); })
@@ -7039,35 +7003,29 @@ var Summary_Categorical_functions = {
           });
 
       } else {
-        DOM_cats_new.append("path").attr("class", "aggr total");
-        DOM_cats_new.append("path").attr("class", "aggr total_tip");
-        DOM_cats_new.append("path").attr("class", "aggr active")
-          .on("click", function(d){ me.onCatClick(d); });
-        DOM_cats_new.append("path").attr("class", "aggr preview");
-        DOM_cats_new.append("path").attr("class", "aggr compare").attr("hidden",true);
+        ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+          DOM_cats_new.append("span").attr("class", "measure_"+m);
+        });
+
+        DOM_cats_new.select(".measure_Active").on("click", function(d){ me.onCatClick(d); });
         DOM_cats_new.append("text").attr("class", "measureLabel"); // label on top of (after) all the rest
       }
       this.refreshDOMcats();
     },
     /** -- */
     refreshDOMcats: function(){
-      this.DOM.aggrGlyphs = this.DOM.aggrGroup.selectAll(".aggrGlyph");
+      this.DOM.aggrGlyphs = this.DOM.aggrGroup.selectAll(".aggrGlyph").each(function(aggr){ aggr.DOM.aggrGlyph = this; });
 
-      this.DOM.aggrGlyphs.each(function(_cat){
-        _cat.DOM.aggrGlyph = this;
-      });
+      this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
+      this.DOM.measureTotalTip = this.DOM.aggrGlyphs.selectAll(".total_tip");
+      ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+        this.DOM["measure_"+m] = this.DOM.aggrGlyphs.selectAll(".measure_"+m);
+      },this);
 
       if(this.viewType==='list'){
         this.DOM.attribClickArea = this.DOM.aggrGlyphs.selectAll(".clickArea");
         this.DOM.lockButton      = this.DOM.aggrGlyphs.selectAll(".lockButton");
       }
-
-      this.DOM.measureLabel  = this.DOM.aggrGlyphs.selectAll(".measureLabel");
-      this.DOM.aggr_Total    = this.DOM.aggrGlyphs.selectAll(".aggr.total");
-      this.DOM.aggr_TotalTip = this.DOM.aggrGlyphs.selectAll(".aggr.total_tip");
-      this.DOM.aggr_Active   = this.DOM.aggrGlyphs.selectAll(".aggr.active");
-      this.DOM.aggr_Preview  = this.DOM.aggrGlyphs.selectAll(".aggr.preview");
-      this.DOM.aggr_Compare  = this.DOM.aggrGlyphs.selectAll(".aggr.compare");
     },
     /** -- */
     updateCatIsInView: function(){
@@ -7216,12 +7174,12 @@ var Summary_Categorical_functions = {
     /** --  */
     map_projectCategories: function(){
       var me = this;
-      this.DOM.aggr_Active.attr("d", function(_cat){
+      this.DOM.measure_Active.attr("d", function(_cat){
         _cat._d_ = me.catMap.call(_cat.data,_cat);
         if(_cat._d_===undefined) return;
         return me.geoPath(_cat._d_);
       });
-      this.DOM.aggr_Preview.attr("d", function(_cat){
+      this.DOM.measure_Highlighted.attr("d", function(_cat){
         return me.geoPath(_cat._d_);
       });
       this.DOM.measureLabel
@@ -7914,7 +7872,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getMaxAggr_Active: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.aggregate_Active; });
+      return d3.max(this.histBins,function(aggr){ return aggr.measure.Active; });
     },
     /** -- */
     showPercentileChart: function(v){
@@ -8580,7 +8538,7 @@ var Summary_Interval_functions = {
       aggr.DOM.aggrGlyph.setAttribute("selection","selected");
       if(!this.browser.ratioModeActive){
         this.DOM.highlightedMeasureValue
-          .style("top",(this.height_hist - this.chartScale_Measure(aggr.aggregate_Active))+"px")
+          .style("top",(this.height_hist - this.chartScale_Measure(aggr.measure.Active))+"px")
           .style("opacity",1);
       }
       this.browser.setSelect_Highlight(this,aggr);
@@ -8646,17 +8604,16 @@ var Summary_Interval_functions = {
           me.summaryFilter.addFilter(true);
         });
 
-      newBins.append("span").attr("class","aggr total");
-      newBins.append("span").attr("class","aggr total_tip");
-      newBins.append("span").attr("class","aggr active");
-      newBins.append("span").attr("class","aggr preview");
-      newBins.append("span").attr("class","aggr compare").attr("hidden",true);
+      ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+        newBins.append("span").attr("class","measure_"+m);
+      });
+      newBins.append("span").attr("class","total_tip");
 
       newBins.append("span").attr("class","lockButton fa")
         .each(function(aggr){
           this.tipsy = new Tipsy(this, {
             gravity: 's',
-            title: function(){ return kshf.lang.cur[ me.browser.comparedAggregate!==aggr ? 'LockToCompare' : 'Unlock']; }
+            title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compared_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
           });
         })
         .on("click",function(aggr){
@@ -8681,14 +8638,14 @@ var Summary_Interval_functions = {
       });
 
       this.DOM.aggrGlyphs    = this.DOM.histogram_bins.selectAll(".aggrGlyph");
-      this.DOM.aggr_Total    = this.DOM.aggrGlyphs.selectAll(".total");
-      this.DOM.aggr_TotalTip = this.DOM.aggrGlyphs.selectAll(".total_tip");
-      this.DOM.aggr_Active   = this.DOM.aggrGlyphs.selectAll(".active");
-      this.DOM.aggr_Preview  = this.DOM.aggrGlyphs.selectAll(".preview");
-      this.DOM.aggr_Compare  = this.DOM.aggrGlyphs.selectAll(".compare");
+
+      this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
+      this.DOM.measureTotalTip = this.DOM.aggrGlyphs.selectAll(".total_tip");
+      ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+        this.DOM["measure_"+m] = this.DOM.aggrGlyphs.selectAll(".measure_"+m);
+      },this);
 
       this.DOM.lockButton = this.DOM.aggrGlyphs.selectAll(".lockButton");
-      this.DOM.measureLabel  = this.DOM.aggrGlyphs.selectAll(".measureLabel");
     },
     /** --- */
     roundFilterRange: function(){
@@ -8963,9 +8920,9 @@ var Summary_Interval_functions = {
         var width=this.getWidth_Bin();
 
         var heightTotal = function(aggr){
-            if(aggr.aggregate_Total===0) return 0;
+            if(aggr.measure.Total===0) return 0;
             if(me.browser.ratioModeActive) return me.height_hist;
-            return me.chartScale_Measure(aggr.aggregate_Total);
+            return me.chartScale_Measure(aggr.measure.Total);
         };
 
         if(this.scaleType==='time'){
@@ -8974,25 +8931,25 @@ var Summary_Interval_functions = {
               .x(function(aggr){ return me.valueScale(aggr.minV)+width/2; })
               .y0(me.height_hist)
               .y1(function(aggr){
-                  if(aggr.aggregate_Total===0) return me.height_hist+3;
+                  if(aggr.measure.Total===0) return me.height_hist+3;
                   return me.height_hist-heightTotal(aggr);
               });
             this.DOM.lineTrend_Total
                 .transition().duration(durationTime)
                 .attr("d", this.timeSVGLine);
         } else {
-            this.DOM.aggr_Total.each(function(aggr){
+            this.DOM.measure_Total.each(function(aggr){
                 kshf.Util.setTransform(this,
                     "translateY("+me.height_hist+"px) scale("+width+","+heightTotal(aggr)+")");
             });
             if(!this.browser.ratioModeActive){
-                this.DOM.aggr_TotalTip
+                this.DOM.measureTotalTip
                     .style("opacity",function(aggr){
-                        return (aggr.aggregate_Total>me.chartScale_Measure.domain()[1])?1:0;
+                        return (aggr.measure.Total>me.chartScale_Measure.domain()[1])?1:0;
                     })
                     .style("width",width+"px");
             } else {
-                this.DOM.aggr_TotalTip.style("opacity",0);
+                this.DOM.measureTotalTip.style("opacity",0);
             }
         }
     },
@@ -9003,9 +8960,9 @@ var Summary_Interval_functions = {
       var width = this.getWidth_Bin();
 
       var heightActive = function(aggr){
-        if(aggr.aggregate_Active===0) return 0;
+        if(aggr.measure.Active===0) return 0;
         if(me.browser.ratioModeActive) return me.height_hist;
-        return me.chartScale_Measure(aggr.aggregate_Active);
+        return me.chartScale_Measure(aggr.measure.Active);
       };
 
       // Position the lock button
@@ -9025,7 +8982,7 @@ var Summary_Interval_functions = {
           .x(function(aggr){ return me.valueScale(aggr.minV)+width/2; })
           .y0(me.height_hist+2)
           .y1(function(aggr){
-              if(aggr.aggregate_Active===0) return me.height_hist+3;
+              if(aggr.measure.Active===0) return me.height_hist+3;
               return me.height_hist-heightActive(aggr);
           });
 
@@ -9035,7 +8992,7 @@ var Summary_Interval_functions = {
         this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
         .attr("y1",function(aggr){ return me.height_hist+3; })
         .attr("y2",function(aggr){
-          return (aggr.aggregate_Active===0) ? (me.height_hist+3) : (me.height_hist - heightActive(aggr));
+          return (aggr.measure.Active===0) ? (me.height_hist+3) : (me.height_hist - heightActive(aggr));
         })
         .attr("x1",function(aggr){
           return me.valueScale(aggr.minV)+width/2;
@@ -9045,7 +9002,7 @@ var Summary_Interval_functions = {
 
       if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
         // No partial rendering
-        this.DOM.aggr_Active.each(function(aggr){
+        this.DOM.measure_Active.each(function(aggr){
           kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+heightActive(aggr)+")");
         });
       } else {
@@ -9055,12 +9012,12 @@ var Summary_Interval_functions = {
         var filter_max = this.summaryFilter.active.max;
         var minPos = this.valueScale(filter_min);
         var maxPos = this.valueScale(filter_max);
-        this.DOM.aggr_Active.each(function(aggr){
+        this.DOM.measure_Active.each(function(aggr){
           var translateX = "";
           var width_self=width;
           var aggr_min = aggr.minV;
           var aggr_max = aggr.maxV;
-          if(aggr.aggregate_Active>0){
+          if(aggr.measure.Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
               var lostWidth = minPos-me.valueScale(aggr_min);
@@ -9093,14 +9050,14 @@ var Summary_Interval_functions = {
         }
       }
       var heightCompare = function(aggr){
-        if(aggr.aggregate_Compare===0) return 0;
-        return ratioModeActive ? aggr.compareRatioToActive()*me.height_hist : me.chartScale_Measure(aggr.aggregate_Compare);
+        if(aggr.measure.Compared_A===0) return 0;
+        return ratioModeActive ? aggr.ratioCompareToActive('A')*me.height_hist : me.chartScale_Measure(aggr.measure.Compared_A);
       };
 
       // Time (line chart) update
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr.aggregate_Compare===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr));
+          return (aggr.measure.Compared_A===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr));
         };
         var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
 
@@ -9115,7 +9072,7 @@ var Summary_Interval_functions = {
 
       if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
         // No partial rendering
-        this.DOM.aggr_Compare.each(function(aggr){
+        this.DOM.measure_Compared_A.each(function(aggr){
           kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+(width/2)+","+heightCompare(aggr)+")");
         });
       } else {
@@ -9124,12 +9081,12 @@ var Summary_Interval_functions = {
         var filter_max = this.summaryFilter.active.max;
         var minPos = this.valueScale(filter_min);
         var maxPos = this.valueScale(filter_max);
-        this.DOM.aggr_Compare.each(function(aggr){
+        this.DOM.measure_Compared_A.each(function(aggr){
           var translateX = "";
           var width_self=width;
           var aggr_min = aggr.minV;
           var aggr_max = aggr.maxV;
-          if(aggr.aggregate_Active>0){
+          if(aggr.measure.Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
               var lostWidth = minPos-me.valueScale(aggr_min);
@@ -9157,7 +9114,7 @@ var Summary_Interval_functions = {
       if(this.browser.vizPreviewActive){
         this.updatePercentiles("highlighted_");
         this.DOM.highlightedMeasureValue
-          .style("top",( this.height_hist * (1-this.browser.allRecordsAggr.previewRatioToTotal() ))+"px")
+          .style("top",( this.height_hist * (1-this.browser.allRecordsAggr.ratioHighlightToTotal() ))+"px")
           .style("opacity",(this.browser.ratioModeActive?1:0));
       } else {
         // Highlight not active
@@ -9172,11 +9129,11 @@ var Summary_Interval_functions = {
         .style("left", function(d){ return me.valueScale(me.flexAggr_Highlight[(d===0)?'minV':'maxV'])+"px"; });
 
       var getAggrHeight_Preview = function(aggr){
-        var p=aggr.aggregate_Preview;
-        if(me.browser.preview_not) p = aggr.aggregate_Active-aggr.aggregate_Preview;
+        var p=aggr.measure.Highlighted;
+        if(me.browser.preview_not) p = aggr.measure.Active-aggr.measure.Highlighted;
         if(me.browser.ratioModeActive){
-          if(aggr.aggregate_Active===0) return 0;
-          return (p / aggr.aggregate_Active)*me.height_hist;
+          if(aggr.measure.Active===0) return 0;
+          return (p / aggr.measure.Active)*me.height_hist;
         } else {
           return me.chartScale_Measure(p);
         }
@@ -9184,7 +9141,7 @@ var Summary_Interval_functions = {
 
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr.aggregate_Preview===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
+          return (aggr.measure.Highlighted===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
         };
         var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
         var dTime=200;
@@ -9201,7 +9158,7 @@ var Summary_Interval_functions = {
       } else {
         if(!this.browser.vizPreviewActive){
           var transform="translateY("+this.height_hist+"px) "+"scale("+this.getWidth_Bin()+",0)";
-          this.DOM.aggr_Preview.each(function(){ kshf.Util.setTransform(this,transform); });
+          this.DOM.measure_Highlighted.each(function(){ kshf.Util.setTransform(this,transform); });
           return;
         }
 
@@ -9220,10 +9177,10 @@ var Summary_Interval_functions = {
         var minPos = this.valueScale(range_min);
         var maxPos = this.valueScale(range_max);
 
-        this.DOM.aggr_Preview.each(function(aggr){
+        this.DOM.measure_Highlighted.each(function(aggr){
           var _translateX = "";
           var barWidth = width;
-          if(aggr.aggregate_Active>0){
+          if(aggr.measure.Active>0){
             var aggr_min = aggr.minV;
             var aggr_max = aggr.maxV;
             // it is within the filtered range
@@ -9258,7 +9215,7 @@ var Summary_Interval_functions = {
                 .filter(function(d){return d!==0;});
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.aggregate_Active);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure.Active);
                 tickValues = d3.scale.linear()
                     .rangeRound([0, this.height_hist])
                     .nice(chartAxis_Measure_TickSkip)
@@ -9754,7 +9711,7 @@ var Summary_Clique_functions = {
   },
   /** -- */
   updateMaxAggr_Active: function(){
-    this._maxSetPairAggr_Active = d3.max(this._setPairs, function(aggr){ return aggr.aggregate_Active; });
+    this._maxSetPairAggr_Active = d3.max(this._setPairs, function(aggr){ return aggr.measure.Active; });
   },
   /** -- */
   checkWidth: function(){
@@ -9899,15 +9856,15 @@ var Summary_Clique_functions = {
       });
 
     newCliques.append("rect").attr("class","setPairBackground").attr("rx",3).attr("ry",3);
-    newCliques.append("circle").attr("class","aggr active").attr("cx",0).attr("cy",0).attr("r",0);
-    newCliques.append("path").attr("class","aggr preview").each(function(aggr){ aggr.currentPreviewAngle=-Math.PI/2; });
-    newCliques.append("path").attr("class","aggr compare");
+    newCliques.append("circle").attr("class","measure_Active").attr("cx",0).attr("cy",0).attr("r",0);
+    newCliques.append("path").attr("class","measure_Highlighted").each(function(aggr){ aggr.currentPreviewAngle=-Math.PI/2; });
+    newCliques.append("path").attr("class","measure_Compared_A");
 
     this.DOM.aggrGlyphs           = this.DOM.setPairGroup.selectAll("g.setPairGlyph");
-    this.DOM.setPairBackground    = this.DOM.setPairGroup.selectAll("g.setPairGlyph > rect.setPairBackground");
-    this.DOM.setPairGlyph_Active  = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.active");
-    this.DOM.setPairGlyph_Preview = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.preview");
-    this.DOM.setPairGlyph_Compare = this.DOM.setPairGroup.selectAll("g.setPairGlyph > .aggr.compare");
+    this.DOM.setPairBackground    = this.DOM.aggrGlyphs.selectAll(".setPairBackground");
+    this.DOM.measure_Active       = this.DOM.aggrGlyphs.selectAll(".measure_Active");
+    this.DOM.measure_Highlighted  = this.DOM.aggrGlyphs.selectAll(".measure_Highlighted");
+    this.DOM.measure_Compared_A   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_A");
   },
   /** -- */
   printAggrSelection: function(aggr){
@@ -9939,7 +9896,7 @@ var Summary_Clique_functions = {
     var me=this;
     
     // Edges are set-pairs with at least one element inside (based on the filtering state)
-    var edges = this._setPairs.filter(function(setPair){ return setPair.aggregate_Active>0; });
+    var edges = this._setPairs.filter(function(setPair){ return setPair.measure.Active>0; });
     // Nodes are the set-categories
     var nodes = this.setListSummary._cats;
 
@@ -9972,10 +9929,10 @@ var Summary_Clique_functions = {
             setPair_2 = me._setPairs_ID[set_2.id()][set_other.id()];
         }
         if(setPair_2===undefined){ // the other intersection size is zero, there is no link
-          edge.mst_distance+=setPair_1.aggregate_Active;
+          edge.mst_distance+=setPair_1.measure.Active;
           return;
         }
-        edge.mst_distance += Math.abs(setPair_1.aggregate_Active-setPair_2.aggregate_Active);
+        edge.mst_distance += Math.abs(setPair_1.measure.Active-setPair_2.measure.Active);
       });
       // For every intersection of set_2
       set_2.setPairs.forEach(function(setPair_1){
@@ -9991,7 +9948,7 @@ var Summary_Clique_functions = {
             setPair_2 = me._setPairs_ID[set_1.id()][set_other.id()];
         }
         if(setPair_2===undefined){ // the other intersection size is zero, there is no link
-          edge.mst_distance+=setPair_1.aggregate_Active;
+          edge.mst_distance+=setPair_1.measure.Active;
           return;
         }
         // If ther is setPair_2, it was already processed in the main loop above
@@ -10191,12 +10148,12 @@ var Summary_Clique_functions = {
       .attr("width",this.setPairDiameter)
       .attr("height",this.setPairDiameter);
   },
-  /** Call when aggregate_Active is updated */
+  /** Call when measure.Active is updated */
   updateSetPairSimilarity: function(){
     this._setPairs.forEach(function(setPair){
-      var size_A = setPair.set_1.aggregate_Active;
-      var size_B = setPair.set_2.aggregate_Active;
-      var size_and = setPair.aggregate_Active;
+      var size_A = setPair.set_1.measure.Active;
+      var size_B = setPair.set_2.measure.Active;
+      var size_and = setPair.measure.Active;
       setPair.Similarity = (size_and===0 || (size_A===0&&size_B===0)) ? 0 : size_and/Math.min(size_A,size_B);
     });
     this._maxSimilarity = d3.max(this._setPairs, function(d){ return d.Similarity; });
@@ -10303,12 +10260,12 @@ var Summary_Clique_functions = {
   },
   /** -- */
   getCliqueSizeRatio: function(setPair){
-    return Math.sqrt(setPair.aggregate_Active/this._maxSetPairAggr_Active);
+    return Math.sqrt(setPair.measure.Active/this._maxSetPairAggr_Active);
   },
   // Given a setPair, return the angle for preview
   getPreviewAngle_rad: function(setPair){
-    if(setPair.aggregate_Active===0) return 0;
-    var ratio=setPair.previewRatioToActive();
+    if(setPair.measure.Active===0) return 0;
+    var ratio=setPair.ratioHighlightToActive();
     if(this.browser.preview_not) ratio = 1-ratio;
     if(ratio===1) ratio=0.999;
     return ((360*ratio-90) * Math.PI) / 180;
@@ -10330,8 +10287,8 @@ var Summary_Clique_functions = {
   /** -- */
   refreshViz_Active: function(){
     var me=this;
-    this.DOM.aggrGlyphs.attr("activesize",function(setPair){ return setPair.aggregate_Active; });
-    this.DOM.setPairGlyph_Active.transition().duration(this.noanim?0:700)
+    this.DOM.aggrGlyphs.attr("activesize",function(setPair){ return setPair.measure.Active; });
+    this.DOM.measure_Active.transition().duration(this.noanim?0:700)
       .attr("r",this.browser.ratioModeActive ?
         function(setPair){ return (setPair.subset!=='') ? me.setPairRadius-1 : me.setPairRadius; } :
         function(setPair){ return me.getCliqueSizeRatio(setPair)*me.setPairRadius; }
@@ -10340,7 +10297,7 @@ var Summary_Clique_functions = {
   /** -- */
   refreshViz_Highlight: function(){
     var me=this;
-    this.DOM.setPairGlyph_Preview
+    this.DOM.measure_Highlighted
       .transition().duration(500).attrTween("d",function(d) {
         var angleInterp = d3.interpolate(d.currentPreviewAngle, me.getPreviewAngle_rad(d));
         var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(d);
@@ -10354,25 +10311,21 @@ var Summary_Clique_functions = {
   /** -- */
   refreshViz_Compare: function(){
     var me=this;
-    if(this.browser.vizCompareActive===false){
-      this.DOM.setPairGlyph_Compare.attr("hidden",true);
-    } else {
-      this.DOM.setPairGlyph_Compare.attr("d",function(setPair){
-        var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
-        this.setAttribute('hidden',setPair.aggregate_Preview===0);
-        return me.getPiePath(setPair.currentPreviewAngle,1,ratio);
-      });
-    }
+    this.DOM.measure_Compared_A.attr("d",function(setPair){
+      var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
+      this.style.display = setPair.measure.Highlighted===0 ? "none" : "block";
+      return me.getPiePath(setPair.currentPreviewAngle,0,ratio);
+    });
   },
   /** -- */
   refreshSetPair_Containment: function(){
     var me=this;
     var numOfSubsets = 0;
-    this.DOM.setPairGlyph_Active
+    this.DOM.measure_Active
       .each(function(setPair){
-        var setPair_itemCount = setPair.aggregate_Active;
-        var set_1_itemCount   = setPair.set_1.aggregate_Active;
-        var set_2_itemCount   = setPair.set_2.aggregate_Active;
+        var setPair_itemCount = setPair.measure.Active;
+        var set_1_itemCount   = setPair.set_1.measure.Active;
+        var set_2_itemCount   = setPair.set_2.measure.Active;
         if(setPair_itemCount===set_1_itemCount || setPair_itemCount===set_2_itemCount){
           numOfSubsets++;
           setPair.subset = (set_1_itemCount===set_2_itemCount)?'equal':'proper';
@@ -10392,13 +10345,13 @@ var Summary_Clique_functions = {
     var me=this;
     
     var strengthColor = d3.interpolateHsl(d3.rgb(230, 230, 247),d3.rgb(159, 159, 223));
-    this.DOM.setPairGlyph_Active.style("fill",function(setPair){
+    this.DOM.measure_Active.style("fill",function(setPair){
       if(!me.browser.ratioModeActive) return null;
       return strengthColor(setPair.Similarity/me._maxSimilarity);
     });
 
     if(this.browser.ratioModeActive){
-      this.DOM.setPairGlyph_Active.each(function(setPair){
+      this.DOM.measure_Active.each(function(setPair){
         // border
         if(setPair.subset==='') return;
         if(setPair.subset==='equal'){
@@ -10411,8 +10364,8 @@ var Summary_Clique_functions = {
         // rotate halfway 
         var i1 = setPair.set_1.orderIndex;
         var i2 = setPair.set_2.orderIndex;
-        var c1 = setPair.set_1.aggregate_Active;
-        var c2 = setPair.set_2.aggregate_Active;
+        var c1 = setPair.set_1.measure.Active;
+        var c2 = setPair.set_2.measure.Active;
         if((i1<i2 && c1<c2) || (i1>i2 && c1>c2)) halfCircle = halfCircle/2;
         this.style.strokeDashoffset = halfCircle+"px";
       });
@@ -10425,7 +10378,7 @@ var Summary_Clique_functions = {
     this.refreshViz_All();
     this.refreshViz_EmptyRecords();
 
-    this.DOM.setRows.style("opacity",function(setRow){ return (setRow.aggregate_Active>0)?1:0.3; });
+    this.DOM.setRows.style("opacity",function(setRow){ return (setRow.measure.Active>0)?1:0.3; });
     this.updateSetPairSimilarity();
     this.refreshSetPair_Containment();
   },

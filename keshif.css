@@ -214,6 +214,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[selectCompare] .compareLine {
   opacity: 1 !important;
 }
+.kshf[selectCompare] [class^="measure_Compared"] {
+  opacity: 1 !important;
+}
 .kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f0dc";
 }
@@ -971,28 +974,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] {
   max-width: 0px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_filter > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filtered > .clearCrumbButton {
   background-color: #788D9B;
   border: solid 1px #788D9B;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_filter > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filtered > .clearCrumbButton > .fa::before {
   content: "\f0b0";
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_highlight > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlighted > .clearCrumbButton {
   background-color: orangered;
   border: solid 1px orangered;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_highlight > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlighted > .clearCrumbButton > .fa::before {
   content: "\f245";
   position: relative;
   top: 1px;
   left: 1px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared'] > .clearCrumbButton {
   background-color: #2f4f4f;
   border: solid 1px #2f4f4f;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_compare > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared'] > .clearCrumbButton > .fa::before {
   content: "\f023";
   font-size: 1.1em;
   position: relative;
@@ -2066,11 +2069,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: absolute;
 }
-.kshf .aggrGlyph > .aggr {
+.kshf .aggrGlyph > [class^="measure_"] {
   display: block;
   position: absolute;
 }
-.kshf .aggrGlyph > span.aggr {
+.kshf .aggrGlyph > span[class^="measure_"] {
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
@@ -2078,28 +2081,157 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 0% 0%;
   pointer-events: none;
 }
-.kshf .aggrGlyph > span.aggr.active {
+.kshf .aggrGlyph > span[class^="measure_Active"] {
   background-color: #b8c7d2;
   cursor: pointer;
   pointer-events: all;
 }
-.kshf .aggrGlyph > span.aggr.total {
+.kshf .aggrGlyph > span[class^="measure_Total"] {
   background-color: #dee2e6;
 }
-.kshf .aggrGlyph > span.aggr.preview {
+.kshf .aggrGlyph > span[class^="measure_Highlighted"] {
   background-color: #ff6a33;
   -webkit-transition: -webkit-transform 250ms ease-in-out;
   -moz-transition: -moz-transform 250ms ease-in-out;
   -o-transition: -o-transform 250ms ease-in-out;
   transition: -webkit-transform 250ms ease-in-out,-moz-transform 250ms ease-in-out,-o-transform 250ms ease-in-out,transform 250ms ease-in-out;
 }
-.kshf .aggrGlyph > span.aggr.compare {
+.kshf .aggrGlyph > span[class^="measure_Compared"] {
   background-color: #2f4f4f;
   -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   -moz-transition: -moz-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   -o-transition: -o-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 300ms ease-in-out;
   opacity: 0;
+}
+.kshf .aggrGlyph.totalGlyph {
+  position: absolute;
+  height: 4px;
+  bottom: 0px;
+  left: 0px;
+}
+.kshf .aggrGlyph.totalGlyph > [class^="measure_"] {
+  left: 0px;
+  top: 0px;
+  width: 1px;
+  height: 5px;
+}
+.kshf .aggrGlyph.totalGlyph > [class^="measure_Highlighted"] {
+  transform: inherit;
+}
+.kshf .aggrGlyph.totalGlyph > [class^="measure_Compared"] {
+  height: 3px;
+}
+.kshf .aggrGlyph.catGlyph {
+  top: 0px;
+  height: 16px;
+}
+.kshf .aggrGlyph.catGlyph > [class^="measure_"] {
+  top: 4px;
+  width: 1px;
+  height: 10px;
+}
+.kshf .aggrGlyph.catGlyph > [class^="measure_Compared"] {
+  height: 5px;
+}
+.kshf .aggrGlyph.catGlyph > .total_tip {
+  right: -5px;
+  /* right arrow */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #dee2e6;
+  background-color: initial;
+  /*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
+          linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
+          background-position: top left, top left;
+          background-repeat: repeat;
+          background-size: 8px 8px; */
+}
+.kshf .aggrGlyph.setPairGlyph > .setPairBackground {
+  opacity: 0;
+  fill: rgba(234, 234, 234, 0.5);
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .aggrGlyph.setPairGlyph > [class^="measure_"] {
+  cursor: pointer;
+  -webkit-transition: all 500ms linear;
+  -moz-transition: all 500ms linear;
+  -o-transition: all 500ms linear;
+  transition: all 500ms linear;
+}
+.kshf .aggrGlyph.setPairGlyph > [class^="measure_Active"] {
+  fill: #b8c7d2;
+}
+.kshf .aggrGlyph.setPairGlyph > [class^="measure_Highlighted"] {
+  fill: #ff6a33;
+}
+.kshf .aggrGlyph.setPairGlyph > [class^="measure_Compared_"] {
+  fill: none;
+  stroke: #2f4f4f;
+  stroke-width: 1px;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+  opacity: 0;
+}
+.kshf .aggrGlyph.setPairGlyph[activesize="0"] {
+  display: none;
+}
+.kshf .aggrGlyph.setPairGlyph:not([activesize="0"]) > .setPairBackground {
+  opacity: 1;
+}
+.kshf .aggrGlyph.rangeGlyph {
+  height: 100%;
+  pointer-events: none;
+}
+.kshf .aggrGlyph.rangeGlyph > [class^="measure_"] {
+  -webkit-transform-origin: 0% 100%;
+  -moz-transform-origin: 0% 100%;
+  -ms-transform-origin: 0% 100%;
+  -o-transform-origin: 0% 100%;
+  transform-origin: 0% 100%;
+  width: 1px;
+  height: 1px;
+}
+.kshf .aggrGlyph.rangeGlyph > .total_tip {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: -7px;
+  width: 100%;
+  left: 0px;
+  height: 8px;
+  opacity: 0;
+  background: linear-gradient(-135deg, transparent 75%, #dee2e6 75%) 0 50%, linear-gradient(135deg, transparent 75%, #dee2e6 75%) 0 50%;
+  background-position: top left, top left;
+  background-repeat: repeat;
+  background-size: 8px 8px;
+}
+.kshf .aggrGlyph.rangeGlyph > .lockButton {
+  position: absolute;
+  text-align: center;
+  width: 16px;
+  left: calc(50% - 8px);
+}
+.kshf .aggrGlyph.rangeGlyph > .lockButton[inside] {
+  margin-top: 12px;
+}
+.kshf .aggrGlyph.rangeGlyph > .measureLabel {
+  position: relative;
+  display: block;
+  top: 1px;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  pointer-events: all;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
 .kshf .aggrGlyph > .measureLabel {
   color: #969da3;
@@ -2147,126 +2279,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .aggrGlyph[compare="true"] > .lockButton:hover:after {
   content: "\f13e";
-}
-.kshf .aggrGlyph.catGlyph {
-  top: 0px;
-  height: 16px;
-}
-.kshf .aggrGlyph.catGlyph > .aggr {
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
-  top: 4px;
-  width: 1px;
-  height: 10px;
-}
-.kshf .aggrGlyph.catGlyph > .aggr.total_tip {
-  right: -5px;
-  /* right arrow */
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 5px solid #dee2e6;
-  background-color: initial;
-  /*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-            linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
-            background-position: top left, top left;
-            background-repeat: repeat;
-            background-size: 8px 8px; */
-}
-.kshf .aggrGlyph.catGlyph > .aggr.compare {
-  width: 1px;
-  height: 5px;
-}
-.kshf .aggrGlyph.rangeGlyph {
-  height: 100%;
-  pointer-events: none;
-}
-.kshf .aggrGlyph.rangeGlyph > .aggr {
-  width: 1px;
-  height: 1px;
-  -webkit-transform-origin: 0% 100%;
-  -moz-transform-origin: 0% 100%;
-  -ms-transform-origin: 0% 100%;
-  -o-transform-origin: 0% 100%;
-  transform-origin: 0% 100%;
-}
-.kshf .aggrGlyph.rangeGlyph > .aggr.total_tip {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: -7px;
-  width: 100%;
-  left: 0px;
-  height: 8px;
-  opacity: 0;
-  background: linear-gradient(-135deg, transparent 75%, #dee2e6 75%) 0 50%, linear-gradient(135deg, transparent 75%, #dee2e6 75%) 0 50%;
-  background-position: top left, top left;
-  background-repeat: repeat;
-  background-size: 8px 8px;
-}
-.kshf .aggrGlyph.rangeGlyph > .lockButton {
-  position: absolute;
-  text-align: center;
-  width: 16px;
-  left: calc(50% - 8px);
-}
-.kshf .aggrGlyph.rangeGlyph > .lockButton[inside] {
-  margin-top: 12px;
-}
-.kshf .aggrGlyph.rangeGlyph > .measureLabel {
-  position: relative;
-  display: block;
-  top: 1px;
-  width: 100%;
-  text-align: center;
-  cursor: pointer;
-  pointer-events: all;
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
-}
-.kshf .aggrGlyph.setPairGlyph > .setPairBackground {
-  opacity: 0;
-  fill: rgba(234, 234, 234, 0.5);
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-}
-.kshf .aggrGlyph.setPairGlyph > .aggr {
-  cursor: pointer;
-  -webkit-transition: all 500ms linear;
-  -moz-transition: all 500ms linear;
-  -o-transition: all 500ms linear;
-  transition: all 500ms linear;
-}
-.kshf .aggrGlyph.setPairGlyph > .aggr.active {
-  fill: #b8c7d2;
-}
-.kshf .aggrGlyph.setPairGlyph > .aggr.preview {
-  fill: #ff6a33;
-}
-.kshf .aggrGlyph.setPairGlyph > .aggr.compare {
-  fill: none;
-  stroke: #2f4f4f;
-  stroke-width: 1px;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-  opacity: 1;
-}
-.kshf .aggrGlyph.setPairGlyph > .aggr.compare[hidden='true'] {
-  opacity: 0;
-}
-.kshf .aggrGlyph.setPairGlyph[activesize="0"] {
-  display: none;
-}
-.kshf .aggrGlyph.setPairGlyph:not([activesize="0"]) > .setPairBackground {
-  opacity: 1;
 }
 .kshf .aggrGlyph.mapGlyph > .aggr {
   opacity: 0.8;
@@ -2317,30 +2329,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   stroke: #241e12;
   stroke-width: 2px;
   fill: #ab9157;
-}
-.kshf .aggrGlyph.totalGlyph {
-  height: 4px;
-  position: absolute;
-  bottom: 0px;
-  left: 0px;
-}
-.kshf .aggrGlyph.totalGlyph > .aggr {
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
-  cursor: default !important;
-  left: 0px;
-  top: 0px;
-  width: 1px;
-  height: 5px;
-}
-.kshf .aggrGlyph.totalGlyph > .aggr.preview {
-  transform: inherit;
-}
-.kshf .aggrGlyph.totalGlyph > .aggr.compare {
-  height: 3px;
 }
 .kshf .kshfRecord {
   opacity: 1;

@@ -168,8 +168,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
     &[selectCompare]{
+      // The two below are used by line-chart (part of svg)
       .compare    { opacity: 1 !important; }
       .compareLine{ opacity: 1 !important; }
+      [class^="measure_Compared"]{ opacity: 1 !important; }
     }
     &:not([record_display="map"]){
       .kshfSummary[summary_type="interval"] {
@@ -745,14 +747,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               &[filtered=false]{ display: none; }
               &[ready=true]{ max-width: 100%; }
               &[ready=false]{ max-width: 0px; }
-              &.crumbMode_filter {
+              &.crumbMode_Filtered {
                 > .clearCrumbButton {
                   background-color: #788D9B;
                   border: solid 1px #788D9B;
                   > .fa::before{ content: "\f0b0"; } // cross
                 }
               }
-              &.crumbMode_highlight {
+              &.crumbMode_Highlighted {
                 > .clearCrumbButton {
                   background-color: orangered;
                   border: solid 1px orangered;
@@ -764,7 +766,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   } // mouse pointer
                 }
               }
-              &.crumbMode_compare {
+              &[class*='crumbMode_Compared'] {
                 > .clearCrumbButton {
                   background-color: @color_preview_compare;
                   border: solid 1px @color_preview_compare;
@@ -1739,35 +1741,148 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .aggrGlyph{
       display: block;
       position: absolute;
-      > .aggr{
+
+      > [class^="measure_"]{
         display: block;
         position: absolute;
       }
-      > span.aggr{
-        .transform-origin(0% 0%);
-        pointer-events: none;
-        &.active{
+
+      > span{
+        &[class^="measure_"]{
+          .transform-origin(0% 0%);
+          pointer-events: none;
+        }
+        &[class^="measure_Active"]{
           background-color: @color_bars;
           cursor: pointer;
           pointer-events: all;
         }
-        &.total{ background-color: @color_bars_background; }
-        &.preview{
+        &[class^="measure_Total"]{
+          background-color: @color_bars_background;
+        }
+        &[class^="measure_Highlighted"]{
           background-color: @color_bar_preview;
           .transition(~'transform 250ms ease-in-out');
         }
-        &.compare{
+        &[class^="measure_Compared"]{
           background-color: @color_preview_compare;
           .transition(~'transform 500ms ease-in-out, opacity 300ms ease-in-out');
           opacity: 0;
         }
-      }      
+      }
+
+      &.totalGlyph{ // Breadcrumb
+        position: absolute;
+        height: 4px;
+        bottom: 0px;
+        left: 0px;
+        > [class^="measure_"]{
+          left: 0px;
+          top: 0px;
+          width: 1px;
+          height: 5px;
+        }
+        > [class^="measure_Highlighted"]{ transform: inherit; }
+        > [class^="measure_Compared"]{ height: 3px; }
+      }
+
+      &.catGlyph{
+        top: 0px;
+        height: 16px;
+        > [class^="measure_"]{
+          top: 4px;
+          width: 1px;
+          height: 10px;
+        }
+        > [class^="measure_Compared"]{ height: 5px; }
+        > .total_tip{
+          right: -5px;
+          /* right arrow */
+          border-top: 5px solid transparent;
+          border-bottom: 5px solid transparent;
+          border-left: 5px solid @color_bars_background;
+          background-color: initial;
+          // The sawtooth pattern
+/*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
+          linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
+          background-position: top left, top left;
+          background-repeat: repeat;
+          background-size: 8px 8px; */
+        }
+      } // .catGlyph
+
+      &.setPairGlyph{
+        > .setPairBackground{
+          opacity: 0;
+          fill: @color_setPair_background;
+          .transition(~'opacity 500ms linear');
+        }
+        > [class^="measure_"]{
+          cursor: pointer;
+          .transition(~'all 500ms linear');
+        }
+        > [class^="measure_Active"]{ fill: @color_bars; }
+        > [class^="measure_Highlighted"]{ fill: @color_bar_preview; }
+        > [class^="measure_Compared_"]{ 
+          fill: none;
+          stroke: @color_preview_compare;
+          stroke-width: 1px;
+          .transition(~'opacity 500ms linear');
+          opacity: 0;
+        }
+        &[activesize="0"]{ display: none; }
+        &:not([activesize="0"]) > .setPairBackground{ opacity: 1; }
+      } // .setPairGlyph
+
+      // Part of interval summary
+      &.rangeGlyph{
+        height: 100%;
+        pointer-events: none;
+        > [class^="measure_"]{
+          .transform-origin(0% 100%);
+          width: 1px;
+          height: 1px;
+        }
+        > .total_tip{
+          content: " ";
+          display: block;
+          position: absolute;
+          top: -7px;
+          width: 100%;
+          left: 0px;
+          height: 8px;
+          opacity: 0;
+
+          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
+          linear-gradient(135deg, transparent 75%, @color_bars_background 75%) 0 50%;
+          background-position: top left, top left;
+          background-repeat: repeat;
+          background-size: 8px 8px;
+        }
+        > .lockButton{
+          position: absolute;
+          // width: 100%;
+          text-align: center;
+          width: 16px;
+          left: calc(~"50% - 8px");
+          &[inside]{ margin-top: 12px; }
+        }
+        > .measureLabel{
+          position: relative;
+          display: block;
+          top: 1px;
+          width: 100%;
+          text-align: center;
+          cursor: pointer;
+          pointer-events: all;
+          .transition(~'transform 700ms ease-in-out');
+        }
+      } // .rangeGlyph
+
       > .measureLabel{ 
         color: @color_item_count;
         font-size: 0.7em;
-        > .unitName{
-          margin-left: 0px; // no need extra spacing.
-        }
+        > .unitName{ margin-left: 0px; } // no need extra spacing.
       }
       > .lockButton{
         display: block;
@@ -1796,104 +1911,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:after{ content: "\f023"; } // Unlock
         &:hover:after{ content: "\f13e"; } // Lock
       }
-
-      &.catGlyph{
-        top: 0px;
-        height: 16px;
-        > .aggr{
-          .transform-origin(0%, 0%);
-          top: 4px;
-          width: 1px;
-          height: 10px;
-          &.total_tip{
-            right: -5px;
-            /* right arrow */
-            border-top: 5px solid transparent;
-            border-bottom: 5px solid transparent;
-            border-left: 5px solid @color_bars_background;
-            background-color: initial;
-            // The sawtooth pattern
-/*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-            linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
-            background-position: top left, top left;
-            background-repeat: repeat;
-            background-size: 8px 8px; */
-          }
-          &.compare{
-            width: 1px;
-            height: 5px;
-          }
-        }
-      } // .catGlyph
-
-      // Part of interval summary
-      &.rangeGlyph{
-        height: 100%;
-        pointer-events: none;
-        > .aggr{
-          width: 1px;
-          height: 1px;
-          .transform-origin(0% 100%);
-          &.total_tip{
-            content: " ";
-            display: block;
-            position: absolute;
-            top: -7px;
-            width: 100%;
-            left: 0px;
-            height: 8px;
-            opacity: 0;
-
-            background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-            linear-gradient(135deg, transparent 75%, @color_bars_background 75%) 0 50%;
-            background-position: top left, top left;
-            background-repeat: repeat;
-            background-size: 8px 8px;
-          }
-        } // .aggr
-        > .lockButton{
-          position: absolute;
-          // width: 100%;
-          text-align: center;
-          width: 16px;
-          left: calc(~"50% - 8px");
-          &[inside]{ margin-top: 12px; }
-        }
-        > .measureLabel{
-          position: relative;
-          display: block;
-          top: 1px;
-          width: 100%;
-          text-align: center;
-          cursor: pointer;
-          pointer-events: all;
-          .transition(~'transform 700ms ease-in-out');
-        }
-      } // .rangeGlyph
-
-      &.setPairGlyph{
-        > .setPairBackground{
-          opacity: 0;
-          fill: @color_setPair_background;
-          .transition(~'opacity 500ms linear');
-        }
-        > .aggr{
-          cursor: pointer;
-          .transition(~'all 500ms linear');
-          &.active{ fill: @color_bars; }
-          &.preview{ fill: @color_bar_preview; }
-          &.compare{
-            fill: none;
-            stroke: @color_preview_compare;
-            stroke-width: 1px;
-            .transition(~'opacity 500ms linear');
-            opacity: 1;
-            &[hidden='true']{ opacity: 0; }
-          }
-        }
-        &[activesize="0"]{ display: none; }
-        &:not([activesize="0"]) > .setPairBackground{ opacity: 1; }
-      } // .setPairGlyph
 
       &.mapGlyph{
         > .aggr{
@@ -1939,23 +1956,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
 
-      // Breadcrumb
-      &.totalGlyph{
-        height: 4px;
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        > .aggr{
-          .transform-origin(0%, 0%);
-          cursor: default !important;
-          left: 0px;
-          top: 0px;
-          width: 1px;
-          height: 5px;
-          &.preview{ transform: inherit; }
-          &.compare{ height: 3px; }
-        }
-      }
     } // aggrGlyph
 
 
