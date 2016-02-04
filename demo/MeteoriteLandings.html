@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Meteorite Landings</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 160,
+    middlePanelLabelWidth: 160,
+    source: {
+      gdocId: "1bfOzLmnLEbPk8Oh7Vy8D0JtCJBsd0tB3mOQQLMtNzZw",
+      tables: "Meteorites"
+    },
+    summaries: [
+      { name: "Status", panel: "left", description: "\"Official\" indicates a formally recognized name; \"Doubtful\" usually indicates that a lack of specimens or unavailability of specimens to scientists casts doubt on the existence of actual recovered meteorites; \"Pseudo\" indicates that the name refers to an object that has been proven NOT to be a meteorite, and \"Provisional\" indicates that the name has been assigned by the Nomenclature Committee, but formal approval has not been granted" },
+      { name: "Fall", panel: "right" },
+      { name: "Year", panel: "bottom", description: "The year of the find or fall. For meteorites of unknown provenance, this field may also contain the year of purchase." },
+      { name: "Place", value: function(){ if(this.Place) return this.Place.split(", ")}, panel: "left" },
+      { name: "Type", panel: "right", description: "The classification of the meteorite" },
+      { name: "Mass", panel: "middle", unitName: "gr", description: "Masses are taken from the Catalogue of Meteorites, MetBase, and/or the Meteoritical Bulletin. In most cases, they represent the total known weight of the meteorite. The masses shown here should not be considered as authoritative, and may be rounded off. Qualifying marks in the primary sources of data, such as \">\", \"<\", and \"~\", have simply been dropped."}
+      // The number of the Meteoritical Bulletin in which the name was published. 
+    ],
+    recordDisplay: {
+      displayType: "list",
+      sortColWidth: 70,
+      textSearch: "Name",
+      recordView: function(){ 
+        return this.Name + 
+          " <a href='http://www.lpi.usra.edu/meteor/metbull.php?code="+this.id+"' class='fa fa-external-link' target='_blank'></a>";
+      },
+      sortBy: [ 'Mass', 'Year' ],
+      detailsToggle: "zoom"
+    }
+  });
+});
+    </script>
+<style>
+.fa-external-link{
+  font-size: 0.8em;
+  color: gray;
+  text-decoration: none;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">Meteorite Landings</div>
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
+</html>
