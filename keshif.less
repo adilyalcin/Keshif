@@ -137,7 +137,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       .buttonSummaryRemove{ display: inline-block !important; }
     }
-    &[percentview=true]{
+    &[percentLabelMode]{
       .measurePercentControl{
         &::after{ content: "%"; }
         &[highlight="true"]::after{ content: '#'; }
@@ -145,7 +145,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .chartAxis_Measure > .tick > .text:after{ content: "%"; }
       .scaleBound::after{ content: "%"; }
     }
-    &[ratiomode=true]{
+    &[relativeMode]{
       .chartAxis_Measure > .tick > .text::after{ content: "%"; }
       .scaleBound::after{ content: "%"; }
       .highlightedAggrValuePointer{ display: block; }
@@ -167,7 +167,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .strengthLabel{ display: inline-block; }
       }
     }
-    &[previewcompare="true"]{
+    &[selectCompare]{
       .compare    { opacity: 1 !important; }
       .compareLine{ opacity: 1 !important; }
     }
@@ -194,7 +194,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
     }
-    &[showdropzone=true]{
+    &[showDropZone=true]{
       &:not([dropattrtype~="unique"]){
         .kshfSummary[collapsed=false]{
           .flex-grow(3);
@@ -1688,9 +1688,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-left: 2px;
             &:hover{ color: black; }
           }
-          > .hasMultiMappings{
-            display: none;
-          }
           > .summaryDescription{
             display: none;
             cursor: default;
@@ -2039,7 +2036,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[selection^="onRecord"]  { 
         padding: 0px;
         background-color: @color_onRecord_back !important;
-        border: solid 1px darken(@color_onRecord_back,20%) !important;
+        border: solid 1px darken(@color_onRecord_back,40%) !important;
       }
       &[selection="highlighted"]{ 
         padding: 0px;
@@ -2049,7 +2046,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[recCompared="true"]{
         padding: 0px;
         background-color: #EBF0F0;
-        border: solid 1px darken(#EBF0F0,20%) !important;
+        border: solid 1px darken(#EBF0F0,40%) !important;
+        &[selection="highlighted"]{
+          .background-image(~"linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);");
+        }
       }
     } // kshfRecord
 
@@ -2432,7 +2432,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }// summaryCategorical
 
             > .summaryInterval {
-                padding: 7px 11px 0px 6px;
+              padding-top: 7px;
+              padding-right: 11px; // TODO: Set by JS
+              // padding-left: 6px; // Set by JS
                 overflow: hidden;
                 &[scaletype="time"]{
                   .aggr{ opacity: 0 !important; }
@@ -2499,6 +2501,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                        height: 100%;
                       z-index: 3;
                       height: 100%;
+                      width: 100%;
                       .transition(@layout_animation);
                       > .highlightRangeLimits{
                         display: none;
@@ -2506,12 +2509,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         background-color: orangered;
                         position: absolute;
                         z-index: 100;
+                        .transition(~"opacity 200ms linear");
                       }
                     }
                     > .chartAxis_Measure{
                         top: 0px;
                         width: 100%;
                         height: 100%;
+                        margin-left: -2px;
                         > .measurePercentControl{
                           bottom: -1px;
                           left: -10px;
@@ -2523,9 +2528,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           height: calc(~"100% - 12px");
                           top: 0px;
                         }
-                        > .highlightedAggrValue{
+                        > .highlightedMeasureValue{
                           position: absolute;
-                          width: calc(~"100% - 21px");
+                          width: 100%;
                           height: 2px;
                           border-bottom: solid 1px lighten(@color_bar_preview,20%);
                           opacity: 0;
@@ -2556,11 +2561,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
 
                 }
-                > .percentileChart{
-                  display: none;
-                  height: 12px;
-                  margin-top: 1px;
+                > .percentileGroup{
+                  .display(flex);
+                  .flex-direction(column);
                   position: relative;
+                  height: 16px;
+                  margin-top: 1px;
                   border-style: solid;
                   border-color: lightgray;
                   border-width: 1px 0px;
@@ -2570,7 +2576,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: inline-block;
                     font-weight: 300;
                     top: 0px;
-                    left: -9px;
+                    right: -10px;
                     text-shadow: 0px 0px 2px white;
                     z-index: 120;
                     color: gray;
@@ -2578,39 +2584,83 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     display: none;
                   }
                   &:hover > .percentileTitle{ display: block; }
-                  > .quantile {
-                    display: inline-block;
-                    position: absolute;
-                    height: 10px;
-                    left: 0px;
-                    width:1px;
-                    .transition(~'transform 700ms ease-in-out');
-                    .transform-origin(0% 0%);
-                    cursor: pointer;
-                    &.q_pos{
-                      background-color: rgb(27, 111, 97);
-                      margin-left: -0.5px;
-                      z-index: 101;
+                  > .percentileChart{
+                    .flex(1);
+                    position: relative;
+                    opacity: 0;
+                    .transition(~'opacity 500ms linear');
+                    &.active_percentileChart{ 
+                      opacity: 1;
+                      > .quantile{
+                        height: 14px;
+                        &.q_40_60 { background-color: darken(@color_bars, 5%); }
+                        &.q_30_70 { background-color: lighten(@color_bars, 0%); }
+                        &.q_20_80 { background-color: lighten(@color_bars, 7%); }
+                        &.q_10_90 { background-color: lighten(@color_bars, 15%); }
+                        &.q_pos{ background-color: darken(@color_bars, 25%); }
+                        &.q_50 { background-color: darken(@color_bars, 35%); }
+                      }
+                    }
+                    &.highlighted_percentileChart{ 
+                      border-top: solid 1px lightgray;
+                      background-color: white;
                       pointer-events: none;
-                      &.q_50 {
-                        width: 4px;
-                        background-color: rgb(27, 111, 97);
-                        margin-left: -2px;
-                        pointer-events: all;
+                      > .quantile{
+                        &.q_40_60 { background-color: lighten(@color_bar_preview, 10%); }
+                        &.q_30_70 { background-color: lighten(@color_bar_preview, 20%); }
+                        &.q_20_80 { background-color: lighten(@color_bar_preview, 30%); }
+                        &.q_10_90 { background-color: lighten(@color_bar_preview, 35%); }
+                        &.q_pos{ background-color: @color_bar_preview; }
+                        &.q_50{ background-color: darken(@color_bar_preview, 20%); }
                       }
                     }
-                    &.q_range{
-                      &:hover{
-                        border-color: rgb(27, 111, 97);
-                        border-style: solid;
-                        border-width: 1px 0px 1px 0px;
-                        z-index: 100;
+                    &.compared_percentileChart{ 
+                      display: none;
+                      pointer-events: none;
+                      background-color: white;
+                      border-top: solid 1px lightgray;
+                      > .quantile{
+                        &.q_40_60 { background-color: lighten(@color_preview_compare, 10%); }
+                        &.q_30_70 { background-color: lighten(@color_preview_compare, 20%); }
+                        &.q_20_80 { background-color: lighten(@color_preview_compare, 30%); }
+                        &.q_10_90 { background-color: lighten(@color_preview_compare, 35%); }
+                        &.q_pos{ background-color: @color_preview_compare; }
+                        &.q_50{ background-color: darken(@color_preview_compare, 20%); }
                       }
                     }
-                    &.q_40_60 { background-color: lighten(rgb(27, 111, 97), 15%); }
-                    &.q_30_70 { background-color: lighten(rgb(27, 111, 97), 40%); }
-                    &.q_20_80 { background-color: lighten(rgb(27, 111, 97), 60%); }
-                    &.q_10_90 { background-color: lighten(rgb(27, 111, 97), 70%); }
+
+                    > .quantile {
+                      box-sizing: content-box;
+                      display: inline-block;
+                      position: absolute;
+                      height: 100%;
+                      left: 0px;
+                      width: 1px;
+                      top: -1px;
+                      margin: 1px 0px;
+                      .transition(~'transform 700ms ease-in-out');
+                      .transform-origin(0% 0%);
+                      cursor: pointer;
+                      &.q_pos{
+                        margin-left: -0.5px;
+                        pointer-events: none;
+                        &.q_50 {
+                          width: 2px;
+                          margin-left: -1px;
+                          pointer-events: all;
+                        }
+                      }
+                      &.q_range{
+                        &:hover{
+                          border-style: solid;
+                          border-width: 1px 0px 1px 0px;
+                          border-color: darken(@color_bars, 20%);
+                          top: -2px;
+                          // make the size 1px larger on top and bottom, display the border.
+                          //height: calc(~"100% + 2px");
+                        }
+                      }
+                    }
                   }
                 } // percentileChart
                 > .mapColorBar{
@@ -2843,7 +2893,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .header_display_control > .fa{ opacity: 1; }
         }
         .unmapped_records { color: gray }
-        &[isMultiValued=true] > .headerGroup .hasMultiMappings{ display: inline-block; }
       }
 
       &[hasMap="true"][collapsed="false"]{
@@ -2947,7 +2996,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           height: 12px;
           margin-left: 2px;
         }
-        > .highlightedAggrValue{
+        > .highlightedMeasureValue{
           position: absolute;
           border-left: solid 1px lighten(@color_bar_preview,20%);
           margin-left: -1px;
@@ -3004,7 +3053,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: black;
           }
         }
-        > .highlightedAggrValue{
+        > .highlightedMeasureValue{
           position: absolute;
           top: 2px;
           margin-left: -3px; // center the circle
@@ -3038,7 +3087,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    &[resultpreview="true"]{
+    &[selectHighlight]{
       .aggrGlyph > .measureLabel{ 
         color: orangered;
         fill: orangered;
@@ -3052,13 +3101,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       .lineTrend.preview{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
-      &[ratiomode=false] .mapGlyph > .aggr.preview{
+      &:not([relativeMode]) .mapGlyph > .aggr.preview{
         opacity: 1;
 //        .animation(mapPreviewAnimation 800ms infinite ease-in-out);
       }
-      .mapGlyph > .aggr.preview{
-        opacity: 1;
-      }
+      .mapGlyph > .aggr.preview{ opacity: 1; }
     }
 
     .selectVertLine {

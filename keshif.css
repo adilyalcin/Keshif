@@ -161,32 +161,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode=true] .buttonSummaryRemove {
   display: inline-block !important;
 }
-.kshf[percentview=true] .measurePercentControl::after {
+.kshf[percentLabelMode] .measurePercentControl::after {
   content: "%";
 }
-.kshf[percentview=true] .measurePercentControl[highlight="true"]::after {
+.kshf[percentLabelMode] .measurePercentControl[highlight="true"]::after {
   content: '#';
 }
-.kshf[percentview=true] .chartAxis_Measure > .tick > .text:after {
+.kshf[percentLabelMode] .chartAxis_Measure > .tick > .text:after {
   content: "%";
 }
-.kshf[percentview=true] .scaleBound::after {
+.kshf[percentLabelMode] .scaleBound::after {
   content: "%";
 }
-.kshf[ratiomode=true] .chartAxis_Measure > .tick > .text::after {
+.kshf[relativeMode] .chartAxis_Measure > .tick > .text::after {
   content: "%";
 }
-.kshf[ratiomode=true] .scaleBound::after {
+.kshf[relativeMode] .scaleBound::after {
   content: "%";
 }
-.kshf[ratiomode=true] .highlightedAggrValuePointer {
+.kshf[relativeMode] .highlightedAggrValuePointer {
   display: block;
 }
-.kshf[ratiomode=true] .aggr.active[subset] {
+.kshf[relativeMode] .aggr.active[subset] {
   stroke-width: 2px;
   stroke: #4000ff;
 }
-.kshf[ratiomode=true] .Summary_Set > .summaryControls > .strengthControl {
+.kshf[relativeMode] .Summary_Set > .summaryControls > .strengthControl {
   background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
   /* FF3.6+ */
   background: -webkit-gradient(linear, left top, right top, color-stop(0%, #e6e6f7), color-stop(100%, #9595db));
@@ -205,13 +205,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black;
   text-shadow: 0px 0px 2px #FFFFFF;
 }
-.kshf[ratiomode=true] .Summary_Set > .summaryControls > .strengthControl > .strengthLabel {
+.kshf[relativeMode] .Summary_Set > .summaryControls > .strengthControl > .strengthLabel {
   display: inline-block;
 }
-.kshf[previewcompare="true"] .compare {
+.kshf[selectCompare] .compare {
   opacity: 1 !important;
 }
-.kshf[previewcompare="true"] .compareLine {
+.kshf[selectCompare] .compareLine {
   opacity: 1 !important;
 }
 .kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
@@ -233,7 +233,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[record_display="map"] .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
   display: inline-block;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .kshfSummary[collapsed=false] {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .kshfSummary[collapsed=false] {
   -webkit-flex-grow: 3;
   flex-grow: 3;
   -webkit-box-flex: 3;
@@ -243,10 +243,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 3;
   overflow: hidden;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between_wrapper {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_between_wrapper {
   display: block;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel {
   display: block;
   width: 100%;
   height: 100%;
@@ -256,19 +256,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-width: 0px;
   border-radius: 5px;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel > .dropIcon {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel > .dropIcon {
   display: none;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel > .dropText {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="true"] > .dropZone_panel > .dropText {
   display: none;
 }
-.kshf[showdropzone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
 }
-.kshf[showdropzone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
+.kshf[showDropZone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
-.kshf[showdropzone=true] .recordDisplay[hasRecordView="false"] {
+.kshf[showDropZone=true] .recordDisplay[hasRecordView="false"] {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -276,13 +276,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   min-height: 50px;
 }
-.kshf[showdropzone=true] .dropZone_recordView {
+.kshf[showDropZone=true] .dropZone_recordView {
   display: block !important;
 }
-.kshf[showdropzone=true][dropattrtype~="interval"] .dropZone_resultSort {
+.kshf[showDropZone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
 }
-.kshf[showdropzone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
+.kshf[showDropZone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
   display: block !important;
 }
 .kshf .unitName {
@@ -2002,9 +2002,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .summaryIcons > .fa:hover {
   color: black;
 }
-.kshf .headerGroup .summaryIcons > .hasMultiMappings {
-  display: none;
-}
 .kshf .headerGroup .summaryIcons > .summaryDescription {
   display: none;
   cursor: default;
@@ -2436,7 +2433,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfRecord[selection^="onRecord"] {
   padding: 0px;
   background-color: #efeadf !important;
-  border: solid 1px #cdbd9b !important;
+  border: solid 1px #ab9157 !important;
 }
 .kshf .kshfRecord[selection="highlighted"] {
   padding: 0px;
@@ -2446,7 +2443,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfRecord[recCompared="true"] {
   padding: 0px;
   background-color: #EBF0F0;
-  border: solid 1px #b1c4c4 !important;
+  border: solid 1px #769999 !important;
+}
+.kshf .kshfRecord[recCompared="true"][selection="highlighted"] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNFQkYwRjAiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjRUJGMEYwIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI0YyRTlFNyIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjJFOUU3IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+  background-image: -webkit-linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
+  background-image: -moz-linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
+  background-image: -o-linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
+  background-image: linear-gradient(to right, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
 }
 .kshf .summaryConfig {
   position: absolute;
@@ -2870,7 +2874,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 20px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval {
-  padding: 7px 11px 0px 6px;
+  padding-top: 7px;
+  padding-right: 11px;
   overflow: hidden;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="time"] .aggr {
@@ -2937,6 +2942,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 0px;
   z-index: 3;
   height: 100%;
+  width: 100%;
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 250ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -2948,11 +2954,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: orangered;
   position: absolute;
   z-index: 100;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure {
   top: 0px;
   width: 100%;
   height: 100%;
+  margin-left: -2px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .measurePercentControl {
   bottom: -1px;
@@ -2965,9 +2976,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: calc(100% - 12px);
   top: 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedAggrValue {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedMeasureValue {
   position: absolute;
-  width: calc(100% - 21px);
+  width: 100%;
   height: 2px;
   border-bottom: solid 1px #ffb599;
   opacity: 0;
@@ -2976,7 +2987,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedAggrValue > .highlightedAggrValuePointer {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedMeasureValue > .highlightedAggrValuePointer {
   left: -10px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick {
@@ -2998,37 +3009,135 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   padding-right: 1px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart {
-  display: none;
-  height: 12px;
-  margin-top: 1px;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
   position: relative;
+  height: 16px;
+  margin-top: 1px;
   border-style: solid;
   border-color: lightgray;
   border-width: 1px 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .percentileTitle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileTitle {
   font-size: 0.6em;
   position: absolute;
   display: inline-block;
   font-weight: 300;
   top: 0px;
-  left: -9px;
+  right: -10px;
   text-shadow: 0px 0px 2px white;
   z-index: 120;
   color: gray;
   pointer-events: none;
   display: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart:hover > .percentileTitle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup:hover > .percentileTitle {
   display: block;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  position: relative;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart {
+  opacity: 1;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile {
+  height: 14px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_40_60 {
+  background-color: #a8bbc8;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_30_70 {
+  background-color: #b8c7d2;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_20_80 {
+  background-color: #ced8e0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_10_90 {
+  background-color: #e7ecf0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_pos {
+  background-color: #6a89a1;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_50 {
+  background-color: #546f84;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart {
+  border-top: solid 1px lightgray;
+  background-color: white;
+  pointer-events: none;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_40_60 {
+  background-color: #ff8f66;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_30_70 {
+  background-color: #ffb599;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_20_80 {
+  background-color: #ffdacc;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_10_90 {
+  background-color: #ffece5;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_pos {
+  background-color: #ff6a33;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_50 {
+  background-color: #cc3700;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart {
+  display: none;
+  pointer-events: none;
+  background-color: white;
+  border-top: solid 1px lightgray;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_40_60 {
+  background-color: #426f6f;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_30_70 {
+  background-color: #558f8f;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_20_80 {
+  background-color: #6ea9a9;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_10_90 {
+  background-color: #7eb2b2;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_pos {
+  background-color: #2f4f4f;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_50 {
+  background-color: #090f0f;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile {
+  box-sizing: content-box;
   display: inline-block;
   position: absolute;
-  height: 10px;
+  height: 100%;
   left: 0px;
   width: 1px;
+  top: -1px;
+  margin: 1px 0px;
   -webkit-transition: -webkit-transform 700ms ease-in-out;
   -moz-transition: -moz-transform 700ms ease-in-out;
   -o-transition: -o-transform 700ms ease-in-out;
@@ -3040,35 +3149,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transform-origin: 0% 0%;
   cursor: pointer;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_pos {
-  background-color: #1b6f61;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile.q_pos {
   margin-left: -0.5px;
-  z-index: 101;
   pointer-events: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_pos.q_50 {
-  width: 4px;
-  background-color: #1b6f61;
-  margin-left: -2px;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile.q_pos.q_50 {
+  width: 2px;
+  margin-left: -1px;
   pointer-events: all;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_range:hover {
-  border-color: #1b6f61;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile.q_range:hover {
   border-style: solid;
   border-width: 1px 0px 1px 0px;
-  z-index: 100;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_40_60 {
-  background-color: #2aad97;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_30_70 {
-  background-color: #78decd;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_20_80 {
-  background-color: #caf2eb;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileChart > .quantile.q_10_90 {
-  background-color: #f3fcfb;
+  border-color: #7a96aa;
+  top: -2px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
   -webkit-box-direction: normal;
@@ -3341,9 +3435,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary:hover .unmapped_records {
   color: #808080;
 }
-.kshf .kshfSummary:hover[isMultiValued=true] > .headerGroup .hasMultiMappings {
-  display: inline-block;
-}
 .kshf .kshfSummary[hasMap="true"][collapsed="false"] .summaryViewAs {
   display: inline-block;
 }
@@ -3459,7 +3550,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 12px;
   margin-left: 2px;
 }
-.kshf .belowCatChart > .chartAxis_Measure > .highlightedAggrValue {
+.kshf .belowCatChart > .chartAxis_Measure > .highlightedMeasureValue {
   position: absolute;
   border-left: solid 1px #ffb599;
   margin-left: -1px;
@@ -3469,7 +3560,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
 }
-.kshf .belowCatChart > .chartAxis_Measure > .highlightedAggrValue > .highlightedAggrValuePointer {
+.kshf .belowCatChart > .chartAxis_Measure > .highlightedMeasureValue > .highlightedAggrValuePointer {
   bottom: -14px;
   left: -3px;
 }
@@ -3534,7 +3625,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #E0E4D7;
   color: black;
 }
-.kshf .belowCatChart > .catMapColorScale > .highlightedAggrValue {
+.kshf .belowCatChart > .catMapColorScale > .highlightedMeasureValue {
   position: absolute;
   top: 2px;
   margin-left: -3px;
@@ -3572,24 +3663,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMax {
   right: -24px;
 }
-.kshf[resultpreview="true"] .aggrGlyph > .measureLabel {
+.kshf[selectHighlight] .aggrGlyph > .measureLabel {
   color: orangered;
   fill: orangered;
 }
-.kshf[resultpreview="true"] .kshfSummary:not([isMultiValued="true"]):hover .aggrGlyph:not([selection="selected"]) > .measureLabel {
+.kshf[selectHighlight] .kshfSummary:not([isMultiValued="true"]):hover .aggrGlyph:not([selection="selected"]) > .measureLabel {
   color: #969da3;
   fill: black;
 }
-.kshf[resultpreview="true"] .lineTrend.preview {
+.kshf[selectHighlight] .lineTrend.preview {
   opacity: 1 !important;
 }
-.kshf[resultpreview="true"] .previewLine {
+.kshf[selectHighlight] .previewLine {
   opacity: 1 !important;
 }
-.kshf[resultpreview="true"][ratiomode=false] .mapGlyph > .aggr.preview {
+.kshf[selectHighlight]:not([relativeMode]) .mapGlyph > .aggr.preview {
   opacity: 1;
 }
-.kshf[resultpreview="true"] .mapGlyph > .aggr.preview {
+.kshf[selectHighlight] .mapGlyph > .aggr.preview {
   opacity: 1;
 }
 .kshf .selectVertLine {
