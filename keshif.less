@@ -45,7 +45,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_onRecord: lighten(orangered, 10%); //#B2B227;
 @color_onRecord_back: #EFEADF;
 @color_bar_preview: lighten(orangered, 10%);
-@color_preview_compare: darkslategray; //#222222;
+@color_Compare_A: darkslategray; //#222222;
+@color_Compare_B: #2FD71B; //#222222;
+@color_Compare_C: #FFFEDC; // purple; //#222222;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
 @color_chart_background_highlight: rgba(211, 217, 197, 1);
@@ -73,13 +75,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .box-sizing(border-box);
     *{ .box-sizing(border-box); }
 
+    &[noanim=true]{
+      .aggrGlyph{ 
+        .transition(~'none');
+        &[class^="measure_"]{ .transition(~'none'); }
+      }
+    }
     &[noanim=false]{
-      .aggr{ .transition(@bar_animation); }
       .chartAxis_Measure {
         .transition(@layout_animation);
         .tick{ .transition(~'transform 500ms ease-out'); }
       }
-      .aggrGlyph{ .transition(~'all 700ms ease-in-out'); }
       .wrapper{ .transition(~'height 700ms ease-in-out'); }
       .panels_Above{ .transition(~'height 700ms ease-in-out'); }
       .controlLine {
@@ -149,7 +155,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .chartAxis_Measure > .tick > .text::after{ content: "%"; }
       .scaleBound::after{ content: "%"; }
       .highlightedAggrValuePointer{ display: block; }
-      .aggr.active[subset]{ // setPair
+      [class="measure_Active"].active[subset]{ // setPair
         stroke-width: 2px;
         stroke: @color_set_containment;
       }
@@ -167,11 +173,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .strengthLabel{ display: inline-block; }
       }
     }
-    &[selectCompare]{
-      // The two below are used by line-chart (part of svg)
-      .compare    { opacity: 1 !important; }
-      .compareLine{ opacity: 1 !important; }
-      [class^="measure_Compared"]{ opacity: 1 !important; }
+    &[selectCompared_A]{
+      .measure_Compared_A{ opacity: 1 !important; }
+    }
+    &[selectCompared_B]{
+      .measure_Compared_B{ opacity: 1 !important; }
+    }
+    &[selectCompared_C]{
+      .measure_Compared_C{ opacity: 1 !important; }
     }
     &:not([record_display="map"]){
       .kshfSummary[summary_type="interval"] {
@@ -697,7 +706,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .breadcrumbs{
             .flex(1);
-            padding: 2px 2px 0px 5px;
+            padding: 2px 2px 4px 5px;
             font-size: 0.8em;
             vertical-align: top;
             > .crumb{
@@ -739,6 +748,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 position: absolute;
                 pointer-events: none;
                 font-size: 11px;
+                padding: 1px;
                 left: 0px;
                 text-align: center;
                 color: white;
@@ -767,16 +777,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
               }
               &[class*='crumbMode_Compared'] {
-                > .clearCrumbButton {
-                  background-color: @color_preview_compare;
-                  border: solid 1px @color_preview_compare;
-                  > .fa::before{ 
-                    content: "\f023"; // lock
-                    font-size: 1.1em;
-                    position: relative;
-                    top: 1px;
-                  }
+                > .clearCrumbButton > .fa::before{ 
+                  content: "\f023"; // lock
+                  font-size: 1.1em;
+                  position: relative;
+                  top: 1px;
                 }
+              }
+              &[class*='crumbMode_Compared_A'] > .clearCrumbButton { background-color: @color_Compare_A; }
+              &[class*='crumbMode_Compared_B'] > .clearCrumbButton { background-color: @color_Compare_B; }
+              &[class*='crumbMode_Compared_C'] > .clearCrumbButton { 
+                background-color: @color_Compare_C; 
+                color: black;
               }
               &:hover{
                 background-color: rgba(255,255,255,1.0);
@@ -1741,6 +1753,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .aggrGlyph{
       display: block;
       position: absolute;
+      .transition(~'all 700ms ease-in-out');
 
       > [class^="measure_"]{
         display: block;
@@ -1750,6 +1763,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       > span{
         &[class^="measure_"]{
           .transform-origin(0% 0%);
+          .transition(@bar_animation);
           pointer-events: none;
         }
         &[class^="measure_Active"]{
@@ -1765,25 +1779,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .transition(~'transform 250ms ease-in-out');
         }
         &[class^="measure_Compared"]{
-          background-color: @color_preview_compare;
           .transition(~'transform 500ms ease-in-out, opacity 300ms ease-in-out');
           opacity: 0;
         }
+        &[class^="measure_Compared_A"]{ background-color: @color_Compare_A; }
+        &[class^="measure_Compared_B"]{ background-color: @color_Compare_B; }
+        &[class^="measure_Compared_C"]{ background-color: @color_Compare_C; }
       }
 
       &.totalGlyph{ // Breadcrumb
         position: absolute;
-        height: 4px;
+        height: 7px;
         bottom: 0px;
         left: 0px;
         > [class^="measure_"]{
           left: 0px;
           top: 0px;
           width: 1px;
-          height: 5px;
+          height: 1px;
+          pointer-events: none;
         }
         > [class^="measure_Highlighted"]{ transform: inherit; }
-        > [class^="measure_Compared"]{ height: 3px; }
+        > [class^="measure_Compared"]{ height: 1px; }
       }
 
       &.catGlyph{
@@ -1794,14 +1811,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 1px;
           height: 10px;
         }
-        > [class^="measure_Compared"]{ height: 5px; }
+        > [class^="measure_Compared"]{ height: 1px; }
         > .total_tip{
-          right: -5px;
           /* right arrow */
           border-top: 5px solid transparent;
           border-bottom: 5px solid transparent;
           border-left: 5px solid @color_bars_background;
           background-color: initial;
+          top: 4px;
+          position: absolute;
+          display: inline-block;
           // The sawtooth pattern
 /*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
           linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
@@ -1825,7 +1844,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > [class^="measure_Highlighted"]{ fill: @color_bar_preview; }
         > [class^="measure_Compared_"]{ 
           fill: none;
-          stroke: @color_preview_compare;
+          stroke: @color_Compare_A;
           stroke-width: 1px;
           .transition(~'opacity 500ms linear');
           opacity: 0;
@@ -1907,7 +1926,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[compare="true"] > .lockButton{
         pointer-events: all;
         opacity: 1;
-        &:not([inside]){ color: @color_preview_compare; }
+        &:not([inside]){ color: @color_Compare_A; }
         &:after{ content: "\f023"; } // Unlock
         &:hover:after{ content: "\f13e"; } // Lock
       }
@@ -2040,15 +2059,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[selection="highlighted"]{ 
         padding: 0px;
-        background-color: #F2E9E7;
-        border: solid 1px darken(#F2E9E7,20%) !important;
+        background-color: lighten(@color_bar_preview, 35%);
+        border: solid 1px darken(@color_bar_preview,0%) !important;
       }
-      &[recCompared="true"]{
-        padding: 0px;
-        background-color: #EBF0F0;
-        border: solid 1px darken(#EBF0F0,40%) !important;
+      &[recCompared]{ padding: 0px; }
+      &[recCompared^="A"]{
+        background-color: lighten(@color_Compare_A, 55%);
+        border: solid 1px @color_Compare_A !important;
         &[selection="highlighted"]{
-          .background-image(~"linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);");
+          .background-image( linear-gradient(to right, 
+            lighten(@color_Compare_A, 55%) 0%, lighten(@color_Compare_A, 55%) 20%, 
+            lighten(@color_bar_preview, 35%) 80%, lighten(@color_bar_preview, 35%) 100%) );
+        }
+      }
+      &[recCompared^="B"]{
+        background-color: lighten(@color_Compare_B, 30%);
+        border: solid 1px darken(@color_Compare_B,10%) !important;
+        &[selection="highlighted"]{
+          .background-image( linear-gradient(to right, 
+            lighten(@color_Compare_B, 30%) 0%, lighten(@color_Compare_B, 30%) 20%, 
+            lighten(@color_bar_preview, 35%) 80%, lighten(@color_bar_preview, 35%) 100%) );
+        }
+      }
+      &[recCompared^="C"]{
+        background-color: darken(@color_Compare_C, 10%);
+        border: solid 1px darken(@color_Compare_C,40%) !important;
+        &[selection="highlighted"]{
+          .background-image( linear-gradient(to right, 
+            darken(@color_Compare_C, 10%) 0%, darken(@color_Compare_C, 10%) 20%, 
+            lighten(@color_bar_preview, 35%) 80%, lighten(@color_bar_preview, 35%) 100%) );
         }
       }
     } // kshfRecord
@@ -2437,7 +2476,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               // padding-left: 6px; // Set by JS
                 overflow: hidden;
                 &[scaletype="time"]{
-                  .aggr{ opacity: 0 !important; }
+                  span[class^="measure_"]{ opacity: 0 !important; }
                 }
                 &[scaletype="step"]{
                   .zoomControl[sign="plus"]{ display: none !important; }
@@ -2452,46 +2491,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    overflow-y: visible;
                     .transition(~'height 700ms ease-in-out');
                     > .timeSVG{
+                      .transition(~'opacity 500ms linear');
                       //overflow: visible;
-                      .activeLine{
+                      > [class^="measure_Highlighted_"]{ opacity: 0; }
+                      > [class^="measure_Compared_"]{ opacity: 0; }
+                      > .measure_Active_Line      { stroke: @color_bars; }
+                      > .measure_Highlighted_Line { stroke: @color_bar_preview; }
+                      > .measure_Compared_Line_A  { stroke: @color_Compare_A; }
+                      > .measure_Compared_Line_B  { stroke: @color_Compare_B; }
+                      > .measure_Compared_Line_C  { stroke: @color_Compare_C; }
+                      
+                      > [class$="measure_"]{ stroke-width: 1.5px; }
+                      > .measure_Total_Area{
+                        fill: #EEF0F2;
+                      }
+                      > .measure_Active_Area{
+                        fill: lighten(@color_bars, 10%);
                         stroke: @color_bars;
-                        stroke-width: 2px;
                       }
-                      .previewLine{
+                      > .measure_Highlighted_Area{
+                        fill: fadeout(@color_bar_preview,70%);
                         stroke: @color_bar_preview;
-                        stroke-width: 2px;
-                        opacity: 0;
                       }
-                      .compareLine{
-                        stroke: @color_preview_compare;
-                        stroke-width: 2px;
-                        opacity: 0;
-                      }
-                      .lineTrend{
-                        .transition(~'opacity 500ms linear');
-                        &.total{
-                          fill: #EEF0F2;
-                          stroke: none;
-                          stroke-width: 1.5px;
-                        }
-                        &.active{
-                          fill: lighten(@color_bars, 10%);
-                          stroke: @color_bars;
-                          stroke-width: 1.5px;
-                        }
-                        &.preview{
-                          fill: fadeout(@color_bar_preview,70%);
-                          stroke: @color_bar_preview;
-                          stroke-width: 2px;
-                          opacity: 0;
-                        }
-                        &.compare{
-                          fill: none;
-                          stroke: @color_preview_compare;
-                          stroke-width: 1.5px;
-                          opacity: 0;
-                        }
-                      }
+                      > [class^="measure_Compared_Area_"] { stroke-width: 2px;}
+                      > .measure_Compared_Area_A{ stroke: @color_Compare_A; }
+                      > .measure_Compared_Area_B{ stroke: @color_Compare_B; }
+                      > .measure_Compared_Area_C{ stroke: @color_Compare_C; }
                     }
                     > .aggrGroup{
                       position: absolute;
@@ -2620,12 +2645,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       background-color: white;
                       border-top: solid 1px lightgray;
                       > .quantile{
-                        &.q_40_60 { background-color: lighten(@color_preview_compare, 10%); }
-                        &.q_30_70 { background-color: lighten(@color_preview_compare, 20%); }
-                        &.q_20_80 { background-color: lighten(@color_preview_compare, 30%); }
-                        &.q_10_90 { background-color: lighten(@color_preview_compare, 35%); }
-                        &.q_pos{ background-color: @color_preview_compare; }
-                        &.q_50{ background-color: darken(@color_preview_compare, 20%); }
+                        &.q_40_60 { background-color: lighten(@color_Compare_A, 10%); }
+                        &.q_30_70 { background-color: lighten(@color_Compare_A, 20%); }
+                        &.q_20_80 { background-color: lighten(@color_Compare_A, 30%); }
+                        &.q_10_90 { background-color: lighten(@color_Compare_A, 35%); }
+                        &.q_pos{ background-color: @color_Compare_A; }
+                        &.q_50{ background-color: darken(@color_Compare_A, 20%); }
                       }
                     }
 
@@ -3099,7 +3124,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           fill: black;
         }
       }
-      .lineTrend.preview{ opacity: 1 !important; }
+      .timeSVG > [class^="measure_Highlighted_"]{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
       &:not([relativeMode]) .mapGlyph > .aggr.preview{
         opacity: 1;
@@ -3948,10 +3973,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &.tipsyFilterLock{
         .tipsy-inner{
-            background-color: @color_preview_compare;
+            background-color: @color_Compare_A;
         }
         .tipsy-arrow{
-            border-color: @color_preview_compare;
+            border-color: @color_Compare_A;
         }
     }
 

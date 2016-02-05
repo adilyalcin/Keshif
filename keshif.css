@@ -56,11 +56,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.kshf[noanim=false] .aggr {
-  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+.kshf[noanim=true] .aggrGlyph {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+.kshf[noanim=true] .aggrGlyph[class^="measure_"] {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 .kshf[noanim=false] .chartAxis_Measure {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 250ms ease-in-out;
@@ -73,12 +79,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: -moz-transform 500ms ease-out;
   -o-transition: -o-transform 500ms ease-out;
   transition: -webkit-transform 500ms ease-out,-moz-transform 500ms ease-out,-o-transform 500ms ease-out,transform 500ms ease-out;
-}
-.kshf[noanim=false] .aggrGlyph {
-  -webkit-transition: all 700ms ease-in-out;
-  -moz-transition: all 700ms ease-in-out;
-  -o-transition: all 700ms ease-in-out;
-  transition: all 700ms ease-in-out;
 }
 .kshf[noanim=false] .wrapper {
   -webkit-transition: height 700ms ease-in-out;
@@ -182,7 +182,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[relativeMode] .highlightedAggrValuePointer {
   display: block;
 }
-.kshf[relativeMode] .aggr.active[subset] {
+.kshf[relativeMode] [class="measure_Active"].active[subset] {
   stroke-width: 2px;
   stroke: #4000ff;
 }
@@ -208,13 +208,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[relativeMode] .Summary_Set > .summaryControls > .strengthControl > .strengthLabel {
   display: inline-block;
 }
-.kshf[selectCompare] .compare {
+.kshf[selectCompared_A] .measure_Compared_A {
   opacity: 1 !important;
 }
-.kshf[selectCompare] .compareLine {
+.kshf[selectCompared_B] .measure_Compared_B {
   opacity: 1 !important;
 }
-.kshf[selectCompare] [class^="measure_Compared"] {
+.kshf[selectCompared_C] .measure_Compared_C {
   opacity: 1 !important;
 }
 .kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
@@ -905,7 +905,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  padding: 2px 2px 0px 5px;
+  padding: 2px 2px 4px 5px;
   font-size: 0.8em;
   vertical-align: top;
 }
@@ -957,6 +957,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   pointer-events: none;
   font-size: 11px;
+  padding: 1px;
   left: 0px;
   text-align: center;
   color: white;
@@ -991,15 +992,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 1px;
   left: 1px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared'] > .clearCrumbButton {
-  background-color: #2f4f4f;
-  border: solid 1px #2f4f4f;
-}
 .kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared'] > .clearCrumbButton > .fa::before {
   content: "\f023";
   font-size: 1.1em;
   position: relative;
   top: 1px;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared_A'] > .clearCrumbButton {
+  background-color: #2f4f4f;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared_B'] > .clearCrumbButton {
+  background-color: #2fd71b;
+}
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared_C'] > .clearCrumbButton {
+  background-color: #fffedc;
+  color: black;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb:hover {
   background-color: #ffffff;
@@ -2068,6 +2075,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggrGlyph {
   display: block;
   position: absolute;
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
 }
 .kshf .aggrGlyph > [class^="measure_"] {
   display: block;
@@ -2079,6 +2090,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;
   transform-origin: 0% 0%;
+  -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   pointer-events: none;
 }
 .kshf .aggrGlyph > span[class^="measure_Active"] {
@@ -2097,16 +2112,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: -webkit-transform 250ms ease-in-out,-moz-transform 250ms ease-in-out,-o-transform 250ms ease-in-out,transform 250ms ease-in-out;
 }
 .kshf .aggrGlyph > span[class^="measure_Compared"] {
-  background-color: #2f4f4f;
   -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   -moz-transition: -moz-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   -o-transition: -o-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 300ms ease-in-out;
   opacity: 0;
 }
+.kshf .aggrGlyph > span[class^="measure_Compared_A"] {
+  background-color: #2f4f4f;
+}
+.kshf .aggrGlyph > span[class^="measure_Compared_B"] {
+  background-color: #2fd71b;
+}
+.kshf .aggrGlyph > span[class^="measure_Compared_C"] {
+  background-color: #fffedc;
+}
 .kshf .aggrGlyph.totalGlyph {
   position: absolute;
-  height: 4px;
+  height: 7px;
   bottom: 0px;
   left: 0px;
 }
@@ -2114,13 +2137,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
   top: 0px;
   width: 1px;
-  height: 5px;
+  height: 1px;
+  pointer-events: none;
 }
 .kshf .aggrGlyph.totalGlyph > [class^="measure_Highlighted"] {
   transform: inherit;
 }
 .kshf .aggrGlyph.totalGlyph > [class^="measure_Compared"] {
-  height: 3px;
+  height: 1px;
 }
 .kshf .aggrGlyph.catGlyph {
   top: 0px;
@@ -2132,15 +2156,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 10px;
 }
 .kshf .aggrGlyph.catGlyph > [class^="measure_Compared"] {
-  height: 5px;
+  height: 1px;
 }
 .kshf .aggrGlyph.catGlyph > .total_tip {
-  right: -5px;
   /* right arrow */
   border-top: 5px solid transparent;
   border-bottom: 5px solid transparent;
   border-left: 5px solid #dee2e6;
   background-color: initial;
+  top: 4px;
+  position: absolute;
+  display: inline-block;
   /*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
           linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
           background-position: top left, top left;
@@ -2425,20 +2451,44 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfRecord[selection="highlighted"] {
   padding: 0px;
-  background-color: #F2E9E7;
-  border: solid 1px #ceaca5 !important;
+  background-color: #ffece5;
+  border: solid 1px #ff6a33 !important;
 }
-.kshf .kshfRecord[recCompared="true"] {
+.kshf .kshfRecord[recCompared] {
   padding: 0px;
-  background-color: #EBF0F0;
-  border: solid 1px #769999 !important;
 }
-.kshf .kshfRecord[recCompared="true"][selection="highlighted"] {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNFQkYwRjAiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjRUJGMEYwIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI0YyRTlFNyIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRjJFOUU3IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
-  background-image: -webkit-linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
-  background-image: -moz-linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
-  background-image: -o-linear-gradient(left, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
-  background-image: linear-gradient(to right, #EBF0F0 0%, #EBF0F0 20%, #F2E9E7 80%, #F2E9E7 100%);;
+.kshf .kshfRecord[recCompared^="A"] {
+  background-color: #bed8d8;
+  border: solid 1px #2f4f4f !important;
+}
+.kshf .kshfRecord[recCompared^="A"][selection="highlighted"] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNiZWQ4ZDgiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjYmVkOGQ4IiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+  background-image: -webkit-linear-gradient(left, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -moz-linear-gradient(left, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -o-linear-gradient(left, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
+  background-image: linear-gradient(to right, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
+}
+.kshf .kshfRecord[recCompared^="B"] {
+  background-color: #a2f299;
+  border: solid 1px #25aa15 !important;
+}
+.kshf .kshfRecord[recCompared^="B"][selection="highlighted"] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNhMmYyOTkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjYTJmMjk5IiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+  background-image: -webkit-linear-gradient(left, #a2f299 0%, #a2f299 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -moz-linear-gradient(left, #a2f299 0%, #a2f299 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -o-linear-gradient(left, #a2f299 0%, #a2f299 20%, #ffece5 80%, #ffece5 100%);
+  background-image: linear-gradient(to right, #a2f299 0%, #a2f299 20%, #ffece5 80%, #ffece5 100%);
+}
+.kshf .kshfRecord[recCompared^="C"] {
+  background-color: #fffda9;
+  border: solid 1px #fff810 !important;
+}
+.kshf .kshfRecord[recCompared^="C"][selection="highlighted"] {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZkYTkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjZmZmZGE5IiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+  background-image: -webkit-linear-gradient(left, #fffda9 0%, #fffda9 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -moz-linear-gradient(left, #fffda9 0%, #fffda9 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -o-linear-gradient(left, #fffda9 0%, #fffda9 20%, #ffece5 80%, #ffece5 100%);
+  background-image: linear-gradient(to right, #fffda9 0%, #fffda9 20%, #ffece5 80%, #ffece5 100%);
 }
 .kshf .summaryConfig {
   position: absolute;
@@ -2866,7 +2916,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding-right: 11px;
   overflow: hidden;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="time"] .aggr {
+.kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="time"] span[class^="measure_"] {
   opacity: 0 !important;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval[scaletype="step"] .zoomControl[sign="plus"] {
@@ -2883,47 +2933,58 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .activeLine {
-  stroke: #b8c7d2;
-  stroke-width: 2px;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .previewLine {
-  stroke: #ff6a33;
-  stroke-width: 2px;
-  opacity: 0;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .compareLine {
-  stroke: #2f4f4f;
-  stroke-width: 2px;
-  opacity: 0;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG {
   -webkit-transition: opacity 500ms linear;
   -moz-transition: opacity 500ms linear;
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.total {
-  fill: #EEF0F2;
-  stroke: none;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Highlighted_"] {
+  opacity: 0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compared_"] {
+  opacity: 0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Active_Line {
+  stroke: #b8c7d2;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlighted_Line {
+  stroke: #ff6a33;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Line_A {
+  stroke: #2f4f4f;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Line_B {
+  stroke: #2fd71b;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Line_C {
+  stroke: #fffedc;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class$="measure_"] {
   stroke-width: 1.5px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.active {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Total_Area {
+  fill: #EEF0F2;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Active_Area {
   fill: #d7e0e6;
   stroke: #b8c7d2;
-  stroke-width: 1.5px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.preview {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlighted_Area {
   fill: rgba(255, 106, 51, 0.3);
   stroke: #ff6a33;
-  stroke-width: 2px;
-  opacity: 0;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG .lineTrend.compare {
-  fill: none;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compared_Area_"] {
+  stroke-width: 2px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Area_A {
   stroke: #2f4f4f;
-  stroke-width: 1.5px;
-  opacity: 0;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Area_B {
+  stroke: #2fd71b;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Area_C {
+  stroke: #fffedc;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .aggrGroup {
   position: absolute;
@@ -3659,7 +3720,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #969da3;
   fill: black;
 }
-.kshf[selectHighlight] .lineTrend.preview {
+.kshf[selectHighlight] .timeSVG > [class^="measure_Highlighted_"] {
   opacity: 1 !important;
 }
 .kshf[selectHighlight] .previewLine {
