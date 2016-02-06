@@ -175,12 +175,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[selectCompared_A]{
       .measure_Compared_A{ opacity: 1 !important; }
+      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_A{ display: block; }
     }
     &[selectCompared_B]{
       .measure_Compared_B{ opacity: 1 !important; }
+      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_B{ display: block; }
     }
     &[selectCompared_C]{
       .measure_Compared_C{ opacity: 1 !important; }
+      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C{ display: block; }
     }
     &:not([record_display="map"]){
       .kshfSummary[summary_type="interval"] {
@@ -771,7 +774,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   > .fa::before{ 
                     content: "\f245";
                     position: relative;
-                    top: 1px;
+                    top: 0px;
                     left: 1px;
                   } // mouse pointer
                 }
@@ -1750,6 +1753,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
     } // headerGroup
 
+    .lockButton{
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      cursor: pointer;
+      color: gray;
+      font-size: 0.8em;
+    }
+
     .aggrGlyph{
       display: block;
       position: absolute;
@@ -1805,13 +1817,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       &.catGlyph{
         top: 0px;
-        height: 16px;
         > [class^="measure_"]{
           top: 4px;
           width: 1px;
-          height: 10px;
+          .calc(height, ~"100% - 8px");
         }
         > [class^="measure_Compared"]{ height: 1px; }
+        > .clickArea > .lockButton{
+          display: block;
+          .calc(top, ~"50% - 5px");
+          right: 1px;
+          .transition(~'opacity 500ms linear');
+          &:after{ content: "\f13e"; } // Lock
+          &:hover:after{ content: "\f023"; } // Unlock
+          &[inside]{ // Appears inside the visual glyph
+            color: white;
+            text-shadow: 0px 0px 1px rgb(0, 0, 0);
+          }
+        }
+
         > .total_tip{
           /* right arrow */
           border-top: 5px solid transparent;
@@ -1879,7 +1903,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           background-size: 8px 8px;
         }
         > .lockButton{
-          position: absolute;
           // width: 100%;
           text-align: center;
           width: 16px;
@@ -1903,28 +1926,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-size: 0.7em;
         > .unitName{ margin-left: 0px; } // no need extra spacing.
       }
-      > .lockButton{
-        display: block;
-        position: absolute;
-        font-size: 0.7em;
-        color: gray;
-        opacity: 0;
-        cursor: pointer;
-        pointer-events: none;
-        .transition(~'opacity 500ms linear');
-        &:after{ content: "\f13e"; } // Lock
-        &:hover:after{ content: "\f023"; } // Unlock
-        &[inside]{ // Appears inside the visual glyph
-          color: white;
-          text-shadow: 0px 0px 1px rgb(0, 0, 0);
-        }
-      }
-      &[showlock="true"] > .lockButton{
-        pointer-events: all;
+      &[showlock="true"] .lockButton{
+        pointer-events: all !important;
         opacity: 1;
       }
-      &[compare="true"] > .lockButton{
-        pointer-events: all;
+      &[compare="true"] .lockButton{
+        pointer-events: all !important;
         opacity: 1;
         &:not([inside]){ color: @color_Compare_A; }
         &:after{ content: "\f023"; } // Unlock
@@ -2120,11 +2127,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding: 0px 3px;
         margin-left: -1px;
         font-size: 0.8em;
-        vertical-align: top;
+        top: -1px;
         &:hover{ color: orangered; }
-        &[active=true]{ background-color: white; pointer-events: none;}
+        &[active=true]{ background-color: white; pointer-events: none; font-weight: 500; }
         &:first-child{ border-radius: 5px 0px 0px 5px; }
         &:last-child{ border-radius: 0px 5px 5px 0px; }
+        > *[class^="bl_"]{
+          display: inline-block;
+          width: 4px;
+          height: 7px;
+        }
+        > .bl_Active     { background-color: @color_bars; }
+        > .bl_Highlighted{ background-color: @color_bar_preview; }
+        > .bl_Compared_A { background-color: @color_Compare_A; }
+        > .bl_Compared_B { background-color: @color_Compare_B; }
+        > .bl_Compared_C { background-color: darken(@color_Compare_C, 40%); }
       }
     }
     .summaryConfig_UnitName{
@@ -2146,6 +2163,131 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover{ border-color: #cb5454; }
       }
     }
+
+    // ***********************************************************************************************************
+    // PERCENTILE CHART STYLES
+
+    .percentileGroup{
+      .display(flex);
+      .flex-direction(column);
+      position: relative;
+      // height: 16px; Depends on UI state
+      border-style: solid;
+      border-color: lightgray;
+      border-width: 1px 0px;
+      > .percentileTitle{
+        font-size: 0.6em;
+        position: absolute;
+        display: inline-block;
+        font-weight: 300;
+        top: 0px;
+        right: -10px;
+        text-shadow: 0px 0px 2px white;
+        z-index: 120;
+        color: gray;
+        pointer-events: none;
+        display: none;
+      }
+      // Fixed height for active selection: So it covers the whole chart. Compare selections will be on top.
+      &[percentilechartvisible="Basic"] > .percentileChart_Active > .quantile{ height: 11px; }
+      &[percentilechartvisible="Extended"] > .percentileChart_Active > .quantile{ height: 28px; }
+      &:hover > .percentileTitle{ display: block; }
+    } // percentileGroup
+
+    *[class^="percentileChart"]{
+      .flex(1);
+      position: relative;
+      opacity: 0;
+      .transition(~'opacity 500ms linear');
+      > .quantile {
+        box-sizing: content-box;
+        display: inline-block;
+        position: absolute;
+        height: 100%;
+        left: 0px;
+        width: 1px;
+        top: -1px;
+        margin: 1px 0px;
+        .transition(~'transform 700ms ease-in-out');
+        .transform-origin(0% 0%);
+        cursor: pointer;
+        &.q_pos{
+          margin-left: -0.5px;
+          pointer-events: none;
+          background-color: rgba(0,0,0,0.4);
+          &.q_50 {
+            width: 2px;
+            margin-left: -1px;
+            pointer-events: all;
+            background-color: rgb(10,10,10);
+          }
+        }
+        &.q_range{
+          &:hover{
+            border-style: solid;
+            border-width: 1px 0px 1px 0px;
+            border-color: darken(@color_bars, 20%);
+            top: -2px;
+            // make the size 1px larger on top and bottom, display the border.
+            //height: calc(~"100% + 2px");
+          }
+        }
+      }
+    }
+    .percentileChart_Active{ 
+      opacity: 1;
+      > .quantile{
+        &.q_40_60 { background-color: darken(@color_bars, 10%); }
+        &.q_30_70 { background-color: lighten(@color_bars, 0%); }
+        &.q_20_80 { background-color: lighten(@color_bars, 7%); }
+        &.q_10_90 { background-color: lighten(@color_bars, 15%); }
+      }
+    }
+    .percentileChart_Highlighted{ 
+      border-top: solid 1px lightgray;
+      background-color: white;
+      pointer-events: none;
+      > .quantile{
+        &.q_40_60 { background-color: lighten(@color_bar_preview, 0%); }
+        &.q_30_70 { background-color: lighten(@color_bar_preview, 10%); }
+        &.q_20_80 { background-color: lighten(@color_bar_preview, 20%); }
+        &.q_10_90 { background-color: lighten(@color_bar_preview, 30%); }
+      }
+    }
+    *[class^="percentileChart_Compared"]{ 
+      display: none;
+      pointer-events: all; // mouse-over can be applied...
+      background-color: white;
+      border-top: solid 1px #EEEEEE;
+    }
+    .percentileChart_Compared_A{ 
+      > .quantile{
+        &.q_40_60 { background-color: lighten(@color_Compare_A, 20%); }
+        &.q_30_70 { background-color: lighten(@color_Compare_A, 30%); }
+        &.q_20_80 { background-color: lighten(@color_Compare_A, 40%); }
+        &.q_10_90 { background-color: lighten(@color_Compare_A, 50%); }
+      }
+    }
+    .percentileChart_Compared_B{ 
+      > .quantile{
+        &.q_40_60 { background-color: darken(@color_Compare_B, 10%); }
+        &.q_30_70 { background-color: darken(@color_Compare_B, 2%); }
+        &.q_20_80 { background-color: lighten(@color_Compare_B, 12%); }
+        &.q_10_90 { background-color: lighten(@color_Compare_B, 25%); }
+      }
+    }
+    .percentileChart_Compared_C{ 
+      > .quantile{
+        &.q_40_60 { background-color: darken(@color_Compare_C, 65%); }
+        &.q_30_70 { background-color: darken(@color_Compare_C, 57%); }
+        &.q_20_80 { background-color: darken(@color_Compare_C, 50%); }
+        &.q_10_90 { background-color: darken(@color_Compare_C, 40%); }
+      }
+    }
+
+    // PERCENTILE CHART STYLES - END
+    // ***********************************************************************************************************
+
 
     .unmapped_records{
       display: none;
@@ -2293,6 +2435,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                   > .catGlyph{
                     white-space: nowrap;
+                    width: 100%;
                     > .clickArea{
                       position: absolute;
                       left: 0px;
@@ -2303,33 +2446,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       // Note: The height of clickable area is the same as height of the bar!
                       margin-top:4px;
                       margin-bottom:4px;
-                      height: 10px !important; // total: 18px
+                      .calc(height, ~"100% - 8px");
                       position: absolute;
                       font-size: 0.8em;
                       font-weight: 300;
                       width: 1px;
                       left: 0px;
                     }
-                    .lockButton{
-                      width: 9px;
-                      text-align: right;
-                      top: 4px;
-                      z-index: 300;
-                      &[inside]{ margin-left: -11px; }
-                    }
                     > .categoryLabel{
                       position: absolute;
                       display: inline-block;
                       vertical-align: top;
-                      line-height: 18px;
-                      pointer-events: none;
-                      z-index: 21;
+                      line-height: 16px;
+                      height: 100%;
                       padding-right: 2px;
+                      z-index: 21;
 
                       font-size: 0.8em;
                       font-weight: 300;
                       cursor: default;
                       // display ... when text is too long
+                      pointer-events: none;
                       white-space: nowrap;
                       text-overflow: ellipsis;
                       overflow: hidden;
@@ -2351,13 +2488,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .measureLabel{
                       position: absolute;
                       display: inline-block;
-                      height: 18px;
+                      height: 16px;
                       padding-right: 1px;
-                      pointer-events: none;
+                      .calc(top, ~"50% - 8px");
 
                       vertical-align: top;
                       text-align: right;
-                      line-height: 19px;
+                      line-height: 18px;
+                      pointer-events: none;
                     }
 
                     .filterButtons{
@@ -2584,110 +2722,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             }
                         }
                     }
-
                 }
-                > .percentileGroup{
-                  .display(flex);
-                  .flex-direction(column);
-                  position: relative;
-                  height: 16px;
-                  margin-top: 1px;
-                  border-style: solid;
-                  border-color: lightgray;
-                  border-width: 1px 0px;
-                  > .percentileTitle{
-                    font-size: 0.6em;
-                    position: absolute;
-                    display: inline-block;
-                    font-weight: 300;
-                    top: 0px;
-                    right: -10px;
-                    text-shadow: 0px 0px 2px white;
-                    z-index: 120;
-                    color: gray;
-                    pointer-events: none;
-                    display: none;
-                  }
-                  &:hover > .percentileTitle{ display: block; }
-                  > .percentileChart{
-                    .flex(1);
-                    position: relative;
-                    opacity: 0;
-                    .transition(~'opacity 500ms linear');
-                    &.active_percentileChart{ 
-                      opacity: 1;
-                      > .quantile{
-                        height: 14px;
-                        &.q_40_60 { background-color: darken(@color_bars, 5%); }
-                        &.q_30_70 { background-color: lighten(@color_bars, 0%); }
-                        &.q_20_80 { background-color: lighten(@color_bars, 7%); }
-                        &.q_10_90 { background-color: lighten(@color_bars, 15%); }
-                        &.q_pos{ background-color: darken(@color_bars, 25%); }
-                        &.q_50 { background-color: darken(@color_bars, 35%); }
-                      }
-                    }
-                    &.highlighted_percentileChart{ 
-                      border-top: solid 1px lightgray;
-                      background-color: white;
-                      pointer-events: none;
-                      > .quantile{
-                        &.q_40_60 { background-color: lighten(@color_bar_preview, 10%); }
-                        &.q_30_70 { background-color: lighten(@color_bar_preview, 20%); }
-                        &.q_20_80 { background-color: lighten(@color_bar_preview, 30%); }
-                        &.q_10_90 { background-color: lighten(@color_bar_preview, 35%); }
-                        &.q_pos{ background-color: @color_bar_preview; }
-                        &.q_50{ background-color: darken(@color_bar_preview, 20%); }
-                      }
-                    }
-                    &.compared_percentileChart{ 
-                      display: none;
-                      pointer-events: none;
-                      background-color: white;
-                      border-top: solid 1px lightgray;
-                      > .quantile{
-                        &.q_40_60 { background-color: lighten(@color_Compare_A, 10%); }
-                        &.q_30_70 { background-color: lighten(@color_Compare_A, 20%); }
-                        &.q_20_80 { background-color: lighten(@color_Compare_A, 30%); }
-                        &.q_10_90 { background-color: lighten(@color_Compare_A, 35%); }
-                        &.q_pos{ background-color: @color_Compare_A; }
-                        &.q_50{ background-color: darken(@color_Compare_A, 20%); }
-                      }
-                    }
 
-                    > .quantile {
-                      box-sizing: content-box;
-                      display: inline-block;
-                      position: absolute;
-                      height: 100%;
-                      left: 0px;
-                      width: 1px;
-                      top: -1px;
-                      margin: 1px 0px;
-                      .transition(~'transform 700ms ease-in-out');
-                      .transform-origin(0% 0%);
-                      cursor: pointer;
-                      &.q_pos{
-                        margin-left: -0.5px;
-                        pointer-events: none;
-                        &.q_50 {
-                          width: 2px;
-                          margin-left: -1px;
-                          pointer-events: all;
-                        }
-                      }
-                      &.q_range{
-                        &:hover{
-                          border-style: solid;
-                          border-width: 1px 0px 1px 0px;
-                          border-color: darken(@color_bars, 20%);
-                          top: -2px;
-                          // make the size 1px larger on top and bottom, display the border.
-                          //height: calc(~"100% + 2px");
-                        }
-                      }
-                    }
-                  }
-                } // percentileChart
                 > .mapColorBar{
                   .flex-direction(row);
                   .flex-wrap(wrap);
@@ -2773,6 +2809,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             width: 100%;
                             height: 3px;
                             top: 3px;
+                            left: 1px;
                             background-color: lightgray;
                           }
                           &.active{
@@ -3113,6 +3150,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     &[selectHighlight]{
+      .percentileChart_Highlighted{ display: block !important; }
       .aggrGlyph > .measureLabel{ 
         color: orangered;
         fill: orangered;

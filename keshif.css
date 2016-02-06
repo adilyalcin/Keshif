@@ -211,11 +211,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[selectCompared_A] .measure_Compared_A {
   opacity: 1 !important;
 }
+.kshf[selectCompared_A] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_A {
+  display: block;
+}
 .kshf[selectCompared_B] .measure_Compared_B {
   opacity: 1 !important;
 }
+.kshf[selectCompared_B] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_B {
+  display: block;
+}
 .kshf[selectCompared_C] .measure_Compared_C {
   opacity: 1 !important;
+}
+.kshf[selectCompared_C] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C {
+  display: block;
 }
 .kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
   content: "\f0dc";
@@ -989,7 +998,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlighted > .clearCrumbButton > .fa::before {
   content: "\f245";
   position: relative;
-  top: 1px;
+  top: 0px;
   left: 1px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared'] > .clearCrumbButton > .fa::before {
@@ -2072,6 +2081,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .header_display_control > .buttonSummaryExpand {
   display: none;
 }
+.kshf .lockButton {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  color: gray;
+  font-size: 0.8em;
+}
 .kshf .aggrGlyph {
   display: block;
   position: absolute;
@@ -2148,15 +2165,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .aggrGlyph.catGlyph {
   top: 0px;
-  height: 16px;
 }
 .kshf .aggrGlyph.catGlyph > [class^="measure_"] {
   top: 4px;
   width: 1px;
-  height: 10px;
+  -lh-property: 0;
+height:-webkit-calc(100% - 8px);
+height:-moz-calc(100% - 8px);
+height:calc(100% - 8px);
+;
 }
 .kshf .aggrGlyph.catGlyph > [class^="measure_Compared"] {
   height: 1px;
+}
+.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton {
+  display: block;
+  -lh-property: 0;
+top:-webkit-calc(50% - 5px);
+top:-moz-calc(50% - 5px);
+top:calc(50% - 5px);
+;
+  right: 1px;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton:after {
+  content: "\f13e";
+}
+.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton:hover:after {
+  content: "\f023";
+}
+.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton[inside] {
+  color: white;
+  text-shadow: 0px 0px 1px #000000;
 }
 .kshf .aggrGlyph.catGlyph > .total_tip {
   /* right arrow */
@@ -2238,7 +2281,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-size: 8px 8px;
 }
 .kshf .aggrGlyph.rangeGlyph > .lockButton {
-  position: absolute;
   text-align: center;
   width: 16px;
   left: calc(50% - 8px);
@@ -2266,44 +2308,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggrGlyph > .measureLabel > .unitName {
   margin-left: 0px;
 }
-.kshf .aggrGlyph > .lockButton {
-  display: block;
-  position: absolute;
-  font-size: 0.7em;
-  color: gray;
-  opacity: 0;
-  cursor: pointer;
-  pointer-events: none;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-}
-.kshf .aggrGlyph > .lockButton:after {
-  content: "\f13e";
-}
-.kshf .aggrGlyph > .lockButton:hover:after {
-  content: "\f023";
-}
-.kshf .aggrGlyph > .lockButton[inside] {
-  color: white;
-  text-shadow: 0px 0px 1px #000000;
-}
-.kshf .aggrGlyph[showlock="true"] > .lockButton {
-  pointer-events: all;
+.kshf .aggrGlyph[showlock="true"] .lockButton {
+  pointer-events: all !important;
   opacity: 1;
 }
-.kshf .aggrGlyph[compare="true"] > .lockButton {
-  pointer-events: all;
+.kshf .aggrGlyph[compare="true"] .lockButton {
+  pointer-events: all !important;
   opacity: 1;
 }
-.kshf .aggrGlyph[compare="true"] > .lockButton:not([inside]) {
+.kshf .aggrGlyph[compare="true"] .lockButton:not([inside]) {
   color: #2f4f4f;
 }
-.kshf .aggrGlyph[compare="true"] > .lockButton:after {
+.kshf .aggrGlyph[compare="true"] .lockButton:after {
   content: "\f023";
 }
-.kshf .aggrGlyph[compare="true"] > .lockButton:hover:after {
+.kshf .aggrGlyph[compare="true"] .lockButton:hover:after {
   content: "\f13e";
 }
 .kshf .aggrGlyph.mapGlyph > .aggr {
@@ -2521,7 +2540,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 0px 3px;
   margin-left: -1px;
   font-size: 0.8em;
-  vertical-align: top;
+  top: -1px;
 }
 .kshf .summaryConfig .configOption:hover {
   color: orangered;
@@ -2529,12 +2548,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .summaryConfig .configOption[active=true] {
   background-color: white;
   pointer-events: none;
+  font-weight: 500;
 }
 .kshf .summaryConfig .configOption:first-child {
   border-radius: 5px 0px 0px 5px;
 }
 .kshf .summaryConfig .configOption:last-child {
   border-radius: 0px 5px 5px 0px;
+}
+.kshf .summaryConfig .configOption > *[class^="bl_"] {
+  display: inline-block;
+  width: 4px;
+  height: 7px;
+}
+.kshf .summaryConfig .configOption > .bl_Active {
+  background-color: #b8c7d2;
+}
+.kshf .summaryConfig .configOption > .bl_Highlighted {
+  background-color: #ff6a33;
+}
+.kshf .summaryConfig .configOption > .bl_Compared_A {
+  background-color: #2f4f4f;
+}
+.kshf .summaryConfig .configOption > .bl_Compared_B {
+  background-color: #2fd71b;
+}
+.kshf .summaryConfig .configOption > .bl_Compared_C {
+  background-color: #fff810;
 }
 .kshf .summaryConfig_UnitName > .unitNameInput {
   height: 14px;
@@ -2554,6 +2594,170 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .summaryConfig_UnitName > .unitNameInput:hover {
   border-color: #cb5454;
+}
+.kshf .percentileGroup {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+  border-style: solid;
+  border-color: lightgray;
+  border-width: 1px 0px;
+}
+.kshf .percentileGroup > .percentileTitle {
+  font-size: 0.6em;
+  position: absolute;
+  display: inline-block;
+  font-weight: 300;
+  top: 0px;
+  right: -10px;
+  text-shadow: 0px 0px 2px white;
+  z-index: 120;
+  color: gray;
+  pointer-events: none;
+  display: none;
+}
+.kshf .percentileGroup[percentilechartvisible="Basic"] > .percentileChart_Active > .quantile {
+  height: 11px;
+}
+.kshf .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Active > .quantile {
+  height: 28px;
+}
+.kshf .percentileGroup:hover > .percentileTitle {
+  display: block;
+}
+.kshf *[class^="percentileChart"] {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  position: relative;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}
+.kshf *[class^="percentileChart"] > .quantile {
+  box-sizing: content-box;
+  display: inline-block;
+  position: absolute;
+  height: 100%;
+  left: 0px;
+  width: 1px;
+  top: -1px;
+  margin: 1px 0px;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+  -webkit-transform-origin: 0% 0%;
+  -moz-transform-origin: 0% 0%;
+  -ms-transform-origin: 0% 0%;
+  -o-transform-origin: 0% 0%;
+  transform-origin: 0% 0%;
+  cursor: pointer;
+}
+.kshf *[class^="percentileChart"] > .quantile.q_pos {
+  margin-left: -0.5px;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.kshf *[class^="percentileChart"] > .quantile.q_pos.q_50 {
+  width: 2px;
+  margin-left: -1px;
+  pointer-events: all;
+  background-color: #0a0a0a;
+}
+.kshf *[class^="percentileChart"] > .quantile.q_range:hover {
+  border-style: solid;
+  border-width: 1px 0px 1px 0px;
+  border-color: #7a96aa;
+  top: -2px;
+}
+.kshf .percentileChart_Active {
+  opacity: 1;
+}
+.kshf .percentileChart_Active > .quantile.q_40_60 {
+  background-color: #99aebe;
+}
+.kshf .percentileChart_Active > .quantile.q_30_70 {
+  background-color: #b8c7d2;
+}
+.kshf .percentileChart_Active > .quantile.q_20_80 {
+  background-color: #ced8e0;
+}
+.kshf .percentileChart_Active > .quantile.q_10_90 {
+  background-color: #e7ecf0;
+}
+.kshf .percentileChart_Highlighted {
+  border-top: solid 1px lightgray;
+  background-color: white;
+  pointer-events: none;
+}
+.kshf .percentileChart_Highlighted > .quantile.q_40_60 {
+  background-color: #ff6a33;
+}
+.kshf .percentileChart_Highlighted > .quantile.q_30_70 {
+  background-color: #ff8f66;
+}
+.kshf .percentileChart_Highlighted > .quantile.q_20_80 {
+  background-color: #ffb599;
+}
+.kshf .percentileChart_Highlighted > .quantile.q_10_90 {
+  background-color: #ffdacc;
+}
+.kshf *[class^="percentileChart_Compared"] {
+  display: none;
+  pointer-events: all;
+  background-color: white;
+  border-top: solid 1px #EEEEEE;
+}
+.kshf .percentileChart_Compared_A > .quantile.q_40_60 {
+  background-color: #558f8f;
+}
+.kshf .percentileChart_Compared_A > .quantile.q_30_70 {
+  background-color: #6ea9a9;
+}
+.kshf .percentileChart_Compared_A > .quantile.q_20_80 {
+  background-color: #8ebcbc;
+}
+.kshf .percentileChart_Compared_A > .quantile.q_10_90 {
+  background-color: #aecfcf;
+}
+.kshf .percentileChart_Compared_B > .quantile.q_40_60 {
+  background-color: #25aa15;
+}
+.kshf .percentileChart_Compared_B > .quantile.q_30_70 {
+  background-color: #2dce1a;
+}
+.kshf .percentileChart_Compared_B > .quantile.q_20_80 {
+  background-color: #58e847;
+}
+.kshf .percentileChart_Compared_B > .quantile.q_10_90 {
+  background-color: #8eef82;
+}
+.kshf .percentileChart_Compared_C > .quantile.q_40_60 {
+  background-color: #908b00;
+}
+.kshf .percentileChart_Compared_C > .quantile.q_30_70 {
+  background-color: #b8b300;
+}
+.kshf .percentileChart_Compared_C > .quantile.q_20_80 {
+  background-color: #dcd600;
+}
+.kshf .percentileChart_Compared_C > .quantile.q_10_90 {
+  background-color: #fff810;
 }
 .kshf .unmapped_records {
   display: none;
@@ -2738,6 +2942,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph {
   white-space: nowrap;
+  width: 100%;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .clickArea {
   z-index: 20;
@@ -2746,33 +2951,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   margin-top: 4px;
   margin-bottom: 4px;
-  height: 10px !important;
+  -lh-property: 0;
+height:-webkit-calc(100% - 8px);
+height:-moz-calc(100% - 8px);
+height:calc(100% - 8px);
+;
   position: absolute;
   font-size: 0.8em;
   font-weight: 300;
   width: 1px;
   left: 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .lockButton {
-  width: 9px;
-  text-align: right;
-  top: 4px;
-  z-index: 300;
-}
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .lockButton[inside] {
-  margin-left: -11px;
-}
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .categoryLabel {
   position: absolute;
   display: inline-block;
   vertical-align: top;
-  line-height: 18px;
-  pointer-events: none;
-  z-index: 21;
+  line-height: 16px;
+  height: 100%;
   padding-right: 2px;
+  z-index: 21;
   font-size: 0.8em;
   font-weight: 300;
   cursor: default;
+  pointer-events: none;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -2793,12 +2994,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .measureLabel {
   position: absolute;
   display: inline-block;
-  height: 18px;
+  height: 16px;
   padding-right: 1px;
-  pointer-events: none;
+  -lh-property: 0;
+top:-webkit-calc(50% - 8px);
+top:-moz-calc(50% - 8px);
+top:calc(50% - 8px);
+;
   vertical-align: top;
   text-align: right;
-  line-height: 19px;
+  line-height: 18px;
+  pointer-events: none;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons {
   white-space: nowrap;
@@ -3058,161 +3264,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   padding-right: 1px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: vertical;
-  -moz-box-orient: vertical;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  position: relative;
-  height: 16px;
-  margin-top: 1px;
-  border-style: solid;
-  border-color: lightgray;
-  border-width: 1px 0px;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileTitle {
-  font-size: 0.6em;
-  position: absolute;
-  display: inline-block;
-  font-weight: 300;
-  top: 0px;
-  right: -10px;
-  text-shadow: 0px 0px 2px white;
-  z-index: 120;
-  color: gray;
-  pointer-events: none;
-  display: none;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup:hover > .percentileTitle {
-  display: block;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  position: relative;
-  opacity: 0;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart {
-  opacity: 1;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile {
-  height: 14px;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_40_60 {
-  background-color: #a8bbc8;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_30_70 {
-  background-color: #b8c7d2;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_20_80 {
-  background-color: #ced8e0;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_10_90 {
-  background-color: #e7ecf0;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_pos {
-  background-color: #6a89a1;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.active_percentileChart > .quantile.q_50 {
-  background-color: #546f84;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart {
-  border-top: solid 1px lightgray;
-  background-color: white;
-  pointer-events: none;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_40_60 {
-  background-color: #ff8f66;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_30_70 {
-  background-color: #ffb599;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_20_80 {
-  background-color: #ffdacc;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_10_90 {
-  background-color: #ffece5;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_pos {
-  background-color: #ff6a33;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.highlighted_percentileChart > .quantile.q_50 {
-  background-color: #cc3700;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart {
-  display: none;
-  pointer-events: none;
-  background-color: white;
-  border-top: solid 1px lightgray;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_40_60 {
-  background-color: #426f6f;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_30_70 {
-  background-color: #558f8f;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_20_80 {
-  background-color: #6ea9a9;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_10_90 {
-  background-color: #7eb2b2;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_pos {
-  background-color: #2f4f4f;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart.compared_percentileChart > .quantile.q_50 {
-  background-color: #090f0f;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile {
-  box-sizing: content-box;
-  display: inline-block;
-  position: absolute;
-  height: 100%;
-  left: 0px;
-  width: 1px;
-  top: -1px;
-  margin: 1px 0px;
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
-  -webkit-transform-origin: 0% 0%;
-  -moz-transform-origin: 0% 0%;
-  -ms-transform-origin: 0% 0%;
-  -o-transform-origin: 0% 0%;
-  transform-origin: 0% 0%;
-  cursor: pointer;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile.q_pos {
-  margin-left: -0.5px;
-  pointer-events: none;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile.q_pos.q_50 {
-  width: 2px;
-  margin-left: -1px;
-  pointer-events: all;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .percentileGroup > .percentileChart > .quantile.q_range:hover {
-  border-style: solid;
-  border-width: 1px 0px 1px 0px;
-  border-color: #7a96aa;
-  top: -2px;
-}
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
@@ -3330,6 +3381,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   width: 100%;
   height: 3px;
   top: 3px;
+  left: 1px;
   background-color: lightgray;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active {
@@ -3711,6 +3763,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMax {
   right: -24px;
+}
+.kshf[selectHighlight] .percentileChart_Highlighted {
+  display: block !important;
 }
 .kshf[selectHighlight] .aggrGlyph > .measureLabel {
   color: orangered;
