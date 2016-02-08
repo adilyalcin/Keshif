@@ -182,9 +182,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[relativeMode] .highlightedAggrValuePointer {
   display: block;
 }
-.kshf[relativeMode] [class="measure_Active"].active[subset] {
+.kshf[relativeMode] [class="measure_Active"][subset] {
   stroke-width: 2px;
   stroke: #4000ff;
+}
+.kshf[relativeMode] .setPairBackground {
+  opacity: 0 !important;
 }
 .kshf[relativeMode] .Summary_Set > .summaryControls > .strengthControl {
   background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%);
@@ -210,18 +213,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[selectCompared_A] .measure_Compared_A {
   opacity: 1 !important;
+  pointer-events: all !important;
 }
 .kshf[selectCompared_A] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_A {
   display: block;
 }
 .kshf[selectCompared_B] .measure_Compared_B {
   opacity: 1 !important;
+  pointer-events: all !important;
 }
 .kshf[selectCompared_B] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_B {
   display: block;
 }
 .kshf[selectCompared_C] .measure_Compared_C {
   opacity: 1 !important;
+  pointer-events: all !important;
 }
 .kshf[selectCompared_C] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C {
   display: block;
@@ -1023,10 +1029,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb:hover > .crumbText {
   text-decoration: line-through;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb:hover.crumbMode_compare > .clearCrumbButton > .fa::before {
-  content: "\f13e";
-}
-.kshf .panel_Basic > .breadcrumbs > .crumb:hover.crumbMode_filter > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb:hover > .clearCrumbButton > .fa::before {
   content: "\f00d";
 }
 .kshf .panel_Basic > .filterClearAll {
@@ -2083,11 +2086,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .lockButton {
   position: absolute;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
   opacity: 0;
   pointer-events: none;
   cursor: pointer;
   color: gray;
-  font-size: 0.8em;
+  font-size: 0.9em;
+  z-index: 21;
+}
+.kshf .lockButton:after {
+  content: "\f13e";
+}
+.kshf .lockButton:hover:after {
+  content: "\f023";
+}
+.kshf .lockButton[inside] {
+  color: white;
+  text-shadow: 0px 0px 1px #000000;
 }
 .kshf .aggrGlyph {
   display: block;
@@ -2100,6 +2118,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggrGlyph > [class^="measure_"] {
   display: block;
   position: absolute;
+}
+.kshf .aggrGlyph > .total_tip {
+  pointer-events: none;
 }
 .kshf .aggrGlyph > span[class^="measure_"] {
   -webkit-transform-origin: 0% 0%;
@@ -2175,7 +2196,13 @@ height:-moz-calc(100% - 8px);
 height:calc(100% - 8px);
 ;
 }
+.kshf .aggrGlyph.catGlyph > [class^="measure_Active"] {
+  pointer-events: none;
+}
 .kshf .aggrGlyph.catGlyph > [class^="measure_Compared"] {
+  height: 1px;
+}
+.kshf .aggrGlyph.catGlyph > [class^="measure_Highlighted"] {
   height: 1px;
 }
 .kshf .aggrGlyph.catGlyph > .clickArea > .lockButton {
@@ -2186,20 +2213,6 @@ top:-moz-calc(50% - 5px);
 top:calc(50% - 5px);
 ;
   right: 1px;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
-}
-.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton:after {
-  content: "\f13e";
-}
-.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton:hover:after {
-  content: "\f023";
-}
-.kshf .aggrGlyph.catGlyph > .clickArea > .lockButton[inside] {
-  color: white;
-  text-shadow: 0px 0px 1px #000000;
 }
 .kshf .aggrGlyph.catGlyph > .total_tip {
   /* right arrow */
@@ -2231,21 +2244,25 @@ top:calc(50% - 5px);
   -o-transition: all 500ms linear;
   transition: all 500ms linear;
 }
-.kshf .aggrGlyph.setPairGlyph > [class^="measure_Active"] {
+.kshf .aggrGlyph.setPairGlyph > .measure_Active {
   fill: #b8c7d2;
 }
-.kshf .aggrGlyph.setPairGlyph > [class^="measure_Highlighted"] {
+.kshf .aggrGlyph.setPairGlyph > .measure_Highlighted {
   fill: #ff6a33;
 }
 .kshf .aggrGlyph.setPairGlyph > [class^="measure_Compared_"] {
   fill: none;
-  stroke: #2f4f4f;
   stroke-width: 1px;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
   opacity: 0;
+}
+.kshf .aggrGlyph.setPairGlyph > .measure_Compared_A {
+  stroke: #2f4f4f;
+}
+.kshf .aggrGlyph.setPairGlyph > .measure_Compared_B {
+  stroke: #2fd71b;
+}
+.kshf .aggrGlyph.setPairGlyph > .measure_Compared_C {
+  stroke: #fffedc;
 }
 .kshf .aggrGlyph.setPairGlyph[activesize="0"] {
   display: none;
@@ -2325,15 +2342,13 @@ top:calc(50% - 5px);
 .kshf .aggrGlyph[compare="true"] .lockButton:hover:after {
   content: "\f13e";
 }
-.kshf .aggrGlyph.mapGlyph > .aggr {
+.kshf .aggrGlyph.mapGlyph > .measure_Active {
   opacity: 0.8;
-}
-.kshf .aggrGlyph.mapGlyph > .aggr.active {
   stroke-width: 1px;
-  -webkit-transition: fill 700ms ease-in-out;
-  -moz-transition: fill 700ms ease-in-out;
-  -o-transition: fill 700ms ease-in-out;
-  transition: fill 700ms ease-in-out;
+  -webkit-transition: all 500ms linear;
+  -moz-transition: all 500ms linear;
+  -o-transition: all 500ms linear;
+  transition: all 500ms linear;
 }
 .kshf .aggrGlyph.mapGlyph > .aggr.preview {
   -webkit-transition: opacity 500ms ease-in-out;
@@ -2347,21 +2362,21 @@ top:calc(50% - 5px);
   color: black;
   fill: black;
   font-weight: 500;
-  text-shadow: 0 0 1px #FFFFFF,0 0 1px #FFFFEF,0 0 1px #FFFFFF,0 0 1px #FFFFFF,0 0 10px #FFFFFF;
+  text-shadow: 0 0 1px #FFFFFF, 0 0 1px #FFFFEF, 0 0 1px #FFFFFF, 0 0 1px #FFFFFF, 0 0 8px #FFFFFF;
   text-rendering: geometricPrecision;
   text-anchor: middle;
   alignment-baseline: middle;
+  paint-order: stroke;
+  stroke: white;
+  stroke-width: 2px;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
 }
-.kshf .aggrGlyph.mapGlyph[selection="selected"] > .aggr.active {
+.kshf .aggrGlyph.mapGlyph[selection="selected"] > .measure_Active {
   cursor: pointer;
+  stroke-width: 2px;
   stroke: orangered;
-  stroke-width: 1px;
-  opacity: 1 !important;
-  fill: #ff6a33;
-  -webkit-transition: fill 200ms ease-in-out;
-  -moz-transition: fill 200ms ease-in-out;
-  -o-transition: fill 200ms ease-in-out;
-  transition: fill 200ms ease-in-out;
+  fill: #ffb599;
 }
 .kshf .aggrGlyph.mapGlyph[selection="selected"] > .aggr.preview {
   display: none;
@@ -2945,7 +2960,6 @@ top:calc(50% - 5px);
   width: 100%;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph > .clickArea {
-  z-index: 20;
   display: inline-block;
   vertical-align: top;
   pointer-events: all;
@@ -3204,7 +3218,7 @@ top:calc(50% - 8px);
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 250ms ease-in-out;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .aggrGroup > .highlightRangeLimits {
-  display: none;
+  opacity: 0;
   width: 1px;
   background-color: orangered;
   position: absolute;
@@ -3577,6 +3591,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
   display: inline-block !important;
 }
+.kshf .kshfSummary[collapsed=false][summary_type='categorical']:hover .summaryConfigControl {
+  display: inline-block !important;
+}
 .kshf .kshfSummary[showConfig=true] .summaryConfig {
   top: 21px;
   opacity: 1;
@@ -3763,6 +3780,16 @@ top:calc(50% - 8px);
 }
 .kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMax {
   right: -24px;
+}
+.kshf[measureLabelType="Compared_A"] .aggrGlyph > .measureLabel {
+  color: #2f4f4f !important;
+}
+.kshf[measureLabelType="Compared_B"] .aggrGlyph > .measureLabel {
+  color: #25aa15 !important;
+}
+.kshf[measureLabelType="Compared_C"] .aggrGlyph > .measureLabel {
+  color: #fffda9 !important;
+  text-shadow: 0px 0px 2px black;
 }
 .kshf[selectHighlight] .percentileChart_Highlighted {
   display: block !important;
@@ -4193,10 +4220,10 @@ top:calc(50% - 8px);
   font-style: italic;
   font-size: 0.8em;
 }
-.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel:nth-child(0) {
+.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel:first-child {
   text-align: left;
 }
-.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel:nth-child(1) {
+.kshf .Summary_Set > .summaryControls > .strengthControl > .strengthLabel:last-child {
   text-align: right;
 }
 .kshf .Summary_Set > .summaryControls > .strengthControl > .strengthText {
@@ -4329,7 +4356,7 @@ top:calc(50% - 8px);
   alignment-baseline: middle;
 }
 .kshf .Summary_Set .rows > .row > .label.label_vert {
-  text-anchor: start;
+  text-anchor: start !important;
   background-color: white;
   display: none;
 }

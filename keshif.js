@@ -705,11 +705,11 @@ kshf.Aggregate.prototype = {
   },
   /** -- */
   ratioHighlightToTotal: function(){
-    return this.measure.Highlighted / this.measure.Active;
+    return this.measure.Highlighted / this.measure.Total;
   },
   /** -- */
   ratioHighlightToActive: function(){
-    return this.measure.Highlighted / this.measure.Total;
+    return this.measure.Highlighted / this.measure.Active;
   },
   /** -- */
   ratioCompareToActive: function(cT){
@@ -2906,8 +2906,14 @@ kshf.Browser.prototype = {
             }
           });
         })
-        .on("mouseenter",function(){ this.tipsy.show(); })
-        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mouseenter",function(){ 
+          this.tipsy.show();
+          if(_className.substr(0,8)==="Compared"){ me.refreshMeasureLabels(_className); }
+        })
+        .on("mouseleave",function(){ 
+          this.tipsy.hide();
+          if(_className.substr(0,8)==="Compared"){ me.refreshMeasureLabels(); }
+        })
         .on("click",function(){
           this.tipsy.hide();
           if(_className==="Filtered") {
@@ -2920,6 +2926,7 @@ kshf.Browser.prototype = {
           } else {
             me.clearSelect_Compare(_className.substr(9)); // TODO: _className Compared_A / className, etc
             me.clearCrumbAggr(_className);
+            me.refreshMeasureLabels();
           }
         });
       x.append("span").attr("class","clearCrumbButton inCrumb").append("span").attr("class","fa");
@@ -2932,13 +2939,17 @@ kshf.Browser.prototype = {
       return x;
     },
     /** -- */
+    getActiveComparedCount: function(){
+      return this.vizActive.Compared_A + this.vizActive.Compared_B + this.vizActive.Compared_C;
+    },
+    /** -- */
     refreshTotalViz: function(){
       var me=this;
       var totalScale = d3.scale.linear()
         .domain([0, this.allRecordsAggr.measure[this.ratioModeActive ? 'Active' : 'Total']])
         .range([0, this.getWidth_Browser()]);
 
-      var totalC = this.vizActive.Compared_A + this.vizActive.Compared_B + this.vizActive.Compared_C;
+      var totalC = this.getActiveComparedCount();
       totalC++; // 1 more for highlight
 
       var VizHeight = 8;
@@ -4127,6 +4138,8 @@ kshf.Browser.prototype = {
     /** -- */
     updateAfterFilter: function () {
       this.clearSelect_Compare('A');
+      this.clearSelect_Compare('B');
+      this.clearSelect_Compare('C');
       this.clearCrumbAggr('Compared_A');
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
@@ -4138,13 +4151,17 @@ kshf.Browser.prototype = {
     /** Ratio mode is when glyphs scale to their max */
     setRelativeMode: function(how){
       this.ratioModeActive = how;
-      this.DOM.root.attr("relativeMode",how);
+      this.DOM.root.attr("relativeMode",how?how:null);
       this.setPercentLabelMode(how);
-      this.summaries.forEach(function(summary){
-        summary.refreshViz_All();
-        summary.refreshMeasureLabel();
-      });
+      this.summaries.forEach(function(summary){ summary.refreshViz_All(); });
+      this.refreshMeasureLabels();
       this.refreshTotalViz();
+    },
+    /** -- */
+    refreshMeasureLabels: function(t){
+      this.measureLabelType = t;
+      this.DOM.root.attr("measureLabelType",this.measureLabelType ? this.measureLabelType : null)
+      this.summaries.forEach(function(summary){ summary.refreshMeasureLabel(); });
     },
     /** -- */
     setPercentLabelMode: function(how){
@@ -4450,15 +4467,23 @@ kshf.Browser.prototype = {
       this.panels.bottom.updateSummariesWidth();
     },
     /** -- */
-    getMeasureLabel: function(aggr){
+    getMeasureLabel: function(aggr,summary){
       var _val;
       if(!(aggr instanceof kshf.Aggregate)){
         _val = aggr;
       } else {
         if(!aggr.isVisible) return "";
-        _val = this.vizActive.Highlighted?
-          (this.preview_not? aggr.measure.Active - aggr.measure.Highlighted : aggr.measure.Highlighted ) :
-          aggr.measure.Active;
+        if(this.measureLabelType){
+          _val = aggr.measure[this.measureLabelType];
+        } else {
+          if(summary && summary === this.highlightSelectedSummary && !summary.isMultiValued){
+            _val = aggr.measure.Active;
+          } else {
+            _val = this.vizActive.Highlighted?
+              (this.preview_not? aggr.measure.Active - aggr.measure.Highlighted : aggr.measure.Highlighted ) :
+              aggr.measure.Active;
+          }
+        }
         if(this.percentModeActive){
           if(aggr.measure.Active===0) return "";
           if(this.ratioModeActive){
@@ -5338,7 +5363,7 @@ kshf.Summary_Base.prototype = {
       });
   },
   refreshViz_Compare_All: function(){
-    var totalC = this.browser.vizActive.Compared_A + this.browser.vizActive.Compared_B + this.browser.vizActive.Compared_C;
+    var totalC = this.browser.getActiveComparedCount();
     if(totalC===0) return;
     totalC++; // 1 more for highlight
     var activeNum = 0;
@@ -5402,9 +5427,8 @@ kshf.Summary_Base.prototype = {
     if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
     var me=this;
     if(this.DOM.measureLabel)
-      this.DOM.measureLabel.html(function(aggr){ return me.browser.getMeasureLabel(aggr); });
+      this.DOM.measureLabel.html(function(aggr){ return me.browser.getMeasureLabel(aggr,me); });
   },
-
 };
 
 kshf.Summary_Categorical = function(){};
@@ -5998,6 +6022,7 @@ var Summary_Categorical_functions = {
   /** -- */
   initDOM: function(beforeDOM){
     this.initializeAggregates();
+    var me=this;
 
     if(this.DOM.inited===true) return;
 
@@ -6018,6 +6043,20 @@ var Summary_Categorical_functions = {
     if(!this.isEmpty()) this.init_DOM_Cat();
 
     this.setCollapsed(this.collapsed);
+
+    this.DOM.summaryConfig_CatHeight = this.DOM.summaryConfig.append("div")
+      .attr("class","summaryConfig_CatHeight summaryConfig_Option");
+    this.DOM.summaryConfig_CatHeight.append("span").html("<i class='fa fa-arrows-v'></i> Category Height: ");
+    x = this.DOM.summaryConfig_CatHeight.append("span").attr("class","optionGroup");
+    x.selectAll(".configOption").data(
+      [ {l:"Short",v:18}, {l:"Long", v:35} ])
+      .enter()
+      .append("span").attr("class",function(d){ return "configOption pos_"+d.v;})
+      .attr("active",function(d){ return d.v===me.heightRow_category; })
+      .html(function(d){ return d.l; })
+      .on("click", function(d){ 
+        me.setHeight_Category(d.v);
+      })
 
     this.DOM.inited = true;
   },
@@ -6327,6 +6366,9 @@ var Summary_Categorical_functions = {
       this.DOM.chartBackground.style("height",this.getHeight_VisibleAttrib()+"px");
       this.DOM.chartCatLabelResize.style("height",this.getHeight_VisibleAttrib()+"px");
 
+      this.DOM.summaryConfig_CatHeight.selectAll(".configOption").attr("active",false);
+      this.DOM.summaryConfig_CatHeight.selectAll(".pos_"+this.heightRow_category).attr("active",true);
+
       setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },
     /** -- */
@@ -6371,6 +6413,7 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshViz_Total: function(){
       if(this.isEmpty() || this.collapsed) return;
+      if(this.viewType==='map') return; // Maps do not display total distribution.
       if(this.browser.ratioModeActive){
         // Do not need to update total. Total value is invisible. Percent view is based on active count.
         this.DOM.measureTotalTip.style("opacity",0);
@@ -6413,17 +6456,19 @@ var Summary_Categorical_functions = {
       var ratioMode = this.browser.ratioModeActive;
 
       if(this.viewType==='map') {
-        var boundMin = this.browser.percentModeActive?
-          0 :
-          1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
         var maxAggr_Active = this.getMaxAggr_Active();
-        var boundMax = this.browser.percentModeActive?
-          100*maxAggr_Active/this.browser.allRecordsAggr.measure.Active :
-          maxAggr_Active ;
+
+        var boundMin, boundMax;
+        var allRecordsAggr_measure_Active = this.browser.allRecordsAggr.measure.Active;
+        if(this.browser.percentModeActive){
+          boundMin = 0;
+          boundMax = 100*maxAggr_Active/allRecordsAggr_measure_Active;
+        } else {
+          boundMin = 1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
+          boundMax = maxAggr_Active;
+        }
         
-        this.mapColorScale = d3.scale.linear()
-          .range([0, 9])
-          .domain( [boundMin, boundMax]);
+        this.mapColorScale = d3.scale.linear().range([0, 9]).domain([boundMin, boundMax]);
 
         this.DOM.catMapColorScale.select(".boundMin").text(boundMin);
         this.DOM.catMapColorScale.select(".boundMax").text(boundMax);
@@ -6432,6 +6477,9 @@ var Summary_Categorical_functions = {
           .attr("fill", function(_cat){ 
             var v = _cat.measure.Active;
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
+            if(me.browser.percentModeActive){
+              v = 100*v/allRecordsAggr_measure_Active;
+            }
             var vv = me.mapColorScale(v);
             if(ratioMode) vv=0;
             //if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
@@ -6439,6 +6487,9 @@ var Summary_Categorical_functions = {
           })
           .attr("stroke", function(_cat){ 
             var v = _cat.measure.Active;
+            if(me.browser.percentModeActive){
+              v = 100*v/allRecordsAggr_measure_Active;
+            }
             var vv = 9-me.mapColorScale(v);
             if(ratioMode) vv=8;
             //if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
@@ -6503,7 +6554,7 @@ var Summary_Categorical_functions = {
 
       if(this.viewType=='map'){
         if(!this.browser.vizActive.Highlighted){
-          this.temp_refreshMapColorScale();
+          this.refreshViz_Active();
           return;
         }
         if(!isThisIt || this.isMultiValued) {
@@ -6528,31 +6579,47 @@ var Summary_Categorical_functions = {
             .domain([boundMin,boundMax]);
         }
 
-        this.DOM.measure_Highlighted
+        this.DOM.measure_Active
           .attr("fill", function(_cat){ 
-            if(isThisIt && !me.isMultiValued) {
-              return (_cat === me.browser.selectedAggr.Highlighted) ? me.mapColorQuantize(9) : "rgba(0,0,0,0)";
+            //if(_cat === me.browser.selectedAggr.Highlighted) return "";
+            var _v;
+            if(me.isMultiValued || me.browser.highlightSelectedSummary!==me){
+              v = _cat.measure.Highlighted;
+              if(ratioMode) {
+                v = 100*v/_cat.measure.Active;
+              }
+            } else {
+              v = _cat.measure.Active;
+              if(me.browser.percentModeActive){
+                v = 100*v/allRecordsAggr_measure_Active;
+              }
             }
-            var _v = _cat.measure.Active;
-            if(_v<=0 || _v===undefined ) return "url(#diagonalHatch)";
-            v = _cat.measure.Highlighted;
+
+//            if(isThisIt && !me.isMultiValued) {
+//              return (_cat === me.browser.selectedAggr.Highlighted) ? me.mapColorQuantize(9) : "rgba(0,0,0,0)";
+//            }
+//            var _v = _cat.measure.Active;
+//            if(_v<=0 || _v===undefined ) return "url(#diagonalHatch)";
+//            v = _cat.measure.Highlighted;
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
-            if(ratioMode) {
-              v = 100*v/_cat.measure.Active;
-            }
             return me.mapColorQuantize(me.mapColorScale(v)); 
           })
-          .attr("stroke", function(_cat){ return (_cat.measure.Highlighted!==0) ? "orangered" : null; });
+          //.attr("stroke", function(_cat){ 
+          //  return (_cat === me.browser.selectedAggr.Highlighted) ? "orangered" : null;
+          //  //return (_cat.measure.Highlighted!==0) ? "orangered" : null; 
+          //});
         return;
       }
 
       if(this.viewType==='list'){
+        var totalC = this.browser.getActiveComparedCount();
+        var barHeight = (this.heightRow_category-8)/(totalC+1);
         this.DOM.measure_Highlighted.each(function(_cat){
           var p=_cat.measure.Highlighted;
           if(me.browser.preview_not) p = _cat.measure.Active-p;
-          kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX("+(
+          kshf.Util.setTransform(this,"translate("+width_Text+"px,"+barHeight*totalC+"px) scale("+(
               ratioMode ? ((p/_cat.measure.Active)*maxWidth ) : me.chartScale_Measure(p)
-          )+")");
+          )+","+barHeight+")");
         });
       }
     },
@@ -6935,6 +7002,7 @@ var Summary_Categorical_functions = {
     onCatEnter_OR: function(ctgry){
       this.browser.clearSelect_Highlight();
       ctgry.DOM.aggrGlyph.setAttribute("selecttype","or");
+      ctgry.DOM.aggrGlyph.setAttribute("selection","selected");
       if(this.summaryFilter.selected_OR.length>0){
         this.browser.clearSelect_Highlight();
         if(this.viewType==='map') this.DOM.highlightedMeasureValue.style("opacity",0);
@@ -6954,6 +7022,7 @@ var Summary_Categorical_functions = {
     /** -- */
     onCatEnter_NOT: function(ctgry){
       ctgry.DOM.aggrGlyph.setAttribute("selecttype","not");
+      ctgry.DOM.aggrGlyph.setAttribute("selection","selected");
       this.browser.preview_not = true;
       this.browser.setSelect_Highlight(this,ctgry);
       d3.event.stopPropagation();
@@ -7004,32 +7073,6 @@ var Summary_Categorical_functions = {
           .style("height",this.heightRow_category+"px")
           .each(function(_cat){ kshf.Util.setTransform(this,"translateY(0px)"); })
 
-        var domAttrLabel = DOM_cats_new.append("span").attr("class", "categoryLabel hasLabelWidth")
-          .style("padding-top",(this.heightRow_category/2-8)+"px");
-
-        var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
-        filterButtons.append("span").attr("class","filterButton notButton")
-          .text(kshf.lang.cur.Not)
-          .on("mouseover", function(_cat){ me.onCatEnter_NOT(_cat); })
-          .on("mouseout",  function(_cat){ me.onCatLeave_NOT(_cat); })
-          .on("click",     function(_cat){ me.onCatClick_NOT(_cat); });
-        filterButtons.append("span").attr("class","filterButton orButton")
-          .text(kshf.lang.cur.Or)
-          .on("mouseover",function(_cat){ me.onCatEnter_OR(_cat); })
-          .on("mouseout", function(_cat){ me.onCatLeave_OR(_cat); })
-          .on("click",    function(_cat){ me.onCatClick_OR(_cat); });
-
-        this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(_cat){
-          return me.catLabel_Func.call(_cat.data);
-        });
-        DOM_cats_new.append("span").attr("class", "measureLabel");
-
-        ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
-          DOM_cats_new.append("span").attr("class", "measure_"+m);
-        });
-
-        DOM_cats_new.append("span").attr("class", "total_tip");
-
         var clickArea = DOM_cats_new.append("span").attr("class", "clickArea")
           .on("mouseenter",function(_cat){
             if(me.browser.mouseSpeed<0.2) { 
@@ -7060,6 +7103,44 @@ var Summary_Categorical_functions = {
             d3.event.stopPropagation();
           });
 
+        var domAttrLabel = DOM_cats_new.append("span").attr("class", "categoryLabel hasLabelWidth")
+          .style("padding-top",(this.heightRow_category/2-8)+"px");
+
+        var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
+        filterButtons.append("span").attr("class","filterButton notButton")
+          .text(kshf.lang.cur.Not)
+          .on("mouseover", function(_cat){ me.onCatEnter_NOT(_cat); })
+          .on("mouseout",  function(_cat){ me.onCatLeave_NOT(_cat); })
+          .on("click",     function(_cat){ me.onCatClick_NOT(_cat); });
+        filterButtons.append("span").attr("class","filterButton orButton")
+          .text(kshf.lang.cur.Or)
+          .on("mouseover",function(_cat){ me.onCatEnter_OR(_cat); })
+          .on("mouseout", function(_cat){ me.onCatLeave_OR(_cat); })
+          .on("click",    function(_cat){ me.onCatClick_OR(_cat); });
+
+        this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(_cat){
+          return me.catLabel_Func.call(_cat.data);
+        });
+        DOM_cats_new.append("span").attr("class", "measureLabel");
+
+        ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+          DOM_cats_new.append("span").attr("class", "measure_"+m);
+        });
+
+        DOM_cats_new.selectAll("[class^='measure_Compared_']")
+          .on("mouseover" ,function(){ 
+            me.browser.refreshMeasureLabels(this.classList[0].substr(8)); 
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+          })
+          .on("mouseleave",function(){
+            me.browser.refreshMeasureLabels();
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+          });
+
+        DOM_cats_new.append("span").attr("class", "total_tip");
+
       } else {
         DOM_cats_new
           .each(function(_cat){
@@ -7089,9 +7170,7 @@ var Summary_Categorical_functions = {
             me.onCatLeave(_cat);
           });
 
-        ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
-          DOM_cats_new.append("span").attr("class", "measure_"+m);
-        });
+        DOM_cats_new.append("path").attr("class", "measure_Active");
 
         DOM_cats_new.select(".measure_Active").on("click", function(aggr){ me.onCatClick(aggr); });
         DOM_cats_new.append("text").attr("class", "measureLabel"); // label on top of (after) all the rest
@@ -8730,6 +8809,12 @@ var Summary_Interval_functions = {
       ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
         newBins.append("span").attr("class","measure_"+m);
       });
+
+      newBins.selectAll("[class^='measure_Compared_']")
+        .on("mouseover" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); })
+        .on("mouseleave",function(){ me.browser.refreshMeasureLabels(); });
+
+
       newBins.append("span").attr("class","total_tip");
 
       newBins.append("span").attr("class","lockButton fa")
@@ -9086,7 +9171,7 @@ var Summary_Interval_functions = {
       // Position the lock button
       this.DOM.lockButton
         .each(function(aggr){
-          kshf.Util.setTransform(this,"translateY("+(me.height_hist-heightActive(aggr)-9)+"px)");
+          kshf.Util.setTransform(this,"translateY("+(me.height_hist-heightActive(aggr)-10)+"px)");
         })
         .attr("inside",function(aggr){
           if(me.browser.ratioModeActive) return "";
@@ -9230,6 +9315,9 @@ var Summary_Interval_functions = {
       this.refreshViz_EmptyRecords();
       this.refreshMeasureLabel();
 
+      var totalC = this.browser.getActiveComparedCount();
+      var barHeight = (this.heightRow_category-8)/(totalC+1);
+
       if(this.browser.vizActive.Highlighted){
         this.updatePercentiles("Highlighted");
         this.DOM.highlightedMeasureValue
@@ -9276,7 +9364,8 @@ var Summary_Interval_functions = {
           .attr("x2",xFunc);
       } else {
         if(!this.browser.vizActive.Highlighted){
-          var transform="translateY("+this.height_hist+"px) "+"scale("+this.getWidth_Bin()+",0)";
+          var xx = (width / (totalC+1));
+          var transform = "translateX("+xx*totalC+"px) translateY("+this.height_hist+"px) scale("+xx+",0)";
           this.DOM.measure_Highlighted.each(function(){ kshf.Util.setTransform(this,transform); });
           return;
         }
@@ -9285,13 +9374,16 @@ var Summary_Interval_functions = {
 
         var range_min = this.valueScale.domain()[0];
         var range_max = this.valueScale.domain()[1];
+        var rangeFill = false;
         if(this.isFiltered()){
           range_min = Math.max(range_min, this.summaryFilter.active.min);
           range_max = Math.max(range_min, this.summaryFilter.active.max);
+          rangeFill = true;
         }
         if(this.highlightRangeLimits_Active){
           range_min = Math.max(range_min, this.flexAggr_Highlight.minV);
           range_max = Math.max(range_min, this.flexAggr_Highlight.maxV);
+          rangeFill = true;
         }
         var minPos = this.valueScale(range_min);
         var maxPos = this.valueScale(range_max);
@@ -9299,7 +9391,7 @@ var Summary_Interval_functions = {
         this.DOM.measure_Highlighted.each(function(aggr){
           var _translateX = "";
           var barWidth = width;
-          if(aggr.measure.Active>0){
+          if(aggr.measure.Active>0 && rangeFill){
             var aggr_min = aggr.minV;
             var aggr_max = aggr.maxV;
             // it is within the filtered range
@@ -9311,6 +9403,10 @@ var Summary_Interval_functions = {
             if(aggr_max>range_max){
               barWidth -= me.valueScale(aggr_max)-maxPos-me.width_barGap*2;
             }
+          }
+          if(!rangeFill){
+            barWidth = barWidth / (totalC+1);
+            _translateX = "translateX("+barWidth*totalC+"px) ";
           }
           var _scale = "scale("+barWidth+","+getAggrHeight_Preview(aggr)+")";
           kshf.Util.setTransform(this,_translateY+_translateX+_scale);
@@ -9982,12 +10078,16 @@ var Summary_Clique_functions = {
     newCliques.append("circle").attr("class","measure_Active").attr("cx",0).attr("cy",0).attr("r",0);
     newCliques.append("path").attr("class","measure_Highlighted").each(function(aggr){ aggr.currentPreviewAngle=-Math.PI/2; });
     newCliques.append("path").attr("class","measure_Compared_A");
+    newCliques.append("path").attr("class","measure_Compared_B");
+    newCliques.append("path").attr("class","measure_Compared_C");
 
     this.DOM.aggrGlyphs           = this.DOM.setPairGroup.selectAll("g.setPairGlyph");
     this.DOM.setPairBackground    = this.DOM.aggrGlyphs.selectAll(".setPairBackground");
     this.DOM.measure_Active       = this.DOM.aggrGlyphs.selectAll(".measure_Active");
     this.DOM.measure_Highlighted  = this.DOM.aggrGlyphs.selectAll(".measure_Highlighted");
     this.DOM.measure_Compared_A   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_A");
+    this.DOM.measure_Compared_B   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_B");
+    this.DOM.measure_Compared_C   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_C");
   },
   /** -- */
   printAggrSelection: function(aggr){
@@ -10386,9 +10486,9 @@ var Summary_Clique_functions = {
     return Math.sqrt(setPair.measure.Active/this._maxSetPairAggr_Active);
   },
   // Given a setPair, return the angle for preview
-  getPreviewAngle_rad: function(setPair){
+  getAngleToActive_rad: function(setPair,m){
     if(setPair.measure.Active===0) return 0;
-    var ratio=setPair.ratioHighlightToActive();
+    var ratio = setPair.measure[m] / setPair.measure.Active;
     if(this.browser.preview_not) ratio = 1-ratio;
     if(ratio===1) ratio=0.999;
     return ((360*ratio-90) * Math.PI) / 180;
@@ -10421,24 +10521,28 @@ var Summary_Clique_functions = {
   refreshViz_Highlight: function(){
     var me=this;
     this.DOM.measure_Highlighted
-      .transition().duration(500).attrTween("d",function(d) {
-        var angleInterp = d3.interpolate(d.currentPreviewAngle, me.getPreviewAngle_rad(d));
-        var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(d);
+      .transition().duration(500).attrTween("d",function(aggr) {
+        var angleInterp = d3.interpolate(aggr.currentPreviewAngle, me.getAngleToActive_rad(aggr,"Highlighted"));
+        var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(aggr);
         return function(t) {
           var newAngle=angleInterp(t);
-          d.currentPreviewAngle = newAngle;
-          return me.getPiePath(newAngle,(d.subset!=='' && me.browser.ratioModeActive)?2:0,ratio);
+          aggr.currentPreviewAngle = newAngle;
+          return me.getPiePath(newAngle,(aggr.subset!=='' && me.browser.ratioModeActive)?2:0,ratio);
         };
       });
   },
   /** -- */
   refreshViz_Compare: function(cT, curGroup, totalGroups){
-    if(cT!=="A") return; // Only 1 compare selection
     var me=this;
-    this.DOM.measure_Compared_A.attr("d",function(setPair){
+    var strokeWidth = 1;
+    if(this.browser.ratioModeActive){
+      strokeWidth = Math.ceil(this.getRowHeight()/18);
+    }
+    this.DOM["measure_Compared_"+cT].attr("d",function(setPair){
       var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
-      this.style.display = setPair.measure.Highlighted===0 ? "none" : "block";
-      return me.getPiePath(setPair.currentPreviewAngle,0,ratio);
+      this.style.display = setPair.measure["Compared_"+cT]===0 ? "none" : "block";
+      this.style.strokeWidth = strokeWidth;
+      return me.getPiePath( me.getAngleToActive_rad(setPair,"Compared_"+cT), curGroup*strokeWidth, ratio );
     });
   },
   /** -- */

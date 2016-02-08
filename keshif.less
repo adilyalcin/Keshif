@@ -155,10 +155,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .chartAxis_Measure > .tick > .text::after{ content: "%"; }
       .scaleBound::after{ content: "%"; }
       .highlightedAggrValuePointer{ display: block; }
-      [class="measure_Active"].active[subset]{ // setPair
+      [class="measure_Active"][subset]{ // setPair
         stroke-width: 2px;
         stroke: @color_set_containment;
       }
+      .setPairBackground{ opacity: 0 !important; }
       .Summary_Set > .summaryControls > .strengthControl {
         background: -moz-linear-gradient(left, #e6e6f7 0%, #9595db 100%); /* FF3.6+ */
         background: -webkit-gradient(linear, left top, right top, color-stop(0%,#e6e6f7), color-stop(100%,#9595db)); /* Chrome,Safari4+ */
@@ -174,15 +175,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
     &[selectCompared_A]{
-      .measure_Compared_A{ opacity: 1 !important; }
+      .measure_Compared_A{ opacity: 1 !important; pointer-events: all !important; }
       .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_A{ display: block; }
     }
     &[selectCompared_B]{
-      .measure_Compared_B{ opacity: 1 !important; }
+      .measure_Compared_B{ opacity: 1 !important; pointer-events: all !important;}
       .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_B{ display: block; }
     }
     &[selectCompared_C]{
-      .measure_Compared_C{ opacity: 1 !important; }
+      .measure_Compared_C{ opacity: 1 !important; pointer-events: all !important;}
       .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C{ display: block; }
     }
     &:not([record_display="map"]){
@@ -796,8 +797,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               &:hover{
                 background-color: rgba(255,255,255,1.0);
                 > .crumbText{ text-decoration: line-through; }
-                &.crumbMode_compare > .clearCrumbButton >.fa::before{  content: "\f13e"; } // unlock
-                &.crumbMode_filter > .clearCrumbButton >.fa::before{  content: "\f00d"; } // cross
+//                > .clearCrumbButton >.fa::before{  content: "\f13e"; } // unlock
+                > .clearCrumbButton >.fa::before{  content: "\f00d"; } // cross
               }
             }
         }
@@ -1721,45 +1722,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         > .header_display_control{
-            display: block;
-            position: absolute;
-            font-size: 0.9em;
-            top: 3px;
-            left: 2px;
-            .transition(~'color 250ms linear, opacity 100ms linear ');
-            .transform-origin(50% 50%);
-            > .fa{
-                display: inline-block;
-                vertical-align: top;
-                opacity: 0;
-                color: black;
-                cursor: pointer;
-                margin-right: 2px;
-                width: 14px;
-                height: 14px;
-                width: 13px;
-                height: 13px;
-                &:hover{ color:#cb5454; }
-            }
-            > .buttonSummaryCollapse{
-                &::before{ content: "\f066"; }
-            }
-            > .buttonSummaryRemove{
-                display: none;
-            }
-            > .buttonSummaryExpand{
-                display: none;
-            }
+          display: block;
+          position: absolute;
+          font-size: 0.9em;
+          top: 3px;
+          left: 2px;
+          .transition(~'color 250ms linear, opacity 100ms linear ');
+          .transform-origin(50% 50%);
+          > .fa{
+            display: inline-block;
+            vertical-align: top;
+            opacity: 0;
+            color: black;
+            cursor: pointer;
+            margin-right: 2px;
+            width: 14px;
+            height: 14px;
+            width: 13px;
+            height: 13px;
+            &:hover{ color:#cb5454; }
+          }
+          > .buttonSummaryCollapse::before{ content: "\f066"; }
+          > .buttonSummaryRemove{ display: none; }
+          > .buttonSummaryExpand{ display: none; }
         }
     } // headerGroup
 
     .lockButton{
       position: absolute;
+      .transition(~'opacity 500ms linear');
       opacity: 0;
       pointer-events: none;
       cursor: pointer;
       color: gray;
-      font-size: 0.8em;
+      font-size: 0.9em;
+      z-index: 21;
+      &:after{ content: "\f13e"; } // Lock
+      &:hover:after{ content: "\f023"; } // Unlock
+      &[inside]{ // Appears inside the visual glyph
+        color: white;
+        text-shadow: 0px 0px 1px rgb(0, 0, 0);
+      }
     }
 
     .aggrGlyph{
@@ -1771,6 +1774,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         position: absolute;
       }
+
+      > .total_tip{ pointer-events: none; }
 
       > span{
         &[class^="measure_"]{
@@ -1822,18 +1827,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 1px;
           .calc(height, ~"100% - 8px");
         }
+        > [class^="measure_Active"]{ pointer-events: none; }
         > [class^="measure_Compared"]{ height: 1px; }
+        > [class^="measure_Highlighted"]{ height: 1px; }
         > .clickArea > .lockButton{
           display: block;
           .calc(top, ~"50% - 5px");
           right: 1px;
-          .transition(~'opacity 500ms linear');
-          &:after{ content: "\f13e"; } // Lock
-          &:hover:after{ content: "\f023"; } // Unlock
-          &[inside]{ // Appears inside the visual glyph
-            color: white;
-            text-shadow: 0px 0px 1px rgb(0, 0, 0);
-          }
         }
 
         > .total_tip{
@@ -1864,15 +1864,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           cursor: pointer;
           .transition(~'all 500ms linear');
         }
-        > [class^="measure_Active"]{ fill: @color_bars; }
-        > [class^="measure_Highlighted"]{ fill: @color_bar_preview; }
+        > .measure_Active { fill: @color_bars; }
+        > .measure_Highlighted { fill: @color_bar_preview; }
         > [class^="measure_Compared_"]{ 
           fill: none;
-          stroke: @color_Compare_A;
           stroke-width: 1px;
-          .transition(~'opacity 500ms linear');
           opacity: 0;
         }
+        > .measure_Compared_A{ stroke: @color_Compare_A; }
+        > .measure_Compared_B{ stroke: @color_Compare_B; }
+        > .measure_Compared_C{ stroke: @color_Compare_C; }
         &[activesize="0"]{ display: none; }
         &:not([activesize="0"]) > .setPairBackground{ opacity: 1; }
       } // .setPairGlyph
@@ -1939,13 +1940,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       &.mapGlyph{
+        > .measure_Active{
+          opacity: 0.8;
+          stroke-width: 1px;
+          .transition(~'all 500ms linear');
+        };
         > .aggr{
           //stroke: rgba(255, 255, 255, 0.5);
-          opacity: 0.8; // show the underlying map a little
-          &.active{
-            stroke-width: 1px;
-            .transition(~'fill 700ms ease-in-out');
-          }
           &.preview{
             .transition(~'opacity 500ms ease-in-out');
             stroke-width: 1px;
@@ -1956,19 +1957,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           color: black;
           fill: black;
           font-weight: 500;
-          text-shadow: 0 0 1px #FFFFFF,0 0 1px #FFFFEF,0 0 1px #FFFFFF,0 0 1px #FFFFFF,0 0 10px #FFFFFF;
+          text-shadow: 0 0 1px #FFFFFF, 0 0 1px #FFFFEF, 0 0 1px #FFFFFF, 0 0 1px #FFFFFF, 0 0 8px #FFFFFF;
           text-rendering: geometricPrecision;
           text-anchor: middle;
           alignment-baseline: middle;
+          paint-order: stroke;
+          stroke: white;
+          stroke-width: 2px;
+          stroke-linecap: butt;
+          stroke-linejoin: miter;
         }
         &[selection="selected"] {
-          > .aggr.active{
+          > .measure_Active{
             cursor: pointer;
+            stroke-width: 2px;
             stroke: orangered;
-            stroke-width: 1px;
-            opacity: 1 !important;
-            fill: lighten(orangered, 10%);
-            .transition(~'fill 200ms ease-in-out');
+            fill: lighten(orangered, 30%);
+            //.transition(~'fill 200ms ease-in-out');
           }
           > .aggr.preview{ display: none; }
         }
@@ -2439,7 +2444,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .clickArea{
                       position: absolute;
                       left: 0px;
-                      z-index: 20;
                       display: inline-block;
                       vertical-align: top;
                       pointer-events: all;
@@ -2667,7 +2671,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       width: 100%;
                       .transition(@layout_animation);
                       > .highlightRangeLimits{
-                        display: none;
+                        opacity: 0;
                         width: 1px;
                         background-color: orangered;
                         position: absolute;
@@ -2990,8 +2994,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .summaryConfig_UnitName{ display: none;}
       }
 
-      &[collapsed=false][viewType='bar']:hover {
-        .summaryConfigControl{ display: inline-block !important; }
+      &[collapsed=false]{
+        &[viewType='bar']:hover {
+          .summaryConfigControl{ display: inline-block !important; }
+        }
+        &[summary_type='categorical']:hover {
+          .summaryConfigControl{ display: inline-block !important; }
+        }
       }
       &[showConfig=true]{
         .summaryConfig{
@@ -3147,6 +3156,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
       }
+    }
+
+    &[measureLabelType="Compared_A"]{
+      .aggrGlyph > .measureLabel{ color: @color_Compare_A !important; }
+    }
+    &[measureLabelType="Compared_B"]{
+      .aggrGlyph > .measureLabel{ color: darken(@color_Compare_B, 10%) !important; }
+    }
+    &[measureLabelType="Compared_C"]{
+      .aggrGlyph > .measureLabel{ color: darken(@color_Compare_C, 10%) !important; text-shadow: 0px 0px 2px black; }
     }
 
     &[selectHighlight]{
@@ -3467,8 +3486,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             width: 36px;
             font-style: italic;
             font-size: 0.8em;
-            &:nth-child(0){ text-align: left; }
-            &:nth-child(1){ text-align: right; }
+            &:first-child{ text-align: left; }
+            &:last-child{ text-align: right; }
           }
           >.strengthText{ padding: 0px 2px; }
         }
@@ -3598,7 +3617,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             font-size: 0.8em;
             alignment-baseline: middle;
             &.label_vert{
-              text-anchor: start;
+              text-anchor: start !important;
               background-color: white;
               display:none;
             }
