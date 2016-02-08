@@ -608,7 +608,13 @@ kshf.Record.prototype = {
   /** -- */
   addForHighlight: function(){
     if(!this.isWanted || this.highlighted) return;
-    if(this.DOM.record) this.DOM.record.setAttribute("selection","highlighted");
+    if(this.DOM.record) {
+      var x = this.DOM.record;
+      x.setAttribute("selection","highlighted");
+      // SVG geo area - move it to the bottom of parent so that border can be displayed nicely.
+      // TODO: improve the conditional check!
+      if(x.nodeName==="path") d3.select(x.parentNode.appendChild(x));
+    }
     this._aggrCache.forEach(function(aggr){ aggr.measure.Highlighted += this.measure_Self; }, this);
     this.highlighted = true;
   },
@@ -634,9 +640,9 @@ kshf.Record.prototype = {
   domCompared: function(){
     if(!this.DOM.record) return;
     if(this.selectCompared_str==="") {
-      this.DOM.record.removeAttribute("recCompared");
+      this.DOM.record.removeAttribute("rec_compared");
     } else {
-      this.DOM.record.setAttribute("recCompared",this.selectCompared_str);
+      this.DOM.record.setAttribute("rec_compared",this.selectCompared_str);
     }
   }
 
@@ -1450,34 +1456,30 @@ kshf.RecordDisplay.prototype = {
         x.append("span").attr("class","dropZone_resultSort_text");
 
         this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
-            .attr("class","listSortOptionSelect")
-            .on("change", function(){
-                me.setSortingOpt_Active(this.selectedIndex);
-            });
+          .attr("class","listSortOptionSelect")
+          .on("change", function(){ me.setSortingOpt_Active(this.selectedIndex); });
 
         this.refreshSortingOptions();
 
         this.DOM.removeSortOption = this.DOM.recordViewHeader
-            .append("span").attr("class","removeSortOption_wrapper")
-            .append("span").attr("class","removeSortOption fa")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'n', title: "Remove current sorting option" });
-            })
-            .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout",function(d,i){ this.tipsy.hide(); })
-            .on("click",function(){
-                var index=-1;
-                me.sortingOpts.forEach(function(o,i){ if(o===me.sortingOpt_Active) index=i; })
-                if(index!==-1){
-                    me.sortingOpts.splice(index,1);
-                    if(index===me.sortingOpts.length) index--;
-                    me.prepSortingOpts();
-                    me.setSortingOpt_Active(index);
-                    me.refreshSortingOptions();
-                    me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
-                }
-            })
+          .append("span").attr("class","removeSortOption_wrapper")
+          .append("span").attr("class","removeSortOption fa")
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: "Remove current sorting option" }); })
+          .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout",function(d,i){ this.tipsy.hide(); })
+          .on("click",function(){
+            var index=-1;
+            me.sortingOpts.forEach(function(o,i){ if(o===me.sortingOpt_Active) index=i; })
+            if(index!==-1){
+              me.sortingOpts.splice(index,1);
+              if(index===me.sortingOpts.length) index--;
+              me.prepSortingOpts();
+              me.setSortingOpt_Active(index);
+              me.refreshSortingOptions();
+              me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
+            }
+          });
 
         this.DOM.recordViewHeader.append("span").attr("class","sortColumn sortButton fa")
           .on("click",function(d){
@@ -1494,9 +1496,7 @@ kshf.RecordDisplay.prototype = {
               .order();
             kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
           })
-          .each(function(){
-            this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder });
-          })
+          .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout",function(){ this.tipsy.hide(); });
     },
@@ -1690,7 +1690,7 @@ kshf.RecordDisplay.prototype = {
         .append( this.displayType==='map' ? 'path' : 'div' )
         .attr('class','kshfRecord')
         .attr('details',false)
-        .attr("recCompared",function(record){ return record.selectCompared_str?record.selectCompared_str:null;})
+        .attr("rec_compared",function(record){ return record.selectCompared_str?record.selectCompared_str:null;})
         .attr("id",function(record){ return "kshfRecord_"+record.id(); }) // can be used to apply custom CSS
         .each(function(record){ 
           record.DOM.record = this;
@@ -1714,13 +1714,20 @@ kshf.RecordDisplay.prototype = {
             this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
             this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
+          if(me.displayType==="map"){
+            // Move this node to the end of elements...
+            d3.select(this.parentNode.appendChild(this));
+          }
           if(me.browser.mouseSpeed<0.2) {
-            record.highlightRecord(); return;
+            record.highlightRecord();
+            return;
           }
           // mouse is moving fast, should wait a while...
           this.highlightTimeout = window.setTimeout(
             function(){ record.highlightRecord(); }, 
             me.browser.mouseSpeed*300);
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
         })
         .on("mouseleave",function(record){
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);

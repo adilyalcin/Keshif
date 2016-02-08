@@ -1395,7 +1395,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
             > .infobox_loading{
                 width: 300px;
-                height: 35px;
+                height: 40px;
                 position: absolute;
                 top: 0; left: 0; bottom: 0; right: 0;
                 // http://tobiasahlin.com/spinkit/
@@ -2064,6 +2064,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .item_details_toggle{ display: inline-block; }
         .item_details{ display: none; }
       }
+    } // kshfRecord
+    div.kshfRecord{
       &[selection^="onRecord"]  { 
         padding: 0px;
         background-color: @color_onRecord_back !important;
@@ -2074,8 +2076,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-color: lighten(@color_bar_preview, 35%);
         border: solid 1px darken(@color_bar_preview,0%) !important;
       }
-      &[recCompared]{ padding: 0px; }
-      &[recCompared^="A"]{
+      &[rec_compared]{ padding: 0px; }
+      &[rec_compared^="A"]{
         background-color: lighten(@color_Compare_A, 55%);
         border: solid 1px @color_Compare_A !important;
         &[selection="highlighted"]{
@@ -2084,7 +2086,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             lighten(@color_bar_preview, 35%) 80%, lighten(@color_bar_preview, 35%) 100%) );
         }
       }
-      &[recCompared^="B"]{
+      &[rec_compared^="B"]{
         background-color: lighten(@color_Compare_B, 30%);
         border: solid 1px darken(@color_Compare_B,10%) !important;
         &[selection="highlighted"]{
@@ -2093,7 +2095,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             lighten(@color_bar_preview, 35%) 80%, lighten(@color_bar_preview, 35%) 100%) );
         }
       }
-      &[recCompared^="C"]{
+      &[rec_compared^="C"]{
         background-color: darken(@color_Compare_C, 10%);
         border: solid 1px darken(@color_Compare_C,40%) !important;
         &[selection="highlighted"]{
@@ -3343,16 +3345,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .kshfRecord{
             stroke-width: 1px;
             stroke: rgba(255,255,255,0.5);
+            //paint-order: stroke;
             cursor: pointer;
             &[selection="onRecord"]{
               stroke: darken(@color_onRecord_back, 70%);
               stroke-width: 2px;
-              //fill: @color_onRecord_back;
             }
             &[selection="highlighted"]{
               stroke: orangered;
               stroke-width: 1px;
             }
+            &[rec_compared^="A"]{ stroke: @color_Compare_A; }
+            &[rec_compared^="B"]{ stroke: @color_Compare_B; }
+            &[rec_compared^="C"]{ stroke: @color_Compare_C; }
           }
         }
 
