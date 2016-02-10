@@ -978,18 +978,11 @@ kshf.RecordDisplay = function(kshf_, config, root){
       this.DOM.recordMap_Base = this.DOM.root.append("div").attr("class","recordMap_Base");
 
       this.leafletMap = L.map(this.DOM.recordMap_Base[0][0], 
-        {
-          //maxBoundsViscosity: 1,
-          //continuousWorld: true
-        })
-        // Using openstreetmap tiles
+          { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
+        )
         .addLayer(new L.TileLayer(
-          "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", 
-          {
-            //noWrap: true,
-            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>'
-          }
-          )) 
+          "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          { attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', /*nowrap: true*/ }))
         .on("viewreset",function(){ 
           me.map_projectRecords()
         })
@@ -1069,7 +1062,7 @@ kshf.RecordDisplay = function(kshf_, config, root){
           return true;
         })
         .on("click",function(){
-          me.map_zoomToWanted();
+          me.map_zoomToActive();
           d3.event.preventDefault();
           d3.event.stopPropagation();
           return true;
@@ -1170,14 +1163,21 @@ kshf.RecordDisplay = function(kshf_, config, root){
 kshf.RecordDisplay.prototype = {
     /** -- */
     setHeight: function(v){
+      var me=this;
       if(this.recordViewSummary===null) return;
       if(this.displayType==="map"){
         this.DOM.recordMap_Base.style("height",v+"px");
         if(this.DOM.recordMap_SVG) this.DOM.recordMap_SVG.style("height",v+"px");
-        if(this.leafletMap) this.leafletMap.invalidateSize();
+        if(!this.curHeight || this.curHeight!==v){
+          setTimeout(function(){ 
+            me.leafletMap.invalidateSize();
+            me.map_zoomToActive();
+          }, 1000);
+        }
       } else {
         this.DOM.recordGroup.style("height",v+"px");
       }
+      this.curHeight = v;
     },
     /** -- */
     map_refreshColorScale: function(){
@@ -1199,7 +1199,7 @@ kshf.RecordDisplay.prototype = {
       // TODO: This should just move the SVG element (translate / scale, and do not re-compute the paths)
     },
     /** -- */
-    map_zoomToWanted: function(){
+    map_zoomToActive: function(){
       // Insert the bounds for each record path into the bs
       var bs = [];
       var _geo_ = this.config.geo;
@@ -1215,22 +1215,18 @@ kshf.RecordDisplay.prototype = {
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
 
-      if(this.asdsds===undefined){ // First time: just fit bounds
-        this.asdsds = true;
-        this.leafletMap.fitBounds(
-          new L.LatLngBounds(bs),
-          { padding: [0,0], 
-            pan: {animate: true, duration: 1.2}, 
-            zoom: {animate: true} 
-          } );
+      var bounds = new L.latLngBounds(bs);
+      if(!browser.finalized){ // First time: just fit bounds
+        this.leafletMap.fitBounds( bounds );
         return;
       }
       this.leafletMap.flyToBounds(
-        new L.LatLngBounds(bs),
+        bounds,
         { padding: [0,0], 
           pan: {animate: true, duration: 1.2}, 
           zoom: {animate: true} 
-        } );
+        }
+        );
     },
     /** -- */
     initDOM_RecordViewHeader: function(){
@@ -1810,7 +1806,7 @@ kshf.RecordDisplay.prototype = {
       this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
 
       if(this.displayType==="map") {
-        this.map_zoomToWanted();
+        this.map_zoomToActive();
         this.map_projectRecords();
         this.map_updateRecordColor();
       } else {
@@ -1921,7 +1917,7 @@ kshf.RecordDisplay.prototype = {
       if(this.recordViewSummary===null) return;
       if(this.displayType==="map") {
         this.updateItemVisibility(false);
-        this.map_zoomToWanted();
+        this.map_zoomToActive();
         return;
       }
       var me=this;
@@ -4010,10 +4006,6 @@ kshf.Browser.prototype = {
 
         this.reorderNuggetList();
 
-        if(this.recordDisplay.displayType==="map") {
-          this.recordDisplay.map_zoomToWanted();
-        }
-
         if(typeof this.readyCb === "string" && this.readyCb.substr(0,8)==="function"){
           eval("\"use strict\"; this.readyCb = "+this.readyCb);
         }
@@ -4335,9 +4327,7 @@ kshf.Browser.prototype = {
         divHeight_Total-=panel_Basic_height;
 
         // initialize all summaries as not yet processed.
-        this.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.heightProcessed = false;
-        });
+        this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.heightProcessed = false; });
 
         var bottomPanelHeight=0;
         // process bottom summary
@@ -4437,19 +4427,19 @@ kshf.Browser.prototype = {
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
+        this.panels.middle.DOM.root.style("height",midPanelHeight+"px");
 
         // The part where summary DOM is updated
-        this.summaries.forEach(function(summary){
-            if(summary.inBrowser()) summary.refreshHeight();
-        });
+        this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.refreshHeight(); });
 
         if(this.recordDisplay){
-            var listDivTop = 0;
-            // get height of header
-            var listHeaderHeight = this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight;
-            var listDisplayHeight = divHeight_Total - listDivTop - listHeaderHeight - midPanelHeight - bottomPanelHeight;
-            if(this.showDropZones && this.panels.middle.summaries.length===0) listDisplayHeight*=0.5;
-            this.recordDisplay.setHeight(listDisplayHeight);
+          // get height of header
+          var listDisplayHeight = divHeight_Total
+            - this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight 
+            - midPanelHeight 
+            - bottomPanelHeight;
+          if(this.showDropZones && this.panels.middle.summaries.length===0) listDisplayHeight*=0.5;
+          this.recordDisplay.setHeight(listDisplayHeight);
         }
     },
     /** -- */
@@ -7435,19 +7425,12 @@ var Summary_Categorical_functions = {
         return; 
       }
 
-      this.leafletMap = L.map(this.DOM.catMap_Base[0][0], 
-        {
-          maxBoundsViscosity: 1,
-          //continuousWorld: true,
-          //crs: L.CRS.EPSG3857
-        })
-        // Using openstreetmap tiles
+      this.leafletMap = L.map(this.DOM.recordMap_Base[0][0], 
+          { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
+        )
         .addLayer(new L.TileLayer(
           "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          {
-            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>'
-          }
-          ))
+          { attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', /*nowrap: true*/ }))
         .on("viewreset",function(){ 
           me.map_projectCategories()
         })
@@ -8005,7 +7988,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getHeight_Extra: function(){
-      return 7+this.height_hist_topGap+this.height_labels+this.height_slider+ this.getHeight_Percentile();
+      return 7+this.height_hist_topGap+this.height_labels+this.height_slider+this.getHeight_Percentile()+this.getHeight_MapColor();
     },
     /** -- */
     getHeight_RangeMax: function(){

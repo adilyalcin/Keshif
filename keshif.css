@@ -3223,6 +3223,7 @@ top:calc(50% - 8px);
   background-color: orangered;
   position: absolute;
   z-index: 100;
+  pointer-events: none;
   -webkit-transition: opacity 200ms linear;
   -moz-transition: opacity 200ms linear;
   -o-transition: opacity 200ms linear;
@@ -3839,6 +3840,7 @@ top:calc(50% - 8px);
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  height: 100%;
   position: relative;
 }
 .kshf .recordDisplay {
