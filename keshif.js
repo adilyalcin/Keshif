@@ -1216,7 +1216,7 @@ kshf.RecordDisplay.prototype = {
       });
 
       var bounds = new L.latLngBounds(bs);
-      if(!browser.finalized){ // First time: just fit bounds
+      if(!this.browser.finalized){ // First time: just fit bounds
         this.leafletMap.fitBounds( bounds );
         return;
       }
