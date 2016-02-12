@@ -20,7 +20,7 @@ google.setOnLoadCallback(function(){
     domID: "#demo_Browser",
     itemName: "Faculty and Staff Members",
     barChartWidth: 100,
-    leftPanelLabelWidth: 200,
+    leftPanelLabelWidth: 220,
     rightPanelLabelWidth: 200,
     source: {
       gdocId: '1b7L4aTZKaq0mijDt0O2f9q131HyCJJdE867Jhb7k2po',
@@ -33,8 +33,12 @@ google.setOnLoadCallback(function(){
         value: function(){ 
           if(this["Other Appointments"]) return this["Other Appointments"].split("+"); 
         } },
+      { name: "Lab Affiliations", 
+        value: function(){ 
+          if(this["Affiliations"]) return this["Affiliations"].split("+"); 
+        } },
       { name: "Education", 
-        layout: "right",
+        layout: "left",
         value: function(){
           var e = this.Education;
           if(e===null || e==="") return;
@@ -47,9 +51,7 @@ google.setOnLoadCallback(function(){
           return r;
         }
         },
-      { name: "Type", panel: 'right' },
-      { name: "Race", panel: 'right' },
-      { name: "Label" }
+      { name: "Gender"},
     ],
     recordDisplay: {
       textSearch: "Name",
