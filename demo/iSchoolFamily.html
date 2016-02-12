@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>i-School Family</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    itemName: "Faculty and Staff Members",
+    barChartWidth: 100,
+    leftPanelLabelWidth: 200,
+    rightPanelLabelWidth: 200,
+    source: {
+      gdocId: '1b7L4aTZKaq0mijDt0O2f9q131HyCJJdE867Jhb7k2po',
+      tables: "Members"
+    },
+    summaries: [
+      { name: "Role", value: function(){ return this.Role.split(", "); } },
+      { name: "Position", value: function(){ return this.Position.split("+"); } },
+      { name: "Other Appointments", 
+        value: function(){ 
+          if(this["Other Appointments"]) return this["Other Appointments"].split("+"); 
+        } },
+      { name: "Education", 
+        layout: "right",
+        value: function(){
+          var e = this.Education;
+          if(e===null || e==="") return;
+          var r = [];
+          e.split(" + ").forEach(function(e2){
+            var x = e2.split(":")[1];
+            if(x.split("-").length>1) x = x.split("-")[1];
+            r.push(x);
+          });
+          return r;
+        }
+        },
+      { name: "Type", panel: 'right' },
+      { name: "Race", panel: 'right' },
+      { name: "Label" }
+    ],
+    recordDisplay: {
+      textSearch: "Name",
+      displayType: "grid",
+      detailsToggle: "zoom",
+      sortColWidth: 45,
+      sortBy: { name: "First Name", value: function(){ return this.Name.charCodeAt(0); }, inverse: true},
+      recordView: function(){ 
+        var imgURL = "http://ischool.umd.edu/sites/default/files/styles/thumbnail/public/default_images/noimage.jpg";
+        if(this["Image URL"]){
+          imgURL = "http://ischool.umd.edu/sites/default/files/styles/large/public/Staff_Pics/"+this["Image URL"];
+        }
+        str = "<img src='"+imgURL+"' class='jImg'>";
+
+        str+="<span class='jContact'>";
+          if(this["Web URL"]) 
+            str+="<a href='"+this["Web URL"]+"' target='_blank' class='fa fa-home' title='Website'></a>";
+          if(this["E-Mail"]) 
+            str+="<a href='mailto:"+this["E-Mail"]+"' target='_blank' class='fa fa-envelope' title='E-Mail'></a>";
+          if(this["Telephone"]) 
+            str+="<a href='tel:"+this["Telephone"]+"' target='_blank' class='fa fa-phone' title='"+this["Telephone"]+"'></a>";
+          //if(this["Fax"]) 
+          //  str+="<a href='tel:"+this["Fax"]+"' target='_blank' class='fa fa-fax' title='"+this["Fax"]+"'></a>";
+        str+="</span>";
+
+        str+="<span class='jName'>"+this.Name+"</span>";
+        str+="<span class='jRole'>"+this.Role+
+          " <a target='_blank' href='http://ischool.umd.edu/faculty-staff/"+
+              this["iSchool URL"]+"' class='fa fa-external-link iSchoolLink'></a> </span>";
+        //str+="<span class='jMoreInfo'>More Info</span>";
+
+        return str
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.jImg{
+  height: 70px;
+  margin: 0 auto;
+  display: block;
+  border-radius: 15px;
+}
+.jName{
+  font-size: 0.8em;
+  display: block;
+  font-weight: 600;
+  text-align: center;
+}
+.jRole{
+  font-size: 0.6em;
+  display: block;
+  font-weight: 300;
+  text-align: center;
+}
+.jContact{
+  display: block;
+  text-align: center;
+  margin-top: -18px;
+  height: 20px;
+}
+.jMoreInfo{
+  display: block;
+  font-size: 0.7em;
+  font-weight: 100;
+  text-align: center;
+}
+.jMoreInfo:hover{
+  color: orangered;
+}
+.jContact > .fa{
+  color: white;
+  text-decoration: none;
+  margin: 0px 2px;
+  text-shadow: 0px 0px 2px black;
+}
+.jContact > .fa:hover{
+  color: orangered;
+}
+
+.content{
+  padding: 2px;
+}
+.iSchoolLink{
+  text-decoration: none;
+  color: gray;
+}
+.iSchoolLink:hover{
+  color: orangered;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">UMD i-School Faculty and Staff Members</div>
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
+</html>
