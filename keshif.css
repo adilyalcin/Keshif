@@ -118,48 +118,62 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block !important;
   border-left: solid lightgray 2px;
 }
-.kshf[authoringMode=true] > .attributePanel {
+.kshf[authoringMode] > .attributePanel {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[authoringMode=true] > .panel_Wrapper {
+.kshf[authoringMode] > .panel_Wrapper {
   margin-left: 220px;
 }
-.kshf[authoringMode=true] .saveBrowserConfig {
+.kshf[authoringMode] .saveBrowserConfig {
   display: inline-block;
 }
-.kshf[authoringMode=true] .configUser {
+.kshf[authoringMode] .configUser {
   display: inline-block;
 }
-.kshf[authoringMode=true] .kshfSummary[collapsed=false][viewType='list']:hover .chartCatLabelResize {
+.kshf[authoringMode] .kshfSummary[collapsed=false][viewType='list']:hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[authoringMode=true] .summaryConfig_UnitName {
+.kshf[authoringMode] .recordName {
+  cursor: text;
+  pointer-events: all !important;
+}
+.kshf[authoringMode] .recordName:hover {
+  margin: -1px;
+  border: solid 1px gray;
+}
+.kshf[authoringMode] .recordInfo {
+  pointer-events: none !important;
+}
+.kshf[authoringMode] .summaryName_text {
+  pointer-events: all !important;
+}
+.kshf[authoringMode] .summaryConfig_UnitName {
   display: block;
 }
-.kshf[authoringMode=true] .recordDisplay:hover .buttonRecordViewRemove {
+.kshf[authoringMode] .recordDisplay:hover .buttonRecordViewRemove {
   display: block;
 }
-.kshf[authoringMode=true] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
+.kshf[authoringMode] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
   display: block;
 }
-.kshf[authoringMode=true] .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control {
+.kshf[authoringMode] .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control {
   display: inline-block;
 }
-.kshf[authoringMode=true] .panel:hover > .panelAdjustWidth {
+.kshf[authoringMode] .panel:hover > .panelAdjustWidth {
   display: block;
 }
-.kshf[authoringMode=true] .editableTextContainer > .editTextButton {
-  display: inline-block;
-}
-.kshf[authoringMode=true] .editableTextContainer:hover > .editTextButton {
-  opacity: 1;
-}
-.kshf[authoringMode=true] .buttonSummaryRemove {
+.kshf[authoringMode] .buttonSummaryRemove {
   display: inline-block !important;
+}
+.kshf:not([authoringMode]) .recordInfo[changeMeasureBox] {
+  cursor: pointer;
+}
+.kshf:not([authoringMode]) .recordInfo[changeMeasureBox]:hover {
+  color: orangered;
 }
 .kshf[percentLabelMode] .measurePercentControl::after {
   content: "%";
@@ -378,27 +392,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   outline: 0 none;
   margin: 0px;
 }
-.kshf .editableTextContainer > .editTextButton {
-  display: none;
-  opacity: 0;
-  font-size: 0.8em;
-  color: gray;
-  margin-left: 2px;
-  vertical-align: top;
-  cursor: pointer;
-}
-.kshf .editableTextContainer > .editTextButton:before {
-  content: '\f040';
-}
-.kshf .editableTextContainer > .editTextButton:hover {
-  color: black;
-}
- > .editTextButton.kshf .editableTextContainer[edittitle="true"]::before {
-  content: "\f00c";
-}
-.kshf .editableTextContainer[state='edited'] > .editTextButton {
-  display: inline-block;
-}
 .kshf > .attributePanel {
   display: none;
   -webkit-box-direction: normal;
@@ -522,14 +515,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   border-radius: 3px;
   background-color: #dfd7d7;
-  border: solid 1px lightgray;
+  border: solid 1px gray;
   cursor: pointer;
   color: #C0B1B1;
   font-size: 0.8em;
+  margin: 2px;
 }
 .kshf > .attributePanel .newAttribute:hover {
   background-color: #DBD4D4;
-  border-color: #B8B6B1;
+  border-color: black;
   color: #877676;
 }
 .kshf > .attributePanel .nugget {
@@ -559,6 +553,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 1px;
   overflow-wrap: break-word;
   max-width: calc(100% - 70px);
+  padding: 1px;
+}
+.kshf > .attributePanel .nugget > .summaryName:hover {
+  cursor: text;
+  padding: 0px;
+  border: solid 1px gray;
 }
 .kshf > .attributePanel .nugget > .editCodeButton {
   display: none;
@@ -567,10 +567,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
 }
 .kshf > .attributePanel .nugget > .editCodeButton:hover {
-  color: black;
+  color: orangered;
 }
 .kshf > .attributePanel .nugget > .summaryTypeIcon {
   float: right;
+}
+.kshf > .attributePanel .nugget > .addFromAttribute_Button {
+  display: none;
+  margin-left: 5px;
+  color: gray;
+  cursor: pointer;
+}
+.kshf > .attributePanel .nugget > .addFromAttribute_Button:hover {
+  color: orangered;
 }
 .kshf > .attributePanel .nugget .nuggetInfo {
   display: inline-block;
@@ -703,8 +712,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   order: 2;
   max-height: 1em;
 }
-.kshf > .attributePanel .nugget[datatype~='time'] .nuggetInfo:before {
+.kshf > .attributePanel .nugget[datatype~='time']:hover > .addFromAttribute_Button {
+  display: inline-block;
+}
+.kshf > .attributePanel .nugget[datatype~='time'] .num_right:before {
   content: '\f017';
+}
+.kshf > .attributePanel .nugget[datatype~='multivalue']:hover > .addFromAttribute_Button {
+  display: inline-block;
 }
 .kshf > .attributePanel .nugget[datatype~="categorical"] > .nuggetViz {
   -webkit-box-direction: normal;
@@ -728,6 +743,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  height: 100%;
 }
 .kshf > .attributePanel .nugget[state='custom'] > .editCodeButton {
   display: inline-block;
@@ -844,11 +860,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   margin-right: 3px;
 }
-.kshf .panel_Basic > .recordInfo[editable] {
-  cursor: pointer;
-}
-.kshf .panel_Basic > .recordInfo[editable]:hover {
-  color: orangered;
+.kshf .panel_Basic > .recordInfo > .recordName {
+  pointer-events: none;
 }
 .kshf .panel_Basic > .measureTypeSelectBoxWrapper {
   position: relative;
@@ -1983,6 +1996,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   font-size: 0.9em;
   padding: 0px 3px;
+  pointer-events: none;
+  cursor: text;
+}
+.kshf .headerGroup .summaryName > .summaryName_text:hover {
+  margin: -1px;
+  border: solid 1px gray;
 }
 .kshf .headerGroup .summaryName > .summaryName_text:focus {
   background-color: white;
@@ -3642,6 +3661,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary.setPairSummary[position="right"] .setMatrixWidthAdjust {
   right: 0px;
 }
+.kshf .kshfSummary.setPairSummary > .headerGroup > .header_display_control > .buttonSummaryRemove {
+  display: none !important;
+}
 .kshf .kshfSummary[show_set_matrix=true] > .kshfSummary.setPairSummary {
   display: block;
 }
@@ -4077,7 +4099,7 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
   position: absolute;
   left: 0px;
-  z-index: 10;
+  z-index: 2;
 }
 .kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord {
   display: -webkit-box;

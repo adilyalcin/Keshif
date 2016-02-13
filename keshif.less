@@ -107,7 +107,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       display: block !important;
       border-left: solid lightgray 2px;
     }
-    &[authoringMode=true]{
+    &[authoringMode]{
       //left: 120px;
       > .attributePanel{
           .display(flex);
@@ -126,6 +126,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .chartCatLabelResize{ display: block !important; }
         }
       }
+      .recordName{
+        cursor: text;
+        pointer-events: all !important;
+        &:hover{
+          margin: -1px;
+          border: solid 1px gray;
+        }
+      }
+      .recordInfo{
+        pointer-events: none !important;
+      }
+      .summaryName_text{ pointer-events: all !important; }
       .summaryConfig_UnitName{ display: block;}
       .recordDisplay{
         &:hover .buttonRecordViewRemove{ display: block; }
@@ -137,11 +149,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .panel:hover > .panelAdjustWidth{
         display: block;
       }
-      .editableTextContainer {
-        > .editTextButton{ display: inline-block; }
-        &:hover > .editTextButton{ opacity: 1; }// Do not use display none-vs-inlineblock, because it changes layout
-      }
       .buttonSummaryRemove{ display: inline-block !important; }
+    }
+    &:not([authoringMode]){
+      .recordInfo[changeMeasureBox]{
+        cursor: pointer;
+        &:hover{ color: orangered; }
+      }
     }
     &[percentLabelMode]{
       .measurePercentControl{
@@ -317,24 +331,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         outline: 0 none;
         margin: 0px;
       }
-
-      > .editTextButton{
-        display: none;
-        opacity: 0;
-        font-size: 0.8em;
-        color: gray;
-        margin-left: 2px;
-        vertical-align: top;
-        cursor: pointer;
-        &:before{ content: '\f040'; }
-        &:hover{ color: black; }
-      }
-      &[edittitle="true"]{
-        > .editTextButton&::before{ content: "\f00c"; }
-      }
-      &[state='edited']{
-        > .editTextButton{ display: inline-block; }
-      }
     }
 
     > .attributePanel{
@@ -419,14 +415,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         text-align: center;
         border-radius: 3px;
-        background-color: rgb(223, 215, 215);
-        border: solid 1px lightgray;
+        background-color: #dfd7d7;
+        border: solid 1px gray;
         cursor: pointer;
         color: #C0B1B1;
         font-size: 0.8em;
+        margin: 2px;
         &:hover{
           background-color: #DBD4D4;
-          border-color: #B8B6B1;
+          border-color: black;
           color: #877676;
         }
       }
@@ -452,15 +449,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           margin: 1px;
           overflow-wrap: break-word;
           max-width: calc(~"100% - 70px");
+          padding: 1px;
+          &:hover{ 
+            cursor: text;
+            padding: 0px;
+            border: solid 1px gray;
+          }
         }
         > .editCodeButton{
           display: none;
           font-size: 0.9em;
           color: black;
           cursor: pointer;
-          &:hover{ color: black; }
+          &:hover{ color: orangered; }
         }
         > .summaryTypeIcon{ float: right; }
+        > .addFromAttribute_Button{
+          display: none;
+          margin-left: 5px;
+          color: gray;
+          cursor: pointer;
+          &:hover{ color: orangered; }
+        }
         
         .nuggetInfo{
           display: inline-block;
@@ -527,33 +537,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .nuggetViz{ border-color: gray; }
         }
         &[datatype~="interval"]{
-            > .nuggetViz{
-                .flex-direction(column);
-                > .nuggetChart{
-                    .display(flex);
-                    .flex-direction(row);
-                    > .nuggetBar{
-                        .align-self(flex-end);
-                    }
-                }
+          > .nuggetViz{
+            .flex-direction(column);
+            > .nuggetChart{
+              .display(flex);
+              .flex-direction(row);
+              > .nuggetBar{ .align-self(flex-end); }
             }
-            .nuggetChart{ .order(1); }
-            .nuggetInfo{ .order(2); max-height: 1em; }
+          }
+          .nuggetChart{ .order(1); }
+          .nuggetInfo{ .order(2); max-height: 1em; }
         }
         &[datatype~='time']{
-          .nuggetInfo:before { content: '\f017'; } // fa-clock-o
+          &:hover > .addFromAttribute_Button{ display: inline-block; }
+          .num_right:before { content: '\f017'; } // fa-clock-o
+        }
+        &[datatype~='multivalue']{
+          &:hover > .addFromAttribute_Button{ display: inline-block; }
         }
         &[datatype~="categorical"]{
-            > .nuggetViz{
-                .flex-direction(row);
-                > .nuggetChart{
-                    .display(flex);
-                    .flex-direction(column);
-                }
+          > .nuggetViz{
+            .flex-direction(row);
+            > .nuggetChart{
+                .display(flex);
+                .flex-direction(column);
+                height: 100%;
             }
+          }
         }
         &[state='custom']{
-            > .editCodeButton{ display: inline-block; }
+          > .editCodeButton{ display: inline-block; }
         }
         &[moved]{ opacity: 0.5 !important; }
         &[anim="disappear"]{
@@ -638,10 +651,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-align: right;
             margin-right: 3px;
           }
-          > .recordName{ }
-          &[editable]{
-            cursor: pointer;
-            &:hover{ color: orangered; }
+          > .recordName{
+            pointer-events: none;
           }
         }
         > .measureTypeSelectBoxWrapper{
@@ -1669,6 +1680,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-overflow: ellipsis;
             font-size: 0.9em;
             padding: 0px 3px;
+            pointer-events: none;
+            cursor: text;
+            &:hover {
+              margin: -1px;
+              border: solid 1px gray;
+            }
             &:focus{
               background-color: white;
               box-shadow: 0 0 3px #2CABCF;
@@ -3038,6 +3055,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .rows > .row > .label{ text-anchor: start; }
           .setMatrixWidthAdjust{ right: 0px;}
         }
+        > .headerGroup > .header_display_control > .buttonSummaryRemove{ display: none !important; }
       }
       &[show_set_matrix=true] > .kshfSummary.setPairSummary{ display: block; }
 
@@ -3382,7 +3400,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .recordToggleDetail{
               position: absolute;
               left: 0px;
-              z-index: 10;
+              z-index: 2;
             }
           }
         }

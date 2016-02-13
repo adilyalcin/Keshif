@@ -93,9 +93,10 @@ var kshf = {
             And: "And",
             Or: "Or",
             Not: "Not",
-            EditTitle: "Edit",
+            EditTitle: "Rename",
             ResizeBrowser: "Resize Browser",
-            RemoveRecords: "Remove Record View"
+            RemoveRecords: "Remove Record View",
+            EditFormula: "Edit Formula"
         },
         tr: {
             ModifyBrowser: "Tarayıcıyı düzenle",
@@ -131,7 +132,8 @@ var kshf = {
             Not: "Değil",
             EditTitle: "Değiştir",
             ResizeBrowser: "Boyutlandır",
-            RemoveRecords: "Kayıtları kaldır"
+            RemoveRecords: "Kayıtları kaldır",
+            EditFormula: "Edit Formula"
         },
         fr: {
             ModifyBrowser: "Modifier le navigateur",
@@ -164,6 +166,7 @@ var kshf = {
             And: "??",
             Or: "??",
             Not: "??",
+            EditFormula: "Edit Formula"
         },
         cur: null // Will be set to en if not defined before a browser is loaded
     },
@@ -1515,7 +1518,7 @@ kshf.RecordDisplay.prototype = {
       var me=this;
       var labelFunc=this.sortingOpt_Active.sortLabel;
       var sortColformat = d3.format(".s");
-      if(this.sortingOpt_Active.hasTime){
+      if(this.sortingOpt_Active.isTimeStamp()){
         sortColformat = d3.time.format("%Y");
       }
       d3_selection.html(function(d){
@@ -2333,7 +2336,6 @@ kshf.Browser = function(options){
     this.DOM.root = d3.select(this.domID)
       .classed("kshf",true)
       .attr("noanim",true)
-      .attr("authoringMode",false)
       .attr("record_display","none")
       .style("position","relative")
       //.style("overflow-y","hidden")
@@ -2608,7 +2610,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refreshMeasureSelectAction: function(){
-      this.DOM.recordInfo.style('pointer-events', (this.getMeasurableSummaries().length===0)? 'none' : 'all');
+      this.DOM.recordInfo.attr('changeMeasureBox', (this.getMeasurableSummaries().length!==0)? 'true' : null);
     },
     /** -- */
     insertDOM_PanelBasic: function(){
@@ -2622,11 +2624,16 @@ kshf.Browser.prototype = {
       this.DOM.recordInfo = this.DOM.panel_Basic.append("span")
         .attr("class","recordInfo editableTextContainer")
         .attr("edittitle",false)
-        .attr("editable",true)
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "Change measure" }); })
-        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseenter",function(){
+          if(me.authoringMode) return; 
+          if(me.getMeasurableSummaries().length===0) return;
+          this.tipsy.show(); 
+        })
         .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
+          if(me.authoringMode) return;
+          if(me.getMeasurableSummaries().length===0) return;
           this.tipsy.hide();
           me.insertDOM_measureSelect();
           me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",true);
@@ -2637,8 +2644,24 @@ kshf.Browser.prototype = {
       this.DOM.measureAggrType = this.DOM.recordInfo.append("span").attr("class","measureAggrType");
 
       this.DOM.recordName = this.DOM.recordInfo.append("span").attr("class","recordName editableText")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'w', title: function(){
+              var curState=this.parentNode.getAttribute("edittitle");
+              return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
+            }
+          })
+        })
         .attr("contenteditable",false)
         .on("mousedown", function(){ d3.event.stopPropagation(); })
+        .on("mouseenter",function(){ 
+          this.tipsy.show(); d3.event.stopPropagation();
+        })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("mousedown", function(){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
         .on("blur",function(){
           this.parentNode.setAttribute("edittitle",false);
           this.setAttribute("contenteditable", false);
@@ -2650,25 +2673,9 @@ kshf.Browser.prototype = {
             this.setAttribute("contenteditable", false);
             me.itemName = this.textContent;
           }
-        });
-
-      this.DOM.recordInfo.append("span")
-        .attr("class","editTextButton fa")
-        .each(function(){
-          this.tipsy = new Tipsy(this, {
-            gravity: 'w', title: function(){
-              var curState=this.parentNode.getAttribute("edittitle");
-              return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
-            }
-          })
-        })
-        .on("mouseenter",function(){ this.tipsy.show(); })
-        .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("mousedown", function(){
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
         })
         .on("click",function(){
+          this.tipsy.hide();
           var curState=this.parentNode.getAttribute("edittitle");
           if(curState===null || curState==="false"){
             this.parentNode.setAttribute("edittitle",true);
@@ -3346,7 +3353,7 @@ kshf.Browser.prototype = {
             summary.DOM.nugget.attr("filtered",false);
           });
         });
-      this.DOM.attribTextSearchInput = this.DOM.attribTextSearch.append("input")
+      this.DOM.attribTextSearch.append("input")
         .attr("class","textSearchInput")
         .attr("type","text")
         .attr("placeholder",kshf.lang.cur.Search)
@@ -3354,11 +3361,7 @@ kshf.Browser.prototype = {
           if(this.timer) clearTimeout(this.timer);
           var x = this;
           var queryString = x.value.toLowerCase();
-          if(queryString===""){
-            me.DOM.attribTextSearchControl.attr("showClear",true);
-          } else {
-            me.DOM.attribTextSearchControl.attr("showClear",true);
-          }
+          me.DOM.attribTextSearchControl.attr("showClear", (queryString!=="") )
           this.timer = setTimeout( function(){
             me.summaries.forEach(function(summary){
               if(summary.DOM.nugget===undefined) return;
@@ -3395,9 +3398,7 @@ kshf.Browser.prototype = {
       this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
 
       this.DOM.attributeList.append("div").attr("class","newAttribute").html("<i class='fa fa-plus-square'></i>")
-        .each(function(){
-          this.tipsy = new Tipsy(this, { gravity: 'n', title: 'Add new attribute' });
-        })
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: 'Add new attribute' }); })
         .on("mouseenter",function(){ this.tipsy.show(); })
         .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
@@ -3444,7 +3445,7 @@ kshf.Browser.prototype = {
     enableAuthoring: function(v){
       if(v===undefined) v = !this.authoringMode; // if undefined, invert
       this.authoringMode = v;
-      this.DOM.root.attr("authoringMode",this.authoringMode);
+      this.DOM.root.attr("authoringMode",this.authoringMode?"true":null);
 
       this.updateLayout();
 
@@ -4085,7 +4086,7 @@ kshf.Browser.prototype = {
       }
       // If tithis, add to bottom panel
       var target_panel;
-      if(summary.hasTime!==undefined && summary.hasTime===true) {
+      if(summary.isTimeStamp()) {
         target_panel = 'bottom';
       } else if(summary.type==='categorical') {
         target_panel = 'left';
@@ -4636,7 +4637,7 @@ kshf.Summary_Base.prototype = {
     }
     if(this.type==='interval') {
       if(!this.aggr_initialized) return str+=" uninitialized";
-      if(this.hasTime) return "interval time";
+      if(this.isTimeStamp()) return "interval time";
       return "interval numeric";
       //
       if(this.hasFloat) return "floating";
@@ -4667,6 +4668,10 @@ kshf.Summary_Base.prototype = {
   /** -- */
   inBrowser: function(){
     return this.panel!==undefined;
+  },
+  /** -- */
+  isTimeStamp: function(){
+    return false; // False by default
   },
   /** -- */
   clearDOM: function(){
@@ -4762,9 +4767,7 @@ kshf.Summary_Base.prototype = {
 
     this.DOM.nugget = this.browser.DOM.attributeList
       .append("div").attr("class","nugget editableTextContainer")
-      .each(function(){
-        this.__data__ = me;
-      })
+      .each(function(){ this.__data__ = me; })
       .attr("title", (this.summaryColumn!==undefined) ? this.summaryColumn : undefined )
       .attr("state",function(){
         if(me.summaryColumn===null) return "custom"; // calculated
@@ -4835,9 +4838,36 @@ kshf.Summary_Base.prototype = {
     this.DOM.nuggetViz.append("span").attr("class","nuggetInfo fa");
     
     this.DOM.nuggetViz.append("span").attr("class","nuggetChart");
+    
     this.DOM.nugget.append("span").attr("class","summaryName editableText")
       .attr("contenteditable",false)
-      .text(function(){ return me.summaryName; })
+      .text( this.summaryName )
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditTitle }); })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); })
+      .on("mousedown",function(){
+        this.tipsy.hide();
+
+        var parentDOM = d3.select(this.parentNode);
+        var summaryName = parentDOM.select(".summaryName");
+        var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
+
+        var curState=this.parentNode.getAttribute("edittitle");
+        if(curState===null || curState==="false"){
+          this.parentNode.setAttribute("edittitle",true);
+          summaryName_DOM.setAttribute("contenteditable",true);
+          summaryName_DOM.focus();
+        } else {
+          /*
+          this.parentNode.setAttribute("edittitle",false);
+          summaryName_DOM.setAttribute("contenteditable",false);
+          me.browser.changeSummaryName(me.summaryName,summaryName_DOM.textContent);
+          */
+        }
+        // stop dragging event start
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+      })
       .on("blur",function(){
         this.parentNode.setAttribute("edittitle",false);
         this.setAttribute("contenteditable",false);
@@ -4855,46 +4885,8 @@ kshf.Summary_Base.prototype = {
         }
       });
 
-    this.DOM.nugget.append("div").attr("class","fa editTextButton")
-      .each(function(){
-        this.tipsy = new Tipsy(this, {
-          gravity: 'w', title: function(){
-            var curState=this.parentNode.getAttribute("edittitle");
-            return (curState===null || curState==="false") ? kshf.lang.cur.EditTitle : "OK";
-          }
-        });
-      })
-      .on("mouseenter",function(){ this.tipsy.show(); })
-      .on("mouseleave",function(){ this.tipsy.hide(); })
-      .on("mousedown",function(){
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
-      })
-      .on("click",function(){
-        this.tipsy.hide();
-        var parentDOM = d3.select(this.parentNode);
-        var summaryName = parentDOM.select(".summaryName");
-        var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
-
-        var curState=this.parentNode.getAttribute("edittitle");
-        if(curState===null || curState==="false"){
-          this.parentNode.setAttribute("edittitle",true);
-          summaryName_DOM.setAttribute("contenteditable",true);
-          summaryName_DOM.focus();
-        } else {
-          this.parentNode.setAttribute("edittitle",false);
-          summaryName_DOM.setAttribute("contenteditable",false);
-          me.browser.changeSummaryName(me.summaryName,summaryName_DOM.textContent);
-        }
-        // stop dragging event start
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
-      });
-
     this.DOM.nugget.append("div").attr("class","fa fa-code editCodeButton")
-      .each(function(){
-        this.tipsy = new Tipsy(this, { gravity: 'w', title: function(){ return "Edit Function"; } });
-      })
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditFormula }); })
       .on("mouseenter",function(){ this.tipsy.show(); })
       .on("mouseleave",function(){ this.tipsy.hide(); })
       .on("mousedown",function(){
@@ -4912,6 +4904,57 @@ kshf.Summary_Base.prototype = {
         d3.event.stopPropagation();
         d3.event.preventDefault();
       });
+
+    this.DOM.nugget.append("div").attr("class","addFromAttribute_Button fa fa-plus-square")
+      .each(function(){ 
+        this.tipsy = new Tipsy(this, { 
+          gravity: 'w',
+          title: function(){
+            if(me.isMultiValued) return "Extract \"# of"+me.summaryName+"\"";
+            if(me.isTimeStamp() ) {
+              if(me.timeTyped.month && me.summary_sub_month===undefined){
+                return "Extract Month of "+me.summaryName;
+              }
+              if(me.timeTyped.day && me.summary_sub_day===undefined){
+                return "Extract WeekDay of "+me.summaryName;
+              }
+              if(me.timeTyped.hour && me.summary_sub_hour===undefined){
+                return "Extract Hour of "+me.summaryName;
+              }
+            }
+            return "?";
+          }
+        }); 
+      })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+          if(me.isMultiValued && !me.hasDegreeSummary){
+            var summary = me.browser.createSummary(
+              "# of "+me.summaryName,
+              function(d){
+                var arr=d._valueCache[me.summaryID];
+                return (arr===null) ? null : arr.length;
+              },
+              'interval'
+            );
+            summary.initializeAggregates();
+            me.hasDegreeSummary = true;
+            this.style.display = "none";
+            return;
+          }
+          if(me.isTimeStamp()){
+            if(me.timeTyped.month && me.summary_sub_month===undefined){
+              me.createMonthSummary();
+            } else if(me.timeTyped.day && me.summary_sub_day===undefined){
+              me.createDaySummary();
+            } else if(me.timeTyped.hour && me.summary_sub_hour===undefined){
+              me.createHourSummary();
+            }
+          }
+        });
 
     this.refreshNuggetDisplay();
     if(this.aggr_initialized) this.refreshViz_Nugget();
@@ -5058,89 +5101,69 @@ kshf.Summary_Base.prototype = {
           ;
 
       this.DOM.summaryName = this.DOM.headerGroup.append("span")
-          .attr("class","summaryName editableTextContainer")
-          .attr("edittitle",false)
-          .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); })
-          ;
+        .attr("class","summaryName editableTextContainer")
+        .attr("edittitle",false)
+        .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); });
 
       this.DOM.summaryName.append("span").attr("class","chartFilterButtonParent").append("div")
           .attr("class","clearFilterButton rowFilter inSummary")
           .each(function(d){
-              this.tipsy = new Tipsy(this, {
-                  gravity: function(){ return me.panelOrder!==0?'s':'n'; },
-                  title: kshf.lang.cur.RemoveFilter
-              })
+            this.tipsy = new Tipsy(this, {
+              gravity: function(){ return me.panelOrder!==0?'s':'n'; },
+              title: kshf.lang.cur.RemoveFilter
+            });
           })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout" ,function(){ this.tipsy.hide(); })
           .on("mousedown", function(){
-              d3.event.preventDefault();
-              d3.event.stopPropagation();
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
           })
           .on("click", function(d,i){
-              this.tipsy.hide();
-              me.summaryFilter.clearFilter();
+            this.tipsy.hide();
+            me.summaryFilter.clearFilter();
           })
-          .append("span").attr("class","fa fa-times")
-          ;
+          .append("span").attr("class","fa fa-times");
 
       this.DOM.summaryName_text = this.DOM.summaryName.append("span").attr("class","summaryName_text editableText")
-          .attr("contenteditable",false)
-          .on("mousedown", function(){
-              // stop dragging event start
-              d3.event.stopPropagation();
-          })
-          .on("blur",function(){
-              this.parentNode.setAttribute("edittitle",false);
-              this.setAttribute("contenteditable", false);
-              me.browser.changeSummaryName(me.summaryName,this.textContent);
-          })
-          .on("keydown",function(){
-              if(event.keyCode===13){ // ENTER
-                  this.parentNode.setAttribute("edittitle",false);
-                  this.setAttribute("contenteditable", false);
-                  me.browser.changeSummaryName(me.summaryName,this.textContent);
-              }
-          })
-          .html(this.summaryName);
-
-      this.DOM.summaryName.append("span")
-          .attr("class","editTextButton fa")
-          .each(function(summary){
-              this.tipsy = new Tipsy(this, {
-                  gravity: 'w', title: function(){
-                      var curState=this.parentNode.getAttribute("edittitle");
-                      if(curState===null || curState==="false"){
-                          return kshf.lang.cur.EditTitle;
-                      } else {
-                          return "OK";
-                      }
-                  }
-              })
-          })
-          .on("mouseenter",function(){ this.tipsy.show(); })
-          .on("mouseleave",function(){ this.tipsy.hide(); })
-          .on("mousedown", function(){
-              // stop dragging event start
-              d3.event.stopPropagation();
-              d3.event.preventDefault();
-          })
-          .on("click",function(){
-              var curState=this.parentNode.getAttribute("edittitle");
-              if(curState===null || curState==="false"){
-                  this.parentNode.setAttribute("edittitle",true);
-                  var parentDOM = d3.select(this.parentNode);
-                  var v=parentDOM.select(".summaryName_text")[0][0];
-                  v.setAttribute("contenteditable",true);
-                  v.focus();
-              } else {
-                  this.parentNode.setAttribute("edittitle",false);
-                  var parentDOM = d3.select(this.parentNode);
-                  var v=parentDOM.select(".summaryName_text")[0][0];
-                  v.setAttribute("contenteditable",false);
-                  me.browser.changeSummaryName(me.summaryName,v.textContent);
-              }
-          });
+        .attr("contenteditable",false)
+        .each(function(summary){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditTitle }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("mousedown", function(){
+          // stop dragging event start
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("click", function(){
+          var curState=this.parentNode.getAttribute("edittitle");
+          if(curState===null || curState==="false"){
+            this.parentNode.setAttribute("edittitle",true);
+            var parentDOM = d3.select(this.parentNode);
+            var v=parentDOM.select(".summaryName_text")[0][0];
+            v.setAttribute("contenteditable",true);
+            v.focus();
+          } else {
+            this.parentNode.setAttribute("edittitle",false);
+            var parentDOM = d3.select(this.parentNode);
+            var v=parentDOM.select(".summaryName_text")[0][0];
+            v.setAttribute("contenteditable",false);
+            me.browser.changeSummaryName(me.summaryName,v.textContent);
+          }
+        })
+        .on("blur",function(){
+          this.parentNode.setAttribute("edittitle",false);
+          this.setAttribute("contenteditable", false);
+          me.browser.changeSummaryName(me.summaryName,this.textContent);
+        })
+        .on("keydown",function(){
+          if(event.keyCode===13){ // ENTER
+            this.parentNode.setAttribute("edittitle",false);
+            this.setAttribute("contenteditable", false);
+            me.browser.changeSummaryName(me.summaryName,this.textContent);
+          }
+        })
+        .html(this.summaryName);
 
     this.DOM.summaryIcons = this.DOM.headerGroup.append("span").attr("class","summaryIcons");
 
@@ -6191,11 +6214,11 @@ var Summary_Categorical_functions = {
         var me=this;
         this.DOM.catTextSearch = this.DOM.summaryControls.append("div").attr("class","textSearchBox catTextSearch hasLabelWidth");
         this.DOM.catTextSearchControl = this.DOM.catTextSearch.append("span")
-            .attr("class","textSearchControl fa")
-            .on("click",function() { 
-                me.DOM.catTextSearchControl.attr("showClear",false);
-                me.summaryFilter.clearFilter();
-            });
+          .attr("class","textSearchControl fa")
+          .on("click",function() { 
+            me.DOM.catTextSearchControl.attr("showClear",false);
+            me.summaryFilter.clearFilter();
+          });
         this.DOM.catTextSearchInput = this.DOM.catTextSearch.append("input")
             .attr("class","textSearchInput")
             .attr("type","text")
@@ -6365,6 +6388,8 @@ var Summary_Categorical_functions = {
 
       this.DOM.summaryConfig_CatHeight.selectAll(".configOption").attr("active",false);
       this.DOM.summaryConfig_CatHeight.selectAll(".pos_"+this.heightRow_category).attr("active",true);
+
+      if(this.cbSetHeight) this.cbSetHeight(this);
 
       setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },
@@ -7629,7 +7654,7 @@ var Summary_Interval_functions = {
       this.optimumTickWidth = 45;
 
       this.hasFloat = false;
-      this.hasTime  = false;
+      this.timeTyped = { base: false };
 
       this.unitName = undefined; // the text appended to the numeric value (TODO: should not apply to time)
       this.percentileChartVisible = false; // Percentile chart is a 1-line chart which shows %10-%20-%30-%40-%50 percentiles
@@ -7660,6 +7685,63 @@ var Summary_Interval_functions = {
       if(this.records.length<=1000) this.initializeAggregates();
     },
     /** -- */
+    isTimeStamp: function(){
+      return this.timeTyped.base;
+    },
+    /** TODO: Only relevant is timeStamp-- */
+    createMonthSummary: function(){
+      if(!this.isTimeStamp()) return;
+      if(this.summary_sub_month) return this.summary_sub_month;
+      var summaryID = this.summaryID;
+      this.summary_sub_month = this.browser.createSummary(
+        "Month of "+this.summaryName,
+        function(d){
+          var arr=d._valueCache[summaryID];
+          return (arr===null) ? null : arr.getUTCMonth();
+        },
+        'categorical'
+      );
+      this.summary_sub_month.setSortingOptions("id");
+      this.summary_sub_month.setCatLabel(_demo.Month);
+      this.summary_sub_month.initializeAggregates();
+      return this.summary_sub_month;
+    },
+    /** TODO: Only relevant is timeStamp-- */
+    createDaySummary: function(){
+      if(!this.isTimeStamp()) return;
+      if(this.summary_sub_day) return this.summary_sub_day;
+      var summaryID = this.summaryID;
+      this.summary_sub_day = this.browser.createSummary(
+        "WeekDay of "+this.summaryName,
+        function(d){
+          var arr=d._valueCache[summaryID];
+          return (arr===null) ? null : arr.getUTCDay();
+        },
+        'categorical'
+      );
+      this.summary_sub_day.setSortingOptions("id");
+      this.summary_sub_day.setCatLabel(_demo.DayOfWeek);
+      this.summary_sub_day.initializeAggregates();
+      return this.summary_sub_day;
+    },
+    /** TODO: Only relevant is timeStamp-- */
+    createHourSummary: function(){
+      if(!this.isTimeStamp()) return;
+      if(this.summary_sub_hour) return this.summary_sub_hour;
+      var summaryID = this.summaryID;
+      this.summary_sub_hour = this.browser.createSummary(
+        "Hour of "+this.summaryName,
+        function(d){
+          var arr=d._valueCache[summaryID];
+          return (arr===null) ? null : arr.getUTCHours();
+        },
+        'interval'
+      );
+      this.summary_sub_hour.initializeAggregates();
+      this.summary_sub_hour.setUnitName(":00");
+      return this.summary_sub_hour;
+    },
+    /** -- */
     initializeAggregates: function(){
       if(this.aggr_initialized) return;
       var me = this;
@@ -7671,7 +7753,7 @@ var Summary_Interval_functions = {
         if(v===undefined) v=null;
         if(v!==null){
           if(v instanceof Date){
-              this.hasTime = true;
+              this.timeTyped.base = true;
           } else {
             if(typeof v!=='number'){
               v = null;
@@ -7684,6 +7766,30 @@ var Summary_Interval_functions = {
         if(v===null) this.emptyRecordsAggr.addRecord(record);
       },this);
 
+      if(this.timeTyped.base===true){
+        // Check time resolutions
+        this.timeTyped.month = false;
+        this.timeTyped.hour = false;
+        this.timeTyped.day = false;
+        var tempDay = null;
+        this.records.forEach(function(record){
+          v = record._valueCache[this.summaryID];
+          if(v) {
+            if(v.getUTCMonth()!==0) this.timeTyped.month = true;
+            if(v.getUTCHours()!==0) this.timeTyped.hour = true;
+            // Day
+            if(!this.timeTyped.day){
+              if(tempDay===null) {
+                tempDay = v.getUTCDay();
+              } else {
+                if(v.getUTCDay()!==tempDay) this.timeTyped.day = true;
+                tempDay = v.getUTCDay();
+              }
+            }
+          }
+        },this);
+      }
+
       // remove records that map to null / undefined
       this.filteredItems = this.records.filter(function(record){
         var v = me.getRecordValue(record);
@@ -7691,7 +7797,7 @@ var Summary_Interval_functions = {
       });
 
       // Sort the items by their attribute value
-      var sortValue = this.hasTime?
+      var sortValue = this.isTimeStamp()?
           function(a){ return me.getRecordValue(a).getTime(); }:
           function(a){ return me.getRecordValue(a); };
       this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
@@ -7715,7 +7821,7 @@ var Summary_Interval_functions = {
       this.stepTicks = false;
 
       // TIME SCALE
-      if(this.hasTime) {
+      if(this.isTimeStamp()) {
         this.setScaleType('time',true);
         return;
       }
@@ -9700,6 +9806,7 @@ var Summary_Clique_functions = {
       
       // do not show number labels if the row height is small
       me.DOM.chartRoot.attr("showNumberLabels",me.getRowHeight()>=30);
+      me.DOM.chartRoot.attr("show_gridlines",(me.getRowHeight()>15));
       
       me.DOM.setPairGroup.attr("animate_position",false);
       me.refreshRow();
@@ -9707,6 +9814,7 @@ var Summary_Clique_functions = {
       me.refreshSetPair_Position();
       me.refreshViz_All();
       me.refreshWindowSize();
+      me.refreshSetPair_Strength();
       setTimeout(function(){
         me.DOM.setPairGroup.attr("animate_position",true);
       },1000);
@@ -9729,7 +9837,6 @@ var Summary_Clique_functions = {
     this.insertHeader();
     this.DOM.headerGroup.style("height",(this.setListSummary.getHeight_Header())+"px");
 
-    this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
     this.DOM.chartRoot = this.DOM.wrapper.append("span")
       .attr("class","Summary_Set")
       .attr("noanim",false)
@@ -9962,25 +10069,16 @@ var Summary_Clique_functions = {
     sdad.append("span").attr("class","fa fa-plus").on("mousedown",function(){
       // TODO: Keep calling as long as the mouse is clicked - to a certain limit
       me.setListSummary.setHeight_Category(me.getRowHeight()+1);
-      me.DOM.chartRoot.attr("show_gridlines",(me.getRowHeight()>15));
-      me.setListSummary.cbSetHeight();
-      me.refreshSetPair_Strength();
       d3.event.stopPropagation();
     });
     sdad.append("span").attr("class","fa fa-minus").on("mousedown",function(){
       // TODO: Keep calling as long as the mouse is clicked - to a certain limit
       me.setListSummary.setHeight_Category(me.getRowHeight()-1);
-      me.DOM.chartRoot.attr("show_gridlines",(me.getRowHeight()>15));
-      me.setListSummary.cbSetHeight();
-      me.refreshSetPair_Strength();
       d3.event.stopPropagation();
     });
     sdad.append("span").attr("class","fa fa-arrows-alt").on("mousedown",function(){
       // TODO: Keep calling as long as the mouse is clicked - to a certain limit
       me.setListSummary.setHeight_Category(10);
-      me.DOM.chartRoot.attr("show_gridlines",false);
-      me.setListSummary.cbSetHeight();
-      me.refreshSetPair_Strength();
       d3.event.stopPropagation();
     });
   },
