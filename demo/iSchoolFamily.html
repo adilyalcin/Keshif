@@ -36,7 +36,9 @@ google.setOnLoadCallback(function(){
       { name: "Lab Affiliations", 
         value: function(){ 
           if(this["Affiliations"]) return this["Affiliations"].split("+"); 
-        } },
+        },
+        catTooltip: 'id'
+        },
       { name: "Education", 
         layout: "left",
         value: function(){
@@ -71,7 +73,7 @@ google.setOnLoadCallback(function(){
 
         str+="<span class='jContact'>";
           if(this["Web URL"]) 
-            str+="<a href='"+this["Web URL"]+"' target='_blank' class='fa fa-home' title='Website'></a>";
+            str+="<a href='"+this["Web URL"]+"' target='_blank' class='fa fa-file-text' title='Website'></a>";
           if(this["E-Mail"]) 
             str+="<a href='mailto:"+this["E-Mail"]+"' target='_blank' class='fa fa-envelope' title='E-Mail'></a>";
           if(this["Telephone"]) 
