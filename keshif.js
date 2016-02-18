@@ -997,6 +997,8 @@ kshf.RecordDisplay = function(kshf_, config, root){
       this.addSortingOption(summary);
     },this);
     this.prepSortingOpts();
+    this.alphabetizeSortingOptions();
+
     this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
 
     this.DOM.root = root.select(".recordDisplay")
@@ -1520,7 +1522,6 @@ kshf.RecordDisplay.prototype = {
             if(index!==-1){
               me.sortingOpts.splice(index,1);
               if(index===me.sortingOpts.length) index--;
-              me.prepSortingOpts();
               me.setSortingOpt_Active(index);
               me.refreshSortingOptions();
               me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
@@ -1620,13 +1621,14 @@ kshf.RecordDisplay.prototype = {
         this.sortingOpts[i] = summary;
       },this);
 
-      // Sort sorting options alphabetically
+      if(this.DOM.removeSortOption)
+        this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
+    },
+    /** -- */
+    alphabetizeSortingOptions: function(){
       this.sortingOpts.sort(function(s1,s2){ 
         return s1.summaryName.localeCompare(s2.summaryName, { sensitivity: 'base' });
       });
-
-      if(this.DOM.removeSortOption)
-        this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
     },
     /** -- */
     setSortingOpt_Active: function(index){
