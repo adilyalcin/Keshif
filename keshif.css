@@ -175,6 +175,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf:not([authoringMode]) .recordInfo[changeMeasureBox]:hover {
   color: orangered;
 }
+.kshf[measurefunc="Avg"] .measurePercentControl {
+  pointer-events: none !important;
+}
+.kshf[measurefunc="Avg"] .relativeModeControl {
+  pointer-events: none !important;
+}
+.kshf[measurefunc="Avg"] .measurePercentControl:after {
+  content: "Avg" !important;
+}
+.kshf[measurefunc="Sum"] .measurePercentControl:after {
+  content: "Sum" !important;
+}
 .kshf[percentLabelMode] .measurePercentControl::after {
   content: "%";
 }
@@ -660,7 +672,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
   display: block;
-  background-color: #b8c7d2;
+  background-color: #b1bdc5;
 }
 .kshf > .attributePanel .nugget:hover {
   background-color: #E8E0CE;
@@ -855,40 +867,52 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   z-index: 10;
   margin-bottom: 2px;
 }
-.kshf .panel_Basic > .recordInfo > .activeRecordCount {
+.kshf .panel_Basic > .recordInfo > .activeRecordMeasure {
   display: inline-block;
   text-align: right;
   margin-right: 3px;
 }
+.kshf .panel_Basic > .recordInfo > .activeRecordMeasure > .unitName {
+  font-weight: 400;
+}
+.kshf .panel_Basic > .recordInfo > .measureFuncType {
+  font-weight: 400;
+}
 .kshf .panel_Basic > .recordInfo > .recordName {
   pointer-events: none;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper {
+.kshf .panel_Basic > .measureSelectBox_Wrapper {
   position: relative;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox {
+.kshf .panel_Basic > .measureSelectBox_Wrapper[showMeasureBox="true"] > .measureSelectBox {
+  display: block;
+}
+.kshf .panel_Basic .measureSelectBox {
   display: none;
   position: absolute;
   left: 5px;
   top: 1.6em;
   z-index: 200;
-  background-color: #EFEADF;
+  background-color: white;
   font-size: 0.9em;
   font-weight: 400;
   border-radius: 4px;
   border: solid 1px gray;
   color: black;
+  box-shadow: 2px 2px 8px gray;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureBoxClose {
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Close {
   position: absolute;
   top: 2px;
   right: 2px;
   cursor: pointer;
+  font-size: 1.2em;
+  color: gray;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureBoxClose:hover {
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Close:hover {
   color: orangered;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureHeader {
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Header {
   font-weight: 700;
   padding: 3px;
   background-color: #DDD9D0;
@@ -896,36 +920,95 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-bottom: solid 1px gray;
   white-space: nowrap;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType {
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content {
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  padding: 4px 10px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  vertical-align: top;
+  text-align: right;
+}
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType {
+  display: block;
+  margin-bottom: 2px;
+  cursor: pointer;
+  color: gray;
+}
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType:hover {
+  color: orangered;
+}
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType[selected] {
+  color: black;
+  font-weight: 600;
+}
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_Summaries {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: block;
+  padding: 0.5em 5px 0px 5px;
+  margin: 1em 0px 0px 5px;
+  text-align: center;
+  border-top: dotted 1px lightgray;
+}
+.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_RecordName {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: block;
+  vertical-align: top;
+  cursor: default;
+  font-weight: 600;
+  padding-left: 4px;
+}
+.kshf .panel_Basic .measureSelectBox > .measureOptionGroup {
   margin: 1px 6px;
   white-space: nowrap;
   cursor: pointer;
   border-bottom: solid 1px #CBC5B9;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_ {
+.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureOption {
   display: inline-block;
   vertical-align: top;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_:hover {
+.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureOption:hover {
   color: orangered;
-  background-color: #E1DDD3;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_summaryBox {
+.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureType_Box {
   display: inline-block;
   border-left: solid 1px gray;
   margin-left: 2px;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_summaryBox > .measureType_Summary {
+.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureType_Box > .measureType {
   cursor: pointer;
   display: block;
   margin-left: 2px;
 }
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper > .measureTypeSelectBox > .measureType > .measureType_summaryBox > .measureType_Summary:hover {
+.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureType_Box > .measureType:hover {
   color: orangered;
-  background-color: #E1DDD3;
-}
-.kshf .panel_Basic > .measureTypeSelectBoxWrapper[showMeasureBox="true"] > .measureTypeSelectBox {
-  display: block;
 }
 .kshf .panel_Basic > .breadcrumbs {
   -webkit-box-flex: 1;
@@ -2154,7 +2237,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none;
 }
 .kshf .aggrGlyph > span[class^="measure_Active"] {
-  background-color: #b8c7d2;
+  background-color: #b1bdc5;
   cursor: pointer;
   pointer-events: all;
 }
@@ -2242,8 +2325,8 @@ top:calc(50% - 5px);
   top: 4px;
   position: absolute;
   display: inline-block;
-  /*          background: linear-gradient(-135deg, transparent 75%, @color_bars_background 75%) 0 50%,
-          linear-gradient(-45deg, transparent 75%, @color_bars_background 75%) 0 50%;
+  /*          background: linear-gradient(-135deg, transparent 75%, @color_distr_total 75%) 0 50%,
+          linear-gradient(-45deg, transparent 75%, @color_distr_total 75%) 0 50%;
           background-position: top left, top left;
           background-repeat: repeat;
           background-size: 8px 8px; */
@@ -2264,7 +2347,7 @@ top:calc(50% - 5px);
   transition: all 500ms linear;
 }
 .kshf .aggrGlyph.setPairGlyph > .measure_Active {
-  fill: #b8c7d2;
+  fill: #b1bdc5;
 }
 .kshf .aggrGlyph.setPairGlyph > .measure_Highlighted {
   fill: #ff6a33;
@@ -2596,7 +2679,7 @@ top:calc(50% - 5px);
   height: 7px;
 }
 .kshf .summaryConfig .configOption > .bl_Active {
-  background-color: #b8c7d2;
+  background-color: #b1bdc5;
 }
 .kshf .summaryConfig .configOption > .bl_Highlighted {
   background-color: #ff6a33;
@@ -2716,23 +2799,23 @@ top:calc(50% - 5px);
 .kshf *[class^="percentileChart"] > .quantile.q_range:hover {
   border-style: solid;
   border-width: 1px 0px 1px 0px;
-  border-color: #7a96aa;
+  border-color: #778c9a;
   top: -2px;
 }
 .kshf .percentileChart_Active {
   opacity: 1;
 }
 .kshf .percentileChart_Active > .quantile.q_40_60 {
-  background-color: #99aebe;
+  background-color: #94a4af;
 }
 .kshf .percentileChart_Active > .quantile.q_30_70 {
-  background-color: #b8c7d2;
+  background-color: #b1bdc5;
 }
 .kshf .percentileChart_Active > .quantile.q_20_80 {
-  background-color: #ced8e0;
+  background-color: #c5ced4;
 }
 .kshf .percentileChart_Active > .quantile.q_10_90 {
-  background-color: #e7ecf0;
+  background-color: #dde2e6;
 }
 .kshf .percentileChart_Highlighted {
   border-top: solid 1px lightgray;
@@ -3185,7 +3268,7 @@ top:calc(50% - 8px);
   opacity: 0;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Active_Line {
-  stroke: #b8c7d2;
+  stroke: #b1bdc5;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlighted_Line {
   stroke: #ff6a33;
@@ -3206,8 +3289,8 @@ top:calc(50% - 8px);
   fill: #EEF0F2;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Active_Area {
-  fill: #d7e0e6;
-  stroke: #b8c7d2;
+  fill: #ced6db;
+  stroke: #b1bdc5;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlighted_Area {
   fill: rgba(255, 106, 51, 0.3);
@@ -3256,7 +3339,8 @@ top:calc(50% - 8px);
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .measurePercentControl {
   bottom: -1px;
-  left: -10px;
+  width: 21px;
+  left: -21px;
   text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
@@ -3424,7 +3508,7 @@ top:calc(50% - 8px);
   top: 1px;
   width: 1px;
   pointer-events: none;
-  background-color: #30b8c4;
+  background-color: #30B8C4;
   -webkit-transition: opacity 500ms;
   -moz-transition: opacity 500ms;
   -o-transition: opacity 500ms;
@@ -4080,8 +4164,19 @@ top:calc(50% - 8px);
   -webkit-flex-wrap: wrap;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  justify-content: space-around;
+  -webkit-box-align: start;
+  -moz-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -webkit-align-content: flex-start;
+  -ms-flex-line-pack: start;
+  align-content: flex-start;
+  -webkit-box-pack: justify;
+  -moz-box-pack: justify;
+  -ms-flex-pack: distribute;
   -webkit-justify-content: space-around;
+  justify-content: space-around;
 }
 .kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord {
   display: block;
@@ -4447,7 +4542,7 @@ top:calc(50% - 8px);
   border-radius: 10px;
   display: inline-block;
   margin-right: 2px;
-  background-color: #b8c7d2;
+  background-color: #b1bdc5;
 }
 .kshf .Summary_Set > .belowMatrix > .matrixInfo > .circleeee.borrderr {
   border-top: solid 2px #4000ff;

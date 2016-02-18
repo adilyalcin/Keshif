@@ -576,9 +576,13 @@ kshf.Record.prototype = {
     var oldWanted = this.isWanted;
     this.isWanted = this._filterCache.every(function(f){ return f; });
 
-    if(this.measure_Self!==0 && this.isWanted !== oldWanted){ // There is some change that affects computation
+    if(this.measure_Self && this.isWanted !== oldWanted){ // There is some change that affects computation
       var valToAdd = (this.isWanted && !oldWanted) ? this.measure_Self /*add*/ : -this.measure_Self /*remove*/;
-      this._aggrCache.forEach(function(aggr){ aggr.measure.Active += valToAdd; });
+      var cntToAdd = valToAdd>0?1:-1;
+      this._aggrCache.forEach(function(aggr){ 
+        aggr._measure.Active += valToAdd;
+        if(valToAdd) aggr.recCnt.Active+=cntToAdd;
+      });
     }
 
     this._filterCacheIsDirty = false;
@@ -618,14 +622,22 @@ kshf.Record.prototype = {
       // TODO: improve the conditional check!
       if(x.nodeName==="path") d3.select(x.parentNode.appendChild(x));
     }
-    this._aggrCache.forEach(function(aggr){ aggr.measure.Highlighted += this.measure_Self; }, this);
+    this._aggrCache.forEach(function(aggr){ 
+      if(this.measure_Self===null ||this.measure_Self===0) return;
+      aggr._measure.Highlighted += this.measure_Self;
+      aggr.recCnt.Highlighted++;
+    }, this);
     this.highlighted = true;
   },
   /** -- */
   remForHighlight: function(distribute){
     if(!this.isWanted || !this.highlighted) return;
     if(this.DOM.record) this.DOM.record.removeAttribute("selection");
-    if(distribute) this._aggrCache.forEach(function(aggr){ aggr.measure.Highlighted -= this.measure_Self; }, this);
+    if(distribute) this._aggrCache.forEach(function(aggr){ 
+      if(this.measure_Self===null || this.measure_Self===0) return;
+      aggr._measure.Highlighted -= this.measure_Self; 
+      aggr.recCnt.Highlighted--;
+    }, this);
     this.highlighted = false;
   },
   /** -- */
@@ -661,7 +673,16 @@ kshf.Aggregate.prototype = {
     // Items which are mapped/related to this item
     this.records = [];
 
-    this.measure = {
+    this._measure = {
+      Active: 0,
+      Highlighted: 0,
+      Total: 0,
+      Compared_A: 0,
+      Compared_B: 0,
+      Compared_C: 0
+    }
+
+    this.recCnt = {
       Active: 0,
       Highlighted: 0,
       Total: 0,
@@ -693,36 +714,61 @@ kshf.Aggregate.prototype = {
   addRecord: function(record){
     this.records.push(record);
     record._aggrCache.push(this);
-    this.measure.Total  += record.measure_Self;
-    if(record.isWanted) this.measure.Active += record.measure_Self;
+    if(record.measure_Self===null || record.measure_Self===0) return;
+    this._measure.Total  += record.measure_Self;
+    this.recCnt.Total++;
+    if(record.isWanted) {
+      this._measure.Active += record.measure_Self;
+      this.recCnt.Active++;
+    }
+  },
+  /** -- */
+  measure: function(v){
+    if(kshf.browser.measureFunc==="Avg"){
+      var r=this.recCnt[v];
+      return (r===0) ? 0 : this._measure[v]/r ; // avoid division by zero.
+    }
+    return this._measure[v];
   },
   /** -- */
   resetAggregateMeasures: function(){
-    this.measure = {
+    this._measure = {
       Active: 0,
       Highlighted: 0,
       Total: 0,
       Compared_A: 0,
       Compared_B: 0,
       Compared_C: 0
-    }
+    };
+    this.recCnt = {
+      Active: 0,
+      Highlighted: 0,
+      Total: 0,
+      Compared_A: 0,
+      Compared_B: 0,
+      Compared_C: 0
+    };
     this.records.forEach(function(record){
-      if(!record.isWanted) return;
-      this.measure.Total  += record.measure_Self;
-      this.measure.Active += record.measure_Self;
+      if(record.measure_Self===null || record.measure_Self===0) return;
+      this._measure.Total += record.measure_Self;
+      this.recCnt.Total++;
+      if(record.isWanted) {
+        this._measure.Active += record.measure_Self;
+        this.recCnt.Active++;
+      }
     },this);
   },
   /** -- */
   ratioHighlightToTotal: function(){
-    return this.measure.Highlighted / this.measure.Total;
+    return this._measure.Highlighted / this._measure.Total;
   },
   /** -- */
   ratioHighlightToActive: function(){
-    return this.measure.Highlighted / this.measure.Active;
+    return this._measure.Highlighted / this._measure.Active;
   },
   /** -- */
   ratioCompareToActive: function(cT){
-    return this.measure["Compared_"+cT] / this.measure.Active;
+    return this._measure["Compared_"+cT] / this._measure.Active;
   },
 
   /** -- */
@@ -808,6 +854,7 @@ var Aggregate_EmptyRecords_functions = {
   /** -- */
   init: function(){
     kshf.Aggregate.prototype.init.call(this,{id: null},'id');
+    this.isVisible = true;
   }
 }
 for(var index in Aggregate_EmptyRecords_functions){
@@ -2232,10 +2279,7 @@ kshf.Panel.prototype = {
     },
     /** --- */
     updateSummariesWidth: function(){
-      this.summaries.forEach(function(summary){
-        if(summary.type==='categorical') summary.updateBarPreviewScale2Active();
-        summary.refreshWidth();
-      });
+      this.summaries.forEach(function(summary){ summary.refreshWidth(); });
     },
     /** --- */
     updateWidth_QueryPreview: function(){
@@ -2302,6 +2346,7 @@ kshf.Browser = function(options){
     this.showDropZones = false;
 
     this.mapColorTheme = "converge";
+    this.measureFunc = "Count";
 
     this.mouseSpeed = 0; // includes touch-screens...
 
@@ -2337,6 +2382,7 @@ kshf.Browser = function(options){
       .classed("kshf",true)
       .attr("noanim",true)
       .attr("record_display","none")
+      .attr("measureFunc",this.measureFunc)
       .style("position","relative")
       //.style("overflow-y","hidden")
       .on("mousemove",function(d,e){
@@ -2414,13 +2460,15 @@ kshf.Browser = function(options){
 
     kshf.loadFont();
 
+    kshf.browsers.push(this);
+    kshf.browser = this;
+
     if(options.source){
       window.setTimeout(function() { me.loadSource(options.source); }, 10);
     } else {
       this.panel_infobox.attr("show","source");
     }
     
-    kshf.browsers.push(this);
 };
 
 kshf.Browser.prototype = {
@@ -2579,33 +2627,64 @@ kshf.Browser.prototype = {
     /** -- */
     insertDOM_measureSelect: function(){
       var me=this;
-      if(this.DOM.measureTypeSelectBox) return;
-      this.DOM.measureTypeSelectBox = this.DOM.measureTypeSelectBoxWrapper.append("div").attr("class","measureTypeSelectBox");
-      this.DOM.measureTypeSelectBox.append("div").attr("class","measureBoxClose fa fa-times-circle")
-        .on("click",function(){ me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",false); });
-      this.DOM.measureTypeSelectBox.append("div").attr("class","measureHeader").text("Choose measure");
-      this.DOM.measureTypeSelectBox.append("div").attr("class","measureType")
-        .append("span").attr("class","measureType_").text("Number of "+this.itemName)
-        .on("click",function(){
-          me.closeMeasureSelectBox();
-          me.setMeasureSummary(); // no summary, will revert to count
+      if(this.DOM.measureSelectBox) return;
+      this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox");
+      this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
+        .on("click",function(){ me.closeMeasureSelectBox(); });
+      this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure");
+
+      var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
+      m.append("span").attr("class","measureSelectBox_Content_FuncType")
+        .selectAll(".measureFunctionType").data([
+          {v:"Count", l:"Count"},
+          {v:"Sum", l:"Sum (Total)"},
+          {v:"Avg", l:"Average"},
+        ]).enter()
+        .append("div").attr("class", function(d){ return "measureFunctionType measureFunction_"+d.v})
+        .html(function(d){ return d.l; })
+        .on("click",function(d){
+          if(d.v==="Count"){
+            me.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled","true");
+            me.setMeasureFunction(); // no summary, will revert to count
+            return;
+          }
+          me.DOM.measureSelectBox.selectAll(".measureFunctionType").attr("selected",null);
+          this.setAttribute("selected","");
+          me.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",null);
+          me.setMeasureFunction( me.DOM.sdsso23oadsa[0][0].selectedOptions[0].__data__ , d.v);
         });
-      var x = this.DOM.measureTypeSelectBox.append("div").attr("class","measureType");
-      x.append("span").attr("class","measureType_").text("Sum (Total) of ... ");
-      x.append("span").attr("class","measureType_summaryBox")
-        .selectAll(".measureType_Summary").data(me.getMeasurableSummaries()).enter()
-        .append("div").attr("class","measureType_Summary") 
-        .html(function(summary){ return summary.summaryName; })
-        .on("click", function(d){
-          me.closeMeasureSelectBox();
-          me.setMeasureSummary(d);
+
+      this.DOM.sdsso23oadsa = m.append("div").attr("class","measureSelectBox_Content_Summaries")
+        .append("select").attr("class","sdsso23oadsa")
+        .on("change",function(){
+          var s = this.selectedOptions[0].__data__;
+          me.setMeasureFunction(s,me.measureFunc);
         });
+
+      this.DOM.sdsso23oadsa
+        .selectAll(".measureSummary").data(this.getMeasurableSummaries()).enter()
+        .append("option")
+          .attr("class",function(summary){ return "measureSummary measureSummary_"+summary.summaryID;; })
+          .attr("value",function(summary){ return summary.summaryID; })
+          .attr("selected", function(summary){ return summary===me.measureSummary?"true":null })
+          .html(function(summary){ return summary.summaryName; })
+
+      m.append("span").attr("class","measureSelectBox_Content_RecordName").html(" of "+this.itemName);
+
+      this.refreshMeasureSelectBox();
+    },
+    /** -- */
+    refreshMeasureSelectBox: function(){
+      // measureBox stuf
+      this.DOM.measureSelectBox.selectAll(".measureFunctionType").attr("selected",null);
+      this.DOM.measureSelectBox.select(".measureFunction_"+this.measureFunc).attr("selected","");
+      this.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",this.measureFunc==="Count"?"true":null);
     },
     /** -- */
     closeMeasureSelectBox: function(){
-      this.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",false); // Close box
-      this.DOM.measureTypeSelectBox = undefined;
-      var d = this.DOM.measureTypeSelectBoxWrapper[0][0];
+      this.DOM.measureSelectBox_Wrapper.attr("showMeasureBox",false); // Close box
+      this.DOM.measureSelectBox = undefined;
+      var d = this.DOM.measureSelectBox_Wrapper[0][0];
       while (d.hasChildNodes()) d.removeChild(d.lastChild);
     },
     /** -- */
@@ -2618,30 +2697,32 @@ kshf.Browser.prototype = {
 
       this.DOM.panel_Basic = this.DOM.panel_Wrapper.append("div").attr("class","panel_Basic");
 
-      this.DOM.measureTypeSelectBoxWrapper = this.DOM.panel_Basic.append("span").attr("class","measureTypeSelectBoxWrapper")
-      .attr("showMeasureBox",false);
+      this.DOM.measureSelectBox_Wrapper = this.DOM.panel_Basic.append("span").attr("class","measureSelectBox_Wrapper")
+        .attr("showMeasureBox",false);
       
       this.DOM.recordInfo = this.DOM.panel_Basic.append("span")
         .attr("class","recordInfo editableTextContainer")
         .attr("edittitle",false)
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "Change measure" }); })
         .on("mouseenter",function(){
-          if(me.authoringMode) return; 
-          if(me.getMeasurableSummaries().length===0) return;
+          if(me.authoringMode || me.getMeasurableSummaries().length===0) return;
           this.tipsy.show(); 
         })
         .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
-          if(me.authoringMode) return;
-          if(me.getMeasurableSummaries().length===0) return;
+          if(me.authoringMode || me.getMeasurableSummaries().length===0) return;
           this.tipsy.hide();
+          if(me.DOM.measureSelectBox) {
+            me.closeMeasureSelectBox();
+            return;
+          }
           me.insertDOM_measureSelect();
-          me.DOM.measureTypeSelectBoxWrapper.attr("showMeasureBox",true);
+          me.DOM.measureSelectBox_Wrapper.attr("showMeasureBox",true);
         });
 
-      this.DOM.activeRecordCount = this.DOM.recordInfo.append("span").attr("class","activeRecordCount");
+      this.DOM.activeRecordMeasure = this.DOM.recordInfo.append("span").attr("class","activeRecordMeasure");
 
-      this.DOM.measureAggrType = this.DOM.recordInfo.append("span").attr("class","measureAggrType");
+      this.DOM.measureFuncType = this.DOM.recordInfo.append("span").attr("class","measureFuncType");
 
       this.DOM.recordName = this.DOM.recordInfo.append("span").attr("class","recordName editableText")
         .each(function(){
@@ -2956,8 +3037,9 @@ kshf.Browser.prototype = {
     refreshTotalViz: function(){
       var me=this;
       var totalScale = d3.scale.linear()
-        .domain([0, this.allRecordsAggr.measure[this.ratioModeActive ? 'Active' : 'Total']])
-        .range([0, this.getWidth_Browser()]);
+        .domain([0, this.allRecordsAggr.measure(this.ratioModeActive ? 'Active' : 'Total') ])
+        .range([0, this.getWidth_Browser()])
+        .clamp(true);
 
       var totalC = this.getActiveComparedCount();
       totalC++; // 1 more for highlight
@@ -2968,11 +3050,11 @@ kshf.Browser.prototype = {
 
       this.DOM.totalGlyph.each(function(d){
         if(d==="Total" || d==="Highlighted" || d==="Active"){
-          kshf.Util.setTransform(this, "scale("+totalScale(me.allRecordsAggr.measure[d])+","+VizHeight+")");
+          kshf.Util.setTransform(this, "scale("+totalScale(me.allRecordsAggr.measure(d))+","+VizHeight+")");
         } else {
           kshf.Util.setTransform(this, 
             "translateY("+(stp*curC)+"px) "+
-            "scale("+totalScale(me.allRecordsAggr.measure[d])+","+stp+")");
+            "scale("+totalScale(me.allRecordsAggr.measure(d))+","+stp+")");
           curC++;
         }
       });
@@ -3953,7 +4035,7 @@ kshf.Browser.prototype = {
 
         if(this.options.measure){
           var summary = this.summaries_by_name[this.options.measure];
-          this.setMeasureSummary(summary);
+          this.setMeasureFunction(summary,"Sum");
         }
         this.refreshMeasureSelectAction();
 
@@ -4119,24 +4201,25 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refresh_ActiveRecordCount: function(){
-      var noneSelected = this.allRecordsAggr.measure.Active===0;
-      var numStr = this.allRecordsAggr.measure.Active.toLocaleString();
+      if(this.allRecordsAggr.recCnt.Active===0){
+        this.DOM.activeRecordMeasure.html("No"); return;
+      }
+      var numStr = this.allRecordsAggr.measure('Active').toLocaleString();
       if(this.measureSummary){
         numStr = this.measureSummary.printWithUnitName(numStr);
       }
-      this.DOM.activeRecordCount.html(noneSelected?"No":numStr);
+      this.DOM.activeRecordMeasure.html(numStr);
     },
     /** -- */
     update_Records_Wanted_Count: function(){
       this.recordsWantedCount = 0;
-      this.records.forEach(function(record){
-        if(record.isWanted) this.recordsWantedCount++;
-      },this);
+      this.records.forEach(function(record){ if(record.isWanted) this.recordsWantedCount++; },this);
       this.refreshTotalViz();
       this.refresh_ActiveRecordCount();
     },
     /** -- */
     updateAfterFilter: function () {
+      kshf.browser = this;
       this.clearSelect_Compare('A');
       this.clearSelect_Compare('B');
       this.clearSelect_Compare('C');
@@ -4184,27 +4267,12 @@ kshf.Browser.prototype = {
         this.selectedAggr["Compared_"+cT].clearCompare(cT);
         this.selectedAggr["Compared_"+cT] = null;
       }
-      this.allAggregates.forEach(function(aggr){ aggr.measure["Compared_"+cT] = 0; });
+      var ccT = "Compared_"+cT;
+      this.allAggregates.forEach(function(aggr){ 
+        aggr._measure[ccT] = 0;
+        aggr.recCnt[ccT] = 0;
+      });
       this.summaries.forEach(function(summary){ summary.refreshViz_Compare_All(); });
-    },
-    /** -- */
-    do_setSelect_Compare: function(selSummary, selAggregate, cT){
-      var compId = "Compared_"+cT;
-
-      this.vizActive["Compared_"+cT] = true;
-      this.DOM.root.attr("selectCompared_"+cT,true);
-      this.selectedAggr[compId] = selAggregate;
-      this.selectedAggr[compId].selectCompare(cT);
-
-      this.allAggregates.forEach(function(aggr){
-        aggr.measure[compId] = 
-          this.preview_not ? (aggr.measure.Active-aggr.measure.Highlighted) : aggr.measure.Highlighted;
-      },this);
-
-      this.summaries.forEach(function(summary){ summary.refreshViz_Compare_All(); });
-      this.refreshTotalViz();
-
-      this.setCrumbAggr(compId,selSummary);
     },
     /** -- */
     setSelect_Compare: function(selSummary, selAggregate, noReclick){
@@ -4213,11 +4281,42 @@ kshf.Browser.prototype = {
         this.clearSelect_Compare(selAggregate.compared);
         if(noReclick) { this.clearCrumbAggr(x); return; }
       }
-      var target_cT = "A"; // Which compare type to store? A, B, C
+      var cT = "A"; // Which compare type to store? A, B, C
       if(this.DOM.root.attr("selectCompared_A")){
-        target_cT = this.DOM.root.attr("selectCompared_B") ? "C" : "B";
+        cT = this.DOM.root.attr("selectCompared_B") ? "C" : "B";
       }
-      this.do_setSelect_Compare(selSummary, selAggregate, target_cT);
+
+      var compId = "Compared_"+cT;
+
+      this.vizActive["Compared_"+cT] = true;
+      this.DOM.root.attr("selectCompared_"+cT,true);
+      this.selectedAggr[compId] = selAggregate;
+      this.selectedAggr[compId].selectCompare(cT);
+
+      if(!this.preview_not){
+        this.allAggregates.forEach(function(aggr){
+          aggr._measure[compId] = aggr._measure.Highlighted;
+          aggr.recCnt[compId] = aggr.recCnt.Highlighted;
+        },this);
+      } else {
+        this.allAggregates.forEach(function(aggr){
+          aggr._measure[compId] = aggr._measure.Active - aggr._measure.Highlighted;
+          aggr.recCnt[compId] = aggr.recCnt.Active - aggr.recCnt.Highlighted;
+        },this);
+      }
+
+      this.summaries.forEach(function(summary){ 
+        if(this.measureFunc==="Avg" && summary.updateChartScale_Measure){
+          // refreshes all visualizations automatically
+          summary.updateChartScale_Measure();
+        } else {
+          summary.refreshViz_Compare_All();
+        }
+      },this);
+
+      this.refreshTotalViz();
+
+      this.setCrumbAggr(compId,selSummary);
     },
     /** -- */
     clearSelect_Highlight: function(){
@@ -4230,7 +4329,10 @@ kshf.Browser.prototype = {
         this.selectedAggr.Highlighted = undefined;
       }
 
-      this.allAggregates.forEach(function(aggr){ aggr.measure.Highlighted = 0; });
+      this.allAggregates.forEach(function(aggr){
+        aggr._measure.Highlighted = 0;
+        aggr.recCnt.Highlighted = 0;
+      });
       this.summaries.forEach(function(summary){ summary.refreshViz_Highlight(); });
       this.refreshTotalViz();
 
@@ -4274,21 +4376,34 @@ kshf.Browser.prototype = {
       crumb.attr("ready",false);
       setTimeout(function(){ crumb[0][0].parentNode.removeChild(crumb[0][0]); }, 350);
     },
-    /** -- */
-    setMeasureSummary: function(summary){
+    /** funType: "Sum" or "Avg" */
+    setMeasureFunction: function(summary, funcType){
       if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
         // Clearing measure summary (defaulting to count)
         if(this.measureSummary===undefined) return; // No update
         this.measureSummary = undefined;
         this.records.forEach(function(record){ record.measure_Self = 1; });
-        this.DOM.measureAggrType.text("");
+        this.DOM.measureFuncType.text("");
+        this.measureFunc = "Count";
       } else {
-        if(this.measureSummary===summary) return; // No update
+        if(this.measureSummary===summary && this.measureFunc===funcType) return; // No update
         this.measureSummary = summary;
+        this.measureFunc = funcType;
         summary.initializeAggregates();
         this.records.forEach(function(record){ record.measure_Self = summary.getRecordValue(record); });
-        this.DOM.measureAggrType.html("Total "+summary.summaryName+" of ");
+        this.DOM.measureFuncType.html( ((this.measureFunc==="Sum")?"Total ":"Average ")+ summary.summaryName+" of ");
       }
+
+      this.DOM.root.attr("measureFunc",this.measureFunc);
+
+      if(this.measureFunc==="Avg"){
+        // Remove ratio and percent modes
+        if(this.ratioModeActive){ this.setRelativeMode(false); }
+        if(this.percentModeActive){ this.setPercentLabelMode(false); }
+      }
+
+      this.refreshMeasureSelectBox();
+
       this.allAggregates.forEach(function(aggr){ aggr.resetAggregateMeasures(); });
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.update_Records_Wanted_Count();
@@ -4472,28 +4587,33 @@ kshf.Browser.prototype = {
       } else {
         if(!aggr.isVisible) return "";
         if(this.measureLabelType){
-          _val = aggr.measure[this.measureLabelType];
+          _val = aggr.measure(this.measureLabelType);
         } else {
           if(summary && summary === this.highlightSelectedSummary && !summary.isMultiValued){
-            _val = aggr.measure.Active;
+            _val = aggr.measure('Active');
           } else {
             _val = this.vizActive.Highlighted?
-              (this.preview_not? aggr.measure.Active - aggr.measure.Highlighted : aggr.measure.Highlighted ) :
-              aggr.measure.Active;
+              (this.preview_not? aggr._measure.Active - aggr._measure.Highlighted : aggr.measure('Highlighted') ) :
+              aggr.measure('Active');
           }
         }
         if(this.percentModeActive){
-          if(aggr.measure.Active===0) return "";
+          // Cannot be Avg-function
+          if(aggr._measure.Active===0) return "";
           if(this.ratioModeActive){
             if(!this.vizActive.Highlighted) return "";
-            _val = 100*_val/aggr.measure.Active;
+            _val = 100*_val/aggr._measure.Active;
           } else {
-            _val = 100*_val/this.allRecordsAggr.measure.Active;
+            _val = 100*_val/this.allRecordsAggr._measure.Active;
           }
         }
       }
 
       if(_val<0) _val=0; // TODO? There is it, again... Just sanity I guess
+
+      if(this.measureFunc!=="Count"){ // Avg or Sum
+        _val = Math.round(_val);
+      }
 
       if(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g"){
         // MAP - cannot insert % as an inline tag
@@ -4744,7 +4864,6 @@ kshf.Summary_Base.prototype = {
 
     if(this.type=="categorical"){
       this.refreshLabelWidth();
-      this.updateBarPreviewScale2Active();
     }
     if(this.type==='interval'){
       if(this.browser.recordDisplay)
@@ -5336,7 +5455,7 @@ kshf.Summary_Base.prototype = {
       .each(function(){
         me.emptyRecordsAggr.DOM.aggrGlyph = this;
         this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
-          var x = me.emptyRecordsAggr.measure.Active;
+          var x = me.browser.getMeasureLabel(me.emptyRecordsAggr, me);
           // TODO: Number should depend on filtering state, and also reflect percentage-mode
           return "<b>"+x+"</b> "+me.browser.itemName+" (none)"; 
         }});
@@ -5376,9 +5495,9 @@ kshf.Summary_Base.prototype = {
     var interp = d3.interpolateHsl(d3.rgb(211,211,211)/*lightgray*/, d3.rgb(255,69,0));
 
     this.DOM.unmapped_records
-      .style("display",this.emptyRecordsAggr.measure.Active>0?"block":"none")
+      .style("display",this.emptyRecordsAggr.recCnt.Active>0?"block":"none")
       .style("color", function(){
-        if(me.emptyRecordsAggr.measure.Total===0) return;
+        if(me.emptyRecordsAggr.recCnt.Active===0) return;
         return interp(me.emptyRecordsAggr.ratioHighlightToActive());
       });
   },
@@ -5386,18 +5505,19 @@ kshf.Summary_Base.prototype = {
     var totalC = this.browser.getActiveComparedCount();
     if(totalC===0) return;
     totalC++; // 1 more for highlight
-    var activeNum = 0;
+    if(this.browser.measureFunc==="Avg") totalC++;
+    var activeNum = totalC-2;
     if(this.browser.vizActive.Compared_A) {
       this.refreshViz_Compare("A", activeNum, totalC);
-      activeNum++;
+      activeNum--;
     }
     if(this.browser.vizActive.Compared_B) {
       this.refreshViz_Compare("B", activeNum, totalC);
-      activeNum++;
+      activeNum--;
     }
     if(this.browser.vizActive.Compared_C) {
       this.refreshViz_Compare("C", activeNum, totalC);
-      activeNum++;
+      activeNum--;
     }
   },
   /** -- */
@@ -5712,8 +5832,8 @@ var Summary_Categorical_functions = {
         if(!a.f_selected() &&  b.f_selected()) return  1;
         if( a.f_selected() && !b.f_selected()) return -1;
         // Rest
-        var x = b.measure.Active - a.measure.Active;
-        if(x===0) x = b.measure.Total - a.measure.Total;
+        var x = b.measure('Active') - a.measure('Active');
+        if(x===0) x = b.measure('Total') - a.measure('Total');
         if(x===0) x = idCompareFunc(a,b); // stable sorting. ID's would be string most probably.
         if(inverse) x=-x;
         return x;
@@ -6095,34 +6215,32 @@ var Summary_Categorical_functions = {
         this.refreshConfigRowCount();
 
         this.DOM.scrollToTop = this.DOM.summaryCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
-            .each(function(){
-                this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop });
-            })
-            .on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("click",function(d){
-                this.tipsy.hide();
-                kshf.Util.scrollToPos_do(me.DOM.aggrGroup[0][0],0);
-            })
-            ;
+          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
+          .on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); })
+          .on("click",function(d){
+            this.tipsy.hide();
+            kshf.Util.scrollToPos_do(me.DOM.aggrGroup[0][0],0);
+          })
+          ;
 
         this.DOM.aggrGroup = this.DOM.summaryCategorical.append("div").attr("class","aggrGroup")
-            .on("mousedown",function(){
-                d3.event.stopPropagation();
-                d3.event.preventDefault();
-            })
-            .on("scroll",function(d){
-                if(kshf.Util.ignoreScrollEvents===true) return;
-                me.scrollTop_cache = me.DOM.aggrGroup[0][0].scrollTop;
+          .on("mousedown",function(){
+            d3.event.stopPropagation();
+            d3.event.preventDefault();
+          })
+          .on("scroll",function(d){
+            if(kshf.Util.ignoreScrollEvents===true) return;
+            me.scrollTop_cache = me.DOM.aggrGroup[0][0].scrollTop;
 
-                me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
+            me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
-                me.firstCatIndexInView = Math.floor(me.scrollTop_cache/me.heightRow_category);
-                me.refreshScrollDisplayMore(me.firstCatIndexInView+me.catCount_InDisplay);
-                me.updateCatIsInView();
-                me.cullAttribs();
-                me.refreshMeasureLabel();
-            });
+            me.firstCatIndexInView = Math.floor(me.scrollTop_cache/me.heightRow_category);
+            me.refreshScrollDisplayMore(me.firstCatIndexInView+me.catCount_InDisplay);
+            me.updateCatIsInView();
+            me.cullAttribs();
+            me.refreshMeasureLabel();
+          });
         this.DOM.aggrGroup_list = this.DOM.aggrGroup;
 
         this.DOM.catMap_Base = this.DOM.summaryCategorical.append("div").attr("class","catMap_Base");
@@ -6282,15 +6400,13 @@ var Summary_Categorical_functions = {
 
     /** returns the maximum active aggregate value per row in chart data */
     getMaxAggr_Active: function(){
-      return d3.max(this._cats, function(cat){ return cat.measure.Active; });
+      return d3.max(this._cats, function(aggr){ return aggr.measure('Active'); });
     },
     /** returns the maximum total aggregate value stored per row in chart data */
     getMaxAggr_Total: function(){
       if(this._cats===undefined) return 0;
       if(this.isEmpty()) return 0;
-      if(this._maxBarValueMaxPerAttrib) return this._maxBarValueMaxPerAttrib;
-      this._maxBarValueMaxPerAttrib = d3.max(this._cats, function(d){ return d.measure.Total; });
-      return this._maxBarValueMaxPerAttrib;
+      return d3.max(this._cats, function(aggr){ return aggr.measure('Total'); });
     },
     /** -- */
     _update_Selected: function(){
@@ -6335,14 +6451,20 @@ var Summary_Categorical_functions = {
       return this.categoriesHeight<this._cats.length*this.heightRow_category;
     },
     /** -- */
-    updateBarPreviewScale2Active: function(){
-      if(this.isEmpty()) return; // nothing to do
-      var maxAggr_Active = this.getMaxAggr_Active();
+    updateChartScale_Measure: function(){
+      if(!this.aggr_initialized || this.isEmpty()) return; // nothing to do
+      var maxMeasureValue = this.getMaxAggr_Active();
+      if(this.browser.measureFunc==="Avg"){
+        ["Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(distr){
+          if(!browser.vizActive[distr]) return;
+          maxMeasureValue = Math.max(maxMeasureValue, d3.max(this._cats, function(aggr){return aggr.measure(distr);} ) );
+        },this);
+      }
 
       this.chartScale_Measure
         .rangeRound([0, this.getWidth_CatChart()])
         .nice(this.chartAxis_Measure_TickSkip())
-        .domain([ 0,(maxAggr_Active===0)?1:maxAggr_Active ]);
+        .domain([ 0,(maxMeasureValue===0)?1:maxMeasureValue ]);
 
       this.refreshViz_All();
     },
@@ -6407,7 +6529,7 @@ var Summary_Categorical_functions = {
         return;
       }
       
-      this.updateBarPreviewScale2Active();
+      this.updateChartScale_Measure();
       this.refreshMeasureLabel();
 
       this.refreshViz_EmptyRecords();
@@ -6426,6 +6548,7 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshWidth: function(){
       if(this.DOM.summaryCategorical===undefined) return;
+      this.updateChartScale_Measure();
       this.DOM.summaryCategorical.style("width",this.getWidth()+"px");
       this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
       this.DOM.chartAxis_Measure.selectAll(".relativeModeControl")
@@ -6443,14 +6566,14 @@ var Summary_Categorical_functions = {
         var me = this;
         var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
         this.DOM.measure_Total.each(function(_cat){
-          kshf.Util.setTransform(this, "translateX("+width_Text+"px) scaleX("+me.chartScale_Measure(_cat.measure.Total)+")");
+          kshf.Util.setTransform(this, "translateX("+width_Text+"px) scaleX("+me.chartScale_Measure(_cat.measure('Total'))+")");
         });
         this.DOM.measureTotalTip
           .each(function(_cat){
-            kshf.Util.setTransform(this, "translateX("+(me.chartScale_Measure(_cat.measure.Total)+width_Text)+"px)");
+            kshf.Util.setTransform(this, "translateX("+(me.chartScale_Measure.range()[1]+width_Text)+"px)");
           })
           .style("opacity",function(_cat){
-            return (_cat.measure.Total>me.chartScale_Measure.domain()[1])?1:0;
+            return (_cat.measure('Total')>me.chartScale_Measure.domain()[1])?1:0;
           });
       }
     },
@@ -6461,7 +6584,7 @@ var Summary_Categorical_functions = {
         1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
       var maxAggr_Active = this.getMaxAggr_Active();
       var boundMax = this.browser.percentModeActive?
-        100*maxAggr_Active/this.browser.allRecordsAggr.measure.Active :
+        100*maxAggr_Active/this.browser.allRecordsAggr.measure('Active') :
         maxAggr_Active ;
       
       this.mapColorScale = d3.scale.linear()
@@ -6481,7 +6604,7 @@ var Summary_Categorical_functions = {
         var maxAggr_Active = this.getMaxAggr_Active();
 
         var boundMin, boundMax;
-        var allRecordsAggr_measure_Active = this.browser.allRecordsAggr.measure.Active;
+        var allRecordsAggr_measure_Active = this.browser.allRecordsAggr.measure('Active');
         if(this.browser.percentModeActive){
           boundMin = 0;
           boundMax = 100*maxAggr_Active/allRecordsAggr_measure_Active;
@@ -6497,7 +6620,7 @@ var Summary_Categorical_functions = {
 
         this.DOM.measure_Active
           .attr("fill", function(_cat){ 
-            var v = _cat.measure.Active;
+            var v = _cat.measure('Active');
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
             if(me.browser.percentModeActive){
               v = 100*v/allRecordsAggr_measure_Active;
@@ -6508,7 +6631,7 @@ var Summary_Categorical_functions = {
             return me.mapColorQuantize(vv); 
           })
           .attr("stroke", function(_cat){ 
-            var v = _cat.measure.Active;
+            var v = _cat.measure('Active');
             if(me.browser.percentModeActive){
               v = 100*v/allRecordsAggr_measure_Active;
             }
@@ -6525,26 +6648,21 @@ var Summary_Categorical_functions = {
 
       this.DOM.measure_Active.each(function(_cat){
         kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX("+(ratioMode?
-          ((_cat.measure.Active===0)?0:maxWidth):
-          me.chartScale_Measure(_cat.measure.Active)
+          ((_cat.measure_Active===0)?0:maxWidth):
+          me.chartScale_Measure(_cat.measure('Active'))
         )+")");
       });
-      var func_clickAreaScale = function(_cat){
-        return width_Text+(ratioMode?
-          ((_cat.measure.Active===0)?0:maxWidth):
-          me.chartScale_Measure(_cat.measure.Active)
-        )+"px";
-      };
       this.DOM.attribClickArea.style("width",function(_cat){
           return width_Text+(ratioMode?
-            ((_cat.measure.Active===0)?0:maxWidth):
-            Math.min((me.chartScale_Measure(_cat.measure.Active)+10),maxWidth)
+            ((_cat.recCnt.Active===0)?0:maxWidth):
+            Math.min((me.chartScale_Measure(_cat.measure('Active'))+10),maxWidth)
           )+"px";
         });
       this.DOM.lockButton
         .attr("inside",function(_cat){
           if(ratioMode) return "";
-          if(maxWidth-me.chartScale_Measure(_cat.measure.Active)<10) return "";
+          if(maxWidth-me.chartScale_Measure(_cat.measure('Active'))<10) return "";
+          return null; // nope, not inside
         });
     },
     /** -- */
@@ -6581,17 +6699,16 @@ var Summary_Categorical_functions = {
         }
         if(!isThisIt || this.isMultiValued) {
           var boundMin = ratioMode ? 
-            d3.min(this._cats, function(_cat){ 
-              if(_cat.measure.Active===0 || _cat.measure.Highlighted===0) return null;
-              return 100*_cat.ratioHighlightToActive(); }) :
+            d3.min(this._cats, function(aggr){ 
+              if(aggr.recCnt.Active===0 || aggr.recCnt.Highlighted===0) return null;
+              return 100*aggr.ratioHighlightToActive(); }) :
             1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
           var boundMax = ratioMode ? 
             d3.max(this._cats, function(_cat){ 
-              if(_cat.measure.Active===0) return null;
-              return 100*_cat.ratioHighlightToActive(); }) : 
-            d3.max(this._cats, function(_cat){ 
-              return _cat.measure.Highlighted;
-            });
+              if(_cat._measure.Active===0) return null;
+              return 100*_cat.ratioHighlightToActive(); })
+            : 
+            d3.max(this._cats, function(_cat){ return _cat.measure('Highlighted'); });
           
           this.DOM.catMapColorScale.select(".boundMin").text(Math.round(boundMin));
           this.DOM.catMapColorScale.select(".boundMax").text(Math.round(boundMax));
@@ -6606,12 +6723,12 @@ var Summary_Categorical_functions = {
             //if(_cat === me.browser.selectedAggr.Highlighted) return "";
             var _v;
             if(me.isMultiValued || me.browser.highlightSelectedSummary!==me){
-              v = _cat.measure.Highlighted;
+              v = _cat.measure('Highlighted');
               if(ratioMode) {
-                v = 100*v/_cat.measure.Active;
+                v = 100*v/_cat.measure('Active');
               }
             } else {
-              v = _cat.measure.Active;
+              v = _cat.measure('Active');
               if(me.browser.percentModeActive){
                 v = 100*v/allRecordsAggr_measure_Active;
               }
@@ -6635,13 +6752,14 @@ var Summary_Categorical_functions = {
 
       if(this.viewType==='list'){
         var totalC = this.browser.getActiveComparedCount();
+        if(this.browser.measureFunc==="Avg") totalC++;
         var barHeight = (this.heightRow_category-8)/(totalC+1);
-        this.DOM.measure_Highlighted.each(function(_cat){
-          var p=_cat.measure.Highlighted;
-          if(me.browser.preview_not) p = _cat.measure.Active-p;
-          kshf.Util.setTransform(this,"translate("+width_Text+"px,"+barHeight*totalC+"px) scale("+(
-              ratioMode ? ((p/_cat.measure.Active)*maxWidth ) : me.chartScale_Measure(p)
-          )+","+barHeight+")");
+        this.DOM.measure_Highlighted.each(function(aggr){
+          var p = aggr.measure('Highlighted');
+          if(me.browser.preview_not) p = aggr._measure.Active - aggr._measure.Highlighted;
+          kshf.Util.setTransform(this,
+            "translateX("+width_Text+"px) "+
+            "scale("+(ratioMode ? ((p/aggr._measure.Active)*maxWidth ) : me.chartScale_Measure(p))+","+barHeight+")");
         });
       }
     },
@@ -6652,94 +6770,79 @@ var Summary_Categorical_functions = {
       var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
       var _translateX = "translateX("+width_Text+"px) ";
       var barHeight = (this.heightRow_category-8)/totalGroups;
-      var _translateY = "translateY("+(barHeight*curGroup)+"px)";
+      var _translateY = "translateY("+(barHeight*(curGroup+1))+"px)";
       var compId = "Compared_"+cT;
       this.DOM["measure_Compared_"+cT].each(function(aggr){
         var sx = (me.browser.vizActive[compId])?
-          ( ratioMode ? (aggr.ratioCompareToActive(cT)*maxWidth) : me.chartScale_Measure(aggr.measure[compId]) ) : 0;
+          ( ratioMode ? (aggr.ratioCompareToActive(cT)*maxWidth) : me.chartScale_Measure(aggr.measure(compId)) ) : 0;
         kshf.Util.setTransform(this,_translateX+_translateY+"scale("+sx+","+barHeight+")");
       });
     },
     /** -- */
     refreshViz_Axis: function(){
-        if(this.isEmpty()) return;
-        var me=this;
+      if(this.isEmpty()) return;
+      var me=this;
 
-        var tickValues;
-        var transformFunc;
+      var tickValues, posFunc, transformFunc, maxValue, chartWidth = this.getWidth_CatChart();
 
-        var maxValue;
+      var axis_Scale = this.chartScale_Measure;
 
-        var chartWidth = this.getWidth_CatChart();
+      function setCustomAxis(){
+        axis_Scale = d3.scale.linear()
+          .rangeRound([0, chartWidth])
+          .nice(me.chartAxis_Measure_TickSkip())
+          .clamp(true)
+          .domain([0,maxValue]);
+      };
 
-        if(this.browser.ratioModeActive) {
-            maxValue = 100;
-            tickValues = d3.scale.linear()
-                .rangeRound([0, chartWidth])
-                .nice(this.chartAxis_Measure_TickSkip())
-                .clamp(true)
-                .domain([0,100])
-                .ticks(this.chartAxis_Measure_TickSkip());
-        } else {
-            if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure.Active);
-                tickValues = d3.scale.linear()
-                    .rangeRound([0, chartWidth])
-                    .nice(this.chartAxis_Measure_TickSkip())
-                    .clamp(true)
-                    .domain([0,maxValue])
-                    .ticks(this.chartAxis_Measure_TickSkip());
-            } else {
-                tickValues = this.chartScale_Measure.ticks(this.chartAxis_Measure_TickSkip())
-            }
-        }
+      if(this.browser.ratioModeActive) {
+        maxValue = 100;
+        setCustomAxis();
+      } else if(this.browser.percentModeActive) {
+        maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
+        setCustomAxis();
+      }
 
-        // remove non-integer values & 0...
-        tickValues = tickValues.filter(function(d){return d%1===0&&d!==0;});
+      // GET TICK VALUES ***********************************************************
+      tickValues = axis_Scale.ticks(this.chartAxis_Measure_TickSkip());
+      // remove 0-tick
+      tickValues = tickValues.filter(function(d){return d!==0;});
+      // Remove non-integer values from count
+      if((this.browser.measureFunc==="Count") || (this.browser.measureFunc==="Sum" && !this.browser.measureSummary.hasFloat)){
+        tickValues = tickValues.filter(function(d){return d%1===0;});
+      }
 
-        var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick").data(tickValues,function(i){return i;});
+      var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick").data(tickValues,function(i){return i;});
 
-        if(this.browser.ratioModeActive){
-            transformFunc=function(d){
-                kshf.Util.setTransform(this,"translateX("+(d*chartWidth/100-0.5)+"px)");
-            };
-        } else {
-            if(this.browser.percentModeActive) {
-                transformFunc=function(d){
-                    kshf.Util.setTransform(this,"translateX("+((d/maxValue)*chartWidth-0.5)+"px)");
-                };
-            } else {
-                transformFunc=function(d){
-                    kshf.Util.setTransform(this,"translateX("+(me.chartScale_Measure(d)-0.5)+"px)");
-                };
-            }
-        }
+      transformFunc = function(d){
+        kshf.Util.setTransform(this,"translateX("+(axis_Scale(d)-0.5)+"px)");
+      }
 
-        var x=this.browser.noAnim;
+      var x=this.browser.noAnim;
 
-        if(x===false) this.browser.setNoAnim(true);
-        var tickData_new=tickDoms.enter().append("span").attr("class","tick").each(transformFunc);
-        if(x===false) this.browser.setNoAnim(false);
+      if(x===false) this.browser.setNoAnim(true);
+      var tickData_new=tickDoms.enter().append("span").attr("class","tick").each(transformFunc);
+      if(x===false) this.browser.setNoAnim(false);
 
-        // translate the ticks horizontally on scale
-        tickData_new.append("span").attr("class","line longRefLine")
-            .style("top","-"+(this.categoriesHeight+3)+"px")
-            .style("height",(this.categoriesHeight-1)+"px");
+      // translate the ticks horizontally on scale
+      tickData_new.append("span").attr("class","line longRefLine")
+        .style("top","-"+(this.categoriesHeight+3)+"px")
+        .style("height",(this.categoriesHeight-1)+"px");
 
-        tickData_new.append("span").attr("class","text");
-        if(this.configRowCount>0){
-            var h=this.categoriesHeight;
-            var hm=tickData_new.append("span").attr("class","text text_upper").style("top",(-h-21)+"px");
-            this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background_2").style("display","block");
-        }
+      tickData_new.append("span").attr("class","text");
+      if(this.configRowCount>0){
+        var h=this.categoriesHeight;
+        var hm=tickData_new.append("span").attr("class","text text_upper").style("top",(-h-21)+"px");
+        this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background_2").style("display","block");
+      }
 
-        this.DOM.chartAxis_Measure_TickGroup.selectAll(".text").html(function(d){ return me.browser.getMeasureLabel(d); });
+      this.DOM.chartAxis_Measure_TickGroup.selectAll(".text").html(function(d){ return me.browser.getMeasureLabel(d); });
 
-        setTimeout(function(){
-          me.DOM.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
-        });
+      setTimeout(function(){
+        me.DOM.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
+      });
 
-        tickDoms.exit().remove();
+      tickDoms.exit().remove();
     },
     /** -- */
     refreshLabelWidth: function(){
@@ -6800,7 +6903,7 @@ var Summary_Categorical_functions = {
             "inline-block"
       );
 
-      this.updateBarPreviewScale2Active();
+      this.updateChartScale_Measure();
 
       var h=this.categoriesHeight;
       this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
@@ -6820,10 +6923,10 @@ var Summary_Categorical_functions = {
     /** -- */
     isCatActive: function(category){
       if(category.f_selected()) return true;
-      if(category.measure.Active!==0) return true;
+      if(category.recCnt.Active!==0) return true;
       // summary is not filtered yet, don't show categories with no records
-      if(!this.isFiltered()) return category.measure.Active!==0;
-      if(this.viewType==='map') return category.measure.Active!==0;
+      if(!this.isFiltered()) return category.recCnt.Active!==0;
+      if(this.viewType==='map') return category.recCnt.Active!==0;
       // Hide if multiple options are selected and selection is and
 //        if(this.summaryFilter.selecttype==="SelectAnd") return false;
       // TODO: Figuring out non-selected, zero-active-item attribs under "SelectOr" is tricky!
@@ -6832,7 +6935,7 @@ var Summary_Categorical_functions = {
     /** -- */
     isCatSelectable: function(category){
       if(category.f_selected()) return true;
-      if(category.measure.Active!==0) return true;
+      if(category.recCnt.Active!==0) return true;
       // Show if multiple attributes are selected and the summary does not include multi value records
       if(this.isFiltered() && !this.isMultiValued) return true;
       // Hide
@@ -6884,7 +6987,7 @@ var Summary_Categorical_functions = {
         }
         if(what==="NOT"){
             if(ctgry.is_NONE()){
-                if(ctgry.measure.Active===this.browser.allRecordsAggr.measure.Active){
+                if(ctgry.recCnt.Active===this.browser.allRecordsAggr.recCnt.Active){
                     alert("Removing this category will create an empty result list, so it is not allowed.");
                     return;
                 }
@@ -7005,9 +7108,9 @@ var Summary_Categorical_functions = {
         this.browser.setSelect_Highlight(this,aggr);
         if(!this.browser.ratioModeActive) {
           if(this.viewType==="map"){
-            this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlighted)/9))+"%");
+            this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure('Highlighted'))/9))+"%");
           } else {
-            this.DOM.highlightedMeasureValue.style("left",this.chartScale_Measure(aggr.measure.Active)+"px");
+            this.DOM.highlightedMeasureValue.style("left",this.chartScale_Measure(aggr.measure('Active'))+"px");
           }
           this.DOM.highlightedMeasureValue.style("opacity",1);
         }
@@ -7450,7 +7553,7 @@ var Summary_Categorical_functions = {
         return; 
       }
 
-      this.leafletMap = L.map(this.DOM.recordMap_Base[0][0], 
+      this.leafletMap = L.map(this.DOM.catMap_Base[0][0], 
           { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
         )
         .addLayer(new L.TileLayer(
@@ -8089,8 +8192,8 @@ var Summary_Interval_functions = {
     /** -- */
     getHeight_Percentile: function(){
       if(this.percentileChartVisible===false) return 0;
-      if(this.percentileChartVisible==="Basic") return 14;
-      if(this.percentileChartVisible==="Extended") return 31;
+      if(this.percentileChartVisible==="Basic") return 15;
+      if(this.percentileChartVisible==="Extended") return 32;
     },
     /** -- */
     getHeight_Extra: function(){
@@ -8132,11 +8235,11 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getMaxAggr_Total: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.records.length; });
+      return d3.max(this.histBins,function(aggr){ return aggr.measure('Total'); });
     },
     /** -- */
     getMaxAggr_Active: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.measure.Active; });
+      return d3.max(this.histBins,function(aggr){ return aggr.measure('Active'); });
     },
     /** -- */
     refreshPercentileChart: function(){
@@ -8836,7 +8939,7 @@ var Summary_Interval_functions = {
       aggr.DOM.aggrGlyph.setAttribute("selection","selected");
       if(!this.browser.ratioModeActive){
         this.DOM.highlightedMeasureValue
-          .style("top",(this.height_hist - this.chartScale_Measure(aggr.measure.Active))+"px")
+          .style("top",(this.height_hist - this.chartScale_Measure(aggr.measure('Active')))+"px")
           .style("opacity",1);
       }
       this.browser.setSelect_Highlight(this,aggr);
@@ -9224,9 +9327,9 @@ var Summary_Interval_functions = {
       var width=this.getWidth_Bin();
 
       var heightTotal = function(aggr){
-        if(aggr.measure.Total===0) return 0;
+        if(aggr._measure.Total===0) return 0;
         if(me.browser.ratioModeActive) return me.height_hist;
-        return me.chartScale_Measure(aggr.measure.Total);
+        return me.chartScale_Measure(aggr.measure('Total'));
       };
 
       if(this.scaleType==='time'){
@@ -9234,21 +9337,18 @@ var Summary_Interval_functions = {
         this.timeSVGLine = d3.svg.area().interpolate("cardinal")
           .x(function(aggr){ return me.valueScale(aggr.minV)+width/2; })
           .y0(me.height_hist)
-          .y1(function(aggr){ return (aggr.measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr)); });
+          .y1(function(aggr){ return (aggr._measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr)); });
         this.DOM.measure_Total_Area.transition().duration(durationTime).attr("d", this.timeSVGLine);
       } else {
         this.DOM.measure_Total.each(function(aggr){
-            kshf.Util.setTransform(this,
-                "translateY("+me.height_hist+"px) scale("+width+","+heightTotal(aggr)+")");
+          kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+heightTotal(aggr)+")");
         });
         if(!this.browser.ratioModeActive){
-            this.DOM.measureTotalTip
-                .style("opacity",function(aggr){
-                    return (aggr.measure.Total>me.chartScale_Measure.domain()[1])?1:0;
-                })
-                .style("width",width+"px");
+          this.DOM.measureTotalTip
+            .style("opacity",function(aggr){ return (aggr.measure('Total')>me.chartScale_Measure.domain()[1])?1:0; })
+            .style("width",width+"px");
         } else {
-            this.DOM.measureTotalTip.style("opacity",0);
+          this.DOM.measureTotalTip.style("opacity",0);
         }
       }
     },
@@ -9259,9 +9359,9 @@ var Summary_Interval_functions = {
       var width = this.getWidth_Bin();
 
       var heightActive = function(aggr){
-        if(aggr.measure.Active===0) return 0;
+        if(aggr._measure.Active===0) return 0;
         if(me.browser.ratioModeActive) return me.height_hist;
-        return me.chartScale_Measure(aggr.measure.Active);
+        return me.chartScale_Measure(aggr.measure('Active'));
       };
 
       // Position the lock button
@@ -9281,7 +9381,7 @@ var Summary_Interval_functions = {
         this.timeSVGLine = d3.svg.area().interpolate("cardinal")
           .x(xFunc).y0(me.height_hist+2)
           .y1(function(aggr){
-              return (aggr.measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1);
+              return (aggr._measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1);
           });
 
         this.DOM.measure_Active_Area.transition().duration(durationTime).attr("d", this.timeSVGLine);
@@ -9291,7 +9391,7 @@ var Summary_Interval_functions = {
           .attr("x2",xFunc)
           .attr("y1",function(aggr){ return me.height_hist+3; })
           .attr("y2",function(aggr){
-            return (aggr.measure.Active===0) ? (me.height_hist+3) : (me.height_hist - heightActive(aggr)+1);
+            return (aggr._measure.Active===0) ? (me.height_hist+3) : (me.height_hist - heightActive(aggr)+1);
           });
       }
 
@@ -9312,7 +9412,7 @@ var Summary_Interval_functions = {
           var width_self=width;
           var aggr_min = aggr.minV;
           var aggr_max = aggr.maxV;
-          if(aggr.measure.Active>0){
+          if(aggr._measure.Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
               var lostWidth = minPos-me.valueScale(aggr_min);
@@ -9348,14 +9448,14 @@ var Summary_Interval_functions = {
         }
       }
       var heightCompare = function(aggr){
-        if(aggr.measure[compId]===0) return 0;
-        return ratioModeActive ? aggr.ratioCompareToActive(cT)*me.height_hist : me.chartScale_Measure(aggr.measure[compId]);
+        if(aggr._measure[compId]===0) return 0;
+        return ratioModeActive ? aggr.ratioCompareToActive(cT)*me.height_hist : me.chartScale_Measure(aggr.measure(compId));
       };
 
       // Time (line chart) update
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr.measure[compId]===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr));
+          return (aggr._measure[compId]===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr));
         };
         var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
 
@@ -9369,7 +9469,7 @@ var Summary_Interval_functions = {
       }
 
       var _translateY = "translateY("+me.height_hist+"px) ";
-      var _translateX = "translateX("+(curGroup*binWidth)+"px) ";
+      var _translateX = "translateX("+((curGroup+1)*binWidth)+"px) ";
 
       if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
         // No partial rendering
@@ -9387,7 +9487,7 @@ var Summary_Interval_functions = {
           var width_self=(curGroup*binWidth);
           var aggr_min = aggr.minV;
           var aggr_max = aggr.maxV;
-          if(aggr.measure.Active>0){
+          if(aggr._measure.Active>0){
             // it is within the filtered range
             if(aggr_min<filter_min){
               var lostWidth = minPos-me.valueScale(aggr_min);
@@ -9412,7 +9512,7 @@ var Summary_Interval_functions = {
       this.refreshMeasureLabel();
 
       var totalC = this.browser.getActiveComparedCount();
-      var barHeight = (this.heightRow_category-8)/(totalC+1);
+      if(this.browser.measureFunc==="Avg") totalC++;
 
       if(this.browser.vizActive.Highlighted){
         this.updatePercentiles("Highlighted");
@@ -9432,11 +9532,11 @@ var Summary_Interval_functions = {
         .style("left", function(d){ return me.valueScale(me.flexAggr_Highlight[(d===0)?'minV':'maxV'])+"px"; });
 
       var getAggrHeight_Preview = function(aggr){
-        var p=aggr.measure.Highlighted;
-        if(me.browser.preview_not) p = aggr.measure.Active-aggr.measure.Highlighted;
+        var p=aggr.measure('Highlighted');
+        if(me.browser.preview_not) p = aggr.measure('Active')-p;
         if(me.browser.ratioModeActive){
-          if(aggr.measure.Active===0) return 0;
-          return (p / aggr.measure.Active)*me.height_hist;
+          if(aggr._measure.Active===0) return 0;
+          return (p / aggr.measure('Active'))*me.height_hist;
         } else {
           return me.chartScale_Measure(p);
         }
@@ -9444,7 +9544,7 @@ var Summary_Interval_functions = {
 
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr.measure.Highlighted===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
+          return (aggr._measure.Highlighted===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
         };
         var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
         var dTime=200;
@@ -9461,7 +9561,7 @@ var Summary_Interval_functions = {
       } else {
         if(!this.browser.vizActive.Highlighted){
           var xx = (width / (totalC+1));
-          var transform = "translateX("+xx*totalC+"px) translateY("+this.height_hist+"px) scale("+xx+",0)";
+          var transform = "translateY("+this.height_hist+"px) scale("+xx+",0)";
           this.DOM.measure_Highlighted.each(function(){ kshf.Util.setTransform(this,transform); });
           return;
         }
@@ -9487,7 +9587,7 @@ var Summary_Interval_functions = {
         this.DOM.measure_Highlighted.each(function(aggr){
           var _translateX = "";
           var barWidth = width;
-          if(aggr.measure.Active>0 && rangeFill){
+          if(aggr._measure.Active>0 && rangeFill){
             var aggr_min = aggr.minV;
             var aggr_max = aggr.maxV;
             // it is within the filtered range
@@ -9502,7 +9602,7 @@ var Summary_Interval_functions = {
           }
           if(!rangeFill){
             barWidth = barWidth / (totalC+1);
-            _translateX = "translateX("+barWidth*totalC+"px) ";
+            //_translateX = "translateX("+barWidth*totalC+"px) ";
           }
           var _scale = "scale("+barWidth+","+getAggrHeight_Preview(aggr)+")";
           kshf.Util.setTransform(this,_translateY+_translateX+_scale);
@@ -9526,7 +9626,7 @@ var Summary_Interval_functions = {
                 .filter(function(d){return d!==0;});
         } else {
             if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure.Active);
+                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
                 tickValues = d3.scale.linear()
                     .rangeRound([0, this.height_hist])
                     .nice(chartAxis_Measure_TickSkip)
@@ -9659,13 +9759,14 @@ var Summary_Interval_functions = {
     /** -- */
     updateAfterFilter: function(){
       if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
-      this.updateBarPreviewScale2Active();
+      this.updateChartScale_Measure();
       this.refreshMeasureLabel();
       this.refreshViz_EmptyRecords();
       this.updatePercentiles("Active");
     },
     /** -- */
-    updateBarPreviewScale2Active: function(){
+    updateChartScale_Measure: function(){
+      if(!this.aggr_initialized || this.isEmpty()) return; // nothing to do
       var me=this;
       this.updateBarScale2Active();
       this.refreshBins_Translate();
@@ -10023,7 +10124,7 @@ var Summary_Clique_functions = {
   },
   /** -- */
   updateMaxAggr_Active: function(){
-    this._maxSetPairAggr_Active = d3.max(this._setPairs, function(aggr){ return aggr.measure.Active; });
+    this._maxSetPairAggr_Active = d3.max(this._setPairs, function(aggr){ return aggr.measure('Active'); });
   },
   /** -- */
   checkWidth: function(){
@@ -10207,7 +10308,7 @@ var Summary_Clique_functions = {
     var me=this;
     
     // Edges are set-pairs with at least one element inside (based on the filtering state)
-    var edges = this._setPairs.filter(function(setPair){ return setPair.measure.Active>0; });
+    var edges = this._setPairs.filter(function(setPair){ return setPair._measure.Active>0; });
     // Nodes are the set-categories
     var nodes = this.setListSummary._cats;
 
@@ -10240,10 +10341,10 @@ var Summary_Clique_functions = {
             setPair_2 = me._setPairs_ID[set_2.id()][set_other.id()];
         }
         if(setPair_2===undefined){ // the other intersection size is zero, there is no link
-          edge.mst_distance+=setPair_1.measure.Active;
+          edge.mst_distance+=setPair_1._measure.Active;
           return;
         }
-        edge.mst_distance += Math.abs(setPair_1.measure.Active-setPair_2.measure.Active);
+        edge.mst_distance += Math.abs(setPair_1._measure.Active-setPair_2._measure.Active);
       });
       // For every intersection of set_2
       set_2.setPairs.forEach(function(setPair_1){
@@ -10259,7 +10360,7 @@ var Summary_Clique_functions = {
             setPair_2 = me._setPairs_ID[set_1.id()][set_other.id()];
         }
         if(setPair_2===undefined){ // the other intersection size is zero, there is no link
-          edge.mst_distance+=setPair_1.measure.Active;
+          edge.mst_distance+=setPair_1._measure.Active;
           return;
         }
         // If ther is setPair_2, it was already processed in the main loop above
@@ -10459,12 +10560,15 @@ var Summary_Clique_functions = {
       .attr("width",this.setPairDiameter)
       .attr("height",this.setPairDiameter);
   },
-  /** Call when measure.Active is updated */
+  /** 
+    - Call when measure.Active is updated 
+    - Does not work with Average aggregate
+    */
   updateSetPairSimilarity: function(){
     this._setPairs.forEach(function(setPair){
-      var size_A = setPair.set_1.measure.Active;
-      var size_B = setPair.set_2.measure.Active;
-      var size_and = setPair.measure.Active;
+      var size_A = setPair.set_1._measure.Active;
+      var size_B = setPair.set_2._measure.Active;
+      var size_and = setPair._measure.Active;
       setPair.Similarity = (size_and===0 || (size_A===0&&size_B===0)) ? 0 : size_and/Math.min(size_A,size_B);
     });
     this._maxSimilarity = d3.max(this._setPairs, function(d){ return d.Similarity; });
@@ -10571,12 +10675,14 @@ var Summary_Clique_functions = {
   },
   /** -- */
   getCliqueSizeRatio: function(setPair){
-    return Math.sqrt(setPair.measure.Active/this._maxSetPairAggr_Active);
+    return Math.sqrt(setPair.measure('Active')/this._maxSetPairAggr_Active);
   },
-  // Given a setPair, return the angle for preview
+  /** Given a setPair, return the angle for preview
+   Does not work with "Avg" measure
+   **/
   getAngleToActive_rad: function(setPair,m){
-    if(setPair.measure.Active===0) return 0;
-    var ratio = setPair.measure[m] / setPair.measure.Active;
+    if(setPair._measure.Active===0) return 0;
+    var ratio = setPair._measure[m] / setPair._measure.Active;
     if(this.browser.preview_not) ratio = 1-ratio;
     if(ratio===1) ratio=0.999;
     return ((360*ratio-90) * Math.PI) / 180;
@@ -10598,7 +10704,7 @@ var Summary_Clique_functions = {
   /** -- */
   refreshViz_Active: function(){
     var me=this;
-    this.DOM.aggrGlyphs.attr("activesize",function(setPair){ return setPair.measure.Active; });
+    this.DOM.aggrGlyphs.attr("activesize",function(aggr){ return aggr.measure('Active'); });
     this.DOM.measure_Active.transition().duration(this.noanim?0:700)
       .attr("r",this.browser.ratioModeActive ?
         function(setPair){ return (setPair.subset!=='') ? me.setPairRadius-1 : me.setPairRadius; } :
@@ -10628,20 +10734,20 @@ var Summary_Clique_functions = {
     }
     this.DOM["measure_Compared_"+cT].attr("d",function(setPair){
       var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
-      this.style.display = setPair.measure["Compared_"+cT]===0 ? "none" : "block";
+      this.style.display = setPair.measure("Compared_"+cT)===0 ? "none" : "block";
       this.style.strokeWidth = strokeWidth;
       return me.getPiePath( me.getAngleToActive_rad(setPair,"Compared_"+cT), curGroup*strokeWidth, ratio );
     });
   },
-  /** -- */
+  /** Does not work with Avg pair */
   refreshSetPair_Containment: function(){
     var me=this;
     var numOfSubsets = 0;
     this.DOM.measure_Active
       .each(function(setPair){
-        var setPair_itemCount = setPair.measure.Active;
-        var set_1_itemCount   = setPair.set_1.measure.Active;
-        var set_2_itemCount   = setPair.set_2.measure.Active;
+        var setPair_itemCount = setPair._measure.Active;
+        var set_1_itemCount   = setPair.set_1._measure.Active;
+        var set_2_itemCount   = setPair.set_2._measure.Active;
         if(setPair_itemCount===set_1_itemCount || setPair_itemCount===set_2_itemCount){
           numOfSubsets++;
           setPair.subset = (set_1_itemCount===set_2_itemCount)?'equal':'proper';
@@ -10680,8 +10786,8 @@ var Summary_Clique_functions = {
         // rotate halfway 
         var i1 = setPair.set_1.orderIndex;
         var i2 = setPair.set_2.orderIndex;
-        var c1 = setPair.set_1.measure.Active;
-        var c2 = setPair.set_2.measure.Active;
+        var c1 = setPair.set_1._measure.Active;
+        var c2 = setPair.set_2._measure.Active;
         if((i1<i2 && c1<c2) || (i1>i2 && c1>c2)) halfCircle = halfCircle/2;
         this.style.strokeDashoffset = halfCircle+"px";
       });
@@ -10694,7 +10800,7 @@ var Summary_Clique_functions = {
     this.refreshViz_All();
     this.refreshViz_EmptyRecords();
 
-    this.DOM.setRows.style("opacity",function(setRow){ return (setRow.measure.Active>0)?1:0.3; });
+    this.DOM.setRows.style("opacity",function(setRow){ return (setRow._measure.Active>0)?1:0.3; });
     this.updateSetPairSimilarity();
     this.refreshSetPair_Containment();
   },
