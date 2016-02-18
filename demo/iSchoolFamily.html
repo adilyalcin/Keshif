@@ -58,7 +58,10 @@ google.setOnLoadCallback(function(){
       displayType: "grid",
       detailsToggle: "zoom",
       sortColWidth: 45,
-      sortBy: { name: "First Name", value: function(){ return this.Name.charCodeAt(0); }, inverse: true},
+      sortBy: [
+        { name: "Last Name", value: function(){ return this.LastName.charCodeAt(0); }, inverse: true},
+        { name: "First Name", value: function(){ return this.FirstName.charCodeAt(0); }, inverse: true},
+      ],
       recordView: function(){ 
         var imgURL = "http://ischool.umd.edu/sites/default/files/styles/thumbnail/public/default_images/noimage.jpg";
         if(this["Image URL"]){

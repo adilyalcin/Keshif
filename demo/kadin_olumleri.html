@@ -30,14 +30,14 @@ google.setOnLoadCallback(function(){
       tables: {name:"Oldurulen kadin", id:"ASIN"}
     },
     summaries: [
-      { name: "Yıl", catSortBy: { value:"id", inverse: true } },
+      { name: "Yıl", panel: 'middle'},
       { name: "Kim tarafından" },
       { name: "Neden" },
       { name: "Nasıl", panel: 'right' },
       { name: "Korunma talebi", panel: 'right' }
     ],
     recordDisplay: {
-      sortBy: 'Yıl',
+      sortBy: {name: 'Yıl.', value: function(){ return 1*this.Yıl;} },
       sortColWidth: 60,
       detailsToggle: "zoom",
       textSearch: "İsim",

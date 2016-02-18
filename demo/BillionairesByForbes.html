@@ -41,7 +41,7 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      {name: "Gender", value: "gender"},
+      {name: "Gender", value: "gender", catLabel: function(){ return (this.id==="M"?"Male":"Female")+" "+getIcon(this.id); }},
       {name: "Industry", value: "industry"},
       {name: "Age", value: "age", panel: "right"},
       {name: "Worth", unitName: "$", panel: "right"},
@@ -50,9 +50,7 @@ google.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortColWidth: 40,
-      sortBy: { name: "Worth", label: function(){
-        return currencyFormat(this.Worth).replace("G","B");
-      }},
+      sortBy: { name: "Worth", label: function(){ return currencyFormat(this.Worth).replace("G","B"); }},
       showRank: true,
       textSearch: "name",
       recordView: function(){ 

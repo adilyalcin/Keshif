@@ -16,7 +16,8 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-new kshf.Browser({
+  kshf.lang.cur = kshf.lang.tr;
+  browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Öldürülen Gazeteci",
     categoryTextWidth: 130,
@@ -26,9 +27,9 @@ new kshf.Browser({
       tables: "Journalists"
     },
     summaries: [
-      { name: "Organization" },
-      { name: "Location", panel: 'right' },
-      { name: "Date", panel: 'bottom' }
+      { name: "Organizasyon", value: "Organization" },
+      { name: "Sehir", value: "Location", panel: 'right' },
+      { name: "Tarih", value: "Date", panel: 'bottom' }
     ],
     recordDisplay: {
       sortColWidth: 50,
