@@ -155,13 +155,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover{ color: orangered; }
       }
     }
+    &[measurefunc="Count"]{
+      .measureFunction_Count{ color: black !important; font-weight: 600; }
+    }
     &[measurefunc="Avg"]{
       .measurePercentControl{ pointer-events: none !important; }
       .relativeModeControl{ pointer-events: none !important; }
       .measurePercentControl:after{ content: "Avg" !important; }
+      .measureFunction_Avg{ color: black !important; font-weight: 600; }
+      .measureSelectBox_Content_RecordName{ margin-top: 2.4em}
     }
     &[measurefunc="Sum"]{
       .measurePercentControl:after{ content: "Sum" !important; }
+      .measureFunction_Sum{ color: black !important; font-weight: 600; }
+      .measureSelectBox_Content_RecordName{ margin-top: 1.2em}
     }
     &[percentLabelMode]{
       .measurePercentControl{
@@ -718,7 +725,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 cursor: pointer;
                 color: gray;
                 &:hover{ color: orangered; }
-                &[selected]{ color: black; font-weight: 600; }
               }
             }
             > .measureSelectBox_Content_Summaries{
@@ -2364,7 +2370,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     // ***********************************************************************************************************
 
 
-    .unmapped_records{
+    .missingValueAggr{
       display: none;
       position: absolute;
       left: 0px;
@@ -2375,9 +2381,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .transition(~'color 100ms linear');
       cursor: pointer;
       z-index: 10;
-      &[filtered=true]{ color: black !important; }
+      &[filtered]{ 
+        color: black !important;
+        border: solid 1px darken(lightgray,20%);
+        border-radius: 4px;
+        padding: 0px;
+        background-color: lightgray;
+      }
       &[selection="onRecord"]{ 
-        color: black;
+        color: black !important;
         border: solid 1px darken(@color_onRecord_back,20%);
         border-radius: 4px;
         padding: 0px;
@@ -3030,7 +3042,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           box-shadow: 0px 0px 2px rgb(100, 100, 100);
           > .header_display_control > .fa{ opacity: 1; }
         }
-        .unmapped_records { color: gray }
+        .missingValueAggr{ color: gray }
       }
 
       &[hasMap="true"][collapsed="false"]{

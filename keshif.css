@@ -175,6 +175,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf:not([authoringMode]) .recordInfo[changeMeasureBox]:hover {
   color: orangered;
 }
+.kshf[measurefunc="Count"] .measureFunction_Count {
+  color: black !important;
+  font-weight: 600;
+}
 .kshf[measurefunc="Avg"] .measurePercentControl {
   pointer-events: none !important;
 }
@@ -184,8 +188,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[measurefunc="Avg"] .measurePercentControl:after {
   content: "Avg" !important;
 }
+.kshf[measurefunc="Avg"] .measureFunction_Avg {
+  color: black !important;
+  font-weight: 600;
+}
+.kshf[measurefunc="Avg"] .measureSelectBox_Content_RecordName {
+  margin-top: 2.4em;
+}
 .kshf[measurefunc="Sum"] .measurePercentControl:after {
   content: "Sum" !important;
+}
+.kshf[measurefunc="Sum"] .measureFunction_Sum {
+  color: black !important;
+  font-weight: 600;
+}
+.kshf[measurefunc="Sum"] .measureSelectBox_Content_RecordName {
+  margin-top: 1.2em;
 }
 .kshf[percentLabelMode] .measurePercentControl::after {
   content: "%";
@@ -955,10 +973,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType:hover {
   color: orangered;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType[selected] {
-  color: black;
-  font-weight: 600;
 }
 .kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_Summaries {
   -webkit-box-flex: 1;
@@ -2876,7 +2890,7 @@ top:calc(50% - 5px);
 .kshf .percentileChart_Compared_C > .quantile.q_10_90 {
   background-color: #fff810;
 }
-.kshf .unmapped_records {
+.kshf .missingValueAggr {
   display: none;
   position: absolute;
   left: 0px;
@@ -2891,11 +2905,15 @@ top:calc(50% - 5px);
   cursor: pointer;
   z-index: 10;
 }
-.kshf .unmapped_records[filtered=true] {
+.kshf .missingValueAggr[filtered] {
   color: black !important;
+  border: solid 1px #a0a0a0;
+  border-radius: 4px;
+  padding: 0px;
+  background-color: lightgray;
 }
-.kshf .unmapped_records[selection="onRecord"] {
-  color: black;
+.kshf .missingValueAggr[selection="onRecord"] {
+  color: black !important;
   border: solid 1px #cdbd9b;
   border-radius: 4px;
   padding: 0px;
@@ -3651,7 +3669,7 @@ top:calc(50% - 8px);
 .kshf .kshfSummary:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
 }
-.kshf .kshfSummary:hover .unmapped_records {
+.kshf .kshfSummary:hover .missingValueAggr {
   color: #808080;
 }
 .kshf .kshfSummary[hasMap="true"][collapsed="false"] .summaryViewAs {

@@ -96,7 +96,8 @@ var kshf = {
             EditTitle: "Rename",
             ResizeBrowser: "Resize Browser",
             RemoveRecords: "Remove Record View",
-            EditFormula: "Edit Formula"
+            EditFormula: "Edit Formula",
+            NoData: "(no data)"
         },
         tr: {
             ModifyBrowser: "Tarayıcıyı düzenle",
@@ -133,7 +134,8 @@ var kshf = {
             EditTitle: "Değiştir",
             ResizeBrowser: "Boyutlandır",
             RemoveRecords: "Kayıtları kaldır",
-            EditFormula: "Edit Formula"
+            EditFormula: "Edit Formula",
+            NoData: "(verisiz)"
         },
         fr: {
             ModifyBrowser: "Modifier le navigateur",
@@ -166,7 +168,8 @@ var kshf = {
             And: "??",
             Or: "??",
             Not: "??",
-            EditFormula: "Edit Formula"
+            EditFormula: "Edit Formula",
+            NoData: "(no data)"
         },
         cur: null // Will be set to en if not defined before a browser is loaded
     },
@@ -2638,7 +2641,7 @@ kshf.Browser.prototype = {
       var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
       m.append("span").attr("class","measureSelectBox_Content_FuncType")
         .selectAll(".measureFunctionType").data([
-          {v:"Count", l:"Count"},
+          {v:"Count", l:"Count (#)"},
           {v:"Sum", l:"Sum (Total)"},
           {v:"Avg", l:"Average"},
         ]).enter()
@@ -2650,7 +2653,6 @@ kshf.Browser.prototype = {
             me.setMeasureFunction(); // no summary, will revert to count
             return;
           }
-          me.DOM.measureSelectBox.selectAll(".measureFunctionType").attr("selected",null);
           this.setAttribute("selected","");
           me.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",null);
           me.setMeasureFunction( me.DOM.sdsso23oadsa[0][0].selectedOptions[0].__data__ , d.v);
@@ -2678,8 +2680,6 @@ kshf.Browser.prototype = {
     /** -- */
     refreshMeasureSelectBox: function(){
       // measureBox stuf
-      this.DOM.measureSelectBox.selectAll(".measureFunctionType").attr("selected",null);
-      this.DOM.measureSelectBox.select(".measureFunction_"+this.measureFunc).attr("selected","");
       this.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",this.measureFunc==="Count"?"true":null);
     },
     /** -- */
@@ -4368,7 +4368,7 @@ kshf.Browser.prototype = {
       if(crumb[0][0]===null) crumb = this.insertDOM_crumb(selectType);
       crumb.select(".crumbHeader"  ).html(selectedSummary.summaryName);
       crumb.select(".filterDetails").html(
-        (this.selectedAggr[selectType] instanceof kshf.Aggregate_EmptyRecords) ? "(none)" :
+        (this.selectedAggr[selectType] instanceof kshf.Aggregate_EmptyRecords) ? kshf.lang.cur.NoData :
           selectedSummary.printAggrSelection(this.selectedAggr[selectType]) );
     },
     /** -- */
@@ -4378,6 +4378,11 @@ kshf.Browser.prototype = {
       crumb.attr("ready",false);
       setTimeout(function(){ crumb[0][0].parentNode.removeChild(crumb[0][0]); }, 350);
     },
+    /** -- */
+    getMeasureFuncTypeText: function(){
+      return this.measureSummary ? 
+        (((this.measureFunc==="Sum")?"Total ":"Average ")+this.measureSummary.summaryName+" of ") : "";
+    },
     /** funType: "Sum" or "Avg" */
     setMeasureFunction: function(summary, funcType){
       if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
@@ -4385,7 +4390,6 @@ kshf.Browser.prototype = {
         if(this.measureSummary===undefined) return; // No update
         this.measureSummary = undefined;
         this.records.forEach(function(record){ record.measure_Self = 1; });
-        this.DOM.measureFuncType.text("");
         this.measureFunc = "Count";
       } else {
         if(this.measureSummary===summary && this.measureFunc===funcType) return; // No update
@@ -4393,8 +4397,8 @@ kshf.Browser.prototype = {
         this.measureFunc = funcType;
         summary.initializeAggregates();
         this.records.forEach(function(record){ record.measure_Self = summary.getRecordValue(record); });
-        this.DOM.measureFuncType.html( ((this.measureFunc==="Sum")?"Total ":"Average ")+ summary.summaryName+" of ");
       }
+      this.DOM.measureFuncType.html(this.getMeasureFuncTypeText());
 
       this.DOM.root.attr("measureFunc",this.measureFunc);
 
@@ -4617,17 +4621,16 @@ kshf.Browser.prototype = {
         _val = Math.round(_val);
       }
 
-      if(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g"){
-        // MAP - cannot insert % as an inline tag
-        if(this.percentModeActive){
+      if(this.percentModeActive){
+        if(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g"){
           return _val.toFixed(0)+"%";
         } else {
-          return kshf.Util.formatForItemCount(_val);
+          return _val.toFixed(0)+"<span class='unitName'>%</span>";
         }
-      }
-
-      if(this.percentModeActive){
-        return _val.toFixed(0)+"<span class='unitName'>%</span>";
+      } else if(this.measureSummary){
+        // Print with the measure summary unit
+        return this.measureSummary.printWithUnitName(kshf.Util.formatForItemCount(
+          _val),(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g") );
       } else {
         return kshf.Util.formatForItemCount(_val);
       }
@@ -4681,9 +4684,9 @@ kshf.Summary_Base.prototype = {
     this.summaryColumn = attribFunc?null:name;
     this.summaryFunc   = attribFunc || function(){ return this[name]; };
 
-    this.emptyRecordsAggr = new kshf.Aggregate_EmptyRecords();
-    this.emptyRecordsAggr.init();
-    this.browser.allAggregates.push(this.emptyRecordsAggr);
+    this.missingValueAggr = new kshf.Aggregate_EmptyRecords();
+    this.missingValueAggr.init();
+    this.browser.allAggregates.push(this.missingValueAggr);
 
     this.DOM = {};
     this.DOM.inited = false;
@@ -5453,37 +5456,36 @@ kshf.Summary_Base.prototype = {
   /** -- */
   insertDOM_EmptyAggr: function(){
     var me = this;
-    this.DOM.unmapped_records = this.DOM.wrapper.append("span").attr("class","unmapped_records fa fa-ban")
+    this.DOM.missingValueAggr = this.DOM.wrapper.append("span").attr("class","missingValueAggr fa fa-ban")
       .each(function(){
-        me.emptyRecordsAggr.DOM.aggrGlyph = this;
+        me.missingValueAggr.DOM.aggrGlyph = this;
         this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
-          var x = me.browser.getMeasureLabel(me.emptyRecordsAggr, me);
+          var x = me.browser.getMeasureLabel(me.missingValueAggr, me);
           // TODO: Number should depend on filtering state, and also reflect percentage-mode
-          return "<b>"+x+"</b> "+me.browser.itemName+" (none)"; 
+          return "<b>"+x+"</b> "+me.browser.getMeasureFuncTypeText()+me.browser.itemName+" "+kshf.lang.cur.NoData; 
         }});
       })
       .on("mouseover",function(){
         this.tipsy.show();
         // TODO: Disable mouse-over action if aggregate has no active item
-        me.browser.setSelect_Highlight(me,me.emptyRecordsAggr);
+        me.browser.setSelect_Highlight(me,me.missingValueAggr);
       })
       .on("mouseout" ,function(){ 
         this.tipsy.hide();
-        me.DOM.unmapped_records.style("color",null);
         me.browser.clearSelect_Highlight();
       })
       .on("click", function(){
         if(d3.event.shiftKey){
-          me.browser.setSelect_Compare(me,me.emptyRecordsAggr,true);
+          me.browser.setSelect_Compare(me,me.missingValueAggr,true);
           return;
         }
         me.summaryFilter.clearFilter();
-        if(me.emptyRecordsAggr.filtered){
-          me.emptyRecordsAggr.filtered = false;
-          this.setAttribute("filtered",false);
+        if(me.missingValueAggr.filtered){
+          me.missingValueAggr.filtered = false;
+          this.removeAttribute("filtered");
           return;
         } else {
-          me.emptyRecordsAggr.filtered = true;
+          me.missingValueAggr.filtered = true;
           this.setAttribute("filtered",true);
           me.summaryFilter.how = "All";
           me.summaryFilter.addFilter(true);
@@ -5492,15 +5494,15 @@ kshf.Summary_Base.prototype = {
   },
   /** -- */
   refreshViz_EmptyRecords: function(){
-    if(!this.DOM.unmapped_records) return;
+    if(!this.DOM.missingValueAggr) return;
     var me=this;
     var interp = d3.interpolateHsl(d3.rgb(211,211,211)/*lightgray*/, d3.rgb(255,69,0));
 
-    this.DOM.unmapped_records
-      .style("display",this.emptyRecordsAggr.recCnt.Active>0?"block":"none")
+    this.DOM.missingValueAggr
+      .style("display",this.missingValueAggr.recCnt.Active>0?"block":"none")
       .style("color", function(){
-        if(me.emptyRecordsAggr.recCnt.Active===0) return;
-        return interp(me.emptyRecordsAggr.ratioHighlightToActive());
+        if(me.missingValueAggr.recCnt.Active===0) return;
+        return interp(me.missingValueAggr.ratioHighlightToActive());
       });
   },
   refreshViz_Compare_All: function(){
@@ -5927,7 +5929,7 @@ var Summary_Categorical_functions = {
 
           summary.records.forEach(function(record){
             var recordVal_s = record._valueCache[me.summaryID];
-            if(summary.emptyRecordsAggr.filtered===true){
+            if(summary.missingValueAggr.filtered===true){
               record.setFilterCache(me.summaryID, recordVal_s===null);
               return;
             }
@@ -5977,7 +5979,7 @@ var Summary_Categorical_functions = {
           }, this);
         },
         filterView_Detail: function(summary){
-          if(summary.emptyRecordsAggr.filtered===true) return "(none)";
+          if(summary.missingValueAggr.filtered===true) return kshf.lang.cur.NoData;
           // 'this' is the Filter
           // go over all records and prepare the list
           var selectedItemsText="";
@@ -6080,9 +6082,8 @@ var Summary_Categorical_functions = {
         });
         // Empy mapping -> record is not mapped to any value
         if(mapping.length===0) {
-          // Mapped to emptyRecordsAggr
           record._valueCache[this.summaryID] = null;
-          this.emptyRecordsAggr.addRecord(record);
+          this.missingValueAggr.addRecord(record);
           return; 
         }
         maxDegree = Math.max(maxDegree, mapping.length);
@@ -6340,64 +6341,63 @@ var Summary_Categorical_functions = {
             me.summaryFilter.clearFilter();
           });
         this.DOM.catTextSearchInput = this.DOM.catTextSearch.append("input")
-            .attr("class","textSearchInput")
-            .attr("type","text")
-            .attr("placeholder",kshf.lang.cur.Search)
+          .attr("class","textSearchInput")
+          .attr("type","text")
+          .attr("placeholder",kshf.lang.cur.Search)
 //            .on("mousedown",function(){alert('sdsdd');})
-            .on("input",function(){
-                if(this.timer) clearTimeout(this.timer);
-                var x = this;
-                this.timer = setTimeout( function(){
-                    me.unselectAllCategories();
-                    var query = [];
+          .on("input",function(){
+            if(this.timer) clearTimeout(this.timer);
+            var x = this;
+            this.timer = setTimeout( function(){
+                me.unselectAllCategories();
+                var query = [];
 
-                    // split the query by " character
-                    var processed = x.value.toLowerCase().split('"');
-                    processed.forEach(function(block,i){
-                        if(i%2===0) {
-                            block.split(/\s+/).forEach(function(q){ query.push(q)});
-                        } else {
-                            query.push(block);
-                        }
-                    });
-                    // Remove the empty strings
-                    query = query.filter(function(v){ return v!==""});
-
-                    if(query.length>0){
-                        me.DOM.catTextSearchControl.attr("showClear",true);
-                        var labelFunc = me.catLabel_Func;
-                        var tooltipFunc = me.catTooltip;
-                        me._cats.forEach(function(_category){
-                            var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
-                            var f = query.every(function(query_str){
-                                if(catLabel.indexOf(query_str)!==-1){ return true; }
-                                if(tooltipFunc) {
-                                    var tooltipText = tooltipFunc.call(_category.data);
-                                    return (tooltipText && tooltipText.toLowerCase().indexOf(query_str)!==-1);
-                                }
-                                return false;
-                            });
-                            if(f){
-                                _category.set_OR(me.summaryFilter.selected_OR);
-                            } else {
-                                _category.set_NONE(me.summaryFilter.selected_OR);
-                            }
-                        });
-
-                        // All categories are process, and the filtering state is set. Now, process the summary as a whole
-                        if(me.summaryFilter.selectedCount_Total()===0){
-                            me.skipTextSearchClear = true;
-                            me.summaryFilter.clearFilter();
-                            me.skipTextSearchClear = false;
-                        } else {
-                            me.summaryFilter.how = "All";
-                            me.emptyRecordsAggr.filtered = false;
-                            me.summaryFilter.addFilter(true);
-                        }
+                // split the query by " character
+                var processed = x.value.toLowerCase().split('"');
+                processed.forEach(function(block,i){
+                    if(i%2===0) {
+                        block.split(/\s+/).forEach(function(q){ query.push(q)});
+                    } else {
+                        query.push(block);
                     }
-                }, 750);
-            })
-            ;
+                });
+                // Remove the empty strings
+                query = query.filter(function(v){ return v!==""});
+
+                if(query.length>0){
+                  me.DOM.catTextSearchControl.attr("showClear",true);
+                  var labelFunc = me.catLabel_Func;
+                  var tooltipFunc = me.catTooltip;
+                  me._cats.forEach(function(_category){
+                    var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
+                    var f = query.every(function(query_str){
+                        if(catLabel.indexOf(query_str)!==-1){ return true; }
+                        if(tooltipFunc) {
+                            var tooltipText = tooltipFunc.call(_category.data);
+                            return (tooltipText && tooltipText.toLowerCase().indexOf(query_str)!==-1);
+                        }
+                        return false;
+                    });
+                    if(f){
+                      _category.set_OR(me.summaryFilter.selected_OR);
+                    } else {
+                      _category.set_NONE(me.summaryFilter.selected_OR);
+                    }
+                  });
+
+                  // All categories are process, and the filtering state is set. Now, process the summary as a whole
+                  if(me.summaryFilter.selectedCount_Total()===0){
+                    me.skipTextSearchClear = true;
+                    me.summaryFilter.clearFilter();
+                    me.skipTextSearchClear = false;
+                  } else {
+                    me.summaryFilter.how = "All";
+                    me.missingValueAggr.filtered = false;
+                    me.summaryFilter.addFilter(true);
+                  }
+                }
+            }, 750);
+          });
     },
 
     /** returns the maximum active aggregate value per row in chart data */
@@ -6439,7 +6439,7 @@ var Summary_Categorical_functions = {
         aggr.set_NONE();
       });
       this.summaryFilter.selected_All_clear();
-      if(this.DOM.inited) this.DOM.unmapped_records.attr("filtered",false);
+      if(this.DOM.inited) this.DOM.missingValueAggr.attr("filtered",null);
     },
     /** -- */
     clearCatTextSearch: function(){
@@ -7027,7 +7027,7 @@ var Summary_Categorical_functions = {
                 this.summaryFilter.selected_NOT.length>0)){
             this.summaryFilter.how = "All";
         }
-        if(this.emptyRecordsAggr.filtered===true){
+        if(this.missingValueAggr.filtered===true){
             this.summaryFilter.how = "All";
         }
 
@@ -7036,7 +7036,7 @@ var Summary_Categorical_functions = {
             return;
         }
         this.clearCatTextSearch();
-        this.emptyRecordsAggr.filtered = false;
+        this.missingValueAggr.filtered = false;
         this.summaryFilter.addFilter(true);
     },
 
@@ -7868,7 +7868,7 @@ var Summary_Interval_functions = {
           }
         }
         record._valueCache[this.summaryID] = v;
-        if(v===null) this.emptyRecordsAggr.addRecord(record);
+        if(v===null) this.missingValueAggr.addRecord(record);
       },this);
 
       if(this.timeTyped.base===true){
@@ -7985,11 +7985,11 @@ var Summary_Interval_functions = {
           }
           summary.resetIntervalFilterActive();
           summary.refreshIntervalSlider();
-          if(me.DOM.inited) me.DOM.unmapped_records.attr("filtered",false);
+          if(me.DOM.missingValueAggr) me.DOM.missingValueAggr.attr("filtered",null);
         },
         onFilter: function(summary){
           summary.DOM.root.attr("filtered",true);
-          if(summary.emptyRecordsAggr.filtered){
+          if(summary.missingValueAggr.filtered){
             summary.records.forEach(function(record){
               record.setFilterCache(me.summaryID, record._valueCache[me.summaryID]===null);
             },this);
@@ -8030,8 +8030,7 @@ var Summary_Interval_functions = {
           summary.refreshIntervalSlider();
         },
         filterView_Detail: function(summary){
-          if(summary.emptyRecordsAggr.filtered===true) return "(no data)";
-          return summary.printAggrSelection();
+          return (summary.missingValueAggr.filtered) ? kshf.lang.cur.NoData : summary.printAggrSelection();
         },
       });
     },
@@ -8158,7 +8157,7 @@ var Summary_Interval_functions = {
             if(v===false) {
               record._valueCache[this.summaryID] = null;
               // TODO: Remove from existing aggregate for this summary
-              this.emptyRecordsAggr.addRecord(record);
+              this.missingValueAggr.addRecord(record);
             }
             return v;
           },this);
@@ -8383,11 +8382,16 @@ var Summary_Interval_functions = {
       }
     },
     /** -- */
-    printWithUnitName: function(v){
+    printWithUnitName: function(v,noDiv){
       if(v instanceof Date) 
         return this.intervalTickFormat(v);
       if(this.unitName){
-        var s = "<span class='unitName'>"+this.unitName+"</span>";
+        var s;
+        if(noDiv){
+          s=this.unitName;
+        } else {
+          s = "<span class='unitName'>"+this.unitName+"</span>";
+        }
         return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s);
       }
       return v;
@@ -9782,10 +9786,7 @@ var Summary_Interval_functions = {
       if(!this.inBrowser()) return;
       if(this.DOM.inited===false) return;
       var v = this.getRecordValue(record);
-      if(v===null) {
-        this.DOM.unmapped_records.attr("selection","onRecord");
-        return;
-      }
+      if(v===null) return;
       if(this.valueScale===undefined) return;
       if(this.scaleType==='log' && v<=0) return; // do not map zero/negative values
 
@@ -9801,7 +9802,6 @@ var Summary_Interval_functions = {
     /** -- */
     hideRecordValue: function(){
       if(!this.DOM.inited) return;
-      this.DOM.unmapped_records.attr("selection",null);
       this.DOM.recordValue.style("display",null);
     },
     /** -- */
