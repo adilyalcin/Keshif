@@ -224,7 +224,7 @@ var kshf = {
         sortFunc_List_Date: function(a, b){
             if(a===null) return -1;
             if(b===null) return 1;
-            return a.getTime() - b.getTime();
+            return b.getTime() - a.getTime(); // recent first
         },
         sortFunc_List_Number: function(a, b){
             return b - a;
@@ -1602,9 +1602,7 @@ kshf.RecordDisplay.prototype = {
           sortOpt = { title: sortOpt };
         }
         // Old API
-        if(sortOpt.title){
-          sortOpt.name = sortOpt.title;
-        }
+        if(sortOpt.title) sortOpt.name = sortOpt.title;
 
         var summary = this.browser.summaries_by_name[sortOpt.name];
         if(summary===undefined){
@@ -1926,9 +1924,9 @@ kshf.RecordDisplay.prototype = {
           case 'number': sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
           case 'object':
             if(f instanceof Date)
-                sortValueType_temp2 = kshf.Util.sortFunc_List_Date;
+              sortValueType_temp2 = kshf.Util.sortFunc_List_Date;
             else
-                sortValueType_temp2 = kshf.Util.sortFunc_List_Number;
+              sortValueType_temp2 = kshf.Util.sortFunc_List_Number;
             break;
           default: sortValueType_temp2 = kshf.Util.sortFunc_List_Number; break;
         }
