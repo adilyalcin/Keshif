@@ -50,7 +50,7 @@ $(document).ready(function(){
         value: function(){
           var dt = this.StartDate;
           if(dt===""){ return null; }
-          var m = moment(dt,"MM/DD/YYYY");
+          var m = moment(dt,"MM/DD/YY");
           return new Date(m);
         }, },
       { name: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
