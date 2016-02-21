@@ -48,11 +48,6 @@ google.setOnLoadCallback( function(){
       gdocId: '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
       tables: ["Spills", "Notes", "Districts"]
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Spills, ['Cause'], ", ", false);
-      kshf.Util.cellToArray(kshf.dt.Spills, ['Notes'], /-|,\s*/, true);
-      kshf.Util.cellToArray(kshf.dt.Spills, ['During Activity'], /\/\s*/, false);
-    },
     summaries: [
       { name: "Size" },
       { name: "Total Spilled", collapsed: false, panel: "middle", unitName: "brl" },
@@ -65,9 +60,10 @@ google.setOnLoadCallback( function(){
       { name: "Company", panel: 'right' },
       { name: "District", catTableName: "Districts", catLabel: "Name", panel: 'left' },
       { name: "Water Depth", panel: 'right', value: 'Water Depth (feet)', intervalScale: 'log', unitName: 'ft' },
-      { name: "During Activity", collapsed: false },
-      { name: "Cause", panel: 'right' },
-      { name: "Other Properties", value: "Notes", panel: 'right', collapsed: true, catTableName: "Notes", catLabel: "name" },
+      { name: "During Activity", catSplit: /\/\s*/, collapsed: false },
+      { name: "Cause", catSplit: ", ", panel: 'right' },
+      { name: "Other Properties", value: "Notes", catSplit: /-|,\s*/,
+        catTableName: "Notes", catLabel: "name", panel: 'right', collapsed: true,  },
       { name: "Date", panel: 'bottom', value: getDate }
     ],
     recordDisplay: {

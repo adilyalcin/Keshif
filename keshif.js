@@ -3782,51 +3782,6 @@ kshf.Browser.prototype = {
         }
     },
     /** -- */
-    createTableFromTable: function(srcItems, dstTableName, summaryFunc){
-        var i;
-        var me=this;
-        kshf.dt_id[dstTableName] = {};
-        kshf.dt[dstTableName] = [];
-        var dstTable_Id = kshf.dt_id[dstTableName];
-        var dstTable = kshf.dt[dstTableName];
-
-        var hasString = false;
-
-        srcItems.forEach(function(srcData_i){
-            var mapping = summaryFunc.call(srcData_i.data,srcData_i);
-            if(mapping==="" || mapping===undefined || mapping===null) return;
-            if(mapping instanceof Array) {
-                mapping.forEach(function(v2){
-                    if(v2==="" || v2===undefined || v2===null) return;
-                    if(!dstTable_Id[v2]){
-                        if(typeof(v2)==="string") hasString=true;
-                        var aggr = new kshf.Aggregate();
-                        aggr.init({id:v2},'id');
-                        dstTable_Id[v2] = aggr;
-                        dstTable.push(aggr);
-                    }
-                });
-            } else {
-                if(!dstTable_Id[mapping]){
-                    if(typeof(mapping)==="string") hasString=true;
-                    var aggr = new kshf.Aggregate();
-                    aggr.init({id:mapping},'id');
-                    dstTable_Id[mapping] = aggr;
-                    dstTable.push(aggr);
-                }
-            }
-        });
-
-        dstTable.forEach(function(aggr){
-          me.allAggregates.push(aggr);
-        });
-
-        // Make sure all id's are strings...
-        if(hasString){
-          dstTable.forEach(function(item){ item.data.id = ""+item.data.id; });
-        }
-    },
-    /** -- */
     finishDataLoad: function(table,arr) {
         kshf.dt[table.name] = arr;
         var id_table = {};
@@ -3892,16 +3847,21 @@ kshf.Browser.prototype = {
         this.options.facets = this.options.facets || [];
 
         this.options.facets.forEach(function(facetDescr){
+          // String -> resolve to name
+          if(typeof facetDescr==="string"){
+            facetDescr = {name: facetDescr};
+          }
+
           // **************************************************
           // API compability - process old keys
           if(facetDescr.title){
-              facetDescr.name = facetDescr.title;
+            facetDescr.name = facetDescr.title;
           }
           if(facetDescr.sortingOpts){
-              facetDescr.catSortBy = facetDescr.sortingOpts
+            facetDescr.catSortBy = facetDescr.sortingOpts
           }
           if(facetDescr.layout){
-              facetDescr.panel = facetDescr.layout;
+            facetDescr.panel = facetDescr.layout;
           }
           if(facetDescr.intervalScale){
             facetDescr.scaleType = facetDescr.intervalScale;
@@ -3918,12 +3878,8 @@ kshf.Browser.prototype = {
             }
           }
 
-          // String -> resolve to name
-          if(typeof facetDescr==="string"){
-            facetDescr = {name: facetDescr};
-          }
-
-          if(facetDescr.catLabel||facetDescr.catTooltip||facetDescr.catTableName||facetDescr.catSortBy||facetDescr.catMap){
+          if( facetDescr.catLabel || facetDescr.catTooltip || facetDescr.catSplit ||
+              facetDescr.catTableName || facetDescr.catSortBy || facetDescr.catMap){
             facetDescr.type="categorical";
           } else if(facetDescr.scaleType || facetDescr.showPercentile || facetDescr.unitName ){
             facetDescr.type="interval";
@@ -3934,7 +3890,7 @@ kshf.Browser.prototype = {
             if(typeof(facetDescr.value)==="string"){
               var summary = this.summaries_by_name[facetDescr.value];
               if(summary===undefined){
-                  summary = this.createSummary(facetDescr.value);
+                summary = this.createSummary(facetDescr.value);
               }
               summary = this.changeSummaryName(facetDescr.value,facetDescr.name);
             } else if(typeof(facetDescr.value)==="function"){
@@ -3948,6 +3904,9 @@ kshf.Browser.prototype = {
               summary.destroy();
               summary = this.createSummary(facetDescr.name,facetDescr.value,facetDescr.type);
             }
+          }
+          if(facetDescr.catSplit){
+            summary.setCatSplit(facetDescr.catSplit);
           }
 
           if(facetDescr.type){
@@ -4944,10 +4903,8 @@ kshf.Summary_Base.prototype = {
     this.DOM.nuggetViz = this.DOM.nugget.append("span").attr("class","nuggetViz")
       .each(function(){
         this.tipsy = new Tipsy(this, {
-          gravity: 'e', title: function(){
-            return  (!me.aggr_initialized) ? "Click to initialize" : me.getDataType();
-          }
-        })
+          gravity: 'e', title: function(){ return  (!me.aggr_initialized) ? "Initialize" : me.getDataType(); }
+        });
       })
       .on("mousedown",function(){
         if(!me.aggr_initialized){
@@ -5029,6 +4986,22 @@ kshf.Summary_Base.prototype = {
         d3.event.preventDefault();
       });
 
+    this.DOM.nugget.append("div").attr("class","splitCatAttribute_Button fa fa-scissors")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: "Split" });  })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); })
+      .on("click",function(){
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+        var catSplit = window.prompt('Split by text: (Ex: Splitting "A;B;C" by ";" will create 3 separate values: A,B,C', "");
+        if(catSplit!==null){
+          me.setCatSplit(catSplit);
+        }
+        // stop dragging event start
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+      });
+
     this.DOM.nugget.append("div").attr("class","addFromAttribute_Button fa fa-plus-square")
       .each(function(){ 
         this.tipsy = new Tipsy(this, { 
@@ -5052,33 +5025,33 @@ kshf.Summary_Base.prototype = {
       })
       .on("mouseenter",function(){ this.tipsy.show(); })
       .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-          if(me.isMultiValued && !me.hasDegreeSummary){
-            var summary = me.browser.createSummary(
-              "# of "+me.summaryName,
-              function(d){
-                var arr=d._valueCache[me.summaryID];
-                return (arr===null) ? null : arr.length;
-              },
-              'interval'
-            );
-            summary.initializeAggregates();
-            me.hasDegreeSummary = true;
-            this.style.display = "none";
-            return;
+      .on("click",function(){
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+        if(me.isMultiValued && !me.hasDegreeSummary){
+          var summary = me.browser.createSummary(
+            "# of "+me.summaryName,
+            function(d){
+              var arr=d._valueCache[me.summaryID];
+              return (arr===null) ? null : arr.length;
+            },
+            'interval'
+          );
+          summary.initializeAggregates();
+          me.hasDegreeSummary = true;
+          this.style.display = "none";
+          return;
+        }
+        if(me.isTimeStamp()){
+          if(me.timeTyped.month && me.summary_sub_month===undefined){
+            me.createMonthSummary();
+          } else if(me.timeTyped.day && me.summary_sub_day===undefined){
+            me.createDaySummary();
+          } else if(me.timeTyped.hour && me.summary_sub_hour===undefined){
+            me.createHourSummary();
           }
-          if(me.isTimeStamp()){
-            if(me.timeTyped.month && me.summary_sub_month===undefined){
-              me.createMonthSummary();
-            } else if(me.timeTyped.day && me.summary_sub_day===undefined){
-              me.createDaySummary();
-            } else if(me.timeTyped.hour && me.summary_sub_hour===undefined){
-              me.createHourSummary();
-            }
-          }
-        });
+        }
+      });
 
     this.refreshNuggetDisplay();
     if(this.aggr_initialized) this.refreshViz_Nugget();
@@ -5564,6 +5537,9 @@ kshf.Summary_Base.prototype = {
     if(this.catTableName_custom){
       config.catTableName = this.catTableName;
     }
+    if(this.catSplit){
+      config.catSplit = this.catSplit;
+    }
     return config;
   },
   /** -- */
@@ -5602,10 +5578,6 @@ var Summary_Categorical_functions = {
     if(this.catTableName===undefined){
       // Create new table
       this.catTableName = this.summaryName+"_h_"+this.summaryID;
-      this.browser.createTableFromTable(this.records, this.catTableName, this.summaryFunc);
-    }
-    if(kshf.dt[this.catTableName]===undefined){
-      return false; // Cannot initialize, table not defined.
     }
     this.mapToAggregates();
     if(this.catSortBy.length===0) this.setSortingOptions();
@@ -5630,11 +5602,14 @@ var Summary_Categorical_functions = {
       return;
     }
 
+    nuggetChart.selectAll(".nuggetBar").data([]).exit().remove();
+
     var totalWidth= 25;
     var maxAggregate_Total = this.getMaxAggr_Total();
     nuggetChart.selectAll(".nuggetBar").data(this._cats).enter()
-      .append("span").attr("class","nuggetBar")
-        .style("width",function(cat){ return totalWidth*(cat.records.length/maxAggregate_Total)+"px"; });
+      .append("span")
+      .attr("class","nuggetBar")
+      .style("width",function(cat){ return totalWidth*(cat.records.length/maxAggregate_Total)+"px"; });
 
     this.DOM.nugget.select(".nuggetInfo").html(
       "<span class='fa fa-tag"+(this.isMultiValued?"s":"")+"'></span><br>"+
@@ -5911,6 +5886,24 @@ var Summary_Categorical_functions = {
       this.updateCats();
     }
   },
+  /** -- */
+  setCatSplit: function(catSplit){
+    this.catSplit = catSplit;
+    if(this.aggr_initialized){
+      // Remove existing aggregations
+      {
+        var aggrs=this.browser.allAggregates;
+        this._cats.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
+        if(this.DOM.aggrGroup)
+          this.DOM.aggrGroup.selectAll(".aggrGlyph").data([]).exit().remove();
+      }
+      this.mapToAggregates();
+      this.updateCats();
+      this.insertCategories();
+      this.updateCatSorting(0,true,true);
+      this.refreshViz_Nugget();
+    }
+  },
 
   /** -- */
   createSummaryFilter: function(){
@@ -5950,9 +5943,7 @@ var Summary_Categorical_functions = {
                 }
             }*/
 
-            function getAggr(v){
-              return summary.catTable_id[v];
-            };
+            function getAggr(v){ return summary.catTable_id[v]; };
 
             // If any of the record values are selected with NOT, the record will be removed
             if(this.selected_NOT.length>0){
@@ -6046,95 +6037,118 @@ var Summary_Categorical_functions = {
    * Note: accesses summaryFilter, summaryFunc
    */
   mapToAggregates: function(){
-    var allAggregates = this.browser.allAggregates;
-      var aggrTable_id = {};
-      var aggrTable = [];
-      // Converting from kshf.Record to kshf.Item
-      if(kshf.dt[this.catTableName][0] instanceof kshf.Record){
-        kshf.dt[this.catTableName].forEach(function(record){
-          var i = new kshf.Aggregate();
-          i.init(record.data,record.idIndex);
-          aggrTable_id[i.id()] = i;
-          aggrTable.push(i);
-          allAggregates.push(i);
-        },this);
-      } else {
-        // The tables are already in Aggregate object format. just use them.
-        aggrTable_id = kshf.dt_id[this.catTableName];
-        aggrTable = kshf.dt[this.catTableName];
+    var aggrTable_id = {};
+    var aggrTable = [];
+    var mmmm=false;
+
+    // Converting from kshf.Record to kshf.Aggregate
+    if(kshf.dt[this.catTableName] && kshf.dt[this.catTableName][0] instanceof kshf.Record ){
+      kshf.dt[this.catTableName].forEach(function(record){
+        var aggr = new kshf.Aggregate();
+        aggr.init(record.data,record.idIndex);
+        aggrTable_id[aggr.id()] = aggr;
+        aggrTable.push(aggr);
+        this.browser.allAggregates.push(aggr);
+      },this);
+    } else {
+      mmmm = true;
+    }
+
+    this.catTable_id = aggrTable_id;
+    this._cats = aggrTable;
+
+    var maxDegree = 0;
+    var hasString = false;
+
+    this.records.forEach(function(record){
+      var mapping = this.summaryFunc.call(record.data,record);
+
+      // Split
+      if(this.catSplit && typeof mapping === "string"){
+        mapping = mapping.split(this.catSplit);
       }
-      this.catTable = aggrTable;
-      this.catTable_id = aggrTable_id;
-      this._cats = this.catTable;
 
-      var maxDegree = 0;
-      this.records.forEach(function(record){
-        record._valueCache[this.summaryID] = []; // Mapped to none
+      // make mapping an array if it is not
+      if(!(mapping instanceof Array)) mapping = [mapping];
 
-        var mapping = this.summaryFunc.call(record.data,record);
-        // make mapping an array if it is not
-        if(!(mapping instanceof Array)) mapping = [mapping];
-        // Filter invalued / duplicate values within the mapping
-        var found = {};
-        mapping = mapping.filter(function(e){
-          if(e===undefined || e==="" || e===null || found[e]!==undefined) return false;
-          return (found[e] = true);
-        });
-        // Empy mapping -> record is not mapped to any value
-        if(mapping.length===0) {
-          record._valueCache[this.summaryID] = null;
+      // Filter invalid / duplicate values
+      var found = {};
+      mapping = mapping.filter(function(e){
+        if(e===undefined || e==="" || e===null || found[e]!==undefined) return false;
+        return (found[e] = true);
+      });
+
+      // Record is not mapped to any value (missing value)
+      if(mapping.length===0) {
+        record._valueCache[this.summaryID] = null;
+        if(record._aggrCache[this.summaryID]!==this.missingValueAggr)
           this.missingValueAggr.addRecord(record);
-          return; 
-        }
-        maxDegree = Math.max(maxDegree, mapping.length);
-
-        // place the record into the aggregates
-        mapping.forEach(function(v){
-          var aggr = aggrTable_id[v];
-          if(aggr==undefined) return;
-          record._valueCache[this.summaryID].push(v);
-          aggr.addRecord(record);
-        },this);
-      }, this);
-
-      this.isMultiValued = maxDegree>1;
-
-      // add degree summary if attrib has multi-value records and set-vis is enabled
-      if(this.isMultiValued && this.enableSetVis){
-        this.browser.addSummary(
-          {
-            name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
-            value: function(record){
-              var arr=record._valueCache[me.summaryID];
-              if(arr===null) return null; // maps to no items
-              return arr.length;
-            },
-            collapsed: true,
-            type: 'interval',
-            panel: this.panel
-          },
-          this.browser.primaryTableName
-        );
+        return; 
       }
 
-      this.updateCats();
+      record._valueCache[this.summaryID] = [];
 
-      this.unselectAllCategories();
+      maxDegree = Math.max(maxDegree, mapping.length);
 
-      this.refreshViz_EmptyRecords();
+      mapping.forEach(function(v){
+        if(typeof(v)==="string") hasString=true;
+
+        var aggr = aggrTable_id[v];
+        if(aggr==undefined) {
+          aggr = new kshf.Aggregate();
+          aggr.init({id:v},'id');
+          aggrTable_id[v] = aggr;
+          this._cats.push(aggr);
+          this.browser.allAggregates.push(aggr);
+        }
+        record._valueCache[this.summaryID].push(v);
+        aggr.addRecord(record);
+      },this);
+
+    }, this);
+
+    if(mmmm && hasString){
+      this._cats.forEach(function(aggr){ aggr.data.id = ""+aggr.data.id; });
+    }
+
+    this.isMultiValued = maxDegree>1;
+
+    // add degree summary if attrib has multi-value records and set-vis is enabled
+    if(this.isMultiValued && this.enableSetVis){
+      this.browser.addSummary(
+        {
+          name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
+          value: function(record){
+            var arr=record._valueCache[me.summaryID];
+            if(arr===null) return null; // maps to no items
+            return arr.length;
+          },
+          collapsed: true,
+          type: 'interval',
+          panel: this.panel
+        },
+        this.browser.primaryTableName
+      );
+    }
+
+    this.updateCats();
+
+    this.unselectAllCategories();
+
+    this.refreshViz_EmptyRecords();
   },
 
   // Modified internal dataMap function - Skip rows with 0 active item count
   setMinAggrValue: function(v){
     this.minAggrValue = Math.max(1,v);
-    this._cats = this.catTable.filter(function(cat){ return cat.records.length>=this.minAggrValue; },this);
+    this._cats = this._cats.filter(function(cat){ return cat.records.length>=this.minAggrValue; },this);
     this.updateCats();
   },
   /** -- */
   updateCats: function(){
     // Few categories. Disable resorting after filtering
     if(this._cats.length<=4) {
-      this.catSortBy.forEach(function(opt){ opt.no_resort=true; });
+      this.catSortBy.forEach(function(sortOpt){ sortOpt.no_resort=true; });
     }
     this.showTextSearch = this._cats.length>=20;
     this.updateCatCount_Active();
@@ -6412,25 +6426,24 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     _update_Selected: function(){
-        if(this.DOM.root) {
-            this.DOM.root
-                .attr("filtered",this.isFiltered())
-                .attr("filtered_or",this.summaryFilter.selected_OR.length)
-                .attr("filtered_and",this.summaryFilter.selected_AND.length)
-                .attr("filtered_not",this.summaryFilter.selected_NOT.length)
-                .attr("filtered_total",this.summaryFilter.selectedCount_Total())
-                ;
-        }
-        var show_box = (this.summaryFilter.selected_OR.length+this.summaryFilter.selected_AND.length)>1;
-        this.summaryFilter.selected_OR.forEach(function(category){
-            category.DOM.aggrGlyph.setAttribute("show-box",show_box);
-        },this);
-        this.summaryFilter.selected_AND.forEach(function(category){
-            category.DOM.aggrGlyph.setAttribute("show-box",show_box);
-        },this);
-        this.summaryFilter.selected_NOT.forEach(function(category){
-            category.DOM.aggrGlyph.setAttribute("show-box","true");
-        },this);
+      if(this.DOM.root) {
+        this.DOM.root
+          .attr("filtered",this.isFiltered())
+          .attr("filtered_or",this.summaryFilter.selected_OR.length)
+          .attr("filtered_and",this.summaryFilter.selected_AND.length)
+          .attr("filtered_not",this.summaryFilter.selected_NOT.length)
+          .attr("filtered_total",this.summaryFilter.selectedCount_Total());
+      }
+      var show_box = (this.summaryFilter.selected_OR.length+this.summaryFilter.selected_AND.length)>1;
+      this.summaryFilter.selected_OR.forEach(function(category){
+        category.DOM.aggrGlyph.setAttribute("show-box",show_box);
+      },this);
+      this.summaryFilter.selected_AND.forEach(function(category){
+        category.DOM.aggrGlyph.setAttribute("show-box",show_box);
+      },this);
+      this.summaryFilter.selected_NOT.forEach(function(category){
+        category.DOM.aggrGlyph.setAttribute("show-box","true");
+      },this);
     },
     /** -- */
     unselectAllCategories: function(){
@@ -6707,9 +6720,8 @@ var Summary_Categorical_functions = {
             1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
           var boundMax = ratioMode ? 
             d3.max(this._cats, function(_cat){ 
-              if(_cat._measure.Active===0) return null;
-              return 100*_cat.ratioHighlightToActive(); })
-            : 
+              return (_cat._measure.Active===0) ? null : 100*_cat.ratioHighlightToActive();
+            }) : 
             d3.max(this._cats, function(_cat){ return _cat.measure('Highlighted'); });
           
           this.DOM.catMapColorScale.select(".boundMin").text(Math.round(boundMin));
@@ -6726,29 +6738,16 @@ var Summary_Categorical_functions = {
             var _v;
             if(me.isMultiValued || me.browser.highlightSelectedSummary!==me){
               v = _cat.measure('Highlighted');
-              if(ratioMode) {
-                v = 100*v/_cat.measure('Active');
-              }
+              if(ratioMode) v = 100*v/_cat.measure('Active');
             } else {
               v = _cat.measure('Active');
               if(me.browser.percentModeActive){
                 v = 100*v/allRecordsAggr_measure_Active;
               }
             }
-
-//            if(isThisIt && !me.isMultiValued) {
-//              return (_cat === me.browser.selectedAggr.Highlighted) ? me.mapColorQuantize(9) : "rgba(0,0,0,0)";
-//            }
-//            var _v = _cat.measure.Active;
-//            if(_v<=0 || _v===undefined ) return "url(#diagonalHatch)";
-//            v = _cat.measure.Highlighted;
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
             return me.mapColorQuantize(me.mapColorScale(v)); 
           })
-          //.attr("stroke", function(_cat){ 
-          //  return (_cat === me.browser.selectedAggr.Highlighted) ? "orangered" : null;
-          //  //return (_cat.measure.Highlighted!==0) ? "orangered" : null; 
-          //});
         return;
       }
 
@@ -7055,37 +7054,38 @@ var Summary_Categorical_functions = {
         this.unselectAllCategories();
         this.filterCategory("AND","All");
         return;
+      }
+
+      if(ctgry.is_NOT()){
+        this.filterCategory(ctgry,"NOT");
+      } else if(ctgry.is_AND()){
+        this.filterCategory(ctgry,"AND");
+      } else if(ctgry.is_OR()){
+        this.filterCategory(ctgry,"OR");
       } else {
-        if(ctgry.is_NOT()){
-          this.filterCategory(ctgry,"NOT");
-        } else if(ctgry.is_AND()){
-          this.filterCategory(ctgry,"AND");
-        } else if(ctgry.is_OR()){
-          this.filterCategory(ctgry,"OR");
-        } else {
-          // remove the single selection if it is defined with OR
-          if(!this.isMultiValued && this.summaryFilter.selected_Any()){
-            if(this.summaryFilter.selected_OR.indexOf(ctgry)<0){
-              var temp = [];
-              this.summaryFilter.selected_OR.forEach(function(a){ temp.push(a); });
-              temp.forEach(function(a){ a.set_NONE(); });
-            }
-            if(this.summaryFilter.selected_AND.indexOf(ctgry)<0){
-              var temp = [];
-              this.summaryFilter.selected_AND.forEach(function(a){ temp.push(a); });
-              temp.forEach(function(a){ a.set_NONE(); });
-            }
-            if(this.summaryFilter.selected_NOT.indexOf(ctgry)<0){
-              var temp = [];
-              this.summaryFilter.selected_NOT.forEach(function(a){ temp.push(a); });
-              temp.forEach(function(a){ a.set_NONE(); });
-            }
-            this.filterCategory(ctgry,"AND","All");
-          } else {
-            this.filterCategory(ctgry,"AND");
+        // remove the single selection if it is defined with OR
+        if(!this.isMultiValued && this.summaryFilter.selected_Any()){
+          if(this.summaryFilter.selected_OR.indexOf(ctgry)<0){
+            var temp = [];
+            this.summaryFilter.selected_OR.forEach(function(a){ temp.push(a); });
+            temp.forEach(function(a){ a.set_NONE(); });
           }
+          if(this.summaryFilter.selected_AND.indexOf(ctgry)<0){
+            var temp = [];
+            this.summaryFilter.selected_AND.forEach(function(a){ temp.push(a); });
+            temp.forEach(function(a){ a.set_NONE(); });
+          }
+          if(this.summaryFilter.selected_NOT.indexOf(ctgry)<0){
+            var temp = [];
+            this.summaryFilter.selected_NOT.forEach(function(a){ temp.push(a); });
+            temp.forEach(function(a){ a.set_NONE(); });
+          }
+          this.filterCategory(ctgry,"AND","All");
+        } else {
+          this.filterCategory(ctgry,"AND");
         }
       }
+
       if(this.isMultiValued){
         var x = this;
         this.dblClickTimer = setTimeout(function() { x.dblClickTimer = null; }, 500);
@@ -7174,10 +7174,12 @@ var Summary_Categorical_functions = {
     /** - */
     insertCategories: function(){
       var me = this;
+      if(typeof this.DOM.aggrGroup === "undefined") return;
 
-      var DOM_cats_new = this.DOM.aggrGroup.selectAll(".aggrGlyph")
-        .data(this._cats, function(aggr){ return aggr.id(); })
-      .enter()
+      var aggrGlyphSelection = this.DOM.aggrGroup.selectAll(".aggrGlyph")
+        .data(this._cats, function(aggr){ return aggr.id(); });
+
+      var DOM_cats_new = aggrGlyphSelection.enter()
         .append(this.viewType=='list' ? 'span' : 'g')
         .attr("class","aggrGlyph "+(this.viewType=='list'?'cat':'map')+"Glyph")
         .attr("selected",0)
@@ -7215,13 +7217,13 @@ var Summary_Categorical_functions = {
           .on("click", function(aggr){ me.onCatClick(aggr); });
 
         clickArea.append("span").attr("class","lockButton fa")
-          .each(function(aggr){
+          .on("mouseenter",function(aggr){ 
             this.tipsy = new Tipsy(this, {
               gravity: me.panel.name==='right'?'se':'w',
               title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compared_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
             });
+            this.tipsy.show(); 
           })
-          .on("mouseenter",function(){ this.tipsy.show(); })
           .on("mouseleave",function(){ this.tipsy.hide(); })
           .on("click",function(_cat){
             this.tipsy.hide();
@@ -7647,8 +7649,7 @@ var Summary_Categorical_functions = {
         .each(function(){
           this.tipsy = new Tipsy(this, {
             gravity: 'e', title: function(){
-              return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
-                  kshf.lang.cur.Width;
+              return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+kshf.lang.cur.Width;
             },
           });
         })
@@ -8139,12 +8140,11 @@ var Summary_Interval_functions = {
       this.scaleType = t;
       if(force) this.scaleType_forced = this.scaleType;
       
-      if(this.DOM.summaryConfig){
+      if(this.DOM.inited){
         this.DOM.summaryConfig.selectAll(".summaryConfig_ScaleType .configOption").attr("active",false);
         this.DOM.summaryConfig.selectAll(".summaryConfig_ScaleType .pos_"+this.scaleType).attr("active",true);
+        this.DOM.summaryInterval.attr("scaleType",this.scaleType);
       }
-
-      if(this.DOM.summaryInterval) this.DOM.summaryInterval.attr("scaleType",this.scaleType);
 
       if(this.filteredItems === undefined) return;
 
@@ -8354,7 +8354,7 @@ var Summary_Interval_functions = {
       this.setCollapsed(this.collapsed);
       this.setUnitName(this.unitName);
 
-      this.DOM.inited=true;
+      this.DOM.inited = true;
     },
     /** -- */
     setZoomed: function(v){
@@ -9660,8 +9660,7 @@ var Summary_Interval_functions = {
           kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
         });
 
-        tickData_new.append("span").attr("class","text").text(
-          this.browser.ratioModeActive? function(d){return d;} : function(d){return d3.format("s")(d);} );
+        tickData_new.append("span").attr("class","text").html( function(d){ return me.browser.getMeasureLabel(d); });
 
         setTimeout(function(){
           var transformFunc;

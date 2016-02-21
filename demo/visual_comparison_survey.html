@@ -226,7 +226,7 @@ function loadData(browser){
                         var y=paper.data.Year;
                         if(y>=1990) d.Year = y;
                         d.Venue = paper.data.Venue;
-                        d.Authors = paper.data.Authors.split(", ");
+                        d.Authors = paper.data.Authors;
                     }
                 }
                 kshf.dt.Projects.push(new kshf.Record(d,"id"));
@@ -250,13 +250,13 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "General Category", value: "GeneralCategory" },
-      { name: "Comparison Category", value: function(){return this.ComparisonCategory.split("/");} },
+      { name: "Comparison Category", value: "ComparisonCategory", catSplit: "/" },
       { name: "Data Type Compared", value: "DataTypeCompared" },
       { name: "Comparison Scale", value: "ComparisonScale" },
 //    { name: "CitedInPaper", panel: 'right' },
 //    { name: "MentionedInPaper", panel: 'right' },
       { name: "Technique Used", value: "TechniqueUsed", panel: 'right' },
-      { name: "Authors", panel: 'right' },
+      { name: "Authors", catSplit: ", ", panel: 'right' },
       { name: "Venue", panel: 'right' },
       { name: "Categorized By", value: "CategorizedBy", panel: 'right', collapsed: true,
         catLabel: {

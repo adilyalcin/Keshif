@@ -44,9 +44,9 @@ var loadDemoBrowser = function(){
       tables: "Demos"
     },
     summaries: [
-      { name: "Keywords", panel: 'left', value: function(){ return this.Keywords.split(" + ");} },
+      { name: "Keywords", panel: 'left', catSplit: " + " },
       { name: "# of Records", value: "# of Items", showPercentile: true, panel: 'left', intervalScale: "log"},
-      { name: "Data Source Type", panel: 'left', collapsed: true, value: function(){ return this.Source.split(" + ");} },
+      { name: "Data Source Type", value: "Source", catSplit: " + ", panel: 'left', collapsed: true },
       { name: "Code Complexity", panel: 'right',
         description: "Relative code complexity of demo source",
         catSortBy: "id",
@@ -83,7 +83,7 @@ var loadDemoBrowser = function(){
             r.push("None");
           return r;
         }},
-/*        },{ name: "Other", panel: "right",
+/*    },{ name: "Other", panel: "right",
           value: function(){
               var r = [];
               if(this['Main Text Search'])

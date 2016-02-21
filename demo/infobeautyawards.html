@@ -27,22 +27,20 @@ google.setOnLoadCallback(function(){
       tables: "Showcases"
     },
     loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Showcases, ['Categories'], /\*/, false);
       kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
-      kshf.Util.cellToArray(kshf.dt.Showcases, ['Credits'], ", ", false);
       kshf.dt.Showcases.forEach(function(d){
           var i=d.data.Title.indexOf(" by ");
           if(i>0) d.data.Title = d.data.Title.substr(0,i);
       });
     },
     summaries: [
-      { name: "Categories" },
+      { name: "Categories", catSplit: "*" },
       { name: "Year", value: "Award" },
-      { name: "Credits", collapsed: true }
+      { name: "Credits", catSplit: ", ", collapsed: true }
     ],
     recordDisplay: {
       sortColWidth: 45,
-      sortBy: {title: 'id', inverse:false},
+//      sortBy: {name: 'id', inverse: false},
       textSearch: 'Title',
       displayType: 'grid',
       recordView: function(){ 

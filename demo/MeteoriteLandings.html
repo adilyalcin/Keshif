@@ -29,7 +29,7 @@ google.setOnLoadCallback(function(){
       { name: "Status", panel: "left", description: "\"Official\" indicates a formally recognized name; \"Doubtful\" usually indicates that a lack of specimens or unavailability of specimens to scientists casts doubt on the existence of actual recovered meteorites; \"Pseudo\" indicates that the name refers to an object that has been proven NOT to be a meteorite, and \"Provisional\" indicates that the name has been assigned by the Nomenclature Committee, but formal approval has not been granted" },
       { name: "Fall", panel: "right" },
       { name: "Year", panel: "bottom", description: "The year of the find or fall. For meteorites of unknown provenance, this field may also contain the year of purchase." },
-      { name: "Place", value: function(){ if(this.Place) return this.Place.split(", ")}, panel: "left" },
+      { name: "Place", catSplit: ", ", panel: "left" },
       { name: "Type", panel: "right", description: "The classification of the meteorite" },
       { name: "Mass", panel: "middle", unitName: "gr", description: "Masses are taken from the Catalogue of Meteorites, MetBase, and/or the Meteoritical Bulletin. In most cases, they represent the total known weight of the meteorite. The masses shown here should not be considered as authoritative, and may be rounded off. Qualifying marks in the primary sources of data, such as \">\", \"<\", and \"~\", have simply been dropped."}
       // The number of the Meteoritical Bulletin in which the name was published. 

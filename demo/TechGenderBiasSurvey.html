@@ -33,7 +33,7 @@ google.setOnLoadCallback(function(){
           if(v==="Male" || v==="Female") return v;
           return null;
         } },
-      { name: "Race", value: function(){ return this.Race.split(","); } },
+      { name: "Race", catSplit: "," },
       { name: "Education Level",
         value: "What is your level of schooling?",
         description: "What is your level of schooling?" },
@@ -70,8 +70,7 @@ google.setOnLoadCallback(function(){
           "6-8 years old",
           "< 5 years old"
         ] },
-      { name: "Tech Area",
-        value: function(){ return this["What area of tech do you work in?"].split(",");} ,
+      { name: "Tech Area", value: "What area of tech do you work in?", catSplit: ",",
         description: "What area of tech do you work in?" },
       { name: "University", collapsed: true,
         value: "What university do/did you attend?",

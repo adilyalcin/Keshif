@@ -484,6 +484,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           cursor: pointer;
           &:hover{ color: orangered; }
         }
+        > .splitCatAttribute_Button{
+          display: none;
+          cursor: pointer;
+          color: gray;
+          &:hover{ color: black; }
+        }
         
         .nuggetInfo{
           display: inline-block;
@@ -576,6 +582,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 .flex-direction(column);
                 height: 100%;
             }
+          }
+        }
+        &[datatype~="categorical"][datatype~="singlevalue"]:hover{
+          > .splitCatAttribute_Button{
+            display: inline-block;
           }
         }
         &[state='custom']{
@@ -2492,6 +2503,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   position: absolute;
                   left: 0px;
                   vertical-align: top;
+                  padding-right: 5px;
                   cursor: pointer;
                   color: rgb(180, 180, 180);
                   opacity:1;

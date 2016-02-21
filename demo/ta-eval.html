@@ -32,7 +32,7 @@ google.setOnLoadCallback(function () {
       { name: "Class Size" }
     ],
     recordDisplay: {
-      sortBy: { name: 'Performance', label: function(){ return performanceText(this.Performance); } },
+      sortBy: { name: 'Performance*', value: function(){ return this.Performance; } },
       textSearch: 'Name',
       recordView: 'Name'
     }

@@ -30,8 +30,8 @@ google.setOnLoadCallback(function(){
     },
     loadedCb: function(browser){
   		kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
-        kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
-      },
+      kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
+    },
     summaries: [
       { name: "Regulatory Domains", catTableName: "Regulatory Domain", catSortBy: "Order" },
       { name: "Research Topics", catTableName: "Research Topics", catTooltip: "Description", catSortBy: "Order", 

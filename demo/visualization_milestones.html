@@ -66,12 +66,8 @@ function loadData(browser){
                 var $el = $(el);
                 cData.Category = $el.find("span.tl_bubble_category > a")[0].text.trim();
                 cData.Date_Location = $el.find("span.tl_bubble_date_location").text().trim();
-                cData.Author = $el.find("span.tl_bubble_author").text().trim();
-                cData.Author = cData.Author.replace(/\(.*\)/,"");
-                cData.Author = cData.Author.split(" & ");
-                for(var a=0;a<cData.Author.length;a++){
-                    cData.Author[a] = cData.Author[a].trim();
-                }
+                cData.Author = $el.find("span.tl_bubble_author").text().trim().replace(/\(.*\)/,"");
+                cData.Author = cData.Author.split(/\s+\&\s+/);
 
                 cData.Description = $el.find("span.tl_bubble_description").text().trim();
                 cData.URL = $el.find("span.tl_bubble_link > a").attr("href").trim();
@@ -89,22 +85,22 @@ function loadData(browser){
     });
 
     $.ajax({
-        url:"./data/visualization_milestones_references.html",
-        dataType:"xml",
-        async: false,
-        success: function(collection){
-            var $collection = $(collection);
-            var arr = kshf.dt.References;
+      url:"./data/visualization_milestones_references.html",
+      dataType:"xml",
+      async: false,
+      success: function(collection){
+        var $collection = $(collection);
+        var arr = kshf.dt.References;
 
-            $collection.find("> ol > li").each(function(){
-                var $this = $(this);
-                var cData = {};
-                cData.id = $this.attr("id");
-                cData.Author = $this.find("strong").text();
-                cData.FullText = $this.text();
-                arr.push(new kshf.Record(cData,"id"));
-            });
-        }
+        $collection.find("> ol > li").each(function(){
+          var $this = $(this);
+          var cData = {};
+          cData.id = $this.attr("id");
+          cData.Author = $this.find("strong").text();
+          cData.FullText = $this.text();
+          arr.push(new kshf.Record(cData,"id"));
+        });
+      }
     });
 
     // add more data! - images, links, references, etc

@@ -611,6 +611,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf > .attributePanel .nugget > .addFromAttribute_Button:hover {
   color: orangered;
 }
+.kshf > .attributePanel .nugget > .splitCatAttribute_Button {
+  display: none;
+  cursor: pointer;
+  color: gray;
+}
+.kshf > .attributePanel .nugget > .splitCatAttribute_Button:hover {
+  color: black;
+}
 .kshf > .attributePanel .nugget .nuggetInfo {
   display: inline-block;
   width: 100%;
@@ -774,6 +782,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex-direction: column;
   flex-direction: column;
   height: 100%;
+}
+.kshf > .attributePanel .nugget[datatype~="categorical"][datatype~="singlevalue"]:hover > .splitCatAttribute_Button {
+  display: inline-block;
 }
 .kshf > .attributePanel .nugget[state='custom'] > .editCodeButton {
   display: inline-block;
@@ -3041,6 +3052,7 @@ top:calc(50% - 5px);
   position: absolute;
   left: 0px;
   vertical-align: top;
+  padding-right: 5px;
   cursor: pointer;
   color: #b4b4b4;
   opacity: 1;

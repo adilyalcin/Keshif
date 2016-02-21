@@ -28,9 +28,6 @@ google.setOnLoadCallback(function(){
       gdocId: '0Ai6LdDWgaqgNdE5OaTFVTFh2Z2NtTmVwWGEwNjJwMlE',
       tables: {name:"apr_2011", headers:1}
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.apr_2011, ['condition', 'category'], /\b,\s+/, false);
-    },
     summaries: [
       { name: "<i class='fa fa-heart'></i> Evidence", value: "evidence",
         description: "Is there scientific evidence for its benefits on a specific health condition?" },
@@ -42,9 +39,9 @@ google.setOnLoadCallback(function(){
         value: "popularity", intervalScale: "log", },
       { name: "<i class='fa fa-th-large type_icon'></i> Type", value: "type",
         description: "What type of substance is this?" },
-      { name: "Health Categories", value: "category",
+      { name: "Health Categories", value: "category", catSplit: /\b,\s+/,
         description: "The type of condition", panel: 'right' },
-      { name: "Health Conditions", value: "condition",
+      { name: "Health Conditions", value: "condition", catSplit: /\b,\s+/,
         description: "What condition does the supplement purport to affect?", panel: 'right' },
       { name: "Source", value: "source", collapsed: true,
         description: "The key study for grading the evidence", panel: 'right' }

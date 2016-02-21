@@ -46,7 +46,7 @@ google.setOnLoadCallback(function(){
       {name: "Age", value: "age", panel: "right"},
       {name: "Worth", unitName: "$", panel: "right"},
       {name: "Country", value: "country", panel: "right"},
-      {name: "Source", value: function(){ return this.source.split(", "); }, minAggrValue: 2, collapsed: true },
+      {name: "Source", value: "source", catSplit: ", ", minAggrValue: 2, collapsed: true },
     ],
     recordDisplay: {
       sortColWidth: 40,

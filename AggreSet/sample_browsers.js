@@ -19,24 +19,21 @@ var browser_configs = {
         gdocId: '1nMU5gL16rDXdDIDRs6bvTRMoUuhdd3vmeaVi2WVv0pE',
         tables: ["Chapters", "Characters"]
       },
-      loadedCb: function(){
-        kshf.Util.cellToArray(kshf.dt.Chapters, ['Characters'], /,|;/g, false);
-      },
       summaries: [
-        { name: "Characters", catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
+        { name: "Characters", catSplit: /,|;/g, catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
         { name: "Volume", collapsed: true, catSortBy: "id", catLabel: function(){ return "Volume "+this.id;} }
       ],
       recordDisplay: {
         sortColWidth: 45,
         detailsToggle: "off",
-        recordView: function(){
+        recordView: function(record){
           var characters="";
           var str="<i class='fa fa-book'></i>"+
               " <span style='font-weight:400'>Vol. "+this.Volume+
               ", Book "+this.Book+
               ", Chapter "+this.Chapter+"</span>";
-          if(this.Characters && this.Characters.length>0){
-            this.Characters.forEach(function(c){
+          if(record._valueCache[3] && record._valueCache[3].length>0){
+            record._valueCache[3].forEach(function(c){
               characters+=kshf.dt_id.Characters[c].data.Name+", ";
             });
             str+="<div style='font-weight:200; font-size:0.9em'><i class='fa fa-users'></i> "+characters+"</div>";
@@ -153,11 +150,8 @@ var browser_configs = {
         gdocId: '1u7Lc-TUhcqW_OqC4R-ovJe_Ji0nQ7Zdps_jvsaWo824',
         tables: {name:"Recipes", range:"1:5001"}
       },
-      loadedCb: function(){
-        kshf.Util.cellToArray(kshf.dt.Recipes,['Ingredients'],"*",false);
-      },
       summaries: [
-        { name: "Ingredients", minAggrValue: 100, panel: "middle" },
+        { name: "Ingredients", catSplit: "*", minAggrValue: 100, panel: "middle" },
         { name: "Region", panel: "middle" }
       ]
     }
@@ -289,11 +283,8 @@ var browser_configs = {
         gdocId: '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
         tables: "Breaches"
       },
-      loadedCb: function(){
-        kshf.Util.cellToArray(kshf.dt.Breaches, ['Record Types'], ",", false);
-      },
       summaries:[
-        { name: "Record Types", 
+        { name: "Record Types", catSplit: ",",
           catLabel: {
             'NAM': 'Name',
             'PII': 'Personally Iden. Info.',
@@ -339,7 +330,6 @@ var browser_configs = {
         tables: "Talks"
       },
       loadedCb: function(){
-        kshf.Util.cellToArray(kshf.dt.Talks, ['Feelings'],"+",false);
         kshf.dt.Talks.forEach(function(d){
           var views = d.data.Views;
           if(views[views.length-1]==="M") {
@@ -351,7 +341,7 @@ var browser_configs = {
         })
       },
       summaries: [
-        { name: "Feelings" },
+        { name: "Feelings", catSplit: "+" },
         { name: "Views", panel: "bottom" }
       ],
       recordDisplay: {

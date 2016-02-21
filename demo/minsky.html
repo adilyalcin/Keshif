@@ -24,12 +24,9 @@ google.setOnLoadCallback( function() {
       gdocId: '0Ai6LdDWgaqgNdDN4Qm5aQTVwQW1fSnE1RTl1LXhzbGc',
       tables: "Publications"
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Publications, ['Co-Author','Topic'], /\b,/, false );
-    },
     summaries: [
-      { name: "Topic" },
-      { name: "Co-Author" },
+      { name: "Topic", catSplit: ", " },
+      { name: "Co-Author", catSplit: /,\b/ },
       { name: "Pub. Type" },
       { name: "Date", panel: 'middle' }
     ],

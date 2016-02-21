@@ -27,11 +27,8 @@ google.setOnLoadCallback(function(){
       gdocId: '1M9M_iYxO0lqvEfsV8ENJLbA7xfdWCD7dv4Gh6C5M2oE',
       tables: "Covers"
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Covers, ['Categories'], ",", false);
-    },
     summaries: [
-      { name: "Categories" },
+      { name: "Categories", catSplit: "," },
       { name: "Credits", panel: 'right' },
       { name: "Month", panel: 'right', catLabel: _demo.Month, catSortBy: "id",
         value: function(){ if(this.Date) return this.Date.getMonth(); } },

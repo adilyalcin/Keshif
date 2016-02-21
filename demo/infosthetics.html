@@ -26,11 +26,8 @@ $(document).ready( function(){
       gdocId: '0Ai6LdDWgaqgNdFhuMXh0V1E2Wk5tU19JaDltUWVMVnc',
       tables: ["Posts", "Authors"]
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Posts, ['Category'], ",", false);
-    },
     summaries: [
-      { name: "Category" },
+      { name: "Category", catSplit: "," },
       { name: "Author", catTableName: "Authors", catLabel: "Name", collapsed: true },
       { name: "# Comments",  value: '# of Comments' },
       { name: "Date", panel: 'bottom' }

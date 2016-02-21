@@ -33,7 +33,6 @@ $(document).ready( function(){
     },
     loadedCb: function(){
       kshf.dt.Songs.forEach(function(song){
-        song.data.DJs = song.data.DJ.split("; ");
         var m=moment(song.data.Date, "YYYY/MM/DD/hhA");
         if(m.year()<1950) return;
         song.data["Release Year"] = parseInt(song.data["Release Year"]);
@@ -45,7 +44,7 @@ $(document).ready( function(){
       { name: "Album", minAggrValue: 30 },
       { name: "Artist", panel: 'middle', minAggrValue: 30 },
       { name: "Label", panel: 'middle', minAggrValue: 30 },
-      { name: "DJs", panel:"right", catTableName: "DJs",
+      { name: "DJs", value: "DJ", catSplit: "; ", catTableName: "DJs", panel:"right", 
         catLabel: function(){ return this.DJ+"<img src='"+this.Image+"' class='charImg'>"; } },
       { name: "Show", panel:"right" },
       { name: "Release Year", panel:"bottom", type: 'interval' },

@@ -25,23 +25,12 @@ google.setOnLoadCallback(function(){
       gdocId: '1M0I8q0-5aq89ONt8IPhyqyZRzSV9aJqqeDQIldxQPvY',
       tables: "Members (2015-2008)"
     },
-    loadedCb: function(){
-      kshf.dt["Members (2015-2008)"].forEach(function(d){
-        if(d.data.Affiliations) d.data.Affiliations = d.data.Affiliations.split("; ");
-      })
-    },
     summaries: [
       { name: "Year", layout: "bottom" },
-      { name: "Affiliations", collapsed: true},
-      { name: "Roles (with Track)", value: function(){ return this.Roles.split("; "); }},
+      { name: "Affiliations", catSplit: "; ", collapsed: true },
+      { name: "Roles (with Track)", value: "Roles", catSplit: "; " },
       { name: "Roles (Without Track)", collapsed: true, 
-        value: function(){ 
-          return this.Roles
-            .replace(" (InfoVis)","").replace(" (InfoVis)","").replace(" (InfoVis)","")
-            .replace(" (SciVis)","").replace(" (SciVis)","").replace(" (SciVis)","")
-            .replace(" (VAST)","").replace(" (VAST)","").replace(" (VAST)","")
-            .split("; ");
-        }},
+        value: function(){ return this.Roles.replace(/\s\(\w+\)/g, '').split('; '); } }
     ],
     recordDisplay: {
       sortBy: "Year",

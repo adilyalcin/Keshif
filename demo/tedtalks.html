@@ -27,20 +27,19 @@ google.setOnLoadCallback(function(){
       tables: "Talks"
     },
     loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Talks, ['Feelings'], "+", false);
       // convert views from 10M to 10,000,000 etc
       kshf.dt.Talks.forEach(function(d){
-          var views = d.data.Views;
-          if(views[views.length-1]==="M") {
-              views = 1000000*views.substr(0,views.length-1)
-          } else if(views[views.length-1]==="K") {
-              views = 1000*views.substr(0,views.length-1)
-          }
-          d.data.Views = views;
+        var views = d.data.Views;
+        if(views[views.length-1]==="M") {
+          views = 1000000*views.substr(0,views.length-1)
+        } else if(views[views.length-1]==="K") {
+          views = 1000*views.substr(0,views.length-1)
+        }
+        d.data.Views = views;
       });
     },
     summaries: [
-      { name: "Feelings", },
+      { name: "Feelings", catSplit: "+" },
       { name: "Talk Duration", value: function(){ return this.Duration[0]; }, unitName: "min" },
       { name: "Views" },
       { name: "Speaker", layout: 'right' },

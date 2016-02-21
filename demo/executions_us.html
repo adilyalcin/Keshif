@@ -31,7 +31,7 @@ google.setOnLoadCallback(function(){
       })
     },
     summaries: [
-      { name: "Crime", value: function(){ return this.Crime.split(" - "); } },
+      { name: "Crime", catSplit: " - "},
       { name: "Method", },
       { name: "State", panel: 'right', catLabel: function(){ return getStateName(this.id); } },
       { name: "Race", panel: 'right' },

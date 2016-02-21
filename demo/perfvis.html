@@ -30,8 +30,7 @@ function loadData(browser){
         entryData.Key = entry.EntryKey;
         entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
         entryData.Type = entry.EntryType;
-        entryData.Authors = [];
-        if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
+        entryData.Authors = entry.Fields.author;
         entryData.Title = entry.Fields.title;
         entryData.Year = entry.Fields.year;
         if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
@@ -59,7 +58,7 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "Type", collapsed: true },
-      { name: "Authors" },
+      { name: "Authors", catSplit: " and " },
       { name: "Journal", collapsed: false },
       { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,0);} }
     ],

@@ -27,18 +27,10 @@ google.setOnLoadCallback(function(){
       tables: "Members"
     },
     summaries: [
-      { name: "Role", value: function(){ return this.Role.split(", "); } },
-      { name: "Position", value: function(){ return this.Position.split("+"); } },
-      { name: "Other Appointments", 
-        value: function(){ 
-          if(this["Other Appointments"]) return this["Other Appointments"].split("+"); 
-        } },
-      { name: "Lab Affiliations", 
-        value: function(){ 
-          if(this["Affiliations"]) return this["Affiliations"].split("+"); 
-        },
-        catTooltip: 'id'
-        },
+      { name: "Role", catSplit: ", " },
+      { name: "Position", catSplit: "+" },
+      { name: "Other Appointments", catSplit: "+" },
+      { name: "Lab Affiliations", value: "Affiliations", catSplit: "+", catTooltip: 'id' },
       { name: "Education", 
         layout: "left",
         value: function(){

@@ -27,27 +27,25 @@ google.setOnLoadCallback(function () {
       tables: "Publications"
     },
     loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Publications, 
-          ['Authors','Concepts','Keywords','IndexTerms','Citations','citeLocs'], "*", false);
       kshf.dt.Publications.forEach(function(publication){
           publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
       });
     },
     summaries: [
-      { name: "Concepts" },
+      { name: "Concepts", catSplit: "*" },
       { name: "Year", value: "time", panel: "middle" },
-      { name: "Highlights",
-        value: function(){ if(this.best) return "Best in Year"; } },
+      { name: "Highlights", value: function(){ if(this.best) return "Best in Year"; } },
       { name: "Citations to",
         // these are how the items are related.
         // X is related to Y (set) => Each Y stores the items it has been mapped to.
         // That number is shown on display
         value: "Citations",
+        catSplit: "*",
         // Using the main table name, this will enable linking through items
         catTableName: "Publications",
         collapsed: true },
       { name: "Total Citations", value: "num", intervalScale: 'log' },
-      { name: "Authors", panel: 'right' }
+      { name: "Authors", catSplit: "*", panel: 'right' }
       /*,{
 //              name: "Keywords",
           timeTitle: "Year",

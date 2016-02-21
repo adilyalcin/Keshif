@@ -41,10 +41,9 @@ $(document).ready(function(){
         var v = d.data.AwardedAmountToDate.replace(/[^0-9]+/g,"");
         d.data.AwardedAmountToDate = parseInt(v)/100;
       });
-      kshf.Util.cellToArray(kshf.dt.nsfawards, ['Program(s)', 'ProgramReferenceCode(s)'], ", ", false);
     },
     summaries: [
-      { name: "Program", value: "Program(s)" },
+      { name: "Program(s)", catSplit: ", " },
       { name: "Name", value: "Organization" },
       { name: "AwardInstrument", },
       { name: "Start Date", panel: 'bottom',

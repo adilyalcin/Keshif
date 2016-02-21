@@ -26,19 +26,16 @@ function loadData(browser){
 
       BibtexParser(bibdata).entries.forEach(function(entry){
         var entryData = {};
+        console.log(entry);
 
         entryData.Key = entry.EntryKey;
-        entryData.ImgURL = "./img/setvis/"+entryData.Key+".png";
         entryData.Type = entry.EntryType;
-        entryData.Authors = [];
-        if(entry.Fields.author) entryData.Authors = entry.Fields.author.split(" and ");
+        entryData.Authors = entry.Fields.author;
         entryData.Title = entry.Fields.title;
         entryData.Year = entry.Fields.year;
         if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
-
-        entryData.Keywords = [];
-        if(entry.Fields.keywords)
-          entryData.Keywords = entry.Fields.keywords.replace(/category:/g,"").split(", ");
+        entryData.Keywords = entry.Fields.keywords;
+        if(entryData.Keywords) entryData.Keywords = entryData.Keywords.replace(/category:/g,"");
         if(entry.Fields.journal)
           entryData.Journal = entry.Fields.journal;
         else if(entry.Fields.booktitle)
@@ -62,9 +59,9 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "Keywords" },
+      { name: "Keywords", catSplit: ", "},
       { name: "Type", collapsed: true },
-      { name: "Authors" },
+      { name: "Authors", catSplit: " and " },
       { name: "Journal", collapsed: false },
       { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,0); } }
     ],

@@ -27,10 +27,6 @@ $(document).ready( function(){
       fileType: 'csv',
       tables: "women_in_film"
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.women_in_film, 
-          ['Rating','Genre','Main Actors','Language','Production Company','Plot Keywords (top 10)'],', ', false);
-    },
     summaries: [
       { name: "Movie Passes Bechdel Test ?", value: "Passes Bechdel Test?" },
       { name: "Bechdel Criterias",
@@ -45,13 +41,13 @@ $(document).ready( function(){
           return r;
         } },
       { name: "Clarity of Pass", collapsed: true },
-      { name: "Plot Keywords (top 10)", minAggrValue: 5 },
+      { name: "Plot Keywords (top 10)", catSplit: ", ", minAggrValue: 5 },
       { name: "IMDb Popularity", panel: 'middle', },
       { name: "Award Popularity", panel: 'left', collapsed: true },
-      { name: "Rating" },
-      { name: "Genre", panel: 'right' },
-      { name: "Main Actors", minAggrValue: 3, panel: 'right' },
-      { name: "Language", panel: 'right' },
+      { name: "Rating", catSplit: ", " },
+      { name: "Genre", catSplit: ", ", panel: 'right' },
+      { name: "Main Actors", catSplit: ", ", minAggrValue: 3, panel: 'right' },
+      { name: "Language", catSplit: ", ", panel: 'right' },
       { name: "Runtime", value: "Runtime (min)", panel: 'right', collapsed: true, unitName: "min" },
       { name: "Year", panel: "middle", collapsed: true }
     ],

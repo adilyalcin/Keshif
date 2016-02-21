@@ -27,14 +27,10 @@ google.setOnLoadCallback( function () {
       gdocId: '0AonYZs4MzlZbdHJNSVh6clE4MVR4OHhqZWs4WGpSZlE',
       tables: "TELEVIZED VILLAINS"
     },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt['TELEVIZED VILLAINS'], 
-        ['Doctor actor','Motivation (invasion earth, kill humans, etc)','Story titles'], /\b,\s+/, false);
-    },
     summaries:[
-      { name: "Doctor actor" },
-      { name: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)' },
-      { name: "Story titles" },
+      { name: "Doctor actor", catSplit: /\b,\s+/ },
+      { name: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)', catSplit: /\b,\s+/, panel: "right" },
+      { name: "Story titles", catSplit: /\b,\s+/ },
       { name: "Total Stories", value: function(){ return this['Story titles'].length; } },
       { name: "1st Appearance", panel: 'bottom',
         value: function(){ 

@@ -26,17 +26,6 @@ google.setOnLoadCallback(function(){
       gdocId: '1ZVabBN65bCtUDURAjiZBeFddXzJT2gjN3HQNZa2adLk',
       tables: "Responses"
     },
-    loadedCb: function(){
-      // split some strings using | character
-      kshf.Util.cellToArray(kshf.dt.Responses, [
-        'Training & Education', 
-        'Current Language', 
-        'Future Language', 
-        'Source control used',
-        'Why use Stack Overflow',
-        'Why answer?'
-      ], "|", false);
-    },
     readyCb: function(){
       this.setPercentMode(true);
     },
@@ -65,15 +54,15 @@ google.setOnLoadCallback(function(){
           '11+ years'
         ] },
 //    { name: "Desktop Operating System" },
-      { name: "Training & Education" },
-      { name: "Current Language", panel:'middle', minAggrValue: 2 },
-      { name: "Future Language", panel:'middle' },
+      { name: "Training & Education", catSplit: "|" },
+      { name: "Current Language", catSplit: "|", panel:'middle', minAggrValue: 2 },
+      { name: "Future Language", catSplit: "|", panel:'middle' },
       { name: "Desktop Operating System", panel:'right' },
       { name: "Preferred text editor", panel:'middle', collapsed: true },
       { name: "Prefered IDE theme", panel:'middle', collapsed: true },
-      { name: "Source control used", panel:'middle', collapsed: true, },
+      { name: "Source control used", catSplit: "|", panel:'middle', collapsed: true, },
       { name: "Prefered Source Control", panel:'middle', collapsed: true },
-      { name: "Why use Stack Overflow", panel:'middle', collapsed: true },
+      { name: "Why use Stack Overflow", catSplit: "|", panel:'middle', collapsed: true },
       { name: "How often are Stack Overflow's answers helpful", panel:'middle', collapsed: true, 
         catSortBy: [
           'Always',
@@ -82,7 +71,7 @@ google.setOnLoadCallback(function(){
           'Rarely',
           'Never',
         ] },
-      { name: "Why answer?", panel:'middle' },
+      { name: "Why answer?", catSplit: "|", panel:'middle' },
       { name: "Employment Status", panel:'right' },
       { name: "Compensation", panel:'right', 
         catSortBy: [

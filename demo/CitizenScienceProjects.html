@@ -36,34 +36,23 @@ $(document).ready( function() {
         browser.loadCharts();
       }
     },
-    loadedCb: function(){
-      kshf.dt.ccsinventory_wilsoncenter.forEach(function(d){
-        d.data.start_date = parseInt(d.data.start_date.substr(0,4));
-      });
-    },
     summaries: [
-      { name: "Project Topic", 
-        value: function(){ if(this.project_topic) return this.project_topic.split(", ");} },
-      { name: "Keywords", 
-        value: function(){ if(this.keywords) return this.keywords.split(", ");} },
-      { name: "Affiliation", value: "affiliation"},
-      { name: "Agency Sponsor", 
-        value: function(){ if(this.agency_sponsor) return this.agency_sponsor.split(", ");} },
-      { name: "Geographic Scope", value: "geographic_scope", panel: "right", collapsed: true},
+      { name: "Project Topic", value: "project_topic", catSplit: ", " },
+      { name: "Keywords", value: "keywords", catSplit: ", " },
+      { name: "Affiliation", value: "affiliation" },
+      { name: "Agency Sponsor", value: "agency_sponsor", catSplit: ", " },
+      { name: "Geographic Scope", value: "geographic_scope", panel: "right", collapsed: true },
       { name: "State", 
         value:    function(){ return this.state.trim(); }, // there are 2 MD's one with a new line character. Let's fix that
         catLabel: function(){ return US_States.index_code[this.id].name; },
         catMap:   function(){ return US_States.index_code[this.id].geo; },
-        panel: "right",
-        },
-      { name: "City", value: "city", collapsed: true, panel: "right", collapsed: true},
-      { name: "Intended Outcomes", panel: "right", collapsed: true,
-        value: function(){ if(this.intended_outcomes) return this.intended_outcomes.split(", ");} },
-      { name: "Participant Age", panel: "right",
-        value: function(){ if(this.participant_age) return this.participant_age.split(", ");} },
+        panel: "right" },
+      { name: "City", value: "city", collapsed: true, panel: "right", collapsed: true },
+      { name: "Intended Outcomes", value: "intended_outcomes", catSplit: ", ", panel: "right", collapsed: true },
+      { name: "Participant Age", value: "participant_age", catSplit: ", ", panel: "right" },
       { name: "Status", value: "status", panel: "right", collapsed: true },
       //{ name: "Project Topic", value: "project_topic"},
-      { name: "Start Year", value: "start_date", layout: "middle"}
+      { name: "Start Year", value: function(){ return parseInt(this.start_date.substr(0,4)); }, layout: "middle" }
     ],
     recordDisplay: {
       sortColWidth: 50,

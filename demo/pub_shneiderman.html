@@ -32,45 +32,31 @@ function loadData(browser){
       var lastItem;
 
       var bibParser = new BibtexParser(function(entry) {
-          lastItem = entry;
-          entry.EntryKey = entry.EntryKey.replace( /(:|\.|\[|\])/g, "\\$1" );
+        lastItem = entry;
+        entry.EntryKey = entry.EntryKey.replace( /(:|\.|\[|\])/g, "\\$1" );
 
-          // convert text form date to javascript date
-          var year = entry.Fields.year;
-          if(year){
-              if(entry.Fields.month){
-                  console.log("month: " + entry.Fields.month);
-              }
-              entry.Year = new Date(moment(year,0));
-          } else {
-              var asd=2323232;
-          }
+        // convert text form date to javascript date
+        if(entry.Fields.year){ entry.Year = new Date(moment(entry.Fields.year,0)); }
 
-          // process author chunk
-          if(entry.Fields.author){
-              entry.Authors = entry.Fields.author.split(" and ")
-          }
+        entry.Authors = entry.Fields.author;
 
-          if(entry.EntryKey.indexOf('/') === -1 && entry.EntryKey.indexOf('!') === -1){
-              // read pdf link
-              $$doc.find('#'+entry.EntryKey+ ' a:last-of-type').each(function(aTag){
-                  if(this.innerText==="PDF"){
-                      entry.PDF = this.attributes.href;
-                  }
-              });                          
-              
-              // read abstract
-              $$doc.find('#abs_'+entry.EntryKey).each(function(abs){
-                  entry.Abstract = this.innerText;
-              });
-          }
+        if(entry.EntryKey.indexOf('/') === -1 && entry.EntryKey.indexOf('!') === -1){
+          // read pdf link
+          $$doc.find('#'+entry.EntryKey+ ' a:last-of-type').each(function(aTag){
+            if(this.innerText==="PDF") entry.PDF = this.attributes.href;
+          });                          
+          // read abstract
+          $$doc.find('#abs_'+entry.EntryKey).each(function(abs){
+            entry.Abstract = this.innerText;
+          });
+        }
 
-          kshf.dt.Publications.push(new kshf.Record(entry,"EntryKey"));
+        kshf.dt.Publications.push(new kshf.Record(entry,"EntryKey"));
       });
 
       $$doc.find('#qs_table tr.bibtex pre').each(function(){
-          bibParser.parse(this.innerText);
-          lastItem.bibTex = this.innerText;
+        bibParser.parse(this.innerText);
+        lastItem.bibTex = this.innerText;
       });
 
       browser.loadCharts();
@@ -92,7 +78,7 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "EntryType" },
-      { name: "Authors" },
+      { name: "Authors", catSplit: " and " },
       { name: "Journal", value: function(){ return this.Fields.journal; } },
       { name: "Year", panel: "bottom" }
     ],
@@ -114,28 +100,21 @@ $(document).ready( function(){
 
         str+="<span class='item_details'>";
 
-        // author names
-        var authors = this.Authors;
-        if(authors){
-          str+="<div class=\"authorNames\">";
-          for(j=0; j<authors.length; j++){
-              str+=authors[j];
-              if(j!==authors.length-1) { str+=' & '; }
-          }
-          str+="</div>";
-      }
-      // Venue + details
-          str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Year.getFullYear()+"</span> ";
-          if(this.Fields.journal) {
-              str+=this.Fields.journal+" ";
-          }
-          if(this.Fields.booktitle) {
-              str+=this.Fields.booktitle+" ";
-          }
-          if(this.Fields.publisher) {
-              str+="<b>Publisher:</b> "+this.Fields.publisher;
-          }
-          str+="</div>";
+        if(this.Authors){
+          str+="<div class='authorNames'>"+this.Authors.replace(" and "," & ")+"</div>";
+        }
+        // Venue + details
+        str+="<div class='venueInfo'><span style='font-weight:bolder;'>"+this.Year.getFullYear()+"</span> ";
+        if(this.Fields.journal) {
+          str+=this.Fields.journal+" ";
+        }
+        if(this.Fields.booktitle) {
+          str+=this.Fields.booktitle+" ";
+        }
+        if(this.Fields.publisher) {
+          str+="<b>Publisher:</b> "+this.Fields.publisher;
+        }
+        str+="</div>";
 
         // Abstract
         if(this.Abstract){

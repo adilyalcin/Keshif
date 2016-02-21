@@ -29,8 +29,8 @@ $(document).ready( function(){
       tables: "d3_gallery"
     },
     summaries: [
-      {name: "Visualization Type", value: function(){ return this.visualizationType.split("; "); }},
-      {name: "Author", value: function(){ return this.author.split("; ");} }
+      {name: "Visualization Type", value: "visualizationType", catSplit: "; "},
+      {name: "Author", value: "author", catSplit: "; "}
     ],
     recordDisplay: {
       sortBy: {name: "-", value: function(){ return ((this.thumbnail!=="")?10000:0)+this.id; }},

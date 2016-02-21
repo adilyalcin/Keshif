@@ -32,12 +32,8 @@ google.setOnLoadCallback(function(){
     leftPanelLabelWidth: 190,
     rightPanelLabelWidth: 200,
     source: {
-      url: "http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html",
       gdocId: '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
       tables: "Breaches"
-    },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Breaches,['Record Types'], /\,/, false);
     },
     summaries: [
       { name: "Type", panel: 'left' },
@@ -45,7 +41,7 @@ google.setOnLoadCallback(function(){
       { name: "# of Records", showPercentile: true },
       { name: "Source", panel: 'right'},
 //      { name: "Data Source", panel: 'right' },
-      { name: "Record Types", panel: 'right', 
+      { name: "Record Types", panel: 'right', catSplit: ",",
         catLabel: {
           'NAM': 'Name',
           'PII': 'Personally Identifying Information',
