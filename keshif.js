@@ -1263,6 +1263,7 @@ kshf.RecordDisplay.prototype = {
         var feature = record.data[_geo_];
         if(typeof feature === 'undefined') return;
         var b = d3.geo.bounds(feature);
+        if(isNaN(b[0][0])) return;
         // Change wrapping (US World wrap issue)
         if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
         if(b[1][0]>kshf.wrapLongitude) b[1][0]-=360;
@@ -7496,6 +7497,7 @@ var Summary_Categorical_functions = {
         var feature = me.catMap.call(_cat.data,_cat);
         if(typeof feature === 'undefined') return;
         var b = d3.geo.bounds(feature);
+        if(isNaN(b[0][0])) return;
         // Change wrapping
         if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
         if(b[1][0]>kshf.wrapLongitude) b[1][0]-=360;
