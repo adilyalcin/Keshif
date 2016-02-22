@@ -1261,7 +1261,7 @@ kshf.RecordDisplay.prototype = {
       this.browser.records.forEach(function(record){
         if(!record.isWanted) return;
         var feature = record.data[_geo_];
-        if(feature===undefined) return;
+        if(typeof feature === 'undefined') return;
         var b = d3.geo.bounds(feature);
         // Change wrapping (US World wrap issue)
         if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
@@ -7494,7 +7494,7 @@ var Summary_Categorical_functions = {
       this._cats.forEach(function(_cat){
         if(!_cat.isActive) return;
         var feature = me.catMap.call(_cat.data,_cat);
-        if(feature===undefined) return;
+        if(typeof feature === 'undefined') return;
         var b = d3.geo.bounds(feature);
         // Change wrapping
         if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
