@@ -6503,9 +6503,18 @@ var Summary_Categorical_functions = {
     /** -- */
     setHeight_Category: function(h){
       var me=this;
-      if(this.heightRow_category===h) return;
       this.heightRow_category = h;
 
+      if(this.viewType==='list') {
+        this.refreshHeight_Category();
+      } else {
+        this.heightRow_category_dirty = true;
+      }
+    },
+    /** -- */
+    refreshHeight_Category: function(){
+      var me=this;
+      this.heightRow_category_dirty = false;
       this.browser.setNoAnim(true);
 
       this.browser.updateLayout();
@@ -6514,7 +6523,6 @@ var Summary_Categorical_functions = {
         .each(function(aggr){
           kshf.Util.setTransform(this, "translate("+aggr.posX+"px,"+(me.heightRow_category*aggr.orderIndex)+"px)");
         })
-        //.style("margin-top",((this.heightRow_category-18)/2)+"px")
         .style("height",this.heightRow_category+"px");
 
       this.DOM.aggrGlyphs.selectAll(".categoryLabel").style("padding-top",(this.heightRow_category/2-8)+"px");
@@ -7539,7 +7547,7 @@ var Summary_Categorical_functions = {
       this.DOM.root.attr("viewType",this.viewType);
       if(this.viewType==='list'){
         this.DOM.aggrGroup = this.DOM.aggrGroup_list;
-
+        if(this.heightRow_category_dirty) this.refreshHeight_Category();
         this.refreshDOMcats();
         this.updateCatSorting(0,true,true);
         return;

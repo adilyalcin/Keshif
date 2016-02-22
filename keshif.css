@@ -3725,7 +3725,7 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
   display: inline-block !important;
 }
-.kshf .kshfSummary[collapsed=false][summary_type='categorical']:hover .summaryConfigControl {
+.kshf .kshfSummary[collapsed=false][summary_type='categorical'][viewType='list']:hover .summaryConfigControl {
   display: inline-block !important;
 }
 .kshf .kshfSummary[showConfig=true] .summaryConfig {
