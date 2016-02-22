@@ -1971,7 +1971,7 @@ kshf.RecordDisplay.prototype = {
       if(this.recordViewSummary===null) return;
       if(this.displayType==="map") {
         this.updateItemVisibility(false);
-        this.map_zoomToActive();
+        //this.map_zoomToActive();
         return;
       }
       var me=this;
@@ -6544,8 +6544,8 @@ var Summary_Categorical_functions = {
       
       if(this.viewType==='map'){
         this.updateCatCount_Active();
-        this.map_refreshBounds_Active();
-        setTimeout(function(){ me.map_zoomToActive(); }, 1000);
+        //this.map_refreshBounds_Active();
+        //setTimeout(function(){ me.map_zoomToActive(); }, 1000);
         this.refreshMeasureLabel();
         this.refreshViz_Active();
         return;
