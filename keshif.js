@@ -1240,7 +1240,7 @@ kshf.RecordDisplay.prototype = {
         this.leafletMap.invalidateSize();
         this.map_zoomToActive();
       }
-    }
+    },
     /** -- */
     map_refreshColorScale: function(){
       var me = this;
