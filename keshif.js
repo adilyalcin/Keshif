@@ -1235,6 +1235,13 @@ kshf.RecordDisplay.prototype = {
       this.curHeight = v;
     },
     /** -- */
+    refreshWidth: function(){
+      if(this.displayType==="map"){
+        this.leafletMap.invalidateSize();
+        this.map_zoomToActive();
+      }
+    }
+    /** -- */
     map_refreshColorScale: function(){
       var me = this;
       this.DOM.mapColorScaleBins
@@ -4542,6 +4549,8 @@ kshf.Browser.prototype = {
       this.panels.middle.updateSummariesWidth();
       this.panels.bottom.setTotalWidth(this.divWidth);
       this.panels.bottom.updateSummariesWidth();
+
+      this.recordDisplay.refreshWidth();
     },
     /** -- */
     getMeasureLabel: function(aggr,summary){
