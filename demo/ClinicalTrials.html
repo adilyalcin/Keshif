@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Clinical Data</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+$(document).ready( function(){
+  var dateFormat = d3.time.format("%b-%y");
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    itemName: "Clinical Trials",
+    leftPanelLabelWidth: 200,
+    rightPanelLabelWidth: 200,
+    source: {
+      url: 'http://selfiecity.net/selfiexploratory/',
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: "ClinicalTrials_Simplified"
+    },
+    summaries: [
+      { name: "Gender"},
+      { name: "Age Groups", catSplit: "|"},
+      { name: "Recruitment", collapsed: true },
+      { name: "Phases", catSplit: "|", collapsed: true},
+      { name: "Study Designs", catSplit: "|"},
+      { name: "Study Results"},
+      { name: "Study Types" },
+      { name: "Funded Bys", catSplit: "|", panel: 'right'},
+      { name: "Conditions", catSplit: "|", panel: 'right', minAggrValue: 200},
+      { name: "Interventions", catSplit: "|", panel: 'right', minAggrValue: 200},
+      { name: "Start Date", panel: 'middle', value: function(){
+        var x=dateFormat.parse(this["Start Date"]);
+        if(x!==null) return new Date(x);
+        }},
+      { name: "Completion Date", panel: 'middle', value: function(){
+        var v=this["Completion Date"];
+        if(v==="null") return;
+        var x=dateFormat.parse(v);
+        if(x!==null) return new Date(x);
+        }},
+      { name: "Enrollment", panel: 'middle', unitName: "ppl" },
+      //{ name: "Sponsor/Collaborators", catSplit: "|", minAggrValue: 100},
+    ],
+    recordDisplay: {
+      sortBy: "Enrollment",
+      detailsToggle: "zoom",
+      recordView: "Title"
+    }
+  });
+});
+    </script>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">Clinical Trials in the U.S.A.</div>
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
+</html>
