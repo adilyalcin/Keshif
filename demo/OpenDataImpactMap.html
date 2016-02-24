@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Open Data Impact Map - Keshif Browser</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 130,
+    leftPanelLabelWidth: 180,
+    rightPanelLabelWidth: 170,
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'json',
+      tables: "OpenDataImpactMap"
+    },
+    summaries: [
+      { name: "Types",
+        value: function(){
+          var r = [];
+          if(this.Other==="TRUE") r.push("Other");
+          if(this.Research==="TRUE") r.push("Research");
+          if(this.Advocacy==="TRUE") r.push("Advocacy");
+          if(this["Product/Service"]==="TRUE") r.push("Product/Service");
+          return r;
+        } },
+      { name: "Industry", value: "Industry Category" },
+      { name: "Country", panel: 'right', description: "Country of origin" },
+      { name: "Organization Type", panel: 'right' },
+      { name: "Organizational Optimization", panel: 'right', collapsed: true },
+      { name: "Region", panel: 'left' },
+      { name: "City", panel: 'left', collapsed: true },
+      { name: "Size", panel: 'right',
+        catSortBy: [
+          '1-10',
+          '11-50',
+          '51-200',
+          '201-1000',
+          '1000+',
+        ] },
+      { name: "Founding Year", panel: 'bottom'}
+      //{ name: "Founding Year", value: function(){ return new Date(this["Founding Year"],1,1);}, panel: 'bottom'}
+    ],
+    recordDisplay: {
+      sortColWidth: 45,
+      sortBy: "Founding Year",
+      textSearch: "Company Name",
+      recordView: function(){
+        var str='';
+        str+="<a href='"+this.URL+"' target='_blank' class='compLink'>"+this["Company Name"]+
+          " <i class='fa fa-external-link'></i></a>";
+        if(this["Description"]) 
+          str+="<span class='comDecr comDescription'>"+this["Description"]+"</span>";
+        if(this["Research Description"]) 
+          str+="<span class='comResDecr comDescription'>"+this["Research Description"]+"</span>";
+        if(this["Product/Service Description"]) 
+          str+="<span class='comPSDecr comDescription'>"+this["Product/Service Description"]+"</span>";
+        if(this["Advocacy Description"]) 
+          str+="<span class='comAdvDecr comDescription'>"+this["Advocacy Description"]+"</span>";
+        if(this["Use - Other Description"]) 
+          str+="<span class='comOthDecr comDescription'>"+this["Use - Other Description"]+"</span>";
+
+        return str;
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.compLink{
+  font-weight: 700;
+  display: block;
+  color: black;
+}
+.compLink:hover{
+  color: orangered;
+}
+.comDescription{
+  display: block;
+  font-size: 0.8em;
+  font-weight: 300;
+  margin: 0px 5px;
+}
+.comDescription:before{
+  font-weight: 500;
+  display: inline-block;
+  margin-right: 5px;
+}
+.comResDecr:before{ content: "Description:"; }
+.comResDecr:before{ content: "Research:"; }
+.comPSDecr:before { content: "Product/Service:"; }
+.comAdvDecr:before{ content: "Product/Service:"; }
+.comOtherDecr:before{ content: "Other Use:"; }
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">Open Data Impact Map</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox" align="center">
+      Data from <a href='http://opendataenterprise.org/map.html' target='_blank'>The Open Data Impact Map</a>,
+      a project of the Center for Open Data Enterprise as part of the OD4D network, is licensed under 
+      <a href='http://creativecommons.org/licenses/by-sa/4.0/' target='_blank'>CC Attribution-Share Alike 4.0 Intern. License</a>.
+      </div>
+  </body>
+</html>
