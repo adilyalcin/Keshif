@@ -15,12 +15,12 @@
 
     <script type="text/javascript">
 function loadData(browser){
-  var subreddit = "hot";
+  var subreddit = "";
   if(window.location.hash!==""){
-    subreddit = window.location.hash.substring(1);
+    subreddit = "r/"+window.location.hash.substring(1);
   }
   $.ajax( {
-    url: "http://api.reddit.com/"+subreddit+".json?limit=100",
+    url: "http://api.reddit.com/"+subreddit+"/hot",
     dataType: "json",
     success: function(data){
       browser.primaryTableName = "Posts";
