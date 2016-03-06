@@ -681,6 +681,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           font-weight: 700;
           z-index: 10;
           margin-bottom: 2px;
+          margin-left: 2px;
           > .activeRecordMeasure{
             display: inline-block;
             text-align: right;
@@ -1800,7 +1801,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: gray;
             cursor: pointer;
             margin-left: 2px;
-            &:hover{ color: black; }
+            &:hover{ color: orangered; }
           }
           > .summaryDescription{
             display: none;
@@ -1833,7 +1834,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 14px;
             width: 13px;
             height: 13px;
-            &:hover{ color:#cb5454; }
+            &:hover{ color: orangered; }
           }
           > .buttonSummaryCollapse::before{ content: "\f066"; }
           > .buttonSummaryRemove{ display: none; }
@@ -1902,6 +1903,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height: 7px;
         bottom: 0px;
         left: 0px;
+        width: 100%;
         > [class^="measure_"]{
           left: 0px;
           top: 0px;
@@ -2001,6 +2003,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           text-align: center;
           width: 16px;
           left: calc(~"50% - 8px");
+          font-size: 0.8em;
           &[inside]{ margin-top: 12px; }
         }
         > .measureLabel{

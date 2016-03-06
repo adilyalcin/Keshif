@@ -2929,7 +2929,10 @@ kshf.Browser.prototype = {
       if(this.DOM.measureSelectBox) return;
       this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox");
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
-        .on("click",function(){ me.closeMeasureSelectBox(); });
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Close" }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure");
 
       var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
@@ -2954,6 +2957,7 @@ kshf.Browser.prototype = {
 
       this.DOM.sdsso23oadsa = m.append("div").attr("class","measureSelectBox_Content_Summaries")
         .append("select").attr("class","sdsso23oadsa")
+        .attr("disabled",this.measureFunc==="Count"?"true":null)
         .on("change",function(){
           var s = this.selectedOptions[0].__data__;
           me.setMeasureFunction(s,me.measureFunc);
@@ -2968,13 +2972,6 @@ kshf.Browser.prototype = {
           .html(function(summary){ return summary.summaryName; })
 
       m.append("span").attr("class","measureSelectBox_Content_RecordName").html(" of "+this.itemName);
-
-      this.refreshMeasureSelectBox();
-    },
-    /** -- */
-    refreshMeasureSelectBox: function(){
-      // measureBox stuf
-      this.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",this.measureFunc==="Count"?"true":null);
     },
     /** -- */
     closeMeasureSelectBox: function(){
@@ -4292,7 +4289,6 @@ kshf.Browser.prototype = {
           var summary = this.summaries_by_name[this.options.measure];
           this.setMeasureFunction(summary,"Sum");
         }
-        this.refreshMeasureSelectAction();
 
         this.DOM.recordName.html(this.itemName);
 
@@ -4669,8 +4665,6 @@ kshf.Browser.prototype = {
         if(this.ratioModeActive){ this.setRelativeMode(false); }
         if(this.percentModeActive){ this.setPercentLabelMode(false); }
       }
-
-      this.refreshMeasureSelectBox();
 
       this.allAggregates.forEach(function(aggr){ aggr.resetAggregateMeasures(); });
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });

@@ -901,6 +901,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 700;
   z-index: 10;
   margin-bottom: 2px;
+  margin-left: 2px;
 }
 .kshf .panel_Basic > .recordInfo > .activeRecordMeasure {
   display: inline-block;
@@ -2155,7 +2156,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin-left: 2px;
 }
 .kshf .headerGroup .summaryIcons > .fa:hover {
-  color: black;
+  color: orangered;
 }
 .kshf .headerGroup .summaryIcons > .summaryDescription {
   display: none;
@@ -2203,7 +2204,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 13px;
 }
 .kshf .headerGroup > .header_display_control > .fa:hover {
-  color: #cb5454;
+  color: orangered;
 }
 .kshf .headerGroup > .header_display_control > .buttonSummaryCollapse::before {
   content: "\f066";
@@ -2300,6 +2301,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 7px;
   bottom: 0px;
   left: 0px;
+  width: 100%;
 }
 .kshf .aggrGlyph.totalGlyph > [class^="measure_"] {
   left: 0px;
@@ -2431,6 +2433,7 @@ top:calc(50% - 5px);
   text-align: center;
   width: 16px;
   left: calc(50% - 8px);
+  font-size: 0.8em;
 }
 .kshf .aggrGlyph.rangeGlyph > .lockButton[inside] {
   margin-top: 12px;
