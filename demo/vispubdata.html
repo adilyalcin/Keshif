@@ -23,66 +23,62 @@ google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
-    leftPanelLabelWidth: 210,
-    rightPanelLabelWidth: 150,
+    leftPanelLabelWidth: 190,
+    rightPanelLabelWidth: 170,
     source: {
-      gdocId: '1Qd1TDAsqtIEE2fiIKlSJ0KSsCg6L2kKn_brCIMsqWyU',
+      //gdocId: '1Qd1TDAsqtIEE2fiIKlSJ0KSsCg6L2kKn_brCIMsqWyU',
+      gdocId: '1R2CqmUzsBFD7PwC4Mk3GROozNjGDa8gEo0ySUoL-9To',
       tables: {name:"Papers", id:"IEEE XPLORE Number"} // IEEE XPLORE Number is unique per paper
     },
     loadedCb: function(){
       kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";", false);
-      kshf.Util.cellToArray(kshf.dt.Papers, ['Citations'], ",", false);
+      kshf.Util.cellToArray(kshf.dt.Papers, ['References'], ";", false);
 
-      // Remove whitespaces from author affiliation
+      // Remove whitespaces and |c| from author affiliation
       kshf.dt.Papers.forEach(function(paper){
         var affList=paper.data['First Author Affiliation'];
         if(affList===null) return;
-        affList.forEach(function(aff,i){
-          affList[i] = aff.trim().replace("|c|","");
-        });
+        affList.forEach(function(aff,i){ affList[i] = aff.trim().replace("|c|",""); });
       });
-
-      var papersIndexed = kshf.dt_id.Papers;
-
-      // Also index papers by their filename.
-      // Why did the source defines "Citations" inconsistently to point to either IEEE explore number
-      //   or the file_name, I dunno
 
       // Process citations
+      kshf.dt.Papers.forEach(function(paper){ paper.data.Citations = []; });
       kshf.dt.Papers.forEach(function(paper){
-        paper.data.CitationsFrom = [];
-        papersIndexed[paper.data.filename] = paper;
-      });
-      kshf.dt.Papers.forEach(function(paper){
-        if(paper.data.Citations===null) return;
-        paper.data.Citations.forEach(function(citation){
-          var citesTo=papersIndexed[citation];
-          if(citesTo){ citesTo.data.CitationsFrom.push(paper);}
+        if(paper.data.References===null) return;
+        paper.data.References.forEach(function(reference){
+          var citesTo=kshf.dt_id.Papers[reference];
+          if(citesTo){ citesTo.data.Citations.push(paper); }
         });
       });
+
     },
     summaries: [
-      { name: "Venue" },
-      { name: "Type", 
-        description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ..." },
-      { name: "# Citations To...",
-        value: function(){ if(this.CitationsFrom.length>0) return this.CitationsFrom.length; } },
-      { name: "First Author Affiliation", collapsed: false, minAggrValue: 2, 
-        description: "Only affiliations with at least two papers are shown" },
+      { name: "Venue" }, // Convert "Vis" to "SciVis"
+      { name: "Type",  description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ...",
+        catLabel: { C: "Conference", M: "Miscallenous", T: "Journal (TVCG)" } },
+      { name: "# of Citations to Paper (within)", panel: 'left', 
+        value: function(){ if(this.Citations.length>0) return this.Citations.length; } },
+      { name: "# of References in Paper (within)", panel: 'left', 
+        value: function(){ if(this.References) return this.References.length; } },
       { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,0,0);} },
       { name: "Authors", value: 'Deduped author names', catSplit: ";", panel: 'right', minAggrValue: 2,
-        description: "Only authors with at least two papers are shown" }
+        description: "Only authors with at least two papers are shown" },
+      /*{ name: "First Author Affiliation", collapsed: false, minAggrValue: 2, panel: 'right', 
+        description: "Only affiliations with at least two papers are shown" },*/
     ],
     recordDisplay: {
-      sortBy: 'Year',
+      sortBy: "# of Citations to Paper (within)", //'Year',
       sortColWidth: 45,
       detailsToggle: "one",
-      recordView: function(){ 
+      linkBy: ["References","Citations"],
+      textSearch: "Paper Title",
+      recordView: "Paper Title",
+/*      recordView: function(){ 
         var str="";
         str+="<span class='paperTitle'>"+this['Paper Title']+"</span>";
 
         str+="<div class='papertype-venue-year'>";
-        str+="<span class='paperType paperType_"+this.Type+"'>"+this.Type+"</span>"+
+        str+="<span class='paperType paperType_"+this.Type+"'></span>"+
             "<span class='paperVenue'>"+this.Venue+"</span>,"+
             "<span class='paperYear'>"+this.Year+"</span>";
         if(this.DOI!==""){
@@ -98,7 +94,7 @@ google.setOnLoadCallback(function(){
         // Display: Paper Type
         // Display: Abstract (on demand)
         return str;
-      }
+      }*/
     }
   });
 });
@@ -148,15 +144,13 @@ google.setOnLoadCallback(function(){
   position: relative;
   top: -1px;
 }
-.paperType_Conference{
-  background-color: rgb(220, 220, 238)
-}
-.paperType_Journal{
-  background-color: rgb(240, 200, 200); 
-}
-.paperType_Miscellaneous{
-  background-color: rgb(201, 237, 201); 
-}
+.paperType_C{ background-color: rgb(220, 220, 238); }
+.paperType_C:after{ content: "Conference"; }
+.paperType_T{ background-color: rgb(240, 200, 200); }
+.paperType_T:after{ content: "Journal (TVCG)"; }
+.paperType_M{ background-color: rgb(201, 237, 201); }
+.paperType_M:after{ content: "Miscallenous"; }
+
 .paperAbstract{
   font-size: 0.7em;
   font-style: italic;
@@ -165,21 +159,21 @@ google.setOnLoadCallback(function(){
   display: block;
   font-size: 0.9em;
 }
+
 </style>
   </head>
   <body>
     <div class="contents">
       <div id="demo_PageTitle" align="center">Visualization Publication Data Collection</div>
-      <div id="demo_Browser"></div></div>
+      <div id="demo_Browser"></div>
+      </div>
 
     <div id="demo_Infobox" align="center">
-      Data source: Visualization Publication Dataset, 
-      <a href="http://www.vispubdata.org/site/vispubdata/" target="_blank">
-          http://www.vispubdata.org/site/vispubdata/
-          </a><br>
+      Data from 
+      <a href="http://www.vispubdata.org/site/vispubdata/" target="_blank">Visualization Publication Dataset</a>,
       P. Isenberg, F. Heimerl, S. Koch, T. Isenberg, P. Xu, C. Stolper, M. Sedlmair, 
-      J. Chen, T. Möller, J. Stasko,
-      Published 2015, June
+      J. Chen, T. Möller, J. Stasko.
+      2015 June
       </div>
   </body>
 </html>

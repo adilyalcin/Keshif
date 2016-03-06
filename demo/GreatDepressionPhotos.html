@@ -36,7 +36,7 @@ $(document).ready( function(){
       { name: "Category", value: "van0" },
       { name: "County", value: "county", panel: "right"},
       { name: "Year", value: "year", panel: "right"},
-      { name: "Month", value: "month", panel: "right"},
+      { name: "Month", value: function(){ if(this.month) return this.month-1; }, panel: "right", catSortBy: "id", catLabel: _demo.Month },
       { name: "Date", panel: "bottom",
         value: function(){ 
           if(this.date===undefined) return;
@@ -70,6 +70,9 @@ $(document).ready( function(){
 <style id="kshfStyle">
   .recordGroup{
     background-color: black !important;
+  }
+  #demo_Browser{
+    height: calc(100vh - 90px);
   }
 </style>
   <body>

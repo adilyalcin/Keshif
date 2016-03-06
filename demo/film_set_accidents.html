@@ -45,7 +45,7 @@ $(document).ready( function(){
     recordDisplay: {
       sortColWidth: 70,
       sortBy: [
-        {title: 'Date', label: function(){ return timeFormat(this.Date); }, inverse: true},
+        {title: 'Date', label: function(){ return timeFormat(this.Date); } },
         // Need to include them here, because they are treated as categorical facets above
         'Injuries',
         'Fatalities',

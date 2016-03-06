@@ -44,7 +44,7 @@ $(document).ready( function(){
       { name: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,1,1); }, }
     ],
     recordDisplay: {
-      sortBy: { name: "Year", inverse: true},
+      sortBy: "Year",
       textSearch: { name: "name", value: function () {
         var laureate = kshf.dt_id.Laureates[this.laureate_id];
         return laureate.data.firstname + " " + (laureate.data.surname || "");
@@ -71,7 +71,7 @@ $(document).ready( function(){
 });
     </script>
 <style id="kshfStyle">
-.attrib .fa{
+.theLabel > .fa{
   width: 15px;
   text-align: center;
 }

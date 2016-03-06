@@ -59,7 +59,7 @@ google.setOnLoadCallback(function(){
       { name: "Date", panel: "bottom" }
     ],
     recordDisplay: {
-      sortBy: { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); }, inverse: true},
+      sortBy: { name: 'Date', label: function(){ return moment(this.Date).format('MMM DD, YYYY'); } },
       sortColWidth: 85,
       textSearch: {name: "Organization", value: "org" },
       recordView: function(){

@@ -56,6 +56,7 @@ google.setOnLoadCallback(function(){
     recordDisplay: {
       sortColWidth: 55,
       sortBy: { name: "% of Film", inverse: true,  label: function(){ return numFormat(this["% of Film"]);} },
+      detailsToggle: 'off',
       textSearch: "Line",
       recordView: function(){
         return getIcon(this.Side)+

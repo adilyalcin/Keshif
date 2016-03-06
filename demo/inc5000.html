@@ -54,11 +54,11 @@ $(document).ready( function(){
           return "<div><span class='companyName'>"+this.company+"</span>"+
               //http://www.google.com/search?q=hellp&btnI
               "<a target='_blank' class='fa fa-external-link companyURL' "+
-                  "href='http://whttp://www.inc.com/profile/"+this.url+"'></a></div>"+
+                  "href='http://www.inc.com/profile/"+this.url+"'></a></div>"+
       "<div class='companyInfo' style='float:right'>"+simpleFormat(this.growth)+"% <i class='fa fa-line-chart'></i></div>"+
               "<div class='companyInfo'><i class='fa fa-suitcase'></i>"+this.industry+"</div>"+
       "<div class='companyInfo' style='float:right'>"+simpleFormat(this.revenue)+"$ <i class='fa fa-money'></i></div>"+
-              "<div class='companyInfo'><i class='fa fa-map-marker'></i>"+this.metro+"</div>"+
+              "<div class='companyInfo'><i class='fa fa-map-marker'></i>"+this.city+" ("+this.metro+"), "+this.state_l+"</div>"+
               "<div class='companyInfo'><i class='fa fa-users'></i>"+this.workers+" workers</div>"+
               ""
               ;
@@ -95,6 +95,7 @@ $(document).ready( function(){
   color: gray;
   display: inline-block;
   width: 18px;
+  text-align: center;
 }
 </style>
 	</head>

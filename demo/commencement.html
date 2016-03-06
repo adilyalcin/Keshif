@@ -28,16 +28,16 @@ $(document).ready( function() {
       tables: "commencement-speeches"
     },
     summaries: [
-      {name: "Featured", value: function(){ return this.featured!==""?"Featured":null}, panel: "right"},
-      {name: "University", value: "school"},
-      //{name: "img_source", collapsed: true},
-      {name: "Field", value: "field", panel: "right"},
-      {name: "Tags", value: "tags", panel: "right"},
-      {name: "Year", value: "year", panel: "bottom", intervalScale: "linear", collapsed: true},
+      { name: "Featured", 
+        value: function(){ return this.featured!==""?"Featured <span class='fa fa-star'></span>":null}, panel: "right"},
+      { name: "University", value: "school"},
+      { name: "Field", value: "field", panel: "right"},
+      { name: "Tags", value: "tags", panel: "right"},
+      { name: "Year", value: "year", panel: "bottom", intervalScale: "linear", collapsed: true},
     ],
     recordDisplay: {
       sortBy: "Year",
-      sortColWidth: 70,
+      sortColWidth: 40,
       detailsToggle: "off",
       textSearch: "name",
       recordView: function(d){
@@ -50,17 +50,16 @@ $(document).ready( function() {
           ((this.audio_url!=="")?
               "<a class='audio_url fa fa-volume-up' target='_blank' href='"+this.audio_url+"''></a>": "")+
           (this.featured!==""?"<span class='fa fa-star'></span>":"")+
-          "<span class='money_quote'>"+this.money_quote+
-              "<a class='full_text fa fa-file-text' target='_blank' href='"+this.full_text+"''></a>"+
-              "</span>"
-          ;
+          "<div><span class='money_quote'>"+this.money_quote+"</span>"+ 
+            (this.full_text?("<a class='full_text fa fa-file-text' target='_blank' href='"+this.full_text+"''></a>"):"")+
+            "</div";
       }
     }
   });
 });
     </script>
 <style id="kshfStyle">
-#demo_Browser{ height: calc(100vh - 80px); }
+#demo_Browser{ height: calc(100vh - 85px); }
 .speaker_name{
   font-size: 1.2em;
   font-weight: 700;
@@ -82,13 +81,17 @@ $(document).ready( function() {
   color: gray;
 }
 .money_quote{
-  display: block;
   font-weight: 300;
   font-size: 0.9em;
   font-style: italic;
 }
 .content a:hover{ text-decoration: underline; }
 .money_quote:before{
+  content: "\"";
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.money_quote:after{
   content: "\"";
   font-weight: 700;
   font-size: 1.1em;
