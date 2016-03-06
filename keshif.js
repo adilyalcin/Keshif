@@ -1096,7 +1096,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     getAttribMapping: function(){
-      return (this.displayType==="map" || this.displayType==="modelink") ? "color" : "sort";
+      return (this.displayType==="map" || this.displayType==="nodelink") ? "color" : "sort";
     },
     /** -- */
     map_refreshColorScaleBins: function(){
