@@ -34,11 +34,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // load google visualization library only if google scripts were included
 if(typeof google !== 'undefined'){
-    google.load('visualization', '1', {'packages': []});
-}
-
-if(typeof sendLog !== 'function'){
-    sendLog = null;
+  google.load('visualization', '1', {'packages': []});
 }
 
 // kshf namespace
@@ -961,7 +957,7 @@ kshf.Filter.prototype = {
 };
 
 /** -- */
-kshf.RecordDisplay = function(kshf_, config, root){
+kshf.RecordDisplay = function(kshf_, config){
     var me = this;
     this.browser = kshf_;
     this.DOM = {};
@@ -976,8 +972,15 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
     this.showRank = config.showRank || false;
 
-    this.displayType   = config.displayType   || 'list'; // 'grid', 'list'
+    this.displayType   = config.displayType   || 'list'; // 'grid', 'list', 'map', 'nodelink'
     if(config.geo) this.displayType = 'map';
+    if(config.linkBy) {
+      this.displayType = 'nodelink';
+      if(!Array.isArray(config.linkBy)) config.linkBy = [config.linkBy];
+    } else {
+      config.linkBy = [];
+    }
+
     this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off practically)
 
     this.textSearchSummary = null; // no text search summary by default
@@ -1004,11 +1007,10 @@ kshf.RecordDisplay = function(kshf_, config, root){
 
     this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
 
-    this.DOM.root = root.select(".recordDisplay")
-        .attr('detailsToggle',this.detailsToggle)
-        .attr('displayType',this.displayType)
-        .attr('showRank',this.showRank)
-        .attr('hasRecordView',false);
+    this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
+      .attr('detailsToggle',this.detailsToggle)
+      .attr('showRank',this.showRank)
+      .attr('hasRecordView',false);
 
     var zone = this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
         .on("mouseenter",function(){ this.setAttribute("readyToDrop",true);  })
@@ -1026,154 +1028,12 @@ kshf.RecordDisplay = function(kshf_, config, root){
         });
     zone.append("div").attr("class","dropIcon fa fa-list-ul");
     
-    this.DOM.recordViewHeader = this.DOM.root.append("div").attr("class","recordDisplay--Header");
+    this.DOM.recordDisplayHeader = this.DOM.root.append("div").attr("class","recordDisplayHeader");
     this.initDOM_RecordViewHeader();
 
-    if(this.displayType==="map"){
-      this.DOM.recordMap_Base = this.DOM.root.append("div").attr("class","recordMap_Base");
+    this.DOM.recordDisplayWrapper = this.DOM.root.append("div").attr("class","recordDisplayWrapper");
 
-      this.leafletMap = L.map(this.DOM.recordMap_Base[0][0], 
-          { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
-        )
-        .addLayer(new L.TileLayer(
-          "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          { attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', /*nowrap: true*/ }))
-        .on("viewreset",function(){ 
-          me.map_projectRecords()
-        })
-        .on("movestart",function(){
-          me.DOM.recordGroup.style("display","none");
-        })
-        .on("move",function(){
-          // console.log("MapZoom: "+me.leafletMap.getZoom());
-          // me.map_projectRecords()
-        })
-        .on("moveend",function(){
-          me.DOM.recordGroup.style("display","block");
-          me.map_projectRecords()
-        })
-        ;
-
-      //var width = 500, height = 500;
-      //var projection = d3.geo.albersUsa().scale(900).translate([width / 2, height / 2]);
-      this.geoPath = d3.geo.path().projection( 
-        d3.geo.transform({
-          // Use Leaflet to implement a D3 geometric transformation.
-          point: function(x, y) {
-            if(x>kshf.wrapLongitude) x-=360;
-            var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
-            this.stream.point(point.x, point.y);
-          }
-        }) 
-      );
-
-      this.DOM.recordMap_SVG = d3.select(this.leafletMap.getPanes().overlayPane)
-        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordMap_SVG");
-
-      // The fill pattern definition in SVG, used to denote geo-objects with no data.
-      // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
-      this.DOM.recordMap_SVG.append('defs')
-        .append('pattern')
-          .attr('id', 'diagonalHatch')
-          .attr('patternUnits', 'userSpaceOnUse')
-          .attr('width', 4)
-          .attr('height', 4)
-          .append('path')
-            .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
-            .attr('stroke', 'gray')
-            .attr('stroke-width', 1);
-
-      this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g")
-          .attr("class", "leaflet-zoom-hide recordGroup");
-
-      // Add custom controls
-      var DOM_control = d3.select(this.leafletMap.getContainer()).select(".leaflet-control");
-
-      DOM_control.append("a")
-        .attr("class","leaflet-control-view-map").attr("title","Show/Hide Map")
-        .attr("href","#")
-        .html("<span class='viewMap fa fa-map-o'></span>")
-        .on("dblclick",function(){
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-          return true;
-        })
-        .on("click",function(){
-          var x = me.leafletMap.getPanes().tilePane.style
-          x.display = (x.display==="none")?"":"none";
-          d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.display==="none")?"":"-o"));
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-          return true;
-        });
-
-      DOM_control.append("a")
-        .attr("class","leaflet-control-viewFit").attr("title","Fit View")
-        .attr("href","#")
-        .html("<span class='viewFit fa fa-dot-circle-o'></span>")
-        .on("dblclick",function(){
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-          return true;
-        })
-        .on("click",function(){
-          me.map_zoomToActive();
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-          return true;
-        });
-    } else {
-      // displayType is list or grid
-      this.DOM.recordGroup = this.DOM.root.append("div").attr("class","recordGroup")
-        .on("scroll",function(d){
-          if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
-            if(me.autoExpandMore===false){
-              me.DOM.showMore.attr("showMoreVisible",true);
-            } else {
-              me.showMore(); // automatically add more records
-            }
-          } else {
-            me.DOM.showMore.attr("showMoreVisible",false);
-          }
-          me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
-          me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
-        });
-
-      this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
-        .attr("class","adjustSortColumnWidth dragWidthHandle")
-        .on("mousedown", function (d, i) {
-          if(d3.event.which !== 1) return; // only respond to left-click
-          root.style('cursor','ew-resize');
-          var _this = this;
-          var mouseDown_x = d3.mouse(document.body)[0];
-          var mouseDown_width = me.sortColWidth;
-
-          me.browser.DOM.pointerBlock.attr("active","");
-
-          root.on("mousemove", function() {
-            _this.setAttribute("dragging","");
-            me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
-          }).on("mouseup", function(){
-            root.style('cursor','default');
-            me.browser.DOM.pointerBlock.attr("active",null);
-            root.on("mousemove", null).on("mouseup", null);
-            _this.removeAttribute("dragging");
-          });
-          d3.event.preventDefault();
-        });
-
-      this.DOM.showMore = this.DOM.root.append("div").attr("class","showMore")
-        .attr("showMoreVisible",false)
-        .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
-        .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
-        .on("click",function(){ me.showMore(); });
-      this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
-      this.DOM.showMore.append("span").attr("class","Count CountAbove");
-      this.DOM.showMore.append("span").attr("class","Count CountBelow");
-      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
-      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
-      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
-    }
+    this.viewAs(this.displayType);
 
     if(config.recordView!==undefined){
       if(typeof(config.recordView)==="string"){
@@ -1193,58 +1053,55 @@ kshf.RecordDisplay = function(kshf_, config, root){
     }
 
     if(config.textSearch){
-        // Find the summary. If it is not there, create it
-        if(typeof(config.textSearch)==="string"){
-            this.setTextSearchSummary( this.browser.summaries_by_name[config.textSearch] );
-        } else {
-            var name = config.textSearch.name;
-            var value = config.textSearch.value;
-            if(name!==undefined){
-                var summary = this.browser.summaries_by_name[config.textSearch];
-                if(summary){
-                    this.setTextSearchSummary(summary);
-                } else {
-                    if(typeof(value)==="function"){
-                        this.setTextSearchSummary(browser.createSummary(name,value,'categorical'));
-                    } else if(typeof(value)==="string"){
-                        this.setTextSearchSummary(browser.changeSummaryName(value,name));
-                    };
-                }
-            }
+      // Find the summary. If it is not there, create it
+      if(typeof(config.textSearch)==="string"){
+        this.setTextSearchSummary( this.browser.summaries_by_name[config.textSearch] );
+      } else {
+        var name = config.textSearch.name;
+        var value = config.textSearch.value;
+        if(name!==undefined){
+          var summary = this.browser.summaries_by_name[config.textSearch];
+          if(!summary){
+            if(typeof(value)==="function"){
+              summary = browser.createSummary(name,value,'categorical');
+            } else if(typeof(value)==="string"){
+              summary = browser.changeSummaryName(value,name);
+            };
+          }
         }
+        this.setTextSearchSummary(summary);
+      }
     }
 };
 
 kshf.RecordDisplay.prototype = {
     /** -- */
     setHeight: function(v){
-      var me=this;
       if(this.recordViewSummary===null) return;
-      if(this.displayType==="map"){
-        this.DOM.recordMap_Base.style("height",v+"px");
-        if(this.DOM.recordMap_SVG) this.DOM.recordMap_SVG.style("height",v+"px");
-        if(!this.curHeight || this.curHeight!==v){
-          setTimeout(function(){ 
-            me.leafletMap.invalidateSize();
-            me.map_zoomToActive();
-          }, 1000);
-        }
-      } else {
-        this.DOM.recordGroup.style("height",v+"px");
-      }
+      var me=this;
       this.curHeight = v;
-    },
-    /** -- */
-    refreshWidth: function(){
+      this.DOM.recordDisplayWrapper.style("height",v+"px");
       if(this.displayType==="map"){
-        this.leafletMap.invalidateSize();
-        this.map_zoomToActive();
+        setTimeout(function(){ 
+          me.leafletRecordMap.invalidateSize();
+        }, 1000);
       }
     },
     /** -- */
-    map_refreshColorScale: function(){
+    refreshWidth: function(widthMiddlePanel){
+      this.curWidth = widthMiddlePanel;
+      if(this.displayType==="map"){
+        this.leafletRecordMap.invalidateSize();
+      }
+    },
+    /** -- */
+    getAttribMapping: function(){
+      return (this.displayType==="map" || this.displayType==="modelink") ? "color" : "sort";
+    },
+    /** -- */
+    map_refreshColorScaleBins: function(){
       var me = this;
-      this.DOM.mapColorScaleBins
+      this.DOM.recordColorScaleBins
         .style("background-color", function(d){
           if(me.sortingOpt_Active.invertColorScale) d = 8-d;
           return kshf.colorScale[me.browser.mapColorTheme][d];
@@ -1254,11 +1111,7 @@ kshf.RecordDisplay.prototype = {
     map_projectRecords: function(){
       var me = this;
       var _geo_ = this.config.geo;
-      this.DOM.kshfRecords.attr("d", function(record){ return me.geoPath(record.data[_geo_]); });
-    },
-    /** --  */
-    map_projectFeatures_2: function(){
-      // TODO: This should just move the SVG element (translate / scale, and do not re-compute the paths)
+      this.DOM.kshfRecords.attr("d", function(record){ return me.recordGeoPath(record.data[_geo_]); });
     },
     /** -- */
     map_zoomToActive: function(){
@@ -1280,10 +1133,10 @@ kshf.RecordDisplay.prototype = {
 
       var bounds = new L.latLngBounds(bs);
       if(!this.browser.finalized){ // First time: just fit bounds
-        this.leafletMap.fitBounds( bounds );
+        this.leafletRecordMap.fitBounds( bounds );
         return;
       }
-      this.leafletMap.flyToBounds(
+      this.leafletRecordMap.flyToBounds(
         bounds,
         { padding: [0,0], 
           pan: {animate: true, duration: 1.2}, 
@@ -1292,50 +1145,247 @@ kshf.RecordDisplay.prototype = {
         );
     },
     /** -- */
+    initDOM_MapView: function(){
+      var me = this;
+      if(this.DOM.recordMap_Base) {
+        this.DOM.recordGroup = this.DOM.recordMap_SVG.select(".recordGroup");
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        return; // Do not initialize twice
+      }
+
+      this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
+
+      this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], 
+          { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
+        )
+        .addLayer(new L.TileLayer(
+          "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          { attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', /*nowrap: true*/ }))
+        .on("viewreset",function(){ me.map_projectRecords(); })
+        .on("movestart",function(){ me.DOM.recordGroup.style("display","none"); })
+        .on("move",function(){
+          // console.log("MapZoom: "+me.leafletRecordMap.getZoom());
+          // me.map_projectRecords()
+        })
+        .on("moveend",function(){
+          me.DOM.recordGroup.style("display","block");
+          me.map_projectRecords();
+        });
+
+      this.recordGeoPath = d3.geo.path().projection( 
+        d3.geo.transform({
+          // Use Leaflet to implement a D3 geometric transformation.
+          point: function(x, y) {
+            if(x>kshf.wrapLongitude) x-=360;
+            var point = me.leafletRecordMap.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+          }
+        }) 
+      );
+
+      this.DOM.recordMap_SVG = d3.select(this.leafletRecordMap.getPanes().overlayPane)
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordMap_SVG");
+
+      // The fill pattern definition in SVG, used to denote geo-objects with no data.
+      // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
+      this.DOM.recordMap_SVG.append('defs')
+        .append('pattern')
+          .attr('id', 'diagonalHatch')
+          .attr('patternUnits', 'userSpaceOnUse')
+          .attr('width', 4)
+          .attr('height', 4)
+          .append('path')
+            .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
+            .attr('stroke', 'gray')
+            .attr('stroke-width', 1);
+
+      this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g").attr("class", "leaflet-zoom-hide recordGroup");
+
+      // Add custom controls
+      var DOM_control = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control");
+
+      DOM_control.append("a")
+        .attr("class","leaflet-control-view-map").attr("title","Show/Hide Map")
+        .attr("href","#")
+        .html("<span class='viewMap fa fa-map-o'></span>")
+        .on("dblclick",function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("click",function(){
+          var x = me.leafletRecordMap.getPanes().tilePane.style
+          x.display = (x.display==="none")?"":"none";
+          d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.display==="none")?"":"-o"));
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        });
+
+      DOM_control.append("a")
+        .attr("class","leaflet-control-viewFit").attr("title","Fit View")
+        .attr("href","#")
+        .html("<span class='viewFit fa fa-dot-circle-o'></span>")
+        .on("dblclick",function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("click",function(){
+          me.map_zoomToActive();
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        });
+    },
+    /** -- */
+    initDOM_NodeLinkView: function(){
+      var me = this;
+
+      if(this.DOM.recordNodeLink_SVG) {
+        this.DOM.recordGroup = this.DOM.recordNodeLink_SVG.select(".recordGroup");
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        return; // Do not initialize twice
+      }
+
+      this.initDOM_NodeLinkView_Settings();
+
+      this.nodeZoomBehavior = d3.behavior.zoom()
+        .scaleExtent([0.5, 8])
+        .on("zoom", function(){
+          gggg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+          me.refreshNodeVis();
+        });
+
+      this.DOM.recordNodeLink_SVG = this.DOM.recordDisplayWrapper
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordNodeLink_SVG")
+        .call(this.nodeZoomBehavior);
+
+      var gggg = this.DOM.recordNodeLink_SVG.append("g");
+
+      this.DOM.linkGroup = gggg.append("g").attr("class","linkGroup");
+
+      this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup recordGroup_Node");
+
+      this.DOM.NodeLinkControl = this.DOM.recordDisplayWrapper.append("span").attr("class","NodeLinkControl");
+
+      var animationControl = this.DOM.NodeLinkControl.append("span").attr("class","animationControl");
+
+      animationControl.append("span").attr("class","NodeLinkAnim_Play fa fa-play")
+        .on("click",function(){ me.nodelink_Force.start(); });
+      animationControl.append("span").attr("class","NodeLinkAnim_Pause fa fa-pause")
+        .on("click",function(){ me.nodelink_Force.stop(); });
+      this.DOM.NodeLinkAnim_Refresh = this.DOM.NodeLinkControl.append("span")
+        .attr("class","NodeLinkAnim_Refresh fa fa-refresh")
+        .on("click",function(){ 
+          me.refreshNodeLinks();
+          this.style.display = null;
+        });
+    },
+    /** -- */
+    initDOM_ListView: function(){
+      var me = this;
+
+      if(this.DOM.recordGroup_List) return;
+
+      this.DOM.recordGroup_List = this.DOM.recordDisplayWrapper.append("div").attr("class","recordGroup_List");
+
+      this.DOM.recordGroup = this.DOM.recordGroup_List.append("div").attr("class","recordGroup")
+        .on("scroll",function(d){
+          if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
+            if(me.autoExpandMore===false){
+              me.DOM.showMore.attr("showMoreVisible",true);
+            } else {
+              me.showMoreRecordsOnList(); // automatically add more records
+            }
+          } else {
+            me.DOM.showMore.attr("showMoreVisible",false);
+          }
+          me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
+          me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
+        });
+
+      this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
+        .attr("class","adjustSortColumnWidth dragWidthHandle")
+        .on("mousedown", function (d, i) {
+          if(d3.event.which !== 1) return; // only respond to left-click
+          me.browser.DOM.root.style('cursor','ew-resize');
+          var _this = this;
+          var mouseDown_x = d3.mouse(document.body)[0];
+          var mouseDown_width = me.sortColWidth;
+
+          me.browser.DOM.pointerBlock.attr("active","");
+
+          me.browser.DOM.root.on("mousemove", function() {
+            _this.setAttribute("dragging","");
+            me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
+          }).on("mouseup", function(){
+            me.browser.DOM.root.style('cursor','default');
+            me.browser.DOM.pointerBlock.attr("active",null);
+            me.browser.DOM.root.on("mousemove", null).on("mouseup", null);
+            _this.removeAttribute("dragging");
+          });
+          d3.event.preventDefault();
+        });
+
+      this.DOM.showMore = this.DOM.root.append("div").attr("class","showMore")
+        .attr("showMoreVisible",false)
+        .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
+        .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
+        .on("click",function(){ me.showMoreRecordsOnList(); });
+      this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
+      this.DOM.showMore.append("span").attr("class","Count CountAbove");
+      this.DOM.showMore.append("span").attr("class","Count CountBelow");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
+    },
+    /** -- */
     initDOM_RecordViewHeader: function(){
       var me=this;
 
-      this.DOM.mapColorScaleBins =  this.DOM.recordViewHeader.append("div").attr("class","mapColorScale")
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Change color scale"}); })
+      this.DOM.recordColorScaleBins =  this.DOM.recordDisplayHeader.append("div").attr("class","recordColorScale")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Change color scale"}); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
         .on("click",function(){
-          if(me.browser.mapColorTheme==="converge"){
-            me.browser.mapColorTheme = "diverge";
-          } else {
-            me.browser.mapColorTheme = "converge";
-          }
-          me.map_updateRecordColor();
-          me.map_refreshColorScale();
+          me.browser.mapColorTheme = (me.browser.mapColorTheme==="converge") ? "diverge" : "converge";
+          me.refreshRecordColors();
+          me.map_refreshColorScaleBins();
           me.sortingOpt_Active.map_refreshColorScale();
         })
-        .selectAll(".mapColorScaleBin").data([0,1,2,3,4,5,6,7,8])
-          .enter().append("div").attr("class","mapColorScaleBin");
+        .selectAll(".recordColorScaleBin").data([0,1,2,3,4,5,6,7,8])
+          .enter().append("div").attr("class","recordColorScaleBin");
       
-      this.map_refreshColorScale();
+      this.map_refreshColorScaleBins();
 
-      this.DOM.recordViewHeader.append("div").attr("class","itemRank_control fa")
+      this.DOM.recordDisplayHeader.append("div").attr("class","itemRank_control fa")
         .each(function(){
           this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return (me.showRank?"Hide":"Show")+" ranking"; }});
         })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          me.setShowRank(!me.showRank);
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-      });
+        .on("click",function(){ me.setShowRank(!me.showRank); });
 
       this.initDOM_SortSelect();
       this.initDOM_GlobalTextSearch();
 
-      this.DOM.recordViewHeader.append("div").attr("class","buttonRecordViewRemove fa fa-times")
+      this.DOM.recordDisplayHeader.append("div").attr("class","buttonRecordViewRemove fa fa-times")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("click",    function(){ me.removeRecordViewSummary(); });
 
-      this.DOM.scrollToTop = this.DOM.recordViewHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
+      this.DOM.recordDisplayHeader.append("span").selectAll("span").data([
+        {v:"Map", i:"globe"},
+        {v:"List", i:"list-ul"},
+        {v:"NodeLink", i:"share-alt"} ]
+      ).enter()
+        .append("span").attr("class", function(d){ return "recordView_Set"+d.v+" fa fa-"+d.i; })
+        .each(function(d){ this.tipsy = new Tipsy(this, {gravity: 'ne', 
+          title: function(){ return "View as "+d.v; } }); 
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",    function(d){ me.viewAs(d.v); });
+
+      this.DOM.scrollToTop = this.DOM.recordDisplayHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
@@ -1399,7 +1449,7 @@ kshf.RecordDisplay.prototype = {
     initDOM_GlobalTextSearch: function(){
       var me=this;
 
-      this.DOM.recordTextSearch = this.DOM.recordViewHeader.append("span").attr("class","recordTextSearch");
+      this.DOM.recordTextSearch = this.DOM.recordDisplayHeader.append("span").attr("class","recordTextSearch");
 
       var x= this.DOM.recordTextSearch.append("div").attr("class","dropZone_textSearch")
         .on("mouseenter",function(){ this.style.backgroundColor = "rgb(255, 188, 163)"; })
@@ -1447,6 +1497,26 @@ kshf.RecordDisplay.prototype = {
           });
     },
     /** -- */
+    initDOM_NodeLinkView_Settings: function(){
+      var me=this;
+
+      this.DOM.NodeLinkAttrib = this.DOM.recordDisplayHeader.append("span").attr("class","NodeLinkAttrib");
+
+      this.DOM.NodeLinkAttrib.append("span").attr("class","fa fa-share-alt NodeLinkAttribIcon")
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e',  title: "Show/Hide Links" }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(){ this.tipsy.hide(); })
+        .on("click",function(){ me.DOM.root.attr("hideLinks", me.DOM.root.attr("hideLinks")?null:true ); });
+
+      var s = this.DOM.NodeLinkAttrib.append("select")
+        .on("change",function(){
+          var s = this.selectedOptions[0].__data__;
+          // TODO: change the network calculation
+        });;
+
+      s.selectAll("option").data(this.config.linkBy).enter().append("option").text(function(d){ return d; });
+    },
+    /** -- */
     setRecordViewSummary: function(summary){
       if(summary===undefined || summary===null) return;
       if(this.recordViewSummary===summary) return;
@@ -1457,12 +1527,18 @@ kshf.RecordDisplay.prototype = {
       this.recordViewSummary.isRecordView = true;
       this.recordViewSummary.refreshNuggetDisplay();
 
-      this.sortRecords();
-      this.updateVisibleIndex();
-      this.refreshRecordDOM();
-      this.setSortColumnWidth(this.config.sortColWidth || 50); // default: 50px;
+      if(this.displayType==="list" || this.displayType==="grid"){
+        this.sortRecords();
+        this.refreshRecordDOM();
+        this.setSortColumnWidth(this.config.sortColWidth || 50); // default: 50px;
+      } else if(this.displayType==='map'){
+        this.refreshRecordDOM();
+      } else if(this.displayType==='nodelink'){
+        this.setNodeLink();
+        this.refreshRecordDOM();
+      }
 
-      this.browser.DOM.root.attr("record_display",this.displayType);
+      this.browser.DOM.root.attr("recordDisplayMapping",this.getAttribMapping());
     },
     /** -- */
     removeRecordViewSummary: function(){
@@ -1471,7 +1547,7 @@ kshf.RecordDisplay.prototype = {
       this.recordViewSummary.isRecordView = false;
       this.recordViewSummary.refreshNuggetDisplay();
       this.recordViewSummary = null;
-      this.browser.DOM.root.attr("record_display","none");
+      this.browser.DOM.root.attr("recordDisplayMapping",null);
     },
     /** -- */
     setTextSearchSummary: function(summary){
@@ -1499,64 +1575,54 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     initDOM_SortSelect: function(){
-        var me=this;
+      var me=this;
 
-        this.DOM.header_listSortColumn = this.DOM.recordViewHeader.append("div")
-            .attr("class","header_listSortColumn");
-        var x=this.DOM.header_listSortColumn.append("div").attr("class","dropZone_resultSort")
-            .on("mouseenter",function(){ this.style.backgroundColor = "rgb(255, 188, 163)"; })
-            .on("mouseleave",function(){ this.style.backgroundColor = ""; })
-            .on("mouseup",function(event){
-                me.addSortingOption(me.browser.movedSummary);
-                me.setSortingOpt_Active(me.sortingOpts.length-1);
-                me.DOM.listSortOptionSelect[0][0].selectedIndex = me.sortingOpts.length-1;
-            })
-            ;
-        x.append("span").attr("class","dropZone_resultSort_text");
+      this.DOM.header_listSortColumn = this.DOM.recordDisplayHeader.append("div").attr("class","header_listSortColumn");
 
-        this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
-          .attr("class","listSortOptionSelect")
-          .on("change", function(){ me.setSortingOpt_Active(this.selectedIndex); });
+      this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
+        .attr("class","listSortOptionSelect")
+        .on("change", function(){ me.setSortingOpt_Active(this.selectedIndex); });
 
-        this.refreshSortingOptions();
+      this.refreshSortingOptions();
 
-        this.DOM.removeSortOption = this.DOM.recordViewHeader
-          .append("span").attr("class","removeSortOption_wrapper")
-          .append("span").attr("class","removeSortOption fa")
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: "Remove current sorting option" }); })
-          .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(d,i){ this.tipsy.hide(); })
-          .on("click",function(){
-            var index=-1;
-            me.sortingOpts.forEach(function(o,i){ if(o===me.sortingOpt_Active) index=i; })
-            if(index!==-1){
-              me.sortingOpts.splice(index,1);
-              if(index===me.sortingOpts.length) index--;
-              me.setSortingOpt_Active(index);
-              me.refreshSortingOptions();
-              me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
-            }
-          });
+      this.DOM.removeSortOption = this.DOM.recordDisplayHeader
+        .append("span").attr("class","removeSortOption_wrapper")
+        .append("span").attr("class","removeSortOption fa")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: "Remove current sorting option" }); })
+        .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(d,i){ this.tipsy.hide(); })
+        .on("click",function(){
+          var index=-1;
+          me.sortingOpts.forEach(function(o,i){ if(o===me.sortingOpt_Active) index=i; })
+          if(index!==-1){
+            me.sortingOpts.splice(index,1);
+            if(index===me.sortingOpts.length) index--;
+            me.setSortingOpt_Active(index);
+            me.refreshSortingOptions();
+            me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
+          }
+        });
 
-        this.DOM.recordViewHeader.append("span").attr("class","sortColumn sortButton fa")
-          .on("click",function(d){
-            me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
-            this.setAttribute("inverse",me.sortingOpt_Active.inverse);
-            me.browser.records.reverse();
+      this.DOM.recordDisplayHeader.append("span").attr("class","sortColumn sortButton fa")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout",function(){ this.tipsy.hide(); })
+        .on("click",function(d){
+          // NOTE: Only on list/grid views
+          me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
+          this.setAttribute("inverse",me.sortingOpt_Active.inverse);
+          me.browser.records.reverse();
 
-            me.updateVisibleIndex();
-            me.refreshRecordDOM();
-            me.refreshRecordRanks(me.DOM.recordRanks);
+          me.updateVisibleIndex();
+          me.refreshRecordDOM();
+          me.refreshRecordRanks(me.DOM.recordRanks);
 
-            me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
-              .data(me.browser.records, function(record){ return record.id(); })
-              .order();
-            kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
-          })
-          .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(){ this.tipsy.hide(); });
+          me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
+            .data(me.browser.records, function(record){ return record.id(); })
+            .order();
+          kshf.Util.scrollToPos_do(me.DOM.recordGroup[0][0],0);
+        });
     },
     /** -- */
     refreshRecordRanks: function(d3_selection){
@@ -1598,7 +1664,9 @@ kshf.RecordDisplay.prototype = {
       x.exit().each(function(summary){ summary.sortingSummary = false; });
       this.sortingOpts.forEach(function(summary, i){
         if(summary===me.sortingOpt_Active) {
-          me.DOM.listSortOptionSelect[0][0].selectedIndex = i;
+          var DOM = me.DOM.listSortOptionSelect[0][0];
+          DOM.selectedIndex = i;
+          if(DOM.dispatchEvent) DOM.dispatchEvent(new Event('change'));
         }
       });
     },
@@ -1642,9 +1710,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     setSortingOpt_Active: function(index){
       if(this.sortingOpt_Active){
-        if(this.sortingOpt_Active.DOM.root)
-          this.sortingOpt_Active.DOM.root.attr("usedForSorting","false");
-        this.sortingOpt_Active.usedForSorting = false;
+        this.sortingOpt_Active.clearAsRecordSorting();
       }
       
       if(typeof index === "number"){
@@ -1654,17 +1720,15 @@ kshf.RecordDisplay.prototype = {
         this.sortingOpt_Active = index;
       }
 
-      this.sortingOpt_Active.usedForSorting = true;
-
-      if(this.sortingOpt_Active.DOM.root)
-        this.sortingOpt_Active.DOM.root.attr("usedForSorting","true");
+      this.sortingOpt_Active.setAsRecordSorting();
 
       if(this.DOM.root===undefined) return;
-      if(this.displayType==="map"){
-        this.map_updateRecordColor();
+      if(this.displayType==="map" || this.displayType==="nodelink"){
+        this.refreshRecordColors();
       } else {
         this.sortRecords();
-        this.updateVisibleIndex();
+        if(this.DOM.recordGroup===undefined) return;
+
         this.refreshRecordDOM();
         this.refreshRecordRanks(this.DOM.recordRanks);
         kshf.Util.scrollToPos_do(this.DOM.recordGroup[0][0],0);
@@ -1688,24 +1752,120 @@ kshf.RecordDisplay.prototype = {
       this.refreshRecordRanks(this.DOM.recordRanks);
       this.refreshAdjustSortColumnWidth();
     },
-    /** 
-      Currently only called if displayType is map
-      */
-    map_updateRecordColor: function(){
+    /** -- */
+    refreshNodeLinks: function(){
+      this.generateNodeLinks();
+      this.nodelink_nodes = this.browser.records.filter(function(record){ return record.isWanted; });
+
+      this.nodelink_Force
+        .nodes(this.nodelink_nodes)
+        .links(this.nodelink_links)
+        .start();
+    },
+    /** -- */
+    generateNodeLinks: function(){
+      this.nodelink_links = [];
+
+      var recordsIndexed = kshf.dt_id[browser.primaryTableName];
+      var linkAttribName = this.config.linkBy[0];
+
+      this.browser.records.forEach(function(recordFrom){
+        if(!recordFrom.isWanted) return;
+        var links = recordFrom.data[linkAttribName];
+        if(links) {
+          links.forEach(function(recordTo_id){
+            var recordTo = recordsIndexed[recordTo_id];
+            if(recordTo) {
+              if(!recordTo.isWanted) return;
+              this.nodelink_links.push({source:recordFrom, target: recordTo});
+            }
+          },this);
+        }
+      },this);
+    },
+    /** -- */
+    initializeNetwork: function(){
+      this.nodelink_Force.size([this.curWidth, this.curHeight]).start();
+
+      this.DOM.root.attr("NodeLinkState","started");
+    },
+    refreshNodeVis: function(){
+      if(this.DOM.recordLinks===undefined) return;
+
+      // position & direction of the line
+      this.DOM.recordLinks.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+      // position of the record
+      var s = 1/this.nodeZoomBehavior.scale();
+      this.DOM.kshfRecords.attr("transform", function(d){
+        return "translate("+d.x+","+d.y+") scale("+s+")";
+      });
+    },
+    /** -- */
+    setNodeLink: function(){
       var me=this;
-      var s_id = this.sortingOpt_Active.summaryID;
+
+      this.browser.records.forEach(function(record){
+        record.DOM.links_To = [];
+        record.DOM.links_From = [];
+        record.links_To = [];
+        record.links_From = [];
+      });
+
+      this.nodelink_links = [];
+
+      var recordsIndexed = kshf.dt_id[browser.primaryTableName];
+      var linkAttribName = this.config.linkBy[0];
+
+      this.browser.records.forEach(function(recordFrom){
+        var links = recordFrom.data[linkAttribName];
+        if(links) {
+          links.forEach(function(recordTo_id){
+            var recordTo = recordsIndexed[recordTo_id];
+            if(recordTo) {
+              recordFrom.links_To.push(recordTo);
+              recordTo.links_From.push(recordFrom);
+            }
+          },this);
+        }
+      },this);
+
+      this.generateNodeLinks();
+
+      this.DOM.recordLinks = this.DOM.linkGroup.selectAll(".recordLink").data(this.nodelink_links)
+        .enter().append("line").attr("class", "recordLink")
+        .each(function(link){
+          var recordFrom = link.source;
+          var recordTo = link.target;
+          recordFrom.DOM.links_To.push(this);
+          recordTo.DOM.links_From.push(this);
+        });
+
+      this.nodelink_Force = d3.layout.force()
+        .charge(-60)
+        .gravity(0.8)
+        .alpha(0.4)
+        .nodes(this.browser.records)
+        .links(this.nodelink_links)
+        .on("start",function(){ me.DOM.root.attr("NodeLinkState","started"); })
+        .on("end",  function(){ me.DOM.root.attr("NodeLinkState","stopped"); })
+        .on("tick", function(){ me.refreshNodeVis(); });
+    },
+    /** -- */
+    refreshRecordColors: function(){
+      if(!this.recordViewSummary) return;
+      var me=this;
       var s_f  = this.sortingOpt_Active.summaryFunc;
       var s_log;
 
-      this.colorQuantize = d3.scale.quantize()
-        .domain([0,9])
-        .range(kshf.colorScale[me.browser.mapColorTheme]);
-
       if(this.sortingOpt_Active.scaleType==='log'){
-        this.mapColorScale = d3.scale.log();
+        this.recordColorScale = d3.scale.log();
         s_log = true;
       } else {
-        this.mapColorScale = d3.scale.linear();
+        this.recordColorScale = d3.scale.linear();
         s_log = false;
       }
       var min_v = this.sortingOpt_Active.intervalRange.min;
@@ -1716,18 +1876,66 @@ kshf.RecordDisplay.prototype = {
       }
       if(min_v===undefined) min_v = d3.min(this.browser.records, function(d){ return s_f.call(d.data); });
       if(max_v===undefined) max_v = d3.max(this.browser.records, function(d){ return s_f.call(d.data); });
-      this.mapColorScale
+      this.recordColorScale
         .range([0, 9])
         .domain( [min_v, max_v] );
 
-      this.DOM.kshfRecords.attr("fill", function(d){ 
+      this.colorQuantize = d3.scale.quantize()
+        .domain([0,9])
+        .range(kshf.colorScale[me.browser.mapColorTheme]);
+
+      var undefinedFill = (this.displayType==="map") ? "url(#diagonalHatch)" : "white";
+
+      var fillFunc = function(d){ 
         var v = s_f.call(d.data);
         if(s_log && v<=0) v=undefined;
-        if(v===undefined) return "url(#diagonalHatch)";
-        var vv = me.mapColorScale(v);
+        if(v===undefined) return undefinedFill;
+        var vv = me.recordColorScale(v);
         if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
         return me.colorQuantize(vv); 
+      };
+
+      if(this.displayType==="map") this.DOM.kshfRecords.attr("fill", fillFunc);
+      if(this.displayType==="nodelink") this.DOM.kshfRecords.selectAll("circle").style("fill", fillFunc);
+    },
+    /** -- */
+    highlightRelated: function(recordFrom){
+      recordFrom.DOM.links_To.forEach(function(dom){
+        dom.style.stroke = "green";
+        dom.style.strokeOpacity = 1;
+        dom.style.display = "block";
       });
+      var links = recordFrom.data[this.config.linkBy[0]];
+      if(!links) return;
+      var recordsIndexed = kshf.dt_id[browser.primaryTableName];
+      links.forEach(function(recordTo_id){
+        var recordTo = recordsIndexed[recordTo_id];
+        if(recordTo) {
+          if(recordTo.DOM.record){
+            d3.select(recordTo.DOM.record.parentNode.appendChild(recordTo.DOM.record));
+            recordTo.DOM.record.setAttribute("selection","related");
+          }
+        }
+      },this);
+    },
+    /** -- */
+    unhighlightRelated: function(recordFrom){
+      recordFrom.DOM.links_To.forEach(function(dom){
+        dom.style.stroke = null;
+        dom.style.strokeOpacity = null;
+        dom.style.display = null;
+      });
+      var links = recordFrom.data[this.config.linkBy[0]];
+      if(!links) return;
+      var recordsIndexed = kshf.dt_id[browser.primaryTableName];
+      links.forEach(function(recordTo_id){
+        var recordTo = recordsIndexed[recordTo_id];
+        if(recordTo) {
+          if(recordTo.DOM.record){
+            recordTo.DOM.record.removeAttribute("selection");
+          }
+        }
+      },this);
     },
     /** Insert records into the UI, called once on load */
     refreshRecordDOM: function(){
@@ -1742,9 +1950,16 @@ kshf.RecordDisplay.prototype = {
       var newRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
         .data(records, function(record){ return record.id(); }).enter();
 
+      var nodeType = "div";
+      if(this.displayType==='map'){
+        nodeType = 'path';
+      } else if(this.displayType==='nodelink'){
+        nodeType = 'g';
+      }
+
       // Shared structure per record view
       newRecords = newRecords
-        .append( this.displayType==='map' ? 'path' : 'div' )
+        .append( nodeType )
         .attr('class','kshfRecord')
         .attr('details',false)
         .attr("rec_compared",function(record){ return record.selectCompared_str?record.selectCompared_str:null;})
@@ -1771,24 +1986,28 @@ kshf.RecordDisplay.prototype = {
             this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
             this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
-          if(me.displayType==="map"){
-            // Move this node to the end of elements...
+          if(me.browser.mouseSpeed<0.2) {
+            if(me.displayType==="nodelink") me.highlightRelated(record);
+            record.highlightRecord();
+          } else {
+            // mouse is moving fast, should wait a while...
+            this.highlightTimeout = window.setTimeout(
+              function(){ 
+                if(me.displayType==="nodelink") me.highlightRelated(record);
+                record.highlightRecord();
+              }, 
+              me.browser.mouseSpeed*300);
+          }
+          if(me.displayType==="map" || me.displayType==="nodelink"){
             d3.select(this.parentNode.appendChild(this));
           }
-          if(me.browser.mouseSpeed<0.2) {
-            record.highlightRecord();
-            return;
-          }
-          // mouse is moving fast, should wait a while...
-          this.highlightTimeout = window.setTimeout(
-            function(){ record.highlightRecord(); }, 
-            me.browser.mouseSpeed*300);
           d3.event.stopPropagation();
           d3.event.preventDefault();
         })
         .on("mouseleave",function(record){
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
           if(this.tipsy) this.tipsy.hide();
+          if(me.displayType==="nodelink") me.unhighlightRelated(record);
           record.unhighlightRecord();
         })
         .on("mousedown", function(){
@@ -1804,12 +2023,13 @@ kshf.RecordDisplay.prototype = {
         .on("click",function(d){
           // Do not show the detail view if the mouse was used to drag the map
           if(this._mousemove) return;
-          if(me.displayType==="map"){
+          if(me.displayType==="map" || me.displayType==='nodelink'){
             me.browser.updateItemZoomText(d);
           }
         });
       
-      if(this.displayType!=="map"){
+      if(this.displayType==="list" || this.displayType==="grid"){
+        // RANK
         x = newRecords.append("span").attr("class","recordRank")
           .each(function(d){
             this.tipsy = new Tipsy(this, {
@@ -1820,12 +2040,12 @@ kshf.RecordDisplay.prototype = {
           .on("mouseenter",function(){ this.tipsy.show(); })
           .on("mouseout"  ,function(){ this.tipsy.hide(); });
         this.refreshRecordRanks(x);
-
+        // SORTING VALUE LABELS
         if(this.displayType==='list'){
           x = newRecords.append("div").attr("class","recordSortCol").style("width",this.sortColWidth+"px");
           this.refreshRecordSortLabels(x);
         }
-
+        // TOGGLE DETAIL
         newRecords.append("div").attr("class","recordToggleDetail")
           .each(function(d){
             this.tipsy = new Tipsy(this, {
@@ -1856,7 +2076,16 @@ kshf.RecordDisplay.prototype = {
         newRecords.append("div").attr("class","content")
           .html(function(record){ 
             return me.recordViewSummary.summaryFunc.call(record.data, record);
-          })
+          });
+      }
+
+      if(this.displayType==="nodelink"){
+        newRecords.append("circle").attr("r",4);
+        newRecords.append("text").attr("class","kshfRecord_label")
+          .attr("dy",4).attr("dx",6)
+          .html(function(record){ 
+            return me.recordViewSummary.summaryFunc.call(record.data, record);
+          });
       }
 
       // Call the domCb function for all the records that have been inserted to the page
@@ -1869,16 +2098,18 @@ kshf.RecordDisplay.prototype = {
       if(this.displayType==="map") {
         this.map_zoomToActive();
         this.map_projectRecords();
-        this.map_updateRecordColor();
+        this.refreshRecordColors();
+      } else if(this.displayType==="nodelink"){
+        this.refreshRecordColors();
       } else {
         this.DOM.recordsSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
         this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
       }
 
-      this.updateItemVisibility();
+      this.updateRecordVisibility();
     },
     /** -- */
-    showMore: function(){
+    showMoreRecordsOnList: function(){
       if(this.displayType==="map") return;
       this.DOM.showMore.attr("showMoreVisible",false);
       this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
@@ -1892,6 +2123,7 @@ kshf.RecordDisplay.prototype = {
       var sortValueFunc = this.sortingOpt_Active.summaryFunc;
       var sortFunc = this.sortingOpt_Active.sortFunc;
       var inverse = this.sortingOpt_Active.sortInverse;
+
       this.browser.records.sort(
         function(record_A,record_B){
           // Put filtered/remove data to later position
@@ -1915,6 +2147,8 @@ kshf.RecordDisplay.prototype = {
           return dif; // use unique IDs to add sorting order as the last option
         }
       );
+
+      this.updateVisibleIndex();
     },
     /** Returns the sort value type for given sort Value function */
     getSortFunc: function(sortValueFunc){
@@ -1948,60 +2182,73 @@ kshf.RecordDisplay.prototype = {
       }
       return sortValueFunction;
     },
-    /** Updates visibility of list records */
-    updateItemVisibility: function(){
+    /** Updates visibility of individual records */
+    updateRecordVisibility: function(){
+      if(this.DOM.kshfRecords===undefined) return;
+
       var me = this;
       var visibleItemCount=0;
 
-      if(this.DOM.kshfRecords===undefined) return;
-
-      this.DOM.kshfRecords.each(function(record){
-        if(me.displayType==="map"){
+      if(me.displayType==="map"){
+        this.DOM.kshfRecords.each(function(record){
           this.style.opacity = record.isWanted?0.9:0.2;
           this.style.pointerEvents = record.isWanted?"":"none";
-          return;
-        }
+          this.style.display = "block"; // Have this for now bc switching views can invalidate display setting
+        });
+      } else if(me.displayType==="nodelink"){
+        this.browser.records.forEach(function(record){
+          if(record.DOM.record)
+            record.DOM.record.style.display = record.isWanted?"block":"none";
+        });
+        this.DOM.recordLinks.each(function(link){
+          var recordFrom = link.source;
+          var recordTo = link.target;
+          this.style.display = (!recordFrom.isWanted || !recordTo.isWanted) ? "none" : null;
+        });
+      } else {
+        this.DOM.kshfRecords.each(function(record){
+          var isVisible = (record.visibleOrder>=0) && (record.visibleOrder<me.maxVisibleItems);
+          if(isVisible) visibleItemCount++;
+          this.style.display = isVisible?null:'none';
+        });
 
-        var isVisible = (record.visibleOrder>=0) && (record.visibleOrder<me.maxVisibleItems);
-        if(isVisible) visibleItemCount++;
-        this.style.display = isVisible?null:'none';
-      });
-
-      if(this.displayType!=="map") {
         var hiddenItemCount = this.browser.recordsWantedCount-visibleItemCount;
         this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
         this.DOM.showMore.select(".CountBelow").html(hiddenItemCount+" below&#x25BC;");
-      }
+      };
     },
     /** -- */
     updateAfterFilter: function(){
       if(this.recordViewSummary===null) return;
       if(this.displayType==="map") {
-        this.updateItemVisibility(false);
+        this.updateRecordVisibility();
         //this.map_zoomToActive();
-        return;
+      } else if(this.displayType==="nodelink") {
+        this.updateRecordVisibility();
+        this.DOM.NodeLinkAnim_Refresh.style('display','inline-block');
+        // this.refreshNodeLinks();
+      } else {
+        var me=this;
+        var startTime = null;
+        var scrollDom = this.DOM.recordGroup[0][0];
+        var scrollInit = scrollDom.scrollTop;
+        var easeFunc = d3.ease('cubic-in-out');
+        var animateToTop = function(timestamp){
+          var progress;
+          if(startTime===null) startTime = timestamp;
+          // complete animation in 500 ms
+          progress = (timestamp - startTime)/1000;
+          scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
+          if(scrollDom.scrollTop!==0){
+            window.requestAnimationFrame(animateToTop);
+            return;
+          }
+          me.updateVisibleIndex();
+          me.refreshRecordDOM();
+          me.refreshRecordRanks(me.DOM.recordRanks);
+        };
+        window.requestAnimationFrame(animateToTop);
       }
-      var me=this;
-      var startTime = null;
-      var scrollDom = this.DOM.recordGroup[0][0];
-      var scrollInit = scrollDom.scrollTop;
-      var easeFunc = d3.ease('cubic-in-out');
-      var scrollTime = 1000;
-      var animateToTop = function(timestamp){
-        var progress;
-        if(startTime===null) startTime = timestamp;
-        // complete animation in 500 ms
-        progress = (timestamp - startTime)/scrollTime;
-        scrollDom.scrollTop = (1-easeFunc(progress))*scrollInit;
-        if(scrollDom.scrollTop!==0){
-          window.requestAnimationFrame(animateToTop);
-          return;
-        }
-        me.updateVisibleIndex();
-        me.refreshRecordDOM();
-        me.refreshRecordRanks(me.DOM.recordRanks);
-      };
-      window.requestAnimationFrame(animateToTop);
     },
     /** -- */
     updateVisibleIndex: function(){
@@ -2018,6 +2265,48 @@ kshf.RecordDisplay.prototype = {
         }
       });
       this.maxVisibleItems = this.maxVisibleItems_Default;
+    },
+    /** -- */
+    viewAs: function(d){
+      d = d.toLowerCase();
+      this.displayType = d;
+      this.DOM.root.attr("displayType",this.displayType);
+
+      if(this.displayType==="map"){
+        this.initDOM_MapView();
+        this.DOM.root.select(".recordView_SetList").style("display","inline-block");
+        if(this.nodelink_Force) this.nodelink_Force.stop();
+      } else if(this.displayType==="nodelink"){
+        this.initDOM_NodeLinkView();
+        this.DOM.root.select(".recordView_SetList").style("display","inline-block");
+      } else {
+        this.initDOM_ListView();
+        this.DOM.root.select(".recordView_SetList").style("display",null);
+        if(this.nodelink_Force) this.nodelink_Force.stop();
+      }
+      this.DOM.root.select(".recordView_SetMap").style("display",
+        (this.config.geo && this.displayType!=="map") ? "inline-block" : null );
+      this.DOM.root.select(".recordView_SetNodeLink").style("display",
+        (this.config.linkBy.length>0 && this.displayType!=="nodelink") ? "inline-block" : null );
+
+      if(this.recordViewSummary) {
+        
+        if(this.displayType==="list" || this.displayType==="grid"){
+          this.sortRecords();
+          this.refreshRecordDOM();
+          this.setSortColumnWidth(this.config.sortColWidth || 50); // default: 50px;
+        } else if(this.displayType==='map'){
+          this.refreshRecordColors();
+          //this.refreshRecordDOM();
+        } else if(this.displayType==='nodelink'){
+          this.refreshRecordColors();
+          //this.setNodeLink();
+          //this.refreshRecordDOM();
+        }
+        this.updateRecordVisibility();
+
+        this.browser.DOM.root.attr("recordDisplayMapping",this.getAttribMapping());
+      }
     },
     /** -- */
     exportConfig: function(){
@@ -2392,7 +2681,6 @@ kshf.Browser = function(options){
     this.DOM.root = d3.select(this.domID)
       .classed("kshf",true)
       .attr("noanim",true)
-      .attr("record_display","none")
       .attr("measureFunc",this.measureFunc)
       .style("position","relative")
       //.style("overflow-y","hidden")
@@ -2536,7 +2824,7 @@ kshf.Browser.prototype = {
         func = function(){ return this[x]; }
       }
 
-      var attribFunc=func || function(d){ return d.data[name]; }
+      var attribFunc = func || function(){ return this[name]; }
       if(type===undefined){
         type = this.getAttribTypeFromFunc(attribFunc);
       }
@@ -3722,8 +4010,8 @@ kshf.Browser.prototype = {
             var parsedData = Papa.parse(data, config);
 
             parsedData.data.forEach(function(row,i){
-                if(row[idColumn]===undefined) row[idColumn] = i;
-                arr.push(new kshf.Record(row,idColumn));
+              if(row[idColumn]===undefined) row[idColumn] = i;
+              arr.push(new kshf.Record(row,idColumn));
             })
 
             me.finishDataLoad(tableDescr, arr);
@@ -3998,7 +4286,7 @@ kshf.Browser.prototype = {
         this.panels.right.updateWidth_QueryPreview();
         this.panels.middle.updateWidth_QueryPreview();
 
-        this.recordDisplay = new kshf.RecordDisplay(this,this.options.recordDisplay||{}, this.DOM.root);
+        this.recordDisplay = new kshf.RecordDisplay(this,this.options.recordDisplay||{});
 
         if(this.options.measure){
           var summary = this.summaries_by_name[this.options.measure];
@@ -4056,6 +4344,10 @@ kshf.Browser.prototype = {
 
         this.reorderNuggetList();
 
+        if(this.recordDisplay.displayType==='nodelink'){
+          this.recordDisplay.initializeNetwork();
+        }
+
         if(typeof this.readyCb === "string" && this.readyCb.substr(0,8)==="function"){
           eval("\"use strict\"; this.readyCb = "+this.readyCb);
         }
@@ -4066,6 +4358,11 @@ kshf.Browser.prototype = {
 
         setTimeout(function(){ 
           if(me.options.enableAuthoring) me.enableAuthoring(true);
+          if(me.recordDisplay.displayType==="map"){
+            setTimeout(function(){ 
+              me.recordDisplay.map_zoomToActive();
+            }, 1000);
+          }
           me.setNoAnim(false);
         },1000);
     },
@@ -4522,7 +4819,7 @@ kshf.Browser.prototype = {
         if(this.recordDisplay){
           // get height of header
           var listDisplayHeight = divHeight_Total
-            - this.recordDisplay.DOM.recordViewHeader[0][0].offsetHeight 
+            - this.recordDisplay.DOM.recordDisplayHeader[0][0].offsetHeight 
             - midPanelHeight 
             - bottomPanelHeight;
           if(this.showDropZones && this.panels.middle.summaries.length===0) listDisplayHeight*=0.5;
@@ -4550,7 +4847,9 @@ kshf.Browser.prototype = {
       this.panels.bottom.setTotalWidth(this.divWidth);
       this.panels.bottom.updateSummariesWidth();
 
-      this.recordDisplay.refreshWidth();
+      this.DOM.middleColumn.style("width",widthMiddlePanel+"px");
+
+      this.recordDisplay.refreshWidth(widthMiddlePanel);
     },
     /** -- */
     getMeasureLabel: function(aggr,summary){
@@ -5296,19 +5595,16 @@ kshf.Summary_Base.prototype = {
       .each(function(d){
         this.tipsy = new Tipsy(this, {
           gravity: 'ne', title: function(){
-            return "Use to "+
-              ((me.browser.recordDisplay.displayType==="map")?"color":"sort")+" "+me.browser.itemName;
+            return "Use to "+me.browser.recordDisplay.getAttribMapping()+" "+me.browser.itemName;
           }
         });
       })
       .on("mouseover",function(d){ this.tipsy.show(); })
       .on("mouseout" ,function(d){ this.tipsy.hide(); })
       .on("click",function(d){
-        if(me.browser.recordDisplay.recordViewSummary){
-          me.browser.recordDisplay.setSortingOpt_Active(me);
-          me.browser.recordDisplay.refreshSortingOptions();
-        }
-        me.browser.updateLayout();
+        if(me.browser.recordDisplay.recordViewSummary===null) return;
+        me.browser.recordDisplay.setSortingOpt_Active(me);
+        me.browser.recordDisplay.refreshSortingOptions();
       });
 
     this.DOM.summaryViewAs = this.DOM.summaryIcons.append("span")
@@ -6479,7 +6775,7 @@ var Summary_Categorical_functions = {
       var maxMeasureValue = this.getMaxAggr_Active();
       if(this.browser.measureFunc==="Avg"){
         ["Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(distr){
-          if(!browser.vizActive[distr]) return;
+          if(!this.browser.vizActive[distr]) return;
           maxMeasureValue = Math.max(maxMeasureValue, d3.max(this._cats, function(aggr){return aggr.measure(distr);} ) );
         },this);
       }
@@ -6934,7 +7230,7 @@ var Summary_Categorical_functions = {
       if(this.viewType==='map'){
         this.DOM.catMap_Base.style("height",h+"px");
         if(this.DOM.catMap_SVG) this.DOM.catMap_SVG.style("height",h+"px");
-        if(this.leafletMap) this.leafletMap.invalidateSize();
+        if(this.leafletAttrMap) this.leafletAttrMap.invalidateSize();
       }
     },
     /** -- */
@@ -7372,9 +7668,8 @@ var Summary_Categorical_functions = {
       if(this.viewType==='map') return;
       if(this._cats===undefined) return;
       if(this._cats.length===0) return;
-      if(this.uniqueCategories()) return; // Nothing to sort...
+      if(this.uniqueCategories() && this.panel===undefined) return; // Nothing to sort...
       if(this.catSortBy_Active.no_resort===true && force!==true) return;
-      if(sortDelay===undefined) sortDelay = 1000;
 
       var me = this;
 
@@ -7466,7 +7761,7 @@ var Summary_Categorical_functions = {
 
           },(me.catCount_NowInvisible>0)?300:0);
 
-      },sortDelay);
+      }, (sortDelay===undefined) ? 1000 : sortDelay );
     },
     /** -- */
     chartAxis_Measure_TickSkip: function(){
@@ -7528,11 +7823,11 @@ var Summary_Categorical_functions = {
     map_zoomToActive: function(){
       if(this.asdsds===undefined){ // First time: just fit bounds
         this.asdsds = true;
-        this.leafletMap.fitBounds(this.mapBounds_Active);
+        this.leafletAttrMap.fitBounds(this.mapBounds_Active);
         return;
       }
 
-      this.leafletMap.flyToBounds(
+      this.leafletAttrMap.flyToBounds(
         this.mapBounds_Active,
         { padding: [0,0], 
           pan: {animate: true, duration: 1.2}, 
@@ -7563,7 +7858,7 @@ var Summary_Categorical_functions = {
       }
       // 'map'
       // The map view is already initialized
-      if(this.leafletMap) {
+      if(this.leafletAttrMap) {
         this.DOM.aggrGroup = this.DOM.summaryCategorical.select(".catMap_SVG > .aggrGroup");
         this.refreshDOMcats();
 
@@ -7574,9 +7869,7 @@ var Summary_Categorical_functions = {
         return; 
       }
 
-      this.leafletMap = L.map(this.DOM.catMap_Base[0][0], 
-          { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
-        )
+      this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0] )
         .addLayer(new L.TileLayer(
           "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
           { attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', /*nowrap: true*/ }))
@@ -7587,7 +7880,7 @@ var Summary_Categorical_functions = {
           me.DOM.aggrGlyphs.style("display","none");
         })
         .on("move",function(){
-          // console.log("MapZoom: "+me.leafletMap.getZoom());
+          // console.log("MapZoom: "+me.leafletAttrMap.getZoom());
           // me.map_projectCategories()
         })
         .on("moveend",function(){
@@ -7603,7 +7896,7 @@ var Summary_Categorical_functions = {
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
             if(x>kshf.wrapLongitude) x-=360;
-            var point = me.leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
+            var point = me.leafletAttrMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }
         }) 
@@ -7613,7 +7906,7 @@ var Summary_Categorical_functions = {
         .domain([0,9])
         .range(kshf.colorScale.converge);
 
-      this.DOM.catMap_SVG = d3.select(this.leafletMap.getPanes().overlayPane)
+      this.DOM.catMap_SVG = d3.select(this.leafletAttrMap.getPanes().overlayPane)
         .append("svg").attr("xmlns","http://www.w3.org/2000/svg")
         .attr("class","catMap_SVG");
 
@@ -7631,7 +7924,7 @@ var Summary_Categorical_functions = {
             .attr('stroke-width', 1);
 
       // Add custom controls
-      var DOM_control = d3.select(this.leafletMap.getContainer()).select(".leaflet-control");
+      var DOM_control = d3.select(this.leafletAttrMap.getContainer()).select(".leaflet-control");
 
       DOM_control.append("a")
         .attr("class","leaflet-control-viewFit").attr("title","Fit View")
@@ -7640,18 +7933,15 @@ var Summary_Categorical_functions = {
         .on("dblclick",function(){
           d3.event.preventDefault();
           d3.event.stopPropagation();
-          return true;
         })
         .on("click",function(){
           me.map_refreshBounds_Active();
           me.map_zoomToActive();
           d3.event.preventDefault();
           d3.event.stopPropagation();
-          return true;
         });
 
-      this.DOM.aggrGroup = this.DOM.catMap_SVG.append("g")
-          .attr("class", "leaflet-zoom-hide aggrGroup");
+      this.DOM.aggrGroup = this.DOM.catMap_SVG.append("g").attr("class", "leaflet-zoom-hide aggrGroup");
 
       // Now this will insert map svg component
       this.insertCategories();
@@ -7666,8 +7956,8 @@ var Summary_Categorical_functions = {
         .each(function(){
           this.tipsy = new Tipsy(this, {
             gravity: 'e', title: function(){
-              return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+kshf.lang.cur.Width;
-            },
+              return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'Relative']+" "+kshf.lang.cur.Width;
+            }
           });
         })
         .on("click",function(){ 
@@ -7727,7 +8017,7 @@ var Summary_Categorical_functions = {
       var h = this.categoriesHeight;
       this.DOM.catMap_Base.style("height",h+"px");
       if(this.DOM.catMap_SVG) this.DOM.catMap_SVG.style("height",h+"px");
-      if(this.leafletMap) this.leafletMap.invalidateSize();
+      if(this.leafletAttrMap) this.leafletAttrMap.invalidateSize();
       this.DOM.aggrGroup.style("height",h+"px");
       
       this.map_refreshColorScale();
@@ -8193,19 +8483,18 @@ var Summary_Interval_functions = {
         }
       }
       this.updateScaleAndBins(true);
-      if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
-        this.browser.recordDisplay.map_updateRecordColor();
-      }
+      if(this.usedForSorting) this.browser.recordDisplay.refreshRecordColors();
     },
     /** -- */
     getHeight_MapColor: function(){
       if(this.usedForSorting===false) return 0;
-      if(this.browser.recordDisplay.displayType!=="map") return 0; 
-      return 20;
+      if(this.browser.recordDisplay.displayType==="map") return 20; 
+      if(this.browser.recordDisplay.displayType==="nodelink") return 20; 
+      return 0;
     },
     /** -- */
     getHeight_Content: function(){
-      return this.height_hist+this.getHeight_Extra()+this.getHeight_MapColor();
+      return this.height_hist+this.getHeight_Extra();
     },
     /** -- */
     getHeight_Percentile: function(){
@@ -8363,7 +8652,7 @@ var Summary_Interval_functions = {
       this.insertChartAxis_Measure(this.DOM.histogram, 'w', 'nw');
 
       this.initDOM_Slider();
-      this.initDOM_MapColor();
+      this.initDOM_RecordMapColor();
       this.initDOM_Percentile();
 
       this.updateScaleAndBins();
@@ -8412,6 +8701,16 @@ var Summary_Interval_functions = {
         return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s);
       }
       return v;
+    },
+    /** -- */
+    setAsRecordSorting: function(){
+      this.usedForSorting = true;
+      if(this.DOM.root) this.DOM.root.attr("usedForSorting","true");
+    },
+    /** -- */
+    clearAsRecordSorting: function(){
+      this.usedForSorting = false;
+      if(this.DOM.root) this.DOM.root.attr("usedForSorting","false");
     },
     /** -- */
     initDOM_IntervalConfig: function(){
@@ -9104,53 +9403,49 @@ var Summary_Interval_functions = {
         });
     },
     /** -- */
-    initDOM_MapColor: function(){
-        var me=this;
+    initDOM_RecordMapColor: function(){
+      var me=this;
 
-        this.DOM.mapColorBar = this.DOM.summaryInterval.append("div").attr("class","mapColorBar");
+      this.DOM.mapColorBar = this.DOM.summaryInterval.append("div").attr("class","mapColorBar");
 
-        this.DOM.mapColorBar.append("span").attr("class","invertColorScale fa fa-adjust")
-            .each(function(d){
-                this.tipsy = new Tipsy(this, { gravity: 'sw', title: "Invert Color Scale" });
-            })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("click", function(){
-                me.invertColorScale = !me.invertColorScale;
-                me.browser.recordDisplay.map_updateRecordColor();
-                me.browser.recordDisplay.map_refreshColorScale();
-                me.map_refreshColorScale();
-            });
+      this.DOM.mapColorBar.append("span").attr("class","invertColorScale fa fa-adjust")
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'sw', title: "Invert Color Scale" }); })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("click", function(){
+          me.invertColorScale = !me.invertColorScale;
+          me.browser.recordDisplay.refreshRecordColors();
+          me.browser.recordDisplay.map_refreshColorScaleBins();
+          me.map_refreshColorScale();
+        });
 
-        this.DOM.mapColorBlocks = this.DOM.mapColorBar.selectAll("mapColorBlock")
-          .data([0,1,2,3,4,5,6,7,8]).enter()
-          .append("div").attr("class","mapColorBlock")
-          .each(function(d){
-            var r = me.valueScale.range()[1]/9;
-            this._minValue = me.valueScale.invert(d*r);
-            this._maxValue = me.valueScale.invert((d+1)*r);
-            this.tipsy = new Tipsy(this, {
-              gravity: 's', title: function(){
-                return Math.round(this._minValue)+" to "+Math.round(this._maxValue);
-              }
-            });
-          })
-          .on("mouseenter",function(){ 
-            // TODO: Preview items that fall under this range
-            // TODO: Currently, the color blocks do not aggregate records. Hmmmm....
-            this.tipsy.show();
-          })
-          .on("mouseleave",function(){ 
-            this.tipsy.hide();
-          })
-          .on("click",function(){
-            me.summaryFilter.active = {
-                min: this._minValue,
-                max: this._maxValue
-            };
-            me.summaryFilter.addFilter(true);
+      this.DOM.mapColorBlocks = this.DOM.mapColorBar.selectAll("mapColorBlock")
+        .data([0,1,2,3,4,5,6,7,8]).enter()
+        .append("div").attr("class","mapColorBlock")
+        .each(function(d){
+          var r = me.valueScale.range()[1]/9;
+          this._minValue = me.valueScale.invert(d*r);
+          this._maxValue = me.valueScale.invert((d+1)*r);
+          this.tipsy = new Tipsy(this, {
+            gravity: 's', title: function(){ return Math.round(this._minValue)+" to "+Math.round(this._maxValue); }
           });
-        this.map_refreshColorScale();
+        })
+        .on("mouseenter",function(){ 
+          // TODO: Preview items that fall under this range
+          // TODO: Currently, the color blocks do not aggregate records. Hmmmm....
+          this.tipsy.show();
+        })
+        .on("mouseleave",function(){ 
+          this.tipsy.hide();
+        })
+        .on("click",function(){
+          me.summaryFilter.active = {
+            min: this._minValue,
+            max: this._maxValue
+          };
+          me.summaryFilter.addFilter(true);
+        });
+      this.map_refreshColorScale();
     },
     /** -- */
     initDOM_Slider: function(){
@@ -9159,116 +9454,113 @@ var Summary_Interval_functions = {
         this.DOM.intervalSlider = this.DOM.summaryInterval.append("div").attr("class","intervalSlider");
 
         this.DOM.zoomControl = this.DOM.intervalSlider.append("span").attr("class","zoomControl fa")
-            .attr("sign","plus")
-            .each(function(d){
-              this.tipsy = new Tipsy(this, {
-                gravity: 'w', title: function(){ return (this.getAttribute("sign")==="plus")?"Zoom into range":"Zoom out"; }
-              });
-            })
-            .on("mouseenter",function(){ this.tipsy.show(); })
-            .on("mouseleave",function(){ this.tipsy.hide(); })
-            .on("click",function(){
-              this.tipsy.hide();
-              me.setZoomed(this.getAttribute("sign")==="plus");
-            })
-            ;
+          .attr("sign","plus")
+          .each(function(d){
+            this.tipsy = new Tipsy(this, {
+              gravity: 'w', title: function(){ return (this.getAttribute("sign")==="plus")?"Zoom into range":"Zoom out"; }
+            });
+          })
+          .on("mouseenter",function(){ this.tipsy.show(); })
+          .on("mouseleave",function(){ this.tipsy.hide(); })
+          .on("click",function(){
+            this.tipsy.hide();
+            me.setZoomed(this.getAttribute("sign")==="plus");
+          });
 
         var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
-            .on("mousedown", function(){
-                if(d3.event.which !== 1) return; // only respond to left-click
-                me.browser.setNoAnim(true);
-                var e=this.parentNode;
-                var initPos = me.valueScale.invert(d3.mouse(e)[0]);
-                d3.select("body").style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                        me.summaryFilter.active.min=d3.min([initPos,targetPos]);
-                        me.summaryFilter.active.max=d3.max([initPos,targetPos]);
-                        me.roundFilterRange();
-                        me.refreshIntervalSlider();
-                        // wait half second to update
-                        if(this.timer) clearTimeout(this.timer);
-                        me.summaryFilter.filteredBin = this;
-                        this.timer = setTimeout(function(){
-                            if(me.isFiltered_min() || me.isFiltered_max()){
-                              me.summaryFilter.addFilter(true);
-                            } else {
-                              me.summaryFilter.clearFilter();
-                            }
-                        },250);
-                    }).on("mouseup", function(){
-                        me.browser.setNoAnim(false);
-                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                    });
-                d3.event.preventDefault();
-            });
+          .on("mousedown", function(){
+            if(d3.event.which !== 1) return; // only respond to left-click
+            me.browser.setNoAnim(true);
+            var e=this.parentNode;
+            var initPos = me.valueScale.invert(d3.mouse(e)[0]);
+            d3.select("body").style('cursor','ew-resize')
+              .on("mousemove", function() {
+                  var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+                me.summaryFilter.active.min=d3.min([initPos,targetPos]);
+                me.summaryFilter.active.max=d3.max([initPos,targetPos]);
+                me.roundFilterRange();
+                me.refreshIntervalSlider();
+                // wait half second to update
+                if(this.timer) clearTimeout(this.timer);
+                me.summaryFilter.filteredBin = this;
+                this.timer = setTimeout(function(){
+                  if(me.isFiltered_min() || me.isFiltered_max()){
+                    me.summaryFilter.addFilter(true);
+                  } else {
+                    me.summaryFilter.clearFilter();
+                  }
+                },250);
+              }).on("mouseup", function(){
+                me.browser.setNoAnim(false);
+                d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+              });
+            d3.event.preventDefault();
+          });
 
         controlLine.append("span").attr("class","base total");
         controlLine.append("span").attr("class","base active")
-            .each(function(){
-                this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter });
-            })
-            // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
-            // because the size of the bar is set by scaling, not through width....
-            //.on("mouseover",function(){ this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("mousedown", function(){
-                this.tipsy.hide();
-                if(d3.event.which !== 1) return; // only respond to left-click
-                if(me.scaleType==='time') return; // time is not supported for now.
-                var e=this.parentNode;
-                var initMin = me.summaryFilter.active.min;
-                var initMax = me.summaryFilter.active.max;
-                var initRange= initMax - initMin;
-                var initPos = d3.mouse(e)[0];
+          .each(function(){ this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter }); })
+          // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
+          // because the size of the bar is set by scaling, not through width....
+          //.on("mouseover",function(){ this.tipsy.show(); })
+          .on("mouseout" ,function(){ this.tipsy.hide(); })
+          .on("mousedown", function(){
+              this.tipsy.hide();
+              if(d3.event.which !== 1) return; // only respond to left-click
+              if(me.scaleType==='time') return; // time is not supported for now.
+              var e=this.parentNode;
+              var initMin = me.summaryFilter.active.min;
+              var initMax = me.summaryFilter.active.max;
+              var initRange= initMax - initMin;
+              var initPos = d3.mouse(e)[0];
 
-                d3.select("body").style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        if(me.scaleType==='log'){
-                            var targetDif = d3.mouse(e)[0]-initPos;
-                            me.summaryFilter.active.min =
-                                me.valueScale.invert(me.valueScale(initMin)+targetDif);
-                            me.summaryFilter.active.max =
-                                me.valueScale.invert(me.valueScale(initMax)+targetDif);
+              d3.select("body").style('cursor','ew-resize')
+                .on("mousemove", function() {
+                  if(me.scaleType==='log'){
+                      var targetDif = d3.mouse(e)[0]-initPos;
+                      me.summaryFilter.active.min =
+                          me.valueScale.invert(me.valueScale(initMin)+targetDif);
+                      me.summaryFilter.active.max =
+                          me.valueScale.invert(me.valueScale(initMax)+targetDif);
 
-                        } else if(me.scaleType==='time'){
-                            // TODO
-                            return;
-                        } else {
-                            var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                            var targetDif = targetPos-me.valueScale.invert(initPos);
+                  } else if(me.scaleType==='time'){
+                      // TODO
+                      return;
+                  } else {
+                      var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+                      var targetDif = targetPos-me.valueScale.invert(initPos);
 
-                            me.summaryFilter.active.min = initMin+targetDif;
-                            me.summaryFilter.active.max = initMax+targetDif;
-                            if(me.summaryFilter.active.min<me.intervalRange.active.min){
-                                me.summaryFilter.active.min=me.intervalRange.active.min;
-                                me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
-                            }
-                            if(me.summaryFilter.active.max>me.intervalRange.active.max){
-                                me.summaryFilter.active.max=me.intervalRange.active.max;
-                                me.summaryFilter.active.min=me.intervalRange.active.max-initRange;
-                            }
-                        }
+                      me.summaryFilter.active.min = initMin+targetDif;
+                      me.summaryFilter.active.max = initMax+targetDif;
+                      if(me.summaryFilter.active.min<me.intervalRange.active.min){
+                          me.summaryFilter.active.min=me.intervalRange.active.min;
+                          me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
+                      }
+                      if(me.summaryFilter.active.max>me.intervalRange.active.max){
+                          me.summaryFilter.active.max=me.intervalRange.active.max;
+                          me.summaryFilter.active.min=me.intervalRange.active.max-initRange;
+                      }
+                  }
 
-                        me.roundFilterRange();
-                        me.refreshIntervalSlider();
+                  me.roundFilterRange();
+                  me.refreshIntervalSlider();
 
-                        // wait half second to update
-                        if(this.timer) clearTimeout(this.timer);
-                        me.summaryFilter.filteredBin = this;
-                        this.timer = setTimeout(function(){
-                            if(me.isFiltered_min() || me.isFiltered_max()){
-                                me.summaryFilter.addFilter(true);
-                            } else{
-                                me.summaryFilter.clearFilter();
-                            }
-                        },200);
-                    }).on("mouseup", function(){
-                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                    });
-                d3.event.preventDefault();
-                d3.event.stopPropagation();
-            });
+                  // wait half second to update
+                  if(this.timer) clearTimeout(this.timer);
+                  me.summaryFilter.filteredBin = this;
+                  this.timer = setTimeout(function(){
+                      if(me.isFiltered_min() || me.isFiltered_max()){
+                          me.summaryFilter.addFilter(true);
+                      } else{
+                          me.summaryFilter.clearFilter();
+                      }
+                  },200);
+                }).on("mouseup", function(){
+                  d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+                });
+              d3.event.preventDefault();
+              d3.event.stopPropagation();
+          });
 
         controlLine.selectAll(".handle").data(['min','max']).enter()
             .append("span").attr("class",function(d){ return "handle "+d; })

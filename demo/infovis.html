@@ -28,7 +28,7 @@ google.setOnLoadCallback(function () {
     },
     loadedCb: function(){
       kshf.dt.Publications.forEach(function(publication){
-          publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
+        publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
       });
     },
     summaries: [

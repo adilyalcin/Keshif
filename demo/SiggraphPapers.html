@@ -74,21 +74,24 @@ $(document).ready( function() {
       callback: loadData
     },
     summaries: [
-      {name: "Authors", minAggrValue: 2},
-      {name: "Keywords", catLabel: function(){ return keywords[this.id].text; }},
-      {name: "Citation Count"},
-      {name: "Year", panel: "bottom"}
+      //{name: "Authors", minAggrValue: 2},
+      { name: "Keywords", catLabel: function(){ return keywords[this.id].text; } },
+      { name: "Citation Count" },
+      { name: "Citation Count (internal)", value: function(){ if(this.CitedBy) return this.CitedBy.length; } },
+      { name: "Year", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "Citation Count",
+      linkBy: "CitedBy",
       detailsToggle: "one",
       textSearch: "title",
-      recordView: function(){
+      recordView: "title"
+      /* recordView: function(){
         return "<span class='paperTitle'>"+this.title+"</span>"+
           " <a href='"+this.DOI+"' target='_blank' class='fa fa-external-link'></a>"+
           "<span class='authors'>"+this.Authors.join(", ")+"</span>"
           +"<span class='item_details abstract'>"+this.abstract+"</span>";
-      }
+      }*/
     }
   });
 });
@@ -110,6 +113,7 @@ $(document).ready( function() {
   font-size: 1.1em;
   font-weight: 600;
 }
+
 </style>
 	</head>
   <body>

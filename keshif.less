@@ -139,9 +139,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .summaryConfig_UnitName{ display: block;}
       .recordDisplay{
         &:hover .buttonRecordViewRemove{ display: block; }
-        &[displaytype="list"]:hover > .recordGroup > .dragWidthHandle{ display: block; }
+        &[displaytype="list"]:hover .dragWidthHandle{ display: block; }
       }
-      .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control{
+      .recordDisplay:not([displaytype="map"]) > .recordDisplayHeader > .itemRank_control{
         display: inline-block;
       }
       .panel:hover > .panelAdjustWidth{
@@ -213,27 +213,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .measure_Compared_C{ opacity: 1 !important; pointer-events: all !important;}
       .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C{ display: block; }
     }
-    &:not([record_display="map"]){
+    &[recordDisplayMapping="sort"]{
       .kshfSummary[summary_type="interval"] {
-        .headerGroup .summaryIcons > .useForRecordDisplay::before{ content: "\f0dc"; }
-      }
-      .kshfSummary[summary_type="interval"]:hover{
-        .headerGroup .summaryIcons > .useForRecordDisplay{ display: inline-block; }
+        .headerGroup .summaryIcons > .useForRecordDisplay{
+          &:before{ content: "\f0dc"; } // Sorting icon
+          &:hover{ color: orangered; }
+        }
       }
     }
-    &[record_display="map"]{
+    &[recordDisplayMapping="color"]{
       .kshfSummary[summary_type="interval"]{
         .headerGroup .summaryIcons > .useForRecordDisplay{
-          &::before{ content: "\f278"; }
+          // Great CSS trick at https://codepen.io/thebabydino/pen/hkxGp
+          position: relative;
+          margin: 0;
+          border: solid 1px white;
+          width: 1em; height: 1em;
+          border-radius: 50%;
+          background: 
+            linear-gradient(36deg, #272b66 42.34%, transparent 42.34%) 0 0,
+            linear-gradient(72deg, #2d559f 75.48%, transparent 75.48%) 0 0,
+            linear-gradient(-36deg, #9ac147 42.34%, transparent 42.34%) 100% 0,
+            linear-gradient(-72deg, #639b47 75.48%, transparent 75.48%) 100% 0, 
+            linear-gradient(36deg, transparent 57.66%, #e1e23b 57.66%) 100% 100%,
+            linear-gradient(72deg, transparent 24.52%, #f7941e 24.52%) 100% 100%,
+            linear-gradient(-36deg, transparent 57.66%, #662a6c 57.66%) 0 100%,
+            linear-gradient(-72deg, transparent 24.52%, #9a1d34 24.52%) 0 100%, 
+            #43a1cd linear-gradient(#ba3e2e, #ba3e2e) 50% 100%;
+          background-repeat: no-repeat;
+          background-size: 50% 50%;
+          transition: 1s;
+          &:hover { transform: rotate(360deg); }
+          // ::before{ content: "\f278"; } // Map-icon
         }
-        &[usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
-          .display(flex);
-        }
-        &:hover{
-          .headerGroup .summaryIcons > .useForRecordDisplay{
-            display: inline-block;
-          }
-        }
+
+        &[usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar { .display(flex); }
       }
     }
     &[showDropZone=true]{
@@ -272,9 +286,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .dropZone_recordView{ display: block !important; }
 //      }
-      &[dropattrtype~="interval"] .dropZone_resultSort{
-        display: block !important;
-      }
       &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
         .dropZone_textSearch{ display: block !important; }
       }
@@ -694,7 +705,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           position: absolute;
           left: 5px;
           top: 1.6em;
-          z-index: 200;
+          z-index: 2000;
           background-color: white;
           font-size: 0.9em;
           font-weight: 400;
@@ -1799,12 +1810,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             display: none;
             cursor: pointer;
             &[viewAs="map"]:before{ content: "\f0ac"; } // globe
-            &[viewAs="list"]:before{ content: "\f03a"; } // list
+            &[viewAs="list"]:before{ content: "\f0ca"; } // list-ul
           }
-          > .useForRecordDisplay{
-            display: none;
-            &:hover{ color: orangered; }
-          }
+          > .useForRecordDisplay{ display: none; }
         }
         > .header_display_control{
           display: block;
@@ -2084,14 +2092,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
       .transition(~"opacity 500ms ease, background-color 100ms linear");
 
-      > .recordRank{
-        font-size: 0.6em;
-        color: gray;
-        font-weight: 300;
-        font-style: italic;
-        text-align: right;
-      }
-
       > .content{
         vertical-align: top;
         border: solid 0px lightgray;
@@ -2124,6 +2124,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           font-weight:300;
         }
       }
+    } // .kshfRecord
+
+    // List / Grid Views
+    div.kshfRecord{
+      vertical-align: top;
+
+      > .recordRank{
+        font-size: 0.6em;
+        color: gray;
+        font-weight: 300;
+        font-style: italic;
+        text-align: right;
+      }
       > .recordToggleDetail{ // .kshfRecord's
         display: none;
         vertical-align: top;
@@ -2149,8 +2162,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .item_details_toggle{ display: inline-block; }
         .item_details{ display: none; }
       }
-    } // kshfRecord
-    div.kshfRecord{
+
       &[selection^="onRecord"]  { 
         padding: 0px;
         background-color: @color_onRecord_back !important;
@@ -2189,7 +2201,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             lighten(@color_bar_preview, 35%) 80%, lighten(@color_bar_preview, 35%) 100%) );
         }
       }
-    } // kshfRecord
+    } // div.kshfRecord
 
     .summaryConfig{
       position: absolute;
@@ -2198,7 +2210,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       opacity: 0;
       .transition(all 400ms ease-in-out);
       pointer-events: none;
-      background-color: rgba(235, 235, 235, 0.8);
+      background-color: rgba(235, 235, 235, 0.9);
       border-radius: 0px 0px 10px 10px;
       box-shadow: 0px 0px 1px black;
       padding: 1px 5px;
@@ -2556,6 +2568,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       display: inline-block;
                       vertical-align: top;
                       line-height: 16px;
+                      left: 0px;
                       height: 100%;
                       padding-right: 2px;
                       z-index: 21;
@@ -2962,29 +2975,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                     }
                     > .labelGroup{
-                        cursor: default;
-                        position:relative;
-                        > .tick{
-                            position:absolute;
-                            > .text{
-                                top: -1px;
-                                font-size: 0.7em;
-                                font-weight: 300;
-                                position: relative;
-                                left: -50%;
-                                display: block;
-                                text-align: center;
-                                white-space: nowrap;
+                      cursor: default;
+                      position:relative;
+                      > .tick{
+                        position:absolute;
+                        > .text{
+                          top: -1px;
+                          font-size: 0.7em;
+                          font-weight: 300;
+                          position: relative;
+                          left: -50%;
+                          display: block;
+                          text-align: center;
+                          white-space: nowrap;
+                          > .unitName {
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 20px;
+                            display: inline-block;
+                            vertical-align: bottom;
+                            &:hover{
+                              overflow: visible;
                             }
-                            > .line{
-                                position: absolute;
-                                top: -10px;
-                                height: 10px;
-                                border-left: solid 1px rgb(160, 160, 160);
-                                display: block;
-                                pointer-events: none;
-                            }
+                          }
                         }
+                        > .line{
+                          position: absolute;
+                          top: -10px;
+                          height: 10px;
+                          border-left: solid 1px rgb(160, 160, 160);
+                          display: block;
+                          pointer-events: none;
+                        }
+                      }
                     } // labelGroup
                 } // intervalSlider
 
@@ -3090,6 +3114,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .summaryConfig_UnitName{ display: none;}
       }
 
+      &[summary_type='interval']{
+        &:hover .headerGroup .summaryIcons > .useForRecordDisplay{ display: inline-block; }
+      }
+
       &[collapsed=false]{
         &[viewType='bar']:hover {
           .summaryConfigControl{ display: inline-block !important; }
@@ -3100,7 +3128,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[showConfig=true]{
         .summaryConfig{
-          top: 21px;
+          top: 22px;
           opacity: 1;
           pointer-events: all;
         }
@@ -3303,6 +3331,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
     }
 
+    .NodeLinkAttrib{
+      display: none;
+    }
+
     .recordDisplay{
       position: relative;
       top: 0px;
@@ -3336,15 +3368,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[readyToDrop=true]{ background-color: rgb(255, 188, 163); }
       }
 
+      .recordDisplayWrapper{
+        // TODO?
+      }
+      .recordMap_Base{ height: 100%; }
+
       .recordMap_SVG{
+        display: block;
         position: relative;
+        height: 100%;
         left: 0px;
         top: 0px;
         overflow: visible;
       }
 
+      .recordGroup_List{
+        height: 100%;
         > .recordGroup{
           width: 100%;
+          height: 100%;
           overflow-y: scroll;
           overflow-x: hidden;
           position: relative;
@@ -3358,115 +3400,174 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             height: 100%;
           }
         } // recordGroup
+      }
 
-        > .showMore{
-          display: block;
+      > .showMore{
+        display: block;
+        cursor: pointer;
+        border: solid 1px lightgray;
+        border-radius: 9px;
+
+        box-shadow: 2px 2px 2px #D8D8D8;
+        font-weight: 300;
+        font-size: 0.8em;
+        background-color: #eee;
+        height: 20px;
+        width: calc(~"100% - 23px");
+
+        text-align: center;
+        position:absolute;
+        left: 4px;
+        .transition(~"bottom 700ms ease 50ms");
+        //.keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
+
+        > .MoreText{
+          display: inline-block;
+          vertical-align: top;
+          top: 2px;
+          position: relative;
+        }
+        > .Count{
+          font-size: 0.9em;
+          top: 3px;
+          position: relative;
+          color: gray;
+          &.CountAbove{
+            float: left;
+            margin-left: 3px;
+          }
+          &.CountBelow{
+            float: right;
+            margin-right: 3px;
+          }
+        }
+        &:hover{
+          box-shadow: 2px 2px 2px gray;
+          > .MoreText{ text-decoration: underline; }
+        }
+        &[showMoreVisible=true]{
+          opacity: 1;
+          bottom: 4px;
+        }
+        &[showMoreVisible=false]{
+          bottom: -27px;
+          opacity: 0;
+        }
+      }
+
+      &[showRank=true]  {
+        .recordRank{ display: inline-block; }
+        .itemRank_control{ color: black; }
+      }
+      &[showRank=false] {
+        .recordRank{ display: none; }
+        .itemRank_control{ color: gray; }
+      }
+
+      &[displayType="map"]{
+        overflow: visible !important;
+        .scrollToTop{ display: none; }
+        .sortButton{ display: none; }
+        > .recordDisplayHeader > .recordColorScale{ .display(flex); }
+        .recordGroup_List{ display: none; }
+
+        .recordGroup{ overflow: visible !important; }
+        .kshfRecord{
+          stroke-width: 1px;
+          stroke: rgba(255,255,255,0.5);
+          //paint-order: stroke;
           cursor: pointer;
-          border: solid 1px lightgray;
-          border-radius: 9px;
-
-          box-shadow: 2px 2px 2px #D8D8D8;
-          font-weight: 300;
-          font-size: 0.8em;
-          background-color: #eee;
-          height: 20px;
-          width: calc(~"100% - 23px");
-
-          text-align: center;
-          position:absolute;
-          left: 4px;
-          .transition(~"bottom 700ms ease 50ms");
-          //.keyframes(~'fade, 0%{opacity:1;} 50%{opacity:0;} 100% {opacity:1;}');
-
-          > .MoreText{
-            display: inline-block;
-            vertical-align: top;
-            top: 2px;
-            position: relative;
+          &[selection="onRecord"]{
+            stroke: darken(@color_onRecord_back, 70%);
+            stroke-width: 2px;
           }
-          > .Count{
-            font-size: 0.9em;
-            top: 3px;
-            position: relative;
-            color: gray;
-            &.CountAbove{
-              float: left;
-              margin-left: 3px;
-            }
-            &.CountBelow{
-              float: right;
-              margin-right: 3px;
-            }
-          }
-          &:hover{
-            box-shadow: 2px 2px 2px gray;
-            > .MoreText{ text-decoration: underline; }
-          }
-          &[showMoreVisible=true]{
-            opacity: 1;
-            bottom: 4px;
-          }
-          &[showMoreVisible=false]{
-            bottom: -27px;
-            opacity: 0;
-          }
-        }
-        &[showRank=true]  {
-          .recordRank{ display: inline-block; }
-          .itemRank_control{ color: black; }
-        }
-        &[showRank=false] {
-          .recordRank{ display: none; }
-          .itemRank_control{ color: gray; }
-        }
-
-        &[displaytype="map"]{
-          overflow: visible !important;
-          .scrollToTop{ display: none; }
-          .sortButton{ display: none; }
-          > .recordDisplay--Header > .mapColorScale{
-            .display(flex);
-            .flex-direction(row);
-            .flex-wrap(wrap);
-            width: 30px;
-            margin: 2px;
-            border: solid 1px lightgray;
-            cursor: pointer;
-            &:hover{ border: solid 1px gray; }
-            > .mapColorScaleBin{ .flex(1); }
-          }
-          .recordGroup{
-            overflow: visible !important;
-          }
-          .kshfRecord{
+          &[selection="highlighted"]{
+            stroke: orangered;
             stroke-width: 1px;
-            stroke: rgba(255,255,255,0.5);
-            //paint-order: stroke;
+          }
+          &[rec_compared^="A"]{ stroke: @color_Compare_A; }
+          &[rec_compared^="B"]{ stroke: @color_Compare_B; }
+          &[rec_compared^="C"]{ stroke: @color_Compare_C; }
+        }
+      }
+
+      &[displayType="nodelink"]{
+        overflow: visible !important;
+        .scrollToTop{ display: none; }
+        .sortButton{ display: none; }
+
+        > .recordDisplayHeader > .recordColorScale{ .display(flex); }
+
+        .recordGroup_List{ display: none; }
+
+        .NodeLinkAttrib{
+          display: block;
+          > .NodeLinkAttribIcon{
+            padding: 1px 3px;
+            color: black;
             cursor: pointer;
-            &[selection="onRecord"]{
-              stroke: darken(@color_onRecord_back, 70%);
-              stroke-width: 2px;
-            }
-            &[selection="highlighted"]{
-              stroke: orangered;
-              stroke-width: 1px;
-            }
-            &[rec_compared^="A"]{ stroke: @color_Compare_A; }
-            &[rec_compared^="B"]{ stroke: @color_Compare_B; }
-            &[rec_compared^="C"]{ stroke: @color_Compare_C; }
+            text-shadow: 0px 0px 5px white;
+            &:hover{ color: orangered !important; }
           }
         }
 
-        &[displaytype="grid"][hasrecordview="true"] {
-          > .recordGroup {
-            .display(flex);
-            .flex-direction(row);
-            .flex-wrap(wrap);
-            .align-items(flex-start);
-            .align-content(flex-start);
-            .justify-content(space-around);
+        g.kshfRecord{
+          > circle{
+            stroke: gray;
+            stroke-width: 1;
+            fill: white;
+            cursor: pointer;
+            .transition(~'all 400ms ease-in-out');
           }
-          .kshfRecord{
+          > text.kshfRecord_label{
+            display: none;
+            font-size: 0.8em;
+            pointer-events: none;
+            text-shadow: 0px 0px 5px white, 0px 0px 5px white, 0px 0px 2px white;
+          }
+          &[selection="onRecord"]{
+            > circle { stroke: darken(@color_onRecord_back, 70%); stroke-width: 2; }
+            > text.kshfRecord_label{ display: block; }
+          }
+          &[selection="related"]{
+            > circle { stroke: green; stroke-width: 2; }
+            > text.kshfRecord_label{ display: block; fill: green; }
+          }
+          &[selection="highlighted"]{
+            > circle { stroke: orangered; stroke-width: 2; }
+          }
+          &[rec_compared] > circle{ stroke-width: 2; }
+          &[rec_compared^="A"]{ > circle { stroke: @color_Compare_A; } }
+          &[rec_compared^="B"]{ > circle { stroke: @color_Compare_B; } }
+          &[rec_compared^="C"]{ > circle { stroke: @color_Compare_C; } }
+        }
+        .recordLink {
+          stroke: #999;
+          stroke-opacity: .3;
+        }
+        &[hideLinks] {
+          .recordLink { display: none; }
+          .NodeLinkAttribIcon{ color: #BABABA; }
+        }
+        &[NodeLinkState="started"]{
+          .NodeLinkAnim_Play{ display: none; }
+        }
+        &[NodeLinkState="stopped"]{
+          .NodeLinkAnim_Pause{ display: none; }
+        }
+        .NodeLinkAnim_Refresh{ display: none; }
+      }
+
+      &[displayType="grid"][hasrecordview="true"] {
+        .recordGroup {
+          .display(flex);
+          .flex-direction(row);
+          .flex-wrap(wrap);
+          .align-items(flex-start);
+          .align-content(flex-start);
+          .justify-content(space-around);
+          
+          > .kshfRecord{
             display: block;
             .align-self(flex-start);
             > .recordRank{
@@ -3481,73 +3582,97 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
           }
         }
-        &[displaytype="list"][hasrecordview="true"] {
-          .kshfRecord{
-            .display(flex);
-            .flex-direction(row);
-            width: 100%;
-            padding-top: 0px;
-            border-top: solid 1px lightgray;
-            > .recordSortCol{
-              padding-right: 3px;
-              padding-top: 2px;
-              font-weight: 300;
-              text-align: right;
-              font-size: 0.8em;
-              cursor: default;
-              vertical-align: top;
+      }
+      &[displayType="list"][hasrecordview="true"] {
+        .recordMap_Base{ display: none; }
+        .recordNodeLink_SVG{ display: none; }
+        .kshfRecord{
+          .display(flex);
+          .flex-direction(row);
+          width: 100%;
+          padding-top: 0px;
+          border-top: solid 1px lightgray;
+          > .recordSortCol{
+            padding-right: 3px;
+            padding-top: 2px;
+            font-weight: 300;
+            text-align: right;
+            font-size: 0.8em;
+            cursor: default;
+            vertical-align: top;
 
-              white-space: nowrap;
-              text-overflow: ellipsis;
-              overflow: hidden;
-            }
-            > .recordRank{
-              float: left;
-              margin-top: 4px;
-              width: 15px;
-              padding-right: 2px;
-            }
-            > .recordToggleDetail{
-              width: 18px;
-              text-align: center;
-            }
-            > .content{ .flex(1); }
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
           }
+          > .recordRank{
+            float: left;
+            margin-top: 4px;
+            width: 15px;
+            padding-right: 2px;
+          }
+          > .recordToggleDetail{
+            width: 18px;
+            text-align: center;
+          }
+          > .content{ .flex(1); }
         }
-        &[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail{
-          display: inline-block;
-          > .item_details_toggle:before{ content: "\f140"; }
-        }
-        &[detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail{
-          display: inline-block;
-          > .item_details_toggle:before{ content: "\f078"; }
-        }
+      }
+      &[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail{
+        display: inline-block;
+        > .item_details_toggle:before{ content: "\f140"; }
+      }
+      &[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail{
+        display: inline-block;
+        > .item_details_toggle:before{ content: "\f078"; }
+      }
 
-        &[hasRecordView="false"]{
-          > .recordDisplay--Header{ display: none; }
-          > .dropZone_recordView{ 
-            .flex(1);
-            position: absolute; 
-          }
-          > .recordGroup{ display: none; }
+      &[hasRecordView="false"]{
+        > .recordDisplayHeader{ display: none; }
+        > .dropZone_recordView{ 
+          .flex(1);
+          position: absolute; 
         }
-        &[hasRecordView="true"]{
-          box-shadow: 0px 0px 2px rgb(137, 113, 60);
-          margin: 0px 2px 2px 2px;
-          > .recordDisplay--Header{ .display(flex); }
-          > .dropZone_recordView{ position: absolute; }
+        .recordGroup{ display: none; }
+      }
+      &[hasRecordView="true"]{
+        box-shadow: 0px 0px 2px rgb(137, 113, 60);
+        margin: 0px 2px 2px 2px;
+        > .recordDisplayHeader{ .display(flex); }
+        > .dropZone_recordView{ position: absolute; }
+      }
+      &:hover{
+        > .recordDisplayHeader > .sortColumn{
+          opacity: 1;
+          pointer-events: all;
         }
-        &:hover{
-          > .recordDisplay--Header > .sortColumn{
-            opacity: 1;
-            pointer-events: all;
-          }
-        }
+      }
       > .recordMap{
         .viewMap{ font-size: 0.9em; }
         .viewFit{ font-size: 1em; }
       }
     } // .recordDisplay
+
+    .NodeLinkControl{
+      position: absolute;
+      right: 0px;
+      bottom: 0px;
+      margin: 5px;
+      .fa{
+        font-size: 0.9em;
+        padding: 0px 2px;
+        cursor: pointer;
+        &:hover{ color: orangered; }
+      }
+      > .animationControl{
+      }
+    }
+
+    .recordNodeLink_SVG{
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
     .Summary_Set{
       display: block;
@@ -3787,15 +3912,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &:hover{ color:#cb5454; }
     }
 
-    .recordDisplay--Header{
+    .recordDisplayHeader{
         font-size: 0.9em;
         position: relative;
         background-color: #EBE5DF;
         .flex-direction(row);
         min-height: 18px;
-        > .mapColorScale{
-          display: none;
-        }
         > .itemRank_control{
           display: none;
           width: 13px;
@@ -3806,9 +3928,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &:before{ content: "\f102"; }
           &:hover{ color: orangered; }
         }
-        > .removeSortOption_wrapper{
+        > .recordColorScale{
           display: none;
+          .flex-direction(row);
+          .flex-wrap(wrap);
+          width: 30px;
+          margin: 2px;
+          border: solid 1px lightgray;
+          cursor: pointer;
+          &:hover{ border: solid 1px gray; }
+          > .recordColorScaleBin{ .flex(1); }
         }
+        > .removeSortOption_wrapper{ display: none; }
         .removeSortOption{
           cursor: pointer;
           width: 14px;
@@ -3837,28 +3968,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .listSortOptionSelect{
             width: 100%;
             bottom:0px;
-          }
-          > .dropZone_resultSort{
-            display: none;
-            cursor: s-resize;
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            z-index: 50;
-            background-color: rgba(234, 234, 234, 1);
-            border-radius: 5px;
-            border-style: solid;
-            border-width: 2px;
-            border-color: gray;
-            text-align: center;
-            > .dropZone_resultSort_text{
-              pointer-events: none;
-              font-size: 0.8em;
-              display: block;
-              font-weight: 300;
-              &:before{ content: "Sort by"; }
-            }
-            &:hover{ background-color: rgb(255, 188, 163); }
           }
         }
         > .sortColumn {
@@ -3987,7 +4096,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             box-shadow: 0px 0px 2px black;
           }
         } // mainTextSearch
-    } // recordDisplay--Header
+    } // recordDisplayHeader
+
+    [class^="recordView_Set"]{
+      color: gray;
+      padding: 1px;
+      cursor: pointer;
+      display: none;
+      &:hover{ color: orangered; }
+    }
 
     .boxinbox{
         margin-top:10px;

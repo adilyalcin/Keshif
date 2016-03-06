@@ -157,10 +157,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode] .recordDisplay:hover .buttonRecordViewRemove {
   display: block;
 }
-.kshf[authoringMode] .recordDisplay[displaytype="list"]:hover > .recordGroup > .dragWidthHandle {
+.kshf[authoringMode] .recordDisplay[displaytype="list"]:hover .dragWidthHandle {
   display: block;
 }
-.kshf[authoringMode] .recordDisplay:not([displaytype="map"]) > .recordDisplay--Header > .itemRank_control {
+.kshf[authoringMode] .recordDisplay:not([displaytype="map"]) > .recordDisplayHeader > .itemRank_control {
   display: inline-block;
 }
 .kshf[authoringMode] .panel:hover > .panelAdjustWidth {
@@ -276,24 +276,33 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[selectCompared_C] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C {
   display: block;
 }
-.kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
+.kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:before {
   content: "\f0dc";
 }
-.kshf:not([record_display="map"]) .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: inline-block;
+.kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:hover {
+  color: orangered;
 }
-.kshf[record_display="map"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay::before {
-  content: "\f278";
+.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay {
+  position: relative;
+  margin: 0;
+  border: solid 1px white;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: linear-gradient(36deg, #272b66 42.34%, transparent 42.34%) 0 0, linear-gradient(72deg, #2d559f 75.48%, transparent 75.48%) 0 0, linear-gradient(-36deg, #9ac147 42.34%, transparent 42.34%) 100% 0, linear-gradient(-72deg, #639b47 75.48%, transparent 75.48%) 100% 0, linear-gradient(36deg, transparent 57.66%, #e1e23b 57.66%) 100% 100%, linear-gradient(72deg, transparent 24.52%, #f7941e 24.52%) 100% 100%, linear-gradient(-36deg, transparent 57.66%, #662a6c 57.66%) 0 100%, linear-gradient(-72deg, transparent 24.52%, #9a1d34 24.52%) 0 100%, #43a1cd linear-gradient(#ba3e2e, #ba3e2e) 50% 100%;
+  background-repeat: no-repeat;
+  background-size: 50% 50%;
+  transition: 1s;
 }
-.kshf[record_display="map"] .kshfSummary[summary_type="interval"][usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
+.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:hover {
+  transform: rotate(360deg);
+}
+.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"][usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-}
-.kshf[record_display="map"] .kshfSummary[summary_type="interval"]:hover .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: inline-block;
 }
 .kshf[showDropZone=true]:not([dropattrtype~="unique"]) .kshfSummary[collapsed=false] {
   -webkit-flex-grow: 3;
@@ -339,9 +348,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   min-height: 50px;
 }
 .kshf[showDropZone=true] .dropZone_recordView {
-  display: block !important;
-}
-.kshf[showDropZone=true][dropattrtype~="interval"] .dropZone_resultSort {
   display: block !important;
 }
 .kshf[showDropZone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
@@ -921,7 +927,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   left: 5px;
   top: 1.6em;
-  z-index: 200;
+  z-index: 2000;
   background-color: white;
   font-size: 0.9em;
   font-weight: 400;
@@ -2163,13 +2169,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "\f0ac";
 }
 .kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="list"]:before {
-  content: "\f03a";
+  content: "\f0ca";
 }
 .kshf .headerGroup .summaryIcons > .useForRecordDisplay {
   display: none;
-}
-.kshf .headerGroup .summaryIcons > .useForRecordDisplay:hover {
-  color: orangered;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -2529,13 +2532,6 @@ top:calc(50% - 5px);
   -o-transition: opacity 500ms ease, background-color 100ms linear;
   transition: opacity 500ms ease, background-color 100ms linear;
 }
-.kshf .kshfRecord > .recordRank {
-  font-size: 0.6em;
-  color: gray;
-  font-weight: 300;
-  font-style: italic;
-  text-align: right;
-}
 .kshf .kshfRecord > .content {
   vertical-align: top;
   border: solid 0px lightgray;
@@ -2567,14 +2563,24 @@ top:calc(50% - 5px);
   font-style: italic;
   font-weight: 300;
 }
-.kshf .kshfRecord > .recordToggleDetail {
+.kshf div.kshfRecord {
+  vertical-align: top;
+}
+.kshf div.kshfRecord > .recordRank {
+  font-size: 0.6em;
+  color: gray;
+  font-weight: 300;
+  font-style: italic;
+  text-align: right;
+}
+.kshf div.kshfRecord > .recordToggleDetail {
   display: none;
   vertical-align: top;
   width: 18px;
   cursor: pointer;
   font-weight: 700;
 }
-.kshf .kshfRecord > .recordToggleDetail > .item_details_toggle {
+.kshf div.kshfRecord > .recordToggleDetail > .item_details_toggle {
   -webkit-transition: -webkit-transform 500ms;
   -moz-transition: -moz-transform 500ms;
   -o-transition: -o-transform 500ms;
@@ -2582,13 +2588,13 @@ top:calc(50% - 5px);
   color: gray;
   position: relative;
 }
-.kshf .kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
+.kshf div.kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
   color: black;
 }
-.kshf .kshfRecord[details="true"] {
+.kshf div.kshfRecord[details="true"] {
   max-height: none;
 }
-.kshf .kshfRecord[details="true"] .item_details_toggle {
+.kshf div.kshfRecord[details="true"] .item_details_toggle {
   display: inline-block;
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
@@ -2596,13 +2602,13 @@ top:calc(50% - 5px);
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.kshf .kshfRecord[details="true"] .item_details {
+.kshf div.kshfRecord[details="true"] .item_details {
   display: block;
 }
-.kshf .kshfRecord[details="false"] .item_details_toggle {
+.kshf div.kshfRecord[details="false"] .item_details_toggle {
   display: inline-block;
 }
-.kshf .kshfRecord[details="false"] .item_details {
+.kshf div.kshfRecord[details="false"] .item_details {
   display: none;
 }
 .kshf div.kshfRecord[selection^="onRecord"] {
@@ -2661,7 +2667,7 @@ top:calc(50% - 5px);
   -o-transition: all 400ms ease-in-out;
   transition: all 400ms ease-in-out;
   pointer-events: none;
-  background-color: rgba(235, 235, 235, 0.8);
+  background-color: rgba(235, 235, 235, 0.9);
   border-radius: 0px 0px 10px 10px;
   box-shadow: 0px 0px 1px black;
   padding: 1px 5px;
@@ -3113,6 +3119,7 @@ height:calc(100% - 8px);
   display: inline-block;
   vertical-align: top;
   line-height: 16px;
+  left: 0px;
   height: 100%;
   padding-right: 2px;
   z-index: 21;
@@ -3609,6 +3616,17 @@ top:calc(50% - 8px);
   text-align: center;
   white-space: nowrap;
 }
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20px;
+  display: inline-block;
+  vertical-align: bottom;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName:hover {
+  overflow: visible;
+}
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
   top: -10px;
@@ -3722,6 +3740,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[viewType="line"] .summaryConfig_UnitName {
   display: none;
 }
+.kshf .kshfSummary[summary_type='interval']:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+  display: inline-block;
+}
 .kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
   display: inline-block !important;
 }
@@ -3729,7 +3750,7 @@ top:calc(50% - 8px);
   display: inline-block !important;
 }
 .kshf .kshfSummary[showConfig=true] .summaryConfig {
-  top: 21px;
+  top: 22px;
   opacity: 1;
   pointer-events: all;
 }
@@ -3979,6 +4000,9 @@ top:calc(50% - 8px);
   height: 100%;
   position: relative;
 }
+.kshf .NodeLinkAttrib {
+  display: none;
+}
 .kshf .recordDisplay {
   position: relative;
   top: 0px;
@@ -4027,14 +4051,23 @@ top:calc(50% - 8px);
 .kshf .recordDisplay > .dropZone_recordView[readyToDrop=true] {
   background-color: #ffbca3;
 }
+.kshf .recordDisplay .recordMap_Base {
+  height: 100%;
+}
 .kshf .recordDisplay .recordMap_SVG {
+  display: block;
   position: relative;
+  height: 100%;
   left: 0px;
   top: 0px;
   overflow: visible;
 }
-.kshf .recordDisplay > .recordGroup {
+.kshf .recordDisplay .recordGroup_List {
+  height: 100%;
+}
+.kshf .recordDisplay .recordGroup_List > .recordGroup {
   width: 100%;
+  height: 100%;
   overflow-y: scroll;
   overflow-x: hidden;
   position: relative;
@@ -4044,7 +4077,7 @@ top:calc(50% - 8px);
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
 }
-.kshf .recordDisplay > .recordGroup > .dragWidthHandle {
+.kshf .recordDisplay .recordGroup_List > .recordGroup > .dragWidthHandle {
   z-index: 200;
   height: 100%;
 }
@@ -4113,72 +4146,148 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[showRank=false] .itemRank_control {
   color: gray;
 }
-.kshf .recordDisplay[displaytype="map"] {
+.kshf .recordDisplay[displayType="map"] {
   overflow: visible !important;
 }
-.kshf .recordDisplay[displaytype="map"] .scrollToTop {
+.kshf .recordDisplay[displayType="map"] .scrollToTop {
   display: none;
 }
-.kshf .recordDisplay[displaytype="map"] .sortButton {
+.kshf .recordDisplay[displayType="map"] .sortButton {
   display: none;
 }
-.kshf .recordDisplay[displaytype="map"] > .recordDisplay--Header > .mapColorScale {
+.kshf .recordDisplay[displayType="map"] > .recordDisplayHeader > .recordColorScale {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: horizontal;
-  -moz-box-orient: horizontal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  width: 30px;
-  margin: 2px;
-  border: solid 1px lightgray;
-  cursor: pointer;
 }
-.kshf .recordDisplay[displaytype="map"] > .recordDisplay--Header > .mapColorScale:hover {
-  border: solid 1px gray;
+.kshf .recordDisplay[displayType="map"] .recordGroup_List {
+  display: none;
 }
-.kshf .recordDisplay[displaytype="map"] > .recordDisplay--Header > .mapColorScale > .mapColorScaleBin {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-}
-.kshf .recordDisplay[displaytype="map"] .recordGroup {
+.kshf .recordDisplay[displayType="map"] .recordGroup {
   overflow: visible !important;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord {
+.kshf .recordDisplay[displayType="map"] .kshfRecord {
   stroke-width: 1px;
   stroke: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord[selection="onRecord"] {
+.kshf .recordDisplay[displayType="map"] .kshfRecord[selection="onRecord"] {
   stroke: #463b23;
   stroke-width: 2px;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord[selection="highlighted"] {
+.kshf .recordDisplay[displayType="map"] .kshfRecord[selection="highlighted"] {
   stroke: orangered;
   stroke-width: 1px;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord[rec_compared^="A"] {
+.kshf .recordDisplay[displayType="map"] .kshfRecord[rec_compared^="A"] {
   stroke: #2f4f4f;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord[rec_compared^="B"] {
+.kshf .recordDisplay[displayType="map"] .kshfRecord[rec_compared^="B"] {
   stroke: #2fd71b;
 }
-.kshf .recordDisplay[displaytype="map"] .kshfRecord[rec_compared^="C"] {
+.kshf .recordDisplay[displayType="map"] .kshfRecord[rec_compared^="C"] {
   stroke: #fffedc;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] > .recordGroup {
+.kshf .recordDisplay[displayType="nodelink"] {
+  overflow: visible !important;
+}
+.kshf .recordDisplay[displayType="nodelink"] .scrollToTop {
+  display: none;
+}
+.kshf .recordDisplay[displayType="nodelink"] .sortButton {
+  display: none;
+}
+.kshf .recordDisplay[displayType="nodelink"] > .recordDisplayHeader > .recordColorScale {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.kshf .recordDisplay[displayType="nodelink"] .recordGroup_List {
+  display: none;
+}
+.kshf .recordDisplay[displayType="nodelink"] .NodeLinkAttrib {
+  display: block;
+}
+.kshf .recordDisplay[displayType="nodelink"] .NodeLinkAttrib > .NodeLinkAttribIcon {
+  padding: 1px 3px;
+  color: black;
+  cursor: pointer;
+  text-shadow: 0px 0px 5px white;
+}
+.kshf .recordDisplay[displayType="nodelink"] .NodeLinkAttrib > .NodeLinkAttribIcon:hover {
+  color: orangered !important;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord > circle {
+  stroke: gray;
+  stroke-width: 1;
+  fill: white;
+  cursor: pointer;
+  -webkit-transition: all 400ms ease-in-out;
+  -moz-transition: all 400ms ease-in-out;
+  -o-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord > text.kshfRecord_label {
+  display: none;
+  font-size: 0.8em;
+  pointer-events: none;
+  text-shadow: 0px 0px 5px white, 0px 0px 5px white, 0px 0px 2px white;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[selection="onRecord"] > circle {
+  stroke: #463b23;
+  stroke-width: 2;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[selection="onRecord"] > text.kshfRecord_label {
+  display: block;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[selection="related"] > circle {
+  stroke: green;
+  stroke-width: 2;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[selection="related"] > text.kshfRecord_label {
+  display: block;
+  fill: green;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[selection="highlighted"] > circle {
+  stroke: orangered;
+  stroke-width: 2;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[rec_compared] > circle {
+  stroke-width: 2;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[rec_compared^="A"] > circle {
+  stroke: #2f4f4f;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[rec_compared^="B"] > circle {
+  stroke: #2fd71b;
+}
+.kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[rec_compared^="C"] > circle {
+  stroke: #fffedc;
+}
+.kshf .recordDisplay[displayType="nodelink"] .recordLink {
+  stroke: #999;
+  stroke-opacity: .3;
+}
+.kshf .recordDisplay[displayType="nodelink"][hideLinks] .recordLink {
+  display: none;
+}
+.kshf .recordDisplay[displayType="nodelink"][hideLinks] .NodeLinkAttribIcon {
+  color: #BABABA;
+}
+.kshf .recordDisplay[displayType="nodelink"][NodeLinkState="started"] .NodeLinkAnim_Play {
+  display: none;
+}
+.kshf .recordDisplay[displayType="nodelink"][NodeLinkState="stopped"] .NodeLinkAnim_Pause {
+  display: none;
+}
+.kshf .recordDisplay[displayType="nodelink"] .NodeLinkAnim_Refresh {
+  display: none;
+}
+.kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -4208,25 +4317,31 @@ top:calc(50% - 8px);
   -webkit-justify-content: space-around;
   justify-content: space-around;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord {
+.kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup > .kshfRecord {
   display: block;
   -webkit-align-self: flex-start;
   -ms-flex-item-align: start;
   align-self: flex-start;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .recordRank {
+.kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup > .kshfRecord > .recordRank {
   vertical-align: top;
   margin-right: 2px;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .content {
+.kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup > .kshfRecord > .content {
   display: block;
 }
-.kshf .recordDisplay[displaytype="grid"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup > .kshfRecord > .recordToggleDetail {
   position: absolute;
   left: 0px;
   z-index: 2;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord {
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .recordMap_Base {
+  display: none;
+}
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .recordNodeLink_SVG {
+  display: none;
+}
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -4243,7 +4358,7 @@ top:calc(50% - 8px);
   padding-top: 0px;
   border-top: solid 1px lightgray;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordSortCol {
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .recordSortCol {
   padding-right: 3px;
   padding-top: 2px;
   font-weight: 300;
@@ -4255,36 +4370,36 @@ top:calc(50% - 8px);
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordRank {
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .recordRank {
   float: left;
   margin-top: 4px;
   width: 15px;
   padding-right: 2px;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
   width: 18px;
   text-align: center;
 }
-.kshf .recordDisplay[displaytype="list"][hasrecordview="true"] .kshfRecord > .content {
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .content {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .recordDisplay[detailsToggle="zoom"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
+.kshf .recordDisplay[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
   content: "\f140";
 }
-.kshf .recordDisplay[detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail {
+.kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .recordDisplay[detailsToggle="one"] > .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
+.kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
   content: "\f078";
 }
-.kshf .recordDisplay[hasRecordView="false"] > .recordDisplay--Header {
+.kshf .recordDisplay[hasRecordView="false"] > .recordDisplayHeader {
   display: none;
 }
 .kshf .recordDisplay[hasRecordView="false"] > .dropZone_recordView {
@@ -4295,14 +4410,14 @@ top:calc(50% - 8px);
   flex: 1;
   position: absolute;
 }
-.kshf .recordDisplay[hasRecordView="false"] > .recordGroup {
+.kshf .recordDisplay[hasRecordView="false"] .recordGroup {
   display: none;
 }
 .kshf .recordDisplay[hasRecordView="true"] {
   box-shadow: 0px 0px 2px #89713c;
   margin: 0px 2px 2px 2px;
 }
-.kshf .recordDisplay[hasRecordView="true"] > .recordDisplay--Header {
+.kshf .recordDisplay[hasRecordView="true"] > .recordDisplayHeader {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -4312,7 +4427,7 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[hasRecordView="true"] > .dropZone_recordView {
   position: absolute;
 }
-.kshf .recordDisplay:hover > .recordDisplay--Header > .sortColumn {
+.kshf .recordDisplay:hover > .recordDisplayHeader > .sortColumn {
   opacity: 1;
   pointer-events: all;
 }
@@ -4321,6 +4436,25 @@ top:calc(50% - 8px);
 }
 .kshf .recordDisplay > .recordMap .viewFit {
   font-size: 1em;
+}
+.kshf .NodeLinkControl {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  margin: 5px;
+}
+.kshf .NodeLinkControl .fa {
+  font-size: 0.9em;
+  padding: 0px 2px;
+  cursor: pointer;
+}
+.kshf .NodeLinkControl .fa:hover {
+  color: orangered;
+}
+.kshf .recordNodeLink_SVG {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 .kshf .Summary_Set {
   display: block;
@@ -4598,7 +4732,7 @@ top:calc(50% - 8px);
 .kshf .scrollToTop:hover {
   color: #cb5454;
 }
-.kshf .recordDisplay--Header {
+.kshf .recordDisplayHeader {
   font-size: 0.9em;
   position: relative;
   background-color: #EBE5DF;
@@ -4611,10 +4745,7 @@ top:calc(50% - 8px);
   flex-direction: row;
   min-height: 18px;
 }
-.kshf .recordDisplay--Header > .mapColorScale {
-  display: none;
-}
-.kshf .recordDisplay--Header > .itemRank_control {
+.kshf .recordDisplayHeader > .itemRank_control {
   display: none;
   width: 13px;
   text-align: right;
@@ -4622,29 +4753,56 @@ top:calc(50% - 8px);
   font-size: 0.9em;
   cursor: pointer;
 }
-.kshf .recordDisplay--Header > .itemRank_control:before {
+.kshf .recordDisplayHeader > .itemRank_control:before {
   content: "\f102";
 }
-.kshf .recordDisplay--Header > .itemRank_control:hover {
+.kshf .recordDisplayHeader > .itemRank_control:hover {
   color: orangered;
 }
-.kshf .recordDisplay--Header > .removeSortOption_wrapper {
+.kshf .recordDisplayHeader > .recordColorScale {
+  display: none;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: 30px;
+  margin: 2px;
+  border: solid 1px lightgray;
+  cursor: pointer;
+}
+.kshf .recordDisplayHeader > .recordColorScale:hover {
+  border: solid 1px gray;
+}
+.kshf .recordDisplayHeader > .recordColorScale > .recordColorScaleBin {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.kshf .recordDisplayHeader > .removeSortOption_wrapper {
   display: none;
 }
-.kshf .recordDisplay--Header .removeSortOption {
+.kshf .recordDisplayHeader .removeSortOption {
   cursor: pointer;
   width: 14px;
   height: 14px;
   display: inline-block;
   color: gray;
 }
-.kshf .recordDisplay--Header .removeSortOption:before {
+.kshf .recordDisplayHeader .removeSortOption:before {
   content: "\f00d";
 }
-.kshf .recordDisplay--Header .removeSortOption:hover {
+.kshf .recordDisplayHeader .removeSortOption:hover {
   color: black;
 }
-.kshf .recordDisplay--Header > .header_listSortColumn {
+.kshf .recordDisplayHeader > .header_listSortColumn {
   display: inline-block;
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
@@ -4654,7 +4812,7 @@ top:calc(50% - 8px);
   padding-right: 1px;
   position: relative;
 }
-.kshf .recordDisplay--Header > .header_listSortColumn > .sortColumnName {
+.kshf .recordDisplayHeader > .header_listSortColumn > .sortColumnName {
   font-weight: 300;
   font-size: 0.9em;
   margin: 0px 0px 1px 3px;
@@ -4666,37 +4824,11 @@ top:calc(50% - 8px);
   user-select: none;
   pointer-events: none;
 }
-.kshf .recordDisplay--Header > .header_listSortColumn > .listSortOptionSelect {
+.kshf .recordDisplayHeader > .header_listSortColumn > .listSortOptionSelect {
   width: 100%;
   bottom: 0px;
 }
-.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort {
-  display: none;
-  cursor: s-resize;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 50;
-  background-color: #eaeaea;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 2px;
-  border-color: gray;
-  text-align: center;
-}
-.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text {
-  pointer-events: none;
-  font-size: 0.8em;
-  display: block;
-  font-weight: 300;
-}
-.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort > .dropZone_resultSort_text:before {
-  content: "Sort by";
-}
-.kshf .recordDisplay--Header > .header_listSortColumn > .dropZone_resultSort:hover {
-  background-color: #ffbca3;
-}
-.kshf .recordDisplay--Header > .sortColumn {
+.kshf .recordDisplayHeader > .sortColumn {
   opacity: 0;
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
@@ -4710,17 +4842,17 @@ top:calc(50% - 8px);
   -o-transition: opacity 250ms linear;
   transition: opacity 250ms linear;
 }
-.kshf .recordDisplay--Header > .buttonRecordViewRemove {
+.kshf .recordDisplayHeader > .buttonRecordViewRemove {
   display: none;
   cursor: pointer;
 }
-.kshf .recordDisplay--Header > .buttonRecordViewRemove:hover {
+.kshf .recordDisplayHeader > .buttonRecordViewRemove:hover {
   color: orangered;
 }
-.kshf .recordDisplay--Header > .scrollToTop {
+.kshf .recordDisplayHeader > .scrollToTop {
   padding-top: 2px;
 }
-.kshf .recordDisplay--Header > .recordTextSearch {
+.kshf .recordDisplayHeader > .recordTextSearch {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -4735,7 +4867,7 @@ top:calc(50% - 8px);
   position: relative;
   height: 18px;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .dropZone_textSearch {
+.kshf .recordDisplayHeader > .recordTextSearch > .dropZone_textSearch {
   display: none;
   position: absolute;
   height: 100%;
@@ -4748,16 +4880,16 @@ top:calc(50% - 8px);
   border-color: gray;
   text-align: center;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .dropZone_textSearch > .dropZone_textSearch_text {
+.kshf .recordDisplayHeader > .recordTextSearch > .dropZone_textSearch > .dropZone_textSearch_text {
   pointer-events: none;
   font-size: 0.7em;
   display: block;
   font-weight: 300;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .dropZone_textSearch:hover {
+.kshf .recordDisplayHeader > .recordTextSearch > .dropZone_textSearch:hover {
   background-color: #ffbca3;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input {
+.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input {
   display: none;
   font-size: 0.8em;
   font-weight: 700;
@@ -4775,29 +4907,29 @@ top:calc(50% - 8px);
   -o-transition: background-color 150ms linear;
   transition: background-color 150ms linear;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:focus {
+.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input:focus {
   outline-color: #cb5454;
   outline-width: 2px;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:hover {
+.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input:hover {
   border-width: 1px;
   background-color: white;
   margin: 0px;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input::-webkit-input-placeholder {
+.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input::-webkit-input-placeholder {
   color: #cb5454;
   font-weight: 300;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .mainTextSearch_input:focus::-webkit-input-placeholder {
+.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .searchIcon {
+.kshf .recordDisplayHeader > .recordTextSearch > .searchIcon {
   display: none;
   font-size: 0.8em;
   padding-left: 1px;
   color: #cb5454;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .clearSearchText {
+.kshf .recordDisplayHeader > .recordTextSearch > .clearSearchText {
   display: none;
   position: absolute;
   right: 6px;
@@ -4805,10 +4937,10 @@ top:calc(50% - 8px);
   cursor: pointer;
   color: gray;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .clearSearchText:hover {
+.kshf .recordDisplayHeader > .recordTextSearch > .clearSearchText:hover {
   color: #cb5454;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode {
   display: none;
   position: absolute;
   top: 2px;
@@ -4820,36 +4952,45 @@ top:calc(50% - 8px);
   color: white;
   font-weight: 300;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode:hover {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode:hover {
   opacity: 1;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="and"] {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode[mode="and"] {
   background-color: #1d4870;
   right: 20px;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="and"]:after {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode[mode="and"]:after {
   content: "all";
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="or"] {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode[mode="or"] {
   background-color: #1c737a;
   right: 41px;
 }
-.kshf .recordDisplay--Header > .recordTextSearch > .textSearchMode[mode="or"]:after {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode[mode="or"]:after {
   content: "some";
 }
-.kshf .recordDisplay--Header > .recordTextSearch[isActive="true"] > .mainTextSearch_input {
+.kshf .recordDisplayHeader > .recordTextSearch[isActive="true"] > .mainTextSearch_input {
   display: inline-block;
 }
-.kshf .recordDisplay--Header > .recordTextSearch[isActive="true"] > .searchIcon {
+.kshf .recordDisplayHeader > .recordTextSearch[isActive="true"] > .searchIcon {
   display: inline-block;
 }
-.kshf .recordDisplay--Header > .recordTextSearch[mode="and"] > .textSearchMode[mode="and"] {
+.kshf .recordDisplayHeader > .recordTextSearch[mode="and"] > .textSearchMode[mode="and"] {
   opacity: 1;
   box-shadow: 0px 0px 2px black;
 }
-.kshf .recordDisplay--Header > .recordTextSearch[mode="or"] > .textSearchMode[mode="or"] {
+.kshf .recordDisplayHeader > .recordTextSearch[mode="or"] > .textSearchMode[mode="or"] {
   opacity: 1;
   box-shadow: 0px 0px 2px black;
+}
+.kshf [class^="recordView_Set"] {
+  color: gray;
+  padding: 1px;
+  cursor: pointer;
+  display: none;
+}
+.kshf [class^="recordView_Set"]:hover {
+  color: orangered;
 }
 .kshf .boxinbox {
   margin-top: 10px;
