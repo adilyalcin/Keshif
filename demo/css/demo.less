@@ -131,49 +131,47 @@ html, body {
 
 
 .recordDisplay[displaytype="grid"]{
-	> .recordGroup{
-		> .kshfRecord{
-			> .content{
-				.thumbnail{
-            display: block;
-            overflow-y: hidden;
-            overflow-x: hidden;
-            position: relative;
-            .transition(~'background-color 300ms linear');
-            > .thumbImg{
-            	display: block;
-            	margin-left: auto;
-            	margin-right: auto;
-            	background-color: white;
-            	width: 100%; //calc(100% - 10px);
-            }
-        }
-				.subTitle{
-					display: block;
-					font-family: Georgia,"Times New Roman",Times,serif;
-					font-style: italic;
-					font-weight: 400;
-					color: gray;
-					font-size: 0.8em;
-					text-align: left;
-				}
-				.title{
-					display: block;
-					margin-left: auto;
-					margin-right: auto;
-					margin-top: 2px;
-					text-align: left;
-					font-size: 0.9em;
-					font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-					font-weight: 700;
-				}
+	.kshfRecord{
+		> .content{
+			.thumbnail{
+          display: block;
+          overflow-y: hidden;
+          overflow-x: hidden;
+          position: relative;
+          .transition(~'background-color 300ms linear');
+          > .thumbImg{
+          	display: block;
+          	margin-left: auto;
+          	margin-right: auto;
+          	background-color: white;
+          	width: 100%; //calc(100% - 10px);
+          }
+      }
+			.subTitle{
+				display: block;
+				font-family: Georgia,"Times New Roman",Times,serif;
+				font-style: italic;
+				font-weight: 400;
+				color: gray;
+				font-size: 0.8em;
+				text-align: left;
 			}
-			&:hover .thumbImg{
-				box-shadow: 0px 0px 4px black;
+			.title{
+				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top: 2px;
+				text-align: left;
+				font-size: 0.9em;
+				font-family: 'Helvetica Neue Custom', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+				font-weight: 700;
 			}
-			&[highlight=true] > .content .thumbnail{
-			    background-color: orangered;
-			}
+		}
+		&:hover .thumbImg{
+			box-shadow: 0px 0px 4px black;
+		}
+		&[highlight=true] > .content .thumbnail{
+		    background-color: orangered;
 		}
 	}
 }
