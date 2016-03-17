@@ -2057,6 +2057,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .chartAxis_Measure > .relativeModeControl.relativeModeControl_2 {
   display: none;
 }
+.kshf .leaflet-tile-pane {
+  -webkit-transition: opacity 250ms linear;
+  -moz-transition: opacity 250ms linear;
+  -o-transition: opacity 250ms linear;
+  transition: opacity 250ms linear;
+}
+.kshf .leaflet-tile-pane[showhide=hide] {
+  opacity: 0.2;
+}
 .kshf .dragWidthHandle {
   display: none;
   position: absolute;
@@ -2154,6 +2163,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   cursor: pointer;
   margin-left: 2px;
+  vertical-align: top;
 }
 .kshf .headerGroup .summaryIcons > .fa:hover {
   color: orangered;
@@ -3933,7 +3943,7 @@ top:calc(50% - 8px);
   position: absolute;
   width: 22px;
   top: -1px;
-  cursor: pointer;
+  cursor: default;
 }
 .kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMin {
   left: -24px;
@@ -4027,6 +4037,9 @@ top:calc(50% - 8px);
   -o-transition: margin-top 700ms ease-in-out;
   transition: margin-top 700ms ease-in-out;
 }
+.kshf .recordDisplay .mapMouseControl {
+  display: none;
+}
 .kshf .recordDisplay > .dropZone_recordView {
   display: none;
   position: relative;
@@ -4056,6 +4069,39 @@ top:calc(50% - 8px);
 }
 .kshf .recordDisplay .recordMap_Base {
   height: 100%;
+  background: white;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQuery_Highlight {
+  display: none;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQuery_Filter {
+  display: none;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQuery_Filter[active] {
+  display: block;
+  fill: none;
+  stroke-width: 2;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQuery_Filter[active]:hover {
+  stroke-width: 4px;
+}
+.kshf .recordDisplay .recordMap_Base[drawing] {
+  cursor: cell !important;
+}
+.kshf .recordDisplay .recordMap_Base[drawing] .leaflet-overlay-pane {
+  pointer-events: none;
+}
+.kshf .recordDisplay .recordMap_Base[drawing] .leaflet-interactive {
+  pointer-events: none;
+}
+.kshf .recordDisplay .recordMap_Base[drawingFilter] .spatialQuery_Filter {
+  display: block;
+}
+.kshf .recordDisplay .recordMap_Base[drawingHighlight] .spatialQuery_Highlight {
+  display: block;
+}
+.kshf .recordDisplay .leaflet-control > a:hover {
+  color: orangered;
 }
 .kshf .recordDisplay .recordMap_SVG {
   display: block;
@@ -4158,6 +4204,30 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[displayType="map"] .sortButton {
   display: none;
 }
+.kshf .recordDisplay[displayType="map"] .mapMouseControl {
+  display: inline-block;
+  padding: 1px;
+  cursor: pointer;
+  text-align: center;
+}
+.kshf .recordDisplay[displayType="map"] .mapMouseControl:hover {
+  color: orangered;
+}
+.kshf .recordDisplay[displayType="map"][mapMouseControl="pan"] .mapMouseControl:after {
+  content: "\f255";
+}
+.kshf .recordDisplay[displayType="map"][mapMouseControl="pan"] .mapMouseControl:hover:after {
+  content: "\f096";
+}
+.kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .mapMouseControl:after {
+  content: "\f096";
+}
+.kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .mapMouseControl:hover:after {
+  content: "\f255";
+}
+.kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .recordMap_Base {
+  cursor: default;
+}
 .kshf .recordDisplay[displayType="map"] > .recordDisplayHeader > .recordColorScale {
   display: -webkit-box;
   display: -moz-box;
@@ -4172,17 +4242,19 @@ top:calc(50% - 8px);
   overflow: visible !important;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord {
-  stroke-width: 1px;
-  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 0.5px;
+  stroke-opacity: 0.2;
   cursor: pointer;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord[selection="onRecord"] {
-  stroke: #463b23;
+  stroke: #463b23 !important;
   stroke-width: 2px;
+  stroke-opacity: 1;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord[selection="highlighted"] {
-  stroke: orangered;
+  stroke: orangered !important;
   stroke-width: 1px;
+  stroke-opacity: 1;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord[rec_compared^="A"] {
   stroke: #2f4f4f;
@@ -4994,6 +5066,15 @@ top:calc(50% - 8px);
 }
 .kshf [class^="recordView_Set"]:hover {
   color: orangered;
+}
+.kshf .recordView_HeaderSet {
+  font-weight: 300;
+  font-size: 0.8em;
+  cursor: default;
+  padding: 1px;
+  display: none;
+  margin-right: 2px;
+  vertical-align: top;
 }
 .kshf .boxinbox {
   margin-top: 10px;

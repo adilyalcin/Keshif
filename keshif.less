@@ -1704,6 +1704,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
+    .leaflet-tile-pane{
+      .transition(opacity 250ms linear);
+      &[showhide=hide]{ opacity: 0.2; }
+    }
+
     .dragWidthHandle{
       display: none;
       position: absolute;
@@ -1801,6 +1806,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: gray;
             cursor: pointer;
             margin-left: 2px;
+            vertical-align: top;
             &:hover{ color: orangered; }
           }
           > .summaryDescription{
@@ -3274,7 +3280,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           position: absolute;
           width: 22px;
           top: -1px;
-          cursor: pointer;
+          cursor: default;
           &.boundMin{
             left: -24px;
             text-align: right;
@@ -3346,6 +3352,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .flex-direction(column);
       .transition(margin-top 700ms ease-in-out);
 
+      .mapMouseControl{ display: none; }
+
       > .dropZone_recordView{
         display: none;
         position: relative;
@@ -3374,7 +3382,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .recordDisplayWrapper{
         // TODO?
       }
-      .recordMap_Base{ height: 100%; }
+      .recordMap_Base{
+        height: 100%;
+        background: white;
+        .spatialQuery_Highlight{ display: none; }
+        .spatialQuery_Filter{ 
+          display: none;
+          &[active]{
+            display: block;
+            fill: none;
+            stroke-width: 2;
+            &:hover{ stroke-width: 4px; }
+          }
+        }
+        &[drawing]{
+          cursor: cell !important;
+          .leaflet-overlay-pane{ pointer-events: none; }
+          .leaflet-interactive{ pointer-events: none; }
+        }
+        &[drawingFilter]{
+          .spatialQuery_Filter{ 
+            display: block;
+          }
+        }
+        &[drawingHighlight]{
+          .spatialQuery_Highlight{ 
+            display: block;
+          }
+        }
+      }
+
+      .leaflet-control > a:hover{
+        color: orangered;
+      }
 
       .recordMap_SVG{
         display: block;
@@ -3471,22 +3511,43 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: visible !important;
         .scrollToTop{ display: none; }
         .sortButton{ display: none; }
+        .mapMouseControl{ 
+          display: inline-block;
+          padding: 1px;
+          cursor: pointer;
+          text-align: center;
+          &:hover{ color: orangered; }
+        }
+        &[mapMouseControl="pan"]{
+          .mapMouseControl:after{ content: "\f255" } // fa-hand-rock-o
+          .mapMouseControl:hover:after{ content: "\f096" } // fa-square-o
+        }
+        &[mapMouseControl="draw"]{
+          .mapMouseControl:after{ content: "\f096" } // fa-square-o
+          .mapMouseControl:hover:after{ content: "\f255" } // fa-hand-rock-o
+          .recordMap_Base{
+            cursor: default;
+          }
+        }
+
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
         .recordGroup_List{ display: none; }
 
         .recordGroup{ overflow: visible !important; }
         .kshfRecord{
-          stroke-width: 1px;
-          stroke: rgba(255,255,255,0.5);
+          stroke-width: 0.5px;
+          stroke-opacity: 0.2;
           //paint-order: stroke;
           cursor: pointer;
           &[selection="onRecord"]{
-            stroke: darken(@color_onRecord_back, 70%);
+            stroke: darken(@color_onRecord_back, 70%) !important;
             stroke-width: 2px;
+            stroke-opacity: 1;
           }
           &[selection="highlighted"]{
-            stroke: orangered;
+            stroke: orangered !important;
             stroke-width: 1px;
+            stroke-opacity: 1;
           }
           &[rec_compared^="A"]{ stroke: @color_Compare_A; }
           &[rec_compared^="B"]{ stroke: @color_Compare_B; }
@@ -4107,6 +4168,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       cursor: pointer;
       display: none;
       &:hover{ color: orangered; }
+    }
+    .recordView_HeaderSet{
+      font-weight: 300;
+      font-size: 0.8em;
+      cursor: default;
+      padding: 1px;
+      display: none;
+      margin-right: 2px;
+      vertical-align: top;
     }
 
     .boxinbox{
