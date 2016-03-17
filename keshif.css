@@ -2054,9 +2054,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .chartAxis_Measure > .relativeModeControl[highlight="true"] {
   opacity: 1;
 }
-.kshf .chartAxis_Measure > .relativeModeControl.relativeModeControl_2 {
-  display: none;
-}
 .kshf .leaflet-tile-pane {
   -webkit-transition: opacity 250ms linear;
   -moz-transition: opacity 250ms linear;
@@ -2949,6 +2946,9 @@ top:calc(50% - 5px);
   padding: 0px;
   background-color: #efeadf;
 }
+.kshf .measureAxis_right {
+  display: none !important;
+}
 .kshf .kshfSummary {
   display: block;
   position: relative;
@@ -3297,6 +3297,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval[zoomed="true"] .zoomControl[sign="minus"] {
   display: block !important;
 }
+.kshf .kshfSummary > .wrapper > .summaryInterval[measureAxis_right] .measureAxis_right {
+  display: block !important;
+}
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram {
   position: relative;
   pointer-events: all;
@@ -3394,10 +3397,16 @@ top:calc(50% - 8px);
   text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
-  left: -21px;
-  width: 21px;
+  width: 25px;
   height: calc(100% - 12px);
   top: 0px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.relativeModeControl_left {
+  left: -25px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.relativeModeControl_right {
+  right: -25px;
+  left: auto;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedMeasureValue {
   position: absolute;
@@ -3425,12 +3434,19 @@ top:calc(50% - 8px);
   pointer-events: none;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text {
-  position: relative;
+  position: absolute;
   width: 25px;
-  left: -25px;
   top: -3px;
-  text-align: right;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.text_right {
+  right: -25px;
+  padding-left: 1px;
+  text-align: left;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.text_left {
+  left: -25px;
   padding-right: 1px;
+  text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
   -webkit-box-direction: normal;

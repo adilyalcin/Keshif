@@ -4708,7 +4708,7 @@ kshf.Browser.prototype = {
       this.DOM.filterClearAll.attr("active", this.filters.some(function(filter){ return filter.isFiltered; }) );
     },
     /** Ratio mode is when glyphs scale to their max */
-    setRelativeMode: function(how){
+    setMeasureAxisMode: function(how){
       this.ratioModeActive = how;
       this.DOM.root.attr("relativeMode",how?how:null);
       this.setPercentLabelMode(how);
@@ -4880,7 +4880,7 @@ kshf.Browser.prototype = {
 
       if(this.measureFunc==="Avg"){
         // Remove ratio and percent modes
-        if(this.ratioModeActive){ this.setRelativeMode(false); }
+        if(this.ratioModeActive){ this.setMeasureAxisMode(false); }
         if(this.percentModeActive){ this.setPercentLabelMode(false); }
       }
 
@@ -5881,21 +5881,23 @@ kshf.Summary_Base.prototype = {
       });
 
     // Two controls, one for each side of the scale
-    this.DOM.chartAxis_Measure.selectAll(".relativeModeControl").data([1,2])
+    this.DOM.chartAxis_Measure.selectAll(".relativeModeControl").data(["left","right"])
       .enter().append("span")
-        .attr("class",function(d){ return "relativeModeControl relativeModeControl_"+d; })
-        .each(function(){
+        .attr("class",function(d){ return "relativeModeControl measureAxis_"+d+" relativeModeControl_"+d; })
+        .each(function(d){
+          var pos = pos2;
+          if(pos2==='nw' && d==="right") pos = 'ne';
           this.tipsy = new Tipsy(this, {
-            gravity: pos2, title: function(){
+            gravity: pos, title: function(){
               return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
-                  kshf.lang.cur.Width+
-                  " <span class='fa fa-arrows-h'></span>";
+                kshf.lang.cur.Width+
+                " <span class='fa fa-arrows-h'></span>";
             },
           });
         })
         .on("click",function(){ 
           this.tipsy.hide();
-          me.browser.setRelativeMode(!me.browser.ratioModeActive);
+          me.browser.setMeasureAxisMode(!me.browser.ratioModeActive);
         })
         .on("mouseover",function(){
           me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",true);
@@ -7345,7 +7347,7 @@ var Summary_Categorical_functions = {
       if(this.configRowCount>0){
         var h=this.categoriesHeight;
         var hm=tickData_new.append("span").attr("class","text text_upper").style("top",(-h-21)+"px");
-        this.DOM.chartAxis_Measure.selectAll(".relativeModeControl_2").style("top",(-h-14)+"px")
+        this.DOM.chartAxis_Measure.selectAll(".relativeModeControl_right").style("top",(-h-14)+"px")
           .style("display","block");
         this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background_2").style("display","block");
       }
@@ -8164,7 +8166,7 @@ var Summary_Categorical_functions = {
         })
         .on("click",function(){ 
           this.tipsy.hide();
-          me.browser.setRelativeMode(!me.browser.ratioModeActive);
+          me.browser.setMeasureAxisMode(!me.browser.ratioModeActive);
         })
         .on("mouseover",function(){
           me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",true);
@@ -8267,7 +8269,7 @@ var Summary_Interval_functions = {
       this.height_hist_topGap = 12; // Height for histogram gap on top.
 
       this.width_barGap = 2; // The width between neighboring histgoram bars
-      this.width_vertAxisLabel = 23; // ..
+      this.width_measureAxisLabel = 30; // ..
 
       this.optimumTickWidth = 45;
 
@@ -8282,6 +8284,8 @@ var Summary_Interval_functions = {
 
       this.highlightRangeLimits_Active = false;
 
+      // Used for flexible range selection.
+      // TODO: Support multiple compare selections.
       this.flexAggr_Highlight = new kshf.Aggregate();
       this.flexAggr_Compare   = new kshf.Aggregate();
       this.flexAggr_Highlight.init({});
@@ -8296,8 +8300,7 @@ var Summary_Interval_functions = {
       this.intervalTicks = [];
       this.intervalRange = {};
       this.intervalTickFormat = function(v){
-          if(!me.hasFloat) return d3.format("s")(v);
-          return d3.format(".2f")(v);
+        return (me.hasFloat) ? d3.format("s")(v) : d3.format(".2f")(v);
       };
 
       if(this.records.length<=1000) this.initializeAggregates();
@@ -8371,7 +8374,7 @@ var Summary_Interval_functions = {
         if(v===undefined) v=null;
         if(v!==null){
           if(v instanceof Date){
-              this.timeTyped.base = true;
+            this.timeTyped.base = true;
           } else {
             if(typeof v!=='number'){
               v = null;
@@ -8416,8 +8419,8 @@ var Summary_Interval_functions = {
 
       // Sort the items by their attribute value
       var sortValue = this.isTimeStamp()?
-          function(a){ return me.getRecordValue(a).getTime(); }:
-          function(a){ return me.getRecordValue(a); };
+        function(a){ return me.getRecordValue(a).getTime(); }:
+        function(a){ return me.getRecordValue(a); };
       this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
 
       this.updateIntervalRangeMinMax();
@@ -8723,7 +8726,8 @@ var Summary_Interval_functions = {
     /** -- */
     getWidth_Chart: function(){
       if(this.panel===undefined) return 30;
-      return this.getWidth()-this.width_vertAxisLabel-7- 11; // 11 is the right margin
+      return this.getWidth() - this.width_measureAxisLabel -
+        ( this.getWidth()>400 ? this.width_measureAxisLabel : 11 );
     },
     /** -- */
     getWidth_OptimumTick: function(){
@@ -10147,72 +10151,66 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshViz_Axis: function(){
-        if(this.isEmpty() || this.collapsed) return;
-        var me = this, tickValues, maxValue;
+      if(this.isEmpty() || this.collapsed) return;
+      var me = this, tickValues, maxValue;
 
-        var chartAxis_Measure_TickSkip = me.height_hist/17;
+      var chartAxis_Measure_TickSkip = me.height_hist/17;
 
-        if(this.browser.ratioModeActive) {
-            maxValue = 100;
-            tickValues = d3.scale.linear()
-                .rangeRound([0, this.height_hist])
-                .domain([0,100])
-                .ticks(chartAxis_Measure_TickSkip)
-                .filter(function(d){return d!==0;});
+      if(this.browser.ratioModeActive || this.browser.percentModeActive) {
+        maxValue = (this.browser.ratioModeActive) ? 100
+          : Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
+        tickValues = d3.scale.linear()
+          .rangeRound([0, this.height_hist])
+          .domain([0,maxValue])
+          .clamp(true)
+          .ticks(chartAxis_Measure_TickSkip);
+      } else {
+        tickValues = this.chartScale_Measure.ticks(chartAxis_Measure_TickSkip);
+      }
+
+      // remove non-integer values & 0...
+      tickValues = tickValues.filter(function(d){return d%1===0&&d!==0;});
+
+      var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick")
+          .data(tickValues,function(i){return i;});
+      tickDoms.exit().remove();
+      var tickData_new=tickDoms.enter().append("span").attr("class","tick");
+
+      // translate the ticks horizontally on scale
+      tickData_new.append("span").attr("class","line");
+      tickData_new.append("span").attr("class","text text_left  measureAxis_left");
+      tickData_new.append("span").attr("class","text text_right measureAxis_right");
+
+      // Place the doms at the bottom of the histogram, so their position is animated?
+      tickData_new.each(function(){
+        kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
+      });
+
+      this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick > span.text")
+        .html(function(d){ return me.browser.getMeasureLabel(d); });
+
+      setTimeout(function(){
+        var transformFunc;
+        if(me.browser.ratioModeActive){
+          transformFunc=function(d){
+            kshf.Util.setTransform(this,"translateY("+ (me.height_hist-d*me.height_hist/100)+"px)");
+          };
         } else {
-            if(this.browser.percentModeActive) {
-                maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
-                tickValues = d3.scale.linear()
-                    .rangeRound([0, this.height_hist])
-                    .nice(chartAxis_Measure_TickSkip)
-                    .clamp(true)
-                    .domain([0,maxValue])
-                    .ticks(chartAxis_Measure_TickSkip);
-            } else {
-                tickValues = this.chartScale_Measure.ticks(chartAxis_Measure_TickSkip);
-            }
-        }
-
-        // remove non-integer values & 0...
-        tickValues = tickValues.filter(function(d){return d%1===0&&d!==0;});
-
-        var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick")
-            .data(tickValues,function(i){return i;});
-        tickDoms.exit().remove();
-        var tickData_new=tickDoms.enter().append("span").attr("class","tick");
-
-        // translate the ticks horizontally on scale
-        tickData_new.append("span").attr("class","line");
-
-        // Place the doms at the bottom of the histogram, so their animation is in the right direction
-        tickData_new.each(function(){
-          kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
-        });
-
-        tickData_new.append("span").attr("class","text").html( function(d){ return me.browser.getMeasureLabel(d); });
-
-        setTimeout(function(){
-          var transformFunc;
-          if(me.browser.ratioModeActive){
+          if(me.browser.percentModeActive){
             transformFunc=function(d){
-              kshf.Util.setTransform(this,"translateY("+ (me.height_hist-d*me.height_hist/100)+"px)");
+              kshf.Util.setTransform(this,"translateY("+(me.height_hist-(d/maxValue)*me.height_hist)+"px)");
             };
           } else {
-            if(me.browser.percentModeActive){
-              transformFunc=function(d){
-                kshf.Util.setTransform(this,"translateY("+(me.height_hist-(d/maxValue)*me.height_hist)+"px)");
-              };
-            } else {
-              transformFunc=function(d){
-                kshf.Util.setTransform(this,"translateY("+(me.height_hist-me.chartScale_Measure(d))+"px)");
-              };
-            }
+            transformFunc=function(d){
+              kshf.Util.setTransform(this,"translateY("+(me.height_hist-me.chartScale_Measure(d))+"px)");
+            };
           }
-          var x = me.browser.noAnim;
-          if(x===false) me.browser.setNoAnim(true);
-          me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
-          if(x===false) me.browser.setNoAnim(false);
-        });
+        }
+        var x = me.browser.noAnim;
+        if(x===false) me.browser.setNoAnim(true);
+        me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
+        if(x===false) me.browser.setNoAnim(false);
+      });
     },
     /** -- */
     refreshIntervalSlider: function(){
@@ -10260,9 +10258,15 @@ var Summary_Interval_functions = {
       this.updateScaleAndBins();
       if(this.DOM.inited===false) return;
       var chartWidth = this.getWidth_Chart();
+      var wideChart = this.getWidth()>400;
       this.DOM.summaryInterval
+        .attr("measureAxis_right",wideChart?"true":null)
         .style("width",this.getWidth()+"px")
-        .style("padding-left", (this.width_vertAxisLabel+7)+"px");
+        .style("padding-left", this.width_measureAxisLabel+"px")
+        .style("padding-right", ( wideChart ? this.width_measureAxisLabel : 11)+"px");
+      
+      this.DOM.summaryInterval.selectAll(".measureAxis_right").style("display",wideChart?"block":"none");
+
       this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
       if(this.DOM.timeSVG)
           this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
@@ -10677,7 +10681,7 @@ var Summary_Clique_functions = {
 
     var buttonTop = (this.setListSummary.getHeight_Config()-18)/2;
     this.DOM.strengthControl = this.DOM.summaryControls.append("span").attr("class","strengthControl")
-      .on("click",function(){ me.browser.setRelativeMode(me.browser.ratioModeActive!==true); })
+      .on("click",function(){ me.browser.setMeasureAxisMode(me.browser.ratioModeActive!==true); })
       .style("margin-top",buttonTop+"px");
 
     // ******************* STRENGTH CONFIG

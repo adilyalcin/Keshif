@@ -1700,7 +1700,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .transition(opacity 250ms linear);
         &[highlight="true"]{ opacity: 1; }
         // Hidden by default
-        &.relativeModeControl_2{ display: none; }
       }
     }
 
@@ -2429,6 +2428,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
+    .measureAxis_right{
+      display: none !important;
+    }
+
     .kshfSummary{
         display: block;
         position: relative;
@@ -2728,7 +2731,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
             }// summaryCategorical
 
-            > .summaryInterval {
+            > .summaryInterval{
               padding-top: 7px;
               padding-right: 11px; // TODO: Set by JS
               // padding-left: 6px; // Set by JS
@@ -2742,6 +2745,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &[zoomed="true"]{
                   .zoomControl[sign="minus"]{ display: block !important; }
                 }
+                &[measureAxis_right] .measureAxis_right{ display: block !important; }
                 > .histogram{
                     position:relative;
                     pointer-events: all;
@@ -2808,10 +2812,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           text-align: right;
                         }
                         > .relativeModeControl{
-                          left: -21px;
-                          width: 21px;
+                          width: 25px;
                           height: calc(~"100% - 12px");
                           top: 0px;
+                          &.relativeModeControl_left{ 
+                            left: -25px;
+                          }
+                          &.relativeModeControl_right{ 
+                            right: -25px;
+                            left: auto;
+                          }
                         }
                         > .highlightedMeasureValue{
                           position: absolute;
@@ -2835,12 +2845,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                               pointer-events: none;
                             }
                             > .text{
-                              position: relative;
+                              position: absolute;
                               width: 25px;
-                              left: -25px;
                               top: -3px;
-                              text-align: right;
-                              padding-right: 1px;
+                              &.text_right{
+                                right: -25px;
+                                padding-left: 1px;
+                                text-align: left;
+                              }
+                              &.text_left{
+                                left: -25px;
+                                padding-right: 1px;
+                                text-align: right;
+                              }
                             }
                         }
                     }
