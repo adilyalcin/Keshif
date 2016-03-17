@@ -5085,7 +5085,7 @@ kshf.Browser.prototype = {
           // Cannot be Avg-function
           if(aggr._measure.Active===0) return "";
           if(this.ratioModeActive){
-            if(this.measureLabelType===undefined) return "";
+            if(this.measureLabelType===undefined && !this.vizActive.Highlighted) return "";
             _val = 100*_val/aggr._measure.Active;
           } else {
             _val = 100*_val/this.allRecordsAggr._measure.Active;
