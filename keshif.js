@@ -5085,7 +5085,7 @@ kshf.Browser.prototype = {
           // Cannot be Avg-function
           if(aggr._measure.Active===0) return "";
           if(this.ratioModeActive){
-            if(!this.vizActive.Highlighted) return "";
+            if(this.measureLabelType===undefined) return "";
             _val = 100*_val/aggr._measure.Active;
           } else {
             _val = 100*_val/this.allRecordsAggr._measure.Active;
@@ -6062,10 +6062,9 @@ kshf.Summary_Base.prototype = {
   },
   /** -- */
   refreshMeasureLabel: function(){
-    if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
+    if(this.isEmpty() || this.collapsed || !this.inBrowser() || this.DOM.measureLabel===undefined) return;
     var me=this;
-    if(this.DOM.measureLabel)
-      this.DOM.measureLabel.html(function(aggr){ return me.browser.getMeasureLabel(aggr,me); });
+    this.DOM.measureLabel.html(function(aggr){ return me.browser.getMeasureLabel(aggr,me); });
   },
 };
 
