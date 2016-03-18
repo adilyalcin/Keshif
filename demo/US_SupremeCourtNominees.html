@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title> The U.S. Supreme Court Justices and Nominees</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  function checkService(r, v){
+    var vv= this[v];
+    if(vv!==null && vv!==undefined && vv!=="-") r.push(v);
+  };
+
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    categoryTextWidth: 170,
+    barChartWidth: 150,
+    source: {
+      url: "http://apps.washingtonpost.com/investigative/homicides/",
+      gdocId: '1RqCZApS3J1L1RPLglXGpD9Z3b57c9LzYWpdy-OkU-Jc',
+      tables: "Nominees",
+    },
+    summaries: [
+      { name: "Age", value: "age",
+        description: "Age at time of nomination"},
+      { name: "Gender" },
+      { name: "Race" },
+      { name: "Religion"},
+      { name: "National Origin", collapsed: true},
+      { name: "Family Economic Status", panel: "left", collapsed: true,
+        description: "This variable indicates the general socioeconomic status of the nominee’s family during his or her childhood."},
+      { name: "Birth State"},
+      { name: "Law School", collapsed: true},
+      { name: "Married ", value: function(){ if(this.Married) return ""+this.Married}, collapsed: true},
+
+      { name: "Success", panel: "right"},
+      { name: "Position", panel: "right"},
+      { name: "Served in/as", panel: "right",
+        value: function(){ 
+          var r = [];
+          checkService.call(this,r,"Military Branch");
+          checkService.call(this,r,"State Trial Court Judge");
+          checkService.call(this,r,"Intermediate Appellate Court Judge");
+          checkService.call(this,r,"Justice on State’s Highest Court");
+          checkService.call(this,r,"U.S. District Court Judge");
+          checkService.call(this,r,"U. S. Court of Appeals");
+          checkService.call(this,r,"Assistant U.S. Attorney");
+          checkService.call(this,r,"U.S. Attorney");
+          checkService.call(this,r,"Secretary");
+          checkService.call(this,r,"President");
+          checkService.call(this,r,"Representative");
+          checkService.call(this,r,"Senate");
+          checkService.call(this,r,"Deputy or City Attorney");
+          checkService.call(this,r,"Assistant District or County Attorney");
+          checkService.call(this,r,"District or County Attorney");
+          checkService.call(this,r,"State Assistant Attorney General");
+          checkService.call(this,r,"State Attorney General");
+          checkService.call(this,r,"Lt. Governor");
+          checkService.call(this,r,"Governor");
+          checkService.call(this,r,"State Cabinet");
+          checkService.call(this,r,"Mayor");
+          checkService.call(this,r,"State Senate");
+          checkService.call(this,r,"State House");
+          checkService.call(this,r,"City Council");
+          checkService.call(this,r,"State Commission/Convention");
+          return r;
+        }},
+      { name: "Political Party Affiliation", panel: "right",
+        description: " Political Party Affiliation at Time of Nomination"},
+      { name: "Nominating President's Party", value: "President Party", panel: "right",
+        description: "Political Party Affiliation of the Nominating President"},
+      { name: "Dominant Political Party of the U.S. Senate", value: "Senate Party", panel: "right", collapsed: "true"},
+      { name: "Departure Reason", panel: "right"},
+
+      { name: '← Conservative vs. Liberal →', panel: "middle",
+        value: function(){
+          var v = this['Conservative / Liberal'];
+          return (v==="NA") ? null : 1*v;
+        }},
+      { name: "Qualification", panel: "middle", collapsed: "true",
+        value: function(){
+          var v = this['Qualification'];
+          return (v==="NA") ? null : 1*v;
+        }},
+      { name: "Age at Nomination", panel: "middle"},
+
+      { name: "Birth Year", panel: "middle", collapsed: true},
+      { name: "Nomination Year", value: "Year", panel: "middle", collapsed: true},
+    ],
+    recordDisplay: {
+      sortBy: [ 'Nomination Year', 'Birth Year', 'Qualification', '← Conservative vs. Liberal →'],
+      textSearch: "Name",
+      recordView: function(){
+        return "<a class='wikiLink' href='"+this.URL+"' target='_blank'>"+this.Name+"</a>";
+      }
+    }
+  });
+});
+</script>
+<style id="kshfStyle">
+#demo_Browser{
+  height: calc(100vh - 100px);
+}
+.wikiLink{
+  color: black;
+}
+.wikiLink:hover{ 
+  color: orangered;
+}
+.wikiLink:hover:after{
+  content: 'link';
+  font-size: 0.8em;
+  color: gray;
+  vertical-align: top;
+  display: inline-block;
+  margin-left: 3px;
+}
+</style>
+	</head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">The U.S. Supreme Court Justices and Nominees</div>
+      <div id="demo_PageSubtitle" align="center">Explore the Supreme Court nominees before President Obama chose Merrick Garland to fill in the seat after Antonin Scalia's death.</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      DATA: Epstein, Lee, Thomas G. Walker, Nancy Staudt, Scott Hendrickson, and Jason Roberts. (2013). "The U.S. Supreme Court Justices Database." <a href='epstein.wustl.edu/research/justicesdata.html' target='_blank'>
+        http://epstein.wustl.edu/research/justicesdata.html</a>.
+      </div>
+  </body>
+</html>
