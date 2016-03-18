@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Beers</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 160,
+    leftPanelLabelWidth: 150,
+    itemName: "Beers",
+    rightPanelLabelWidth: 90,
+    source: {
+      gdocId: '1yqysG3m-__B8dIBi7bcteInvVxkn0mWEfpfC5Uss2iY',
+      tables: {name:"Beers", id:"Position"}
+    },
+    summaries: [
+      { name: "Country" },
+      { name: "State"},
+      { name: "Brewery"},
+      { name: "Alcohol", value: function(){ return this["Alcohol %"]*100; }, unitName: "%", panel: 'middle' },
+      { name: "IBU", panel: 'middle', scaleType: "log",
+        description: "This is a measure of the actual bitterness of a beer as contributed by the alpha acid from hops. Generally speaking, beers with IBUs of less than 20 have little to no apparent hops presence. Beers with IBUs from 20 to 45 are the most common and have mild to pronounced hops presence. Beers with IBUs greater than 45 are heavily hopped and can be quite bitter."},
+    ],
+    recordDisplay: {
+      sortColWidth: 45,
+      sortBy: [ 'Alcohol', 'IBU'],
+      textSearch: "Beer",
+      recordView: "Beer"
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser {
+  max-width: 890px;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center"><i class='fa fa-beer'></i> Beers <i class='fa fa-beer'></i></div>
+      <div id="demo_Browser"></div>
+
+      <div id="demo_Infobox">
+        Data compiled by <a href='https://twitter.com/pgilks' target='blank'>@pgilks</a>, and visualized 
+          <a href='http://paintbynumbersblog.blogspot.co.uk/2013/05/the-hopometer-visualising-beer-strength.html'>here</a>..
+        Also visualized at <a href='http://vizable.tableau.com/blog#which-beer-to-drink-on-stpatricksday-32' target='_blank'>Vizable</a>.
+        </div>
+      </div>
+  </body>
+</html>
