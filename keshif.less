@@ -132,9 +132,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           border: solid 1px gray;
         }
       }
-      .recordInfo{
-        pointer-events: none !important;
-      }
+      .recordInfo{ pointer-events: none !important; }
       .summaryName_text{ pointer-events: all !important; }
       .summaryConfig_UnitName{ display: block;}
       .recordDisplay{
@@ -148,12 +146,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
       }
       .buttonSummaryRemove{ display: inline-block !important; }
-    }
-    &:not([authoringMode]){
-      .recordInfo[changeMeasureBox]{
-        cursor: pointer;
-        &:hover{ color: orangered; }
-      }
     }
     &[measurefunc="Count"]{
       .measureFunction_Count{ color: black !important; font-weight: 600; }
@@ -663,6 +655,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     } // textSearchBox
 
+    .recordInfo{
+      .user-select(none);
+      display: block;
+      position: relative;
+      white-space: nowrap;
+      cursor: default;
+      font-size: 1.2em;
+      font-weight: 700;
+      z-index: 10;
+      margin-bottom: 2px;
+      margin-left: 2px;
+      > .activeRecordMeasure{
+        display: inline-block;
+        text-align: right;
+        margin-right: 3px;
+        > .unitName{ font-weight: 400;}
+      }
+      > .measureFuncType{
+        font-weight: 400;
+      }
+      > .recordName{
+        pointer-events: none;
+      }
+      &[changeMeasureBox]{
+        cursor: pointer;
+        &:hover{ color: orangered; }
+      }
+    }
+
     .panel_Basic{
         .display(flex);
         .flex-direction(row);
@@ -671,30 +692,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         box-shadow: 0px 0px 2px #B8AF9A;
         margin-bottom: 4px;
         padding-bottom: 2px;
-        > .recordInfo{
-          .user-select(none);
-          display: block;
-          position: relative;
-          white-space: nowrap;
-          cursor: default;
-          font-size: 1.2em;
-          font-weight: 700;
-          z-index: 10;
-          margin-bottom: 2px;
-          margin-left: 2px;
-          > .activeRecordMeasure{
-            display: inline-block;
-            text-align: right;
-            margin-right: 3px;
-            > .unitName{ font-weight: 400;}
-          }
-          > .measureFuncType{
-            font-weight: 400;
-          }
-          > .recordName{
-            pointer-events: none;
-          }
-        }
         // ***************************************************************************
         // MEASURE SELECT BOX
         > .measureSelectBox_Wrapper{

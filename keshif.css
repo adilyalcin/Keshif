@@ -169,12 +169,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode] .buttonSummaryRemove {
   display: inline-block !important;
 }
-.kshf:not([authoringMode]) .recordInfo[changeMeasureBox] {
-  cursor: pointer;
-}
-.kshf:not([authoringMode]) .recordInfo[changeMeasureBox]:hover {
-  color: orangered;
-}
 .kshf[measurefunc="Count"] .measureFunction_Count {
   color: black !important;
   font-weight: 600;
@@ -869,6 +863,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .textSearchBox > .textSearchControl[showClear=true]:before {
   content: "\f057";
 }
+.kshf .recordInfo {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  cursor: default;
+  font-size: 1.2em;
+  font-weight: 700;
+  z-index: 10;
+  margin-bottom: 2px;
+  margin-left: 2px;
+}
+.kshf .recordInfo > .activeRecordMeasure {
+  display: inline-block;
+  text-align: right;
+  margin-right: 3px;
+}
+.kshf .recordInfo > .activeRecordMeasure > .unitName {
+  font-weight: 400;
+}
+.kshf .recordInfo > .measureFuncType {
+  font-weight: 400;
+}
+.kshf .recordInfo > .recordName {
+  pointer-events: none;
+}
+.kshf .recordInfo[changeMeasureBox] {
+  cursor: pointer;
+}
+.kshf .recordInfo[changeMeasureBox]:hover {
+  color: orangered;
+}
 .kshf .panel_Basic {
   display: -webkit-box;
   display: -moz-box;
@@ -887,35 +916,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: 0px 0px 2px #B8AF9A;
   margin-bottom: 4px;
   padding-bottom: 2px;
-}
-.kshf .panel_Basic > .recordInfo {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  display: block;
-  position: relative;
-  white-space: nowrap;
-  cursor: default;
-  font-size: 1.2em;
-  font-weight: 700;
-  z-index: 10;
-  margin-bottom: 2px;
-  margin-left: 2px;
-}
-.kshf .panel_Basic > .recordInfo > .activeRecordMeasure {
-  display: inline-block;
-  text-align: right;
-  margin-right: 3px;
-}
-.kshf .panel_Basic > .recordInfo > .activeRecordMeasure > .unitName {
-  font-weight: 400;
-}
-.kshf .panel_Basic > .recordInfo > .measureFuncType {
-  font-weight: 400;
-}
-.kshf .panel_Basic > .recordInfo > .recordName {
-  pointer-events: none;
 }
 .kshf .panel_Basic > .measureSelectBox_Wrapper {
   position: relative;
