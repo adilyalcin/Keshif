@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Journalists Killed Since 1992</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 150,
+    leftPanelLabelWidth: 170,
+    rightPanelLabelWidth: 160,
+    source: {
+      gdocId: '1v4uy-YBDfo8ulcNLLyRZ-2faIogAHCTCa8Ef25Q9nxo',
+      tables: "Journalists"
+    },
+    summaries: [
+      { name: "Sex" },
+      { name: "Nationality", collapsed: true },
+      { name: "Medium" },
+      { name: "Coverage", catSplit: ", " },
+      { name: "Freelance" },
+      { name: "Local/Foreign"} ,
+
+
+      { name: "Country Killed", panel: "right" },
+      { name: "Type of Death", panel: "right" },
+      { name: "Source of Fire", catSplit: ", ", panel: "right"  },
+
+      { name: "Notes", panel: "right" ,
+        value: function(){
+          var r=[];
+          if(this['Impunity (for Murder)']) r.push('Impunity (for Murder)');
+          if(this['Taken Captive']==="Yes") r.push('Taken Captive');
+          if(this['Threatened']==="Yes") r.push('Threatened');
+          if(this['Tortured']==="Yes") r.push('Tortured');
+          return r;
+        } },
+      { name: "Date", panel: "bottom"}
+    ],
+    recordDisplay: {
+      sortColWidth: 45,
+      sortBy: "Date",
+      textSearch: "Name",
+      recordView: "Name"
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser {
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">Journalists Killed Since 1992</div>
+      <div id="demo_Browser"></div>
+
+      <div id="demo_Infobox">
+        Data from
+        <a href='https://www.cpj.org/killed/' target='_blank'>CPJ - Committee to Protect Journalists</a>. 
+        </div>
+      </div>
+  </body>
+</html>
