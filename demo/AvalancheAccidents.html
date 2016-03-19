@@ -14,27 +14,40 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Accidents",
-    leftPanelLabelWidth: 160,
-    rightPanelLabelWidth: 160,
-    middlePanelLabelWidth: 160,
+    categoryTextWidth: 160,
+    rightPanelLabelWidth: 220,
+    barChartWidth: 150,
     source: {
       gdocId: "1G2umrkAYK5nI-mElgQNYy2HditxQAR4K9wu7ia1V_TY",
-      tables: "Accidents"
+      tables: "Accidents",
+      callback: function(){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
       { name: "Travel Mode", panel: "left" },
       { name: "Primary Activity", panel: "left" },
       { name: "Setting", panel: "left", collapsed: true },
-      { name: "Killed", panel: "right", unitName: 'ppl' },
-      { name: "State", panel: "right" },
+      { name: "State", panel: "right", viewAs: "map",
+        catLabel: function(){
+          var v = US_States.index_code[this.id];
+          return v ? v.name : this.id;
+        },
+        catMap:   function(){ return US_States.index_code[this.id].geo; },
+        },
       { name: "Place", value: "PLACE", panel: "right" },
-      { name: "Avalanche Year", panel: "right", collapsed: true },
-      { name: "Date", panel: "bottom" },
+      //{ name: "Avalanche Year", panel: "right", collapsed: true },
+      { name: "Date", panel: "middle" },
       { name: "Month", value: "function(){ return this.Date.getUTCMonth(); }",
         catSortBy: "id",
         catLabel: {
@@ -51,14 +64,15 @@ google.setOnLoadCallback(function(){
           10: "November",
           11: "December"
         }
-      }
+      },
+      { name: "Killed", panel: "right", unitName: 'ppl' },
     ],
     recordDisplay: {
       displayType: "list",
       sortColWidth: 50,
       textSearch: "PLACE",
       recordView: "PLACE",
-      sortBy: [ 'Killed' ],
+      sortBy: [ 'Killed', 'Date' ],
       detailsToggle: "zoom"
     }
   });
@@ -69,6 +83,15 @@ google.setOnLoadCallback(function(){
     <div class="contents">
       <div id="demo_PageTitle">Avalance Accidents in the U.S.</div>
       <div id="demo_Browser"></div>
+
+      <div id="demo_Infobox">
+        Data from
+        <a href='http://avalanche.state.co.us/accidents/statistics-and-reporting/' target='_blank'>
+          Colorado Avalanche Information Center</a>.
+        Also visualized at 
+        <a href='https://vizable.tableau.com/blog#how-data-helps-me-stay-humble-on-the-ski-slopes-17' target='_blank'>Vizable</a>.
+        </div>
+      
       </div>
   </body>
 </html>

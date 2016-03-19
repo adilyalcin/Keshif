@@ -4115,7 +4115,7 @@ kshf.Browser.prototype = {
 
         this.primaryTableName = this.source.tables[0].name;
         if(this.source.gdocId){
-          this.source.url = this.source.url || ("https://docs.google.com/spreadsheet/ccc?key="+this.source.gdocId);
+          this.source.url = this.source.url || ("https://docs.google.com/spreadsheets/d/"+this.source.gdocId);
         }
         this.source.tables.forEach(function(tableDescr){
           if(tableDescr.id===undefined) tableDescr.id = "id";
@@ -4482,6 +4482,10 @@ kshf.Browser.prototype = {
             if(facetDescr.panel!=="none"){
               facetDescr.panel = facetDescr.panel || 'left';
               summary.addToPanel(this.panels[facetDescr.panel]);
+            }
+
+            if(facetDescr.viewAs){
+              summary.viewAs(facetDescr.viewAs);
             }
           }
 
