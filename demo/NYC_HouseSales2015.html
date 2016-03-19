@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>House Sales in NYC, 2015</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 200,
+    leftPanelLabelWidth: 210,
+    rightPanelLabelWidth: 150,
+    source: {
+      gdocId: '1rGtH4WtebYQK5q9RpTZe2xktEM-r8-l6-aAIlbay8ic',
+      tables: "House Sales"
+    },
+    summaries: [
+      { name: "Borough" },
+      { name: "Neighborhood" },
+
+      { name: "Building Category", panel: "right" },
+      { name: "Tax Class At Time Of Sale", panel: "right",
+        catLabel:{
+          1: "Class 1",
+          2: "Class 2",
+          3: "Class 3",
+          4: "Class 4",
+        }},
+      { name: "Land Size", value: "Land Square Feet", unitName: "ft<sup>2</sup>", panel: "right"},
+      { name: "Gross Size", value: "Gross Square Feet", unitName: "ft<sup>2</sup>", panel: "right"},
+
+      { name: "Year Built", panel: "middle", scaleType: "linear"},
+      { name: "Total Units", scaleType: "log", panel: "middle"},
+      { name: "Residential Units", panel: "middle", collapsed: true},
+      { name: "Commercial Units", panel: "middle", collapsed: true},
+      { name: "Sale Price", unitName: "$", panel: "middle"},
+      
+      { name: "Sale Date", panel: "bottom" },
+    ]
+  });
+});
+    </script>
+<style id="kshfStyle">
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">House Sales in NYC, 2015</div>
+      <div id="demo_Browser"></div>
+
+      <div id="demo_Infobox">
+        Data from
+        <a href='http://www1.nyc.gov/site/finance/taxes/property-rolling-sales-data.page' target='blank'>
+          NYC Department of Finance
+        </a>.
+
+        Also visualized by <a href='' target='blank'></a>
+        at 
+        <a href='http://paintbynumbersblog.blogspot.com/2015/04/real-estate-of-mind-exploring-new-york.html' target='blank'>here</a>
+        and
+        <a href='http://paintbynumbersblog.blogspot.com/2016/01/real-estate-of-mind-all-city-edition.html' target='blank'>here</a>.
+        </div>
+      </div>
+  </body>
+</html>
