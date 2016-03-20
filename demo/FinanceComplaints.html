@@ -14,6 +14,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 
 function response(){
@@ -42,7 +46,11 @@ $(document).ready( function(){
       url: 'http://www.consumerfinance.gov/complaintdatabase',
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'csv',
-      tables: "Consumer_Complaints_2015"
+      tables: "Consumer_Complaints_2015",
+      callback: function(){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
       { name: "Product", 
@@ -81,7 +89,14 @@ $(document).ready( function(){
       { name: "Timely response?"},
       { name: "Consumer disputed?"},
       { name: "Company", panel: "middle", minAggrValue: 100},
-      { name: "State", catLabel: function(){return getStateName(this.id);}, collapsed: true},
+      { name: "State", panel: "middle",
+        catLabel: function(){ return getStateName(this.id); },
+        catMap:   function(){ 
+          var x=US_States.index_code[this.id];
+          if(x) return x.geo;
+        },
+        viewAs: "map"
+        },
       { name: "Issue", panel:"right", 
         catLabel: {
           IIOCR: "Incorrect information on credit report",
@@ -139,9 +154,20 @@ $(document).ready( function(){
     </script>
   </head>
   <body>
-    <div id="demo_PageTitle" align="center">
-      <a href="http://www.consumerfinance.gov/complaintdatabase" target='_blank'>Consumer Complaint Database</a>
-       , 01/01/'15 ... 27/08/'15</div>
-    <div class="contents"><div id="demo_Browser"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">
+        <a href="http://www.consumerfinance.gov/complaintdatabase" target='_blank'>Consumer Complaint Database</a>
+         , 01/01/'15 ... 27/08/'15</div>
+      <div id="demo_Browser"></div>
+
+      
+    </div>
+
+    <div id="demo_Infobox">
+      Data from 
+      <a href="http://www.consumerfinance.gov/complaintdatabase" target="_blank">Consumer Complaint Database</a>, 
+      by <a href="http://www.consumerfinance.gov/" target="_blank">Consumer Financial Protection Bureau</a>.
+      </div>
+
   </body>
 </html>
