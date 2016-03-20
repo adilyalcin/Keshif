@@ -36,6 +36,7 @@ function response(){
 }
 
 $(document).ready( function(){
+  var dateFormat = d3.time.format("%m-%b-%Y");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     leftPanelLabelWidth: 170,
@@ -86,8 +87,8 @@ $(document).ready( function(){
           U: "Untimely response",
           C: "Closed",
         }},
-      { name: "Timely response?"},
-      { name: "Consumer disputed?"},
+      { name: "Timely response?" },
+      { name: "Consumer disputed?" },
       { name: "Company", panel: "middle", minAggrValue: 100},
       { name: "State", panel: "middle",
         catLabel: function(){ return getStateName(this.id); },
@@ -147,7 +148,12 @@ $(document).ready( function(){
           CLID: "Credit line increase/decrease",
           PNC: "Payment to acct not credited",
         } },
-      { name: "Sub-issue", panel: "right"}
+      { name: "Sub-issue", panel: "right"},
+      { name: "Date Received", panel: "middle",
+        value: function(){
+          var str = this["Date received"]+"-2015";
+          return dateFormat.parse(str);
+        }}
     ]
   });
 });
@@ -157,7 +163,7 @@ $(document).ready( function(){
     <div class="contents">
       <div id="demo_PageTitle" align="center">
         <a href="http://www.consumerfinance.gov/complaintdatabase" target='_blank'>Consumer Complaint Database</a>
-         , 01/01/'15 ... 27/08/'15</div>
+         , 01/01/2015 ... 27/08/2015</div>
       <div id="demo_Browser"></div>
 
       
