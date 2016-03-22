@@ -965,7 +965,7 @@ kshf.Filter.prototype = {
       if(this.filterCrumb===null) {
         this.filterCrumb = this.browser.insertDOM_crumb("Filtered",this);
       }
-      this.filterCrumb.select(".crumbHeader").html(this.filterTitle);
+      this.filterCrumb.select(".crumbHeader").html(this.filterTitle());
       this.filterCrumb.select(".filterDetails").html(this.filterView_Detail.call(this));
     }
   },
@@ -1553,7 +1553,7 @@ kshf.RecordDisplay.prototype = {
       var me=this;
 
       this.spatialFilter = this.browser.createFilter({
-        title: "Region", 
+        title: function(){return "Region"}, 
         onClear: function(){
           me.DOM.root.select(".spatialQuery_Filter").attr("active",null);
         },
@@ -1582,7 +1582,7 @@ kshf.RecordDisplay.prototype = {
       var me=this;
 
       this.textFilter = this.browser.createFilter({
-        title: this.textSearchSummary.summaryName, 
+        title: function(){ return me.textSearchSummary.summaryName; }, 
         hideCrumb: true,
         onClear: function(){
           me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
@@ -6442,7 +6442,7 @@ var Summary_Categorical_functions = {
     var me=this;
     this.summaryFilter = this.browser.createFilter(
       {
-        title: this.summaryName,
+        title: function(){ return me.summaryName },
         onClear: function(){
           me.clearCatTextSearch();
           me.unselectAllCategories();
@@ -7158,12 +7158,14 @@ var Summary_Categorical_functions = {
 
         this.refreshMapBounds();
 
+        var allRecordsAggr_measure_Active = me.browser.allRecordsAggr.measure('Active');
+
         this.DOM.measure_Active
           .attr("fill", function(_cat){ 
             var v = _cat.measure('Active');
             if(v<=0 || v===undefined ) return "url(#diagonalHatch)";
             if(me.browser.percentModeActive){
-              v = 100*v/me.browser.allRecordsAggr.measure('Active');
+              v = 100*v/allRecordsAggr_measure_Active;
             }
             var vv = me.mapColorScale(v);
             if(ratioMode) vv=0;
@@ -7256,6 +7258,8 @@ var Summary_Categorical_functions = {
             .range([0, 9])
             .domain([boundMin,boundMax]);
         }
+
+        var allRecordsAggr_measure_Active = me.browser.allRecordsAggr.measure('Active');
 
         this.DOM.measure_Active
           .attr("fill", function(_cat){ 
@@ -8501,7 +8505,7 @@ var Summary_Interval_functions = {
     createSummaryFilter: function(){
       var me=this;
       this.summaryFilter = this.browser.createFilter({
-        title: this.summaryName,
+        title: function(){ return me.summaryName; },
         onClear: function(){
           if(this.filteredBin){
             this.filteredBin.setAttribute("filtered",false);
@@ -8699,9 +8703,8 @@ var Summary_Interval_functions = {
         this.summaryFilter.active.min = Math.max(minnn, this.summaryFilter.active.min);
       }
       if(this.scaleType==="linear"){
-        if(!this.hasFloat && !this.stepTicks){
-          this.intervalRange.active.max+=1;
-        }
+        // round the maximum to an integer. If it is an integer already, has no effect.
+        this.intervalRange.active.max = Math.ceil(this.intervalRange.active.max);
       }
       this.updateScaleAndBins(true);
       if(this.usedForSorting) this.browser.recordDisplay.refreshRecordColors();

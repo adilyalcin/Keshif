@@ -1812,8 +1812,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .summaryViewAs{
             display: none;
             cursor: pointer;
-            &[viewAs="map"]:before{ content: "\f0ac"; } // globe
-            &[viewAs="list"]:before{ content: "\f0ca"; } // list-ul
+            width: 15px;
+            text-align: center;
+            &[viewAs="map"]:before{ content: "\f0ca"; } // globe
+            &[viewAs="map"]:hover:before{ content: "\f0ac"; } // list-ul
+            &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
+            &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
           }
           > .useForRecordDisplay{ display: none; }
         }
