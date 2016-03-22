@@ -27,6 +27,7 @@ google.setOnLoadCallback(function(){
     leftPanelLabelWidth: 250,
     rightPanelLabelWidth: 160,
     middlePanelLabelWidth: 160,
+    barChartWidth: 150,
     source: {
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: "csv",
@@ -54,7 +55,7 @@ google.setOnLoadCallback(function(){
       { name: "PrimaryRegion" },
       { name: "Subregion", collapsed: true },
       { name: "City" },
-      { name: "State", panel: "middle", 
+      { name: "State", panel: "middle", viewAs: "map",
         catLabel: function(){ return US_States.index_code[this.id].name; },
         catMap: function(){ return US_States.index_code[this.id].geo; },
         },

@@ -93,8 +93,8 @@ $(document).ready( function(){
       { name: "State", panel: "middle",
         catLabel: function(){ return getStateName(this.id); },
         catMap:   function(){ 
-          var x=US_States.index_code[this.id];
-          if(x) return x.geo;
+          var state = US_States.index_code[this.id];
+          if(state) return state.geo;
         },
         viewAs: "map"
         },

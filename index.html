@@ -70,6 +70,8 @@ var loadDemoBrowser = function(){
             r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
           if(this['Has Time'])
             r.push("Time <span class='fa fa-clock-o'></span>");
+          if(this["Spatial"]==="Attribute")
+            r.push("Map <span class='fa fa-globe'></span>");
           return r;
         } },
       { name: "Record Display", panel: "right",
@@ -79,8 +81,7 @@ var loadDemoBrowser = function(){
             r.push("Grid <span class='fa fa-th'></span>");
           if(this['Result Display']==="List")
             r.push("List <span class='fa fa-list'></span>");
-          if(this['Result Display']==="None")
-            r.push("None");
+          // if(this['Result Display']==="None") r.push("None");
           return r;
         }},
 /*    },{ name: "Other", panel: "right",

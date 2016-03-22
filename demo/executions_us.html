@@ -14,6 +14,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
@@ -23,7 +27,11 @@ google.setOnLoadCallback(function(){
     rightPanelLabelWidth: 180,
     source: {
       gdocId: '1cPUVuvdCswIUdBYHNUUVkFMn91y9QglZC2gK6qqHo3I',
-      tables: "Executions"
+      tables: "Executions",
+      callback: function(){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     loadedCb: function(){
       kshf.dt.Executions.forEach(function(d){
@@ -33,7 +41,13 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Crime", catSplit: " - "},
       { name: "Method", },
-      { name: "State", panel: 'right', catLabel: function(){ return getStateName(this.id); } },
+      { name: "State", panel: 'middle', viewAs: "map",
+        catLabel: function(){ return getStateName(this.id); },
+        catMap:   function(){ 
+          var state = US_States.index_code[this.id];
+          if(state) return state.geo;
+        },
+        },
       { name: "Race", panel: 'right' },
       { name: "Sex", panel: 'right', catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); } },
       { name: "Age", panel: 'right' },

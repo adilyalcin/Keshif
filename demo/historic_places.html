@@ -15,25 +15,39 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 120,
+    middlePanelLabelWidth: 120,
     leftPanelLabelWidth: 120,
     rightPanelLabelWidth: 190,
     itemName: "Historic Places",
     source: {
       gdocId: '15kyD2xJxY_BFwd6T8MUI4WA8FC3o-DovjO704AGnbbQ',
-      tables: "Places"
+      tables: "Places",
+      callback: function(){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
-      { name: "State", catLabel: function(){ return getStateName(this.id) } },
+      { name: "State", panel: "middle"
+        catLabel: function(){ return getStateName(this.id); },
+        catMap: function(){ 
+          var state = US_States.index_code[this.id];
+          if(state) return state.geo;
+        } },
       { name: "County", panel: 'right', minAggrValue: 50,
         value: function(){ return this.County+", "+this.State; } },
       { name: "Listed Time", panel: 'bottom',
         value: function(){ return moment(this.Listed,"YYYYMMDD")._d; } },
-      { name: "City", panel: 'middle', minAggrValue: 50,
+      { name: "City", panel: 'left', minAggrValue: 50,
         value: function(){ return this.City+", "+this.State; } }
     ],
     recordDisplay: {
@@ -46,8 +60,7 @@ google.setOnLoadCallback(function(){
     </script>
 <style id="kshfStyle">
 #demo_Browser {
-  width: 990px;
-  height: 650px;
+  width: 1100px;
 }
 </style>
   </head>

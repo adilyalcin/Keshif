@@ -15,7 +15,13 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
+
+var neighborhoodRegions = {};
 function dataLoad(browser){
   $.ajax({
     //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
@@ -29,6 +35,21 @@ function dataLoad(browser){
         vic.incident_date = moment(vic.incident_date).toDate();
         kshf.dt.Victims.push(new kshf.Record(vic,"id"));
       });
+
+
+      $.ajax({
+        // Load state geometries
+        url: 'data/dc.geojson',
+        dataType: 'json',
+        async: false,
+        success: function(topojsonData){
+          topojsonData.features.forEach(function(feature){
+            neighborhoodRegions[feature.properties.subhood] = feature.geometry;
+            var x;
+          });
+        }
+      });
+
       browser.loadCharts();
     }
   });
@@ -49,8 +70,13 @@ $(document).ready( function(){
         catLabel: function(){ return (this.id==="m"?"Male ":"Female ")+getIcon(this.id); } },
       { name: "<span class='fa fa-th-large'></span> Quadrant", panel: 'right', value: "quadrant",
         catLabel: { SE: "South-East", SW: "South-West", NE: "North-East", NW: "North-West" } },
-      { name: "Neighborhood", panel: 'right',
-        value: function(){ if(this.nbhd) return this.nbhd.subhood; } },
+      { name: "Neighborhood", panel: 'middle', viewAs: "map",
+        value: function(){ if(this.nbhd) return this.nbhd.subhood; },
+        catMap: function(){
+          return neighborhoodRegions[this.id];
+        }
+        },
+      { name: "Manner", value: function(){ return this.manner.name; }, panel: 'right' },
       { name: "Status", panel: 'right',
         value: function(){
           var r=[];
@@ -59,7 +85,6 @@ $(document).ready( function(){
           return r;
         } },
       { name: "Cases with +2 victims", panel: 'right', value: "ccn", minAggrValue:2, collapsed: true },
-      { name: "Manner", value: function(){ return this.manner.name; } },
       { name: "Motive", value: function(){ return this.motive.name; } },
       { name: "Incident Date", value: "incident_date", panel: "bottom", },
       { name: "Full Name", value: function(){ return this.last_name +", "+this.first_name; }, panel: "none" }
@@ -73,8 +98,9 @@ $(document).ready( function(){
 });
 </script>
 <style id="kshfStyle">
-#demo_Browser{ max-width: 800px;  }
+#demo_Browser{ max-width: 950px;  }
 </style>
+
 	</head>
   <body>
     <div class="contents">
@@ -85,6 +111,7 @@ $(document).ready( function(){
     <div id="demo_Infobox">
       <a href="http://apps.washingtonpost.com/investigative/homicides/" target='_blank'>Data</a> was curated by the 
         <b>Washington Post</b>.
+        Geographical data from <a href='http://opendatadc.org/dataset/neighborhood-boundaries-217-neighborhoods-washpost-justgrimes' target='_blank'>opendatadc.gov</a>
       </div>
   </body>
 </html>

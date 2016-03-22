@@ -14,6 +14,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
     <script type="text/javascript">
 google.setOnLoadCallback( function(){
   browser = new kshf.Browser({
@@ -22,11 +26,18 @@ google.setOnLoadCallback( function(){
     categoryTextWidth: 160,
     source: {
       gdocId: '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
-      tables: {name: "Presidents", id:"Position"}
+      tables: {name: "Presidents", id:"Position"},
+      callback: function(){
+        US_States.loadGeo();
+        browser.loadCharts();
+      }
     },
     summaries: [
       "Party",
-      "State of Birth",
+      { name: "State of Birth",
+        catMap: function(){
+         return US_States.index_name[this.id].geo;
+        } },
       "Occupation",
       { name: "College", panel: 'right' },
       { name: "Religion", panel: 'right' },

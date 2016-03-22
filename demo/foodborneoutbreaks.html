@@ -37,7 +37,7 @@ $(document).ready( function(){
     summaries: [
       { name: "Year", panel: 'bottom', optimumTickWidth: 60, // tick width used so that months, etc are not visible
         value: function(){ return new Date(this.Year,0); } },
-      { name: "State", panel: 'middle',
+      { name: "State", panel: 'middle', viewAs: 'map',
         catMap: function(){ 
           var x=US_States.index_name[this.id];
           if(x) return x.geo;
