@@ -27,7 +27,7 @@ $(document).ready( function(){
     source: {
       dirPath: 'data/',
       fileType: 'csv',
-      tables: {name:"flags", id:'Country'}
+      tables: "flags"
 //      gdocId: '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
     },
     summaries: [
@@ -118,7 +118,7 @@ $(document).ready( function(){
       }
     ],
     recordDisplay: {
-      sortBy: 'Country',
+      sortBy: {name: 'Flag Date', inverse: true},
       displayType: 'grid',
       textSearch: "Country",
       recordView: function(){
