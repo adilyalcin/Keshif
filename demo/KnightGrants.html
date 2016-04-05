@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Knight Foundation Grants</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  var dateParser = d3.time.format("%m/%d/%y"); // 09/01/11
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 200,
+    categoryTextWidth: 230,
+    itemName: "Grants",
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'json',
+      tables: "KnightGrants"
+    },
+    loadedCb: function(){
+      browser.records.forEach(function(item){
+        if(item.data.Meta){
+          var amount = item.data.Meta.Amount;
+          if(amount)
+            item.data.Amount = parseInt(amount.replace(",","").replace("$",""));
+          if(item.data.Meta["Date Awarded"])
+            item.data["Award Date"] = dateParser.parse(item.data.Meta["Date Awarded"]);
+          item.data.Community = item.data.Meta.Community;
+          if(item.data.Meta["Focus Area"]) {
+            item.data["Focus Areas"] = item.data.Meta["Focus Area"];
+          } else if(item.data.Meta["Focus Areas"]) {
+            item.data["Focus Areas"] = item.data.Meta["Focus Areas"].split(", ");
+          }
+        }
+        // parse the amount
+      });
+    },
+    summaries: [
+      "Organization",
+      { name: "Focus Areas" },
+      { name: "Amount", unitName: "$" },
+      { name: "Award Date", layout: "middle"},
+      { name: "Community"}
+    ],
+    recordDisplay: {
+      sortBy: ["Award Date", "Amount"],
+      sortColWidth: 60,
+      textSearch: "Title",
+      recordView: function(){
+        var str="";
+        var aOpen = "<a target='_blank' href='http://www.knightfoundation.org/grants/"+this.id+"'>";
+        if(this.Img)
+          str+= aOpen+"<img class='grantPhoto' src='http://www.knightfoundation.org/"+this.Img+"'></a>";
+        str+=aOpen+"<span class='grantTitle'>"+this.Title+"</span></a>";
+        str+="<div class='grantOrg'>"+this.Organization+"</div>";
+        str+="<div>";
+          str+="<span class='grantDate'> <span class='fa fa-calendar'></span> "+dateParser(this["Award Date"])+"</span>";
+          if(this.Community) str+="<span class='grantCommunity'> <span class='fa fa-map-marker'></span> "+this.Community+"</span>";
+          str+="</div>";
+        str+="<div class='grantPurpose'>"+this.Purpose+"</div>";
+        return str;
+      }
+    }
+  });
+});
+    </script>
+<style>
+.thumbImg{
+  height: 80px;
+  width: auto !important;
+}
+.grantPhoto{
+  margin: 2px;
+  float: right;
+  height: 55px;
+  border-radius: 6px;
+}
+.grantTitle{
+  display: inline-block;
+  font-weight: 600;
+}
+.grantOrg{
+  font-size: 0.9em;
+  display: inline-block;
+}
+.grantOrg:before{
+  content: " to ";
+  margin-left: 5px;
+}
+.grantDate{
+  font-size: 0.8em;
+}
+.grantPurpose{
+  width: 600px;
+  font-size: 0.9em;
+  font-weight: 100;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.grantPurpose:hover{
+  overflow: visible;
+  white-space: normal;
+}
+.grantCommunity{
+  font-size: 0.8em;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">
+        <img src='http://www.knightfoundation.org/media/uploads/media_images/knight-logo-gray-300.jpg' 
+          style='height: 1.2em; vertical-align: top'> Grants</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from <a href="http://www.knightfoundation.org/grants/" target="_blank">
+          Knight Foundation Grants</a> listing
+      </div>
+  </body>
+</html>
