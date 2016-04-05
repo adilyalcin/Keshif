@@ -333,7 +333,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showDropZone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
-.kshf[showDropZone=true] .recordDisplay[hasRecordView="false"] {
+.kshf[showDropZone=true][dropattrtype~="unique"] .recordDisplay[hasRecordView="false"] {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -341,7 +341,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   min-height: 50px;
 }
-.kshf[showDropZone=true] .dropZone_recordView {
+.kshf[showDropZone=true][dropattrtype~="unique"] .dropZone_recordView {
   display: block !important;
 }
 .kshf[showDropZone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
@@ -2519,6 +2519,7 @@ top:calc(50% - 5px);
   stroke-width: 2px;
   stroke-linecap: butt;
   stroke-linejoin: miter;
+  pointer-events: none;
 }
 .kshf .aggrGlyph.mapGlyph[selection="selected"] > .measure_Active {
   cursor: pointer;
@@ -3400,8 +3401,8 @@ top:calc(50% - 8px);
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .measurePercentControl {
   bottom: -1px;
-  width: 21px;
-  left: -21px;
+  width: 24px;
+  left: -24px;
   text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
@@ -3492,9 +3493,10 @@ top:calc(50% - 8px);
   flex: 1;
   border: solid 1px rgba(1, 1, 1, 0);
   cursor: pointer;
+  border: solid 0px white;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar > .mapColorBlock:hover {
-  border: solid 1px white;
+  border-width: 1px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider {
   position: relative;
@@ -3958,7 +3960,7 @@ top:calc(50% - 8px);
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  border: solid 1px rgba(1, 1, 1, 0);
+  border: solid 0px rgba(1, 1, 1, 0);
 }
 .kshf .belowCatChart > .catMapColorScale > .scaleBound {
   color: gray;

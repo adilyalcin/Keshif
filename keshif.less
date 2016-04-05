@@ -271,13 +271,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[dropSource="browser"]{
         > .attributePanel > .attributeList > .dropZone_AttribList{ display: block; }
       }
-//      &[dropattrtype~="unique"] {
+      &[dropattrtype~="unique"] {
         .recordDisplay[hasRecordView="false"]{
           .flex(1);
           min-height: 50px;
         }
         .dropZone_recordView{ display: block !important; }
-//      }
+      }
       &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
         .dropZone_textSearch{ display: block !important; }
       }
@@ -2068,6 +2068,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           stroke-width: 2px;
           stroke-linecap: butt;
           stroke-linejoin: miter;
+          pointer-events: none;
         }
         &[selection="selected"] {
           > .measure_Active{
@@ -2808,8 +2809,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         margin-left: -2px;
                         > .measurePercentControl{
                           bottom: -1px;
-                          width: 21px;
-                          left: -21px;
+                          width: 24px;
+                          left: -24px;
                           text-align: right;
                         }
                         > .relativeModeControl{
@@ -2885,7 +2886,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     .flex(1);
                     border: solid 1px rgba(1,1,1,0);
                     cursor: pointer;
-                    &:hover{ border: solid 1px white; }
+                    border: solid 0px white;
+                    &:hover{ border-width: 1px; }
                   }
                 }
                 > .intervalSlider{
@@ -3289,7 +3291,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .mapColorBlock{
           .flex(1);
-          border: solid 1px rgba(1, 1, 1, 0);
+          border: solid 0px rgba(1, 1, 1, 0);
         }
         > .scaleBound{
           color: gray;
