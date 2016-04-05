@@ -8315,7 +8315,7 @@ var Summary_Interval_functions = {
 
       // pixel width settings...
       this.height_hist = 1; // Initial width (will be updated later...)
-      this.height_hist_min = 15; // Minimum possible histogram height
+      this.height_hist_min = 10; // Minimum possible histogram height
       this.height_hist_max = 100; // Maximim possible histogram height
       this.height_slider = 12; // Slider height
       this.height_labels = 13; // Height for labels
