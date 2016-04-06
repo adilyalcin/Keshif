@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
+window.onbeforeunload = function () { return "Exiting/reloading this page will clear this browser. Are you sure?"; };
+
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",

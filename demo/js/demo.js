@@ -183,259 +183,290 @@ var _demo = {
 };
 
 // Based on ISO_3166 codes
+// ISO 3166-1 numeric
+// ISO 3166-1 alpha-2
+kshf.Countries = {
+  index_alpha: {},
+  index_num: {},
+  index_name: {},
+  data: [
+    { alpha: 'AD', num: 020, name: "Andorra" },
+    { alpha: 'AE', num: 784, name: "United Arab Emirates" },
+    { alpha: 'AF', num: 004, name: "Afghanistan" },
+    { alpha: 'AG', num: 028, name: "Antigua and Barbuda" },
+    { alpha: 'AI', num: 660, name: "Anguilla" },
+    { alpha: 'AL', num: 008, name: "Albania" },
+    { alpha: 'AM', num: 051, name: "Armenia" },
+    { alpha: 'AO', num: 024, name: "Angola" },
+    { alpha: 'AQ', num: 010, name: "Antarctica" },
+    { alpha: 'AR', num: 032, name: "Argentina" },
+    { alpha: 'AS', num: 016, name: "American Samoa" },
+    { alpha: 'AT', num: 040, name: "Austria" },
+    { alpha: 'AU', num: 036, name: "Australia" },
+    { alpha: 'AW', num: 533, name: "Aruba" },
+    { alpha: 'AX', num: 248, name: "Åland Islands" },
+    { alpha: 'AZ', num: 031, name: "Azerbaijan" },
+    { alpha: 'BA', num: 070, name: "Bosnia and Herzegovina" },
+    { alpha: 'BB', num: 052, name: "Barbados" },
+    { alpha: 'BD', num: 050, name: "Bangladesh" },
+    { alpha: 'BE', num: 056, name: "Belgium" },
+    { alpha: 'BF', num: 854, name: "Burkina Faso" },
+    { alpha: 'BG', num: 100, name: "Bulgaria" },
+    { alpha: 'BH', num: 048, name: "Bahrain" },
+    { alpha: 'BI', num: 108, name: "Burundi" },
+    { alpha: 'BJ', num: 204, name: "Benin" },
+    { alpha: 'BL', num: 652, name: "Saint Barthélemy" },
+    { alpha: 'BM', num: 060, name: "Bermuda" },
+    { alpha: 'BN', num: 096, name: "Brunei Darussalam" },
+    { alpha: 'BO', num: 068, name: "Bolivia, Plurinational State of" },
+    { alpha: 'BQ', num: 535, name: "Bonaire, Sint Eustatius and Saba" },
+    { alpha: 'BR', num: 076, name: "Brazil" },
+    { alpha: 'BS', num: 044, name: "Bahamas" },
+    { alpha: 'BT', num: 064, name: "Bhutan" },
+    { alpha: 'BV', num: 074, name: "Bouvet Island" },
+    { alpha: 'BW', num: 072, name: "Botswana" },
+    { alpha: 'BY', num: 112, name: "Belarus" },
+    { alpha: 'BZ', num: 084, name: "Belize" },
+    { alpha: 'CA', num: 124, name: "Canada" },
+    { alpha: 'CC', num: 166, name: "Cocos (Keeling) Islands" },
+    { alpha: 'CD', num: 180, name: "Congo, the Democratic Republic of the" },
+    { alpha: 'CF', num: 140, name: "Central African Republic" },
+    { alpha: 'CG', num: 178, name: "Congo" },
+    { alpha: 'CH', num: 756, name: "Switzerland" },
+    { alpha: 'CI', num: 384, name: "Côte d'Ivoire" },
+    { alpha: 'CK', num: 184, name: "Cook Islands" },
+    { alpha: 'CL', num: 152, name: "Chile" },
+    { alpha: 'CM', num: 120, name: "Cameroon" },
+    { alpha: 'CN', num: 156, name: "China" },
+    { alpha: 'CO', num: 170, name: "Colombia" },
+    { alpha: 'CR', num: 188, name: "Costa Rica" },
+    { alpha: 'CU', num: 192, name: "Cuba" },
+    { alpha: 'CV', num: 132, name: "Cabo Verde" },
+    { alpha: 'CW', num: 531, name: "Curaçao" },
+    { alpha: 'CX', num: 162, name: "Christmas Island" },
+    { alpha: 'CY', num: 196, name: "Cyprus" },
+    { alpha: 'CZ', num: 203, name: "Czech Republic" },
+    { alpha: 'DE', num: 276, name: "Germany" },
+    { alpha: 'DJ', num: 262, name: "Djibouti" },
+    { alpha: 'DK', num: 208, name: "Denmark" },
+    { alpha: 'DM', num: 212, name: "Dominica" },
+    { alpha: 'DO', num: 214, name: "Dominican Republic" },
+    { alpha: 'DZ', num: 012, name: "Algeria" },
+    { alpha: 'EC', num: 218, name: "Ecuador" },
+    { alpha: 'EE', num: 233, name: "Estonia" },
+    { alpha: 'EG', num: 818, name: "Egypt" },
+    { alpha: 'EH', num: 732, name: "Western Sahara" },
+    { alpha: 'ER', num: 232, name: "Eritrea" },
+    { alpha: 'ES', num: 724, name: "Spain" },
+    { alpha: 'ET', num: 231, name: "Ethiopia" },
+    { alpha: 'FI', num: 246, name: "Finland" },
+    { alpha: 'FJ', num: 242, name: "Fiji" },
+    { alpha: 'FK', num: 238, name: "Falkland Islands (Malvinas)" },
+    { alpha: 'FM', num: 583, name: "Micronesia, Federated States of" },
+    { alpha: 'FO', num: 234, name: "Faroe Islands" },
+    { alpha: 'FR', num: 250, name: "France" },
+    { alpha: 'GA', num: 266, name: "Gabon" },
+    { alpha: 'GB', num: 826, name: "United Kingdom of Great Britain and Northern Ireland" },
+    { alpha: 'GD', num: 308, name: "Grenada" },
+    { alpha: 'GE', num: 268, name: "Georgia" },
+    { alpha: 'GF', num: 254, name: "French Guiana" },
+    { alpha: 'GG', num: 831, name: "Guernsey" },
+    { alpha: 'GH', num: 288, name: "Ghana" },
+    { alpha: 'GI', num: 292, name: "Gibraltar" },
+    { alpha: 'GL', num: 304, name: "Greenland" },
+    { alpha: 'GM', num: 270, name: "Gambia" },
+    { alpha: 'GN', num: 324, name: "Guinea" },
+    { alpha: 'GP', num: 312, name: "Guadeloupe" },
+    { alpha: 'GQ', num: 226, name: "Equatorial Guinea" },
+    { alpha: 'GR', num: 300, name: "Greece" },
+    { alpha: 'GS', num: 239, name: "South Georgia and the South Sandwich Islands" },
+    { alpha: 'GT', num: 320, name: "Guatemala" },
+    { alpha: 'GU', num: 316, name: "Guam" },
+    { alpha: 'GW', num: 624, name: "Guinea-Bissau" },
+    { alpha: 'GY', num: 328, name: "Guyana" },
+    { alpha: 'HK', num: 344, name: "Hong Kong" },
+    { alpha: 'HM', num: 334, name: "Heard Island and McDonald Islands" },
+    { alpha: 'HN', num: 340, name: "Honduras" },
+    { alpha: 'HR', num: 191, name: "Croatia" },
+    { alpha: 'HT', num: 332, name: "Haiti" },
+    { alpha: 'HU', num: 348, name: "Hungary" },
+    { alpha: 'ID', num: 360, name: "Indonesia" },
+    { alpha: 'IE', num: 372, name: "Ireland" },
+    { alpha: 'IL', num: 376, name: "Israel" },
+    { alpha: 'IM', num: 833, name: "Isle of Man" },
+    { alpha: 'IN', num: 356, name: "India" },
+    { alpha: 'IO', num: 086, name: "British Indian Ocean Territory" },
+    { alpha: 'IQ', num: 368, name: "Iraq" },
+    { alpha: 'IR', num: 364, name: "Iran, Islamic Republic of" },
+    { alpha: 'IS', num: 352, name: "Iceland" },
+    { alpha: 'IT', num: 380, name: "Italy" },
+    { alpha: 'JE', num: 832, name: "Jersey" },
+    { alpha: 'JM', num: 388, name: "Jamaica" },
+    { alpha: 'JO', num: 400, name: "Jordan" },
+    { alpha: 'JP', num: 392, name: "Japan" },
+    { alpha: 'KE', num: 404, name: "Kenya" },
+    { alpha: 'KG', num: 417, name: "Kyrgyzstan" },
+    { alpha: 'KH', num: 116, name: "Cambodia" },
+    { alpha: 'KI', num: 296, name: "Kiribati" },
+    { alpha: 'KM', num: 174, name: "Comoros" },
+    { alpha: 'KN', num: 659, name: "Saint Kitts and Nevis" },
+    { alpha: 'KP', num: 408, name: "Korea, Democratic People's Republic of" },
+    { alpha: 'KR', num: 410, name: "Korea, Republic of" },
+    { alpha: 'KW', num: 414, name: "Kuwait" },
+    { alpha: 'KY', num: 136, name: "Cayman Islands" },
+    { alpha: 'KZ', num: 398, name: "Kazakhstan" },
+    { alpha: 'LA', num: 428, name: "Lao People's Democratic Republic" },
+    { alpha: 'LB', num: 422, name: "Lebanon" },
+    { alpha: 'LC', num: 662, name: "Saint Lucia" },
+    { alpha: 'LI', num: 438, name: "Liechtenstein" },
+    { alpha: 'LK', num: 144, name: "Sri Lanka" },
+    { alpha: 'LR', num: 430, name: "Liberia" },
+    { alpha: 'LS', num: 426, name: "Lesotho" },
+    { alpha: 'LT', num: 440, name: "Lithuania" },
+    { alpha: 'LU', num: 442, name: "Luxembourg" },
+    { alpha: 'LV', num: 428, name: "Latvia" },
+    { alpha: 'LY', num: 434, name: "Libya" },
+    { alpha: 'MA', num: 504, name: "Morocco" },
+    { alpha: 'MC', num: 492, name: "Monaco" },
+    { alpha: 'MD', num: 498, name: "Moldova, Republic of" },
+    { alpha: 'ME', num: 499, name: "Montenegro" },
+    { alpha: 'MF', num: 663, name: "Saint Martin (French part)" },
+    { alpha: 'MG', num: 450, name: "Madagascar" },
+    { alpha: 'MH', num: 584, name: "Marshall Islands" },
+    { alpha: 'MK', num: 807, name: "Macedonia, the former Yugoslav Republic of" },
+    { alpha: 'ML', num: 466, name: "Mali" },
+    { alpha: 'MM', num: 104, name: "Myanmar" },
+    { alpha: 'MN', num: 496, name: "Mongolia" },
+    { alpha: 'MO', num: 446, name: "Macao" },
+    { alpha: 'MP', num: 580, name: "Northern Mariana Islands" },
+    { alpha: 'MQ', num: 474, name: "Martinique" },
+    { alpha: 'MR', num: 478, name: "Mauritania" },
+    { alpha: 'MS', num: 500, name: "Montserrat" },
+    { alpha: 'MT', num: 470, name: "Malta" },
+    { alpha: 'MU', num: 480, name: "Mauritius" },
+    { alpha: 'MV', num: 462, name: "Maldives" },
+    { alpha: 'MW', num: 454, name: "Malawi" },
+    { alpha: 'MX', num: 484, name: "Mexico" },
+    { alpha: 'MY', num: 458, name: "Malaysia" },
+    { alpha: 'MZ', num: 508, name: "Mozambique" },
+    { alpha: 'NA', num: 516, name: "Namibia" },
+    { alpha: 'NC', num: 540, name: "New Caledonia" },
+    { alpha: 'NE', num: 562, name: "Niger" },
+    { alpha: 'NF', num: 574, name: "Norfolk Island" },
+    { alpha: 'NG', num: 566, name: "Nigeria" },
+    { alpha: 'NI', num: 558, name: "Nicaragua" },
+    { alpha: 'NL', num: 528, name: "Netherlands" },
+    { alpha: 'NO', num: 578, name: "Norway" },
+    { alpha: 'NP', num: 524, name: "Nepal" },
+    { alpha: 'NR', num: 520, name: "Nauru" },
+    { alpha: 'NU', num: 570, name: "Niue" },
+    { alpha: 'NZ', num: 554, name: "New Zealand" },
+    { alpha: 'OM', num: 512, name: "Oman" },
+    { alpha: 'PA', num: 591, name: "Panama" },
+    { alpha: 'PE', num: 604, name: "Peru" },
+    { alpha: 'PF', num: 258, name: "French Polynesia" },
+    { alpha: 'PG', num: 598, name: "Papua New Guinea" },
+    { alpha: 'PH', num: 608, name: "Philippines" },
+    { alpha: 'PK', num: 586, name: "Pakistan" },
+    { alpha: 'PL', num: 616, name: "Poland" },
+    { alpha: 'PM', num: 666, name: "Saint Pierre and Miquelon" },
+    { alpha: 'PN', num: 612, name: "Pitcairn" },
+    { alpha: 'PR', num: 630, name: "Puerto Rico" },
+    { alpha: 'PS', num: 275, name: "Palestine, State of" },
+    { alpha: 'PT', num: 620, name: "Portugal" },
+    { alpha: 'PW', num: 585, name: "Palau" },
+    { alpha: 'PY', num: 600, name: "Paraguay" },
+    { alpha: 'QA', num: 634, name: "Qatar" },
+    { alpha: 'RE', num: 638, name: "Réunion" },
+    { alpha: 'RO', num: 642, name: "Romania" },
+    { alpha: 'RS', num: 688, name: "Serbia" },
+    { alpha: 'RU', num: 643, name: "Russian Federation" },
+    { alpha: 'RW', num: 646, name: "Rwanda" },
+    { alpha: 'SA', num: 682, name: "Saudi Arabia" },
+    { alpha: 'SB', num: 090, name: "Solomon Islands" },
+    { alpha: 'SC', num: 690, name: "Seychelles" },
+    { alpha: 'SD', num: 729, name: "Sudan" },
+    { alpha: 'SE', num: 752, name: "Sweden" },
+    { alpha: 'SG', num: 702, name: "Singapore" },
+    { alpha: 'SH', num: 654, name: "Saint Helena, Ascension and Tristan da Cunha" },
+    { alpha: 'SI', num: 705, name: "Slovenia" },
+    { alpha: 'SJ', num: 744, name: "Svalbard and Jan Mayen" },
+    { alpha: 'SK', num: 703, name: "Slovakia" },
+    { alpha: 'SL', num: 694, name: "Sierra Leone" },
+    { alpha: 'SM', num: 674, name: "San Marino" },
+    { alpha: 'SN', num: 686, name: "Senegal" },
+    { alpha: 'SO', num: 706, name: "Somalia" },
+    { alpha: 'SR', num: 740, name: "Suriname" },
+    { alpha: 'SS', num: 728, name: "South Sudan" },
+    { alpha: 'ST', num: 678, name: "Sao Tome and Principe" },
+    { alpha: 'SV', num: 222, name: "El Salvador" },
+    { alpha: 'SX', num: 534, name: "Sint Maarten (Dutch part)" },
+    { alpha: 'SY', num: 760, name: "Syrian Arab Republic" },
+    { alpha: 'SZ', num: 748, name: "Swaziland" },
+    { alpha: 'TC', num: 796, name: "Turks and Caicos Islands" },
+    { alpha: 'TD', num: 144, name: "Chad" },
+    { alpha: 'TF', num: 260, name: "French Southern Territories" },
+    { alpha: 'TG', num: 768, name: "Togo" },
+    { alpha: 'TH', num: 764, name: "Thailand" },
+    { alpha: 'TJ', num: 762, name: "Tajikistan" },
+    { alpha: 'TK', num: 772, name: "Tokelau" },
+    { alpha: 'TL', num: 626, name: "Timor-Leste" },
+    { alpha: 'TM', num: 795, name: "Turkmenistan" },
+    { alpha: 'TN', num: 788, name: "Tunisia" },
+    { alpha: 'TO', num: 776, name: "Tonga" },
+    { alpha: 'TR', num: 792, name: "Turkey" },
+    { alpha: 'TT', num: 780, name: "Trinidad and Tobago" },
+    { alpha: 'TV', num: 798, name: "Tuvalu" },
+    { alpha: 'TW', num: 158, name: "Taiwan, Province of China" },
+    { alpha: 'TZ', num: 834, name: "Tanzania, United Republic of" },
+    { alpha: 'UA', num: 804, name: "Ukraine" },
+    { alpha: 'UG', num: 800, name: "Uganda" },
+    { alpha: 'UM', num: 581, name: "United States Minor Outlying Islands" },
+    { alpha: 'US', num: 840, name: "United States of America" },
+    { alpha: 'UY', num: 858, name: "Uruguay" },
+    { alpha: 'UZ', num: 860, name: "Uzbekistan" },
+    { alpha: 'VA', num: 336, name: "Holy See" },
+    { alpha: 'VC', num: 679, name: "Saint Vincent and the Grenadines" },
+    { alpha: 'VE', num: 862, name: "Venezuela, Bolivarian Republic of" },
+    { alpha: 'VG', num: 092, name: "Virgin Islands, British" },
+    { alpha: 'VI', num: 850, name: "Virgin Islands, U.S." },
+    { alpha: 'VN', num: 704, name: "Viet Nam" },
+    { alpha: 'VU', num: 548, name: "Vanuatu" },
+    { alpha: 'WF', num: 876, name: "Wallis and Futuna" },
+    { alpha: 'WS', num: 882, name: "Samoa" },
+    { alpha: 'YE', num: 887, name: "Yemen" },
+    { alpha: 'YT', num: 175, name: "Mayotte" },
+    { alpha: 'ZA', num: 710, name: "South Africa" },
+    { alpha: 'ZM', num: 894, name: "Zambia" },
+    { alpha: 'ZW', num: 716, name: "Zimbabwe" },
+  ],
+  loadGeo: function(){
+    $.ajax({
+      // Load state geometries
+      url: 'data/world-countries.json',
+      async: false,
+      success: function(topojsonData){
+        topojson.feature(topojsonData, topojsonData.objects.countries)
+          .features.forEach(function(feature){
+            var country = kshf.Countries.index_num[feature.id];
+            if(country) country.geo = feature;
+          });
+      }
+    });
+  }
+};
+
+kshf.Countries.data.forEach(function(s){
+  kshf.Countries.index_alpha[s.alpha] = s;
+  kshf.Countries.index_num  [s.num  ] = s;
+  kshf.Countries.index_name [s.name ] = s;
+});
+
+
 function getCountryName(v){
-    switch(v){
-        case 'AD': return "Andorra";
-        case 'AE': return "United Arab Emirates";
-        case 'AF': return "Afghanistan";
-        case 'AG': return "Antigua and Barbuda";
-        case 'AI': return "Anguilla";
-        case 'AL': return "Albania";
-        case 'AM': return "Armenia";
-        case 'AO': return "Angola";
-        case 'AQ': return "Antarctica";
-        case 'AR': return "Argentina";
-        case 'AS': return "American Samoa";
-        case 'AT': return "Austria";
-        case 'AU': return "Australia";
-        case 'AW': return "Aruba";
-        case 'AX': return "Åland Islands";
-        case 'AZ': return "Azerbaijan";
-        case 'BA': return "Bosnia and Herzegovina";
-        case 'BB': return "Barbados";
-        case 'BD': return "Bangladesh";
-        case 'BE': return "Belgium";
-        case 'BF': return "Burkina Faso";
-        case 'BG': return "Bulgaria";
-        case 'BH': return "Bahrain";
-        case 'BI': return "Burundi";
-        case 'BJ': return "Benin";
-        case 'BL': return "Saint Barthélemy";
-        case 'BM': return "Bermuda";
-        case 'BN': return "Brunei Darussalam";
-        case 'BO': return "Bolivia, Plurinational State of";
-        case 'BQ': return "Bonaire, Sint Eustatius and Saba";
-        case 'BR': return "Brazil";
-        case 'BS': return "Bahamas";
-        case 'BT': return "Bhutan";
-        case 'BV': return "Bouvet Island";
-        case 'BW': return "Botswana";
-        case 'BY': return "Belarus";
-        case 'BZ': return "Belize";
-        case 'CA': return "Canada";
-        case 'CC': return "Cocos (Keeling) Islands";
-        case 'CD': return "Congo, the Democratic Republic of the";
-        case 'CF': return "Central African Republic";
-        case 'CG': return "Congo";
-        case 'CH': return "Switzerland";
-        case 'CI': return "Côte d'Ivoire";
-        case 'CK': return "Cook Islands";
-        case 'CL': return "Chile";
-        case 'CM': return "Cameroon";
-        case 'CN': return "China";
-        case 'CO': return "Colombia";
-        case 'CR': return "Costa Rica";
-        case 'CU': return "Cuba";
-        case 'CV': return "Cabo Verde";
-        case 'CW': return "Curaçao";
-        case 'CX': return "Christmas Island";
-        case 'CY': return "Cyprus";
-        case 'CZ': return "Czech Republic";
-        case 'DE': return "Germany";
-        case 'DJ': return "Djibouti";
-        case 'DK': return "Denmark";
-        case 'DM': return "Dominica";
-        case 'DO': return "Dominican Republic";
-        case 'DZ': return "Algeria";
-        case 'EC': return "Ecuador";
-        case 'EE': return "Estonia";
-        case 'EG': return "Egypt";
-        case 'EH': return "Western Sahara";
-        case 'ER': return "Eritrea";
-        case 'ES': return "Spain";
-        case 'ET': return "Ethiopia";
-        case 'FI': return "Finland";
-        case 'FJ': return "Fiji";
-        case 'FK': return "Falkland Islands (Malvinas)";
-        case 'FM': return "Micronesia, Federated States of";
-        case 'FO': return "Faroe Islands";
-        case 'FR': return "France";
-        case 'GA': return "Gabon";
-        case 'GB': return "United Kingdom of Great Britain and Northern Ireland";
-        case 'GD': return "Grenada";
-        case 'GE': return "Georgia";
-        case 'GF': return "French Guiana";
-        case 'GG': return "Guernsey";
-        case 'GH': return "Ghana";
-        case 'GI': return "Gibraltar";
-        case 'GL': return "Greenland";
-        case 'GM': return "Gambia";
-        case 'GN': return "Guinea";
-        case 'GP': return "Guadeloupe";
-        case 'GQ': return "Equatorial Guinea";
-        case 'GR': return "Greece";
-        case 'GS': return "South Georgia and the South Sandwich Islands";
-        case 'GT': return "Guatemala";
-        case 'GU': return "Guam";
-        case 'GW': return "Guinea-Bissau";
-        case 'GY': return "Guyana";
-        case 'HK': return "Hong Kong";
-        case 'HM': return "Heard Island and McDonald Islands";
-        case 'HN': return "Honduras";
-        case 'HR': return "Croatia";
-        case 'HT': return "Haiti";
-        case 'HU': return "Hungary";
-        case 'ID': return "Indonesia";
-        case 'IE': return "Ireland";
-        case 'IL': return "Israel";
-        case 'IM': return "Isle of Man";
-        case 'IN': return "India";
-        case 'IO': return "British Indian Ocean Territory";
-        case 'IQ': return "Iraq";
-        case 'IR': return "Iran, Islamic Republic of";
-        case 'IS': return "Iceland";
-        case 'IT': return "Italy";
-        case 'JE': return "Jersey";
-        case 'JM': return "Jamaica";
-        case 'JO': return "Jordan";
-        case 'JP': return "Japan";
-        case 'KE': return "Kenya";
-        case 'KG': return "Kyrgyzstan";
-        case 'KH': return "Cambodia";
-        case 'KI': return "Kiribati";
-        case 'KM': return "Comoros";
-        case 'KN': return "Saint Kitts and Nevis";
-        case 'KP': return "Korea, Democratic People's Republic of";
-        case 'KR': return "Korea, Republic of";
-        case 'KW': return "Kuwait";
-        case 'KY': return "Cayman Islands";
-        case 'KZ': return "Kazakhstan";
-        case 'LA': return "Lao People's Democratic Republic";
-        case 'LB': return "Lebanon";
-        case 'LC': return "Saint Lucia";
-        case 'LI': return "Liechtenstein";
-        case 'LK': return "Sri Lanka";
-        case 'LR': return "Liberia";
-        case 'LS': return "Lesotho";
-        case 'LT': return "Lithuania";
-        case 'LU': return "Luxembourg";
-        case 'LV': return "Latvia";
-        case 'LY': return "Libya";
-        case 'MA': return "Morocco";
-        case 'MC': return "Monaco";
-        case 'MD': return "Moldova, Republic of";
-        case 'ME': return "Montenegro";
-        case 'MF': return "Saint Martin (French part)";
-        case 'MG': return "Madagascar";
-        case 'MH': return "Marshall Islands";
-        case 'MK': return "Macedonia, the former Yugoslav Republic of";
-        case 'ML': return "Mali";
-        case 'MM': return "Myanmar";
-        case 'MN': return "Mongolia";
-        case 'MO': return "Macao";
-        case 'MP': return "Northern Mariana Islands";
-        case 'MQ': return "Martinique";
-        case 'MR': return "Mauritania";
-        case 'MS': return "Montserrat";
-        case 'MT': return "Malta";
-        case 'MU': return "Mauritius";
-        case 'MV': return "Maldives";
-        case 'MW': return "Malawi";
-        case 'MX': return "Mexico";
-        case 'MY': return "Malaysia";
-        case 'MZ': return "Mozambique";
-        case 'NA': return "Namibia";
-        case 'NC': return "New Caledonia";
-        case 'NE': return "Niger";
-        case 'NF': return "Norfolk Island";
-        case 'NG': return "Nigeria";
-        case 'NI': return "Nicaragua";
-        case 'NL': return "Netherlands";
-        case 'NO': return "Norway";
-        case 'NP': return "Nepal";
-        case 'NR': return "Nauru";
-        case 'NU': return "Niue";
-        case 'NZ': return "New Zealand";
-        case 'OM': return "Oman";
-        case 'PA': return "Panama";
-        case 'PE': return "Peru";
-        case 'PF': return "French Polynesia";
-        case 'PG': return "Papua New Guinea";
-        case 'PH': return "Philippines";
-        case 'PK': return "Pakistan";
-        case 'PL': return "Poland";
-        case 'PM': return "Saint Pierre and Miquelon";
-        case 'PN': return "Pitcairn";
-        case 'PR': return "Puerto Rico";
-        case 'PS': return "Palestine, State of";
-        case 'PT': return "Portugal";
-        case 'PW': return "Palau";
-        case 'PY': return "Paraguay";
-        case 'QA': return "Qatar";
-        case 'RE': return "Réunion";
-        case 'RO': return "Romania";
-        case 'RS': return "Serbia";
-        case 'RU': return "Russian Federation";
-        case 'RW': return "Rwanda";
-        case 'SA': return "Saudi Arabia";
-        case 'SB': return "Solomon Islands";
-        case 'SC': return "Seychelles";
-        case 'SD': return "Sudan";
-        case 'SE': return "Sweden";
-        case 'SG': return "Singapore";
-        case 'SH': return "Saint Helena, Ascension and Tristan da Cunha";
-        case 'SI': return "Slovenia";
-        case 'SJ': return "Svalbard and Jan Mayen";
-        case 'SK': return "Slovakia";
-        case 'SL': return "Sierra Leone";
-        case 'SM': return "San Marino";
-        case 'SN': return "Senegal";
-        case 'SO': return "Somalia";
-        case 'SR': return "Suriname";
-        case 'SS': return "South Sudan";
-        case 'ST': return "Sao Tome and Principe";
-        case 'SV': return "El Salvador";
-        case 'SX': return "Sint Maarten (Dutch part)";
-        case 'SY': return "Syrian Arab Republic";
-        case 'SZ': return "Swaziland";
-        case 'TC': return "Turks and Caicos Islands";
-        case 'TD': return "Chad";
-        case 'TF': return "French Southern Territories";
-        case 'TG': return "Togo";
-        case 'TH': return "Thailand";
-        case 'TJ': return "Tajikistan";
-        case 'TK': return "Tokelau";
-        case 'TL': return "Timor-Leste";
-        case 'TM': return "Turkmenistan";
-        case 'TN': return "Tunisia";
-        case 'TO': return "Tonga";
-        case 'TR': return "Turkey";
-        case 'TT': return "Trinidad and Tobago";
-        case 'TV': return "Tuvalu";
-        case 'TW': return "Taiwan, Province of China";
-        case 'TZ': return "Tanzania, United Republic of";
-        case 'UA': return "Ukraine";
-        case 'UG': return "Uganda";
-        case 'UM': return "United States Minor Outlying Islands";
-        case 'US': return "United States of America";
-        case 'UY': return "Uruguay";
-        case 'UZ': return "Uzbekistan";
-        case 'VA': return "Holy See";
-        case 'VC': return "Saint Vincent and the Grenadines";
-        case 'VE': return "Venezuela, Bolivarian Republic of";
-        case 'VG': return "Virgin Islands, British";
-        case 'VI': return "Virgin Islands, U.S.";
-        case 'VN': return "Viet Nam";
-        case 'VU': return "Vanuatu";
-        case 'WF': return "Wallis and Futuna";
-        case 'WS': return "Samoa";
-        case 'YE': return "Yemen";
-        case 'YT': return "Mayotte";
-        case 'ZA': return "South Africa";
-        case 'ZM': return "Zambia";
-        case 'ZW': return "Zimbabwe";
-        default  : return "Unkown: "+v;
-    }
+  var country = kshf.Countries.index_alpha[v];
+  if(country) return country.name;
+  return "Unknown: "+v;
 }
 
 function writeCookie(name,value,days){
