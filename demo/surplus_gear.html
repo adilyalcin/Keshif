@@ -109,7 +109,7 @@ $(document).ready( function() {
       sortBy: "Machine Gun",
       textSearch: 'county',
       recordView: "CombinedName",
-      geo: '_geo_',
+      geo: '_geo_', // equivalent to: function(){ return this._geo_; }. You can specify your own function here to return geo-feature.
     }
   });
 });

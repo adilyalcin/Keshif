@@ -61,8 +61,13 @@ var kshf = {
     attribPanelWidth: 220,
     previewTimeoutMS: 250,
     map: {
-      //"http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png",
-      //"http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      // 'http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'
+      // 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+      // 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+      // 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png'
+      // 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'
+      // 'http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg'
+      // 'http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg'
       tileTemplate: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
       attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', 
     },
@@ -1146,18 +1151,16 @@ kshf.RecordDisplay.prototype = {
     /** --  */
     map_projectRecords: function(){
       var me = this;
-      var _geo_ = this.config.geo;
-      this.DOM.kshfRecords.attr("d", function(record){ return me.recordGeoPath(record.data[_geo_]); });
+      this.DOM.kshfRecords.attr("d", function(record){ return me.recordGeoPath(record._geoFeat_); });
     },
     /** -- */
     map_zoomToActive: function(){
       // Insert the bounds for each record path into the bs
       var bs = [];
-      var _geo_ = this.config.geo;
       this.browser.records.forEach(function(record){
         if(!record.isWanted) return;
-        if(record._geoBounds_ === undefined) return;
-        var b = record._geoBounds_;
+        if(record._geoBound_ === undefined) return;
+        var b = record._geoBound_;
         if(isNaN(b[0][0])) return;
         // Change wrapping (US World wrap issue)
         if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
@@ -1178,6 +1181,27 @@ kshf.RecordDisplay.prototype = {
           zoom: {animate: true} 
         }
         );
+    },
+    /** -- */
+    initRecordGeoFeat: function(){
+      var _geo_ = this.config.geo;
+      if(typeof _geo_ === "string"){
+        var x=_geo_;
+        _geo_ = function(){ return this[x]; }
+      }
+      // Compute _geoBound_ of each record
+      this.browser.records.forEach(function(record){
+        var feature = _geo_.call(record.data);
+        if(feature) record._geoFeat_ = feature;
+      });
+    },
+    /** -- */
+    initRecordGeoBound: function(){
+      // Compute _geoBound_ of each record
+      this.browser.records.forEach(function(record){
+        var feature = record._geoFeat_;
+        if(feature) record._geoBound_ = d3.geo.bounds(feature);
+      });
     },
     /** -- */
     initDOM_MapView: function(){
@@ -1210,7 +1234,6 @@ kshf.RecordDisplay.prototype = {
         .on("movestart",function(){ me.DOM.recordGroup.style("display","none"); })
         .on("move",function(){
           // console.log("MapZoom: "+me.leafletRecordMap.getZoom());
-          // me.map_projectRecords()
         })
         .on("moveend",function(){
           me.DOM.recordGroup.style("display","block");
@@ -1228,13 +1251,8 @@ kshf.RecordDisplay.prototype = {
         }) 
       );
 
-      var _geo_ = this.config.geo;
-      // Compute geo-bohts of each record
-      this.browser.records.forEach(function(record){
-        var feature = record.data[_geo_];
-        if(typeof feature === 'undefined') return;
-        record._geoBounds_ = d3.geo.bounds(feature);
-      });
+      this.initRecordGeoFeat();
+      this.initRecordGeoBound();
 
       this.drawingFilter = false;
       this.DOM.recordMap_Base.select(".leaflet-tile-pane")
@@ -1289,9 +1307,9 @@ kshf.RecordDisplay.prototype = {
             me.spatialAggr_Highlight.records = [];
             me.browser.records.forEach(function(record){ 
               if(!record.isWanted) return;
-              if(record._geoBounds_ === undefined) return;
+              if(record._geoBound_ === undefined) return;
               // already have "bounds" variable
-              if(kshf.intersects(record._geoBounds_, bounds)){
+              if(kshf.intersects(record._geoBound_, bounds)){
                 me.spatialAggr_Highlight.records.push(record);
               } else {
                 record.remForHighlight(true);
@@ -1304,9 +1322,9 @@ kshf.RecordDisplay.prototype = {
           /*
           me.browser.records.forEach(function(record){
             if(!record.isWanted) return;
-            if(record._geoBounds_ === undefined) return;
+            if(record._geoBound_ === undefined) return;
             // already have "bounds" variable
-            if(kshf.intersects(record._geoBounds_, bounds)){
+            if(kshf.intersects(record._geoBound_, bounds)){
               //console.log(record.data.CombinedName);
             }
           });*/
@@ -1579,12 +1597,12 @@ kshf.RecordDisplay.prototype = {
           var bounds = me.spatialQuery.filter._bounds;
 
           me.browser.records.forEach(function(record){
-            if(record._geoBounds_ === undefined) {
+            if(record._geoBound_ === undefined) {
               record.setFilterCache(this.filterID, false);
               return;
             }
             // already have "bounds" variable
-            record.setFilterCache(this.filterID, kshf.intersects(record._geoBounds_, bounds));
+            record.setFilterCache(this.filterID, kshf.intersects(record._geoBound_, bounds));
           },this);
         },
         filterView_Detail: function(){
@@ -5110,7 +5128,7 @@ kshf.Browser.prototype = {
       if(!(aggr instanceof kshf.Aggregate)){
         _val = aggr;
       } else {
-        if(!aggr.isVisible) return "";
+        //if(!aggr.isVisible) return "";
         if(this.measureLabelType){
           _val = aggr.measure(this.measureLabelType);
         } else {
@@ -6383,7 +6401,12 @@ var Summary_Categorical_functions = {
       };
     }
     this._cats.sort(theSortFunc);
-    this._cats.forEach(function(cat,i){ cat.orderIndex=i; });
+
+    var lastRank = 0;
+    this._cats.forEach(function(cat,i){
+      cat.orderIndex_old = cat.orderIndex;
+      if(cat.measure('Active')!==0 || cat.isVisible) cat.orderIndex = lastRank++;
+    });
   },
 
   /** -- */
@@ -6817,7 +6840,7 @@ var Summary_Categorical_functions = {
 
             me.firstCatIndexInView = Math.floor(me.scrollTop_cache/me.heightRow_category);
             me.refreshScrollDisplayMore(me.firstCatIndexInView+me.catCount_InDisplay);
-            me.updateCatIsInView();
+            me.updateCatIsVisible();
             me.cullAttribs();
             me.refreshMeasureLabel();
           });
@@ -7459,7 +7482,7 @@ var Summary_Categorical_functions = {
 
       this.refreshScrollDisplayMore(this.firstCatIndexInView+this.catCount_InDisplay);
 
-      this.updateCatIsInView();
+      this.updateCatIsVisible();
       this.cullAttribs();
 
       this.DOM.headerGroup.select(".buttonSummaryExpand").style("display",
@@ -7759,7 +7782,7 @@ var Summary_Categorical_functions = {
         })
         .attr("title",me.catTooltip?function(_cat){ return me.catTooltip.call(_cat.data); }:null);
 
-      this.updateCatIsInView();
+      this.updateCatIsVisible();
 
       if(this.viewType==='list'){
         DOM_cats_new
@@ -7886,7 +7909,7 @@ var Summary_Categorical_functions = {
       }
     },
     /** -- */
-    updateCatIsInView: function(){
+    updateCatIsVisible: function(){
       var me=this;
       if(this.viewType==='map'){
         this._cats.forEach(function(_cat){
@@ -7932,19 +7955,18 @@ var Summary_Categorical_functions = {
       // The rest deals with updating UI
       if(this.DOM.aggrGlyphs===undefined) return;
 
-      this.updateCatIsInView();
+      this.updateCatIsVisible();
 
-      var xRemoveOffset = (this.panel.name==='right')?-1:-100; // disappear direction, depends on the panel location
+      var xRemoveOffset = -100; // disappear direction, depends on the panel location
       if(this.cbFacetSort) this.cbFacetSort.call(this);
 
-      // Items outside the view are not visible, chartBackground expand the box and makes the scroll bar visible if necessary.
+      // Categories outside the view are invisible, expand the background box and makes the scroll bar visible if necessary.
       this.DOM.chartBackground.style("height",this.getHeight_VisibleAttrib()+"px");
 
-      var attribGroupScroll = me.DOM.aggrGroup[0][0];
-      // always scrolls to top row automatically when re-sorted
-      if(this.scrollTop_cache!==0) kshf.Util.scrollToPos_do(attribGroupScroll,0);
+      // scroll to top when re-sorted
+      if(this.scrollTop_cache!==0) kshf.Util.scrollToPos_do(me.DOM.aggrGroup[0][0],0);
+
       this.refreshScrollDisplayMore(this.firstCatIndexInView+this.catCount_InDisplay);
-      this.refreshMeasureLabel();
 
       if(noAnim){
         this.DOM.aggrGlyphs.each(function(ctgry){
@@ -7958,62 +7980,64 @@ var Summary_Categorical_functions = {
           ctgry.posY = y;
           kshf.Util.setTransform(this,"translate("+x+"px,"+y+"px)");
         });
+
+        this.cullAttribs();
+
         return;
       }
 
-      setTimeout(function(){
-          // 1. Make items disappear
-          // Note: do not cull with number of items made visible.
-          // We are applying visible and block to ALL attributes as we animate the change
-          me.DOM.aggrGlyphs.each(function(ctgry){
-              if(ctgry.isActiveBefore && !ctgry.isActive){
-                  // disappear into left panel...
-                  this.style.opacity = 0;
-                  ctgry.posX = xRemoveOffset;
-                  ctgry.posY = ctgry.posY;
-                  kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
-              }
-              if(!ctgry.isActiveBefore && ctgry.isActive){
-                  // will be made visible...
-                  ctgry.posY = me.heightRow_category*ctgry.orderIndex;
-                  kshf.Util.setTransform(this,"translate("+xRemoveOffset+"px,"+ctgry.posY+"px)");
-              }
-              if(ctgry.isActive || ctgry.isActiveBefore){
-                  this.style.opacity = 0;
-                  this.style.visibility = "visible";
-                  this.style.display = "block";
-              }
+      if(sortDelay===undefined) sortDelay = 1000;
+      var perCatDelay = 30;
+
+      // Disappear animation
+      me.DOM.aggrGlyphs
+        .filter(function(ctgry){ return ctgry.isActiveBefore && !ctgry.isActive; })
+        .transition()
+          .duration(1)
+          .delay(sortDelay)
+          .each("end",function(ctgry){
+            this.style.opacity = 0;
+            ctgry.posX = xRemoveOffset;
+            ctgry.posY = ctgry.posY;
+            kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
           });
 
-          // 2. Re-sort
-          setTimeout(function(){
-              me.DOM.aggrGlyphs.each(function(ctgry){
-                  if(ctgry.isActive && ctgry.isActiveBefore){
-                      this.style.opacity = 1;
-                      ctgry.posX = 0;
-                      ctgry.posY = me.heightRow_category*ctgry.orderIndex;
-                      kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
-                  }
-              });
+      // Appear animation (initial position)
+      me.DOM.aggrGlyphs
+        .filter(function(ctgry){ return !ctgry.isActiveBefore && ctgry.isActive; })
+        .transition()
+          .duration(1)
+          .delay(sortDelay)
+          .each("end",function(ctgry){
+            this.style.opacity = 0;
+            ctgry.posX = xRemoveOffset;
+            ctgry.posY = ctgry.posY;
+            kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
+          });
 
-              // 3. Make items appear
-              setTimeout(function(){
-                  me.DOM.aggrGlyphs.each(function(ctgry){
-                      if(!ctgry.isActiveBefore && ctgry.isActive){
-                          this.style.opacity = 1;
-                          ctgry.posX = 0;
-                          ctgry.posY = me.heightRow_category*ctgry.orderIndex;
-                          kshf.Util.setTransform(this,
-                              "translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
-                      }
-                  });
-                  // 4. Apply culling
-                  setTimeout(function(){ me.cullAttribs();} , 700);
-              },(me.catCount_NowVisible>0)?300:0);
-
-          },(me.catCount_NowInvisible>0)?300:0);
-
-      }, (sortDelay===undefined) ? 1000 : sortDelay );
+      // Sort animation
+      me.DOM.aggrGlyphs
+        .filter(function(ctgry){ return ctgry.isActive; })
+        .transition()
+          .duration(1)
+          .delay(function(ctgry){
+            if(ctgry.isVisibleBefore && !ctgry.isVisible) return sortDelay;
+            var x = ctgry.isActiveBefore ? 0:(me.catCount_InDisplay-5)*perCatDelay; // appear animation is further delayed
+            return 100 + sortDelay + x + Math.min(ctgry.orderIndex,me.catCount_InDisplay+2) * perCatDelay; 
+          })
+          .each("end",function(ctgry){
+            if(ctgry.isVisible || ctgry.isVisibleBefore){
+              this.style.visibility = "visible";
+              this.style.display = "block";
+            } else {
+              this.style.visibility = "hidden";
+              this.style.display = "none";
+            }
+            this.style.opacity = 1;
+            ctgry.posX = 0;
+            ctgry.posY = me.heightRow_category*ctgry.orderIndex;
+            kshf.Util.setTransform(this,"translate("+ctgry.posX+"px,"+ctgry.posY+"px)");
+          });
     },
     /** -- */
     chartAxis_Measure_TickSkip: function(){
@@ -8571,20 +8595,20 @@ var Summary_Interval_functions = {
 
           var isFilteredCb;
           if(me.isFiltered_min() && me.isFiltered_max()){
-            if(this.max_inclusive)
+            if(me.stepTicks)
               isFilteredCb = function(v){ return v>=i_min && v<=i_max; };
             else
               isFilteredCb = function(v){ return v>=i_min && v<i_max; };
           } else if(me.isFiltered_min()){
             isFilteredCb = function(v){ return v>=i_min; };
           } else {
-            if(this.max_inclusive)
+            if(me.stepTicks)
               isFilteredCb = function(v){ return v<=i_max; };
             else
               isFilteredCb = function(v){ return v<i_max; };
           }
           if(me.stepTicks){
-            if(i_min+1===i_max){ isFilteredCb = function(v){ return v===i_min; }; }
+            if(i_min===i_max){ isFilteredCb = function(v){ return v===i_min; }; }
           }
 
           // TODO: Optimize: Check if the interval scale is extending/shrinking or completely updated...
@@ -8615,7 +8639,7 @@ var Summary_Interval_functions = {
         maxValue = this.summaryFilter.active.max;
       }
       if(this.stepTicks){
-        if(minValue+1===maxValue || aggr) {
+        if(minValue===maxValue || aggr) {
           return "<b>"+this.printWithUnitName(minValue)+"</b>";
         }
       }
@@ -9409,6 +9433,8 @@ var Summary_Interval_functions = {
         }, this);
         if(!this.stepTicks){
           this.histBins.pop(); // remove last bin
+        } else {
+          this.histBins.forEach(function(bin){ bin.maxV = bin.minV; });
         }
         // distribute records across bins
         this.filteredItems.forEach(function(record){
@@ -9742,172 +9768,173 @@ var Summary_Interval_functions = {
     },
     /** -- */
     initDOM_Slider: function(){
-        var me=this;
+      var me=this;
 
-        this.DOM.intervalSlider = this.DOM.summaryInterval.append("div").attr("class","intervalSlider");
+      this.DOM.intervalSlider = this.DOM.summaryInterval.append("div").attr("class","intervalSlider");
 
-        this.DOM.zoomControl = this.DOM.intervalSlider.append("span").attr("class","zoomControl fa")
-          .attr("sign","plus")
-          .each(function(d){
-            this.tipsy = new Tipsy(this, {
-              gravity: 'w', title: function(){ return (this.getAttribute("sign")==="plus")?"Zoom into range":"Zoom out"; }
+      this.DOM.zoomControl = this.DOM.intervalSlider.append("span").attr("class","zoomControl fa")
+        .attr("sign","plus")
+        .each(function(d){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'w', title: function(){ return (this.getAttribute("sign")==="plus")?"Zoom into range":"Zoom out"; }
+          });
+        })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          this.tipsy.hide();
+          me.setZoomed(this.getAttribute("sign")==="plus");
+        });
+
+      var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
+        .on("mousedown", function(){
+          if(d3.event.which !== 1) return; // only respond to left-click
+          me.browser.setNoAnim(true);
+          var e=this.parentNode;
+          var initPos = me.valueScale.invert(d3.mouse(e)[0]);
+          d3.select("body").style('cursor','ew-resize')
+            .on("mousemove", function() {
+                var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+              me.summaryFilter.active.min=d3.min([initPos,targetPos]);
+              me.summaryFilter.active.max=d3.max([initPos,targetPos]);
+              me.roundFilterRange();
+              me.refreshIntervalSlider();
+              // wait half second to update
+              if(this.timer) clearTimeout(this.timer);
+              me.summaryFilter.filteredBin = this;
+              this.timer = setTimeout(function(){
+                if(me.isFiltered_min() || me.isFiltered_max()){
+                  me.summaryFilter.addFilter();
+                } else {
+                  me.summaryFilter.clearFilter();
+                }
+              },250);
+            }).on("mouseup", function(){
+              me.browser.setNoAnim(false);
+              d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
             });
-          })
-          .on("mouseenter",function(){ this.tipsy.show(); })
-          .on("mouseleave",function(){ this.tipsy.hide(); })
-          .on("click",function(){
-            this.tipsy.hide();
-            me.setZoomed(this.getAttribute("sign")==="plus");
-          });
+          d3.event.preventDefault();
+        });
 
-        var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
-          .on("mousedown", function(){
-            if(d3.event.which !== 1) return; // only respond to left-click
-            me.browser.setNoAnim(true);
-            var e=this.parentNode;
-            var initPos = me.valueScale.invert(d3.mouse(e)[0]);
-            d3.select("body").style('cursor','ew-resize')
-              .on("mousemove", function() {
+      controlLine.append("span").attr("class","base total");
+      controlLine.append("span").attr("class","base active")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter }); })
+        // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
+        // because the size of the bar is set by scaling, not through width....
+        //.on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("mousedown", function(){
+          this.tipsy.hide();
+          if(d3.event.which !== 1) return; // only respond to left-click
+          if(me.scaleType==='time') return; // time is not supported for now.
+          var e=this.parentNode;
+          var initMin = me.summaryFilter.active.min;
+          var initMax = me.summaryFilter.active.max;
+          var initRange= initMax - initMin;
+          var initPos = d3.mouse(e)[0];
+
+          d3.select("body").style('cursor','ew-resize')
+            .on("mousemove", function() {
+              if(me.scaleType==='log'){
+                  var targetDif = d3.mouse(e)[0]-initPos;
+                  me.summaryFilter.active.min =
+                      me.valueScale.invert(me.valueScale(initMin)+targetDif);
+                  me.summaryFilter.active.max =
+                      me.valueScale.invert(me.valueScale(initMax)+targetDif);
+
+              } else if(me.scaleType==='time'){
+                  // TODO
+                  return;
+              } else {
                   var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                me.summaryFilter.active.min=d3.min([initPos,targetPos]);
-                me.summaryFilter.active.max=d3.max([initPos,targetPos]);
-                me.roundFilterRange();
-                me.refreshIntervalSlider();
-                // wait half second to update
-                if(this.timer) clearTimeout(this.timer);
-                me.summaryFilter.filteredBin = this;
-                this.timer = setTimeout(function(){
+                  var targetDif = targetPos-me.valueScale.invert(initPos);
+
+                  me.summaryFilter.active.min = initMin+targetDif;
+                  me.summaryFilter.active.max = initMax+targetDif;
+                  if(me.summaryFilter.active.min<me.intervalRange.active.min){
+                      me.summaryFilter.active.min=me.intervalRange.active.min;
+                      me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
+                  }
+                  if(me.summaryFilter.active.max>me.intervalRange.active.max){
+                      me.summaryFilter.active.max=me.intervalRange.active.max;
+                      me.summaryFilter.active.min=me.intervalRange.active.max-initRange;
+                  }
+              }
+
+              me.roundFilterRange();
+              me.refreshIntervalSlider();
+
+              // wait half second to update
+              if(this.timer) clearTimeout(this.timer);
+              me.summaryFilter.filteredBin = this;
+              this.timer = setTimeout(function(){
                   if(me.isFiltered_min() || me.isFiltered_max()){
-                    me.summaryFilter.addFilter();
-                  } else {
-                    me.summaryFilter.clearFilter();
+                      me.summaryFilter.addFilter();
+                  } else{
+                      me.summaryFilter.clearFilter();
                   }
-                },250);
-              }).on("mouseup", function(){
-                me.browser.setNoAnim(false);
-                d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-              });
-            d3.event.preventDefault();
-          });
+              },200);
+            }).on("mouseup", function(){
+              d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+            });
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        });
 
-        controlLine.append("span").attr("class","base total");
-        controlLine.append("span").attr("class","base active")
-          .each(function(){ this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter }); })
-          // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
-          // because the size of the bar is set by scaling, not through width....
-          //.on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("mousedown", function(){
-              this.tipsy.hide();
-              if(d3.event.which !== 1) return; // only respond to left-click
-              if(me.scaleType==='time') return; // time is not supported for now.
-              var e=this.parentNode;
-              var initMin = me.summaryFilter.active.min;
-              var initMax = me.summaryFilter.active.max;
-              var initRange= initMax - initMin;
-              var initPos = d3.mouse(e)[0];
+      controlLine.selectAll(".handle").data(['min','max']).enter()
+        .append("span").attr("class",function(d){ return "handle "+d; })
+        .each(function(d,i){
+          this.tipsy = new Tipsy(this, { gravity: i==0?"w":"e", title: kshf.lang.cur.DragToFilter });
+        })
+        .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("mousedown", function(d,i){
+          this.tipsy.hide();
+          if(d3.event.which !== 1) return; // only respond to left-click
 
-              d3.select("body").style('cursor','ew-resize')
-                .on("mousemove", function() {
-                  if(me.scaleType==='log'){
-                      var targetDif = d3.mouse(e)[0]-initPos;
-                      me.summaryFilter.active.min =
-                          me.valueScale.invert(me.valueScale(initMin)+targetDif);
-                      me.summaryFilter.active.max =
-                          me.valueScale.invert(me.valueScale(initMax)+targetDif);
+          var mee = this;
+          var e=this.parentNode;
+          d3.select("body").style('cursor','ew-resize')
+            .on("mousemove", function() {
+              mee.dragging = true;
+              var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+              if(d==='max' && me.stepTicks) targetPos--;
+              me.summaryFilter.active[d] = targetPos;
+              // Swap is min > max
+              if(me.summaryFilter.active.min>me.summaryFilter.active.max){
+                var t=me.summaryFilter.active.min;
+                me.summaryFilter.active.min = me.summaryFilter.active.max;
+                me.summaryFilter.active.max = t;
+                  if(d==='min') d='max'; else d='min';
+              }
+              me.roundFilterRange();
+              me.refreshIntervalSlider();
+              // wait half second to update
+              if(this.timer) clearTimeout(this.timer);
+              me.summaryFilter.filteredBin = this;
+              this.timer = setTimeout( function(){
+                if(me.isFiltered_min() || me.isFiltered_max()){
+                  me.summaryFilter.addFilter();
+                } else {
+                  me.summaryFilter.clearFilter();
+                }
+              },200);
+            }).on("mouseup", function(){
+              mee.dragging = false;
+              d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+            });
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .append("span").attr("class","rangeLimitOnChart");
 
-                  } else if(me.scaleType==='time'){
-                      // TODO
-                      return;
-                  } else {
-                      var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                      var targetDif = targetPos-me.valueScale.invert(initPos);
+      this.DOM.recordValue = controlLine.append("div").attr("class","recordValue");
+      this.DOM.recordValue.append("span").attr("class","recordValueScaleMark");
+      this.DOM.recordValueText = this.DOM.recordValue
+        .append("span").attr("class","recordValueText")
+        .append("span").attr("class","recordValueText-v");
 
-                      me.summaryFilter.active.min = initMin+targetDif;
-                      me.summaryFilter.active.max = initMax+targetDif;
-                      if(me.summaryFilter.active.min<me.intervalRange.active.min){
-                          me.summaryFilter.active.min=me.intervalRange.active.min;
-                          me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
-                      }
-                      if(me.summaryFilter.active.max>me.intervalRange.active.max){
-                          me.summaryFilter.active.max=me.intervalRange.active.max;
-                          me.summaryFilter.active.min=me.intervalRange.active.max-initRange;
-                      }
-                  }
-
-                  me.roundFilterRange();
-                  me.refreshIntervalSlider();
-
-                  // wait half second to update
-                  if(this.timer) clearTimeout(this.timer);
-                  me.summaryFilter.filteredBin = this;
-                  this.timer = setTimeout(function(){
-                      if(me.isFiltered_min() || me.isFiltered_max()){
-                          me.summaryFilter.addFilter();
-                      } else{
-                          me.summaryFilter.clearFilter();
-                      }
-                  },200);
-                }).on("mouseup", function(){
-                  d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                });
-              d3.event.preventDefault();
-              d3.event.stopPropagation();
-          });
-
-        controlLine.selectAll(".handle").data(['min','max']).enter()
-            .append("span").attr("class",function(d){ return "handle "+d; })
-            .each(function(d,i){
-                this.tipsy = new Tipsy(this, { gravity: i==0?"w":"e", title: kshf.lang.cur.DragToFilter });
-            })
-            .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
-            .on("mouseout" ,function(){ this.tipsy.hide(); })
-            .on("mousedown", function(d,i){
-                this.tipsy.hide();
-                if(d3.event.which !== 1) return; // only respond to left-click
-
-                var mee = this;
-                var e=this.parentNode;
-                d3.select("body").style('cursor','ew-resize')
-                    .on("mousemove", function() {
-                        mee.dragging = true;
-                        var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                        me.summaryFilter.active[d] = targetPos;
-                        // Swap is min > max
-                        if(me.summaryFilter.active.min>me.summaryFilter.active.max){
-                            var t=me.summaryFilter.active.min;
-                            me.summaryFilter.active.min = me.summaryFilter.active.max;
-                            me.summaryFilter.active.max = t;
-                            if(d==='min') d='max'; else d='min';
-                        }
-                        me.roundFilterRange();
-                        me.refreshIntervalSlider();
-                        // wait half second to update
-                        if(this.timer) clearTimeout(this.timer);
-                        me.summaryFilter.filteredBin = this;
-                        this.timer = setTimeout( function(){
-                            if(me.isFiltered_min() || me.isFiltered_max()){
-                                me.summaryFilter.addFilter();
-                            } else {
-                                me.summaryFilter.clearFilter();
-                            }
-                        },200);
-                    }).on("mouseup", function(){
-                        mee.dragging = false;
-                        d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-                    });
-                d3.event.preventDefault();
-                d3.event.stopPropagation();
-            })
-            .append("span").attr("class","rangeLimitOnChart");
-
-        this.DOM.recordValue = controlLine.append("div").attr("class","recordValue");
-        this.DOM.recordValue.append("span").attr("class","recordValueScaleMark");
-        this.DOM.recordValueText = this.DOM.recordValue
-            .append("span").attr("class","recordValueText")
-            .append("span").attr("class","recordValueText-v");
-
-        this.DOM.labelGroup = this.DOM.intervalSlider.append("div").attr("class","labelGroup");
+      this.DOM.labelGroup = this.DOM.intervalSlider.append("div").attr("class","labelGroup");
     },
     /** -- */
     updateBarScale2Active: function(){
@@ -10292,9 +10319,9 @@ var Summary_Interval_functions = {
       }
       if(this.summaryFilter.active.max===this.intervalRange.max){
         maxPos = this.valueScale.range()[1];
-        if(this.stepTicks){
-          maxPos += this.getWidth_Bin();
-        }
+      }
+      if(this.stepTicks){
+        maxPos += this.getWidth_Bin();
       }
 
       this.DOM.intervalSlider.select(".base.active")
