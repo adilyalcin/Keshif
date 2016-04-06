@@ -34,10 +34,7 @@ google.setOnLoadCallback( function(){
     },
     summaries: [
       "Party",
-      { name: "State of Birth",
-        catMap: function(){
-         return US_States.index_name[this.id].geo;
-        } },
+      { name: "State of Birth", catMap: function(){ return US_States.index_name[this.id].geo; } },
       "Occupation",
       { name: "College", panel: 'right' },
       { name: "Religion", panel: 'right' },

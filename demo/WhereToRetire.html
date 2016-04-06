@@ -35,13 +35,9 @@ google.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "State", 
-        value: function(){
-          var s=this.State;
-          if(s!=="HI" && s!=="AK") return s; // skipping hawai and alaska
-        },
         panel: "left", viewAs: "map",
         catLabel: function(){ return US_States.index_code[this.id].name; },
-        catMap  : function(){ return US_States.index_code[this.id].geo;  } 
+        catMap  : function(){ if(this.id!=="HI" && this.id!=="AK") return US_States.index_code[this.id].geo; } 
         },
       { name: "Median Home Value", value: "Home Value", unitName: "$", panel: "left"},
       { name: "Population", catSortBy: [ "1,000-10,000", "10,000-25,000", "25,000-50,000", "50,000+"], panel: "right" },
