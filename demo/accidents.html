@@ -48,9 +48,37 @@ google.setOnLoadCallback( function(){
           5: "Flood",
           "-1": "Unknown",
         } },
-      { name: "Light Condition", catTableName: "LightCond", catLabel: "name" },
-      { name: "Weather Condition", catTableName: "WeatherCond", catLabel: "name" },
-      { name: "Special Condition", catTableName: "SpecCond", catLabel: "name", panel: 'right' },
+      { name: "Light Condition", 
+        catLabel: {
+          1: "Daylight",
+          4: "Dark, street lights lit",
+          5: "Dark, street lights unlit",
+          6: "Dark, no street lights",
+          7: "Dark, ? street lights"
+        } },
+      { name: "Weather Condition", 
+        catLabel: {
+          1: "Fine",
+          2: "Raining",
+          3: "Snowing",
+          4: "Fine, high winds",
+          5: "Raining, high winds",
+          6: "Snowing, high winds",
+          7: "Fog or mist",
+          8: "Other",
+          9: "Unknown"
+        } },
+      { name: "Special Condition", panel: 'right', 
+        catLabel: {
+          0: "None",
+          1: "Traffic signal out",
+          2: "Traffic signal defective",
+          3: "Signing/marking defective",
+          4: "Roadworks",
+          5: "Road surface defective",
+          6: "Oil or diesel",
+          7: "Mud Mud",
+        } },
       { name: "Junction Detail", panel: 'right',
         catLabel: {
           1: "Roundabout",
@@ -78,7 +106,13 @@ google.setOnLoadCallback( function(){
 	</head>
   <body>
     <div class="contents">
+      <div id="demo_PageTitle">Traffic Accidents in the U.K. - Police Force 4, 2012</div>
       <div id="demo_Browser"></div>
       </div>
+
+      <div id="demo_Infobox">
+        Data from <a href="https://data.gov.uk/dataset/road-accidents-safety-data" target='_blank'>data.gov.uk</a>, published with 
+        <a href='http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/' target='_blank'>Open Government License</a>.
+        </div>
   </body>
 </html>

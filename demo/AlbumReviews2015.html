@@ -84,7 +84,7 @@ google.setOnLoadCallback(function(){
     recordDisplay: {
       sortColWidth: 25,
       sortBy: { name: "AoTY", inverse: false},
-      textSearch: { name: "Artist & Album", value: function(){return this["Artist"]+" "+this.Album; } },
+      textSearch: { name: "Artist & Album", value: function(){return this.Artist+" "+this.Album; } },
       recordView: function(){ 
         var dateFormat = d3.time.format("%d %b, 2015");
         return ""+
