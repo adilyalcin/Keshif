@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Data.Gov Datasets</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+$(document).ready( function() {
+  var iconMapping = {
+    "Local Government": "Local Government <i class='datagov-icon icon-local-government'></i>",
+    "Climate": "Climate <i class='datagov-icon icon-climate'></i>",
+    "Education": "Education <i class='datagov-icon icon-education'></i>",
+    "Energy": "Energy <i class='datagov-icon icon-energy'></i>",
+    "Safety": "Public Safety <i class='datagov-icon icon-public-safety'></i>",
+    "Agriculture": "Agriculture <i class='datagov-icon icon-agriculture'></i>",
+    "Ecosystems": "Ecosystems <i class='datagov-icon icon-ecosystems'></i>",
+    "Consumer": "Consumer <i class='datagov-icon icon-consumer'></i>",
+    "Ocean": "Ocean <i class='datagov-icon icon-ocean'></i>",
+    "BusinessUSA": "Business <i class='datagov-icon icon-business'></i>",
+    "Finance": "Finance <i class='datagov-icon icon-finance'></i>",
+    "Research": "Science &amp; Research <i class='datagov-icon icon-science-research'></i>",
+    "Law": "Law <i class='datagov-icon icon-law'></i>",
+    "Manufacturing": "Manufacturing <i class='datagov-icon icon-manufacturing'></i>",
+    "AAPI": "AAPI <i class='datagov-icon icon-aapi'></i>",
+    "Disasters": "Disasters",
+    "Aging": "Aging",
+    "World Wide Human Geography Data (WWHGD) Working Group": "World Wide Human Geography Data (WWHGD) Working Group",
+    //"": " <i class='datagov-icon icon-'></i>",
+  };
+
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 110,
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 320,
+    itemName: "Data.Gov Datasets",
+    source: {
+      url: "http://data.gov",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'json',
+      tables: "DataGov"
+    },
+    summaries: [
+      { name: "Topics", 
+        value: function(){ return this.topics; },
+        catLabel: iconMapping},
+      { name: "<i class='fa fa-eye'></i> Total Views", value: "tracking_total" },
+      { name: "<i class='fa fa-eye'></i> Recent Views", value: "tracking_recent" },
+      { name: "<i class='fa fa-file'></i> Formats", value: "formats" },
+      { name: "<i class='fa fa-university'></i> Organization", value: "organization", panel: 'right'},
+      { name: "<i class='fa fa-tag'></i> Tags", value: "tags", panel: 'right', minAggrValue: 20},
+      { name: "<i class='fa fa-legal'></i> License", value: "license_id", panel: "right", collapsed: true
+        }
+    ],
+    recordDisplay: {
+      sortColWidth: 53,
+      sortBy: "Total Views",
+      recordView: function(){
+        var str="";
+        str+="<a href='http://catalog.data.gov/dataset/"+this.name+"' target='_blank' class='datasetTitle'>"+this.title+"</a>";
+        str+="<div class='datasetTopics'>";
+        if(this.topics){
+          this.topics.forEach(function(topic){
+            str+="<span class='datasetTopic'>"+iconMapping[topic]+"</span> ";
+          });
+        }
+        str+="</div>";
+        str+="<span class='datasetViews'> <i class='fa fa-eye'></i> Views: "
+              +this.tracking_total+" Total, "+this.tracking_recent+" Recent</span>";
+        return str;
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+img.dataGov{
+  height: 1.2em;
+  background-color: white;
+  padding: 0px 10px;
+  border-radius: 5px;
+  vertical-align: top;
+}
+.datasetTopics{ 
+  display: inline-block;
+  font-weight: 300;
+  font-size: 0.8em;
+}
+.datasetTopic{
+  display: inline-block;
+  margin: 0px 1px;
+  border: solid 1px lightgray;
+  border-radius: 5px;
+  padding: 0px 2px;
+}
+.datasetTitle{
+  font-weight: 600;
+  color: black;
+  display: block;
+}
+.datasetTitle:hover{
+  color: orangered;
+}
+.datasetViews{
+  font-weight: 300; font-size: 0.7em;
+}
+@font-face {
+  font-family: "datagov-icons";
+  src: url("./img/fonts/datagov-icons.eot");
+  src: url("./img/fonts/datagov-icons.eot?#iefix") format("embedded-opentype"), url("./img/fonts/datagov-icons.woff") format("woff"), url("./img/fonts/datagov-icons.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+.datagov-icon{
+  font-family: "datagov-icons" !important;
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+
+.icon-health:before{ content: "\e00d"; }
+.icon-energy:before{ content: "\e008"; }
+.icon-ethics:before{ content: "\e009"; }
+.icon-education:before{ content: "\e007"; }
+.icon-finance:before{ content: "\e00a"; }
+.icon-climate:before{ content: "\e002" }
+.icon-law:before{ content: "\e010" }
+.icon-science-research:before{ content: "\e013"; }
+.icon-public-safety:before{ content: "\e014" }
+.icon-local-government:before{ content: "\e015" }
+.icon-agriculture:before{ content: "\e00b" }
+.icon-ocean:before{ content: "\e012" }
+.icon-global-development:before{ content: "\e006" }
+.icon-manufacturing:before{ content: "\e011"; }
+.icon-consumer:before{ content: "\e003" }
+.icon-weather:before{ content: "\e016"; }
+.icon-ecosystems:before{ content: "\e017"; }
+.icon-geospatial:before{ content: "\e00c"; }
+.icon-jobs-skills:before{ content: "\e00f"; }
+.icon-business:before{ content: "\e000"; }
+.icon-counties:before{ content: "\e004"; }
+.icon-states:before{ content: "\e015"; }
+.icon-cities:before{ content: "\e001"; }
+.icon-developers:before{ content: "\e005"; }
+.icon-aapi:before{content:"\e600";}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">
+        <img src='http://catalog.data.gov/fanstatic/datagovtheme/:version:2016-03-31T20:11:33.56/images/logo.svg' 
+          class='dataGov'>
+       Datasets <i class='datagov-icon food'></i></div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from <a href='http://data.gov/' target='_blank'>Data.gov</a>
+      </div>
+  </body>
+</html>
