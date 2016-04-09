@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Photographers’ Identities Catalog, by The New York Public Library</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  var addressTypes = {
+    2: 'Studio or Business',
+    5: 'Birth',
+    6: 'Death',
+    7: 'Active in',
+  };
+
+  var genders = {
+    F: 'Female', // 2027998
+    M: 'Male', // 2027999
+    O: 'Other', // 2028000
+    N: 'No Gender (Business or Collective)', // 2028240
+  };
+
+  var formats = {
+    CC: 'Cabinet Cards', // 2028051
+    CV: 'Cartes-de-visite', // 2028050
+    LS: 'Lantern Slides', // 
+    PP: 'Panoramic Photographs', // 2028159
+    PC: 'Photographic Postcards', // 2028188
+    SP: 'Stereoscopic Photographs', // 2028052
+  };
+
+  var processes = {
+    AS: 'Albumen Silver Prints', // 2028048
+    AM: 'Ambrotypes', // 2028053
+    AU: 'Autochromes', // 2028091
+    CT: 'Calotypes', // 2028155
+    CP: 'Carbon Prints', //2028172
+    CH: 'Chromogenic Prints', // 2028145
+    CV: 'Clichés verre', // 2028209
+    CY: 'Cyanotypes', //2028166
+    DA: 'Daguerreotypes', //2028046
+    DY: 'Dye Diffusion Transfer Prints', // 2028146
+    GS: 'Gelatin Silver Prints', // 2028047
+    PG: 'Photogravures', // 2028234
+    PL: 'Photolithographs', // 2028164
+    PP: 'Platinum Prints', // 2028179
+    SP: 'Salted Paper Prints', // 2028049
+    SI: 'Silver dye bleach prints', // 2028243
+    TT: 'Tintypes', // 2028055
+    WT: 'Woodburytypes', //2028162
+  };
+
+  var roles = {
+    ACH: "Academic, Curator, or Historian", //2028217
+    C: "Collector or Dealer", // 2028160
+    D: "Dealer of Photographic Supplies", // 2028122
+    DIS: "Distributor", // 2028161
+    A: "Film or Video artist", // 2028225
+    W: "Institutional sponsor of photographic works", // 2028250
+    I: "Inventor", // 2028148
+    M: "Manufacturer", // 2028054
+    E: "Photoengraver", // 2028178
+    P: "Photographer", // 2028040
+    S: "Photographic Club, Society or Association", // 2028248
+    F: "Photographic Colorist or Finisher", // 2028042
+    PI: "Photographic Instructor", // 2028168
+    PR: "Photographic Printer",
+    PP: "Photographic Publisher", // 2028057
+  };
+
+  var collections = {
+    CAM: "Cambridge University: RCS Collection", // 2028182
+    CCP: "Center for Creative Photography", // 2028018
+    FM: "Family of Man Museum, Clervaux Castle, Luxembourg", // 2028112
+    GM: "Getty Museum", // 2028014
+    ICP: "International Center of Photography", // 2028241
+    LOC: "Library of Congress", // 2028019
+    MET: "Metropolitan Museum of Art", // 2028204
+    MOCP: "Museum of Contemporary Photography Chicago", // 2028015
+    MOMAPC: "Museum of Modern Art: Photography Collection", // 2028219
+    NPGUK: "National Portrait Gallery UK", // 2028021
+    NPGUS: "National Portrait Gallery US", // 2028022
+    NP: "Niepce Museum", // 2028013
+    NYPL: "NYPL: Photography Collection", // 2028165
+  };
+
+  var biographies = {
+    AWOL: "Allgemeines Künstlerlexikon Online / Artists of the World Online",
+    BD: "Baltimore Daguerreans",
+    2028115: "Canadian Census- 1861",
+    2028119: "Canadian Census- 1871",
+    2028186: "Canadian Census- 1881",
+    2028199: "Canadian Census- 1891",
+    2028117: "Canadian Census- 1901",
+    2028200: "Canadian Census- 1911",
+    2028202: "Canadian Census- 1921",
+    2028088: "City or Business Directory",
+    CDR: "Craig's Daguerreian Registry",
+    DCV: "Darrah: Cartes de Visite",
+    2028104: "Death Records",
+    CWP: "Directory of Civil War Photographers",
+    ENCP: "Encyclopedia of Nineteenth-Century Photography",
+    EC1: "English Census- 1881",
+    2028213: "English Census- 1911",
+    TOAH: "Heilbrunn Timeline of Art History",
+    2028246: "International Guide to Nineteenth Century Photographers and Their Works",
+    LOC: "Library of Congress Authorities",
+    MNHS: "MnHS Directory of Minnesota Photographers",
+    PAA1: "PAA Directory 1944-1945",
+    PAA2: "PAA Directory 1948-1949",
+    PPND: "Photographers of the Pacific Northwest database",
+    PDORG: "PhotographyDatabase.org",
+    PL: "photoLondon.org.uk",
+    PPMC: "Pioneer Photographers from the Mississippi to the Continental Divide",
+    PPFW: "Pioneer Photographers of the Far West",
+    RCSI: "Royal Commonwealth Society Index",
+    2028190: "State Census - 1892",
+    2028149: "State Census- 1855",
+    2028152: "State Census- 1865",
+    2028097: "State Census- 1875",
+    2028095: "State Census- 1885",
+    2028113: "State Census- 1895",
+    2028108: "State Census- 1905",
+    2028089: "State Census- 1915",
+    2028110: "State Census- 1925",
+    2028150: "State Census- 1935",
+    ULAN: "Union List of Artist Names (Getty ULAN)",
+    2028067: "US Census- 1850",
+    2028068: "US Census- 1860",
+    2028069: "US Census- 1870",
+    2028070: "US Census- 1880",
+    2028071: "US Census- 1900",
+    2028072: "US Census- 1910",
+    2028073: "US Census- 1920",
+    2028074: "US Census- 1930",
+    2028075: "US Census- 1940",
+    MIL: "US MIlitary Records",
+    VIAF: "Virtual International Authority File",
+    WD: "Wikidata",
+    W: "Wikipedia",
+  };
+
+
+  var nationality = {
+    A: 'American',
+    B: 'British',
+    C: 'Chinese',
+    D: 'Dutch',
+    E: 'English',
+    G: 'German',
+    J: 'Japanese',
+    F: 'French',
+    I: 'Italian',
+    N: 'Norwegian',
+    P: 'Portuguese',
+    R: 'Russian',
+    U: 'Australian'
+  };
+
+  // TODO:
+  // - Source... Blah
+  // - Multiple addresses per person
+  //   - Country
+  //   - Type: Studio / Birth / Death / Active in ?
+
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 120,
+    leftPanelLabelWidth: 300,
+    rightPanelLabelWidth: 200,
+    itemName: "People",
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: "NYPL_PIC"
+    },
+    loadedCb: function(){
+      browser.records.forEach(function(r){
+        if(r.data.BeginDate===0) delete r.data.BeginDate;
+        var EndDate = r.data.EndDate;
+        if(EndDate && EndDate>2016){
+          r.data["Is Active?"] = "Active";
+          delete r.data.EndDate;
+        } else {
+          r.data["Is Active?"] = "Not Active";
+        }
+      })
+    },
+    summaries: [
+      { name: "Gender", catSplit: "+", catLabel: genders, panel: "right" },
+      { name: "Is Active?", panel: "right" },
+      { name: "Nationality", catLabel: nationality, panel: "right",
+        description: "Nationality is often presumed from the location(s) where the bulk of a photographer's or studio's work was produced, and does not necessarily reflect citizenship status." },
+      { name: "Collection", catSplit: "+", catLabel: collections, panel: 'left',
+        description: "Museums or libraries are known to have works by a photographer" },
+      { name: "Process", catSplit: "+", catLabel: processes, panel: 'left', 
+        description: "Photographic processes a constituent is known to have used" },
+      { name: "Format", catSplit: "+", catLabel: formats, panel: 'left',
+        description: "Types of photographs a photographer was known to have made" },
+      { name: "Role", catSplit: "+", catLabel: roles, panel: "right",
+        description: "Occupation within the discipline of photography" },
+      { name: "Source", catSplit: "+", catLabel: biographies, panel: "right",
+        description: "The source(s) from which an entry on the constituient is derived." },
+      { name: "Work Begin Date", value: "BeginDate", panel: 'middle' },
+      { name: "Work End Date", value: "EndDate", panel: 'middle', collapsed: true },
+    ],
+    recordDisplay: {
+      sortColWidth: 45,
+      sortBy: [ "BeginDate", "EndDate"],
+      textSearch: "Name",
+      recordView: function(){
+        str= "<a class='nameee' href='http://www.google.com/search?q="+this.Name.replace(/\s+/g,'+')+"' target='_blank'>";
+        str+=this.Name;
+        str+="</a>";
+        str+="<span class='conDate'> Works: ("+this.BeginDate+" - ";
+        str+= this.EndDate ? this.EndDate : "...";
+        str+=")</span>";
+        return str;
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser{ height: calc(100vh - 120px); }
+.nameee{
+  color: black;
+  font-size: 600;
+}
+.conDate{
+  display: inline-block;
+  font-weight: 300;
+  font-size: 0.8em;
+  color: gray;
+  margin-left: 5px;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">
+        <i class='fa fa-camera-retro'></i>
+        Photographers’ Identities Catalog
+        <i class='fa fa-camera'></i>
+        </div>
+      <div id="demo_PageSubtitle">Here is a collection of biographical data describing 110k people involved in the production of photographic images. The information is from trusted biographical dictionaries, catalogs and databases, and from extensive original research by <a href='https://github.com/NYPL/pic-data' target='_blank'>NYPL Photography Collection</a> staff.
+      If you are a historian, student, genealogist, or simply lover of photography's history, explore the data!! </div>
+      <div id="demo_Browser"></div>
+      </div>
+
+      <div id="demo_Infobox">
+        Data <a href='https://github.com/NYPL/pic-data' target='_blank'>From The New York Public Library</a>.
+        NYPL's interface to this data is available at <a href='http://pic.nypl.org/' target='_blank'>http://pic.nypl.org/</a>.
+        </div>
+  </body>
+</html>
