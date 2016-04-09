@@ -3605,7 +3605,7 @@ top:calc(50% - 8px);
   border-width: 1px;
   border-color: black;
   border-style: solid;
-  cursor: ew-resize;
+  cursor: col-resize;
   z-index: 10;
   top: 1px;
 }
@@ -3632,7 +3632,7 @@ top:calc(50% - 8px);
   display: none;
   width: 2px;
   border-left: dotted 2px #30b8c4;
-  cursor: ew-resize;
+  cursor: col-resize;
   box-shadow: 0px 0px 2px white;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart:hover {
