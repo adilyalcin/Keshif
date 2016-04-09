@@ -8701,14 +8701,14 @@ var Summary_Interval_functions = {
         minValue = this.summaryFilter.active.min;
         maxValue = this.summaryFilter.active.max;
       }
+      if(this.isTimeStamp()){
+        return "<b>"+this.printWithUnitName(minValue)+"</b> to "+
+               "<b>"+this.printWithUnitName(maxValue)+"</b>";
+      }
       if(this.stepTicks){
         if(this.stepRange || aggr) {
           return "<b>"+this.printWithUnitName(minValue)+"</b>";
         }
-      }
-      if(this.isTimeStamp()){
-        return "<b>"+this.printWithUnitName(minValue)+"</b> to "+
-               "<b>"+this.printWithUnitName(maxValue)+"</b>";
       }
       if(this.hasFloat){
         minValue = minValue.toFixed(2);
