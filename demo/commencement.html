@@ -33,11 +33,7 @@ $(document).ready( function() {
       { name: "University", value: "school"},
       { name: "Field", value: "field", panel: "right"},
       { name: "Tags", value: "tags", panel: "right"},
-      { name: "Year", panel: "bottom", 
-        value: function(){ return new Date(this.year,0); }
-        //value: "year", 
-        //, collapsed: true
-        },
+      { name: "Year", panel: "bottom", value: function(){ return new Date(this.year,0); }, collapsed: true },
     ],
     recordDisplay: {
       sortBy: "Year",
@@ -45,7 +41,6 @@ $(document).ready( function() {
       detailsToggle: "off",
       textSearch: "name",
       recordView: function(d){
-        //d.DOM.record.setAttribute("title",this.money_quote);
         return ""+
           "<span class='speaker_name'>"+this.name+"</span>"+
           "<span class='speaker_school'>"+this.school+"</span>"+

@@ -25,7 +25,6 @@ var neighborhoodRegions = {};
 function dataLoad(browser){
   $.ajax({
     //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-    // url: "./data_private/dc_homicides.json", // original source
     url: "./data/dc_homicides.json",
     success: function(data){
       browser.primaryTableName = "Victims";
@@ -35,7 +34,6 @@ function dataLoad(browser){
         vic.incident_date = moment(vic.incident_date).toDate();
         kshf.dt.Victims.push(new kshf.Record(vic,"id"));
       });
-
 
       $.ajax({
         // Load state geometries
@@ -72,10 +70,7 @@ $(document).ready( function(){
         catLabel: { SE: "South-East", SW: "South-West", NE: "North-East", NW: "North-West" } },
       { name: "Neighborhood", panel: 'middle', viewAs: "map",
         value: function(){ if(this.nbhd) return this.nbhd.subhood; },
-        catMap: function(){
-          return neighborhoodRegions[this.id];
-        }
-        },
+        catMap: function(){ return neighborhoodRegions[this.id]; } },
       { name: "Manner", value: function(){ return this.manner.name; }, panel: 'right' },
       { name: "Status", panel: 'right',
         value: function(){
@@ -90,7 +85,8 @@ $(document).ready( function(){
       { name: "Full Name", value: function(){ return this.last_name +", "+this.first_name; }, panel: "none" }
     ],
     recordDisplay: {
-      sortBy: { title: 'Year', value: function(){ return this.incident_date.getFullYear(); }},
+      sortBy: "Incident Date",
+      sortColWidth: 70,
       textSearch: "Full Name",
       recordView: "Full Name"
     }
@@ -100,7 +96,6 @@ $(document).ready( function(){
 <style id="kshfStyle">
 #demo_Browser{ max-width: 950px;  }
 </style>
-
 	</head>
   <body>
     <div class="contents">

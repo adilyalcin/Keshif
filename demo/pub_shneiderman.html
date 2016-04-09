@@ -83,7 +83,7 @@ $(document).ready( function(){
       { name: "Year", panel: "bottom" }
     ],
     recordDisplay: {
-      sortBy: { name: "Year", label: function(){ return this.Year.getFullYear(); }, inverse: true },
+      sortBy: "Year",
       textSearch: { name: "title", value: function(){ return this.Fields.title;} },
       displayType: 'list',
       detailsToggle: "one",

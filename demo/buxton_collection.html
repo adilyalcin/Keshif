@@ -180,11 +180,7 @@ $(document).ready(function(){
       { name: "Degree of Freedom" }
     ],
     recordDisplay: {
-      sortBy: {
-        name: "Year", inverse: true,
-        value: function(){ if(this.Year) return this.Year.getTime(); },
-        label: function(){ if(this.Year) return this.Year.getFullYear(); }
-      },
+      sortBy: "Year",
       displayType: 'grid',
       maxVisibleItems_Default: 40,
       textSearch: "Name",

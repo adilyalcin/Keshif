@@ -22,9 +22,7 @@
 google.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
-    barChartWidth: 210,
-    leftPanelLabelWidth: 220,
-    middlePanelLabelWidth: 200,
+    barChartWidth: 220,
     rightPanelLabelWidth: 120,
     source: {
       gdocId: '1yvkEwRmxHH_1fjIMGQQd2Tq2ygA0CaTmAKi3muToXBw',
@@ -46,7 +44,7 @@ google.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortBy: "# Killed",
-      sortColWidth: 45,
+      sortColWidth: 65,
       recordView: function(){ 
         // Date State   City Or County  Address # Killed    # Injured
       return "<b>"+this.State + ", " + this['City Or County'] +", "+this.Address+"</b>"+

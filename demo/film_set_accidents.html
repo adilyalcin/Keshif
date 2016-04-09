@@ -19,9 +19,9 @@ $(document).ready( function(){
   var timeFormat = d3.time.format("%d %b, %y");
 
   var printPeopleIcons = function(v){
-      var str="";
-      for(var i=0; i<v; i++) str+="<i class='fa fa-male'></i>";
-      return str;
+    var str="";
+    for(var i=0; i<v; i++) str+="<i class='fa fa-male'></i>";
+    return str;
   };
 
   browser = new kshf.Browser({
@@ -44,12 +44,7 @@ $(document).ready( function(){
     ],
     recordDisplay: {
       sortColWidth: 70,
-      sortBy: [
-        {title: 'Date', label: function(){ return timeFormat(this.Date); } },
-        // Need to include them here, because they are treated as categorical facets above
-        'Injuries',
-        'Fatalities',
-      ],
+      sortBy: [ 'Date', 'Injuries', 'Fatalities' ],
       recordView: function(){
         return "<span style='color: red'>"+printPeopleIcons(this.Fatalities) +"</span>"+
           "<span>"+printPeopleIcons(this.Injuries)+"</span>"+  

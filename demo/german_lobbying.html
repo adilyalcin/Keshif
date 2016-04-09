@@ -38,9 +38,12 @@ google.setOnLoadCallback(function(){
       ]
     },
     summaries: [
-      { name: "Politician",
-        catTableName: "Politicians", catLabel: "Politician",
-        summaries: "Department" },
+      { name: "Politician"},
+      { name: "Department", 
+        value: function(){
+          var p = kshf.dt_id.Politicians[this.Politician];
+          if(p) return p.data.Department;
+        }},
       { name: "Type", panel: 'right',
         value: function(){ return kshf.dt_id.Organizations[this.Organization].data.Type; },
         catLabel: function(){ return this.id+" "+getIcon(this.id); } },
@@ -52,7 +55,7 @@ google.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortColWidth: 75,
-      sortBy: { title: 'Date', label: function(){ return moment(this.Date).format("D MMM 'YY"); }, inverse: true },
+      sortBy: 'Date',
       recordView: function(){
         return getIcon(kshf.dt_id.Organizations[this.Organization].data.Type) +
             "<span style='display:block'>"+

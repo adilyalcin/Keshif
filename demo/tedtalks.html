@@ -39,7 +39,7 @@ google.setOnLoadCallback(function(){
           }
           return 1*views;
         }},
-      { name: "Speaker", layout: 'right' },
+      { name: "Speaker", layout: 'right', catSplit: /(?: and )|(?:, )/ },
       { name: "Date", layout: 'bottom' }
     ],
     recordDisplay: {
