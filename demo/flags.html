@@ -15,11 +15,12 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-
     <script type="text/javascript">
 
 $(document).ready( function(){
+  
+  var timeFormat = d3.time.format("%m/%d/%Y");
+
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Flags",
@@ -75,10 +76,7 @@ $(document).ready( function(){
         } },
       { name: "Flag Date", panel: 'left',
         value: function(){
-          if(this.Independence==="") return;
-          if(this.Independence===null) return;
-          if(this.Independence===undefined) return;
-          return new Date(moment(this.Independence,"MM/DD/YYYY"));
+          if(this.Independence && this.Independence!=="") return timeFormat.parse(this.Independence);
         } },
       { name: "Flag Color",  panel: 'right',
         value: function(){

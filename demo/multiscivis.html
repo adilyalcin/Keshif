@@ -58,7 +58,7 @@ var loadData = function(browser){
         });
         d.Name = $this.find("name")[0].textContent.trim();
         d.Year = parseInt($this.find("year")[0].textContent.trim());
-        d.Authors = $this.find("authors")[0].textContent.trim();
+        d.Authors = $this.find("authors")[0].textContent.trim().replace(" and ",", ");
         d.URL = $this.find("url")[0].textContent.trim();
         d.Title = $this.find("title")[0].textContent.trim();
         d.Venue = $this.find("publication")[0].textContent.trim();
@@ -84,7 +84,7 @@ $(document).ready( function(){
       "Data Facets",
       "Main Goals",
       "Techniques",
-      { name "Authors", catSplit: " and "},
+      { name: "Authors", catSplit: ", " },
       { name: "Year", value: function(){ return new Date(this.Year,1,1); }, panel: "bottom" }
     ],
     recordDisplay: {

@@ -49,6 +49,7 @@ google.setOnLoadCallback(function(){
          15:"Offences Against Justice Procedures, Government Security And Government Operations",
          16:"Miscellaneous Offences"
         } },
+      { name: "Yearr", value: function(){ if(this.year) return new Date(this.year,0);}, panel: "middle" },
       { name: "Year", value: "year", panel: "middle" },
       { name: "Gender", value: "gender", catLabel: {F:"Female",M:"Male",X:"Unknown"} },
       { name: "Ethnicity", value: "ethnicity", 
@@ -75,7 +76,7 @@ google.setOnLoadCallback(function(){
     <div class="contents">
       <div id="demo_PageTitle">New Zealand Youth Court Data</div>
       <div id="demo_Browser"></div>
-      <div id="demo_Infobox">Re-Vis from<a href='http://nzyouthcourt.meteor.com' target='_blank'>nzyouthcourt.meteor.com</a>.</div>
+      <div id="demo_Infobox"> Re-Vis from <a href='http://nzyouthcourt.meteor.com' target='_blank'>nzyouthcourt.meteor.com</a>. </div>
       </div>
   </body>
 </html>

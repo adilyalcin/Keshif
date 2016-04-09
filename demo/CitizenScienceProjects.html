@@ -52,7 +52,7 @@ $(document).ready( function() {
       { name: "Participant Age", value: "participant_age", catSplit: ", ", panel: "right" },
       { name: "Status", value: "status", panel: "right", collapsed: true },
       //{ name: "Project Topic", value: "project_topic"},
-      { name: "Start Year", value: function(){ return parseInt(this.start_date.substr(0,4)); }, layout: "middle" }
+      { name: "Start Year", value: function(){ return new Date(parseInt(this.start_date.substr(0,4)),0); }, layout: "middle" }
     ],
     recordDisplay: {
       sortColWidth: 50,

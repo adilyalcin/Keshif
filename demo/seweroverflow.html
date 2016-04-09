@@ -37,7 +37,7 @@ function loadData(browser){
 $(document).ready(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
-    itemName: "Sewer Overflows in Maryland, 2004-2016",
+    itemName: "Sewer Overflows",
     categoryTextWidth: 200,
     source: { 
       url: 'https://data.maryland.gov/Energy-and-Environment/Reported-Sewer-Overflows/3rgd-zjxx',
@@ -92,6 +92,7 @@ var getDuration_Human = function(){
 	</head>
   <body>
     <div class="contents">
+      <div id="demo_PageTitle">Sewer Overflows in Maryland, 2004-2014</div>
       <div id="demo_Browser"></div>
       </div>
   </body>

@@ -26,15 +26,16 @@ google.setOnLoadCallback(function () {
       tables: "Grants"
     },
     summaries: [
-      { name: "Main Category RFCD" },
       { name: "Sector" },
+      { name: "Main Category RFCD" },
       { name: "State", panel: 'right' },
       { name: "Broad Research Area", panel: 'middle' },
       { name: "Field Of Research / RFCD", panel: 'middle' },
       { name: "Grant Admin Institution", panel: 'right' },
       { name: "Funding Purpose", panel: 'right' },
       { name: "Main Funding Group",  panel: 'right' },
-      { name: "Main Funding Unit Type", panel: 'right' }
+      { name: "Main Funding Unit Type", panel: 'right' },
+      { name: "Start Year", value: function(){ return new Date(this["Start Year"],0);}, panel: 'middle' }
     ]
   });
 });
@@ -42,6 +43,7 @@ google.setOnLoadCallback(function () {
 	</head>
   <body>
     <div class="contents">
+      <div id="demo_PageTitle">Australian Gov. National Health &amp; Medical Research Council Grants</div>
       <div id="demo_Browser"></div>
       </div>
   </body>

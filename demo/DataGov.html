@@ -15,6 +15,16 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
+/*  // CODE TO GENERATE CURL COMMANDS TO PULL DATA FROM DATA.GOV
+    var str=""
+    for(i=0; i<200; i++){
+      str+="curl http://catalog.data.gov/api/3/action/package_search\?rows\="+(i+1)+"000\&start\="+(i*1000)+" -o "+i+".json\n";
+    }
+    console.log(str);
+    curl http://catalog.data.gov/api/3/action/package_search?rows=1000&start=0 -o 0.json
+    curl http://catalog.data.gov/api/3/action/package_search?rows=2000&start=1000 -o 1.json
+*/
+
 $(document).ready( function() {
   var iconMapping = {
     "Local Government": "Local Government <i class='datagov-icon icon-local-government'></i>",

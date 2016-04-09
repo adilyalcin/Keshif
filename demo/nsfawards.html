@@ -14,12 +14,11 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-
     <script type="text/javascript">
 
 $(document).ready(function(){
   var frmt = d3.format(".2s");
+  var timeFormat = d3.time.format("%m/%d/%y");
     
   browser = new kshf.Browser({
     domID: "#demo_Browser",
@@ -38,8 +37,7 @@ $(document).ready(function(){
     loadedCb: function(){
       // If you downloaded using csv file, convert award amount field
       kshf.dt.nsfawards.forEach(function(d){
-        var v = d.data.AwardedAmountToDate.replace(/[^0-9]+/g,"");
-        d.data.AwardedAmountToDate = parseInt(v)/100;
+        d.data.AwardedAmountToDate = parseInt(d.data.AwardedAmountToDate.replace(/[^0-9]+/g,""))/100;
       });
     },
     summaries: [
@@ -49,9 +47,7 @@ $(document).ready(function(){
       { name: "Start Date", panel: 'bottom',
         value: function(){
           var dt = this.StartDate;
-          if(dt===""){ return null; }
-          var m = moment(dt,"MM/DD/YY");
-          return new Date(m);
+          return (dt==="") ? null : timeFormat.parse(dt);
         }, },
       { name: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
       { name: "NSFDirectorate", collapsed: true },

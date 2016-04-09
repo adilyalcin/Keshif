@@ -27,8 +27,8 @@ google.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "Sex" },
-      { name: "Nationality", collapsed: true },
-      { name: "Medium" },
+      { name: "Nationality" },
+      { name: "Medium", catSplit: ", " },
       { name: "Coverage", catSplit: ", " },
       { name: "Freelance" },
       { name: "Local/Foreign"} ,
@@ -47,7 +47,7 @@ google.setOnLoadCallback(function(){
           if(this['Tortured']==="Yes") r.push('Tortured');
           return r;
         } },
-      { name: "Date", panel: "bottom"}
+      { name: "Date", panel: "middle" }
     ],
     recordDisplay: {
       sortColWidth: 45,

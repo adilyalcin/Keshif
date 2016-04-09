@@ -43,7 +43,7 @@ $(document).ready( function(){
     summaries: [
       { name: "job", },
       { name: "sex", panel: 'middle' },
-      { name: "year", panel: 'middle' },
+      { name: "year", value: function(){ return new Date(this.year,0); }, panel: 'middle' },
       { name: "count", panel: 'middle', collapsed: true}
     ]
   });

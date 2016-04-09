@@ -243,10 +243,10 @@ $(document).ready( function(){
     itemName: "Techniques",
     categoryTextWidth: 200,
     source: {
-        url: "http://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/",
-        gdocId: "1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0",
-        tables: 'Papers',
-        callback: loadData
+      url: "http://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/",
+      gdocId: "1vcF_pI4edzKDi3YX0H0NXoFa-OUHFh6bSFyqLNk81k0",
+      tables: 'Papers',
+      callback: loadData
     },
     summaries: [
       { name: "General Category", value: "GeneralCategory" },
@@ -264,7 +264,7 @@ $(document).ready( function(){
           Ilir: "Ilir Jusuf",
           RW  : "Rick Walker",
         } },
-      { name: "Year", panel: "bottom" }
+      { name: "Year", value: function(){ return new Date(this.Year, 0); }, panel: "middle" }
     ],
     recordDisplay: {
       sortBy: 'Year',

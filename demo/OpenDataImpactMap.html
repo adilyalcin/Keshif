@@ -37,13 +37,8 @@ google.setOnLoadCallback(function(){
           if(this["Product/Service"]==="TRUE") r.push("Product/Service");
           return r;
         } },
-      { name: "Industry", value: "Industry Category" },
-      { name: "Country", panel: 'right', description: "Country of origin" },
-      { name: "Organization Type", panel: 'right' },
-      { name: "Organizational Optimization", panel: 'right', collapsed: true },
-      { name: "Region", panel: 'left' },
-      { name: "City", panel: 'left', collapsed: true },
-      { name: "Size", panel: 'right',
+      { name: "Organization Type", panel: 'left' },
+      { name: "Size", panel: 'left',
         catSortBy: [
           '1-10',
           '11-50',
@@ -51,8 +46,14 @@ google.setOnLoadCallback(function(){
           '201-1000',
           '1000+',
         ] },
-      { name: "Founding Year", panel: 'bottom'}
-      //{ name: "Founding Year", value: function(){ return new Date(this["Founding Year"],1,1);}, panel: 'bottom'}
+      { name: "Industry", value: "Industry Category" },
+      { name: "Organizational Optimization", panel: 'left', collapsed: true },
+
+      { name: "Region", panel: 'right' },
+      { name: "Country", panel: 'right', description: "Country of origin" },
+      { name: "City", panel: 'right', collapsed: true },
+      //{ name: "Founding Year", panel: 'bottom'}
+      { name: "Founding Year", value: function(){ return new Date(this["Founding Year"],0);}, panel: 'middle'}
     ],
     recordDisplay: {
       sortColWidth: 45,

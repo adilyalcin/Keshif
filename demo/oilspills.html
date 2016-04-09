@@ -17,10 +17,13 @@
     <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript">
+
+var timeFormat = d3.time.format("%Y-%m-%d");
+
 function getDate(){
   var dt=this.Date;
   if(dt.getUTCFullYear) { return dt; }
-  return new Date(moment(this.Date,["YYYY-MM-DD"]));
+  return timeFormat.parse(this.Date);
 }
 
 function getSource(){

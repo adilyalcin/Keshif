@@ -15,10 +15,9 @@
     <link rel="stylesheet" href="./css/demo.css"type="text/css">
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-
     <script type="text/javascript">
 $(document).ready( function() {
+  var timeParser = d3.time.format("%m/%d/%y"); //"MM/DD/YY"
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Tablets",
@@ -36,7 +35,7 @@ $(document).ready( function() {
           var n= parseFloat(this['Flash Memory Size']);
           if(n>=1) return n;
         } },
-      { name: "Screen Size (inches)", unitName: "″",
+      { name: "Screen Size", unitName: "″",
         value: function(){
           var x= parseFloat(this['Screen Size']);
           if(!isNaN(x)) return x;
@@ -47,7 +46,7 @@ $(document).ready( function() {
       { name: "Release Date", panel: 'bottom',
         value: function(){ 
           var dt = this['Date First Available'];
-          if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));
+          if(dt!=="") return timeParser.parse(dt);
         }
       }
     ],

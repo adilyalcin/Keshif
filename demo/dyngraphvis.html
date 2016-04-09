@@ -13,7 +13,6 @@
         <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
         <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
-        <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
         <script type="text/javascript" src="./js/bibParser.js" charset="utf-8"></script>
 
         <script type="text/javascript">
@@ -254,7 +253,7 @@ $(document).ready( function(){
           collapsed: true*/ 
       { name: "Authors", panel: 'right' },
       { name: "Journal", panel: 'right', collapsed: false },
-      { name: "Year", panel: "bottom" }
+      { name: "Year", value: function(){ return new Date(this.Year,0); }, panel: "middle" }
     ],
     recordDisplay: {
       sortBy: "Year",
