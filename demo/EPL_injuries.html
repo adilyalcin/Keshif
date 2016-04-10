@@ -31,8 +31,8 @@ google.setOnLoadCallback(function(){
       { name: "Player" },
       { name: "Injury", panel: 'right' },
       { name: "Season", panel: 'right', catSortBy: function(){ return parseInt(this.id.substr(0,4)); }, },
-      { name: "Month", panel: 'right', catSortBy: "id", catLabel: _demo.Month, collapsed: true,
-        value: function(){ return this.Date.getMonth(); } },
+      { name: "Month", panel: 'right', value: function(){ return this.Date.getMonth(); },
+        catSortBy: "id", catLabel: _demo.Month, collapsed: true },
       { name: "Date", panel: 'bottom' }
     ],
     recordDisplay: {

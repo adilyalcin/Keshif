@@ -36,10 +36,8 @@ $(document).ready( function(){
     },
     summaries: [
       { name: "<i class='fa fa-suitcase'></i> Industry", value: 'industry'},
-      { name: "State", 
-        value: 'state_l',
-        catMap: function(){ return US_States.index_name[this.id].geo; },
-        },
+      { name: "State", value: 'state_l',
+        catMap: function(){ return US_States.index_name[this.id].geo; } },
       { name: "<i class='fa fa-map-marker'></i> Metro Area", value: 'metro'},
       { name: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', panel: "right"},
       { name: "# of Workers", value: 'workers', panel: "right"},

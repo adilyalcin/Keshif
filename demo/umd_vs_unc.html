@@ -27,8 +27,8 @@ google.setOnLoadCallback(function(){
       tables: ["Game Events", "Players"]
     },
     summaries: [
-      { name: "Half", catLabel: function(){ return this.id===1?"First":"Second"}, catSortBy: "id" },
-      { name: "Flow", catLabel: function(){ return this.id==="D2O"?"Defense-2-Offense":"Offense-2-Defense";} },
+      { name: "Half", catLabel: { 1: "First", 2: "Second"}, catSortBy: "id" },
+      { name: "Flow", catLabel: { D2O: "Defense-2-Offense", O2D: "Offense-2-Defense" } },
       { name: "Player", panel: "middle" },
       { name: "Team", panel: "middle", value: function(){ if(this.Player) return kshf.dt_id.Players[this.Player].data.Team; } },
       { name: "Shot Type", panel: "right" },

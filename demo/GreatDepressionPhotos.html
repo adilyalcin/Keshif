@@ -36,19 +36,14 @@ $(document).ready( function(){
       { name: "Category", value: "van0" },
       { name: "County", value: "county", panel: "right"},
       { name: "Year", value: "year", panel: "right"},
-      { name: "Month", value: function(){ if(this.month) return this.month-1; }, panel: "right", catSortBy: "id", catLabel: _demo.Month },
-      { name: "Date", panel: "bottom",
-        value: function(){ 
-          if(this.date===undefined) return;
-          var x=dateFormat.parse(this.date);
-          if(x!==null) return new Date(x);
-        } },
+      { name: "Month", value: function(){ if(this.month) return this.month-1;}, panel: "right", catSortBy: "id", catLabel: _demo.Month },
+      { name: "Date", value: function(){ if(this.date) return dateFormat.parse(this.date); }, panel: "bottom" },
     ],
     recordDisplay: {
       displayType: 'grid',
       detailsToggle: "off",
       maxVisibleItems_Default: 40,
-      sortBy: {name: 'Date', inverse: true},
+      sortBy: 'Date',
       //textSearch: "Title",
       recordView: function(){ 
         return ""+

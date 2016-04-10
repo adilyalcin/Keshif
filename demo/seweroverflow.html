@@ -53,8 +53,8 @@ $(document).ready(function(){
       { name: "Municipality/Facility", value: function(){ return this[9]; }, panel: 'right' }
     ],
     recordDisplay: {
-      sortColWidth: 110,
       sortBy: { title: 'Duration ', value: getDuration_TotalMinutes, label: getDuration_Human },
+      sortColWidth: 110,
       recordView: function(){ return this[16]+" -- "+getDuration_TotalMinutes.call(this)+" minutes"; }
     }
   });

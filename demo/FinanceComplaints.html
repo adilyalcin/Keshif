@@ -90,14 +90,12 @@ $(document).ready( function(){
       { name: "Timely response?" },
       { name: "Consumer disputed?" },
       { name: "Company", panel: "middle", minAggrValue: 100},
-      { name: "State", panel: "middle",
+      { name: "State", panel: "middle", viewAs: "map",
         catLabel: function(){ return getStateName(this.id); },
         catMap:   function(){ 
           var state = US_States.index_code[this.id];
           if(state) return state.geo;
-        },
-        viewAs: "map"
-        },
+        } },
       { name: "Issue", panel:"right", 
         catLabel: {
           IIOCR: "Incorrect information on credit report",
@@ -150,10 +148,7 @@ $(document).ready( function(){
         } },
       { name: "Sub-issue", panel: "right"},
       { name: "Date Received", panel: "middle",
-        value: function(){
-          var str = this["Date received"]+"-2015";
-          return dateFormat.parse(str);
-        }}
+        value: function(){ return dateFormat.parse(this["Date received"]+"-2015"); } }
     ]
   });
 });

@@ -68,12 +68,10 @@ google.setOnLoadCallback(function(){
       { name: "Killed", panel: "right", unitName: 'ppl' },
     ],
     recordDisplay: {
-      displayType: "list",
-      sortColWidth: 50,
+      sortBy: [ 'Killed', 'Date' ],
+      sortColWidth: 65,
       textSearch: "PLACE",
       recordView: "PLACE",
-      sortBy: [ 'Killed', 'Date' ],
-      detailsToggle: "zoom"
     }
   });
 });

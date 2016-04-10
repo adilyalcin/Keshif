@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
-
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
@@ -36,7 +34,7 @@ function loadData(browser){
         entry.EntryKey = entry.EntryKey.replace( /(:|\.|\[|\])/g, "\\$1" );
 
         // convert text form date to javascript date
-        if(entry.Fields.year){ entry.Year = new Date(moment(entry.Fields.year,0)); }
+        if(entry.Fields.year){ entry.Year = new Date(entry.Fields.year,0); }
 
         entry.Authors = entry.Fields.author;
 
@@ -85,7 +83,6 @@ $(document).ready( function(){
     recordDisplay: {
       sortBy: "Year",
       textSearch: { name: "title", value: function(){ return this.Fields.title;} },
-      displayType: 'list',
       detailsToggle: "one",
       recordView: function(){
         var str="";

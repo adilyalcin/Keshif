@@ -66,7 +66,6 @@ $(document).ready( function(){
           value: function(){ return mileSort(this.meta["milestone_str"]); },
           label: function(){ return this.meta["milestone_str"]; } },
       textSearch: 'name',
-      displayType: 'list',
       recordView: function(){
         return "<span class='title'>"+this.name+"</span>"+
         " <a target='_blank' href='http://www.chromestatus.com/feature/"+this.id+"' class='fa fa-external-link-square'></a>"+

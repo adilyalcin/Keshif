@@ -25,10 +25,10 @@ google.setOnLoadCallback(function () {
     },
     summaries: [
       { name: "Instructor", catLabel: function(){ return kshf.dt_id.Instructors[this.id].data.Name; } },
-      { name: "Performance", catLabel: function(){ return performanceText(this.id); } },
-      { name: "Native Speaker", catLabel: function(){ return (this.id===1)?"Yes":"No"; } },
-      { name: "Course" },
-      { name: "Semester", catLabel: function(){ return (this.id===1)?"Summer":"Regular"; } },
+      { name: "Performance", catLabel: { 1: "High", 2: "Medium", 3: "Low" } },
+      { name: "Native Speaker", catLabel: {1: "Yes", 2:"No"} },
+      // { name: "Course" },
+      { name: "Semester", catLabel: {1:"Summer", 2:"Regular"} },
       { name: "Class Size" }
     ],
     recordDisplay: {
@@ -37,14 +37,7 @@ google.setOnLoadCallback(function () {
       recordView: 'Name'
     }
   });
-});function performanceText(d){
-  switch(d){
-    case 1: return "High";
-    case 2: return "Medium";
-    case 3: return "Low";
-    default: return "-";
-  }
-}
+});
     </script>
 <style id="kshfStyle">
 #demo_Browser{

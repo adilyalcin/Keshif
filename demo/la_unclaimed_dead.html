@@ -45,10 +45,8 @@ $(document).ready( function(){
           return r;
         } },
       { name: "Age at Death", value: "Age" },
-      { name: "Death Date", 
-        value: function(){ return dateFormat.parse(this.Death); } },
-      { name: "After Story is Published...",
-        value: function(){ if(this.claimed) return "Claimed"; } }
+      { name: "Death Date", value: function(){ return dateFormat.parse(this.Death); } },
+      { name: "After Story is Published...", value: function(){ if(this.claimed) return "Claimed"; } }
     ],
     recordDisplay: {
       sortBy: "Age at Death",

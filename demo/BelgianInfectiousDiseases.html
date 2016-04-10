@@ -205,9 +205,7 @@ $(document).ready( function(){
       { name: "Age", value: function(){if(this.Age>0 && this.Age<100) return this.Age;}},
       { name: "Date", panel: "bottom",
         value: function(){ 
-          if(this.DateMonday===undefined) return;
-          var x=dateFormat.parse(this.DateMonday);
-          if(x!==null) return new Date(x);
+          if(this.DateMonday) return dateFormat.parse(this.DateMonday);
         } },
     ],
   });

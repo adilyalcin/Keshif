@@ -39,8 +39,7 @@ google.setOnLoadCallback(function(){
     loadedCb: function(){
       var flightDateFormat = d3.time.format("%-m/%-d/%y");
       this.records.forEach(function(record){
-        record.data.Date = flightDateFormat.parse(record.data.Flight_Date.split(" ")[0]);
-        delete record.data.Flight_Date;
+        record.data.Flight_Date = flightDateFormat.parse(record.data.Flight_Date.split(" ")[0]);
       });
     },
     summaries: [
@@ -66,7 +65,7 @@ google.setOnLoadCallback(function(){
       {name: "Cost (Total)", value: "Cost__Total_$", unitName: "$", panel: "right"},
       {name: "Cost (Other)", value: "Cost__Other", unitName: "$", panel: "right", collapsed: true},
       {name: "Cost (Repair)", value: "Cost__Repair", unitName: "$", panel: "right", collapsed: true},
-      {name: "Date", panel: "bottom"}
+      {name: "Date", value: "Flight_Date", panel: "bottom"}
     ],
   });
 });

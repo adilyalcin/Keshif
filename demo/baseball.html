@@ -14,13 +14,14 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
-    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
     <script type="text/javascript">
 $(document).ready(function() {
   var leagues = {
     NL: "National League",
     AL: "American League",
   };
+
+  var timeFormat = d3.time.format("%m/%d/%Y"); // "MM/DD/YYYY"
 
   browser = new kshf.Browser({
     domID: "#demo_Browser",
@@ -114,32 +115,17 @@ $(document).ready(function() {
       { name: "Transaction Date", panel: "bottom",
         value: function(){ 
           var dt = this['primary-date'];
-          if(dt!=="") return new Date(moment(dt,"MM/DD/YYYY"));
+          if(dt!=="") return timeFormat.parse(dt);
         } },
       { name: "Player", value: "player", panel: "middle", minAggrValue: 2 }
     ],
     recordDisplay: {
       sortColWidth: 75,
-      sortBy: [
-        {   title: 'Date',
-            value: function(){ 
-                var dt = this['primary-date'];
-                if(dt===""){ return null; }
-                dt = new Date(moment(dt,"MM/DD/YYYY"));
-                dt = new Date(dt.getUTCFullYear(),dt.getUTCMonth());
-                return dt.getTime();
-            },
-            label: function(){
-                var dt = this['primary-date'];
-                if(dt===""){ return null; }
-                return moment(dt,"MM/DD/YYYY").format("MMM YYYY"); 
-            }
-        }
-      ],
+      sortBy: "Transaction Date",
       recordView: function(){
-        return "<div class=\"iteminfo iteminfo_0\">Player: "+
-                "<a target=\"_blank\" href=\"http://retrosheet.org/boxesetc/"+this.player[0]+"/P"+
-                this.player+".htm\">"+this.player+"</a></div>";
+        return "<div class='iteminfo iteminfo_0'>Player: "+
+                "<a target='_blank' href='http://retrosheet.org/boxesetc/"+this.player[0]+"/P"+
+                this.player+".htm'>"+this.player+"</a></div>";
       }
     }
   });

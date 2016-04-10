@@ -77,12 +77,8 @@ $(document).ready( function() {
     },
     summaries: [
       { name: "State", value: "STATE", layout: "left", 
-        catLabel: function(){ 
-          return US_States.index_id[this.id].name;
-        },
-        catMap: function(){ 
-          return US_States.index_id[this.id].geo; 
-        } },
+        catLabel: function(){ return US_States.index_id[this.id].name; },
+        catMap: function(){ return US_States.index_id[this.id].geo; } },
       { name: "Route", value: "ROUTE", layout: "left", 
         catLabel: {
           1: "Interstate",

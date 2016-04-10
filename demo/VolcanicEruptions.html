@@ -66,23 +66,10 @@ google.setOnLoadCallback(function(){
       { name: "Deaths", panel: "right"},
       { name: "Missing", panel: "right"},
       { name: "Injuries", panel: "right"},
-      /*{ name: "Last known eruption", value: "Time",
-        catLabel: {
-          "D1":  'Last known eruption 1964 or later',
-          "D2":  'Last known eruption 1900-1963',
-          "D3":  'Last known eruption 1800-1899',
-          "D4":  'Last known eruption 1700-1799',
-          "D5":  'Last known eruption 1500-1699',
-          "D6":  'Last known eruption A.D. 1-1499',
-          "D7":  'Last known eruption B.C. (Holocene)',
-          "U": 'Undated, but probable Holocene eruption',
-          "Q": 'Quaternary eruption(s) with the only known Holocene activity being hydrothermal',
-          "?": 'Uncertain Holocene eruption',
-        }}*/
     ],
     recordDisplay: {
-      sortColWidth: 45,
       sortBy: "Year",
+      sortColWidth: 45,
       recordView: function(){ 
         return "<span class='volcanoName'>"+this.Name + "</span>"+
           ", <span class='countryName'>" +this.Country+"</span>"; 

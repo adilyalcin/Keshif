@@ -192,7 +192,7 @@ function loadData(browser){
                 entryData.Title = entry.Fields.title;
                 entryData.Year = entry.Fields.year;
                 if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
-                entryData.Date = new Date(entryData.Year,1,1);
+                entryData.Date = new Date(entryData.Year,0);
 
                 entryData.Paradigms = [];
                 entryData.Applications = [];

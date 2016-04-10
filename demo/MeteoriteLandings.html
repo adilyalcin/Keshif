@@ -16,6 +16,8 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
+  var weightFormat = d3.format("s");
+
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     leftPanelLabelWidth: 160,
@@ -35,15 +37,13 @@ google.setOnLoadCallback(function(){
       // The number of the Meteoritical Bulletin in which the name was published. 
     ],
     recordDisplay: {
-      displayType: "list",
+      sortBy: { name: 'Mass', label: function(){ return weightFormat(this.Mass); } },
       sortColWidth: 70,
       textSearch: "Name",
       recordView: function(){ 
         return this.Name + 
           " <a href='http://www.lpi.usra.edu/meteor/metbull.php?code="+this.id+"' class='fa fa-external-link' target='_blank'></a>";
-      },
-      sortBy: [ 'Mass', 'Year' ],
-      detailsToggle: "zoom"
+      }
     }
   });
 });

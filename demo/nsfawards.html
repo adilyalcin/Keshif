@@ -44,11 +44,7 @@ $(document).ready(function(){
       { name: "Program(s)", catSplit: ", " },
       { name: "Name", value: "Organization" },
       { name: "AwardInstrument", },
-      { name: "Start Date", panel: 'bottom',
-        value: function(){
-          var dt = this.StartDate;
-          return (dt==="") ? null : timeFormat.parse(dt);
-        }, },
+      { name: "Start Date", value: function(){ return timeFormat.parse(this.StartDate); }, panel: 'bottom'},
       { name: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
       { name: "NSFDirectorate", collapsed: true },
       { name: "ProgramManager", collapsed: true },

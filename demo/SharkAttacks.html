@@ -21,6 +21,7 @@ google.setOnLoadCallback(function(){
     barChartWidth: 150,
     leftPanelLabelWidth: 170,
     rightPanelLabelWidth: 160,
+    itemName: "Shark Attack Victims",
     source: {
       gdocId: '1miEf8BUjsBh-KqqaTzyGzCKSo8TY8bmtOjiiEf-q4cE',
       tables: "Shark Attacks"
@@ -32,11 +33,11 @@ google.setOnLoadCallback(function(){
       { name: "Country", panel: "right"},
       { name: "Area", panel: "right"},
       { name: "Activity"},
-      { name: "Year", panel: "middle", scaleType: "linear"}
+      { name: "Year", value: function(){ return new Date(this.Year,0);}, panel: "middle", }
     ],
     recordDisplay: {
-      sortColWidth: 45,
       sortBy: "Year",
+      sortColWidth: 45,
       textSearch: "Name",
       recordView: "Name"
     }

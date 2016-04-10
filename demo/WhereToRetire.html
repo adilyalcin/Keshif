@@ -48,21 +48,16 @@ google.setOnLoadCallback(function(){
       { name: "Crime", panel: "right"}
     ],
     recordDisplay: {
-      sortBy: { name: "Index" }, 
-      maxVisibleItems_Default: 48,
+      sortBy: "Index", 
       sortColWidth: 80,
       textSearch: "Region Name",
-      recordView: function(d){
-        return this["Region Name"]+", "+this.State;
-      }
+      recordView: function(d){ return this["Region Name"]+", "+this.State; }
     }
   });
 });
     </script>
 <style id="kshfStyle">
-#demo_Browser{
-  height: calc(100vh - 100px);
-}
+#demo_Browser{ height: calc(100vh - 100px); }
 </style>
   </head>
   <body>
@@ -74,7 +69,7 @@ google.setOnLoadCallback(function(){
 
     <div id="demo_Infobox">
       Data from 
-      <a href="https://public.tableau.com/profile/zillow.real.estate.research#!/vizhome/TopPlacestoRetire/Dashboard1" target="_blank">Zillow</a> - Data Re-Vis Tableau Public.
+      <a href="https://public.tableau.com/profile/zillow.real.estate.research#!/vizhome/TopPlacestoRetire/Dashboard1" target="_blank">Zillow</a> - Data Re-Vis from Tableau Public.
       </div>
   </body>
 </html>

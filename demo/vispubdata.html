@@ -53,7 +53,7 @@ google.setOnLoadCallback(function(){
 
     },
     summaries: [
-      { name: "Venue" }, // Convert "Vis" to "SciVis"
+      { name: "Venue" },
       { name: "Type",  description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ...",
         catLabel: { C: "Conference", M: "Miscallenous", T: "Journal (TVCG)" } },
       { name: "# of Citations to Paper (within)", panel: 'left', 
@@ -67,10 +67,9 @@ google.setOnLoadCallback(function(){
         description: "Only affiliations with at least two papers are shown" },*/
     ],
     recordDisplay: {
-      sortBy: "# of Citations to Paper (within)", //'Year',
+      sortBy: "# of Citations to Paper (within)",
       sortColWidth: 45,
-      detailsToggle: "one",
-      linkBy: ["References","Citations"],
+      linkBy: ["References", "Citations"],
       textSearch: "Paper Title",
       recordView: "Paper Title",
 /*      recordView: function(){ 

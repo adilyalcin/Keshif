@@ -252,10 +252,8 @@ google.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortBy:
-        { title:'Enrollment', 
-          value: function(){
-            return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"];
-          }},
+        { title:'Total Enrollment', 
+          value: function(){ return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"]; } },
       showRank: true,
       textSearch: "Name",
       recordView: function(){

@@ -42,20 +42,19 @@ $(document).ready( function(){
       { name: "Interventions", catSplit: "|", panel: 'right', minAggrValue: 200},
       { name: "Start Date", panel: 'middle', value: function(){
         var x=dateFormat.parse(this["Start Date"]);
-        if(x!==null) return new Date(x);
+        if(x) return new Date(x);
         }},
       { name: "Completion Date", panel: 'middle', value: function(){
         var v=this["Completion Date"];
         if(v==="null") return;
         var x=dateFormat.parse(v);
-        if(x!==null) return new Date(x);
+        if(x) return new Date(x);
         }},
       { name: "Enrollment", panel: 'middle', unitName: "ppl" },
       //{ name: "Sponsor/Collaborators", catSplit: "|", minAggrValue: 100},
     ],
     recordDisplay: {
       sortBy: "Enrollment",
-      detailsToggle: "zoom",
       recordView: "Title"
     }
   });

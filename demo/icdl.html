@@ -122,10 +122,10 @@ $(document).ready( function(){
     ],
     recordDisplay: {
       sortBy: 'Date Added',
-      textSearchFunc: function(){ 
+      textSearch: { name: "Title", value: function(){ 
         var metadata = dt_metadata[this.id];
         if(metadata) return metadata.data.Title;
-      },
+      } },
       displayType: 'grid',
       maxVisibleItems_Default: 20,
       recordView: function(){

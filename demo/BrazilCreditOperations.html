@@ -16,6 +16,7 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
+  var dateFormat = d3.time.format("%m/%d/%Y");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
@@ -28,12 +29,6 @@ google.setOnLoadCallback(function(){
       fileType: 'json',
       tables: "Data"
     },
-    loadedCb: function(){
-      var dateFormat = d3.time.format("%m/%d/%Y");
-      kshf.dt.Data.forEach(function(d){
-        d.data.Date = dateFormat.parse(d.data.Date);
-      });
-    },
     summaries: [
       { name: "Category" },
       { name: "Entitie's Type"},
@@ -41,7 +36,7 @@ google.setOnLoadCallback(function(){
       { name: "State", panel: "middle" },
       { name: "Entity", panel: "middle", minAggrValue: 5 },
       { name: "Currency" },
-      { name: "Date", panel: 'bottom' },
+      { name: "Date", value: function(){ return dateFormat.parse(this.Date);}, panel: 'bottom' },
       { name: "IBGE", panel: "left" },
       { name: "Finality", panel: "right" },
       { name: "Creditor", panel: "right" },

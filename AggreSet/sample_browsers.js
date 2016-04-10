@@ -861,8 +861,6 @@ var browser_configs = {
                     },
                     enableSetVis: true
                 },{ name: "Rating", value: "AvgRating", panel: 'right'
-                //},{ name: "Watched", value: "Watches", panel: 'right', intervalScale: 'log', collapsed: true
-                //},{ name: "Release Year", value: function(){ return new Date(this.ReleaseDate,0); }, panel: 'bottom'
                 }
             ],
             recordDisplay: {
