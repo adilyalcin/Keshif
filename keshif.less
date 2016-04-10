@@ -1532,7 +1532,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .infobox_credit{
                 display:none;
                 width: 390px;
-                height: 260px;
+                height: 200px;
                 position: absolute;
                 top: 0; left: 0; bottom: 0; right: 0;
                 div.all-the-credits{
@@ -1546,9 +1546,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     border-top-right-radius: 15px;
                     border-bottom: solid 2px rgb(60, 94, 67);
                 }
-                span.libName{
-                    font-size: 1.4em;
-                    font-weight: 700;
+                .libName{
+                  font-size: 1.3em;
+                  font-weight: 700;
+                  color: black;
+                  text-decoration: none;
+                  &:hover{ color: orangered; }
                 }
                 div.project_fund {
                     font-size: 0.8em;
@@ -2896,9 +2899,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .zoomControl{
                       display: none;
                       position: absolute;
-                      left: -18px;
-                      top: -1px;
-                      font-size: 0.8em;
+                      left: -15px;
+                      top: 1px;
+                      font-size: 0.7em;
                       color: gray;
                       cursor: pointer;
                       &:hover{ color: black; }
@@ -2971,8 +2974,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         }
                         > .handle{
                             position:absolute;
-                            width:6px;
-                            height:8px;
+                            width: 6px;
+                            height: 8px;
                             background-color: white;
                             border-width: 1px;
                             border-color: black;
@@ -2998,7 +3001,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                 width: 2px;
                                 border-left: dotted 2px #30b8c4;
                                 cursor: col-resize;
-                                box-shadow: 0px 0px 2px white;
+                                box-shadow: 0px 0px 2px white, 0px 0px 4px white;
                                 &:hover{ border-left: solid 2px #30b8c4; }
                             }
                         }
@@ -3017,6 +3020,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           display: block;
                           text-align: center;
                           white-space: nowrap;
+                          cursor: pointer;
                           > .unitName {
                             white-space: nowrap;
                             overflow: hidden;
@@ -3028,6 +3032,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                               overflow: visible;
                             }
                           }
+                          > .secondLayer{ font-weight: 400; }
                         }
                         > .line{
                           position: absolute;
@@ -3064,9 +3069,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &[filtered=true] {
           > .headerGroup .clearFilterButton{ display: inline-block; }
+          .rangeLimitOnChart{ display: block !important; }
           &:hover > .wrapper > .summaryInterval > .intervalSlider {
             > .zoomControl{ display: block; }
-            > .controlLine > .handle > .rangeLimitOnChart{ display: block; }
           }
         }
         &[isMultiValued=false]{
@@ -3104,7 +3109,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       &:hover{
         > .headerGroup {
-          box-shadow: 0px 0px 2px rgb(100, 100, 100);
+          box-shadow: 0px 0px 2px #646464, 0px 0px 5px #999;
           > .header_display_control > .fa{ opacity: 1; }
         }
         .missingValueAggr{ color: gray }
@@ -3319,7 +3324,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .aggrGlyph > .measureLabel{ color: darken(@color_Compare_B, 10%) !important; }
     }
     &[measureLabelType="Compared_C"]{
-      .aggrGlyph > .measureLabel{ color: darken(@color_Compare_C, 10%) !important; text-shadow: 0px 0px 2px black; }
+      .aggrGlyph > .measureLabel{ 
+        color: darken(@color_Compare_C, 10%) !important; 
+        text-shadow: 0px 0px 1px black, 0px 0px 1px black;
+      }
     }
 
     &[selectHighlight]{
@@ -3688,6 +3696,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            > .unitName{ margin-right: 1px; }
           }
           > .recordRank{
             float: left;
@@ -4218,20 +4227,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.project_credits{
-            font-size: 0.9em;
-            font-style: italic;
-            a.myName{
-                display: inline-block;
-                margin: 17px 10px;
-                vertical-align: top;
-                color: black;
-                font-weight: 700;
-                font-style: normal;
-                text-decoration: none;
-            }
-        }
-        &.project_3rdparty img{
-            position:relative;
+          font-size: 0.9em;
+          cursor: default;
+          a.myName{
+            display: inline-block;
+            font-size: 1.1em;
+            margin: 5px 10px;
+            color: black;
+            font-weight: 600;
+            font-style: normal;
+          }
+          a.advName{
+            color: black;
+          }
         }
     } // boxinbox
 

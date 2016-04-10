@@ -1865,7 +1865,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_infobox > .infobox_credit {
   display: none;
   width: 390px;
-  height: 260px;
+  height: 200px;
   position: absolute;
   top: 0;
   left: 0;
@@ -1883,9 +1883,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-right-radius: 15px;
   border-bottom: solid 2px #3c5e43;
 }
-.kshf .panel.panel_infobox > .infobox_credit span.libName {
-  font-size: 1.4em;
+.kshf .panel.panel_infobox > .infobox_credit .libName {
+  font-size: 1.3em;
   font-weight: 700;
+  color: black;
+  text-decoration: none;
+}
+.kshf .panel.panel_infobox > .infobox_credit .libName:hover {
+  color: orangered;
 }
 .kshf .panel.panel_infobox > .infobox_credit div.project_fund {
   font-size: 0.8em;
@@ -3505,9 +3510,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: none;
   position: absolute;
-  left: -18px;
-  top: -1px;
-  font-size: 0.8em;
+  left: -15px;
+  top: 1px;
+  font-size: 0.7em;
   color: gray;
   cursor: pointer;
 }
@@ -3633,7 +3638,7 @@ top:calc(50% - 8px);
   width: 2px;
   border-left: dotted 2px #30b8c4;
   cursor: col-resize;
-  box-shadow: 0px 0px 2px white;
+  box-shadow: 0px 0px 2px white, 0px 0px 4px white;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart:hover {
   border-left: solid 2px #30b8c4;
@@ -3654,6 +3659,7 @@ top:calc(50% - 8px);
   display: block;
   text-align: center;
   white-space: nowrap;
+  cursor: pointer;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
   white-space: nowrap;
@@ -3665,6 +3671,9 @@ top:calc(50% - 8px);
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName:hover {
   overflow: visible;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .secondLayer {
+  font-weight: 400;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
@@ -3704,10 +3713,10 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[filtered=true] > .headerGroup .clearFilterButton {
   display: inline-block;
 }
-.kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
-  display: block;
+.kshf .kshfSummary[filtered=true] .rangeLimitOnChart {
+  display: block !important;
 }
-.kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
+.kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: block;
 }
 .kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection="selected"][selected="0"] .notButton {
@@ -3733,7 +3742,7 @@ top:calc(50% - 8px);
   display: inline-block;
 }
 .kshf .kshfSummary:hover > .headerGroup {
-  box-shadow: 0px 0px 2px #646464;
+  box-shadow: 0px 0px 2px #646464, 0px 0px 5px #999;
 }
 .kshf .kshfSummary:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
@@ -3986,7 +3995,7 @@ top:calc(50% - 8px);
 }
 .kshf[measureLabelType="Compared_C"] .aggrGlyph > .measureLabel {
   color: #fffda9 !important;
-  text-shadow: 0px 0px 2px black;
+  text-shadow: 0px 0px 1px black, 0px 0px 1px black;
 }
 .kshf[selectHighlight] .percentileChart_Highlighted {
   display: block !important;
@@ -4470,6 +4479,9 @@ top:calc(50% - 8px);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+}
+.kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .recordSortCol > .unitName {
+  margin-right: 1px;
 }
 .kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .recordRank {
   float: left;
@@ -5123,19 +5135,18 @@ top:calc(50% - 8px);
 }
 .kshf .boxinbox.project_credits {
   font-size: 0.9em;
-  font-style: italic;
+  cursor: default;
 }
 .kshf .boxinbox.project_credits a.myName {
   display: inline-block;
-  margin: 17px 10px;
-  vertical-align: top;
+  font-size: 1.1em;
+  margin: 5px 10px;
   color: black;
-  font-weight: 700;
+  font-weight: 600;
   font-style: normal;
-  text-decoration: none;
 }
-.kshf .boxinbox.project_3rdparty img {
-  position: relative;
+.kshf .boxinbox.project_credits a.advName {
+  color: black;
 }
 .kshf .leaflet-container {
   font: inherit;

@@ -1863,7 +1863,8 @@ kshf.RecordDisplay.prototype = {
       if(d3_selection===undefined) d3_selection = this.DOM.recordsSortCol;
       var me=this;
       var labelFunc=this.sortingOpt_Active.sortLabel;
-      var sortColformat = d3.format(".s");
+      var sortColformat = function(a){ return a.toLocaleString(); };
+      //d3.format(".s")
       if(this.sortingOpt_Active.isTimeStamp()){
         sortColformat = this.sortingOpt_Active.timeTyped.print;
       }
@@ -2231,12 +2232,11 @@ kshf.RecordDisplay.prototype = {
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
               title: function(){ 
-                var s="";
+                var v = me.sortingOpt_Active.summaryFunc.call(record.data,record);
                 return ""+
                   "<span class='mapItemName'>"+me.recordViewSummary.summaryFunc.call(record.data,record)+"</span>"+
                   "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryName+"</span>: "+
-                  "<span class='mapTooltipValue'>"+me.sortingOpt_Active.printWithUnitName(
-                    me.sortingOpt_Active.summaryFunc.call(record.data,record))+"</span>";
+                  "<span class='mapTooltipValue'>"+me.sortingOpt_Active.printWithUnitName(v)+"</span>";
               }
             });
           }
@@ -3642,14 +3642,18 @@ kshf.Browser.prototype = {
         var me=this;
         var creditString="";
         creditString += "<div align='center'>";
-        creditString += "<div class='header'>Data made explorable by <span class='libName'>Keshif</span>.</div>";
-        creditString += "<div align='center' class='boxinbox project_credits'>";
-        creditString += "<div>Developed by</div>";
-        creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'><img src='https://wiki.umiacs.umd.edu/hcil/images/"+
-          "1/10/HCIL_logo_small_no_border.gif' style='height:50px'></a>";
-        creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a>";
-        creditString += " <a href='http://www.umd.edu' target='_blank'><img src='http://www.trademarks.umd.edu/marks/gr/informal.gif' "+
-          "style='height:50px'></a>";
+        creditString += "<div class='header'>Data made explorable by "+
+          "<a target='_blank' href='http://www.keshif.me' class='libName'>Keshif</a></div>";
+        creditString += "<div align='center' class='boxinbox project_credits' style='padding: 0px 15px'>";
+        creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'>"+
+          "<img src='http://www.keshif.me/AggreSet/img/logo_hcil.gif' style='height:50px; float: left'></a>";
+        creditString += " <a href='http://www.umd.edu' target='_blank'>"+
+          "<img src='http://www.keshif.me/AggreSet/img/logo_umd.png' style='height:50px; float: right'></a>";
+        creditString += "Developed &amp; designed by: ";
+        creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a><br>";
+        creditString += "Advised by: <br>";
+        creditString += " <a class='advName' href='https://sites.umiacs.umd.edu/elm/' target='_blank'>Niklas Elmqvist</a> and ";
+        creditString += " <a class='advName' href='http://www.cs.umd.edu/~bederson/' target='_blank'>Ben Bederson</a> <br>";
         creditString += "</div>";
         creditString += "";
         creditString += "<div align='center' class='boxinbox project_credits'>";
@@ -3661,14 +3665,14 @@ kshf.Browser.prototype = {
             creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true' "+
               "allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe>";
             creditString += "</div>";
-        creditString += " 3rd party libraries used<br/>";
-        creditString += " <a href='http://d3js.org/' target='_blank'>D3</a> -";
-        creditString += " <a href='http://jquery.com' target='_blank'>JQuery</a> -";
-        creditString += " <a href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a>";
+        creditString += " <span style='font-size: 0.7em'> 3rd party libraries:";
+        creditString += " <a style='color:black;' href='http://d3js.org/' target='_blank'>D3</a>, ";
+        creditString += " <a style='color:black;' href='http://jquery.com' target='_blank'>JQuery</a>, ";
+        creditString += " <a style='color:black;' href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a></span>";
         creditString += "</div><br/>";
         creditString += "";
         creditString += "<div align='center' class='project_fund'>";
-        creditString += "Keshif (<i>keşif</i>) means discovery / exploration in Turkish.<br/>";
+        creditString += "Keshif (<i>keşif</i>) means discovery / exploration in Turkish<br/>";
         creditString += "";
 
         this.panel_infobox = this.DOM.root.append("div").attr("class", "panel panel_infobox");
@@ -4758,6 +4762,8 @@ kshf.Browser.prototype = {
       this.clearSelect_Compare('B');
       this.clearSelect_Compare('C');
       this.clearCrumbAggr('Compared_A');
+      this.clearCrumbAggr('Compared_B');
+      this.clearCrumbAggr('Compared_C');
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
     },
@@ -8417,9 +8423,6 @@ var Summary_Interval_functions = {
           }
         }
       };
-      this.intervalTickFormat = function(v){
-        return (me.hasFloat) ? d3.format("s")(v) : d3.format(".2f")(v);
-      };
 
       if(this.records.length<=1000) this.initializeAggregates();
     },
@@ -8620,7 +8623,6 @@ var Summary_Interval_functions = {
         title: function(){ return me.summaryName; },
         onClear: function(){
           if(this.filteredBin){
-            this.filteredBin.setAttribute("filtered",false);
             this.filteredBin = undefined;
           }
           me.DOM.root.attr("filtered",false);
@@ -8762,8 +8764,8 @@ var Summary_Interval_functions = {
         });
 
       this.DOM.nugget.select(".nuggetInfo").html(
-        "<span class='num_left'>"+this.intervalTickFormat(this.intervalRange.org.min)+"</span>"+
-        "<span class='num_right'>"+this.intervalTickFormat(this.intervalRange.org.max)+"</span>");
+        "<span class='num_left'>"+this.intervalTickPrint(this.intervalRange.org.min)+"</span>"+
+        "<span class='num_right'>"+this.intervalTickPrint(this.intervalRange.org.max)+"</span>");
     },
     /** -- */
     resetActiveRangeToTotal: function(){
@@ -9083,23 +9085,17 @@ var Summary_Interval_functions = {
     setUnitName: function(v){
       this.unitName = v;
       if(this.unitName) this.DOM.unitNameInput[0][0].value = this.unitName;
-      this.refreshTickLabels();
+      this.refreshValueTickLabels();
       if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
         this.browser.recordDisplay.refreshRecordSortLabels();
       }
     },
     /** -- */
     printWithUnitName: function(v,noDiv){
-      if(v instanceof Date) 
-        return this.timeTyped.print(v);
+      if(v instanceof Date) return this.timeTyped.print(v);
       if(this.unitName){
-        var s;
-        if(noDiv){
-          s=this.unitName;
-        } else {
-          s = "<span class='unitName'>"+this.unitName+"</span>";
-        }
-        return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s);
+        var s = noDiv ? this.unitName : ("<span class='unitName'>"+this.unitName+"</span>");
+        return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s); // currency comes before
       }
       return v;
     },
@@ -9262,7 +9258,7 @@ var Summary_Interval_functions = {
         - this.scaleType
         - this.intervalRange
         Updates
-        - this.intervalTickFormat
+        - this.intervalTickPrint
         - this.valueScale.nice()
         Return
         - the tick values in an array
@@ -9341,7 +9337,7 @@ var Summary_Interval_functions = {
                   var nextTick = timeInterval.offset(v, 1);
                   var first=d3.time.format.utc("%-b")(v);
                   var s=first;
-                  if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(nextTick));
+                  if(first==="Jan") s+="<br><span class='secondLayer'>"+(d3.time.format("%Y")(nextTick))+"</span>";
                   return s;
                 },
                 twoLine: true
@@ -9352,7 +9348,7 @@ var Summary_Interval_functions = {
                   var nextTick = timeInterval.offset(v, 3);
                   var first=d3.time.format.utc("%-b")(v);
                   var s=first;
-                  if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(nextTick));
+                  if(first==="Jan") s+="<br><span class='secondLayer'>"+(d3.time.format("%Y")(nextTick))+"</span>";
                   return s;
                 },
                 twoLine: true
@@ -9419,9 +9415,9 @@ var Summary_Interval_functions = {
                 timeInterval = d3.time[tRes.type].utc;
                 this.timeTyped.activeRes = tRes;
                 if(typeof tRes.format === "string"){
-                  this.intervalTickFormat = d3.time.format.utc(tRes.format);
+                  this.intervalTickPrint = d3.time.format.utc(tRes.format);
                 } else {
-                  this.intervalTickFormat = tRes.format;
+                  this.intervalTickPrint = tRes.format;
                 }
                 this.height_labels = (tRes.twoLine) ? 28 : 13;
               }
@@ -9439,7 +9435,7 @@ var Summary_Interval_functions = {
           for(var i=this.intervalRange.active.min ; i<=this.intervalRange.getActiveMax(); i++){ // DONT CHANGE!
             ticks.push(i);
           }
-          this.intervalTickFormat = d3.format("d");
+          this.intervalTickPrint = d3.format("d");
         } else if(this.scaleType==='log'){
           if(this.valueScale.domain()[0] === 0)
             this.valueScale.domain([this.intervalRange.org.min, this.valueScale.domain()[1]]);
@@ -9451,7 +9447,7 @@ var Summary_Interval_functions = {
           }
           if(!this.hasFloat)
             ticks = ticks.filter(function(d){return d%1===0;});
-          this.intervalTickFormat = d3.format(".1s");
+          this.intervalTickPrint = d3.format(".1s");
         } else {
           this.valueScale.nice(optimalTickCount);
           this.valueScale.nice(optimalTickCount);
@@ -9465,7 +9461,7 @@ var Summary_Interval_functions = {
           var ticksFloat = ticks.some(function(tick){ return tick%1!==0; });
 
           var d3Formating = d3.format(ticksFloat?".2f":".2s");
-          this.intervalTickFormat = function(d){
+          this.intervalTickPrint = function(d){
             if(!me.hasFloat && d<10) return d;
             if(!me.hasFloat && Math.abs(ticks[1]-ticks[0])<1000) return d;
             var x= d3Formating(d);
@@ -9499,7 +9495,7 @@ var Summary_Interval_functions = {
       Updates:
       - scaleType (step vs linear)
       - valueScale
-      - intervalTickFormat
+      - intervalTickPrint
       */
     updateScaleAndBins: function(force){
       var me=this;
@@ -9615,10 +9611,8 @@ var Summary_Interval_functions = {
         this.refreshBins_Translate();
         this.refreshViz_Scale();
 
-        var offset=this.getTickOffset();
-        this.DOM.labelGroup.selectAll(".tick").style("left",function(d){
-          return (me.valueScale(d)+offset)+"px";
-        });
+        this.refreshValueTickPos();
+
         this.refreshIntervalSlider();
       }
     },
@@ -9632,10 +9626,6 @@ var Summary_Interval_functions = {
         if(difNew < difOld) t = tick;
       });
       return t;
-    },
-    /** -- */
-    getTickOffset: function(){
-      return (!this.stepTicks) ? 0 : (this.aggrWidth/2);
     },
     /** -- */
     insertVizDOM: function(){
@@ -9678,27 +9668,51 @@ var Summary_Interval_functions = {
       this.insertBins();
       this.refreshViz_Axis();
       this.refreshMeasureLabel();
-      this.updateTicks();
+      this.updateValueTicks();
+    },
+    /** --- */
+    refreshValueTickPos: function(){
+      var me=this;
+      this.DOM.labelGroup.style("left", (this.stepTicks ? (this.aggrWidth/2) : 0)+"px");
+      this.DOM.labelGroup.selectAll(".tick").style("left",function(d){ return me.valueScale(d)+"px"; });
     },
     /** -- */
-    updateTicks: function(){
+    updateValueTicks: function(){
+      var me=this;
       this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove(); // remove all existing ticks
       var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
       var ddd_enter = ddd.enter().append("span").attr("class","tick");
-          ddd_enter.append("span").attr("class","line");
-          ddd_enter.append("span").attr("class","text");
-      this.refreshTickLabels();
+      ddd_enter.append("span").attr("class","line");
+      ddd_enter.append("span").attr("class","text")
+        .each(function(d){
+          this.bin = null;
+          me.histBins.every(function(bin){
+            if(bin.minV===d) {
+              this.bin = bin;
+              return false;
+            }
+            return true;
+          },this);
+        })
+        .on("mouseover",function(d){
+          if(this.bin) me.onBinMouseOver(this.bin);
+        })
+        .on("mouseleave",function(d){
+          if(this.bin===null) return;
+          this.bin.unselectAggregate();
+          me.browser.clearSelect_Highlight();
+        })
+        .on("click",function(d){
+          if(this.bin) me.onAggrClick(this.bin);
+        });
+      this.refreshValueTickLabels();
     },
     /** -- */
-    refreshTickLabels: function(){
+    refreshValueTickLabels: function(){
       var me=this;
       if(this.DOM.labelGroup===undefined) return;
-      this.DOM.labelGroup.selectAll(".tick .text").html(function(d){
-        if(me.scaleType==='time') return me.intervalTickFormat(d);
-        if(d<1 && d!==0) 
-          return me.printWithUnitName( d.toFixed(1) );
-        else 
-          return me.printWithUnitName( me.intervalTickFormat(d) );
+      this.DOM.labelGroup.selectAll(".tick .text").html(function(d){ 
+        return me.printWithUnitName( me.intervalTickPrint(d) ); 
       });
     },
     /** -- */
@@ -9711,6 +9725,28 @@ var Summary_Interval_functions = {
           .style("opacity",1);
       }
       this.browser.setSelect_Highlight(this,aggr);
+    },
+    /** -- */
+    onAggrClick: function(aggr){
+      if(this.highlightRangeLimits_Active) return;
+      if(d3.event.shiftKey){
+        this.browser.setSelect_Compare(this,aggr,true);
+        return;
+      }
+      if(this.summaryFilter.filteredBin===this){
+        this.summaryFilter.clearFilter();
+        return;
+      }
+
+      this.stepRange = this.stepTicks;
+
+      // store histogram state
+      this.summaryFilter.active = {
+        min: aggr.minV,
+        max: aggr.maxV
+      };
+      this.summaryFilter.filteredBin = null;
+      this.summaryFilter.addFilter();
     },
     /** -- */
     insertBins: function(){
@@ -9728,7 +9764,6 @@ var Summary_Interval_functions = {
         })
         .on("mouseenter",function(aggr){
           if(me.highlightRangeLimits_Active) return;
-          var thiss=this;
           // mouse is moving slow, just do it.
           if(me.browser.mouseSpeed<0.2) {
             me.onBinMouseOver(aggr);
@@ -9745,28 +9780,7 @@ var Summary_Interval_functions = {
           aggr.unselectAggregate();
           me.browser.clearSelect_Highlight();
         })
-        .on("click",function(aggr){
-          if(me.highlightRangeLimits_Active) return;
-          if(d3.event.shiftKey){
-            me.browser.setSelect_Compare(me,aggr,true);
-            return;
-          }
-          if(me.summaryFilter.filteredBin===this){
-            me.summaryFilter.clearFilter();
-            return;
-          }
-          this.setAttribute("filtered","true");
-
-          me.stepRange = me.stepTicks;
-
-          // store histogram state
-          me.summaryFilter.active = {
-            min: aggr.minV,
-            max: aggr.maxV
-          };
-          me.summaryFilter.filteredBin = null;
-          me.summaryFilter.addFilter();
-        });
+        .on("click",function(aggr){ me.onAggrClick(aggr); });
 
       ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
         newBins.append("span").attr("class","measure_"+m);
@@ -9775,7 +9789,6 @@ var Summary_Interval_functions = {
       newBins.selectAll("[class^='measure_Compared_']")
         .on("mouseover" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); })
         .on("mouseleave",function(){ me.browser.refreshMeasureLabels(); });
-
 
       newBins.append("span").attr("class","total_tip");
 
@@ -10535,21 +10548,15 @@ var Summary_Interval_functions = {
     },
     /** -- */
     setRecordValue: function(record){
-      if(!this.inBrowser()) return;
-      if(this.DOM.inited===false) return;
+      if(!this.inBrowser() || !this.DOM.inited || this.valueScale===undefined) return;
       var v = this.getRecordValue(record);
-      if(v===null) return;
-      if(this.valueScale===undefined) return;
-      if(this.scaleType==='log' && v<=0) return; // do not map zero/negative values
+      if( v===null || (this.scaleType==='log' && v<=0) ) return;
 
       var me=this;
-
-      var offset=0;//this.getTickOffset();
-      if(this.stepTicks && !this.isTimeStamp()) offset = this.aggrWidth/2;
+      var offset = (this.stepTicks && !this.isTimeStamp()) ? this.aggrWidth/2 : 0;
       this.DOM.recordValue
         .each(function(){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(v)+offset)+"px)"); })
         .style("display","block");
-
       this.DOM.recordValueText.html( this.printWithUnitName(v) );
     },
     /** -- */
@@ -11187,7 +11194,7 @@ var Summary_Clique_functions = {
     this.DOM.scaleLegend_SVG
       .attr("width",this.setPairDiameter+50)
       .attr("height",this.setPairDiameter+10)
-      .attr("viewBox","0 0 "+(this.setPairDiameter+50)+" "+(this.setPairDiameter+10));
+      .attr("viewBox","0 0 "+(this.setPairDiameter+35)+" "+(this.setPairDiameter+10));
 
     this.DOM.legend_Group.attr("transform", "translate("+(this.setPairRadius)+","+(this.setPairRadius+18)+")");
     this.DOM.legendHeader.attr("transform", "translate("+(2*this.setPairRadius+3)+",6)");
