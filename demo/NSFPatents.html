@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>NSF Patents Project</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  var timeParser = d3.time.format("%Y%m%d");
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 150,
+    leftPanelLabelWidth: 250,
+    rightPanelLabelWidth: 200,
+    source: {
+      gdocId: '1BwyoplcePsfIFs-eIJN5CNMnOhWt8749D407c6wonU0',
+      tables: "Grants"
+    },
+    summaries: [
+      //{ name: "Genre" },
+      { name: "Patent Publication Date", 
+        panel: "middle",
+        value: function(){
+          return timeParser.parse(""+this.patpubdate);
+        }},
+      { name: "Patent Filing Date", collapsed: true,
+        panel: "middle",
+        value: function(){
+          return timeParser.parse(""+this.filedate);
+        }},
+      { name: "Prior Publication Date", collapsed: true,
+        panel: "middle",
+        value: function(){
+          return timeParser.parse(""+this.priorpubdate);
+        }},
+
+      { name: "Organization",
+        value: function(){
+          if(this.assignee)
+            return this.assignee.replace(/\]\[/g,"+").replace(/\[/g,"").replace(/\]/g,"").split("+");
+        }},
+      { name: "Inventors", 
+        panel: "right",
+        minAggrValue: 3,
+        value: function(){
+          if(this.invs)
+            return this.invs.replace(/\]\[/g,"+").replace(/\[/g,"").replace(/\]/g,"").split("+");
+        }}
+    ],
+    recordDisplay: {
+      sortColWidth: 65,
+      sortBy: { name: "Patent Publication Date", inverse: true},
+      recordView: function(){ 
+        var str="";
+        str+="<a href='http://www.google.com?q="+this.title+"' target='_blank'>"+this.title+"</a>";
+        return str;
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser{ height: calc(100vh - 100px); }
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">NSF Patents Project</div>
+      <div id="demo_PageSubtitle">The NSF patent project tracks patent generated from NSF sponsored research, correlated back to the orignal NSF grant.</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox" align="center">
+      Data from <a href='http://nsfpatent.codefornova.org/' target='_blank'>NSF Project</a> by the
+        <a href='http://www.codefornova.org' target='_blank'>Code for NoVa</a>.
+      </div>
+
+  </body>
+</html>
