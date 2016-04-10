@@ -46,9 +46,6 @@ function loadData(browser){
           }
         });
 
-        cData.Time = new Date(cData['Creation Date'], 0);
-        cData['Year Born'] = new Date(cData['Year Born'], 0);
-
         kshf.dt.Artworks.push(new kshf.Record(cData,"id"));
       });
 
@@ -73,12 +70,11 @@ $(document).ready( function(){
       { name: "Nationality", panel: 'right' },
       { name: "Gender", panel: 'right' },
       { name: "Living", panel: 'right' },
-      { name: "Year Born", panel: 'right' },
-
+      { name: "Year Born", timeFormat: "%Y", panel: 'right' },
       { name: "Collection", collapsed: true },
       { name: "Object Type", },
       { name: "Medium", minAggrValue: 2},
-      { name: "Creation Date", value: "Time", panel: 'bottom' },
+      { name: "Creation Date", timeFormat: "%Y", panel: 'bottom' },
       { name: "Department" },
       { name: "On Display" }, 
       { name: "Key Words", minAggrValue: 10, collapsed: true }

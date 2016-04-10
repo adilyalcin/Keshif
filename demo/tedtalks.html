@@ -39,8 +39,8 @@ google.setOnLoadCallback(function(){
           }
           return 1*views;
         }},
-      { name: "Speaker", layout: 'right', catSplit: /(?: and )|(?:, )/ },
-      { name: "Date", layout: 'bottom' }
+      { name: "Speaker", catSplit: /(?: and )|(?:, )/, panel: 'right' },
+      { name: "Date", panel: 'bottom' }
     ],
     recordDisplay: {
       sortBy: 'Views',

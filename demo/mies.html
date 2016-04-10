@@ -27,7 +27,7 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Continent" },
       { name: "City / Location", value: function(){ return "<span style='color:gray'>"+this.Country+" </span> - "+this.City; } },
-      { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,0); } },
+      { name: "Year", panel: 'bottom', timeFormat: "%Y" },
       { name: "Type", panel: 'right' }
     ],
     recordDisplay: {

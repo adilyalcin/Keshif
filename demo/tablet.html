@@ -17,7 +17,6 @@
 
     <script type="text/javascript">
 $(document).ready( function() {
-  var timeParser = d3.time.format("%m/%d/%y"); //"MM/DD/YY"
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Tablets",
@@ -43,12 +42,7 @@ $(document).ready( function() {
       { name: "Weight", panel: 'right', unitName: 'oz' },
       { name: "Battery Life", panel: 'right', unitName: 'hr' },
       { name: "Rating", panel: 'right', value: "Customer Reviews", showPercentile: true },
-      { name: "Release Date", panel: 'bottom',
-        value: function(){ 
-          var dt = this['Date First Available'];
-          if(dt!=="") return timeParser.parse(dt);
-        }
-      }
+      { name: "Release Date", value: "Date First Available", timeFormat: "%m/%d/%y", panel: 'bottom'}
     ],
     recordDisplay: {
       sortBy: "Rating",

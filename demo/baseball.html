@@ -21,8 +21,6 @@ $(document).ready(function() {
     AL: "American League",
   };
 
-  var timeFormat = d3.time.format("%m/%d/%Y"); // "MM/DD/YYYY"
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "transactions",
@@ -112,11 +110,7 @@ $(document).ready(function() {
           var x = this['To Team'];
           if(x!=="") return kshf.dt_id.baseball_teams[x].data.league;
         } },
-      { name: "Transaction Date", panel: "bottom",
-        value: function(){ 
-          var dt = this['primary-date'];
-          if(dt!=="") return timeFormat.parse(dt);
-        } },
+      { name: "Transaction Date", value: "primary-date", timeFormat: "%m/%d/%Y", panel: "bottom" },
       { name: "Player", value: "player", panel: "middle", minAggrValue: 2 }
     ],
     recordDisplay: {

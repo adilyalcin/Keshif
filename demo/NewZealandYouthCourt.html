@@ -49,7 +49,7 @@ google.setOnLoadCallback(function(){
          15:"Offences Against Justice Procedures, Government Security And Government Operations",
          16:"Miscellaneous Offences"
         } },
-      { name: "Year", value: function(){ if(this.year) return new Date(this.year,0);}, panel: "middle" },
+      { name: "Year", value: "year", timeFormat: "%Y", panel: "middle" },
       { name: "Gender", value: "gender", catLabel: {F:"Female",M:"Male",X:"Unknown"} },
       { name: "Ethnicity", value: "ethnicity", 
         catLabel:{

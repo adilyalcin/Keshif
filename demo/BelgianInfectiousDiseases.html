@@ -161,8 +161,6 @@ var ProvinceMap = {
 var ProvinceFeatures = {};
 
 $(document).ready( function(){
-  var dateFormat=d3.time.format("%Y-%m-%d");
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 200,
@@ -203,10 +201,7 @@ $(document).ready( function(){
           }
         } },
       { name: "Age", value: function(){if(this.Age>0 && this.Age<100) return this.Age;}},
-      { name: "Date", panel: "bottom",
-        value: function(){ 
-          if(this.DateMonday) return dateFormat.parse(this.DateMonday);
-        } },
+      { name: "Date", value: "DateMonday", timeFormat: "%Y-%m-%d", panel: "bottom" }
     ],
   });
 });

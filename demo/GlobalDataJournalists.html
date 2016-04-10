@@ -44,8 +44,8 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Country", value: "country" },
       { name: "City", value: "city" },
-      { name: "Skills", value: "skills", layout: "right"},
-      { name: "Contact", layout: "right",
+      { name: "Skills", value: "skills", panel: "right"},
+      { name: "Contact", panel: "right",
         value: function(){
           var r=[];
           if(this.github==="YES") r.push("Github");
@@ -55,7 +55,7 @@ google.setOnLoadCallback(function(){
           if(this.twitter==="YES") r.push("Twitter");
           return r;
         } },
-      { name: "Institution", value: "institution", layout: "right"},
+      { name: "Institution", value: "institution", panel: "right"},
     ],
     recordDisplay: {
       textSearch: "title",

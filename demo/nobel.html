@@ -29,7 +29,7 @@ $(document).ready( function(){
       { name: "Category", catLabel: function(){ return this.id+" "+getIcon(this.id); } },
       { name: "Born Country",
         value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.bornCountry; }, },
-      { name: "Affiliation", layout: 'right',
+      { name: "Affiliation", panel: 'right',
         value: function(){ return kshf.dt_id.Laureates[this.laureate_id].data.name; },
         // summaries: [{ name: "# of Winners", value: function(d){ return d.records.length; } }] 
         },
@@ -41,7 +41,7 @@ $(document).ready( function(){
           2: "Female <i class='fa fa-female'></i>",
           3: "Organization <i class='fa fa-university'></i>"
         } },
-      { name: "Year", layout: 'bottom', value: function(){ return new Date(this.Year,0); }, }
+      { name: "Year", panel: 'bottom', timeFormat: "%Y" }
     ],
     recordDisplay: {
       sortBy: "Year",

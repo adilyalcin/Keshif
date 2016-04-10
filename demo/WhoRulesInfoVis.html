@@ -108,17 +108,17 @@ google.setOnLoadCallback(function(){
       callback: loadData
     },
     summaries: [
-      { name: "Roles", value: function(){
+      { name: "Roles", 
+        value: function(){
           var r=[];
           this.Roles.forEach(function(role){ r.push(role.Role); });
           return r;
-          }},
+        } },
       { name: "Number of Role Types", value: function(){ return Object.keys(this.RoleNames).length; } },
       { name: "Number of Roles", value: function(){ return this.Roles.length; } },
       { name: "Affiliations", collapsed: true },
-      { name: "Year of First Role", layout: "bottom",
-        value: function(){ return this.Roles[0].Year; } },
-      { name: "Year of Last Role", layout: "bottom", collapsed: true,
+      { name: "Year of First Role", value: function(){ return this.Roles[0].Year; }, panel: "bottom" },
+      { name: "Year of Last Role", panel: "bottom", collapsed: true,
         value: function(){ return this.Roles[this.Roles.length-1].Year; } },
     ],
     recordDisplay: {

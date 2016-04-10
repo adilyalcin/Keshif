@@ -55,12 +55,7 @@ $(document).ready( function() {
         catLabel: function(){ return _lookup.topics[this.id];}, panel: "right" },
       { name: "Collection", value: "collection", minAggrValue: 10,
         catLabel: function(){ return _lookup.collections[this.id];}, panel: "left" },
-      { name: "Date", value: 'date', panel: 'middle',
-        value: function(){ 
-          if(this.date===undefined) return;
-          if(this.date>2016) return;
-          return new Date(this.date, 0);
-        } },
+      { name: "Date", value: function(){ if(this.date && this.date<=2016) return new Date(this.date, 0); }, panel: 'middle' }
     ],
     recordDisplay: {
       displayType: 'grid',

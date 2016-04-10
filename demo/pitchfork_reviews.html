@@ -32,7 +32,7 @@ $(document).ready( function() {
       { name: "Highlights", value: function(){ if(this.accolade!=="None") return this.accolade; } },
       { name: "Artist", value: "artist", minAggrValue: 4 },
       { name: "Label", value: "label", minAggrValue: 3 },
-      { name: "Release Year",  panel: "bottom", value: function(){ return new Date(this.release_year,0); } },
+      { name: "Release Year", value: "release_year", timeFormat: "%Y", panel: "bottom" },
       { name: "Score", value:"score", panel:'right' },
       { name: "Reviewer", value: "reviewer", panel: "right" }
     ],

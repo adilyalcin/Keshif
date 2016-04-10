@@ -37,10 +37,6 @@ var loadData = function(browser){
         cData.Abstract = $this.find("abstract").text();
         cData.Year = $this.find("date").attr("from");
         cData.url = $this.find("abstract").text();
-        if(cData.Year){
-          // parse the string into a date object
-          cData.Date = new Date(cData.Year,0);
-        }
         cData.Keywords = $this.find("keywords").text().split(/\s*,\s*/);
         for(var i=0; i<cData.Keywords.length; i++){
           cData.Keywords[i] = kshf.Util.toProperCase(cData.Keywords[i])
@@ -133,7 +129,7 @@ $(document).ready( function(){
         value: function(){ return this.References_Internal.length; } },
       { name: "# References Within (External + Other)", panel: 'right', collapsed: true,
         value: function(){ return this.References_External.length+this.References_Other.length; } },
-      { name: "Date", panel: "bottom" }
+      { name: "Year", timeFormat: "%Y", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "# References To (Within)",

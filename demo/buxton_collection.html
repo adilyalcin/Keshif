@@ -48,10 +48,6 @@ function dataLoad(browser){
           }
         })
 
-        if(cData.Year!==undefined)
-            cData.Year = new Date(cData.Year, 0);
-//                            if(isNaN(cData.Year)) cData.Year = undefined;
-        
         var imageFix = {
           97: "IMG_0206.png",
           21: "IMG_0321.png",
@@ -174,7 +170,7 @@ $(document).ready(function(){
     },
     summaries: [
       { name: "Type" },
-      { name: "Year", panel: 'middle' },
+      { name: "Year", timeFormat: "%Y", panel: 'middle' },
       { name: "Price", intervalScale: "log", unitName: "$" },
       { name: "Company", panel: "right" },
       { name: "Degree of Freedom" }

@@ -46,7 +46,7 @@ google.setOnLoadCallback(function(){
       { name: "Race", panel: 'right' },
       { name: "Sex", panel: 'right', catLabel: function(){ return (this.id==="M"?"Male ":"Female ")+getIcon(this.id); } },
       { name: "Age", panel: 'right' },
-      { name: "Year", value: function(){ return new Date(this.Year,0); }, panel: 'bottom'}
+      { name: "Year", timeFormat: "%Y", panel: 'bottom'}
     ],
     recordDisplay: {
       sortBy: "Year",

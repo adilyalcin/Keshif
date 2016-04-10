@@ -39,7 +39,7 @@ $(document).ready( function(){
       { name: "Tag: Subject", value: function(){ return this.tags.subject;}},
       { name: "Publication", value: function(){ return this.tags.publication;}},
       { name: "Collaborators", value: function(){ return this.tags.collaborators;}},
-      { name: "Year", value: function(){ return new Date(1*this.year,0); }, panel: "bottom"},
+      { name: "Year", value: "year", timeFormat: "%Y", panel: "bottom"},
     ],
     recordDisplay: {
       sortBy: "Year",

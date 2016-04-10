@@ -260,7 +260,7 @@ $(document).ready( function(){
       { name: "Venue", panel: 'right' },
       { name: "Categorized By", value: "CategorizedBy", panel: 'right', collapsed: true,
         catLabel: { DA: "Danielle Albers", Ilir: "Ilir Jusuf", RW: "Rick Walker", } },
-      { name: "Year", value: function(){ return new Date(this.Year, 0); }, panel: "middle" }
+      { name: "Year", timeFormat: "%Y", panel: "middle" }
     ],
     recordDisplay: {
       sortBy: 'Year',

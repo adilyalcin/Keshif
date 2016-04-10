@@ -27,7 +27,7 @@ function loadData(browser){
       for(year in data){
         data[year].forEach(function(paper){
           var kshfItem = table[paper.id];
-          kshfItem.data.Year = new Date(1*year,0);
+          kshfItem.data.Year = 1*year;
           kshfItem.data.CitedBy = paper.cited_by;
           kshfItem.data["Citation Count"] = paper.cited_count;
           kshfItem.data.DOI = paper.link;
@@ -78,7 +78,7 @@ $(document).ready( function() {
       { name: "Keywords", catLabel: function(){ return keywords[this.id].text; } },
       { name: "Citation Count" },
       { name: "Citation Count (internal)", value: function(){ if(this.CitedBy) return this.CitedBy.length; } },
-      { name: "Year", panel: "bottom" }
+      { name: "Year", value: "year", timeFormat: "%Y", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "Citation Count",

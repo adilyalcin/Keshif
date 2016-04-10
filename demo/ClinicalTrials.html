@@ -16,7 +16,6 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-  var dateFormat = d3.time.format("%b-%y");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
@@ -40,16 +39,8 @@ $(document).ready( function(){
       { name: "Funded Bys", catSplit: "|", panel: 'right'},
       { name: "Conditions", catSplit: "|", panel: 'right', minAggrValue: 200},
       { name: "Interventions", catSplit: "|", panel: 'right', minAggrValue: 200},
-      { name: "Start Date", panel: 'middle', value: function(){
-        var x=dateFormat.parse(this["Start Date"]);
-        if(x) return new Date(x);
-        }},
-      { name: "Completion Date", panel: 'middle', value: function(){
-        var v=this["Completion Date"];
-        if(v==="null") return;
-        var x=dateFormat.parse(v);
-        if(x) return new Date(x);
-        }},
+      { name: "Start Date", timeFormat: "%b-%y", panel: 'middle' },
+      { name: "Completion Date", timeFormat: "%b-%y", panel: 'middle' },
       { name: "Enrollment", panel: 'middle', unitName: "ppl" },
       //{ name: "Sponsor/Collaborators", catSplit: "|", minAggrValue: 100},
     ],

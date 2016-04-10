@@ -33,7 +33,7 @@ $(document).ready( function() {
       { name: "University", value: "school"},
       { name: "Field", value: "field", panel: "right"},
       { name: "Tags", value: "tags", panel: "right"},
-      { name: "Year", panel: "bottom", value: function(){ return new Date(this.year,0); }, collapsed: true },
+      { name: "Year", value: "year", timeFormat: "%Y", panel: "bottom", collapsed: true },
     ],
     recordDisplay: {
       sortBy: "Year",

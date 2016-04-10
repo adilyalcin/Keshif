@@ -15,7 +15,6 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-  var dateFormat = d3.time.format("%Y-%m-%d");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 160,
@@ -33,11 +32,10 @@ $(document).ready( function(){
       { name: "Status" },
       { name: "Group", collapsed: true },
       { name: "Access", collapsed: true },
-      { name: "Released Year", panel: "middle", collapsed: true, 
-        value: function(){ return dateFormat.parse(this.released); } },
+      { name: "Release Time", value: "released", timeFormat: "%Y-%m-%d", panel: "middle"},
     ],
     recordDisplay: {
-      sortBy: {title:'Released Year', inverse: true},
+      sortBy: 'Release Time',
       textSearch: 'title',
       displayType: 'grid',
       recordView: function(d){

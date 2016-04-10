@@ -58,8 +58,7 @@ google.setOnLoadCallback(function(){
         value: function(){ return this.TimeStart.hour(); } },
       { name: "Duration", panel: 'bottom', intervalScale: "log", unitName: "min",
         value: function(){ return Math.round(this.Duration/60); } },
-      { name: "Birth Year", panel: 'bottom', collapsed: true,
-        value: function(){ return new Date(this.BirthYear,0); } }
+      { name: "Birth Year", value: "BirthYear", timeFormat: "%Y", panel: 'bottom', collapsed: true }
     ]
   });
 });

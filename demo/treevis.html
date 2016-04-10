@@ -74,7 +74,7 @@ $(document).ready( function(){
       "Representation",
       "Alignment",
       { name: "Authors", catSplit: " and ", collapsed: false },
-      { name: "Year", value: function(){ return new Date(this.Year,0); }, panel: "bottom" }
+      { name: "Year", timeFormat: "%Y", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "Year",

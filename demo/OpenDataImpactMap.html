@@ -53,7 +53,7 @@ google.setOnLoadCallback(function(){
       { name: "Country", panel: 'right', description: "Country of origin" },
       { name: "City", panel: 'right', collapsed: true },
       //{ name: "Founding Year", panel: 'bottom'}
-      { name: "Founding Year", value: function(){ return new Date(this["Founding Year"],0);}, panel: 'middle'}
+      { name: "Founding Year", timeFormat: "%Y", panel: 'middle'}
     ],
     recordDisplay: {
       sortColWidth: 45,

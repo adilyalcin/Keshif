@@ -18,7 +18,6 @@
 
 $(document).ready(function(){
   var frmt = d3.format(".2s");
-  var timeFormat = d3.time.format("%m/%d/%y");
     
   browser = new kshf.Browser({
     domID: "#demo_Browser",
@@ -44,7 +43,7 @@ $(document).ready(function(){
       { name: "Program(s)", catSplit: ", " },
       { name: "Name", value: "Organization" },
       { name: "AwardInstrument", },
-      { name: "Start Date", value: function(){ return timeFormat.parse(this.StartDate); }, panel: 'bottom'},
+      { name: "Start Date", value: "StartDate", timeFormat: "%m/%d/%y", panel: 'bottom'},
       { name: "NSFOrganization", catTableName: 'nsf_orgs', catLabel: "name", collapsed: true, },
       { name: "NSFDirectorate", collapsed: true },
       { name: "ProgramManager", collapsed: true },

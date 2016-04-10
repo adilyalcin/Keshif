@@ -16,9 +16,6 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-
-  var dateFormat=d3.time.format("%Y-%m");
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 170,
@@ -37,7 +34,7 @@ $(document).ready( function(){
       { name: "County", value: "county", panel: "right"},
       { name: "Year", value: "year", panel: "right"},
       { name: "Month", value: function(){ if(this.month) return this.month-1;}, panel: "right", catSortBy: "id", catLabel: _demo.Month },
-      { name: "Date", value: function(){ if(this.date) return dateFormat.parse(this.date); }, panel: "bottom" },
+      { name: "Date", value: "date", timeFormat: "%Y-%m", panel: "bottom" },
     ],
     recordDisplay: {
       displayType: 'grid',

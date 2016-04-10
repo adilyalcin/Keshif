@@ -85,7 +85,7 @@ $(document).ready( function(){
       "Main Goals",
       "Techniques",
       { name: "Authors", catSplit: ", " },
-      { name: "Year", value: function(){ return new Date(this.Year,0); }, panel: "bottom" }
+      { name: "Year", timeFormat: "%Y", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "Year",

@@ -33,7 +33,7 @@ google.setOnLoadCallback(function(){
       { name: "Horsepower", unitName: "hp", panel: 'right' },
       { name: "Weight", unitName: "lbs", panel: 'right' },
       { name: "Acceleration", description: "0 to 60 mph", unitName: "sec" },
-      { name: "Year", panel: "bottom", value: function(){ return new Date(this.Year,0);} },
+      { name: "Year", panel: "bottom", timeFormat: "%Y" },
       { name: "RecordView", panel: "none", 
         // Adding the last ID part to make it unique per car
         value: function(){ return this.Name+" ("+this.Year+")"+"<span style='display:none'>"+this.id+"</span>"; } }

@@ -35,7 +35,7 @@ $(document).ready( function(){
       }
     },
     summaries: [
-      { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,0); } },
+      { name: "Year", panel: 'bottom', timeFormat: "%Y" },
       { name: "State", panel: 'middle', viewAs: 'map',
         catMap: function(){ 
           var x=US_States.index_name[this.id];

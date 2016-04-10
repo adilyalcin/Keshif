@@ -58,10 +58,8 @@ google.setOnLoadCallback(function(){
           r.push(a[a.length-1].trim());
           return r;
         } },
-      { name: "<span class='fa fa-calendar'></span> Joined Year", panel: "bottom",
-        description: "When they joined that department of Computer Science as faculty",
-        value: function(){ if(this.JoinYear) return new Date(this.JoinYear,0); }
-      }
+      { name: "<span class='fa fa-calendar'></span> Joined Year", value: "JoinYear", timeFormat: "%Y", panel: "bottom",
+        description: "When they joined that department of Computer Science as faculty" }
     ],
     recordDisplay: {
       sortColWidth: 60,

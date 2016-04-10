@@ -30,11 +30,7 @@ google.setOnLoadCallback( function () {
       { name: "Motivation", value: 'Motivation (invasion earth, kill humans, etc)', catSplit: /\b,\s+/, panel: "right" },
       { name: "Story titles", catSplit: /\b,\s+/ },
       { name: "Total Stories", value: function(){ return this['Story titles'].length; } },
-      { name: "1st Appearance", panel: 'bottom',
-        value: function(){ 
-          var y=this['Year first'];
-          if(y) return new Date(y,0);
-        } }
+      { name: "1st Appearance", value: "Year first", timeFormat: "%Y", panel: 'bottom' }
     ],
     itemDisplay:{
       sortColWidth: 40,

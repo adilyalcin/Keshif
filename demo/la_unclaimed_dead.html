@@ -16,8 +16,6 @@
 
     <script type="text/javascript">
 $(document).ready( function(){
-  var dateFormat = d3.time.format("%m/%d/%Y");
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 250,
@@ -45,7 +43,7 @@ $(document).ready( function(){
           return r;
         } },
       { name: "Age at Death", value: "Age" },
-      { name: "Death Date", value: function(){ return dateFormat.parse(this.Death); } },
+      { name: "Death Date", value: "Death", timeFormat: "%m/%d/%Y" },
       { name: "After Story is Published...", value: function(){ if(this.claimed) return "Claimed"; } }
     ],
     recordDisplay: {

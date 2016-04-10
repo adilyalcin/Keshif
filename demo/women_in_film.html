@@ -49,7 +49,7 @@ $(document).ready( function(){
       { name: "Main Actors", catSplit: ", ", minAggrValue: 3, panel: 'right' },
       { name: "Language", catSplit: ", ", panel: 'right' },
       { name: "Runtime", value: "Runtime (min)", panel: 'right', collapsed: true, unitName: "min" },
-      { name: "Year", value: function(){ return new Date(this.Year,0);}, panel: "middle", collapsed: true }
+      { name: "Year", timeFormat: "%Y", panel: "middle", collapsed: true }
     ],
     recordDisplay: {
       displayType: 'grid',

@@ -35,7 +35,7 @@ google.setOnLoadCallback(function () {
       { name: "Funding Purpose", panel: 'right' },
       { name: "Main Funding Group",  panel: 'right' },
       { name: "Main Funding Unit Type", panel: 'right' },
-      { name: "Start Year", value: function(){ return new Date(this["Start Year"],0);}, panel: 'middle' }
+      { name: "Start Year", timeFormat: "%Y", panel: 'middle' }
     ]
   });
 });

@@ -16,11 +16,7 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
-
 $(document).ready( function(){
-  
-  var timeFormat = d3.time.format("%m/%d/%Y");
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Flags",
@@ -74,10 +70,7 @@ $(document).ready( function(){
           6: "Diverse",
           7: "Others",
         } },
-      { name: "Flag Date", panel: 'left',
-        value: function(){
-          if(this.Independence && this.Independence!=="") return timeFormat.parse(this.Independence);
-        } },
+      { name: "Flag Date", panel: 'left', value: "Independence", timeFormat: "%m/%d/%Y" },
       { name: "Flag Color",  panel: 'right',
         value: function(){
           var toRet = [];

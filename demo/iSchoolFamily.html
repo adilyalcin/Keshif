@@ -31,8 +31,7 @@ google.setOnLoadCallback(function(){
       { name: "Position", catSplit: "+" },
       { name: "Other Appointments", catSplit: "+" },
       { name: "Lab Affiliations", value: "Affiliations", catSplit: "+", catTooltip: 'id' },
-      { name: "Education", 
-        layout: "left",
+      { name: "Education", panel: "left",
         value: function(){
           var e = this.Education;
           if(e===null || e==="") return;

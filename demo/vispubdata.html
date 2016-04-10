@@ -60,7 +60,7 @@ google.setOnLoadCallback(function(){
         value: function(){ if(this.Citations.length>0) return this.Citations.length; } },
       { name: "# of References in Paper (within)", panel: 'left', 
         value: function(){ if(this.References) return this.References.length; } },
-      { name: "Year", panel: 'bottom', value: function(){ return new Date(this.Year,0);} },
+      { name: "Year", panel: 'bottom', timeFormat: "%Y" },
       { name: "Authors", value: 'Deduped author names', catSplit: ";", panel: 'right', minAggrValue: 2,
         description: "Only authors with at least two papers are shown" },
       /*{ name: "First Author Affiliation", collapsed: false, minAggrValue: 2, panel: 'right', 

@@ -192,7 +192,6 @@ function loadData(browser){
                 entryData.Title = entry.Fields.title;
                 entryData.Year = entry.Fields.year;
                 if(typeof entryData.Year === 'string') entryData.Year = parseInt(entryData.Year);
-                entryData.Date = new Date(entryData.Year,0);
 
                 entryData.Paradigms = [];
                 entryData.Applications = [];
@@ -253,7 +252,7 @@ $(document).ready( function(){
           collapsed: true*/ 
       { name: "Authors", panel: 'right' },
       { name: "Journal", panel: 'right', collapsed: false },
-      { name: "Year", value: function(){ return new Date(this.Year,0); }, panel: "middle" }
+      { name: "Year", timeFormat: "%Y", panel: "middle" }
     ],
     recordDisplay: {
       sortBy: "Year",
