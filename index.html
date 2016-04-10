@@ -31,7 +31,6 @@ $(document).ready(function(){
 var loadDemoBrowser = function(){
   if(loaded) return;
   loaded=true;
-  d3.select('#demobox').attr("loaded",true);
 
   browser = new kshf.Browser({
     domID: "#livedemo",
@@ -70,7 +69,7 @@ var loadDemoBrowser = function(){
             r.push("Histogram <span class='fa fa-bar-chart-o'></span>");
           if(this['Has Time'])
             r.push("Time <span class='fa fa-clock-o'></span>");
-          if(this["Spatial"]==="Attribute")
+          if(this["Spatial"] && this["Spatial"]!=="")
             r.push("Map <span class='fa fa-globe'></span>");
           return r;
         } },
@@ -81,6 +80,10 @@ var loadDemoBrowser = function(){
             r.push("Grid <span class='fa fa-th'></span>");
           if(this['Result Display']==="List")
             r.push("List <span class='fa fa-list'></span>");
+          if(this['Result Display']==="Map")
+            r.push("Map <span class='fa fa-globe'></span>");
+          if(this['Result Display']==="Network")
+            r.push("Network <span class='fa fa-share-alt'></span>");
           // if(this['Result Display']==="None") r.push("None");
           return r;
         }},
@@ -310,14 +313,9 @@ h1, .h1 {
   width: 1100px;
   position: relative;
 }
-#demobox{
-  width: 1100px;
-  height: 450px;
-  position:relative;
-}
 #livedemo {
   margin: 0 auto;
-  height: 450px;
+  height: 490px;
   font-size: 12pt;
 }
 
@@ -627,13 +625,13 @@ Data Made Explorable</span>
   Explore and understand your data - interactively, visually, rapidly, and <b>easily</b> <span class='fa fa-magic'></span>.<br></div>
 
 <div style='text-align:center; margin: 5px 10px 10px 10px; font-size: 1.2em;'>
-  <span class='fa fa-eye' style='font-size: 1.4em;'></span> Explore sample datasets below with Keshif.
+  <span class='fa fa-eye' style='font-size: 1.4em;'></span> Explore sample datasets below using Keshif
   | 
   <span class='youtube tutorialLink' href="https://www.youtube.com/embed/3Hmvms-1grU"> 
-    <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> Learn with 5-minute tutorial</span>.
+    <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> Learn with 5-minute tutorial </span>
   |
   <a class='tutorialLink' href="./demo/YourData" target='_blank'> 
-    <span class='fa fa-upload' style='font-size: 1.4em;'></span> Explore your data</a>. 
+    <span class='fa fa-upload' style='font-size: 1.4em;'></span> Explore your data </a>
   |
   <a class='tutorialLink' href="http://www.github.com/adilyalcin/keshif" target='_blank'> 
     </span> Get the code</a>
@@ -641,7 +639,7 @@ Data Made Explorable</span>
 
   </div>
 
-<div id="demobox"> <div id="livedemo"></div> </div>
+<div id="livedemo"></div> 
 
 
 <!-- Overview -->
