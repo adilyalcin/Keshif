@@ -4431,14 +4431,10 @@ kshf.Browser.prototype = {
           if(facetDescr.intervalScale){
             facetDescr.scaleType = facetDescr.intervalScale;
           }
-          if(facetDescr.attribMap){
-            facetDescr.value = facetDescr.attribMap;
-          }
 
           if(typeof(facetDescr.value)==="string"){
             // it may be a function definition if so, evaluate
             if(facetDescr.value.substr(0,8)==="function"){
-              // Evaluate string to a function!!
               eval("\"use strict\"; facetDescr.value = "+facetDescr.value);
             }
           }
@@ -4446,7 +4442,7 @@ kshf.Browser.prototype = {
           if( facetDescr.catLabel || facetDescr.catTooltip || facetDescr.catSplit ||
               facetDescr.catTableName || facetDescr.catSortBy || facetDescr.catMap){
             facetDescr.type="categorical";
-          } else if(facetDescr.scaleType || facetDescr.showPercentile || facetDescr.unitName ){
+          } else if(facetDescr.scaleType || facetDescr.showPercentile || facetDescr.unitName || facetDescr.timeFormat ){
             facetDescr.type="interval";
           }
 
@@ -4465,13 +4461,9 @@ kshf.Browser.prototype = {
             }
           } else {
             if(facetDescr.value){
-              // Requesting a new summarywith the same name.
               summary.destroy();
               summary = this.createSummary(facetDescr.name,facetDescr.value,facetDescr.type);
             }
-          }
-          if(facetDescr.catSplit){
-            summary.setCatSplit(facetDescr.catSplit);
           }
 
           if(facetDescr.type){
@@ -4492,6 +4484,13 @@ kshf.Browser.prototype = {
           }
           // If summary object is not found/created, nothing else to do
           if(summary===undefined) return;
+
+          if(facetDescr.catSplit){
+            summary.setCatSplit(facetDescr.catSplit);
+          }
+          if(facetDescr.timeFormat){
+            summary.setTimeFormat(facetDescr.timeFormat);
+          }
 
           summary.initializeAggregates();
 
@@ -8491,8 +8490,8 @@ var Summary_Interval_functions = {
 
       this.records.forEach(function(record){
         var v=this.summaryFunc.call(record.data,record);
-        if(isNaN(v)) v=null;
         if(v===undefined) v=null;
+        if(isNaN(v)) v=null;
         if(v!==null){
           if(v instanceof Date){
             this.timeTyped.base = true;
@@ -8573,6 +8572,26 @@ var Summary_Interval_functions = {
       if(this.stepTicks && !this.zoomed){
         this.resetFilterRangeToTotal();
       }
+    },
+    /** -- */
+    setTimeFormat: function(fmt){
+      var timeFormatFunc = null;
+      if(fmt==="%Y"){
+        timeFormatFunc = function(v){ if(v && v!=="") return new Date(1*v,0); };
+      } else if(fmt===undefined || fmt===null) {
+        return;
+        timeFormatFunc = null;
+      } else {
+        timeFormatFunc = d3.time.format(fmt).parse;
+      }
+      var f=this.summaryFunc;
+      this.summaryFunc = function(record){
+        var v = f.call(this,record);
+        if(v===undefined || v===null || v==="") return;
+        return timeFormatFunc(v);
+      }
+
+      this.aggr_initialized = false;
     },
     /** -- */
     detectScaleType: function(){
@@ -8789,7 +8808,7 @@ var Summary_Interval_functions = {
       }
 
       this._isEmpty = this.intervalRange.org.min===undefined;
-      if(this._isEmpty) this.setCollapsed(true);
+      //if(this._isEmpty) this.setCollapsed(true);
 
       // Always integer
       if(this.isTimeStamp()){
