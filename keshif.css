@@ -208,9 +208,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentLabelMode] .chartAxis_Measure > .tick > .text:after {
   content: "%";
 }
-.kshf[percentLabelMode] .scaleBound::after {
-  content: "%";
-}
 .kshf[relativeMode] .chartAxis_Measure > .tick > .text::after {
   content: "%";
 }
@@ -2028,7 +2025,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
 }
 .kshf .chartAxis_Measure > .tickGroup > .tick > .text {
-  display: block;
   position: relative;
   text-align: center;
   font-size: 0.6em;
@@ -2036,6 +2032,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 9px;
   cursor: default;
   color: gray;
+}
+.kshf .chartAxis_Measure > .tickGroup > .tick > .text.measureAxis_1 {
+  display: block;
 }
 .kshf .chartAxis_Measure > .tickGroup > .tick > .line {
   display: block;
@@ -2960,8 +2959,8 @@ top:calc(50% - 5px);
   padding: 0px;
   background-color: #efeadf;
 }
-.kshf .measureAxis_right {
-  display: none !important;
+.kshf .measureAxis_2 {
+  display: none;
 }
 .kshf .kshfSummary {
   display: block;
@@ -2983,6 +2982,9 @@ top:calc(50% - 5px);
   -moz-transition: height 700ms ease-in-out;
   -o-transition: height 700ms ease-in-out;
   transition: height 700ms ease-in-out;
+}
+.kshf .kshfSummary > .wrapper[showMeasureAxis_2] .measureAxis_2 {
+  display: block;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical {
   overflow: hidden;
@@ -3311,9 +3313,6 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval[zoomed="true"] .zoomControl[sign="minus"] {
   display: block !important;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval[measureAxis_right] .measureAxis_right {
-  display: block !important;
-}
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram {
   position: relative;
   pointer-events: all;
@@ -3415,10 +3414,10 @@ top:calc(50% - 8px);
   height: calc(100% - 12px);
   top: 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.relativeModeControl_left {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.measureAxis_1 {
   left: -25px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.relativeModeControl_right {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.measureAxis_2 {
   right: -25px;
   left: auto;
 }
@@ -3452,15 +3451,15 @@ top:calc(50% - 8px);
   width: 25px;
   top: -3px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.text_right {
-  right: -25px;
-  padding-left: 1px;
-  text-align: left;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.text_left {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.measureAxis_1 {
   left: -25px;
   padding-right: 1px;
   text-align: right;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.measureAxis_2 {
+  right: -25px;
+  padding-left: 1px;
+  text-align: left;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
   -webkit-box-direction: normal;

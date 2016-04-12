@@ -168,7 +168,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[highlight="true"]::after{ content: '#'; }
       }
       .chartAxis_Measure > .tick > .text:after{ content: "%"; }
-      .scaleBound::after{ content: "%"; }
+      //.scaleBound::after{ content: "%"; }
     }
     &[relativeMode]{
       .chartAxis_Measure > .tick > .text::after{ content: "%"; }
@@ -1673,7 +1673,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         opacity: 0;
         position:absolute;
         > .text{
-          display: block;
           position: relative;
           text-align: center;
           font-size: 0.6em;
@@ -1681,6 +1680,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           line-height: 9px;
           cursor: default;
           color: gray;
+          &.measureAxis_1{ display: block; }
         }
         > .line{
           display: block;
@@ -2433,9 +2433,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .measureAxis_right{
-      display: none !important;
-    }
+    .measureAxis_2{ display: none; }
 
     .kshfSummary{
         display: block;
@@ -2447,6 +2445,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             overflow: hidden;
             .transition(height 700ms ease-in-out);
             // so that absolute positioned elements will not overflow
+
+            &[showMeasureAxis_2] .measureAxis_2 { display: block; }
+
             > .summaryCategorical{
                 overflow: hidden;
                 > .summaryControls{
@@ -2750,7 +2751,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 &[zoomed="true"]{
                   .zoomControl[sign="minus"]{ display: block !important; }
                 }
-                &[measureAxis_right] .measureAxis_right{ display: block !important; }
                 > .histogram{
                     position:relative;
                     pointer-events: all;
@@ -2820,10 +2820,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           width: 25px;
                           height: calc(~"100% - 12px");
                           top: 0px;
-                          &.relativeModeControl_left{ 
+                          &.measureAxis_1{ 
                             left: -25px;
                           }
-                          &.relativeModeControl_right{ 
+                          &.measureAxis_2{ 
                             right: -25px;
                             left: auto;
                           }
@@ -2853,15 +2853,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                               position: absolute;
                               width: 25px;
                               top: -3px;
-                              &.text_right{
-                                right: -25px;
-                                padding-left: 1px;
-                                text-align: left;
-                              }
-                              &.text_left{
+                              &.measureAxis_1{
                                 left: -25px;
                                 padding-right: 1px;
                                 text-align: right;
+                              }
+                              &.measureAxis_2{
+                                right: -25px;
+                                padding-left: 1px;
+                                text-align: left;
                               }
                             }
                         }

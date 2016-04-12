@@ -5946,12 +5946,12 @@ kshf.Summary_Base.prototype = {
       });
 
     // Two controls, one for each side of the scale
-    this.DOM.chartAxis_Measure.selectAll(".relativeModeControl").data(["left","right"])
+    this.DOM.chartAxis_Measure.selectAll(".relativeModeControl").data(["1","2"])
       .enter().append("span")
         .attr("class",function(d){ return "relativeModeControl measureAxis_"+d+" relativeModeControl_"+d; })
         .each(function(d){
           var pos = pos2;
-          if(pos2==='nw' && d==="right") pos = 'ne';
+          if(pos2==='nw' && d==="2") pos = 'ne';
           this.tipsy = new Tipsy(this, {
             gravity: pos, title: function(){
               return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
@@ -7430,15 +7430,15 @@ var Summary_Categorical_functions = {
         .style("top","-"+(this.categoriesHeight+3)+"px")
         .style("height",(this.categoriesHeight-1)+"px");
 
-      tickData_new.append("span").attr("class","text");
+      tickData_new.append("span").attr("class","text measureAxis_1");
+
+      this.DOM.wrapper.attr("showMeasureAxis_2", this.configRowCount>0?"true":null);
+
       if(this.configRowCount>0){
         var h=this.categoriesHeight;
-        var hm=tickData_new.append("span").attr("class","text text_upper").style("top",(-h-21)+"px");
-        this.DOM.chartAxis_Measure.selectAll(".relativeModeControl_right").style("top",(-h-14)+"px")
-          .style("display","block");
-        this.DOM.chartAxis_Measure.select(".chartAxis_Measure_background_2").style("display","block");
+        var hm=tickData_new.append("span").attr("class","text measureAxis_2").style("top",(-h-21)+"px");
+        this.DOM.chartAxis_Measure.selectAll(".relativeModeControl.measureAxis_2").style("top",(h-14)+"px");
       }
-
 
       this.DOM.chartAxis_Measure_TickGroup.selectAll(".text").html(function(d){ return me.browser.getMeasureLabel(d); });
 
@@ -7515,8 +7515,8 @@ var Summary_Categorical_functions = {
       this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
       this.DOM.chartAxis_Measure.selectAll(".longRefLine").style("top",(-h+1)+"px").style("height",(h-2)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".text_upper").style("top",(-h-21)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".chartAxis_Measure_background_2").style("top",(-h-12)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.text").style("top",(-h-21)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.relativeModeControl").style("top",(-h-14)+"px");
 
       if(this.viewType==='map'){
         this.DOM.catMap_Base.style("height",h+"px");
@@ -10432,8 +10432,8 @@ var Summary_Interval_functions = {
 
       // translate the ticks horizontally on scale
       tickData_new.append("span").attr("class","line");
-      tickData_new.append("span").attr("class","text text_left  measureAxis_left");
-      tickData_new.append("span").attr("class","text text_right measureAxis_right");
+      tickData_new.append("span").attr("class","text measureAxis_1");
+      tickData_new.append("span").attr("class","text measureAxis_2");
 
       // Place the doms at the bottom of the histogram, so their position is animated?
       tickData_new.each(function(){
@@ -10511,14 +10511,14 @@ var Summary_Interval_functions = {
       if(this.DOM.inited===false) return;
       var chartWidth = this.getWidth_Chart();
       var wideChart = this.getWidth()>400;
+      
+      this.DOM.wrapper.attr("showMeasureAxis_2",wideChart?"true":null);
+
       this.DOM.summaryInterval
-        .attr("measureAxis_right",wideChart?"true":null)
         .style("width",this.getWidth()+"px")
         .style("padding-left", this.width_measureAxisLabel+"px")
         .style("padding-right", ( wideChart ? this.width_measureAxisLabel : 11)+"px");
       
-      this.DOM.summaryInterval.selectAll(".measureAxis_right").style("display",wideChart?"block":"none");
-
       this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
       if(this.DOM.timeSVG)
           this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
