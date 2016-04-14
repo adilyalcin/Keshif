@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
 
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
@@ -47,21 +48,7 @@ google.setOnLoadCallback(function(){
       { name: "Shot Zone Range", value: "shot_zone_range", panel: "middle" },
       { name: "Distance from Hoop", value: "shot_distance", unitName: "ft", panel: "middle", collapsed: true },
       { name: "Date", panel: "middle",
-        value: function(){
-          var game_date = this.game_date.replace("DEC","12");
-          game_date = game_date.replace("NOV","11");
-          game_date = game_date.replace("OCT","10");
-          game_date = game_date.replace("SEP","09");
-          game_date = game_date.replace("AUG","08");
-          game_date = game_date.replace("JUL","07");
-          game_date = game_date.replace("JUN","06");
-          game_date = game_date.replace("MAY","05");
-          game_date = game_date.replace("APR","04");
-          game_date = game_date.replace("MAR","03");
-          game_date = game_date.replace("FEB","02");
-          game_date = game_date.replace("JAN","01");
-          return timeFormat.parse(game_date +" "+this.matchup); 
-        }},
+        value: function(){ return new Date(moment(this.game_date +" "+this.matchup)); }}, // moment parses better than d3...
 
       { name: "Season", value: "season", panel: "right", catSortBy: "id" },
       { name: "Period", value: "period", catSortBy: "id", panel: "right" },
