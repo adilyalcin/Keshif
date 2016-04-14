@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>All 30,000+ shots by Kobe Bryant</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  var timeFormat = d3.time.format("%e %m %Y");
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 120,
+    leftPanelLabelWidth: 150,
+    middlePanelLabelWidth: 200,
+    rightPanelLabelWidth: 170,
+    itemName: "Shots",
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: 'csv',
+      tables: "kobe"
+    },
+    summaries: [
+      { name: "Hit or miss?", value: "event_type"},
+      { name: "Points", value: "shot_type" },
+      { name: "Shot Type", value: "combined_shot_type" },
+      { name: "Detailed Shot Type", value: "action_type", collapsed: true },
+      { name: "Game", value: "opponent", collapsed: true },
+      { name: "Team" },
+
+      { name: "Shot Zone", value: "shot_zone_basic", panel: "middle" },
+      { name: "Shot Zone Area", value: "shot_zone_area", panel: "middle" },
+      { name: "Shot Zone Range", value: "shot_zone_range", panel: "middle" },
+      { name: "Distance from Hoop", value: "shot_distance", unitName: "ft", panel: "middle", collapsed: true },
+      { name: "Date", panel: "middle",
+        value: function(){
+          var game_date = this.game_date.replace("DEC","12");
+          game_date = game_date.replace("NOV","11");
+          game_date = game_date.replace("OCT","10");
+          game_date = game_date.replace("SEP","09");
+          game_date = game_date.replace("AUG","08");
+          game_date = game_date.replace("JUL","07");
+          game_date = game_date.replace("JUN","06");
+          game_date = game_date.replace("MAY","05");
+          game_date = game_date.replace("APR","04");
+          game_date = game_date.replace("MAR","03");
+          game_date = game_date.replace("FEB","02");
+          game_date = game_date.replace("JAN","01");
+          return timeFormat.parse(game_date +" "+this.matchup); 
+        }},
+
+      { name: "Season", value: "season", panel: "right", catSortBy: "id" },
+      { name: "Period", value: "period", catSortBy: "id", panel: "right" },
+      { name: "Minutes Remaining", value: "minutes_remaining", panel: "right" },
+    ],
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser{ height: calc(100vh - 120px); }
+.wikiLink{ color: gray; font-size: 0.7em; vertical-align: top;}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">All 30,000+ shots by Kobe Bryant</div>
+      <div id="demo_PageSubtitle">
+        On April 13, 2016, Bryant played his final NBA game against the Utah Jazz, scoring a season-high 60 points, outscoring the entire Jazz team in the th quarter.<br> Explore his 30k+ shots in his 20 year career below!
+        <a href='https://en.wikipedia.org/wiki/Kobe_Bryant#Final_season_.282015.E2.80.932016.29' target='_blank' class='wikiLink'>(Wikipedia).</a>
+      </div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Also visualized by the LA Times Graphic Team - <a href="http://graphics.latimes.com/kobe-every-shot-ever/" target="_blank">
+        Every shot Kobe Bryant ever took. All 30,699 of them
+      </a>.
+      Data from <a href='stats.nba.com' target='_blank'>stats.nba.com</a>.
+      Free-throws and two shots from 2012-13 season are not included.
+    </div>
+  </body>
+</html>
