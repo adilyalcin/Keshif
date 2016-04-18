@@ -1,0 +1,323 @@
+@import "../../lesshat";
+
+.overlay_answer{
+  .highlightBox{
+    position: absolute;
+    border: solid 2px green;
+    box-shadow: 0px 0px 5px green;
+  }
+  &[attention=true]{
+    .highlightBox{
+      .animation(attention2 0.3s 2 ease-in-out);
+    }
+  }
+}
+
+.kshf .panel.panel_overlay > .overlay_content.overlay_help{
+  width: 600px;
+  position: absolute;
+  top: 20px;
+  bottom: inherit;
+  .calc(right, ~"50% - 310px");
+  border-radius: 10px;
+  font-family: Roboto, sans-serif;
+  .flex-direction(column);
+  .transition(all 500ms ease-in-out);
+
+  > .answer_box{
+    display: none;
+    position: absolute;
+    top: 3px;
+    font-weight: 300;
+    border: solid 1px gray;
+    border-radius: 10px;
+    font-size: 0.8em;
+    cursor: pointer;
+    padding: 0px 3px;
+    background-color: white;
+    &.answer_ok{ 
+      right: 3px;
+      background-color: #918D85;
+      color: white;
+      font-weight: 400;
+      &:hover{ background-color: orangered; }
+    }
+    &.answer_back{ 
+      left: 3px;
+      &:hover{ color: orangered; }
+    }
+    
+  }
+  > .SearchBlock{
+    position: relative;
+    //background-color: #EEEEEE;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    overflow: hidden;
+    background-color: #efeadf;
+    .transition(all 500ms linear);
+    .flex-shrink(0);
+  }
+
+  > .Questions{
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    border-color: gray;
+    border-style: solid;
+    border-width: 1px 0px 1px 0px;
+    box-shadow: 0px 0px 2px gray;
+
+    .flex(1);
+    > .QuestionBlock{
+      margin: 2px 4px;
+      border: solid 1px lightgray;
+      border-radius: 1em;
+      cursor: pointer;
+      position: relative;
+      display: block;
+      &:hover{ background-color: #efeadf; }
+      > .notInContext{
+        display: none;
+        position: absolute;
+        top: 1px;
+        left: 1px;
+        width: 20px;
+        text-align: center;
+        color: gray;
+      }
+      > .QuestionText{
+        > .fa-question-circle{ 
+          color: gray;
+          margin: 0px 3px;
+        }
+      }
+      > .QuestionIcons{
+        position: absolute;
+        right: 2px;
+        top: 0px;
+        .icon{ 
+          font-size: 0.8em;
+          font-weight: 300;
+          margin-top: 4px;
+          color: gray;
+          width: 14px;
+          text-align: center;
+          vertical-align: top;
+        }
+      }
+      &[outOfContext] {
+        cursor: default;
+        > .notInContext{ display: block; }
+      }
+    }
+  }
+  > .MoreInfo{
+    font-weight: 300;
+    font-size: 0.7em;
+    padding: 3px;
+    cursor: default;
+    background-color: #efeadf;
+    overflow: hidden;
+    .transition(all 500ms linear);
+    .flex-shrink(0);
+    > .MoreInfoLink{ color: black;}
+  }
+
+  &[question=true]{
+    height: initial;
+    width: 370px;
+    right: 10px;
+    top: 10px;
+    box-shadow: 0px 0px 20px black;
+    &[pos="bottom"]{
+      top: inherit;
+      bottom: 10px;
+    }
+    &[attention=true]{
+      .animation(attention 0.3s 2 ease-in-out);
+      box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
+    }
+
+    > .SearchBlock{ 
+      //.flex(0);
+      //display: none;
+      > .QuestionTypes{ display: none; }
+      > .hideNonRelevant{ display: none; }
+      .SearchTextBox{ display: none; }
+    }
+    > .answer_box{
+      display: block;
+    }
+    > .MoreInfo{
+      //.flex(0);
+      display: none;
+    }
+    > .overlay_Close{ display: none; }
+    > .Questions{
+      overflow: hidden;
+      .flex(initial);
+      > .QuestionBlock{
+        display: none;
+        &[selected=true]{
+          display: block;
+          &:hover{ background-color: inherit; cursor: default; }
+        }
+      }
+    }
+  }
+}
+.QuestionTypes{
+  border-width: 1px 0px 1px 0px;
+  border-style: solid;
+  border-color: gray;
+  margin-bottom: 3px;
+  padding: 0px 0px 0px 4px;
+  background-color: #F6F6F6;
+  height: 40px;
+  .display(flex);
+  .flex-direction(row);
+  > .TypeLabel{
+    width: 60px;
+    color: #cb5454;
+    height: 1em;
+    .flex-shrink(0);
+    text-align: right;
+    &:after{ content: ": "; }
+    //&:before{ text-decoration: underline; }
+  }
+  > .TypeGroup{
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    height: 36px;
+    text-align: left;
+    font-size: 0.8em;
+    .flex(1);
+  }
+  &.ActionTypes > .TypeLabel:before{ content: "Actions" }
+  &.TopicTypes > .TypeLabel:before{ content: "Topics" }
+}
+.QuestionTypeSelect{
+  display: inline-block;
+  border-radius: 5px;
+  border: solid 1px #BCBCBC;
+  margin: 1px 2px;
+  padding: 1px 3px;
+  cursor: pointer;
+  background-color: white;
+  font-weight: 300;
+  .user-select(none);
+  &:hover{
+    color: orangered;
+  }
+  &[selected=true]{
+    color: orangered;
+    font-weight: 500;
+    border-color: red;
+  }
+  > .topicInfoMark{
+    color: gray;
+    margin: 0px 2px;
+    &:hover{ color: orangered; }
+  }
+  > .num {
+    margin-left: 2px;
+    font-size: 0.7em;
+    display: inline-block;
+    vertical-align: top;
+    padding-top: 2px;
+    &:before{ content: "(";}
+    &:after { content: ")";}
+  }
+}
+.TextSearchBlock{
+  text-align: center;
+  padding: 3px;
+  font-style: italic;
+  font-weight: 500;
+  padding-bottom: 3px;
+  > .fa-search{
+    color: gray;
+    font-size: 0.8em;
+  }
+  > .SearchTextBox{
+    width: 80px;
+    border-width: 0px 0px 1px 0px;
+    border-style: solid;
+    border-color: #cb5454;
+    margin: 1px 1px 0px 1px;
+    font-family: Roboto;
+    font-size: 1em;
+    font-style: italic;
+    padding: 0px;
+    color: #cb5454;
+    background-color: #efeadf;
+    &:focus{
+      outline-color: #cb5454;
+      outline-width: 0px;
+      margin: 0px;
+      border-width: 1px;
+      font-style: italic;
+    }
+    &:hover{
+      border-width: 1px;
+      margin: 0px 1px 0px 1px;
+      background-color: white;
+    }
+    &::-webkit-input-placeholder{
+      font-weight: 300;
+      font-style: italic;
+    }
+    &:focus::-webkit-input-placeholder{
+      color: #F3CDCD;
+    }
+  }
+
+}
+.textSearch_highlight{
+  background-color: yellow;
+}
+.hideNonRelevant{
+  position: absolute;
+  left: 3px;
+  top: 4px;
+  font-size: 0.8em;
+  font-weight: 300;
+  border: solid 1px gray;
+  border-radius: 20px;
+  padding: 0px 3px;
+  /* margin: 0px 3px; */
+  margin: 0px 3px;
+  cursor: pointer;
+  background-color: white;
+  > .fa{ margin: 0px 2px; }
+  &:hover{ color: orangered; }
+  &[hide="true"]  { 
+    &:after{ content: "Relevant"; }
+    //> .fa:before{ content: "\f070"; }
+    > .fa:before{ content: "\f205"; }
+  }
+  &[hide="false"] {
+    &:after{ content: "Other"; }
+    //> .fa:before{ content: "\f06e"; }
+    > .fa:before{ content: "\f204"; }
+  }
+}
+
+.closePanel{
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  cursor: pointer;
+  font-size: 1.3em;
+  width: 20px;
+  text-align: right;
+  color: gray;
+  &:hover{ color: orangered;}
+}
+
+.keyframes(~'attention, 0%{ transform: scale(1); } 50%{ transform: scale(1.07); } 100%{ transform: scale(1); }');
+.keyframes(~'attention2, 0%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); } 100%{ transform: scale(1); background-color: rgba(1,1,1,0); }');
+
+
