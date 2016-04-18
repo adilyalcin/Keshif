@@ -152,7 +152,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[measurefunc="Avg"]{
       .measurePercentControl{ pointer-events: none !important; }
-      .relativeModeControl{ pointer-events: none !important; }
+      .scaleModeControl{ pointer-events: none !important; }
       .measurePercentControl:after{ content: "Avg" !important; }
       .measureFunction_Avg{ color: black !important; font-weight: 600; }
       .measureSelectBox_Content_RecordName{ margin-top: 2.4em}
@@ -266,6 +266,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .panel[hassummaries="false"] {
           > .dropZone_panel{ display: block; }
+          &.panel_side{ z-index: 300; }
         }
       }
       &[dropSource="browser"]{
@@ -281,6 +282,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
         .dropZone_textSearch{ display: block !important; }
       }
+    }
+    &[showScaleModeControls]{
+      .scaleModeControl{ opacity: 1; }
     }
 
     .unitName{
@@ -1219,66 +1223,62 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         &.panel_resize{
-            position: absolute;
-            right: 0px;
-            bottom: 0px;
-            cursor: nwse-resize;
-            width: 0;
-            height: 0;
-            z-index: 2500;
-            border-right: 16px solid lightgray;
-            border-top: 16px solid transparent;
-            &:hover{ border-right: 16px solid orangered; }
-            &[dragging="true"]{ border-right: 16px solid orangered; }
+          position: absolute;
+          right: 0px;
+          bottom: 0px;
+          cursor: nwse-resize;
+          width: 0;
+          height: 0;
+          z-index: 2500;
+          border-right: 16px solid lightgray;
+          border-top: 16px solid transparent;
+          &:hover{ border-right: 16px solid orangered; }
+          &[dragging="true"]{ border-right: 16px solid orangered; }
         }
-        &.panel_infobox {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-            z-index: 2000;
-            transform: scale(1);
-            text-align: center;
-            .transition(~'transform 500ms ease-in-out, opacity 500ms');
 
-            .infobox_close_button{
+        &.panel_overlay {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+          z-index: 2000;
+          transform: scale(1);
+          text-align: center;
+          .transition(~'transform 500ms ease-in-out, opacity 500ms');
+
+            > .background{
+              width: 100%;
+              height: 100%;
+              z-index: -2;
+              background: #0b0b0b;
+              opacity: 0.8;
+              position: absolute;
+              .transition(~'opacity 0.5s');
+              border-radius: 5px;
+            }
+            > .overlay_content{
+              display: none;
+              margin: auto;
+              box-shadow: 0px 0px 20px black;
+              border-radius:15px;
+              background-color:white;
+              opacity: 1.0;
+              z-index: 1043;
+              max-height: 90%;
+              max-width: 90%;
+              overflow-y: auto;
+              overflow-x: hidden;
+              > .overlay_Close{
+                font-size: 1.2em;
                 position: absolute;
                 right: 3px;
                 top: 3px;
-                background-color: rgb(151, 151, 151);
-                width: 20px;
-                height: 20px;
-                border-radius: 20px;
-                text-align: center;
                 cursor: pointer;
-                line-height: 20px;
-                color: white;
-                &:hover{ background-color: rgb(111, 111, 111); }
-            }
-            > .background{
-                width: 100%;
-                height: 100%;
-                z-index: -2;
-                background: #0b0b0b;
-                opacity: 0.8;
-                position: absolute;
-                .transition(~'all 0.5s');
-                border-radius: 5px;
-            }
-            > .infobox_content{
-                display: none;
-                margin: auto;
-                box-shadow: 0px 0px 20px gray;
-                border-radius:15px;
-                background-color:white;
-                opacity: 1.0;
-                z-index: 1043;
-                max-height: 90%;
-                max-width: 90%;
-                overflow-y: auto;
-                overflow-x: hidden;
+                color: gray;
+                &:hover{ color: orangered; }
+              }
             }
 
-            > .infobox_source{
+            > .overlay_source{
                 background-color:white;
                 width: 550px;
                 height: 270px;
@@ -1305,12 +1305,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     padding: 5px;
                     border: solid 1px lightgray;
                     border-radius: 5px;
-                    > .sourceOptions{
-                        margin-bottom: 3px;
-                    }
-                    .gdocLink{
-                        width: 350px;
-                    }
+                    > .sourceOptions{ margin-bottom: 3px; }
+                    .gdocLink{ width: 350px; }
                     .fileLink{
                         width: 350px;
                         display: none;
@@ -1347,141 +1343,105 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
                 &[selected_source_type="GoogleSheet"] {
-                    .sourceOption[source_type="GoogleSheet"]{
-                        background-color: #EEE;
-                        color: black;
-                        cursor: default;
-                    }
-                    .tableHeader:before{
-                        content: "Sheet";
-                    }
+                  .sourceOption[source_type="GoogleSheet"]{
+                    background-color: #EEE;
+                    color: black;
+                    cursor: default;
+                  }
+                  .tableHeader:before{ content: "Sheet"; }
                 }
                 &[selected_source_type="Dropbox"] {
-                    .sourceOption[source_type="Dropbox"]{
-                        background-color: #EEE;
-                        color: black;
-                        cursor: default;
-                    }
-                    .tableHeader:before{
-                        content: "Cloud-File";
-                    }
-                    > .sheetInfo .fileType_wrapper{
-                        display: inline-block;
-                    }
+                  .sourceOption[source_type="Dropbox"]{
+                    background-color: #EEE;
+                    color: black;
+                    cursor: default;
+                  }
+                  .tableHeader:before{ content: "Cloud-File"; }
+                  > .sheetInfo .fileType_wrapper{ display: inline-block; }
                 }
                 &[selected_source_type="GoogleDrive"] {
-                    .sourceOption[source_type="GoogleDrive"]{
-                        background-color: #EEE;
-                        color: black;
-                        cursor: default;
-                    }
-                    .tableHeader:before{
-                        content: "Cloud-File";
-                    }
-                    > .sheetInfo .fileType_wrapper{
-                        display: inline-block;
-                    }
+                  .sourceOption[source_type="GoogleDrive"]{
+                    background-color: #EEE;
+                    color: black;
+                    cursor: default;
+                  }
+                  .tableHeader:before{ content: "Cloud-File"; }
+                  > .sheetInfo .fileType_wrapper{ display: inline-block; }
                 }
                 &[selected_source_type="LocalFile"] {
-                    .sourceOption[source_type="LocalFile"]{
-                        background-color: #EEE;
-                        color: black;
-                        cursor: default;
-                    }
-                    .gdocLink{
-                        display: none;
-                    }
-                    .fileLink{
-                        display: inline-block;
-                    }
-                    .tableHeader:before{
-                        content: "File";
-                    }
-                    > .sheetInfo {
-                        .fileType_wrapper{
-                            display: inline-block;
-                        }
-                        > .sheet_wrapper > .tableHeader{
-                            display: none;
-                        }
-                        > .sheetName_wrapper{
-                            display: none;
-                        }
-                    }
+                  .sourceOption[source_type="LocalFile"]{
+                    background-color: #EEE;
+                    color: black;
+                    cursor: default;
+                  }
+                  .gdocLink{ display: none; }
+                  .fileLink{ display: inline-block; }
+                  .tableHeader:before{ content: "File"; }
+                  > .sheetInfo {
+                    .fileType_wrapper{ display: inline-block; }
+                    > .sheet_wrapper > .tableHeader{ display: none; }
+                    > .sheetName_wrapper{ display: none; }
+                  }
                 }
 
                 > .sheetInfo{
-                    border: solid 1px lightgray;
-                    border-radius: 5px;
-                    text-align: left;
-                    width: 300px;
-                    margin: 0 auto;
-                    padding-bottom: 5px;
-                    .tableHeader{
-                        font-weight: 700;
-                        text-align: center;
-                        border-bottom: solid 1px lightgray;
-                        margin-bottom: 2px;
-                        margin-top: 5px;
-                    }
-                    > .sheet_wrapper{
-                        margin: 0 auto;
-                    }
-                    .sheetColumn_ID{
-                        width: 60px;
-                    }
-                    .subheading{
-                        width: 110px;
-                        display: inline-block;
-                        text-align: right;
-                        cursor: default;
-                        &:not(.tableHeader){
-                            font-weight: 300;
-                        }
-                    }
-                    .sheetColumn_Splitter{
-                        width: 60px;
-                    }
-                    .tableName{
-                        width: 85px;
-                    }
-                    .sheetColumn_Seperator{
-                        width: 30px;
-                    }
-                    .fileType_wrapper{
-                        display: none;
-                    }
-                    .sheetColumn_sep_wrapper{
-                        display: none;
-                        font-size: 0.8em;
-                        margin-left: 5px;
-                        cursor: default;
-                    }
+                  border: solid 1px lightgray;
+                  border-radius: 5px;
+                  text-align: left;
+                  width: 300px;
+                  margin: 0 auto;
+                  padding-bottom: 5px;
+                  .tableHeader{
+                    font-weight: 700;
+                    text-align: center;
+                    border-bottom: solid 1px lightgray;
+                    margin-bottom: 2px;
+                    margin-top: 5px;
+                  }
+                  > .sheet_wrapper{ margin: 0 auto; }
+                  .sheetColumn_ID{ width: 60px; }
+                  .subheading{
+                    width: 110px;
+                    display: inline-block;
+                    text-align: right;
+                    cursor: default;
+                    &:not(.tableHeader){ font-weight: 300; }
+                  }
+                  .sheetColumn_Splitter{ width: 60px; }
+                  .tableName{ width: 85px; }
+                  .sheetColumn_Seperator{ width: 30px; }
+                  .fileType_wrapper{ display: none; }
+                  .sheetColumn_sep_wrapper{
+                    display: none;
+                    font-size: 0.8em;
+                    margin-left: 5px;
+                    cursor: default;
+                  }
                 }
 
                 >.actionButton{
-                    display: inline-block;
-                    border: solid 1px gray;
-                    padding: 5px;
-                    margin: 5px;
-                    border-radius: 5px;
-                    background-color: white;
-                    font-weight: 300;
-                    &[disabled=true]{
-                        //pointer-events: none;
-                        color: gray;
-                        border-color: lightgray;
-                        cursor: not-allowed;
-                    }
-                    &[disabled=false]:hover{
-                        cursor: pointer;
-                        box-shadow: 1px 1px 1px gray;
-                        background-color: #EEE;
-                    }
+                  display: inline-block;
+                  border: solid 1px gray;
+                  padding: 5px;
+                  margin: 5px;
+                  border-radius: 5px;
+                  background-color: white;
+                  font-weight: 300;
+                  &[disabled=true]{
+                    //pointer-events: none;
+                    color: gray;
+                    border-color: lightgray;
+                    cursor: not-allowed;
+                  }
+                  &[disabled=false]:hover{
+                    cursor: pointer;
+                    box-shadow: 1px 1px 1px gray;
+                    background-color: #EEE;
+                  }
                 }
             }
 
-            > .infobox_loading{
+            > .overlay_loading{
                 width: 300px;
                 height: 40px;
                 position: absolute;
@@ -1529,63 +1489,82 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             }
-            > .infobox_credit{
-                display:none;
-                width: 390px;
-                height: 200px;
-                position: absolute;
-                top: 0; left: 0; bottom: 0; right: 0;
-                div.all-the-credits{
-                    margin: auto;
-                }
-                div.header{
-                    background-color:rgb(216, 221, 212);
-                    width:100%;
-                    padding-top: 5px;
-                    border-top-left-radius: 15px;
-                    border-top-right-radius: 15px;
-                    border-bottom: solid 2px rgb(60, 94, 67);
-                }
-                .libName{
-                  font-size: 1.3em;
-                  font-weight: 700;
+            > .overlay_credit{
+              display:none;
+              width: 390px;
+              height: 200px;
+              position: absolute;
+              top: 0; left: 0; bottom: 0; right: 0;
+              cursor: default;
+              div.header{
+                background-color:rgb(216, 221, 212);
+                width:100%;
+                padding-top: 5px;
+                border-top-left-radius: 15px;
+                border-top-right-radius: 15px;
+                border-bottom: solid 2px rgb(60, 94, 67);
+              }
+              .boxinbox{ 
+                margin-top: 10px;
+                font-size: 0.9em;
+                a.myName{
+                  display: inline-block;
+                  font-size: 1.1em;
+                  margin: 5px 10px;
                   color: black;
-                  text-decoration: none;
-                  &:hover{ color: orangered; }
+                  font-weight: 600;
+                  font-style: normal;
                 }
-                div.project_fund {
-                    font-size: 0.8em;
-                    font-weight: 300;
+                a.advName{
+                  color: black;
                 }
+              }
+              .libName{
+                font-size: 1.3em;
+                font-weight: 700;
+                color: black;
+                text-decoration: none;
+                &:hover{ color: orangered; }
+              }
+              .project_fund {
+                clear: both;
+                margin-top: 1em;
+                text-align: center;
+                font-size: 0.8em;
+                font-weight: 300;
+                white-space: nowrap;
+              }
             }
-            > .infobox_itemZoom{
-                position: relative;
-                margin: 20px;
-                padding: 10px 30px;
-            }
-            &[show="loading"] > .infobox_loading{
-                display: inline-block;
-            }
-            &[show="credit"] > .infobox_credit{
-                display: inline-block;
-            }
-            &[show="source"] > .infobox_source{
-                display: inline-block;
+            > .overlay_recordDetails{
+              position: relative;
+              margin: 20px;
+              padding: 10px 30px;
             }
             &[show="none"]{
+              pointer-events: none;
+              > .background{ opacity: 0; }
+            }
+            &[show="loading"]   > .overlay_loading{ display: inline-block; }
+            &[show="credit"]    > .overlay_credit { display: inline-block; }
+            &[show="source"]    > .overlay_source { display: inline-block; }
+            &[show="help"]      > .overlay_help   { .display(flex); }
+            &[show="answer"] {
+              > .overlay_help    { .display(flex); }
+              > .overlay_answer  { 
+                .display(flex);
                 pointer-events: none;
-                //display: none;
-                > .background{ opacity: 0;}
+              }
+              > .background{ opacity: 0; }
             }
-            &[show=itemZoom]{
-                > .infobox_itemZoom{
-                    .animation(itemZoom 500ms forwards);
-                    .animation-iteration-count(1);
-                    .animation-timing-function(ease-in-out);
-                    display: inline-block;
-                }
+            &[show="recordDetails"]{
+              > .overlay_recordDetails{
+                .animation(recordDetails 500ms forwards);
+                .animation-iteration-count(1);
+                .animation-timing-function(ease-in-out);
+                display: inline-block;
+              }
             }
-        } // panel_infobox
+        } // panel_overlay
     }
 
     .hasLabelWidth{ text-align: right; }
@@ -1687,20 +1666,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           position: absolute;
         }
       }
-      > .relativeModeControl{
-        position: absolute;
-        left: 0px;
-        top: 0px;
-        cursor: pointer;
-        pointer-events: all;
-        background-color: #E0E4D7;
-        border: solid 1px #B7CAAF;
-        border-radius: 5px;
-        opacity: 0;
-        .transition(opacity 250ms linear);
-        &[highlight="true"]{ opacity: 1; }
-        // Hidden by default
-      }
+    }
+    .scaleModeControl{
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      cursor: pointer;
+      pointer-events: all;
+      background-color: #E0E4D7;
+      border: solid 1px #B7CAAF;
+      border-radius: 5px;
+      opacity: 0;
+      .transition(opacity 250ms linear);
     }
 
     .leaflet-tile-pane{
@@ -1733,122 +1710,123 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .headerGroup{
-        position: relative;
-        text-align: center;
-        margin: 1px 0px;
-        border-radius: 3px;
-        box-shadow: 0px 0px 2px rgb(155, 155, 155);
+      position: relative;
+      text-align: center;
+      margin: 1px 0px;
+      border-radius: 3px;
+      box-shadow: 0px 0px 2px rgb(155, 155, 155);
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0) 0%, rgba(190, 190, 190, 0.3) 10%, rgba(190, 190, 190, 0.3) 90%, rgba(190, 190, 190, 0) 100%);");
 //        .background-image(~"linear-gradient(right, rgba(190, 190, 190, 0.3) 0%, rgba(190, 190, 190, 0.4) 20%, rgba(190, 190, 190, 0.4) 80%, rgba(190, 190, 190, 0.3) 100%);");
-        background-color: rgb(235, 235, 235);
-        .summaryName {
-          display: block;
-          font-weight: 700;
-          cursor: default;
-          //font-variant: small-caps;
-          padding-top: 2px;
-          text-rendering: initial;
+      background-color: rgb(235, 235, 235);
+      .summaryName {
+        display: block;
+        font-weight: 700;
+        cursor: default;
+        //font-variant: small-caps;
+        padding-top: 2px;
+        text-rendering: initial;
+        white-space: nowrap;
+        text-align: center;
+        margin: 0 auto;
+        height: 20px;
+        //min-height: 18px;
+        /*white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;*/
+        > .summaryName_text{
+          display: inline-block;
+          max-width: calc(~"100% - 60px");
           white-space: nowrap;
-          text-align: center;
-          margin: 0 auto;
-          height: 20px;
-          //min-height: 18px;
-          /*white-space: nowrap;
           overflow: hidden;
-          text-overflow: ellipsis;*/
-          > .summaryName_text{
-            display: inline-block;
-            max-width: calc(~"100% - 60px");
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 0.9em;
-            padding: 0px 3px;
-            pointer-events: none;
-            cursor: text;
-            &:hover {
-              margin: -1px;
-              border: solid 1px gray;
-            }
-            &:focus{
-              background-color: white;
-              box-shadow: 0 0 3px #2CABCF;
-              outline: 0 none;
-              padding-left: 3px;
-              padding-right: 3px;
-            }
+          text-overflow: ellipsis;
+          font-size: 0.9em;
+          padding: 0px 3px;
+          pointer-events: none;
+          cursor: text;
+          &:hover {
+            margin: -1px;
+            border: solid 1px gray;
+          }
+          &:focus{
+            background-color: white;
+            box-shadow: 0 0 3px #2CABCF;
+            outline: 0 none;
+            padding-left: 3px;
+            padding-right: 3px;
           }
         }
-        .save_filter_as_set{
-          display: none;
-          position: absolute;
-          cursor: pointer;
-          margin-left: 4px;
-          margin-top: 1px;
-          width: 15px;
+      }
+      .save_filter_as_set{
+        display: none;
+        position: absolute;
+        cursor: pointer;
+        margin-left: 4px;
+        margin-top: 1px;
+        width: 15px;
+        color: gray;
+        &:hover{ color: black; }
+      }
+      .clearFilterButton.rowFilter{
+        pointer-events: all;
+        height: 14px;
+        width: 14px;
+        line-height: 13px;
+        margin-right: 3px;
+      }
+      .summaryIcons{
+        top: 3px;
+        right: 2px;
+        position: absolute;
+        font-size: 0.9em;
+        > .fa{
           color: gray;
-          &:hover{ color: black; }
+          cursor: pointer;
+          margin-left: 2px;
+          vertical-align: top;
+          &:hover{ color: orangered; }
         }
-        .clearFilterButton.rowFilter{
-          pointer-events: all;
-          height: 14px;
+        > .summaryDescription{
+          display: none;
+          cursor: default;
+        }
+        > .summaryViewAs{
+          display: none;
+          cursor: pointer;
+          width: 15px;
+          text-align: center;
+          &[viewAs="map"]:before{ content: "\f0ca"; } // globe
+          &[viewAs="map"]:hover:before{ content: "\f0ac"; } // list-ul
+          &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
+          &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
+        }
+        > .useForRecordDisplay{ display: none; }
+      }
+      > .header_display_control{
+        display: block;
+        position: absolute;
+        font-size: 0.9em;
+        top: 3px;
+        left: 2px;
+        .transition(~'color 250ms linear, opacity 100ms linear ');
+        .transform-origin(50% 50%);
+        > .fa{
+          display: inline-block;
+          vertical-align: top;
+          opacity: 0;
+          color: black;
+          cursor: pointer;
+          margin-right: 2px;
           width: 14px;
-          line-height: 13px;
-          margin-right: 3px;
-        }
-        .summaryIcons{
-          top: 3px;
-          right: 2px;
-          position: absolute;
-          font-size: 0.9em;
-          > .fa{
-            color: gray;
-            cursor: pointer;
-            margin-left: 2px;
-            vertical-align: top;
-            &:hover{ color: orangered; }
-          }
-          > .summaryDescription{
-            display: none;
-            cursor: default;
-          }
-          > .summaryViewAs{
-            display: none;
-            cursor: pointer;
-            width: 15px;
-            text-align: center;
-            &[viewAs="map"]:before{ content: "\f0ca"; } // globe
-            &[viewAs="map"]:hover:before{ content: "\f0ac"; } // list-ul
-            &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
-            &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
-          }
-          > .useForRecordDisplay{ display: none; }
-        }
-        > .header_display_control{
-          display: block;
-          position: absolute;
-          font-size: 0.9em;
-          top: 3px;
-          left: 2px;
+          height: 14px;
+          width: 13px;
+          height: 13px;
           .transition(~'color 250ms linear, opacity 100ms linear ');
-          .transform-origin(50% 50%);
-          > .fa{
-            display: inline-block;
-            vertical-align: top;
-            opacity: 0;
-            color: black;
-            cursor: pointer;
-            margin-right: 2px;
-            width: 14px;
-            height: 14px;
-            width: 13px;
-            height: 13px;
-            &:hover{ color: orangered; }
-          }
-          > .buttonSummaryCollapse::before{ content: "\f066"; }
-          > .buttonSummaryRemove{ display: none; }
-          > .buttonSummaryExpand{ display: none; }
+          &:hover{ color: orangered; }
         }
+        > .buttonSummaryCollapse::before{ content: "\f066"; }
+        > .buttonSummaryRemove{ display: none; }
+        > .buttonSummaryExpand{ display: none; }
+      }
     } // headerGroup
 
     .lockButton{
@@ -2816,7 +2794,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           left: -24px;
                           text-align: right;
                         }
-                        > .relativeModeControl{
+                        > .scaleModeControl{
                           width: 25px;
                           height: calc(~"100% - 12px");
                           top: 0px;
@@ -3050,9 +3028,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         } //
 
         &[collapsed=true]{
-          .headerGroup > .header_display_control > .fa.buttonSummaryCollapse{
+          .headerGroup {
+            > .header_display_control > .fa.buttonSummaryCollapse{
               opacity: 1;
               &::before{ content: "\f065" !important; }
+            }
           }
           > .headerGroup .summaryName{ cursor: pointer; }
           > .wrapper .summaryCategorical{
@@ -3159,6 +3139,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[summary_type='categorical'][viewType='list']:hover {
           .summaryConfigControl{ display: inline-block !important; }
         }
+        > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand { display: inline-block !important; }
       }
       &[showConfig=true]{
         .summaryConfig{
@@ -3222,9 +3203,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           right: 0px;
           top: 1px;
         }
-        > .relativeModeControl{ 
-          height: 12px;
-          margin-left: 2px;
+        > .scaleModeControl{ 
+          height: 13px;
         }
         > .highlightedMeasureValue{
           position: absolute;
@@ -3266,7 +3246,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           left: -35px;
           top: -1px;
         }
-        > .relativeModeControl{
+        > .scaleModeControl{
           position: absolute;
           right: -57px;
           top: -1px;
@@ -4032,16 +4012,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &:hover{ border: solid 1px gray; }
           > .recordColorScaleBin{ .flex(1); }
         }
-        > .removeSortOption_wrapper{ display: none; }
-        .removeSortOption{
-          cursor: pointer;
-          width: 14px;
-          height: 14px;
-          display: inline-block;
-          color:gray;
-          &:before{ content: "\f00d"; }
-          &:hover{ color: black; }
-        }
         > .header_listSortColumn{
           display: inline-block;
           .align-self(flex-end);
@@ -4063,11 +4033,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             bottom:0px;
           }
         }
-        > .sortColumn {
+        > .sortColumn{
           opacity: 0;
           .align-self(flex-end);
           width: 17px;
-          font-size: 0.8em;
+          height: 16px;
+          padding-top: 3px;
+          font-size: 0.9em;
           margin-bottom: 2px;
           vertical-align: bottom;
           .transition(opacity 250ms linear);
@@ -4115,7 +4087,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             padding: 0px 2px;
             background-color:rgba(255, 255, 255, 0);
             pointer-events: all;
-            border-width:0px;
+            border-width: 0px;
             border-style: solid;
             border-color: #cb5454;
             margin: 1px;
@@ -4208,41 +4180,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       vertical-align: top;
     }
 
-    .boxinbox{
-        margin-top:10px;
-        &:hover{
-            background-color: #EFEFEF;
-        }
-        ul{
-            margin: 5px 0px 5px 0px;
-        }
-        &.features{
-            width:500px;
-            text-align:left;
-            border: solid 0px lightgray;
-            box-shadow: 0px 0px 0px gray;
-            .credits_features {
-                margin-top: 4px;
-                padding-left: 20px;
-            }
-        }
-        &.project_credits{
-          font-size: 0.9em;
-          cursor: default;
-          a.myName{
-            display: inline-block;
-            font-size: 1.1em;
-            margin: 5px 10px;
-            color: black;
-            font-weight: 600;
-            font-style: normal;
-          }
-          a.advName{
-            color: black;
-          }
-        }
-    } // boxinbox
-
     .leaflet-container{
       font: inherit;
     }
@@ -4292,7 +4229,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-size: 1.2em;
         background-color: #000;
         color: #FFF;
-        max-width: 200px;
+        max-width: 400px;
         text-align: center;
         font-weight: 300px;
         border-radius: 3px;

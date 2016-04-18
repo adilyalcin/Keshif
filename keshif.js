@@ -112,7 +112,9 @@ var kshf = {
         RemoveRecords: "Remove record view",
         EditFormula: "Edit formula",
         NoData: "(no data)",
-        ZoomToFit: "Zoom to fit"
+        ZoomToFit: "Zoom to fit",
+        Close: "Close",
+        Help: "Help"
       },
       tr: {
         ModifyBrowser: "Tarayıcıyı düzenle",
@@ -151,7 +153,9 @@ var kshf = {
         RemoveRecords: "Kayıtları kaldır",
         EditFormula: "Formülü değiştir",
         NoData: "(verisiz)",
-        ZoomToFit: "Oto-yakınlaş"
+        ZoomToFit: "Oto-yakınlaş",
+        Close: "Kapat",
+        Help: "Yardim"
       },
       fr: {
         ModifyBrowser: "Modifier le navigateur",
@@ -424,6 +428,7 @@ var kshf = {
     },
     /** -- */
     gistPublic: true,
+    gistLogin: false,
     getGistLogin: function(){
       if(this.githubToken===undefined) return;
       $.ajax( 'https://api.github.com/user',
@@ -942,6 +947,7 @@ kshf.Filter.prototype = {
   },
   /** -- */
   clearFilter: function(forceUpdate, updateWanted){
+    if(!this.isFiltered) return; // TODO: Does this break anything?
     this.isFiltered = false;
 
     if(this.onClear) this.onClear.call(this);
@@ -1805,25 +1811,6 @@ kshf.RecordDisplay.prototype = {
 
       this.refreshSortingOptions();
 
-      this.DOM.removeSortOption = this.DOM.recordDisplayHeader
-        .append("span").attr("class","removeSortOption_wrapper")
-        .append("span").attr("class","removeSortOption fa")
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: "Remove current sorting option" }); })
-        .style("display",(this.sortingOpts.length<2)?"none":"inline-block")
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(d,i){ this.tipsy.hide(); })
-        .on("click",function(){
-          var index=-1;
-          me.sortingOpts.forEach(function(o,i){ if(o===me.sortingOpt_Active) index=i; })
-          if(index!==-1){
-            me.sortingOpts.splice(index,1);
-            if(index===me.sortingOpts.length) index--;
-            me.setSortingOpt_Active(index);
-            me.refreshSortingOptions();
-            me.DOM.listSortOptionSelect[0][0].selectedIndex = index;
-          }
-        });
-
       this.DOM.recordDisplayHeader.append("span").attr("class","sortColumn sortButton fa")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
         .on("mouseover",function(){ this.tipsy.show(); })
@@ -1919,9 +1906,6 @@ kshf.RecordDisplay.prototype = {
 
         this.sortingOpts[i] = summary;
       },this);
-
-      if(this.DOM.removeSortOption)
-        this.DOM.removeSortOption.style("display",(this.sortingOpts.length<2)?"none":"inline-block");
     },
     /** -- */
     alphabetizeSortingOptions: function(){
@@ -3032,7 +3016,7 @@ kshf.Browser = function(options){
     if(options.source){
       window.setTimeout(function() { me.loadSource(options.source); }, 10);
     } else {
-      this.panel_infobox.attr("show","source");
+      this.panel_overlay.attr("show","source");
     }
     
 };
@@ -3197,7 +3181,7 @@ kshf.Browser.prototype = {
       if(this.DOM.measureSelectBox) return;
       this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox");
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
-        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Close" }); })
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.Close }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("click",function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
@@ -3498,32 +3482,48 @@ kshf.Browser.prototype = {
               'json'
             );
           }
-        });          
+        });
 
-      rightBoxes.append("i").attr("class","showConfigButton fa fa-cog")
-        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ModifyBrowser }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",function(){ me.enableAuthoring(); });
+      // Authoring
+      rightBoxes.append("span").attr("class","showConfigButton fa fa-cog")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.ModifyBrowser }); })
+        .on("mouseover", function(){ this.tipsy.show(); })
+        .on("mouseout" , function(){ this.tipsy.hide(); })
+        .on("click",     function(){ this.tipsy.hide(); me.enableAuthoring(); });
       // Datasource
       this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
         .attr("target","_blank")
-        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.OpenDataSource }); })
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.OpenDataSource }); })
         .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(d,i){ this.tipsy.hide(); });
+        .on("mouseout", function(){ this.tipsy.hide(); });
+      // Help
+      rightBoxes.append("span").attr("class","fa fa-question-circle")
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.Help }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          this.tipsy.hide();
+          if(typeof helpin !== 'undefined'){
+            me.panel_overlay.attr("show","help");
+            helpin.initDOM();
+          } else {
+            alert("Keshif-Help will be available soon!");
+          }
+        });
       // Info & Credits
-      rightBoxes.append("i").attr("class","fa fa-info-circle credits")
+      rightBoxes.append("span").attr("class","fa fa-info-circle credits")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits }); })
         .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(d,i){ this.tipsy.hide(); })
-        .on("click",function(){ me.showInfoBox();});
-      // Info & Credits
-      rightBoxes.append("i").attr("class","fa fa-arrows-alt fullscreen")
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",    function(){ this.tipsy.hide(); me.panel_overlay.attr("show","credit"); });
+      // Fullscreen
+      rightBoxes.append("span").attr("class","fa fa-arrows-alt fullscreen")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen }); })
         .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(d,i){ this.tipsy.hide(); })
-        .on("click",function(){ me.showFullscreen();});
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",    function(){ this.tipsy.hide(); me.showFullscreen();});
 
+      // Total glyph - row
       var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalGlyph aggrGlyph");
       this.DOM.totalGlyph = adsdasda.selectAll("[class*='measure_']")
         .data(["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"])
@@ -3635,16 +3635,16 @@ kshf.Browser.prototype = {
         });
       this.DOM.filterClearAll.append("span").attr("class","title").text(kshf.lang.cur.ShowAll);
       this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter")
-          .append("span").attr("class","fa fa-times");
+        .append("span").attr("class","fa fa-times");
     },
     /* -- */
     insertDOM_Infobox: function(){
         var me=this;
         var creditString="";
-        creditString += "<div align='center'>";
-        creditString += "<div class='header'>Data made explorable by "+
+        creditString += "<div class='header'>Data Made Explorable - by "+
           "<a target='_blank' href='http://www.keshif.me' class='libName'>Keshif</a></div>";
-        creditString += "<div align='center' class='boxinbox project_credits' style='padding: 0px 15px'>";
+
+        creditString += "<div class='boxinbox' style='padding: 0px 15px'>";
         creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'>"+
           "<img src='http://www.keshif.me/AggreSet/img/logo_hcil.gif' style='height:50px; float: left'></a>";
         creditString += " <a href='http://www.umd.edu' target='_blank'>"+
@@ -3652,12 +3652,12 @@ kshf.Browser.prototype = {
         creditString += "Developed &amp; designed by: ";
         creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a><br>";
         creditString += "Advised by: <br>";
-        creditString += " <a class='advName' href='https://sites.umiacs.umd.edu/elm/' target='_blank'>Niklas Elmqvist</a> and ";
+        creditString += " <a class='advName' href='https://sites.umiacs.umd.edu/elm/' target='_blank'>Niklas Elmqvist</a> &amp; ";
         creditString += " <a class='advName' href='http://www.cs.umd.edu/~bederson/' target='_blank'>Ben Bederson</a> <br>";
         creditString += "</div>";
-        creditString += "";
-        creditString += "<div align='center' class='boxinbox project_credits'>";
-            creditString += "<div style='float:right; text-align: right'>"
+
+        creditString += "<div class='boxinbox'>";
+            creditString += "<div style='float:right;'>"
             creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' "+
               "allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe><br/>";
             creditString += "</div>";
@@ -3669,54 +3669,62 @@ kshf.Browser.prototype = {
         creditString += " <a style='color:black;' href='http://d3js.org/' target='_blank'>D3</a>, ";
         creditString += " <a style='color:black;' href='http://jquery.com' target='_blank'>JQuery</a>, ";
         creditString += " <a style='color:black;' href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a></span>";
-        creditString += "</div><br/>";
-        creditString += "";
-        creditString += "<div align='center' class='project_fund'>";
-        creditString += "Keshif (<i>keşif</i>) means discovery / exploration in Turkish<br/>";
-        creditString += "";
+        creditString += "</div>";
 
-        this.panel_infobox = this.DOM.root.append("div").attr("class", "panel panel_infobox");
-        this.panel_infobox.append("div").attr("class","background")
-            .on("click",function(){
-                var activePanel = this.parentNode.getAttribute("show");
-                if(activePanel==="credit" || activePanel==="itemZoom"){
-                    me.panel_infobox.attr("show","none");
-                }
-            })
-            ;
-        this.DOM.loadingBox = this.panel_infobox.append("div").attr("class","infobox_content infobox_loading");
-//        this.DOM.loadingBox.append("span").attr("class","fa fa-spinner fa-spin");
-        var ssdsd = this.DOM.loadingBox.append("span").attr("class","spinner");
-        ssdsd.append("span").attr("class","spinner_x spinner_1");
-        ssdsd.append("span").attr("class","spinner_x spinner_2");
-        ssdsd.append("span").attr("class","spinner_x spinner_3");
-        ssdsd.append("span").attr("class","spinner_x spinner_4");
-        ssdsd.append("span").attr("class","spinner_x spinner_5");
+        creditString += "<div class='project_fund'>Keshif (<i>keşif</i>) means discovery/exploration in Turkish.</div>";
 
+        this.panel_overlay = this.DOM.root.append("div").attr("class", "panel panel_overlay");
+
+        // BACKGROUND 
+        this.panel_overlay.append("div").attr("class","background")
+          .on("click",function(){
+            var activePanel = this.parentNode.getAttribute("show");
+            if(activePanel==="answer"){
+              me.panel_overlay.select(".overlay_help").attr("attention",true);
+              me.panel_overlay.select(".overlay_answer").attr("attention",true);
+              setTimeout(function(){ 
+                me.panel_overlay.select(".overlay_help").attr("attention",false);
+                me.panel_overlay.select(".overlay_answer").attr("attention",false);
+              }, 1200);
+            } else if(activePanel!=="loading" && activePanel!=="none"){
+              me.panel_overlay.attr("show","none");
+            }
+          });
+
+        // LOADING BOX
+        this.DOM.loadingBox = this.panel_overlay.append("div").attr("class","overlay_content overlay_loading");
+        var ssdsd = this.DOM.loadingBox.append("span").attr("class","spinner")
+          .selectAll(".spinner_x").data([1,2,3,4,5]).enter()
+            .append("span").attr("class",function(d){ return "spinner_x spinner_"+d; });
         var hmmm=this.DOM.loadingBox.append("div").attr("class","status_text");
         hmmm.append("span").attr("class","status_text_sub info").text(kshf.lang.cur.LoadingData);
         this.DOM.status_text_sub_dynamic = hmmm.append("span").attr("class","status_text_sub dynamic");
 
-        var infobox_credit = this.panel_infobox.append("div").attr("class","infobox_content infobox_credit");
-        infobox_credit.append("div").attr("class","infobox_close_button")
-            .on("click",function(){
-                me.panel_infobox.attr("show","none");
-            })
-            .append("span").attr("class","fa fa-times");
-        infobox_credit.append("div").attr("class","all-the-credits").html(creditString);
+        // CREDITS 
+        var overlay_credit = this.panel_overlay.append("div").attr("class","overlay_content overlay_credit");
+        overlay_credit.append("div").attr("class","overlay_Close fa fa-times fa-times-circle")
+          .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.Close }); })
+          .on("mouseenter",function(){ this.tipsy.show(); })
+          .on("mouseleave",function(){ this.tipsy.hide(); })
+          .on("click",function(){ me.panel_overlay.attr("show","none"); });
+        overlay_credit.append("div").attr("class","all-the-credits").html(creditString);
 
         this.insertSourceBox();
 
+        // ITEM DETAILS 
+        this.DOM.overlay_recordDetails = this.panel_overlay.append("span").attr("class","overlay_content overlay_recordDetails");
+        this.DOM.overlay_recordDetails.append("div").attr("class","overlay_Close fa fa-times-circle")
+          .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.Close }); })
+          .on("mouseenter",function(){ this.tipsy.show(); })
+          .on("mouseleave",function(){ this.tipsy.hide(); })
+          .on("click",function(){ me.panel_overlay.attr("show","none"); });
 
-        this.DOM.infobox_itemZoom = this.panel_infobox.append("span").attr("class","infobox_content infobox_itemZoom");
+        // HELP
+        this.panel_overlay.append("span").attr("class","overlay_content overlay_help");
+        // ANSWER
+        this.panel_overlay.append("span").attr("class","overlay_content overlay_answer");
 
-        this.DOM.infobox_itemZoom.append("div").attr("class","infobox_close_button")
-            .on("click",function(){
-                me.panel_infobox.attr("show","none");
-            })
-            .append("span").attr("class","fa fa-times");
-
-        this.DOM.infobox_itemZoom_content = this.DOM.infobox_itemZoom.append("span").attr("class","content");
+        this.DOM.overlay_recordDetails_content = this.DOM.overlay_recordDetails.append("span").attr("class","content");
     },
     /** -- */
     insertSourceBox: function(){
@@ -3726,16 +3734,16 @@ kshf.Browser.prototype = {
         var sourceURL = null, sourceSheet = "", localFile = undefined;
 
         var readyToLoad=function(){
-            if(localFile) return true;
-            return sourceURL!==null && sourceSheet!=="";
+          if(localFile) return true;
+          return sourceURL!==null && sourceSheet!=="";
         };
 
-        this.DOM.infobox_source = this.panel_infobox.append("div").attr("class","infobox_content infobox_source")
+        this.DOM.overlay_source = this.panel_overlay.append("div").attr("class","overlay_content overlay_source")
             .attr("selected_source_type",source_type);
 
-        this.DOM.infobox_source.append("div").attr("class","sourceHeader").text("Where's your data?");
+        this.DOM.overlay_source.append("div").attr("class","sourceHeader").text("Where's your data?");
 
-        var source_wrapper = this.DOM.infobox_source.append("div").attr("class","source_wrapper");
+        var source_wrapper = this.DOM.overlay_source.append("div").attr("class","source_wrapper");
 
         x = source_wrapper.append("div").attr("class","sourceOptions");
 
@@ -3753,7 +3761,7 @@ kshf.Browser.prototype = {
 
         x.selectAll(".sourceOption").on("click",function(){
           source_type=this.getAttribute("source_type");
-          me.DOM.infobox_source.attr("selected_source_type",source_type);
+          me.DOM.overlay_source.attr("selected_source_type",source_type);
           var placeholder;
           switch(source_type){
             case "GoogleSheet": placeholder = 'https://docs.google.com/spreadsheets/d/**************'; break;
@@ -3858,14 +3866,13 @@ kshf.Browser.prototype = {
           .each(function(summary){
             this.tipsy = new Tipsy(this, {
               gravity: 's', title: function(){
-                if(source_type==="GoogleSheet")
-                  return "The link to your Google Sheet";
-                if(source_type==="GoogleDrive")
-                  return "The link to *hosted* Google Drive folder";
-                if(source_type==="Dropbox")
-                  return "The link to your *Public* Dropbox folder";
-                if(source_type==="LocalFile")
-                  return "Select your CSV/TSV/JSON file or drag-and-drop here.";
+                switch(source_type){
+                  case "GoogleSheet": return "The link to your Google Sheet";
+                  case "GoogleDrive": return "The link to *hosted* Google Drive folder";
+                  case "Dropbox":     return "The link to your *Public* Dropbox folder";
+                  case "LocalFile":   return "Select your CSV/TSV/JSON file or drag-and-drop here.";
+                }
+                return "(Unknown source type)";
               }
             });
           })
@@ -3874,7 +3881,7 @@ kshf.Browser.prototype = {
 
         var gdocLink_ready = x.append("span").attr("class","gdocLink_ready fa").attr("ready",false);
 
-        var sheetInfo = this.DOM.infobox_source.append("div").attr("class","sheetInfo");
+        var sheetInfo = this.DOM.overlay_source.append("div").attr("class","sheetInfo");
 
         x = sheetInfo.append("div").attr("class","sheet_wrapper")
             x.append("div").attr("class","subheading tableHeader")
@@ -3926,7 +3933,7 @@ kshf.Browser.prototype = {
               .on("mouseleave",function(){ this.tipsy.hide(); });
         this.DOM.sheetColumn_ID = x.append("input").attr("class","sheetColumn_ID").attr("type","text").attr("placeholder","id");
 
-        var actionButton = this.DOM.infobox_source.append("div").attr("class","actionButton")
+        var actionButton = this.DOM.overlay_source.append("div").attr("class","actionButton")
           .text("Explore it with Keshif")
           .attr("disabled",true)
           .on("click",function(){
@@ -4082,13 +4089,8 @@ kshf.Browser.prototype = {
             if(v===undefined || v===null) continue;
             str+="<b>"+column+":</b> "+ v.toString()+"<br>";
         }
-        this.DOM.infobox_itemZoom_content.html(str);
-        this.panel_infobox.attr("show","itemZoom");
-//        this.DOM.infobox_itemZoom_content.html(item.data.toString());
-    },
-    /** -- deprecated */
-    showAttributes: function(v){
-      return this.enableAuthoring();
+        this.DOM.overlay_recordDetails_content.html(str);
+        this.panel_overlay.attr("show","recordDetails");
     },
     /** -- */
     enableAuthoring: function(v){
@@ -4138,13 +4140,9 @@ kshf.Browser.prototype = {
         }
     },
     /** -- */
-    showInfoBox: function(){
-      this.panel_infobox.attr("show","credit");
-    },
-    /** -- */
     loadSource: function(v){
       this.source = v;
-      this.panel_infobox.attr("show","loading");
+      this.panel_overlay.attr("show","loading");
       // Compability with older versions.. Used to specify "sheets" instead of "tables"
       if(this.source.sheets){
           this.source.tables = this.source.sheets;
@@ -4214,11 +4212,11 @@ kshf.Browser.prototype = {
                 return;
             }
             if(response.isError()) {
-                me.panel_infobox.select("div.status_text .info")
+                me.panel_overlay.select("div.status_text .info")
                     .text("Cannot load data");
-                me.panel_infobox.select("span.spinner").selectAll("span").remove();
-                me.panel_infobox.select("span.spinner").append('i').attr("class","fa fa-warning");
-                me.panel_infobox.select("div.status_text .dynamic")
+                me.panel_overlay.select("span.spinner").selectAll("span").remove();
+                me.panel_overlay.select("span.spinner").append('i').attr("class","fa fa-warning");
+                me.panel_overlay.select("div.status_text .dynamic")
                     .text("("+response.getMessage()+")");
                 return;
             }
@@ -4358,7 +4356,7 @@ kshf.Browser.prototype = {
     incrementLoadedTableCount: function(){
         var me=this;
         this.source.loadedTableCount++;
-        this.panel_infobox.select("div.status_text .dynamic")
+        this.panel_overlay.select("div.status_text .dynamic")
             .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
             // finish loading
         if(this.source.loadedTableCount===this.source.tables.length) {
@@ -4382,13 +4380,17 @@ kshf.Browser.prototype = {
       }
 
       var me=this;
-      this.panel_infobox.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
-      this.panel_infobox.select("div.status_text .dynamic").text("");
+      this.panel_overlay.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
+      this.panel_overlay.select("div.status_text .dynamic").text("");
       window.setTimeout(function(){ me._loadCharts(); }, 50);
     },
     /** -- */
     _loadCharts: function(){
         var me=this;
+
+        if(typeof Helpin !== 'undefined'){
+          helpin = new Helpin(this);
+        }
 
         if(this.options.loadedCb){
           if(typeof this.options.loadedCb === "string" && this.options.loadedCb.substr(0,8)==="function"){
@@ -4612,8 +4614,8 @@ kshf.Browser.prototype = {
 
         this.updateLayout_Height();
 
-        // hide infobox
-        this.panel_infobox.attr("show","none");
+        // hide overlay
+        this.panel_overlay.attr("show","none");
 
         this.reorderNuggetList();
 
@@ -4771,13 +4773,17 @@ kshf.Browser.prototype = {
       this.DOM.filterClearAll.attr("active", this.filters.some(function(filter){ return filter.isFiltered; }) );
     },
     /** Ratio mode is when glyphs scale to their max */
-    setMeasureAxisMode: function(how){
+    setScaleMode: function(how){
       this.ratioModeActive = how;
       this.DOM.root.attr("relativeMode",how?how:null);
       this.setPercentLabelMode(how);
       this.summaries.forEach(function(summary){ summary.refreshViz_All(); });
       this.refreshMeasureLabels();
       this.refreshTotalViz();
+    },
+    /** -- */
+    showScaleModeControls: function(how){
+      this.DOM.root.attr("showScaleModeControls",how?how:null);
     },
     /** -- */
     refreshMeasureLabels: function(t){
@@ -4944,7 +4950,7 @@ kshf.Browser.prototype = {
 
       if(this.measureFunc==="Avg"){
         // Remove ratio and percent modes
-        if(this.ratioModeActive){ this.setMeasureAxisMode(false); }
+        if(this.ratioModeActive){ this.setScaleMode(false); }
         if(this.percentModeActive){ this.setPercentLabelMode(false); }
       }
 
@@ -5740,46 +5746,44 @@ kshf.Summary_Base.prototype = {
             } else {
               me.setCollapsedAndLayout(!me.collapsed);
             }
-          })
-          ;
+          });
+
       header_display_control.append("span").attr("class","buttonSummaryExpand fa fa-arrows-alt")
-          .each(function(){
-              this.tipsy = new Tipsy(this, {
-                  gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-                  title: kshf.lang.cur.MaximizeSummary
-              })
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("mousedown", function(){
-              d3.event.preventDefault();
-              d3.event.stopPropagation();
-          })
-          .on("click",function(){
-              me.panel.collapseAllSummaries();
-              me.setCollapsedAndLayout(false); // uncollapse this one
-          })
-          ;
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.MaximizeSummary
+          });
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("mousedown", function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("click",function(){
+          this.tipsy.hide();
+          me.panel.collapseAllSummaries();
+          me.setCollapsedAndLayout(false); // uncollapse this one
+        });
+
       header_display_control.append("span").attr("class","buttonSummaryRemove fa fa-remove")
-          .each(function(){
-              this.tipsy = new Tipsy(this, {
-                  gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-                  title: kshf.lang.cur.RemoveSummary
-              })
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("mousedown", function(){
-              d3.event.preventDefault();
-              d3.event.stopPropagation();
-          })
-          .on("click",function(){
-              this.tipsy.hide();
-              me.removeFromPanel();
-              me.clearDOM();
-              me.browser.updateLayout();
-          })
-          ;
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.RemoveSummary
+          });
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("mousedown", function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("click",function(){
+          this.tipsy.hide();
+          me.removeFromPanel();
+          me.clearDOM();
+          me.browser.updateLayout();
+        });
 
       this.DOM.summaryName = this.DOM.headerGroup.append("span")
         .attr("class","summaryName editableTextContainer")
@@ -5800,7 +5804,7 @@ kshf.Summary_Base.prototype = {
             d3.event.preventDefault();
             d3.event.stopPropagation();
           })
-          .on("click", function(d,i){
+          .on("click", function(){
             this.tipsy.hide();
             me.summaryFilter.clearFilter();
           })
@@ -5946,9 +5950,9 @@ kshf.Summary_Base.prototype = {
       });
 
     // Two controls, one for each side of the scale
-    this.DOM.chartAxis_Measure.selectAll(".relativeModeControl").data(["1","2"])
+    this.DOM.chartAxis_Measure.selectAll(".scaleModeControl").data(["1","2"])
       .enter().append("span")
-        .attr("class",function(d){ return "relativeModeControl measureAxis_"+d+" relativeModeControl_"+d; })
+        .attr("class",function(d){ return "scaleModeControl measureAxis_"+d; })
         .each(function(d){
           var pos = pos2;
           if(pos2==='nw' && d==="2") pos = 'ne';
@@ -5962,14 +5966,14 @@ kshf.Summary_Base.prototype = {
         })
         .on("click",function(){ 
           this.tipsy.hide();
-          me.browser.setMeasureAxisMode(!me.browser.ratioModeActive);
+          me.browser.setScaleMode(!me.browser.ratioModeActive);
         })
         .on("mouseover",function(){
-          me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",true);
+          me.browser.showScaleModeControls(true);
           this.tipsy.show();
         })
         .on("mouseout",function(){
-          me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",false);
+          me.browser.showScaleModeControls(false);
           this.tipsy.hide();
         });
 
@@ -5995,8 +5999,6 @@ kshf.Summary_Base.prototype = {
       if(!this.collapsed) {
         this.refreshViz_All();
         this.refreshMeasureLabel();
-      } else {
-        this.DOM.headerGroup.select(".buttonSummaryExpand").style("display","none");
       }
     }
   },
@@ -7176,8 +7178,8 @@ var Summary_Categorical_functions = {
       this.updateChartScale_Measure();
       this.DOM.summaryCategorical.style("width",this.getWidth()+"px");
       this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".relativeModeControl")
-        .style("width",(this.getWidth()-this.panel.width_catMeasureLabel-this.getWidth_Label()-kshf.scrollWidth)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".scaleModeControl")
+        .style("width",(this.getWidth()-this.panel.width_catMeasureLabel-this.getWidth_Label()-kshf.scrollWidth+5)+"px");
       this.refreshViz_Axis();
     },
     /** -- */
@@ -7437,7 +7439,7 @@ var Summary_Categorical_functions = {
       if(this.configRowCount>0){
         var h=this.categoriesHeight;
         var hm=tickData_new.append("span").attr("class","text measureAxis_2").style("top",(-h-21)+"px");
-        this.DOM.chartAxis_Measure.selectAll(".relativeModeControl.measureAxis_2").style("top",(h-14)+"px");
+        this.DOM.chartAxis_Measure.selectAll(".scaleModeControl.measureAxis_2").style("top",(h-14)+"px");
       }
 
       this.DOM.chartAxis_Measure_TickGroup.selectAll(".text").html(function(d){ return me.browser.getMeasureLabel(d); });
@@ -7501,11 +7503,7 @@ var Summary_Categorical_functions = {
       this.updateCatIsVisible();
       this.cullAttribs();
 
-      this.DOM.headerGroup.select(".buttonSummaryExpand").style("display",
-        (this.panel.getNumOfOpenSummaries()<=1||this.areAllCatsInDisplay())?
-            "none":
-            "inline-block"
-      );
+      this.DOM.headerGroup.attr("allCatsInDisplay", this.areAllCatsInDisplay());
 
       this.updateChartScale_Measure();
 
@@ -7516,7 +7514,7 @@ var Summary_Categorical_functions = {
 
       this.DOM.chartAxis_Measure.selectAll(".longRefLine").style("top",(-h+1)+"px").style("height",(h-2)+"px");
       this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.text").style("top",(-h-21)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.relativeModeControl").style("top",(-h-14)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.scaleModeControl").style("top",(-h-14)+"px");
 
       if(this.viewType==='map'){
         this.DOM.catMap_Base.style("height",h+"px");
@@ -8250,7 +8248,7 @@ var Summary_Categorical_functions = {
       this.DOM.catMapColorScale.append("span").attr("class","scaleBound boundMax");
 
       this.DOM.catMapColorScale.append("span")
-        .attr("class","relativeModeControl fa fa-arrows-h")
+        .attr("class","scaleModeControl fa fa-arrows-h")
         .each(function(){
           this.tipsy = new Tipsy(this, {
             gravity: 'e', title: function(){
@@ -8260,14 +8258,14 @@ var Summary_Categorical_functions = {
         })
         .on("click",function(){ 
           this.tipsy.hide();
-          me.browser.setMeasureAxisMode(!me.browser.ratioModeActive);
+          me.browser.setScaleMode(!me.browser.ratioModeActive);
         })
         .on("mouseover",function(){
-          me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",true);
+          me.browser.showScaleModeControls(true);
           this.tipsy.show();
         })
         .on("mouseout",function(){
-          me.browser.DOM.root.selectAll(".relativeModeControl").attr("highlight",false);
+          me.browser.showScaleModeControls(false);
           this.tipsy.hide();
         });
 
@@ -10927,7 +10925,7 @@ var Summary_Clique_functions = {
 
     var buttonTop = (this.setListSummary.getHeight_Config()-18)/2;
     this.DOM.strengthControl = this.DOM.summaryControls.append("span").attr("class","strengthControl")
-      .on("click",function(){ me.browser.setMeasureAxisMode(me.browser.ratioModeActive!==true); })
+      .on("click",function(){ me.browser.setScaleMode(me.browser.ratioModeActive!==true); })
       .style("margin-top",buttonTop+"px");
 
     // ******************* STRENGTH CONFIG

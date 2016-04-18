@@ -176,7 +176,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[measurefunc="Avg"] .measurePercentControl {
   pointer-events: none !important;
 }
-.kshf[measurefunc="Avg"] .relativeModeControl {
+.kshf[measurefunc="Avg"] .scaleModeControl {
   pointer-events: none !important;
 }
 .kshf[measurefunc="Avg"] .measurePercentControl:after {
@@ -327,6 +327,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"] > .dropZone_panel {
   display: block;
 }
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .panel[hassummaries="false"].panel_side {
+  z-index: 300;
+}
 .kshf[showDropZone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
@@ -343,6 +346,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[showDropZone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
   display: block !important;
+}
+.kshf[showScaleModeControls] .scaleModeControl {
+  opacity: 1;
 }
 .kshf .unitName {
   margin-left: 1px;
@@ -1551,7 +1557,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_resize[dragging="true"] {
   border-right: 16px solid orangered;
 }
-.kshf .panel.panel_infobox {
+.kshf .panel.panel_overlay {
   position: absolute;
   height: 100%;
   width: 100%;
@@ -1563,39 +1569,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 500ms ease-in-out, opacity 500ms;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 500ms;
 }
-.kshf .panel.panel_infobox .infobox_close_button {
-  position: absolute;
-  right: 3px;
-  top: 3px;
-  background-color: #979797;
-  width: 20px;
-  height: 20px;
-  border-radius: 20px;
-  text-align: center;
-  cursor: pointer;
-  line-height: 20px;
-  color: white;
-}
-.kshf .panel.panel_infobox .infobox_close_button:hover {
-  background-color: #6f6f6f;
-}
-.kshf .panel.panel_infobox > .background {
+.kshf .panel.panel_overlay > .background {
   width: 100%;
   height: 100%;
   z-index: -2;
   background: #0b0b0b;
   opacity: 0.8;
   position: absolute;
-  -webkit-transition: all 0.5s;
-  -moz-transition: all 0.5s;
-  -o-transition: all 0.5s;
-  transition: all 0.5s;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
   border-radius: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_content {
+.kshf .panel.panel_overlay > .overlay_content {
   display: none;
   margin: auto;
-  box-shadow: 0px 0px 20px gray;
+  box-shadow: 0px 0px 20px black;
   border-radius: 15px;
   background-color: white;
   opacity: 1.0;
@@ -1605,7 +1595,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   overflow-y: auto;
   overflow-x: hidden;
 }
-.kshf .panel.panel_infobox > .infobox_source {
+.kshf .panel.panel_overlay > .overlay_content > .overlay_Close {
+  font-size: 1.2em;
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  cursor: pointer;
+  color: gray;
+}
+.kshf .panel.panel_overlay > .overlay_content > .overlay_Close:hover {
+  color: orangered;
+}
+.kshf .panel.panel_overlay > .overlay_source {
   background-color: white;
   width: 550px;
   height: 270px;
@@ -1615,20 +1616,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf .panel.panel_infobox > .infobox_source .fa-info-circle {
+.kshf .panel.panel_overlay > .overlay_source .fa-info-circle {
   color: gray;
   cursor: pointer;
   padding: 0px 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source .fa-info-circle:hover {
+.kshf .panel.panel_overlay > .overlay_source .fa-info-circle:hover {
   color: black;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sourceHeader {
+.kshf .panel.panel_overlay > .overlay_source > .sourceHeader {
   font-weight: 700;
   font-size: 1.3em;
   margin: 5px 5px 0px 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper {
   width: 530px;
   display: inline-block;
   margin: 5px;
@@ -1636,17 +1637,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px lightgray;
   border-radius: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper > .sourceOptions {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper > .sourceOptions {
   margin-bottom: 3px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .gdocLink {
   width: 350px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .fileLink {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .fileLink {
   width: 350px;
   display: none;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .sourceOption {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .sourceOption {
   display: inline-block;
   border: solid 1px lightgray;
   padding: 2px 4px;
@@ -1657,79 +1658,79 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   color: #a0a0a0;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .sourceOption:hover {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .sourceOption:hover {
   color: black;
   box-shadow: 0px 0px 1px gray;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready {
   opacity: 0;
   pointer-events: none;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready:before {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready:before {
   content: "\f057";
   color: red;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready[ready=true] {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready[ready=true] {
   pointer-events: all;
 }
-.kshf .panel.panel_infobox > .infobox_source > .source_wrapper .gdocLink_ready[ready=true]:before {
+.kshf .panel.panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready[ready=true]:before {
   content: "\f058";
   color: green;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleSheet"] .sourceOption[source_type="GoogleSheet"] {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="GoogleSheet"] .sourceOption[source_type="GoogleSheet"] {
   background-color: #EEE;
   color: black;
   cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleSheet"] .tableHeader:before {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="GoogleSheet"] .tableHeader:before {
   content: "Sheet";
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] .sourceOption[source_type="Dropbox"] {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="Dropbox"] .sourceOption[source_type="Dropbox"] {
   background-color: #EEE;
   color: black;
   cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] .tableHeader:before {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="Dropbox"] .tableHeader:before {
   content: "Cloud-File";
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="Dropbox"] > .sheetInfo .fileType_wrapper {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="Dropbox"] > .sheetInfo .fileType_wrapper {
   display: inline-block;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] .sourceOption[source_type="GoogleDrive"] {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="GoogleDrive"] .sourceOption[source_type="GoogleDrive"] {
   background-color: #EEE;
   color: black;
   cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] .tableHeader:before {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="GoogleDrive"] .tableHeader:before {
   content: "Cloud-File";
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="GoogleDrive"] > .sheetInfo .fileType_wrapper {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="GoogleDrive"] > .sheetInfo .fileType_wrapper {
   display: inline-block;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .sourceOption[source_type="LocalFile"] {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] .sourceOption[source_type="LocalFile"] {
   background-color: #EEE;
   color: black;
   cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .gdocLink {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] .gdocLink {
   display: none;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .fileLink {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] .fileLink {
   display: inline-block;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] .tableHeader:before {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] .tableHeader:before {
   content: "File";
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] > .sheetInfo .fileType_wrapper {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] > .sheetInfo .fileType_wrapper {
   display: inline-block;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] > .sheetInfo > .sheet_wrapper > .tableHeader {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] > .sheetInfo > .sheet_wrapper > .tableHeader {
   display: none;
 }
-.kshf .panel.panel_infobox > .infobox_source[selected_source_type="LocalFile"] > .sheetInfo > .sheetName_wrapper {
+.kshf .panel.panel_overlay > .overlay_source[selected_source_type="LocalFile"] > .sheetInfo > .sheetName_wrapper {
   display: none;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo {
   border: solid 1px lightgray;
   border-radius: 5px;
   text-align: left;
@@ -1737,47 +1738,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 0 auto;
   padding-bottom: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .tableHeader {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .tableHeader {
   font-weight: 700;
   text-align: center;
   border-bottom: solid 1px lightgray;
   margin-bottom: 2px;
   margin-top: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo > .sheet_wrapper {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo > .sheet_wrapper {
   margin: 0 auto;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_ID {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .sheetColumn_ID {
   width: 60px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .subheading {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .subheading {
   width: 110px;
   display: inline-block;
   text-align: right;
   cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .subheading:not(.tableHeader) {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .subheading:not(.tableHeader) {
   font-weight: 300;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Splitter {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .sheetColumn_Splitter {
   width: 60px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .tableName {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .tableName {
   width: 85px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_Seperator {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .sheetColumn_Seperator {
   width: 30px;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .fileType_wrapper {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .fileType_wrapper {
   display: none;
 }
-.kshf .panel.panel_infobox > .infobox_source > .sheetInfo .sheetColumn_sep_wrapper {
+.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .sheetColumn_sep_wrapper {
   display: none;
   font-size: 0.8em;
   margin-left: 5px;
   cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_source > .actionButton {
+.kshf .panel.panel_overlay > .overlay_source > .actionButton {
   display: inline-block;
   border: solid 1px gray;
   padding: 5px;
@@ -1786,17 +1787,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   font-weight: 300;
 }
-.kshf .panel.panel_infobox > .infobox_source > .actionButton[disabled=true] {
+.kshf .panel.panel_overlay > .overlay_source > .actionButton[disabled=true] {
   color: gray;
   border-color: lightgray;
   cursor: not-allowed;
 }
-.kshf .panel.panel_infobox > .infobox_source > .actionButton[disabled=false]:hover {
+.kshf .panel.panel_overlay > .overlay_source > .actionButton[disabled=false]:hover {
   cursor: pointer;
   box-shadow: 1px 1px 1px gray;
   background-color: #EEE;
 }
-.kshf .panel.panel_infobox > .infobox_loading {
+.kshf .panel.panel_overlay > .overlay_loading {
   width: 300px;
   height: 40px;
   position: absolute;
@@ -1805,7 +1806,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   bottom: 0;
   right: 0;
 }
-.kshf .panel.panel_infobox > .infobox_loading .spinner {
+.kshf .panel.panel_overlay > .overlay_loading .spinner {
   position: absolute;
   left: 20px;
   top: 3px;
@@ -1814,7 +1815,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   font-size: 10px;
 }
-.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_x {
+.kshf .panel.panel_overlay > .overlay_loading .spinner > .spinner_x {
   margin-right: 2px;
   background-color: #a3bdd1;
   height: 100%;
@@ -1825,41 +1826,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-animation: stretchdelay 1.2s infinite ease-in-out;
   animation: stretchdelay 1.2s infinite ease-in-out;
 }
-.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_2 {
+.kshf .panel.panel_overlay > .overlay_loading .spinner > .spinner_2 {
   -webkit-animation-delay: -1.1s;
   -moz-animation-delay: -1.1s;
   -o-animation-delay: -1.1s;
   animation-delay: -1.1s;
 }
-.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_3 {
+.kshf .panel.panel_overlay > .overlay_loading .spinner > .spinner_3 {
   -webkit-animation-delay: -1s;
   -moz-animation-delay: -1s;
   -o-animation-delay: -1s;
   animation-delay: -1s;
 }
-.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_4 {
+.kshf .panel.panel_overlay > .overlay_loading .spinner > .spinner_4 {
   -webkit-animation-delay: -0.9s;
   -moz-animation-delay: -0.9s;
   -o-animation-delay: -0.9s;
   animation-delay: -0.9s;
 }
-.kshf .panel.panel_infobox > .infobox_loading .spinner > .spinner_5 {
+.kshf .panel.panel_overlay > .overlay_loading .spinner > .spinner_5 {
   -webkit-animation-delay: -0.8s;
   -moz-animation-delay: -0.8s;
   -o-animation-delay: -0.8s;
   animation-delay: -0.8s;
 }
-.kshf .panel.panel_infobox > .infobox_loading div.status_text {
+.kshf .panel.panel_overlay > .overlay_loading div.status_text {
   margin: auto;
   position: absolute;
   top: 10px;
   left: 70px;
   height: 20px;
 }
-.kshf .panel.panel_infobox > .infobox_loading div.status_text > .status_text_sub {
+.kshf .panel.panel_overlay > .overlay_loading div.status_text > .status_text_sub {
   margin-left: 5px;
 }
-.kshf .panel.panel_infobox > .infobox_credit {
+.kshf .panel.panel_overlay > .overlay_credit {
   display: none;
   width: 390px;
   height: 200px;
@@ -1868,11 +1869,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0;
   bottom: 0;
   right: 0;
+  cursor: default;
 }
-.kshf .panel.panel_infobox > .infobox_credit div.all-the-credits {
-  margin: auto;
-}
-.kshf .panel.panel_infobox > .infobox_credit div.header {
+.kshf .panel.panel_overlay > .overlay_credit div.header {
   background-color: #d8ddd4;
   width: 100%;
   padding-top: 5px;
@@ -1880,44 +1879,88 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-right-radius: 15px;
   border-bottom: solid 2px #3c5e43;
 }
-.kshf .panel.panel_infobox > .infobox_credit .libName {
+.kshf .panel.panel_overlay > .overlay_credit .boxinbox {
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+.kshf .panel.panel_overlay > .overlay_credit .boxinbox a.myName {
+  display: inline-block;
+  font-size: 1.1em;
+  margin: 5px 10px;
+  color: black;
+  font-weight: 600;
+  font-style: normal;
+}
+.kshf .panel.panel_overlay > .overlay_credit .boxinbox a.advName {
+  color: black;
+}
+.kshf .panel.panel_overlay > .overlay_credit .libName {
   font-size: 1.3em;
   font-weight: 700;
   color: black;
   text-decoration: none;
 }
-.kshf .panel.panel_infobox > .infobox_credit .libName:hover {
+.kshf .panel.panel_overlay > .overlay_credit .libName:hover {
   color: orangered;
 }
-.kshf .panel.panel_infobox > .infobox_credit div.project_fund {
+.kshf .panel.panel_overlay > .overlay_credit .project_fund {
+  clear: both;
+  margin-top: 1em;
+  text-align: center;
   font-size: 0.8em;
   font-weight: 300;
+  white-space: nowrap;
 }
-.kshf .panel.panel_infobox > .infobox_itemZoom {
+.kshf .panel.panel_overlay > .overlay_recordDetails {
   position: relative;
   margin: 20px;
   padding: 10px 30px;
 }
-.kshf .panel.panel_infobox[show="loading"] > .infobox_loading {
-  display: inline-block;
-}
-.kshf .panel.panel_infobox[show="credit"] > .infobox_credit {
-  display: inline-block;
-}
-.kshf .panel.panel_infobox[show="source"] > .infobox_source {
-  display: inline-block;
-}
-.kshf .panel.panel_infobox[show="none"] {
+.kshf .panel.panel_overlay[show="none"] {
   pointer-events: none;
 }
-.kshf .panel.panel_infobox[show="none"] > .background {
+.kshf .panel.panel_overlay[show="none"] > .background {
   opacity: 0;
 }
-.kshf .panel.panel_infobox[show=itemZoom] > .infobox_itemZoom {
-  -webkit-animation: itemZoom 500ms forwards;
-  -moz-animation: itemZoom 500ms forwards;
-  -o-animation: itemZoom 500ms forwards;
-  animation: itemZoom 500ms forwards;
+.kshf .panel.panel_overlay[show="loading"] > .overlay_loading {
+  display: inline-block;
+}
+.kshf .panel.panel_overlay[show="credit"] > .overlay_credit {
+  display: inline-block;
+}
+.kshf .panel.panel_overlay[show="source"] > .overlay_source {
+  display: inline-block;
+}
+.kshf .panel.panel_overlay[show="help"] > .overlay_help {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.kshf .panel.panel_overlay[show="answer"] > .overlay_help {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.kshf .panel.panel_overlay[show="answer"] > .overlay_answer {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  pointer-events: none;
+}
+.kshf .panel.panel_overlay[show="answer"] > .background {
+  opacity: 0;
+}
+.kshf .panel.panel_overlay[show="recordDetails"] > .overlay_recordDetails {
+  -webkit-animation: recordDetails 500ms forwards;
+  -moz-animation: recordDetails 500ms forwards;
+  -o-animation: recordDetails 500ms forwards;
+  animation: recordDetails 500ms forwards;
   -webkit-animation-iteration-count: 1;
   -moz-animation-iteration-count: 1;
   -o-animation-iteration-count: 1;
@@ -2040,7 +2083,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: absolute;
 }
-.kshf .chartAxis_Measure > .relativeModeControl {
+.kshf .scaleModeControl {
   position: absolute;
   left: 0px;
   top: 0px;
@@ -2054,9 +2097,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: opacity 250ms linear;
   -o-transition: opacity 250ms linear;
   transition: opacity 250ms linear;
-}
-.kshf .chartAxis_Measure > .relativeModeControl[highlight="true"] {
-  opacity: 1;
 }
 .kshf .leaflet-tile-pane {
   -webkit-transition: opacity 250ms linear;
@@ -2110,8 +2150,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 0 auto;
   height: 20px;
   /*white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;*/
+        overflow: hidden;
+        text-overflow: ellipsis;*/
 }
 .kshf .headerGroup .summaryName > .summaryName_text {
   display: inline-block;
@@ -2221,6 +2261,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 14px;
   width: 13px;
   height: 13px;
+  -webkit-transition: color 250ms linear, opacity 100ms linear ;
+  -moz-transition: color 250ms linear, opacity 100ms linear ;
+  -o-transition: color 250ms linear, opacity 100ms linear ;
+  transition: color 250ms linear, opacity 100ms linear ;
 }
 .kshf .headerGroup > .header_display_control > .fa:hover {
   color: orangered;
@@ -3409,15 +3453,15 @@ top:calc(50% - 8px);
   left: -24px;
   text-align: right;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .scaleModeControl {
   width: 25px;
   height: calc(100% - 12px);
   top: 0px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.measureAxis_1 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .scaleModeControl.measureAxis_1 {
   left: -25px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .relativeModeControl.measureAxis_2 {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .scaleModeControl.measureAxis_2 {
   right: -25px;
   left: auto;
 }
@@ -3796,6 +3840,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[collapsed=false][summary_type='categorical'][viewType='list']:hover .summaryConfigControl {
   display: inline-block !important;
 }
+.kshf .kshfSummary[collapsed=false] > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand {
+  display: inline-block !important;
+}
 .kshf .kshfSummary[showConfig=true] .summaryConfig {
   top: 22px;
   opacity: 1;
@@ -3869,9 +3916,8 @@ top:calc(50% - 8px);
   right: 0px;
   top: 1px;
 }
-.kshf .belowCatChart > .chartAxis_Measure > .relativeModeControl {
-  height: 12px;
-  margin-left: 2px;
+.kshf .belowCatChart > .chartAxis_Measure > .scaleModeControl {
+  height: 13px;
 }
 .kshf .belowCatChart > .chartAxis_Measure > .highlightedMeasureValue {
   position: absolute;
@@ -3928,7 +3974,7 @@ top:calc(50% - 8px);
   left: -35px;
   top: -1px;
 }
-.kshf .belowCatChart > .catMapColorScale > .relativeModeControl {
+.kshf .belowCatChart > .catMapColorScale > .scaleModeControl {
   position: absolute;
   right: -57px;
   top: -1px;
@@ -3943,7 +3989,7 @@ top:calc(50% - 8px);
   -o-transition: background-color 250ms linear;
   transition: background-color 250ms linear;
 }
-.kshf .belowCatChart > .catMapColorScale > .relativeModeControl[highlight="true"] {
+.kshf .belowCatChart > .catMapColorScale > .scaleModeControl[highlight="true"] {
   border-color: #B7CAAF;
   background-color: #E0E4D7;
   color: black;
@@ -4898,22 +4944,6 @@ top:calc(50% - 8px);
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .recordDisplayHeader > .removeSortOption_wrapper {
-  display: none;
-}
-.kshf .recordDisplayHeader .removeSortOption {
-  cursor: pointer;
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-  color: gray;
-}
-.kshf .recordDisplayHeader .removeSortOption:before {
-  content: "\f00d";
-}
-.kshf .recordDisplayHeader .removeSortOption:hover {
-  color: black;
-}
 .kshf .recordDisplayHeader > .header_listSortColumn {
   display: inline-block;
   -webkit-align-self: flex-end;
@@ -4946,7 +4976,9 @@ top:calc(50% - 8px);
   -ms-flex-item-align: end;
   align-self: flex-end;
   width: 17px;
-  font-size: 0.8em;
+  height: 16px;
+  padding-top: 3px;
+  font-size: 0.9em;
   margin-bottom: 2px;
   vertical-align: bottom;
   -webkit-transition: opacity 250ms linear;
@@ -5113,40 +5145,6 @@ top:calc(50% - 8px);
   margin-right: 2px;
   vertical-align: top;
 }
-.kshf .boxinbox {
-  margin-top: 10px;
-}
-.kshf .boxinbox:hover {
-  background-color: #EFEFEF;
-}
-.kshf .boxinbox ul {
-  margin: 5px 0px 5px 0px;
-}
-.kshf .boxinbox.features {
-  width: 500px;
-  text-align: left;
-  border: solid 0px lightgray;
-  box-shadow: 0px 0px 0px gray;
-}
-.kshf .boxinbox.features .credits_features {
-  margin-top: 4px;
-  padding-left: 20px;
-}
-.kshf .boxinbox.project_credits {
-  font-size: 0.9em;
-  cursor: default;
-}
-.kshf .boxinbox.project_credits a.myName {
-  display: inline-block;
-  font-size: 1.1em;
-  margin: 5px 10px;
-  color: black;
-  font-weight: 600;
-  font-style: normal;
-}
-.kshf .boxinbox.project_credits a.advName {
-  color: black;
-}
 .kshf .leaflet-container {
   font: inherit;
 }
@@ -5303,7 +5301,7 @@ top:calc(50% - 8px);
   font-size: 1.2em;
   background-color: #000;
   color: #FFF;
-  max-width: 200px;
+  max-width: 400px;
   text-align: center;
   font-weight: 300px;
   border-radius: 3px;
