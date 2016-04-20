@@ -239,7 +239,7 @@ $(document).ready(function() {
       },
       recordView: function(){ 
         if(this[columns[11]]===null) return "-";
-        return "<blockquote>" + this[columns[11]] + "</blockquote>";
+        return this[columns[11]];
       }
     }
   });
@@ -247,7 +247,7 @@ $(document).ready(function() {
 
 </script>
 <style id="kshfStyle">
-blockquote {
+.content {
   /*background: #f9f9f9;
   border-left: 10px solid #ccc;
   margin: 1.5em 10px;
@@ -262,7 +262,7 @@ blockquote {
   font-weight: 300;
   text-align: justify;
 }
-blockquote:before {
+.content:before {
   color: #ccc;
   content: open-quote;
   font-size: 4em;
@@ -271,13 +271,13 @@ blockquote:before {
   vertical-align: -0.5em;
   line-height: 0px;
 }
-blockquote:hover:before {
+.content:hover:before {
     color: gray;
 }
-blockquote:hover:after {
+.content:hover:after {
     color: gray;
 }
-blockquote:after {
+.content:after {
   color: #ccc;
   content: close-quote;
   font-size: 4em;
@@ -286,7 +286,7 @@ blockquote:after {
   vertical-align: -0.5em;
   line-height: 0px;
 }
-.kshfRecord[details=true] blockquote{
+.kshfRecord[details=true] .content{
   overflow: visible;
   white-space: normal;
 }
@@ -297,6 +297,7 @@ blockquote:after {
 	</head>
   <body>
     <div class="contents">
+      <div id="demo_PageTitle">Online Collaboration Survey 2014, by Nature</div>
       <div id="demo_Browser"></div>
       </div>
     
