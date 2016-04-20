@@ -42,6 +42,16 @@ function getMaterial(){
 }
 
 google.setOnLoadCallback( function(){
+  var Districts = {
+    1: "New Orleans",
+    2: "Houma",
+    3: "Lafayette",
+    4: "Lake Charles",
+    5: "Lake Jackson",
+    6: "Corpus Christi",
+    7: "Santa Mariia",
+    8: "Camarillo",
+  };
 	browser = new kshf.Browser({
     domID: "#demo_Browser",
     itemName: "Oil Spills",
@@ -49,7 +59,7 @@ google.setOnLoadCallback( function(){
     leftPanelLabelWidth: 150,
     source: {
       gdocId: '0Ai6LdDWgaqgNdHhGOTFRelhlaU5zSjZOVXpOdnlFY3c',
-      tables: ["Spills", "Notes", "Districts"]
+      tables: "Spills"
     },
     summaries: [
       { name: "Size" },
@@ -61,12 +71,21 @@ google.setOnLoadCallback( function(){
       { name: "Source", value: getSource },
       { name: "Material", value: getMaterial },
       { name: "Company", panel: 'right' },
-      { name: "District", catTableName: "Districts", catLabel: "Name", panel: 'left' },
+      { name: "District", catLabel: Districts, panel: 'left' },
       { name: "Water Depth", panel: 'right', value: 'Water Depth (feet)', intervalScale: 'log', unitName: 'ft' },
       { name: "During Activity", catSplit: /\/\s*/, collapsed: false },
       { name: "Cause", catSplit: ", ", panel: 'right' },
-      { name: "Other Properties", value: "Notes", catSplit: /-|,\s*/,
-        catTableName: "Notes", catLabel: "name", panel: 'right', collapsed: true,  },
+      { name: "Other Properties", value: "Notes", catSplit: /-|,\s*/, panel: 'right', collapsed: true,
+        catLabel: {
+          1: "Caused by blowout/losso fo well control",
+          2: "Contacted land",
+          3: "Caused by hurricanes",
+          4: "Seepage from hurricane-damaged strutures awaiting/undergoing abandonment",
+          5: "Explosion/Fire",
+          6: "Collision",
+          7: "With Injury",
+          8: "With Fatality",
+        } },
       { name: "Date", panel: 'bottom', value: getDate }
     ],
     recordDisplay: {
@@ -76,11 +95,9 @@ google.setOnLoadCallback( function(){
         var j;
         var str="";
         // location
-        var district=kshf.dt_id.Districts[this.District];
-        if(district) district = district.data.Name;
         str+="<div class=\"iteminfo iteminfo_1\"><b>Company:</b> "+this.Company+"</div>";
         str+="<div class=\"iteminfo iteminfo_1\"><b>Location:</b>"
-            +" <u>District</u>:"+district
+            +" <u>District</u>:"+Districts[this.District]
             +" - <u>Area Block</u>:"+this["Area Block"]
             +" - <u>Water Depth</u>:"+this["Water Depth (feet)"]+"feet"
             +" - <u>Distance to Shore</u>:"+this["Distance to Shore (miles)"]+"miles"
