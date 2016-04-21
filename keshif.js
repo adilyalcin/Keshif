@@ -69,7 +69,19 @@ var kshf = {
       // 'http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg'
       // 'http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg'
       tileTemplate: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-      attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', 
+      config: {
+        maxBoundsViscosity: 1, 
+        boxZoom: false,
+        touchZoom: false,
+        doubleClickZoom: false,
+        /*continuousWorld: true, crs: L.CRS.EPSG3857 */
+      }
+      tileConfig: { 
+        attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>',
+        subdomains: 'abcd',
+        maxZoom: 19,
+        //noWrap: true
+      }
     },
     browsers: [],
     dt: {},
@@ -1328,25 +1340,8 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
 
-      this.leafletRecordTileLayer = new L.TileLayer(
-        kshf.map.tileTemplate,
-        { 
-          attribution: kshf.map.attribution,
-          subdomains: 'abcd',
-          maxZoom: 19,
-          //noWrap: true
-        });
-
-      this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], 
-          {
-            maxBoundsViscosity: 1, 
-            boxZoom: false,
-            touchZoom: false,
-            doubleClickZoom: false,
-            /*continuousWorld: true, crs: L.CRS.EPSG3857 */
-          }
-        )
-        .addLayer(this.leafletRecordTileLayer)
+      this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], kshf.map.config )
+        .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
         .on("viewreset",function(){ 
           me.map_projectRecords();
         })
@@ -8321,22 +8316,8 @@ var Summary_Categorical_functions = {
       }
 
       // See http://leaflet-extras.github.io/leaflet-providers/preview/ for alternative layers
-      this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0],
-        {
-          maxBoundsViscosity: 1, 
-          boxZoom: false,
-          touchZoom: false,
-          doubleClickZoom: false,
-          /*continuousWorld: true, crs: L.CRS.EPSG3857 */
-        } )
-        .addLayer(new L.TileLayer(
-          kshf.map.tileTemplate,
-          { 
-            attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', 
-            subdomains: 'abcd',
-            maxZoom: 19,
-            //noWrap: true
-          }))
+      this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0], kshf.map.config )
+        .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig ) )
         .on("viewreset",function(){ 
           me.map_projectCategories()
         })
