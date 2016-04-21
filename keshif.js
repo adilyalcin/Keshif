@@ -101,7 +101,7 @@ var kshf = {
         ScrollToTop: "Top",
         Absolute: "Absolute",
         Percent: "Percent",
-        Relative: "Relative",
+        PartOf: "Part-Of",
         Width: "Length",
         DragToFilter: "Drag to filter",
         And: "And",
@@ -142,7 +142,7 @@ var kshf = {
         ScrollToTop: "Yukarı",
         Absolute: "Net",
         Percent: "Yüzde",
-        Relative: "Görece",
+        PartOf: "Görece",
         Width: "Genişlik",
         DragToFilter: "Sürükle ve filtre",
         And: "Ve",
@@ -182,7 +182,7 @@ var kshf = {
         ScrollToTop: "Début",
         Absolute: "Absolue",
         Percent: "Pourcentage",
-        Relative: "Relative",
+        PartOf: "Part-Of",
         Width: "Largeur",
         DragToFilter: "??",
         And: "??",
@@ -191,6 +191,43 @@ var kshf = {
         EditFormula: "Edit Formula",
         NoData: "(no data)",
         ZoomToFit: "Zoom to fit"
+      },
+      // translation by github@nelsonmau
+      it: {
+        ModifyBrowser: "Modifica il browser",
+        OpenDataSource: "Fonte Open Data",
+        ShowInfoCredits: "Mostra info e crediti",
+        ShowFullscreen: "Schermo intero",
+        RemoveFilter: "Rimuovi il filtro",
+        RemoveAllFilters: "Rimuovi tutti i filtri",
+        MinimizeSummary: "Chiudi il sommario",
+        OpenSummary: "Apri il sommario",
+        MaximizeSummary: "Massimizza il sommario",
+        RemoveSummary: "Rimuovi il sommario",
+        ReverseOrder: "Ordine inverso",
+        Reorder: "Riordina",
+        ShowMoreInfo: "Mostra più informazioni",
+        Percentiles: "Percentuali",
+        LockToCompare: "Blocca per confrontare",
+        Unlock: "Sblocca",
+        Search: "Cerca",
+        CreatingBrowser: "Browser in preparazione - Keshif",
+        Rows: "Righe",
+        More: "Di più",
+        LoadingData: "Carimento delle fonti dati",
+        ShowAll: "Mostra tutto",
+        ScrollToTop: "Torna su",
+        Absolute: "Assoluto",
+        Percent: "Percentuale",
+        Relative: "Relativo",
+        Width: "Larghezza",
+        DragToFilter: "Trascina per filtrare",
+        And: "E",
+        Or: "O",
+        Not: "No",
+        EditTitle: "Modifica",
+        ResizeBrowser: "Ridimensiona il browser",
+        RemoveRecords: "Rimuovi la visualizzazione dei record"
       },
       cur: null // Will be set to en if not defined before a browser is loaded
     },
@@ -639,7 +676,7 @@ kshf.Record.prototype = {
     this._aggrCache.forEach(function(aggr){
       if(aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.setAttribute("selection","onRecord");
       if(aggr.DOM.matrixRow) aggr.DOM.matrixRow.setAttribute("selection","onRecord");
-      if(aggr.summary) aggr.summary.setRecordValue(this);
+      if(aggr.summary && aggr.summary.setRecordValue) aggr.summary.setRecordValue(this);
     },this);
   },
   /** -- */
@@ -648,7 +685,7 @@ kshf.Record.prototype = {
     // summaries that this item appears in
     this._aggrCache.forEach(function(aggr){
       aggr.unselectAggregate();
-      if(aggr.summary) aggr.summary.hideRecordValue();
+      if(aggr.summary && aggr.summary.hideRecordValue ) aggr.summary.hideRecordValue();
     },this);
   },
   /** -- */
@@ -663,8 +700,8 @@ kshf.Record.prototype = {
     }
     this._aggrCache.forEach(function(aggr){ 
       if(this.measure_Self===null ||this.measure_Self===0) return;
-      aggr._measure.Highlighted += this.measure_Self;
-      aggr.recCnt.Highlighted++;
+      aggr._measure.Highlight += this.measure_Self;
+      aggr.recCnt.Highlight++;
     }, this);
     this.highlighted = true;
   },
@@ -674,8 +711,8 @@ kshf.Record.prototype = {
     if(this.DOM.record) this.DOM.record.removeAttribute("selection");
     if(distribute) this._aggrCache.forEach(function(aggr){ 
       if(this.measure_Self===null || this.measure_Self===0) return;
-      aggr._measure.Highlighted -= this.measure_Self; 
-      aggr.recCnt.Highlighted--;
+      aggr._measure.Highlight -= this.measure_Self; 
+      aggr.recCnt.Highlight--;
     }, this);
     this.highlighted = false;
   },
@@ -713,21 +750,21 @@ kshf.Aggregate.prototype = {
     this.records = [];
 
     this._measure = {
-      Active: 0,
-      Highlighted: 0,
       Total: 0,
-      Compared_A: 0,
-      Compared_B: 0,
-      Compared_C: 0
+      Active: 0,
+      Highlight: 0,
+      Compare_A: 0,
+      Compare_B: 0,
+      Compare_C: 0
     }
 
     this.recCnt = {
-      Active: 0,
-      Highlighted: 0,
       Total: 0,
-      Compared_A: 0,
-      Compared_B: 0,
-      Compared_C: 0
+      Active: 0,
+      Highlight: 0,
+      Compare_A: 0,
+      Compare_B: 0,
+      Compare_C: 0
     }
 
     // the main data within item
@@ -772,20 +809,20 @@ kshf.Aggregate.prototype = {
   /** -- */
   resetAggregateMeasures: function(){
     this._measure = {
-      Active: 0,
-      Highlighted: 0,
       Total: 0,
-      Compared_A: 0,
-      Compared_B: 0,
-      Compared_C: 0
+      Active: 0,
+      Highlight: 0,
+      Compare_A: 0,
+      Compare_B: 0,
+      Compare_C: 0
     };
     this.recCnt = {
-      Active: 0,
-      Highlighted: 0,
       Total: 0,
-      Compared_A: 0,
-      Compared_B: 0,
-      Compared_C: 0
+      Active: 0,
+      Highlight: 0,
+      Compare_A: 0,
+      Compare_B: 0,
+      Compare_C: 0
     };
     this.records.forEach(function(record){
       if(record.measure_Self===null || record.measure_Self===0) return;
@@ -799,15 +836,15 @@ kshf.Aggregate.prototype = {
   },
   /** -- */
   ratioHighlightToTotal: function(){
-    return this._measure.Highlighted / this._measure.Total;
+    return this._measure.Highlight / this._measure.Total;
   },
   /** -- */
   ratioHighlightToActive: function(){
-    return this._measure.Highlighted / this._measure.Active;
+    return this._measure.Highlight / this._measure.Active;
   },
   /** -- */
   ratioCompareToActive: function(cT){
-    return this._measure["Compared_"+cT] / this._measure.Active;
+    return this._measure["Compare_"+cT] / this._measure.Active;
   },
 
   /** -- */
@@ -900,23 +937,113 @@ for(var index in Aggregate_EmptyRecords_functions){
   kshf.Aggregate_EmptyRecords.prototype[index] = Aggregate_EmptyRecords_functions[index];
 }
 
+kshf.BreadCrumb = function(browser, selectType){
+  this.browser = browser;
+  this.DOM = null;
+  this.selectType = selectType;
+};
+kshf.BreadCrumb.prototype = {
+  isCompare: function(){
+    return this.selectType.substr(0,7)==="Compare";
+  },
+  showCrumb: function(summary){
+    if(this.DOM===null) {
+      this._insertDOM_crumb(summary);
+    }
+    this.DOM.select(".crumbHeader").html(summary.summaryName);
+    var details;
+    if(this.selectType==="Filter"){
+      details = summary.summaryFilter.filterView_Detail.call(summary.summaryFilter);
+    } else {
+      var selectedAggr = this.browser.selectedAggr[this.selectType];
+      if(selectedAggr instanceof kshf.Aggregate_EmptyRecords){
+        details = kshf.lang.cur.NoData;
+      } else if(summary.printAggrSelection){
+        details = summary.printAggrSelection(selectedAggr);
+      } else {
+        return;
+      }
+    }
+    if(details) this.DOM.select(".crumbDetails").html(details.replace(/<br>/g," "));
+  },
+  removeCrumb: function(){
+    if(this.DOM === null) return;
+    var me=this;
+    this.DOM.attr("ready",false);
+    setTimeout(function(){ 
+      if(me.DOM===null) return;
+      me.DOM[0][0].parentNode.removeChild(me.DOM[0][0]);
+      me.DOM = null;
+    }, 350);
+  },
+  _insertDOM_crumb: function(summary){
+    var me=this;
+    this.DOM = this.browser.DOM.breadcrumbs.append("span")
+      .attr("class","crumb crumbMode_"+this.selectType)
+      .each(function(){
+        if(me.selectType!=="Highlight"){
+          var l=this.parentNode.childNodes.length;
+          if(l>1){
+            this.parentNode.insertBefore(this, this.parentNode.childNodes[l-2] );
+          }
+        }
+        this.tipsy = new Tipsy(this, {
+          gravity: 'n',
+          title: function(){ 
+            switch(me.selectType){
+              case "Filter":    return kshf.lang.cur.RemoveFilter;
+              case "Highlight": return "Remove Highlight";
+              default:          return kshf.lang.cur.Unlock; // Compare
+            }
+          }
+        });
+      })
+      .on("mouseenter",function(){
+        this.tipsy.show();
+        if(me.isCompare()) me.browser.refreshMeasureLabels(me.selectType);
+      })
+      .on("mouseleave",function(){
+        this.tipsy.hide();
+        if(me.isCompare()) me.browser.refreshMeasureLabels();
+      })
+      .on("click",function(){
+        this.tipsy.hide();
+        if(me.selectType==="Filter") {
+          summary.summaryFilter.clearFilter();
+        } else if(me.selectType==="Highlight") {
+          me.browser.clearSelect_Highlight(true);
+        } else {
+          me.browser.clearSelect_Compare(me.selectType.substr(8), true);
+          me.browser.refreshMeasureLabels();
+        }
+      });
+
+    this.DOM.append("span").attr("class","clearCrumbButton").append("span").attr("class","fa");
+    var y = this.DOM.append("span").attr("class","crumbText");
+    y.append("span").attr("class","crumbHeader");
+    y.append("span").attr("class","crumbDetails");
+    // animate appear
+    window.getComputedStyle(this.DOM[0][0]).opacity; // force redraw
+    this.DOM.attr("ready",true);
+  },
+};
+
 
 kshf.Filter = function(filterOptions){
   this.isFiltered = false;
 
   this.browser = filterOptions.browser;
-  this.filterTitle = filterOptions.title;
+  this.summary = filterOptions.summary;
 
   this.onClear = filterOptions.onClear;
   this.onFilter = filterOptions.onFilter;
-  this.hideCrumb = filterOptions.hideCrumb || false;
   this.filterView_Detail = filterOptions.filterView_Detail; // must be a function
 
   this.filterID = this.browser.filterCount++;
 
   this.browser.records.forEach(function(record){ record.setFilterCache(this.filterID,true); },this);
   this.how = "All";
-  this.filterCrumb = null;
+  this.filterCrumb = new kshf.BreadCrumb(this.browser,"Filter");
 };
 kshf.Filter.prototype = {
   addFilter: function(){
@@ -931,18 +1058,16 @@ kshf.Filter.prototype = {
     if(this.how==="MoreResults") how = 1;
 
     this.browser.records.forEach(function(record){
-      // if you will show LESS results and record is not wanted, skip
-      // if you will show MORE results and record is wanted, skip
-      if(!(how<0 && !record.isWanted) && !(how>0 && record.isWanted)){
-        stateChanged = record.updateWanted() || stateChanged;
-      }
+      if(how<0 && !record.isWanted) return;
+      if(how>0 &&  record.isWanted) return;
+      stateChanged = record.updateWanted() || stateChanged;
     },this);
 
-    this._refreshFilterSummary();
+    this.filterCrumb.showCrumb(this.summary);
 
     this.browser.update_Records_Wanted_Count();
     this.browser.refresh_filterClearAll();
-    this.browser.clearSelect_Highlight();
+    this.browser.clearSelect_Highlight(true);
     if(stateChanged) this.browser.updateAfterFilter();
   },
   /** -- */
@@ -961,31 +1086,12 @@ kshf.Filter.prototype = {
       });
     }
 
-    this._refreshFilterSummary();
+    this.filterCrumb.removeCrumb();
 
     if(forceUpdate!==false){
       this.browser.update_Records_Wanted_Count();
       this.browser.refresh_filterClearAll();
       this.browser.updateAfterFilter();
-    }
-  },
-
-  /** Don't call this directly */
-  _refreshFilterSummary: function(){
-    if(this.hideCrumb===true) return;
-    if(!this.isFiltered){
-      var root = this.filterCrumb;
-      if(root===null || root===undefined) return;
-      root.attr("ready",false);
-      setTimeout(function(){ root[0][0].parentNode.removeChild(root[0][0]); }, 350);
-      this.filterCrumb = null;
-    } else {
-      // insert DOM
-      if(this.filterCrumb===null) {
-        this.filterCrumb = this.browser.insertDOM_crumb("Filtered",this);
-      }
-      this.filterCrumb.select(".crumbHeader").html(this.filterTitle());
-      this.filterCrumb.select(".filterDetails").html(this.filterView_Detail.call(this).replace(/<br>/g," "));
     }
   },
 };
@@ -1018,17 +1124,10 @@ kshf.RecordDisplay = function(kshf_, config){
       config.linkBy = [];
     }
 
-    this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off practically)
+    this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off)
 
-    this.textSearchSummary = null; // no text search summary by default
+    this.textSearchSummary = null;
     this.recordViewSummary = null;
-
-    this.spatialAggr_Highlight = new kshf.Aggregate();
-    this.spatialAggr_Compare   = new kshf.Aggregate();
-    this.spatialAggr_Highlight.init({});
-    this.spatialAggr_Compare  .init({});
-    this.spatialAggr_Highlight.summary = this;
-    this.spatialAggr_Compare  .summary = this;
 
     /***********
      * SORTING OPTIONS
@@ -1093,7 +1192,7 @@ kshf.RecordDisplay = function(kshf_, config){
         (typeof config.recordView === 'string') ?
           this.browser.summaries_by_name[config.recordView] :
           // function
-          this.browser.createSummary('_RecordView_',config.recordView,'categorical')
+          this.browser.createSummary('Records',config.recordView,'categorical')
       );
     }
 
@@ -1218,29 +1317,65 @@ kshf.RecordDisplay.prototype = {
 
       this.setSpatialFilter();
 
+      function updateRectangle(bounds){
+        var north_west = me.leafletRecordMap.latLngToLayerPoint(bounds.getNorthWest());
+        var south_east = me.leafletRecordMap.latLngToLayerPoint(bounds.getSouthEast());
+        this.style.left = (north_west.x)+"px";
+        this.style.top = (north_west.y)+"px";
+        this.style.height = Math.abs(south_east.y-north_west.y)+"px";
+        this.style.width  = Math.abs(south_east.x-north_west.x)+"px";
+      };
+
       this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
 
       this.leafletRecordTileLayer = new L.TileLayer(
         kshf.map.tileTemplate,
         { 
           attribution: kshf.map.attribution,
-          attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>', 
           subdomains: 'abcd',
           maxZoom: 19,
           //noWrap: true
         });
 
       this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], 
-          { maxBoundsViscosity: 1, /*continuousWorld: true, crs: L.CRS.EPSG3857 */ }
+          {
+            maxBoundsViscosity: 1, 
+            boxZoom: false,
+            touchZoom: false,
+            doubleClickZoom: false,
+            /*continuousWorld: true, crs: L.CRS.EPSG3857 */
+          }
         )
         .addLayer(this.leafletRecordTileLayer)
-        .on("viewreset",function(){ me.map_projectRecords(); })
-        .on("movestart",function(){ me.DOM.recordGroup.style("display","none"); })
+        .on("viewreset",function(){ 
+          me.map_projectRecords();
+        })
+        .on("movestart",function(){ 
+          me.DOM.recordGroup.style("display","none");
+          me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display","none");
+        })
         .on("move",function(){
           // console.log("MapZoom: "+me.leafletRecordMap.getZoom());
         })
         .on("moveend",function(){
           me.DOM.recordGroup.style("display","block");
+          me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display",null);
+          me.refreshViz_Compare_All();
+          me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
+            .each(function(d){
+              var bounds = me.spatialFilter.bounds;
+              if(bounds) updateRectangle.call(this,bounds);
+            });
+          me.DOM.recordMap_Base.select(".spatialQueryBox_Highlight")
+            .each(function(d){
+              var bounds = me.browser.flexAggr_Highlight.bounds;
+              if(bounds) updateRectangle.call(this,bounds);
+            });
+          me.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
+            .each(function(d){
+              var bounds = me.browser['flexAggr_'+d].bounds;
+              if(bounds) updateRectangle.call(this,bounds);
+            });
           me.map_projectRecords();
         });
 
@@ -1258,96 +1393,104 @@ kshf.RecordDisplay.prototype = {
       this.initRecordGeoFeat();
       this.initRecordGeoBound();
 
-      this.drawingFilter = false;
+      this.DOM.recordMap_Base.select(".leaflet-overlay-pane").selectAll(".spatialQueryBox")
+        .data(["Filter","Highlight","Compare_A","Compare_B","Compare_C"])
+        .enter()
+          .append("div").attr("class", function(d){ return "spatialQueryBox spatialQueryBox_"+d; })
+            .append("div").attr("class","clearSelection fa fa-times-circle")
+              .each(function(d){ 
+                this.tipsy = new Tipsy(this, {gravity: 'se', 
+                  title: (d==="Filter") ? kshf.lang.cur.RemoveFilter : kshf.lang.cur.Unlock
+                });
+              })
+              .on("mouseover",function(){ this.tipsy.show(); })
+              .on("mouseout", function(){ this.tipsy.hide(); })
+              .on("click",function(d){
+                this.tipsy.hide();
+                if(d==="Filter"){
+                  me.spatialFilter.clearFilter();
+                } else if(d!=="Highlight"){
+                  me.browser.clearSelect_Compare(d.substr(8), true);
+                }
+              });
+
+      this.drawSelect = false;
       this.DOM.recordMap_Base.select(".leaflet-tile-pane")
         .on("mousedown",function(){ 
           if(me.mapMouseControl!=="draw") return;
-          me.drawingFilter = true;
-          me.DOM.recordMap_Base.attr("drawing",true);
-          me.DOM.recordMap_Base.attr("drawingFilter",true);
+          if(me.drawSelect==="Highlight") return;
           var mousePos = d3.mouse(this);  
           var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(mousePos[0], mousePos[1]));
-          me.adsajasid = curLatLong;
+          me.DOM.recordMap_Base.attr("drawSelect","Filter");
+          me.drawingStartPoint = curLatLong;
+          me.drawSelect = "Filter";
           d3.event.stopPropagation();
           d3.event.preventDefault();
         })
         .on("mouseup",function(){ 
           if(me.mapMouseControl!=="draw") return;
-          if(!me.drawingFilter) return;
-          me.DOM.recordMap_Base.attr("drawing",null);
-          me.DOM.recordMap_Base.attr("drawingFilter",null);
-          me.drawingFilter = false;
-          me.spatialFilter.addFilter();
           d3.event.stopPropagation();
           d3.event.preventDefault();
+          me.DOM.recordMap_Base.attr("drawSelect",null);
+          if(me.drawSelect==="Filter"){
+            me.spatialFilter.addFilter();
+          } else if(me.drawSelect==="Highlight"){
+            var bounds = me.browser.flexAggr_Highlight.bounds;
+            var cT = me.browser.setSelect_Compare(false,true);
+            me.browser['flexAggr_Compare_'+cT].bounds = bounds;
+            me.DOM.recordMap_Base.select(".spatialQueryBox_Compare_"+cT)
+              .attr("active",true)
+              .each(function(d){ updateRectangle.call(this,bounds); });
+          }
+          me.drawSelect = false;
         })
         .on("mousemove",function(){
           if(me.mapMouseControl!=="draw") return;
-          if(me.drawingHighlight && !d3.event.shiftKey){
-            me.drawingHighlight = false;
-            me.DOM.recordMap_Base.attr("drawing",null);
-            me.DOM.recordMap_Base.attr("drawingHighlight",null);
+          if(me.drawSelect!=="Filter" && !d3.event.shiftKey){
+            me.drawSelect = false;
+            me.DOM.recordMap_Base.attr("drawSelect",null);
             me.browser.clearSelect_Highlight();
-            // Disable highlight selection: TODO
           }
           var mousePos = d3.mouse(this);
           var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(mousePos[0], mousePos[1]));
-          if(d3.event.shiftKey){
-            if(!me.drawingFilter && !me.drawingHighlight){
-              // Start highlight selection
-              me.DOM.recordMap_Base.attr("drawing",true);
-              me.adsajasid = curLatLong;              
-              me.DOM.recordMap_Base.attr("drawingHighlight",true);
-              me.drawingHighlight = true;
-            }
+          if(d3.event.shiftKey && !me.drawSelect){
+            me.DOM.recordMap_Base.attr("drawSelect","Highlight");
+            me.drawingStartPoint = curLatLong;              
+            me.drawSelect = "Highlight";
           }
-          if(!me.drawingFilter && !me.drawingHighlight) return;
-          //console.log("X: "+mousePos[0]+", Y:"+mousePos[1]);
-          //console.log(curLatLong);
-          var bounds = L.latLngBounds([me.adsajasid,curLatLong]);
-          if(me.drawingHighlight){
-            me.spatialQuery.highlight.setBounds(bounds);
+          if(!me.drawSelect) return;
 
-            me.spatialAggr_Highlight.records = [];
+          var bounds = L.latLngBounds([me.drawingStartPoint,curLatLong]);
+          if(me.drawSelect==="Highlight"){
+            me.browser.flexAggr_Highlight.bounds = bounds;
+            //me.spatialQuery.highlight.setBounds(bounds);
+            // Refresh bounds
+            me.DOM.recordMap_Base.select(".spatialQueryBox_Highlight")
+              .each(function(d){ updateRectangle.call(this,bounds); });
+
+            var records = [];
             me.browser.records.forEach(function(record){ 
               if(!record.isWanted) return;
               if(record._geoBound_ === undefined) return;
               // already have "bounds" variable
               if(kshf.intersects(record._geoBound_, bounds)){
-                me.spatialAggr_Highlight.records.push(record);
+                records.push(record);
               } else {
                 record.remForHighlight(true);
               }
             });
-            me.browser.setSelect_Highlight(null,me.spatialAggr_Highlight, "Region");
+            me.browser.flexAggr_Highlight.summary = me.recordViewSummary; // record display
+            me.browser.flexAggr_Highlight.records = records;
+            me.browser.setSelect_Highlight();
           } else {
-            me.spatialQuery.filter.setBounds(bounds);
+            me.spatialFilter.bounds = bounds;
+            me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
+              .each(function(d){ updateRectangle.call(this,bounds); });
+            //me.spatialQuery.filter.setBounds(bounds);
           }
-          /*
-          me.browser.records.forEach(function(record){
-            if(!record.isWanted) return;
-            if(record._geoBound_ === undefined) return;
-            // already have "bounds" variable
-            if(kshf.intersects(record._geoBound_, bounds)){
-              //console.log(record.data.CombinedName);
-            }
-          });*/
           d3.event.stopPropagation();
           d3.event.preventDefault();
-        })
-        ;
-
-      // Add an example rectangle layer to the map
-      var bounds = [[-54.559322, -15.767822], [56.1210604, 15.021240]];
-
-      // create an orange rectangle
-      this.spatialQuery = {
-        filter: L.rectangle(bounds, {color: "#5A7283", weight: 1, className: "spatialQuery_Filter"}),
-        highlight: L.rectangle(bounds, {color: "#ff7800", weight: 1, className: "spatialQuery_Highlight"}),
-      };
-
-      this.spatialQuery.filter.addTo(this.leafletRecordMap);
-      this.spatialQuery.highlight.addTo(this.leafletRecordMap);
+        });
 
       this.DOM.recordMap_SVG = d3.select(this.leafletRecordMap.getPanes().overlayPane)
         .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordMap_SVG");
@@ -1419,6 +1562,16 @@ kshf.RecordDisplay.prototype = {
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
+    },
+    /** -- */
+    refreshViz_Compare_All: function(){
+      if(this.displayType==='map') {
+        var me=this;
+        this.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
+          .attr("active", function(d){
+            return me.browser.vizActive[d] ? true : null;
+          });
+      }
     },
     /** -- */
     initDOM_NodeLinkView: function(){
@@ -1590,27 +1743,22 @@ kshf.RecordDisplay.prototype = {
       var me=this;
 
       this.spatialFilter = this.browser.createFilter({
-        title: function(){return "Region"}, 
+        summary: this.recordViewSummary,
         onClear: function(){
-          me.DOM.root.select(".spatialQuery_Filter").attr("active",null);
+          me.DOM.root.select(".spatialQueryBox_Filter").attr("active",null);
+        },
+        filterView_Detail: function(){
+          return "<i class='fa fa-square-o'></i>";
         },
         onFilter: function(){
-          me.DOM.root.select(".spatialQuery_Filter").attr("active",true);
-          var query = [];
-
-          var bounds = me.spatialQuery.filter._bounds;
-
+          me.DOM.root.select(".spatialQueryBox_Filter").attr("active",true);
           me.browser.records.forEach(function(record){
             if(record._geoBound_ === undefined) {
               record.setFilterCache(this.filterID, false);
               return;
             }
-            // already have "bounds" variable
-            record.setFilterCache(this.filterID, kshf.intersects(record._geoBound_, bounds));
+            record.setFilterCache(this.filterID, kshf.intersects(record._geoBound_, this.bounds));
           },this);
-        },
-        filterView_Detail: function(){
-          return "";
         }
       });
     },
@@ -1619,32 +1767,20 @@ kshf.RecordDisplay.prototype = {
       var me=this;
 
       this.textFilter = this.browser.createFilter({
+        summary: me.textSearchSummary,
         title: function(){ return me.textSearchSummary.summaryName; }, 
-        hideCrumb: true,
         onClear: function(){
           me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
           me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display","none"); 
           me.DOM.recordTextSearch.select("input")[0][0].value = "";
         },
+        filterView_Detail: function(){
+          return "*"+this.filterStr+"*";
+        },
         onFilter: function(){
           me.DOM.recordTextSearch.select(".clearSearchText").style('display','inline-block');
-
-          var query = [];
-
-          // split the input by " character
-          var processed = this.filterStr.split('"');
-          processed.forEach(function(block,i){
-            if(i%2===0) {
-              block.split(/\s+/).forEach(function(q){ query.push(q)});
-            } else {
-              query.push(block);
-            }
-          });
-
-          // Remove the empty strings
-          query = query.filter(function(v){ return v!==""});
-
-          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",query.length>1?"inline-block":"none"); 
+          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",
+            this.filterQuery.length>1?"inline-block":"none"); 
 
           // go over all the records in the list, search each keyword separately
           // If some search matches, return true (any function)
@@ -1652,13 +1788,13 @@ kshf.RecordDisplay.prototype = {
           me.browser.records.forEach(function(record){
             var f;
             if(me.textFilter.multiMode==='or') 
-              f = ! query.every(function(v_i){
+              f = ! this.filterQuery.every(function(v_i){
                 var v = summaryFunc.call(record.data,record);
                 if(v===null || v===undefined) return true;
                 return (""+v).toLowerCase().indexOf(v_i)===-1;
               });
             if(me.textFilter.multiMode==='and')
-              f = query.every(function(v_i){
+              f = this.filterQuery.every(function(v_i){
                 var v = summaryFunc.call(record.data,record);
                 return (""+v).toLowerCase().indexOf(v_i)!==-1;
               });
@@ -1681,26 +1817,91 @@ kshf.RecordDisplay.prototype = {
       x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
 
       this.DOM.recordTextSearch.append("i").attr("class","fa fa-search searchIcon");
-      this.DOM.recordTextSearch.append("input").attr("class","mainTextSearch_input")
-        .on("keydown",function(){
+      this.DOM.recordTextSearch.append("input").attr("type","text").attr("class","mainTextSearch_input")
+        .each(function(){ 
+          this.tipsy = new Tipsy(this, {gravity: 'n', 
+            title: '<b><u>Enter</u></b> to filter <i class="fa fa-filter"></i>.<br><br>'+
+            '<b><u>Shift+Enter</u></b> to lock <i class="fa fa-lock"></i>.' }); 
+        })
+        .on("keyup",function(){
           var x = this;
+          me.textFilter.filterStr = x.value.toLowerCase();
+
+          // convert string to query pieces
+          me.textFilter.filterQuery = [];
+          if(me.textFilter.filterStr!=="") {
+            // split the input by " character
+            me.textFilter.filterStr.split('"').forEach(function(block,i){
+              if(i%2===0) {
+                block.split(/\s+/).forEach(function(q){ me.textFilter.filterQuery.push(q)});
+              } else {
+                me.textFilter.filterQuery.push(block);
+              }
+            });
+            // Remove the empty strings
+            me.textFilter.filterQuery = me.textFilter.filterQuery.filter(function(v){ return v!==""});
+          }
+          
+          // Enter pressed
+          if (event.keyCode == '13'){
+            this.tipsy.hide();
+            if(d3.event.shiftKey) {
+              // Compare
+              if(me.textFilter.filterStr!=="") {
+                me.browser.setSelect_Compare();
+              } else {
+                me.textFilter.clearFilter();
+              }
+            } else {
+              // Filter
+              if(me.textFilter.filterStr!=="") {
+                me.textFilter.addFilter();
+              } else {
+                me.textFilter.clearFilter();
+              }
+            }
+            return;
+          }
+
           if(this.timer) clearTimeout(this.timer);
           this.timer = setTimeout( function(){
-            me.textFilter.filterStr = x.value.toLowerCase();
-            if(me.textFilter.filterStr!=="") {
-              me.textFilter.addFilter();
-            } else {
-              me.textFilter.clearFilter();
+            if(me.textFilter.filterQuery.length==0){
+              x.tipsy.hide();
+              me.browser.clearSelect_Highlight();
+              return;
             }
+            x.tipsy.show();
+            // Highlight selection
+            var summaryFunc = me.textSearchSummary.summaryFunc;
+            var records = [];
+            me.browser.records.forEach(function(record){
+              var f;
+              if(me.textFilter.multiMode==='or') 
+                f = ! me.textFilter.filterQuery.every(function(v_i){
+                  var v = summaryFunc.call(record.data,record);
+                  if(v===null || v===undefined) return true;
+                  return (""+v).toLowerCase().indexOf(v_i)===-1;
+                });
+              if(me.textFilter.multiMode==='and')
+                f = me.textFilter.filterQuery.every(function(v_i){
+                  var v = summaryFunc.call(record.data,record);
+                  return (""+v).toLowerCase().indexOf(v_i)!==-1;
+                });
+              if(f) records.push(record);
+            });
+            me.browser.clearSelect_Highlight();
+            me.browser.flexAggr_Highlight.records = records;
+            me.browser.flexAggr_Highlight.summary = me.recordViewSummary;
+            me.browser.setSelect_Highlight();
             x.timer = null;
-          }, 750);
+          }, 200);
         });
       this.DOM.recordTextSearch.append("span").attr("class","fa fa-times-circle clearSearchText")
         .attr("mode","and")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveFilter }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout",function(){ this.tipsy.hide(); })
-        .on("click",function() { me.textFilter.clearFilter(); });
+        .on("click",function() { this.tipsy.hide(); me.textFilter.clearFilter(); });
       
       this.DOM.recordTextSearch.selectAll(".textSearchMode").data(["and","or"]).enter()
         .append("span")
@@ -1713,7 +1914,8 @@ kshf.RecordDisplay.prototype = {
           })
           .on("mouseover",function(){ this.tipsy.show(); })
           .on("mouseout",function(){ this.tipsy.hide(); })
-          .on("click",function(d) { 
+          .on("click",function(d) {
+            this.tipsy.hide();
             me.DOM.recordTextSearch.attr("mode",d);
             me.textFilter.multiMode = d;
             me.textFilter.addFilter();
@@ -1752,6 +1954,11 @@ kshf.RecordDisplay.prototype = {
       this.recordViewSummary = summary;
       this.recordViewSummary.isRecordView = true;
       this.recordViewSummary.refreshNuggetDisplay();
+      
+      if(this.spatialFilter){
+        this.spatialFilter.summary = this.recordViewSummary;
+        this.recordViewSummary.summaryFilter = this.spatialFilter;
+      }
 
       if(this.displayType==="list" || this.displayType==="grid"){
         this.sortRecords();
@@ -1784,6 +1991,7 @@ kshf.RecordDisplay.prototype = {
         .attr("isActive",true)
         .select("input").attr("placeholder", kshf.lang.cur.Search+": "+summary.summaryName);
       this.setTextFilter();
+      this.textSearchSummary.summaryFilter = this.textFilter;
     },
     /** -- */
     addSortingOption: function(summary){
@@ -2880,11 +3088,16 @@ kshf.Browser = function(options){
     this.authoringMode = false;
 
     this.vizActive = {
-      Highlighted: false,
-      Compared_A: false,
-      Compared_B: false,
-      Compared_C: false
+      Highlight: false,
+      Compare_A: false,
+      Compare_B: false,
+      Compare_C: false
     };
+
+    this.crumb_Highlight = new kshf.BreadCrumb(this,"Highlight");
+    this.crumb_Compare_A = new kshf.BreadCrumb(this,"Compare_A");
+    this.crumb_Compare_B = new kshf.BreadCrumb(this,"Compare_B");
+    this.crumb_Compare_C = new kshf.BreadCrumb(this,"Compare_C");
 
     this.ratioModeActive = false;
     this.percentModeActive = false;
@@ -2906,10 +3119,10 @@ kshf.Browser = function(options){
     this.domID = options.domID;
 
     this.selectedAggr = {
-      Compared_A:  null,
-      Compared_B:  null,
-      Compared_C:  null,
-      Highlighted: null
+      Compare_A:  null,
+      Compare_B:  null,
+      Compare_C:  null,
+      Highlight: null
     }
 
     this.allAggregates = [];
@@ -2917,6 +3130,15 @@ kshf.Browser = function(options){
     this.allRecordsAggr = new kshf.Aggregate();
     this.allRecordsAggr.init();
     this.allAggregates.push(this.allRecordsAggr);
+
+    this.flexAggr_Highlight = new kshf.Aggregate();
+    this.flexAggr_Compare_A = new kshf.Aggregate();
+    this.flexAggr_Compare_B = new kshf.Aggregate();
+    this.flexAggr_Compare_C = new kshf.Aggregate();
+    this.flexAggr_Highlight.init();
+    this.flexAggr_Compare_A.init();
+    this.flexAggr_Compare_B.init();
+    this.flexAggr_Compare_C.init();
 
     // Callbacks
     this.newSummaryCb = options.newSummaryCb;
@@ -3352,7 +3574,7 @@ kshf.Browser.prototype = {
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("click",function(){ 
           if(this.getAttribute("auth")==="true"){
-            if (d3.event.shiftKey) {
+            if(d3.event.shiftKey) {
               kshf.gistPublic = !kshf.gistPublic; // invert public setting
               this.setAttribute("public",kshf.gistPublic);
               alert("Future uploads will be "+(kshf.gistPublic?"public":"secret")+".")
@@ -3507,7 +3729,7 @@ kshf.Browser.prototype = {
             me.panel_overlay.attr("show","help");
             helpin.initDOM();
           } else {
-            alert("Keshif-Help will be available soon!");
+            alert("We are working on to provide better help to your exploration. Check again soon!");
           }
         });
       // Info & Credits
@@ -3526,75 +3748,13 @@ kshf.Browser.prototype = {
       // Total glyph - row
       var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalGlyph aggrGlyph");
       this.DOM.totalGlyph = adsdasda.selectAll("[class*='measure_']")
-        .data(["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"])
+        .data(["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"])
         .enter()
         .append("span").attr("class", function(d){ return "measure_"+d;})
     },
-    /** Inserts a summary block to the list breadcrumb DOM */
-    /** Don't call this directly */
-    insertDOM_crumb: function(_className, _filter){
-      var x;
-      var me=this;
-      // breadcrumbs must be always visible (as the basic panel)
-      x = this.DOM.breadcrumbs.append("span")
-        .attr("class","crumb crumbMode_"+_className)
-        .each(function(){
-          if(_className!=="Highlighted"){
-            // Move the node to a sibling before
-            var l=this.parentNode.childNodes.length;
-            if(l>1){
-              var n=this.parentNode.childNodes[l-2];
-              this.parentNode.insertBefore(this,n);
-            }
-          }
-          this.tipsy = new Tipsy(this, {
-            gravity: 'n',
-            title: function(){ 
-              switch(_className){
-                case "Filtered":    return kshf.lang.cur.RemoveFilter;
-                case "Highlighted": return "Remove Highlight";
-                case "Compared_A":
-                case "Compared_B":
-                case "Compared_C": return kshf.lang.cur.Unlock;
-              }
-            }
-          });
-        })
-        .on("mouseenter",function(){ 
-          this.tipsy.show();
-          if(_className.substr(0,8)==="Compared"){ me.refreshMeasureLabels(_className); }
-        })
-        .on("mouseleave",function(){ 
-          this.tipsy.hide();
-          if(_className.substr(0,8)==="Compared"){ me.refreshMeasureLabels(); }
-        })
-        .on("click",function(){
-          this.tipsy.hide();
-          if(_className==="Filtered") {
-            _filter.clearFilter();
-            // delay layout height update
-            setTimeout( function(){ me.updateLayout_Height();}, 1000);
-          } else if(_className==="Highlighted") {
-            me.clearSelect_Highlight();
-            me.clearCrumbAggr("Highlighted");
-          } else {
-            me.clearSelect_Compare(_className.substr(9)); // TODO: _className Compared_A / className, etc
-            me.clearCrumbAggr(_className);
-            me.refreshMeasureLabels();
-          }
-        });
-      x.append("span").attr("class","clearCrumbButton inCrumb").append("span").attr("class","fa");
-      var y = x.append("span").attr("class","crumbText");
-      y.append("span").attr("class","crumbHeader");
-      y.append("span").attr("class","filterDetails");
-      // animate appear
-      window.getComputedStyle(x[0][0]).opacity; // force redraw
-      x.attr("ready",true);
-      return x;
-    },
     /** -- */
     getActiveComparedCount: function(){
-      return this.vizActive.Compared_A + this.vizActive.Compared_B + this.vizActive.Compared_C;
+      return this.vizActive.Compare_A + this.vizActive.Compare_B + this.vizActive.Compare_C;
     },
     /** -- */
     refreshTotalViz: function(){
@@ -3612,7 +3772,7 @@ kshf.Browser.prototype = {
       var stp = VizHeight / totalC;
 
       this.DOM.totalGlyph.each(function(d){
-        if(d==="Total" || d==="Highlighted" || d==="Active"){
+        if(d==="Total" || d==="Highlight" || d==="Active"){
           kshf.Util.setTransform(this, "scale("+totalScale(me.allRecordsAggr.measure(d))+","+VizHeight+")");
         } else {
           kshf.Util.setTransform(this, 
@@ -4346,26 +4506,26 @@ kshf.Browser.prototype = {
     },
     /** -- */
     finishDataLoad: function(table,arr) {
-        kshf.dt[table.name] = arr;
-        var id_table = {};
-        arr.forEach(function(record){id_table[record.id()] = record;});
-        kshf.dt_id[table.name] = id_table;
-        this.incrementLoadedTableCount();
+      kshf.dt[table.name] = arr;
+      var id_table = {};
+      arr.forEach(function(record){id_table[record.id()] = record;});
+      kshf.dt_id[table.name] = id_table;
+      this.incrementLoadedTableCount();
     },
     /** -- */
     incrementLoadedTableCount: function(){
-        var me=this;
-        this.source.loadedTableCount++;
-        this.panel_overlay.select("div.status_text .dynamic")
-            .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
-            // finish loading
-        if(this.source.loadedTableCount===this.source.tables.length) {
-            if(this.source.callback===undefined){
-                this.loadCharts();
-            } else {
-                this.source.callback(this);
-            }
+      var me=this;
+      this.source.loadedTableCount++;
+      this.panel_overlay.select("div.status_text .dynamic")
+          .text("("+this.source.loadedTableCount+"/"+this.source.tables.length+")");
+          // finish loading
+      if(this.source.loadedTableCount===this.source.tables.length) {
+        if(this.source.callback===undefined){
+          this.loadCharts();
+        } else {
+          this.source.callback(this);
         }
+      }
     },
     /** -- */
     loadCharts: function(){
@@ -4759,12 +4919,9 @@ kshf.Browser.prototype = {
     /** -- */
     updateAfterFilter: function () {
       kshf.browser = this;
-      this.clearSelect_Compare('A');
-      this.clearSelect_Compare('B');
-      this.clearSelect_Compare('C');
-      this.clearCrumbAggr('Compared_A');
-      this.clearCrumbAggr('Compared_B');
-      this.clearCrumbAggr('Compared_C');
+      this.clearSelect_Compare('A',true);
+      this.clearSelect_Compare('B',true);
+      this.clearSelect_Compare('C',true);
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
     },
@@ -4806,50 +4963,67 @@ kshf.Browser.prototype = {
     },
     /** -- */
     clearSelect_Compare: function(cT){
-      this.DOM.root.attr("selectCompared_"+cT,null);
-      this.vizActive["Compared_"+cT] = false;
-      if(this.selectedAggr["Compared_"+cT]){
-        this.selectedAggr["Compared_"+cT].clearCompare(cT);
-        this.selectedAggr["Compared_"+cT] = null;
+      var ccT = "Compare_"+cT;
+      this.DOM.root.attr("select"+ccT,null);
+      this.vizActive[ccT] = false;
+      if(this.selectedAggr[ccT]){
+        this.selectedAggr[ccT].clearCompare(cT);
+        this.selectedAggr[ccT] = null;
       }
-      var ccT = "Compared_"+cT;
       this.allAggregates.forEach(function(aggr){ 
         aggr._measure[ccT] = 0;
         aggr.recCnt[ccT] = 0;
       });
       this.summaries.forEach(function(summary){ summary.refreshViz_Compare_All(); });
+
+      this["crumb_"+ccT].removeCrumb();
+
+      this.recordDisplay.refreshViz_Compare_All();
     },
     /** -- */
-    setSelect_Compare: function(selSummary, selAggregate, noReclick){
+    setSelect_Compare: function(noReclick, _copy){
+      var selAggregate = this.selectedAggr.Highlight;
+
       if(selAggregate.compared){
-        var x = "Compared_"+selAggregate.compared;
-        this.clearSelect_Compare(selAggregate.compared);
-        if(noReclick) { this.clearCrumbAggr(x); return; }
-      }
-      var cT = "A"; // Which compare type to store? A, B, C
-      if(this.DOM.root.attr("selectCompared_A")){
-        cT = this.DOM.root.attr("selectCompared_B") ? "C" : "B";
+        this.clearSelect_Compare(selAggregate.compared, true);
+        if(noReclick) { 
+          me[crumb_+"_Compare_"+selAggregate.compared].removeCrumb(); 
+          return;
+        }
       }
 
-      var compId = "Compared_"+cT;
+      // Which compare type to store? A, B, C
+      var cT = "A";
+      if(this.vizActive.Compare_A) cT = this.vizActive.Compare_B ? "C" : "B";
 
-      this.vizActive["Compared_"+cT] = true;
-      this.DOM.root.attr("selectCompared_"+cT,true);
+      var compId = "Compare_"+cT;
+
+      if(_copy){
+        // Copy selected summary and records from highlight selection
+        this['flexAggr_'+compId].records = this.selectedAggr.Highlight.records;
+        this['flexAggr_'+compId].summary = this.selectedAggr.Highlight.summary;
+        selAggregate = this['flexAggr_'+compId];
+      }
+
+      this.vizActive[compId] = true;
+      this.DOM.root.attr("select"+compId,true);
       this.selectedAggr[compId] = selAggregate;
       this.selectedAggr[compId].selectCompare(cT);
 
+      // Copy aggregate measures from highlight selection to compare selection
       if(!this.preview_not){
         this.allAggregates.forEach(function(aggr){
-          aggr._measure[compId] = aggr._measure.Highlighted;
-          aggr.recCnt[compId] = aggr.recCnt.Highlighted;
+          aggr._measure[compId] = aggr._measure.Highlight;
+          aggr.recCnt[compId] = aggr.recCnt.Highlight;
         },this);
       } else {
         this.allAggregates.forEach(function(aggr){
-          aggr._measure[compId] = aggr._measure.Active - aggr._measure.Highlighted;
-          aggr.recCnt[compId] = aggr.recCnt.Active - aggr.recCnt.Highlighted;
+          aggr._measure[compId] = aggr._measure.Active - aggr._measure.Highlight;
+          aggr.recCnt[compId] = aggr.recCnt.Active - aggr.recCnt.Highlight;
         },this);
       }
 
+      // Done
       this.summaries.forEach(function(summary){ 
         if(this.measureFunc==="Avg" && summary.updateChartScale_Measure){
           // refreshes all visualizations automatically
@@ -4861,22 +5035,24 @@ kshf.Browser.prototype = {
 
       this.refreshTotalViz();
 
-      this.setCrumbAggr(compId,selSummary);
+      this["crumb_"+compId].showCrumb(selAggregate.summary);
+
+      return cT;
     },
     /** -- */
-    clearSelect_Highlight: function(){
+    clearSelect_Highlight: function(now){
       var me = this;
-      this.vizActive.Highlighted = false;
+      this.vizActive.Highlight = false;
       this.DOM.root.attr("selectHighlight",null);
       this.highlightSelectedSummary = null;
-      if(this.selectedAggr.Highlighted){
-        this.selectedAggr.Highlighted.clearHighlight();
-        this.selectedAggr.Highlighted = undefined;
+      if(this.selectedAggr.Highlight){
+        this.selectedAggr.Highlight.clearHighlight();
+        this.selectedAggr.Highlight = undefined;
       }
 
       this.allAggregates.forEach(function(aggr){
-        aggr._measure.Highlighted = 0;
-        aggr.recCnt.Highlighted = 0;
+        aggr._measure.Highlight = 0;
+        aggr.recCnt.Highlight = 0;
       });
       this.summaries.forEach(function(summary){ summary.refreshViz_Highlight(); });
       this.refreshTotalViz();
@@ -4884,18 +5060,21 @@ kshf.Browser.prototype = {
       // if the crumb is shown, start the hide timeout
       if(this.highlightCrumbTimeout_Hide) clearTimeout(this.highlightCrumbTimeout_Hide);
       this.highlightCrumbTimeout_Hide = setTimeout(function(){ 
-        me.clearCrumbAggr("Highlighted");
+        me.crumb_Highlight.removeCrumb();
         this.highlightCrumbTimeout_Hide = undefined;
-      },1000);
+      },now?0:1000);
     },
     /** -- */
-    setSelect_Highlight: function(selSummary,selAggregate, headerName){
+    setSelect_Highlight: function(selAggregate){
       var me=this;
-      this.vizActive.Highlighted = true;
+      if(selAggregate===undefined){
+        selAggregate = this.flexAggr_Highlight; // flexible aggregate
+      }
+      this.vizActive.Highlight = true;
       this.DOM.root.attr("selectHighlight",true);
-      this.highlightSelectedSummary = selSummary;
-      this.selectedAggr.Highlighted = selAggregate;
-      this.selectedAggr.Highlighted.selectHighlight();
+      this.highlightSelectedSummary = selAggregate.summary;
+      this.selectedAggr.Highlight = selAggregate;
+      this.selectedAggr.Highlight.selectHighlight();
 
       this.summaries.forEach(function(summary){ summary.refreshViz_Highlight(); });
       this.refreshTotalViz();
@@ -4903,26 +5082,7 @@ kshf.Browser.prototype = {
       clearTimeout(this.highlightCrumbTimeout_Hide);
       this.highlightCrumbTimeout_Hide = undefined;
 
-      this.setCrumbAggr("Highlighted",selSummary,headerName);
-    },
-    /** -- */
-    setCrumbAggr: function(selectType, selectedSummary, headerName){
-      var crumb = this.DOM.breadcrumbs.select(".crumbMode_"+selectType);
-      if(crumb[0][0]===null) crumb = this.insertDOM_crumb(selectType);
-      if(headerName===undefined) headerName = selectedSummary.summaryName;
-      crumb.select(".crumbHeader").html(headerName);
-      if(selectedSummary){
-        var text = (this.selectedAggr[selectType] instanceof kshf.Aggregate_EmptyRecords) ? kshf.lang.cur.NoData :
-            selectedSummary.printAggrSelection(this.selectedAggr[selectType]);
-        crumb.select(".filterDetails").html(text.replace(/<br>/g," "));
-      }
-    },
-    /** -- */
-    clearCrumbAggr: function(selectType){
-      var crumb = this.DOM.breadcrumbs.select(".crumbMode_"+selectType);
-      if(crumb[0][0]===null) return;
-      crumb.attr("ready",false);
-      setTimeout(function(){ crumb[0][0].parentNode.removeChild(crumb[0][0]); }, 350);
+      this.crumb_Highlight.showCrumb(selAggregate.summary);
     },
     /** -- */
     getMeasureFuncTypeText: function(){
@@ -5146,8 +5306,8 @@ kshf.Browser.prototype = {
           if(summary && summary === this.highlightSelectedSummary && !summary.isMultiValued){
             _val = aggr.measure('Active');
           } else {
-            _val = this.vizActive.Highlighted?
-              (this.preview_not? aggr._measure.Active - aggr._measure.Highlighted : aggr.measure('Highlighted') ) :
+            _val = this.vizActive.Highlight?
+              (this.preview_not? aggr._measure.Active - aggr._measure.Highlight : aggr.measure('Highlight') ) :
               aggr.measure('Active');
           }
         }
@@ -5155,7 +5315,7 @@ kshf.Browser.prototype = {
           // Cannot be Avg-function
           if(aggr._measure.Active===0) return "";
           if(this.ratioModeActive){
-            if(this.measureLabelType===undefined && !this.vizActive.Highlighted) return "";
+            if(this.measureLabelType===undefined && !this.vizActive.Highlight) return "";
             _val = 100*_val/aggr._measure.Active;
           } else {
             _val = 100*_val/this.allRecordsAggr._measure.Active;
@@ -5234,6 +5394,7 @@ kshf.Summary_Base.prototype = {
 
     this.missingValueAggr = new kshf.Aggregate_EmptyRecords();
     this.missingValueAggr.init();
+    this.missingValueAggr.summary = this;
     this.browser.allAggregates.push(this.missingValueAggr);
 
     this.DOM = {};
@@ -5264,20 +5425,19 @@ kshf.Summary_Base.prototype = {
   /** -- */
   setSummaryName: function(name){
     this.summaryName = name;
+    // Refresh all the UI components which reflect summary name
     if(this.DOM.summaryName_text){
       this.DOM.summaryName_text.html(this.summaryName);
     }
-    this.summaryFilter._refreshFilterSummary();
-    // This summary may be used for sorting options. Refresh the list
+    if(this.summaryFilter.filterCrumb.DOM !== null){
+      this.summaryFilter.filterCrumb.DOM.select(".crumbHeader").html(this.summary.summaryName);
+    }
     if(this.browser.recordDisplay){
       if(this.sortingSummary) this.browser.recordDisplay.refreshSortingOptions();
     }
     if(this.isTextSearch){
       this.browser.recordDisplay.DOM.recordTextSearch.select("input")
         .attr("placeholder",kshf.lang.cur.Search+": "+this.summaryName);
-    }
-    if(this.sortFunc){
-      this.browser.recordDisplay.refreshSortingOptions();
     }
     if(this.DOM.nugget){
       this.DOM.nugget.select(".summaryName").html(this.summaryName);
@@ -5852,11 +6012,10 @@ kshf.Summary_Base.prototype = {
 
     this.DOM.summaryIcons = this.DOM.headerGroup.append("span").attr("class","summaryIcons");
 
-    this.DOM.summaryIcons.append("span").attr("class", "hasMultiMappings fa fa-tags")
+    this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
       .each(function(d){
-        this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Show relations within "+me.summaryName+"" });
+        this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Show pairwise relations within "+me.summaryName+"" });
       })
-      .style("display", (this.isMultiValued && this._cats.length>5) ? "inline-block" : "none")
       .on("mouseover",function(){ this.tipsy.show(); })
       .on("mouseout" ,function(){ this.tipsy.hide(); })
       .on("click",function(){ me.setShowSetMatrix(!me.show_set_matrix); });
@@ -5958,8 +6117,7 @@ kshf.Summary_Base.prototype = {
           if(pos2==='nw' && d==="2") pos = 'ne';
           this.tipsy = new Tipsy(this, {
             gravity: pos, title: function(){
-              return (me.browser.ratioModeActive?kshf.lang.cur.Absolute:kshf.lang.cur.Relative)+" "+
-                kshf.lang.cur.Width+
+              return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'PartOf']+" "+kshf.lang.cur.Width+
                 " <span class='fa fa-arrows-h'></span>";
             },
           });
@@ -6026,7 +6184,7 @@ kshf.Summary_Base.prototype = {
       .on("mouseover",function(){
         this.tipsy.show();
         // TODO: Disable mouse-over action if aggregate has no active item
-        me.browser.setSelect_Highlight(me,me.missingValueAggr);
+        me.browser.setSelect_Highlight(me.missingValueAggr);
       })
       .on("mouseout" ,function(){ 
         this.tipsy.hide();
@@ -6034,7 +6192,7 @@ kshf.Summary_Base.prototype = {
       })
       .on("click", function(){
         if(d3.event.shiftKey){
-          me.browser.setSelect_Compare(me,me.missingValueAggr,true);
+          me.browser.setSelect_Compare(true);
           return;
         }
         me.summaryFilter.clearFilter();
@@ -6069,15 +6227,15 @@ kshf.Summary_Base.prototype = {
     totalC++; // 1 more for highlight
     if(this.browser.measureFunc==="Avg") totalC++;
     var activeNum = totalC-2;
-    if(this.browser.vizActive.Compared_A) {
+    if(this.browser.vizActive.Compare_A) {
       this.refreshViz_Compare("A", activeNum, totalC);
       activeNum--;
     }
-    if(this.browser.vizActive.Compared_B) {
+    if(this.browser.vizActive.Compare_B) {
       this.refreshViz_Compare("B", activeNum, totalC);
       activeNum--;
     }
-    if(this.browser.vizActive.Compared_C) {
+    if(this.browser.vizActive.Compare_C) {
       this.refreshViz_Compare("C", activeNum, totalC);
       activeNum--;
     }
@@ -6340,7 +6498,7 @@ var Summary_Categorical_functions = {
     this.catSortBy_Active = this.catSortBy[0];
 
     this.updateCatSorting(0,true,true);
-    this.refreshSortOptions();
+    this.refreshCatSortOptions();
     this.refreshSortButton();
   },
   /** -- */
@@ -6351,7 +6509,7 @@ var Summary_Categorical_functions = {
       .attr("inverse",this.catSortBy_Active.inverse);
   },
   /** -- */
-  refreshSortOptions: function(){
+  refreshCatSortOptions: function(){
     if(this.DOM.optionSelect===undefined) return;
 
     this.refreshConfigRowCount();
@@ -6504,6 +6662,7 @@ var Summary_Categorical_functions = {
     var me=this;
     this.summaryFilter = this.browser.createFilter(
       {
+        summary: this,
         title: function(){ return me.summaryName },
         onClear: function(){
           me.clearCatTextSearch();
@@ -6640,6 +6799,7 @@ var Summary_Categorical_functions = {
       kshf.dt[this.catTableName].forEach(function(record){
         var aggr = new kshf.Aggregate();
         aggr.init(record.data,record.idIndex);
+        aggr.summary = this;
         aggrTable_id[aggr.id()] = aggr;
         aggrTable.push(aggr);
         this.browser.allAggregates.push(aggr);
@@ -6690,6 +6850,7 @@ var Summary_Categorical_functions = {
         var aggr = aggrTable_id[v];
         if(aggr==undefined) {
           aggr = new kshf.Aggregate();
+          aggr.summary = this;
           aggr.init({id:v},'id');
           aggrTable_id[v] = aggr;
           this._cats.push(aggr);
@@ -6935,7 +7096,7 @@ var Summary_Categorical_functions = {
           me.updateCatSorting(0,true);
         })
 
-      this.refreshSortOptions();
+      this.refreshCatSortOptions();
     },
     /** -- */
     initDOM_CatTextSearch: function(){
@@ -7074,7 +7235,7 @@ var Summary_Categorical_functions = {
       if(!this.aggr_initialized || this.isEmpty()) return; // nothing to do
       var maxMeasureValue = this.getMaxAggr_Active();
       if(this.browser.measureFunc==="Avg"){
-        ["Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(distr){
+        ["Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(distr){
           if(!this.browser.vizActive[distr]) return;
           maxMeasureValue = Math.max(maxMeasureValue, d3.max(this._cats, function(aggr){return aggr.measure(distr);} ) );
         },this);
@@ -7293,10 +7454,10 @@ var Summary_Categorical_functions = {
       var maxWidth = this.chartScale_Measure.range()[1];
       var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
 
-      if(this.browser.vizActive.Highlighted){
+      if(this.browser.vizActive.Highlight){
         if(this.browser.ratioModeActive) {
           if(this.viewType==="map"){
-            //this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlighted)/9))+"%");
+            //this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlight)/9))+"%");
           } else {
             this.DOM.highlightedMeasureValue
               .style("opacity",1)
@@ -7308,21 +7469,21 @@ var Summary_Categorical_functions = {
       }
 
       if(this.viewType=='map'){
-        if(!this.browser.vizActive.Highlighted){
+        if(!this.browser.vizActive.Highlight){
           this.refreshViz_Active();
           return;
         }
         if(!isThisIt || this.isMultiValued) {
           var boundMin = ratioMode ? 
             d3.min(this._cats, function(aggr){ 
-              if(aggr.recCnt.Active===0 || aggr.recCnt.Highlighted===0) return null;
+              if(aggr.recCnt.Active===0 || aggr.recCnt.Highlight===0) return null;
               return 100*aggr.ratioHighlightToActive(); }) :
             1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
           var boundMax = ratioMode ? 
             d3.max(this._cats, function(_cat){ 
               return (_cat._measure.Active===0) ? null : 100*_cat.ratioHighlightToActive();
             }) : 
-            d3.max(this._cats, function(_cat){ return _cat.measure('Highlighted'); });
+            d3.max(this._cats, function(_cat){ return _cat.measure('Highlight'); });
           
           this.DOM.catMapColorScale.select(".boundMin").text(Math.round(boundMin));
           this.DOM.catMapColorScale.select(".boundMax").text(Math.round(boundMax));
@@ -7336,10 +7497,10 @@ var Summary_Categorical_functions = {
 
         this.DOM.measure_Active
           .attr("fill", function(_cat){ 
-            //if(_cat === me.browser.selectedAggr.Highlighted) return "";
+            //if(_cat === me.browser.selectedAggr.Highlight) return "";
             var _v;
             if(me.isMultiValued || me.browser.highlightSelectedSummary!==me){
-              v = _cat.measure('Highlighted');
+              v = _cat.measure('Highlight');
               if(ratioMode) v = 100*v/_cat.measure('Active');
             } else {
               v = _cat.measure('Active');
@@ -7357,9 +7518,9 @@ var Summary_Categorical_functions = {
         var totalC = this.browser.getActiveComparedCount();
         if(this.browser.measureFunc==="Avg") totalC++;
         var barHeight = (this.heightRow_category-8)/(totalC+1);
-        this.DOM.measure_Highlighted.each(function(aggr){
-          var p = aggr.measure('Highlighted');
-          if(me.browser.preview_not) p = aggr._measure.Active - aggr._measure.Highlighted;
+        this.DOM.measure_Highlight.each(function(aggr){
+          var p = aggr.measure('Highlight');
+          if(me.browser.preview_not) p = aggr._measure.Active - aggr._measure.Highlight;
           kshf.Util.setTransform(this,
             "translateX("+width_Text+"px) "+
             "scale("+(ratioMode ? ((p/aggr._measure.Active)*maxWidth ) : me.chartScale_Measure(p))+","+barHeight+")");
@@ -7374,8 +7535,8 @@ var Summary_Categorical_functions = {
       var _translateX = "translateX("+width_Text+"px) ";
       var barHeight = (this.heightRow_category-8)/totalGroups;
       var _translateY = "translateY("+(barHeight*(curGroup+1))+"px)";
-      var compId = "Compared_"+cT;
-      this.DOM["measure_Compared_"+cT].each(function(aggr){
+      var compId = "Compare_"+cT;
+      this.DOM["measure_Compare_"+cT].each(function(aggr){
         var sx = (me.browser.vizActive[compId])?
           ( ratioMode ? (aggr.ratioCompareToActive(cT)*maxWidth) : me.chartScale_Measure(aggr.measure(compId)) ) : 0;
         kshf.Util.setTransform(this,_translateX+_translateY+"scale("+sx+","+barHeight+")");
@@ -7646,7 +7807,7 @@ var Summary_Categorical_functions = {
       if(!this.isCatSelectable(ctgry)) return;
 
       if(d3.event.shiftKey){
-        this.browser.setSelect_Compare(this,ctgry,true);
+        this.browser.setSelect_Compare(true);
         return;
       }
 
@@ -7708,10 +7869,10 @@ var Summary_Categorical_functions = {
       if(aggr.is_NOT()) return;
       if(this.isMultiValued || this.summaryFilter.selected_AND.length===0){
         aggr.DOM.aggrGlyph.setAttribute("showlock",true);
-        this.browser.setSelect_Highlight(this,aggr);
+        this.browser.setSelect_Highlight(aggr);
         if(!this.browser.ratioModeActive) {
           if(this.viewType==="map"){
-            this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure('Highlighted'))/9))+"%");
+            this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure('Highlight'))/9))+"%");
           } else {
             this.DOM.highlightedMeasureValue.style("left",this.chartScale_Measure(aggr.measure('Active'))+"px");
           }
@@ -7752,7 +7913,7 @@ var Summary_Categorical_functions = {
       ctgry.DOM.aggrGlyph.setAttribute("selecttype","not");
       ctgry.DOM.aggrGlyph.setAttribute("selection","selected");
       this.browser.preview_not = true;
-      this.browser.setSelect_Highlight(this,ctgry);
+      this.browser.setSelect_Highlight(ctgry);
       d3.event.stopPropagation();
     },
     /** -- */
@@ -7821,14 +7982,14 @@ var Summary_Categorical_functions = {
           .on("mouseenter",function(aggr){ 
             this.tipsy = new Tipsy(this, {
               gravity: me.panel.name==='right'?'se':'w',
-              title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compared_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
+              title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compare_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
             });
             this.tipsy.show(); 
           })
           .on("mouseleave",function(){ this.tipsy.hide(); })
           .on("click",function(_cat){
             this.tipsy.hide();
-            me.browser.setSelect_Compare(me,_cat,true);
+            me.browser.setSelect_Compare(true);
             d3.event.preventDefault();
             d3.event.stopPropagation();
           });
@@ -7853,11 +8014,11 @@ var Summary_Categorical_functions = {
         });
         DOM_cats_new.append("span").attr("class", "measureLabel");
 
-        ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+        ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
           DOM_cats_new.append("span").attr("class", "measure_"+m);
         });
 
-        DOM_cats_new.selectAll("[class^='measure_Compared_']")
+        DOM_cats_new.selectAll("[class^='measure_Compare_']")
           .on("mouseover" ,function(){ 
             me.browser.refreshMeasureLabels(this.classList[0].substr(8)); 
             d3.event.preventDefault();
@@ -7913,7 +8074,7 @@ var Summary_Categorical_functions = {
 
       this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
       this.DOM.measureTotalTip = this.DOM.aggrGlyphs.selectAll(".total_tip");
-      ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+      ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
         this.DOM["measure_"+m] = this.DOM.aggrGlyphs.selectAll(".measure_"+m);
       },this);
 
@@ -8074,7 +8235,7 @@ var Summary_Categorical_functions = {
         if(_cat._d_===undefined) return;
         return me.geoPath(_cat._d_);
       });
-      this.DOM.measure_Highlighted.attr("d", function(_cat){
+      this.DOM.measure_Highlight.attr("d", function(_cat){
         return me.geoPath(_cat._d_);
       });
       this.DOM.measureLabel
@@ -8160,7 +8321,14 @@ var Summary_Categorical_functions = {
       }
 
       // See http://leaflet-extras.github.io/leaflet-providers/preview/ for alternative layers
-      this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0] )
+      this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0],
+        {
+          maxBoundsViscosity: 1, 
+          boxZoom: false,
+          touchZoom: false,
+          doubleClickZoom: false,
+          /*continuousWorld: true, crs: L.CRS.EPSG3857 */
+        } )
         .addLayer(new L.TileLayer(
           kshf.map.tileTemplate,
           { 
@@ -8252,7 +8420,7 @@ var Summary_Categorical_functions = {
         .each(function(){
           this.tipsy = new Tipsy(this, {
             gravity: 'e', title: function(){
-              return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'Relative']+" "+kshf.lang.cur.Width;
+              return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'PartOf']+" "+kshf.lang.cur.Width;
             }
           });
         })
@@ -8387,15 +8555,6 @@ var Summary_Interval_functions = {
       this.invertColorScale = false;
 
       this.highlightRangeLimits_Active = false;
-
-      // Used for flexible range selection.
-      // TODO: Support multiple compare selections.
-      this.flexAggr_Highlight = new kshf.Aggregate();
-      this.flexAggr_Compare   = new kshf.Aggregate();
-      this.flexAggr_Highlight.init({});
-      this.flexAggr_Compare  .init({});
-      this.flexAggr_Highlight.summary = this;
-      this.flexAggr_Compare  .summary = this;
 
       this.quantile_val = {};
       this.quantile_pos = {};
@@ -8637,6 +8796,7 @@ var Summary_Interval_functions = {
     createSummaryFilter: function(){
       var me=this;
       this.summaryFilter = this.browser.createFilter({
+        summary: this,
         title: function(){ return me.summaryName; },
         onClear: function(){
           if(this.filteredBin){
@@ -8906,9 +9066,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getHeight_Percentile: function(){
-      if(this.percentileChartVisible===false) return 0;
-      if(this.percentileChartVisible==="Basic") return 15;
-      if(this.percentileChartVisible==="Extended") return 32;
+      return this.percentileChartVisible ? 32 : 0;
     },
     /** -- */
     getHeight_Extra: function(){
@@ -8973,7 +9131,7 @@ var Summary_Interval_functions = {
         .style("opacity",this.percentileChartVisible?1:0)
         .attr("percentileChartVisible",this.percentileChartVisible);
       if(this.percentileChartVisible){
-        this.DOM.percentileGroup.style("height",(this.percentileChartVisible==="Basic"?13:30)+"px");
+        this.DOM.percentileGroup.style("height",30+"px");
       }
 
       this.DOM.summaryConfig.selectAll(".summaryConfig_Percentile .configOption").attr("active",false);
@@ -8981,7 +9139,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     showPercentileChart: function(v){
-      if(v===true) v="Basic";
+      if(v===true) v = "Extended";
       this.percentileChartVisible = v;
       if(this.DOM.inited) {
         var curHeight = this.getHeight();
@@ -9028,15 +9186,17 @@ var Summary_Interval_functions = {
             var minPos = d3.min([this.initPos, pointerPosition]);
             me.highlightRangeLimits_Active = true;
             // Set preview selection
-            me.flexAggr_Highlight.records = [];
+            var records = [];
             me.filteredItems.forEach(function(record){ 
               var v = me.getRecordValue(record);
-              if(v>=minPos && v<=maxPos) me.flexAggr_Highlight.records.push(record);
+              if(v>=minPos && v<=maxPos) records.push(record);
               else record.remForHighlight(true);
             });
-            me.flexAggr_Highlight.minV = minPos;
-            me.flexAggr_Highlight.maxV = maxPos;
-            me.browser.setSelect_Highlight(me,me.flexAggr_Highlight);
+            me.browser.flexAggr_Highlight.summary = me;
+            me.browser.flexAggr_Highlight.records = records;
+            me.browser.flexAggr_Highlight.minV = minPos;
+            me.browser.flexAggr_Highlight.maxV = maxPos;
+            me.browser.setSelect_Highlight();
             d3.event.preventDefault();
             d3.event.stopPropagation();
           } else {
@@ -9051,9 +9211,9 @@ var Summary_Interval_functions = {
         .on("click", function(){
           if(d3.event.shiftKey && me.highlightRangeLimits_Active){
             // Lock for comparison
-            me.flexAggr_Compare.minV = me.flexAggr_Highlight.minV;
-            me.flexAggr_Compare.maxV = me.flexAggr_Highlight.maxV;
-            me.browser.setSelect_Compare(me,me.flexAggr_Compare,false);
+            me.browser.flexAggr_Compare_A.minV = me.browser.flexAggr_Highlight.minV;
+            me.browser.flexAggr_Compare_A.maxV = me.browser.flexAggr_Highlight.maxV;
+            me.browser.setSelect_Compare(false);
             this.initPos = undefined;
             d3.event.preventDefault();
             d3.event.stopPropagation();
@@ -9169,10 +9329,8 @@ var Summary_Interval_functions = {
       summaryConfig_Percentile.append("span").text("Percentile Charts: ")
       x = summaryConfig_Percentile.append("span").attr("class","optionGroup");
       x.selectAll(".configOption").data(
-        [
-          {l:"<i class='bl_Active'></i><i class='bl_Highlighted'></i>"+
-            "<i class='bl_Compared_A'></i><i class='bl_Compared_B'></i><i class='bl_Compared_C'></i> Full",v:"Extended"},
-          {l:"<i class='bl_Active'></i><i class='bl_Highlighted'></i> Basic",v:"Basic"},
+        [ {l:"<i class='bl_Active'></i><i class='bl_Highlight'></i>"+
+            "<i class='bl_Compare_A'></i><i class='bl_Compare_B'></i><i class='bl_Compare_C'></i> Show",v:"Extended"},
           {l:"<i class='fa fa-eye-slash'></i> Hide",v:false}
         ]).enter()
         .append("span")
@@ -9191,7 +9349,9 @@ var Summary_Interval_functions = {
 
       this.DOM.quantile = {};
 
-      function addPercentileDOM(parent, distr){
+      function addPercentileDOM(distr){
+        var parent = me.DOM.percentileGroup.append("div").attr("class","percentileChart_"+distr);
+
         [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
           this.DOM.quantile[distr+qb[0]+"_"+qb[1]] = parent.append("span")
             .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
@@ -9207,15 +9367,17 @@ var Summary_Interval_functions = {
             })
             .on("mouseover",function(){ 
               this.tipsy.show();
-              me.flexAggr_Highlight.records = [];
+              var records = [];
               me.filteredItems.forEach(function(record){ 
                 var v = me.getRecordValue(record);
-                if(v>=me.quantile_val[distr+qb[0]] && v<=me.quantile_val[distr+qb[1]]) me.flexAggr_Highlight.records.push(record);
+                if(v>=me.quantile_val[distr+qb[0]] && v<=me.quantile_val[distr+qb[1]]) records.push(record);
               });
-              me.flexAggr_Highlight.minV = me.quantile_val[distr+qb[0]];
-              me.flexAggr_Highlight.maxV = me.quantile_val[distr+qb[1]];
+              me.browser.flexAggr_Highlight.summary = me;
+              me.browser.flexAggr_Highlight.records = records;
+              me.browser.flexAggr_Highlight.minV = me.quantile_val[distr+qb[0]];
+              me.browser.flexAggr_Highlight.maxV = me.quantile_val[distr+qb[1]];
               me.highlightRangeLimits_Active = true;
-              me.browser.setSelect_Highlight(me,me.flexAggr_Highlight);
+              me.browser.setSelect_Highlight();
             })
             .on("mouseout" ,function(){
               this.tipsy.hide();
@@ -9223,9 +9385,9 @@ var Summary_Interval_functions = {
             })
             .on("click", function(){
               if(d3.event.shiftKey){
-                me.flexAggr_Compare.minV = me.quantile_val[distr+qb[0]];
-                me.flexAggr_Compare.maxV = me.quantile_val[distr+qb[1]];
-                me.browser.setSelect_Compare(me,me.flexAggr_Compare, false);
+                me.browser.flexAggr_Compare_A.minV = me.quantile_val[distr+qb[0]];
+                me.browser.flexAggr_Compare_A.maxV = me.quantile_val[distr+qb[1]];
+                me.browser.setSelect_Compare(me.browser.flexAggr_Compare_A, false);
                 return;
               }
               me.summaryFilter.active = {
@@ -9251,22 +9413,11 @@ var Summary_Interval_functions = {
         },this);
       };
 
-      addPercentileDOM.call(this,
-        this.DOM.percentileGroup.append("div").attr("class","percentileChart_Active"),
-        "Active");
-      addPercentileDOM.call(this,
-        this.DOM.percentileGroup.append("div").attr("class","percentileChart_Highlighted"),
-        "Highlighted");
-      // Adding blocks in reverse order (C,B,A) so when they are inserted, they are linked to visually next to highlight selection
-      addPercentileDOM.call(this,
-        this.DOM.percentileGroup.append("div").attr("class","percentileChart_Compared_C"),
-        "Compared_C");
-      addPercentileDOM.call(this,
-        this.DOM.percentileGroup.append("div").attr("class","percentileChart_Compared_B"),
-        "Compared_B");
-      addPercentileDOM.call(this,
-        this.DOM.percentileGroup.append("div").attr("class","percentileChart_Compared_A"),
-        "Compared_A");
+      addPercentileDOM.call(this, "Active");
+      addPercentileDOM.call(this, "Highlight");
+      addPercentileDOM.call(this, "Compare_C");
+      addPercentileDOM.call(this, "Compare_B");
+      addPercentileDOM.call(this, "Compare_A");
 
       this.refreshPercentileChart();
     },
@@ -9569,6 +9720,7 @@ var Summary_Interval_functions = {
         // Create histBins as kshf.Aggregate
         this.intervalTicks.forEach(function(tick,i){
           var d = new kshf.Aggregate();
+          d.summary = this;
           d.init();
           d.minV = tick;
           d.maxV = this.intervalTicks[i+1];
@@ -9659,27 +9811,27 @@ var Summary_Interval_functions = {
           .data(this.histBins, function(d,i){ return i; })
           .enter().append("line").attr("class","measure_Active_Line");
 
-        this.DOM.measure_Highlighted_Area = this.DOM.timeSVG
-          .append("path").attr("class","measure_Highlighted_Area").datum(this.histBins);
-        this.DOM.measure_Highlighted_Line = this.DOM.timeSVG.selectAll(".measure_Highlighted_Line")
+        this.DOM.measure_Highlight_Area = this.DOM.timeSVG
+          .append("path").attr("class","measure_Highlight_Area").datum(this.histBins);
+        this.DOM.measure_Highlight_Line = this.DOM.timeSVG.selectAll(".measure_Highlight_Line")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Highlighted_Line");
+          .enter().append("line").attr("class","measure_Highlight_Line");
 
-        this.DOM.measure_Compared_Area_A = this.DOM.timeSVG
-          .append("path").attr("class","measure_Compared_Area_A measure_Compared_A").datum(this.histBins);
-        this.DOM.measure_Compared_Line_A = this.DOM.timeSVG.selectAll(".measure_Compared_Line_A")
+        this.DOM.measure_Compare_Area_A = this.DOM.timeSVG
+          .append("path").attr("class","measure_Compare_Area_A measure_Compare_A").datum(this.histBins);
+        this.DOM.measure_Compare_Line_A = this.DOM.timeSVG.selectAll(".measure_Compare_Line_A")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Compared_Line_A measure_Compared_A");
-        this.DOM.measure_Compared_Area_B = this.DOM.timeSVG
-          .append("path").attr("class","measure_Compared_Area_B measure_Compared_B").datum(this.histBins);
-        this.DOM.measure_Compared_Line_B = this.DOM.timeSVG.selectAll(".measure_Compared_Line_B")
+          .enter().append("line").attr("class","measure_Compare_Line_A measure_Compare_A");
+        this.DOM.measure_Compare_Area_B = this.DOM.timeSVG
+          .append("path").attr("class","measure_Compare_Area_B measure_Compare_B").datum(this.histBins);
+        this.DOM.measure_Compare_Line_B = this.DOM.timeSVG.selectAll(".measure_Compare_Line_B")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Compared_Line_B measure_Compared_B");
-        this.DOM.measure_Compared_Area_C = this.DOM.timeSVG
-          .append("path").attr("class","measure_Compared_Area_C measure_Compared_C").datum(this.histBins);
-        this.DOM.measure_Compared_Line_C = this.DOM.timeSVG.selectAll(".measure_Compared_Line_C")
+          .enter().append("line").attr("class","measure_Compare_Line_B measure_Compare_B");
+        this.DOM.measure_Compare_Area_C = this.DOM.timeSVG
+          .append("path").attr("class","measure_Compare_Area_C measure_Compare_C").datum(this.histBins);
+        this.DOM.measure_Compare_Line_C = this.DOM.timeSVG.selectAll(".measure_Compare_Line_C")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Compared_Line_C measure_Compared_C");
+          .enter().append("line").attr("class","measure_Compare_Line_C measure_Compare_C");
       }
 
       this.insertBins();
@@ -9741,13 +9893,13 @@ var Summary_Interval_functions = {
           .style("top",(this.height_hist - this.chartScale_Measure(aggr.measure('Active')))+"px")
           .style("opacity",1);
       }
-      this.browser.setSelect_Highlight(this,aggr);
+      this.browser.setSelect_Highlight(aggr);
     },
     /** -- */
     onAggrClick: function(aggr){
       if(this.highlightRangeLimits_Active) return;
       if(d3.event.shiftKey){
-        this.browser.setSelect_Compare(this,aggr,true);
+        this.browser.setSelect_Compare(true);
         return;
       }
       if(this.summaryFilter.filteredBin===this){
@@ -9799,11 +9951,11 @@ var Summary_Interval_functions = {
         })
         .on("click",function(aggr){ me.onAggrClick(aggr); });
 
-      ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+      ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
         newBins.append("span").attr("class","measure_"+m);
       });
 
-      newBins.selectAll("[class^='measure_Compared_']")
+      newBins.selectAll("[class^='measure_Compare_']")
         .on("mouseover" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); })
         .on("mouseleave",function(){ me.browser.refreshMeasureLabels(); });
 
@@ -9813,12 +9965,12 @@ var Summary_Interval_functions = {
         .each(function(aggr){
           this.tipsy = new Tipsy(this, {
             gravity: 's',
-            title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compared_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
+            title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compare_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
           });
         })
         .on("click",function(aggr){
           this.tipsy.hide();
-          me.browser.setSelect_Compare(me,aggr,true);
+          me.browser.setSelect_Compare(true);
           d3.event.stopPropagation();
         })
         .on("mouseenter",function(aggr){
@@ -9841,7 +9993,7 @@ var Summary_Interval_functions = {
 
       this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
       this.DOM.measureTotalTip = this.DOM.aggrGlyphs.selectAll(".total_tip");
-      ["Total","Active","Highlighted","Compared_A","Compared_B","Compared_C"].forEach(function(m){
+      ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
         this.DOM["measure_"+m] = this.DOM.aggrGlyphs.selectAll(".measure_"+m);
       },this);
 
@@ -9892,16 +10044,17 @@ var Summary_Interval_functions = {
           var _minValue = me.valueScale.invert(d*r);
           var _maxValue = me.valueScale.invert((d+1)*r);
 
-          me.flexAggr_Highlight.records = [];
+          var records = [];
           me.filteredItems.forEach(function(record){ 
             var v = me.getRecordValue(record);
-            if(v>=_minValue && v<=_maxValue)
-             me.flexAggr_Highlight.records.push(record);
+            if(v>=_minValue && v<=_maxValue) records.push(record);
           });
-          me.flexAggr_Highlight.minV = _minValue;
-          me.flexAggr_Highlight.maxV = _maxValue;
+          me.browser.flexAggr_Highlight.summary = me;
+          me.browser.flexAggr_Highlight.records = records;
+          me.browser.flexAggr_Highlight.minV = _minValue;
+          me.browser.flexAggr_Highlight.maxV = _maxValue;
           me.highlightRangeLimits_Active = true;
-          me.browser.setSelect_Highlight(me,me.flexAggr_Highlight);
+          me.browser.setSelect_Highlight();
         })
         .on("mouseleave",function(){ 
           this.tipsy.hide();
@@ -10228,12 +10381,12 @@ var Summary_Interval_functions = {
       var binWidth = width / totalGroups;
       var ratioModeActive = this.browser.ratioModeActive;
 
-      var compId = "Compared_"+cT;
+      var compId = "Compare_"+cT;
 
       if(this.percentileChartVisible==="Extended"){
         if(this.browser.vizActive[compId]){
           this.DOM.percentileGroup.select(".compared_percentileChart").style("display","block");
-          if(this.browser.vizActive["Compared_"+cT]) this.updatePercentiles("Compared_"+cT);
+          if(this.browser.vizActive[compId]) this.updatePercentiles("Compare_"+cT);
         } else {
           this.DOM.percentileGroup.select(".compared_percentileChart").style("display","none");
         }
@@ -10252,8 +10405,8 @@ var Summary_Interval_functions = {
 
         var dTime = 200;
         this.timeSVGLine = d3.svg.area().interpolate("cardinal").x(xFunc).y(yFunc);
-        this.DOM["measure_Compared_Area_"+cT].transition().duration(dTime).attr("d", this.timeSVGLine);
-        this.DOM["measure_Compared_Line_"+cT].transition().duration(dTime)
+        this.DOM["measure_Compare_Area_"+cT].transition().duration(dTime).attr("d", this.timeSVGLine);
+        this.DOM["measure_Compare_Line_"+cT].transition().duration(dTime)
           .attr("y1",me.height_hist+3 ).attr("y2",yFunc)
           .attr("x1",xFunc).attr("x2",xFunc);
         return;
@@ -10264,7 +10417,7 @@ var Summary_Interval_functions = {
 
       if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
         // No partial rendering
-        this.DOM["measure_Compared_"+cT].each(function(aggr){
+        this.DOM["measure_Compare_"+cT].each(function(aggr){
           kshf.Util.setTransform(this, _translateY+_translateX+"scale("+binWidth+","+heightCompare(aggr)+")");
         });
       } else {
@@ -10273,7 +10426,7 @@ var Summary_Interval_functions = {
         var filter_max = this.summaryFilter.active.max;
         var minPos = this.valueScale(filter_min);
         var maxPos = this.valueScale(filter_max);
-        this.DOM["measure_Compared_"+cT].each(function(aggr){
+        this.DOM["measure_Compare_"+cT].each(function(aggr){
           var translateX = "";
           var width_self=(curGroup*binWidth);
           var aggr_min = aggr.minV;
@@ -10305,25 +10458,25 @@ var Summary_Interval_functions = {
       var totalC = this.browser.getActiveComparedCount();
       if(this.browser.measureFunc==="Avg") totalC++;
 
-      if(this.browser.vizActive.Highlighted){
-        this.updatePercentiles("Highlighted");
+      if(this.browser.vizActive.Highlight){
+        this.updatePercentiles("Highlight");
         this.DOM.highlightedMeasureValue
           .style("top",( this.height_hist * (1-this.browser.allRecordsAggr.ratioHighlightToTotal() ))+"px")
           .style("opacity",(this.browser.ratioModeActive?1:0));
       } else {
         // Highlight not active
-        this.DOM.percentileGroup.select(".percentileChart_Highlighted").style("opacity",0);
+        this.DOM.percentileGroup.select(".percentileChart_Highlight").style("opacity",0);
         this.DOM.highlightedMeasureValue.style("opacity",0);
         this.refreshMeasureLabel();
         this.highlightRangeLimits_Active = false;
       }
 
       this.DOM.highlightRangeLimits
-        .style("opacity",(this.highlightRangeLimits_Active&&this.browser.vizActive.Highlighted)?1:0)
-        .style("left", function(d){ return me.valueScale(me.flexAggr_Highlight[(d===0)?'minV':'maxV'])+"px"; });
+        .style("opacity",(this.highlightRangeLimits_Active&&this.browser.vizActive.Highlight)?1:0)
+        .style("left", function(d){ return me.valueScale(me.browser.flexAggr_Highlight[(d===0)?'minV':'maxV'])+"px"; });
 
       var getAggrHeight_Preview = function(aggr){
-        var p=aggr.measure('Highlighted');
+        var p=aggr.measure('Highlight');
         if(me.browser.preview_not) p = aggr.measure('Active')-p;
         if(me.browser.ratioModeActive){
           if(aggr._measure.Active===0) return 0;
@@ -10335,7 +10488,7 @@ var Summary_Interval_functions = {
 
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr._measure.Highlighted===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
+          return (aggr._measure.Highlight===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
         };
         var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
         var dTime=200;
@@ -10343,17 +10496,17 @@ var Summary_Interval_functions = {
           .x(xFunc)
           .y0(me.height_hist+2)
           .y1(yFunc);
-        this.DOM.measure_Highlighted_Area.transition().duration(dTime).attr("d", this.timeSVGLine);
-        this.DOM.measure_Highlighted_Line.transition().duration(dTime)
+        this.DOM.measure_Highlight_Area.transition().duration(dTime).attr("d", this.timeSVGLine);
+        this.DOM.measure_Highlight_Line.transition().duration(dTime)
           .attr("y1",me.height_hist+3)
           .attr("y2",yFunc)
           .attr("x1",xFunc)
           .attr("x2",xFunc);
       } else {
-        if(!this.browser.vizActive.Highlighted){
+        if(!this.browser.vizActive.Highlight){
           var xx = (width / (totalC+1));
           var transform = "translateY("+this.height_hist+"px) scale("+xx+",0)";
-          this.DOM.measure_Highlighted.each(function(){ kshf.Util.setTransform(this,transform); });
+          this.DOM.measure_Highlight.each(function(){ kshf.Util.setTransform(this,transform); });
           return;
         }
 
@@ -10368,14 +10521,14 @@ var Summary_Interval_functions = {
           rangeFill = true;
         }
         if(this.highlightRangeLimits_Active){
-          range_min = Math.max(range_min, this.flexAggr_Highlight.minV);
-          range_max = Math.max(range_min, this.flexAggr_Highlight.maxV);
+          range_min = Math.max(range_min, this.browser.flexAggr_Highlight.minV);
+          range_max = Math.max(range_min, this.browser.flexAggr_Highlight.maxV);
           rangeFill = true;
         }
         var minPos = this.valueScale(range_min);
         var maxPos = this.valueScale(range_max);
 
-        this.DOM.measure_Highlighted.each(function(aggr){
+        this.DOM.measure_Highlight.each(function(aggr){
           var _translateX = "";
           var barWidth = width;
           if(aggr._measure.Active>0 && rangeFill){
@@ -10582,7 +10735,9 @@ var Summary_Interval_functions = {
       this.DOM.recordValue.style("display",null);
     },
     /** -- */
-    updateQuantiles: function(distr){
+    updatePercentiles: function(distr){
+      if(this.percentileChartVisible===false) return;
+
       var me=this;
       // get active values into an array
       // the items are already sorted by their numeric value, it's just a linear pass.
@@ -10591,13 +10746,13 @@ var Summary_Interval_functions = {
         this.filteredItems.forEach(function(record){
           if(record.isWanted) values.push(me.getRecordValue(record));
         });
-      } else if(distr==="Highlighted"){
+      } else if(distr==="Highlight"){
         this.filteredItems.forEach(function(record){
           if(record.highlighted) values.push(me.getRecordValue(record));
         });
       } else {
-        var cT = distr.substr(9);
-        // Compared_A / Compared_B / Compared_C
+        var cT = distr.substr(8);
+        // Compare_A / Compare_B / Compare_C
         this.filteredItems.forEach(function(record){
           if(record.selectCompared[cT]) values.push(me.getRecordValue(record));
         });
@@ -10613,16 +10768,8 @@ var Summary_Interval_functions = {
         this.quantile_val[distr+q] = x;
         this.quantile_pos[distr+q] = this.valueScale(x);
       },this);
-    },
-    /** -- */
-    updatePercentiles: function(distr){
-      if(this.percentileChartVisible===false) return;
-      this.updateQuantiles(distr);
+
       this.DOM.percentileGroup.select(".percentileChart_"+distr).style("opacity",1);
-      this._updatePercentiles(distr);
-    },
-    /** -- */
-    _updatePercentiles: function(distr){
 
       [10,20,30,40,50,60,70,80,90].forEach(function(q){
         kshf.Util.setTransform(this.DOM.quantile[distr+q][0][0],"translateX("+this.quantile_pos[distr+q]+"px)");
@@ -10633,7 +10780,7 @@ var Summary_Interval_functions = {
           "translateX("+(this.quantile_pos[distr+qb[0]])+"px) "+
           "scaleX("+(this.quantile_pos[distr+qb[1]]-this.quantile_pos[distr+qb[0]])+") ");
       },this);
-    }
+    },
 };
 for(var index in Summary_Interval_functions){
   kshf.Summary_Interval.prototype[index] = Summary_Interval_functions[index];
@@ -10664,7 +10811,7 @@ var Summary_Clique_functions = {
       value: function(category){ return -category.MST.index; },
       prep: function(){ me.updatePerceptualOrder(); }
     });
-    this.setListSummary.refreshSortOptions();
+    this.setListSummary.refreshCatSortOptions();
     this.setListSummary.DOM.optionSelect.attr("dir","rtl"); // quick hack: right-align the sorting label
 
     this.setListSummary.cbFacetSort = function(){
@@ -11004,7 +11151,7 @@ var Summary_Clique_functions = {
     aggr.set_2.DOM.aggrGlyph.setAttribute("selectType","and");
     aggr.set_1.DOM.aggrGlyph.setAttribute("selection","selected");
     aggr.set_2.DOM.aggrGlyph.setAttribute("selection","selected");
-    this.browser.setSelect_Highlight(this,aggr);
+    this.browser.setSelect_Highlight(aggr);
   },
   /** -- */
   onSetPairLeave: function(aggr){
@@ -11034,7 +11181,7 @@ var Summary_Clique_functions = {
       })
       .on("click",function(aggr){
         if(d3.event.shiftKey){
-          me.browser.setSelect_Compare(me,aggr,false);
+          me.browser.setSelect_Compare(false);
           return;
         }
         me.setListSummary.filterCategory(aggr.set_1,"AND");
@@ -11043,18 +11190,19 @@ var Summary_Clique_functions = {
 
     newCliques.append("rect").attr("class","setPairBackground").attr("rx",3).attr("ry",3);
     newCliques.append("circle").attr("class","measure_Active").attr("cx",0).attr("cy",0).attr("r",0);
-    newCliques.append("path").attr("class","measure_Highlighted").each(function(aggr){ aggr.currentPreviewAngle=-Math.PI/2; });
-    newCliques.append("path").attr("class","measure_Compared_A");
-    newCliques.append("path").attr("class","measure_Compared_B");
-    newCliques.append("path").attr("class","measure_Compared_C");
+    newCliques.append("path").attr("class","measure_Highlight").each(function(aggr){ 
+      aggr.currentPreviewAngle=-Math.PI/2; });
+    newCliques.append("path").attr("class","measure_Compare_A");
+    newCliques.append("path").attr("class","measure_Compare_B");
+    newCliques.append("path").attr("class","measure_Compare_C");
 
-    this.DOM.aggrGlyphs           = this.DOM.setPairGroup.selectAll("g.setPairGlyph");
-    this.DOM.setPairBackground    = this.DOM.aggrGlyphs.selectAll(".setPairBackground");
-    this.DOM.measure_Active       = this.DOM.aggrGlyphs.selectAll(".measure_Active");
-    this.DOM.measure_Highlighted  = this.DOM.aggrGlyphs.selectAll(".measure_Highlighted");
-    this.DOM.measure_Compared_A   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_A");
-    this.DOM.measure_Compared_B   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_B");
-    this.DOM.measure_Compared_C   = this.DOM.aggrGlyphs.selectAll(".measure_Compared_C");
+    this.DOM.aggrGlyphs        = this.DOM.setPairGroup.selectAll("g.setPairGlyph");
+    this.DOM.setPairBackground = this.DOM.aggrGlyphs.selectAll(".setPairBackground");
+    this.DOM.measure_Active    = this.DOM.aggrGlyphs.selectAll(".measure_Active");
+    this.DOM.measure_Highlight = this.DOM.aggrGlyphs.selectAll(".measure_Highlight");
+    this.DOM.measure_Compare_A = this.DOM.aggrGlyphs.selectAll(".measure_Compare_A");
+    this.DOM.measure_Compare_B = this.DOM.aggrGlyphs.selectAll(".measure_Compare_B");
+    this.DOM.measure_Compare_C = this.DOM.aggrGlyphs.selectAll(".measure_Compare_C");
   },
   /** -- */
   printAggrSelection: function(aggr){
@@ -11365,6 +11513,7 @@ var Summary_Clique_functions = {
       var targetClique = me._setPairs_ID[set_1.id()][set_2.id()];
       if(targetClique===undefined){
         targetClique = new kshf.Aggregate();
+        targetClique.summary = me.setListSummary;
         targetClique.init([me._setPairs.length],0);
         me.browser.allAggregates.push(targetClique);
         targetClique.set_1 = set_1;
@@ -11493,9 +11642,9 @@ var Summary_Clique_functions = {
   /** -- */
   refreshViz_Highlight: function(){
     var me=this;
-    this.DOM.measure_Highlighted
+    this.DOM.measure_Highlight
       .transition().duration(500).attrTween("d",function(aggr) {
-        var angleInterp = d3.interpolate(aggr.currentPreviewAngle, me.getAngleToActive_rad(aggr,"Highlighted"));
+        var angleInterp = d3.interpolate(aggr.currentPreviewAngle, me.getAngleToActive_rad(aggr,"Highlight"));
         var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(aggr);
         return function(t) {
           var newAngle=angleInterp(t);
@@ -11511,11 +11660,11 @@ var Summary_Clique_functions = {
     if(this.browser.ratioModeActive){
       strokeWidth = Math.ceil(this.getRowHeight()/18);
     }
-    this.DOM["measure_Compared_"+cT].attr("d",function(setPair){
+    this.DOM["measure_Compare_"+cT].attr("d",function(setPair){
       var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
-      this.style.display = setPair.measure("Compared_"+cT)===0 ? "none" : "block";
+      this.style.display = setPair.measure("Compare_"+cT)===0 ? "none" : "block";
       this.style.strokeWidth = strokeWidth;
-      return me.getPiePath( me.getAngleToActive_rad(setPair,"Compared_"+cT), curGroup*strokeWidth, ratio );
+      return me.getPiePath( me.getAngleToActive_rad(setPair,"Compare_"+cT), curGroup*strokeWidth, ratio );
     });
   },
   /** Does not work with Avg pair */

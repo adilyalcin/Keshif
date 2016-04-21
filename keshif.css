@@ -246,25 +246,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[relativeMode] .Summary_Set > .summaryControls > .strengthControl > .strengthLabel {
   display: inline-block;
 }
-.kshf[selectCompared_A] .measure_Compared_A {
+.kshf[selectCompare_A] .measure_Compare_A {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompared_A] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_A {
+.kshf[selectCompare_A] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_A {
   display: block;
 }
-.kshf[selectCompared_B] .measure_Compared_B {
+.kshf[selectCompare_B] .measure_Compare_B {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompared_B] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_B {
+.kshf[selectCompare_B] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_B {
   display: block;
 }
-.kshf[selectCompared_C] .measure_Compared_C {
+.kshf[selectCompare_C] .measure_Compare_C {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompared_C] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C {
+.kshf[selectCompare_C] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_C {
   display: block;
 }
 .kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:before {
@@ -1087,14 +1087,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbHeader:after {
   content: ': ';
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .filterDetails {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbDetails {
   padding: 1px 0px 1px 0px;
   display: inline;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .filterDetails > b {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbDetails > b {
   font-weight: 700;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .filterDetails > .unitName {
+.kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbDetails > .unitName {
   font-weight: 300;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb > .clearCrumbButton {
@@ -1121,36 +1121,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb[ready=false] {
   max-width: 0px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filtered > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton {
   background-color: #788D9B;
   border: solid 1px #788D9B;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filtered > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton > .fa::before {
   content: "\f0b0";
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlighted > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight > .clearCrumbButton {
   background-color: orangered;
   border: solid 1px orangered;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlighted > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight > .clearCrumbButton > .fa::before {
   content: "\f245";
   position: relative;
   top: 0px;
   left: 1px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared'] > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compare'] > .clearCrumbButton > .fa::before {
   content: "\f023";
   font-size: 1.1em;
   position: relative;
   top: 1px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared_A'] > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compare_A'] > .clearCrumbButton {
   background-color: #2f4f4f;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared_B'] > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compare_B'] > .clearCrumbButton {
   background-color: #2fd71b;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compared_C'] > .clearCrumbButton {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compare_C'] > .clearCrumbButton {
   background-color: #fffedc;
   color: black;
 }
@@ -2234,6 +2234,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .summaryIcons > .useForRecordDisplay {
   display: none;
 }
+.kshf .headerGroup .summaryIcons > .setMatrixButton {
+  display: none;
+}
 .kshf .headerGroup > .header_display_control {
   display: block;
   position: absolute;
@@ -2336,27 +2339,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .aggrGlyph > span[class^="measure_Total"] {
   background-color: #dee2e6;
 }
-.kshf .aggrGlyph > span[class^="measure_Highlighted"] {
+.kshf .aggrGlyph > span[class^="measure_Highlight"] {
   background-color: #ff6a33;
   -webkit-transition: -webkit-transform 250ms ease-in-out;
   -moz-transition: -moz-transform 250ms ease-in-out;
   -o-transition: -o-transform 250ms ease-in-out;
   transition: -webkit-transform 250ms ease-in-out,-moz-transform 250ms ease-in-out,-o-transform 250ms ease-in-out,transform 250ms ease-in-out;
 }
-.kshf .aggrGlyph > span[class^="measure_Compared"] {
+.kshf .aggrGlyph > span[class^="measure_Compare"] {
   -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   -moz-transition: -moz-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   -o-transition: -o-transform 500ms ease-in-out, opacity 300ms ease-in-out;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 300ms ease-in-out;
   opacity: 0;
 }
-.kshf .aggrGlyph > span[class^="measure_Compared_A"] {
+.kshf .aggrGlyph > span[class^="measure_Compare_A"] {
   background-color: #2f4f4f;
 }
-.kshf .aggrGlyph > span[class^="measure_Compared_B"] {
+.kshf .aggrGlyph > span[class^="measure_Compare_B"] {
   background-color: #2fd71b;
 }
-.kshf .aggrGlyph > span[class^="measure_Compared_C"] {
+.kshf .aggrGlyph > span[class^="measure_Compare_C"] {
   background-color: #fffedc;
 }
 .kshf .aggrGlyph.totalGlyph {
@@ -2373,10 +2376,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 1px;
   pointer-events: none;
 }
-.kshf .aggrGlyph.totalGlyph > [class^="measure_Highlighted"] {
+.kshf .aggrGlyph.totalGlyph > [class^="measure_Highlight"] {
   transform: inherit;
 }
-.kshf .aggrGlyph.totalGlyph > [class^="measure_Compared"] {
+.kshf .aggrGlyph.totalGlyph > [class^="measure_Compare"] {
   height: 1px;
 }
 .kshf .aggrGlyph.catGlyph {
@@ -2394,10 +2397,10 @@ height:calc(100% - 8px);
 .kshf .aggrGlyph.catGlyph > [class^="measure_Active"] {
   pointer-events: none;
 }
-.kshf .aggrGlyph.catGlyph > [class^="measure_Compared"] {
+.kshf .aggrGlyph.catGlyph > [class^="measure_Compare"] {
   height: 1px;
 }
-.kshf .aggrGlyph.catGlyph > [class^="measure_Highlighted"] {
+.kshf .aggrGlyph.catGlyph > [class^="measure_Highlight"] {
   height: 1px;
 }
 .kshf .aggrGlyph.catGlyph > .clickArea > .lockButton {
@@ -2442,22 +2445,22 @@ top:calc(50% - 5px);
 .kshf .aggrGlyph.setPairGlyph > .measure_Active {
   fill: #b1bdc5;
 }
-.kshf .aggrGlyph.setPairGlyph > .measure_Highlighted {
+.kshf .aggrGlyph.setPairGlyph > .measure_Highlight {
   fill: #ff6a33;
 }
-.kshf .aggrGlyph.setPairGlyph > [class^="measure_Compared_"] {
+.kshf .aggrGlyph.setPairGlyph > .measure_Compare_A {
+  stroke: #2f4f4f;
+}
+.kshf .aggrGlyph.setPairGlyph > .measure_Compare_B {
+  stroke: #2fd71b;
+}
+.kshf .aggrGlyph.setPairGlyph > .measure_Compare_C {
+  stroke: #fffedc;
+}
+.kshf .aggrGlyph.setPairGlyph > [class^="measure_Compare"] {
   fill: none;
   stroke-width: 1px;
   opacity: 0;
-}
-.kshf .aggrGlyph.setPairGlyph > .measure_Compared_A {
-  stroke: #2f4f4f;
-}
-.kshf .aggrGlyph.setPairGlyph > .measure_Compared_B {
-  stroke: #2fd71b;
-}
-.kshf .aggrGlyph.setPairGlyph > .measure_Compared_C {
-  stroke: #fffedc;
 }
 .kshf .aggrGlyph.setPairGlyph[activesize="0"] {
   display: none;
@@ -2779,16 +2782,16 @@ top:calc(50% - 5px);
 .kshf .summaryConfig .configOption > .bl_Active {
   background-color: #b1bdc5;
 }
-.kshf .summaryConfig .configOption > .bl_Highlighted {
+.kshf .summaryConfig .configOption > .bl_Highlight {
   background-color: #ff6a33;
 }
-.kshf .summaryConfig .configOption > .bl_Compared_A {
+.kshf .summaryConfig .configOption > .bl_Compare_A {
   background-color: #2f4f4f;
 }
-.kshf .summaryConfig .configOption > .bl_Compared_B {
+.kshf .summaryConfig .configOption > .bl_Compare_B {
   background-color: #2fd71b;
 }
-.kshf .summaryConfig .configOption > .bl_Compared_C {
+.kshf .summaryConfig .configOption > .bl_Compare_C {
   background-color: #fff810;
 }
 .kshf .summaryConfig_UnitName > .unitNameInput {
@@ -2915,63 +2918,63 @@ top:calc(50% - 5px);
 .kshf .percentileChart_Active > .quantile.q_10_90 {
   background-color: #dde2e6;
 }
-.kshf .percentileChart_Highlighted {
+.kshf .percentileChart_Highlight {
   border-top: solid 1px lightgray;
   background-color: white;
   pointer-events: none;
 }
-.kshf .percentileChart_Highlighted > .quantile.q_40_60 {
+.kshf .percentileChart_Highlight > .quantile.q_40_60 {
   background-color: #ff6a33;
 }
-.kshf .percentileChart_Highlighted > .quantile.q_30_70 {
+.kshf .percentileChart_Highlight > .quantile.q_30_70 {
   background-color: #ff8f66;
 }
-.kshf .percentileChart_Highlighted > .quantile.q_20_80 {
+.kshf .percentileChart_Highlight > .quantile.q_20_80 {
   background-color: #ffb599;
 }
-.kshf .percentileChart_Highlighted > .quantile.q_10_90 {
+.kshf .percentileChart_Highlight > .quantile.q_10_90 {
   background-color: #ffdacc;
 }
-.kshf *[class^="percentileChart_Compared"] {
+.kshf *[class^="percentileChart_Compare"] {
   display: none;
   pointer-events: all;
   background-color: white;
   border-top: solid 1px #EEEEEE;
 }
-.kshf .percentileChart_Compared_A > .quantile.q_40_60 {
+.kshf .percentileChart_Compare_A > .quantile.q_40_60 {
   background-color: #558f8f;
 }
-.kshf .percentileChart_Compared_A > .quantile.q_30_70 {
+.kshf .percentileChart_Compare_A > .quantile.q_30_70 {
   background-color: #6ea9a9;
 }
-.kshf .percentileChart_Compared_A > .quantile.q_20_80 {
+.kshf .percentileChart_Compare_A > .quantile.q_20_80 {
   background-color: #8ebcbc;
 }
-.kshf .percentileChart_Compared_A > .quantile.q_10_90 {
+.kshf .percentileChart_Compare_A > .quantile.q_10_90 {
   background-color: #aecfcf;
 }
-.kshf .percentileChart_Compared_B > .quantile.q_40_60 {
+.kshf .percentileChart_Compare_B > .quantile.q_40_60 {
   background-color: #25aa15;
 }
-.kshf .percentileChart_Compared_B > .quantile.q_30_70 {
+.kshf .percentileChart_Compare_B > .quantile.q_30_70 {
   background-color: #2dce1a;
 }
-.kshf .percentileChart_Compared_B > .quantile.q_20_80 {
+.kshf .percentileChart_Compare_B > .quantile.q_20_80 {
   background-color: #58e847;
 }
-.kshf .percentileChart_Compared_B > .quantile.q_10_90 {
+.kshf .percentileChart_Compare_B > .quantile.q_10_90 {
   background-color: #8eef82;
 }
-.kshf .percentileChart_Compared_C > .quantile.q_40_60 {
+.kshf .percentileChart_Compare_C > .quantile.q_40_60 {
   background-color: #908b00;
 }
-.kshf .percentileChart_Compared_C > .quantile.q_30_70 {
+.kshf .percentileChart_Compare_C > .quantile.q_30_70 {
   background-color: #b8b300;
 }
-.kshf .percentileChart_Compared_C > .quantile.q_20_80 {
+.kshf .percentileChart_Compare_C > .quantile.q_20_80 {
   background-color: #dcd600;
 }
-.kshf .percentileChart_Compared_C > .quantile.q_10_90 {
+.kshf .percentileChart_Compare_C > .quantile.q_10_90 {
   background-color: #fff810;
 }
 .kshf .missingValueAggr {
@@ -3371,25 +3374,25 @@ top:calc(50% - 8px);
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Highlighted_"] {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Highlight_"] {
   opacity: 0;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compared_"] {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compare_"] {
   opacity: 0;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Active_Line {
   stroke: #b1bdc5;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlighted_Line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlight_Line {
   stroke: #ff6a33;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Line_A {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Line_A {
   stroke: #2f4f4f;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Line_B {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Line_B {
   stroke: #2fd71b;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Line_C {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Line_C {
   stroke: #fffedc;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class$="measure_"] {
@@ -3402,20 +3405,20 @@ top:calc(50% - 8px);
   fill: #ced6db;
   stroke: #b1bdc5;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlighted_Area {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Highlight_Area {
   fill: rgba(255, 106, 51, 0.3);
   stroke: #ff6a33;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compared_Area_"] {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compare_Area_"] {
   stroke-width: 2px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Area_A {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Area_A {
   stroke: #2f4f4f;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Area_B {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Area_B {
   stroke: #2fd71b;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compared_Area_C {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Area_C {
   stroke: #fffedc;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .aggrGroup {
@@ -3781,6 +3784,9 @@ top:calc(50% - 8px);
   display: inline;
   opacity: 1;
 }
+.kshf .kshfSummary[isMultiValued=true] .setMatrixButton {
+  display: inline-block !important;
+}
 .kshf .kshfSummary[filtered_range=true] .clearFilterButton.rangeFilter {
   display: inline-block;
 }
@@ -4032,17 +4038,17 @@ top:calc(50% - 8px);
 .kshf .belowCatChart > .catMapColorScale > .scaleBound.boundMax {
   right: -24px;
 }
-.kshf[measureLabelType="Compared_A"] .aggrGlyph > .measureLabel {
+.kshf[measureLabelType="Compare_A"] .aggrGlyph > .measureLabel {
   color: #2f4f4f !important;
 }
-.kshf[measureLabelType="Compared_B"] .aggrGlyph > .measureLabel {
+.kshf[measureLabelType="Compare_B"] .aggrGlyph > .measureLabel {
   color: #25aa15 !important;
 }
-.kshf[measureLabelType="Compared_C"] .aggrGlyph > .measureLabel {
+.kshf[measureLabelType="Compare_C"] .aggrGlyph > .measureLabel {
   color: #fffda9 !important;
   text-shadow: 0px 0px 1px black, 0px 0px 1px black;
 }
-.kshf[selectHighlight] .percentileChart_Highlighted {
+.kshf[selectHighlight] .percentileChart_Highlight {
   display: block !important;
 }
 .kshf[selectHighlight] .aggrGlyph > .measureLabel {
@@ -4053,7 +4059,7 @@ top:calc(50% - 8px);
   color: #969da3;
   fill: black;
 }
-.kshf[selectHighlight] .timeSVG > [class^="measure_Highlighted_"] {
+.kshf[selectHighlight] .timeSVG > [class^="measure_Highlight_"] {
   opacity: 1 !important;
 }
 .kshf[selectHighlight] .previewLine {
@@ -4151,33 +4157,71 @@ top:calc(50% - 8px);
   height: 100%;
   background: white;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQuery_Highlight {
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox {
   display: none;
+  position: absolute;
+  border-width: 2px;
+  border-style: solid;
+  z-index: 800;
+  pointer-events: none;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQuery_Filter {
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox > .clearSelection {
   display: none;
+  position: absolute;
+  right: -0.5em;
+  top: -0.5em;
+  background-color: white;
+  pointer-events: all;
+  border-radius: 1em;
+  font-size: 1.2em;
+  height: 15px;
+  width: 15px;
+  line-height: 0.9em;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQuery_Filter[active] {
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox:hover {
+  border-color: orangered !important;
+  color: orangered;
+  cursor: pointer;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox[active] {
   display: block;
-  fill: none;
-  stroke-width: 2;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQuery_Filter[active]:hover {
-  stroke-width: 4px;
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox[active] > .clearSelection {
+  display: block;
 }
-.kshf .recordDisplay .recordMap_Base[drawing] {
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Filter {
+  border-color: #b1bdc5;
+  box-shadow: 0px 0px 20px #5A7283;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Highlight {
+  border-color: #ff7800;
+  box-shadow: 0px 0px 5px #994800;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_A {
+  border-color: #2f4f4f;
+  box-shadow: 0px 0px 20px #2f4f4f;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_B {
+  border-color: #2fd71b;
+  box-shadow: 0px 0px 20px #2fd71b;
+}
+.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_C {
+  border-color: #fffedc;
+  box-shadow: 0px 0px 10px #7A7A77, 0px 0px 10px #7A7A77;
+}
+.kshf .recordDisplay .recordMap_Base[drawSelect] {
   cursor: cell !important;
 }
-.kshf .recordDisplay .recordMap_Base[drawing] .leaflet-overlay-pane {
+.kshf .recordDisplay .recordMap_Base[drawSelect] .leaflet-overlay-pane {
   pointer-events: none;
 }
-.kshf .recordDisplay .recordMap_Base[drawing] .leaflet-interactive {
+.kshf .recordDisplay .recordMap_Base[drawSelect] .leaflet-interactive {
   pointer-events: none;
 }
-.kshf .recordDisplay .recordMap_Base[drawingFilter] .spatialQuery_Filter {
+.kshf .recordDisplay .recordMap_Base[drawSelect="Filter"] .spatialQueryBox_Filter {
   display: block;
 }
-.kshf .recordDisplay .recordMap_Base[drawingHighlight] .spatialQuery_Highlight {
+.kshf .recordDisplay .recordMap_Base[drawSelect="Highlight"] .spatialQueryBox_Highlight {
   display: block;
 }
 .kshf .recordDisplay .leaflet-control > a:hover {
@@ -4306,7 +4350,7 @@ top:calc(50% - 8px);
   content: "\f255";
 }
 .kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .recordMap_Base {
-  cursor: default;
+  cursor: crosshair;
 }
 .kshf .recordDisplay[displayType="map"] > .recordDisplayHeader > .recordColorScale {
   display: -webkit-box;

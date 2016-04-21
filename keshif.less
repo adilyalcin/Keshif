@@ -193,17 +193,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .strengthLabel{ display: inline-block; }
       }
     }
-    &[selectCompared_A]{
-      .measure_Compared_A{ opacity: 1 !important; pointer-events: all !important; }
-      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_A{ display: block; }
+    &[selectCompare_A]{
+      .measure_Compare_A{ opacity: 1 !important; pointer-events: all !important; }
+      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_A{ display: block; }
     }
-    &[selectCompared_B]{
-      .measure_Compared_B{ opacity: 1 !important; pointer-events: all !important;}
-      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_B{ display: block; }
+    &[selectCompare_B]{
+      .measure_Compare_B{ opacity: 1 !important; pointer-events: all !important;}
+      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_B{ display: block; }
     }
-    &[selectCompared_C]{
-      .measure_Compared_C{ opacity: 1 !important; pointer-events: all !important;}
-      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compared_C{ display: block; }
+    &[selectCompare_C]{
+      .measure_Compare_C{ opacity: 1 !important; pointer-events: all !important;}
+      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_C{ display: block; }
     }
     &[recordDisplayMapping="sort"]{
       .kshfSummary[summary_type="interval"] {
@@ -831,7 +831,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   font-weight: 700;
                   &:after{ content: ': '; }
                 }
-                > .filterDetails{
+                > .crumbDetails{
                   padding:1px 0px 1px 0px;
                   display: inline;
                   > b{ font-weight: 700; }
@@ -853,14 +853,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               &[filtered=false]{ display: none; }
               &[ready=true]{ max-width: 100%; }
               &[ready=false]{ max-width: 0px; }
-              &.crumbMode_Filtered {
+              &.crumbMode_Filter {
                 > .clearCrumbButton {
                   background-color: #788D9B;
                   border: solid 1px #788D9B;
                   > .fa::before{ content: "\f0b0"; } // cross
                 }
               }
-              &.crumbMode_Highlighted {
+              &.crumbMode_Highlight {
                 > .clearCrumbButton {
                   background-color: orangered;
                   border: solid 1px orangered;
@@ -872,7 +872,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   } // mouse pointer
                 }
               }
-              &[class*='crumbMode_Compared'] {
+              &[class*='crumbMode_Compare'] {
                 > .clearCrumbButton > .fa::before{ 
                   content: "\f023"; // lock
                   font-size: 1.1em;
@@ -880,9 +880,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   top: 1px;
                 }
               }
-              &[class*='crumbMode_Compared_A'] > .clearCrumbButton { background-color: @color_Compare_A; }
-              &[class*='crumbMode_Compared_B'] > .clearCrumbButton { background-color: @color_Compare_B; }
-              &[class*='crumbMode_Compared_C'] > .clearCrumbButton { 
+              &[class*='crumbMode_Compare_A'] > .clearCrumbButton { background-color: @color_Compare_A; }
+              &[class*='crumbMode_Compare_B'] > .clearCrumbButton { background-color: @color_Compare_B; }
+              &[class*='crumbMode_Compare_C'] > .clearCrumbButton { 
                 background-color: @color_Compare_C; 
                 color: black;
               }
@@ -1800,6 +1800,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
         }
         > .useForRecordDisplay{ display: none; }
+        > .setMatrixButton{ display: none; }
       }
       > .header_display_control{
         display: block;
@@ -1872,17 +1873,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[class^="measure_Total"]{
           background-color: @color_distr_total;
         }
-        &[class^="measure_Highlighted"]{
+        &[class^="measure_Highlight"]{
           background-color: @color_bar_preview;
           .transition(~'transform 250ms ease-in-out');
         }
-        &[class^="measure_Compared"]{
+        &[class^="measure_Compare"]{
           .transition(~'transform 500ms ease-in-out, opacity 300ms ease-in-out');
           opacity: 0;
         }
-        &[class^="measure_Compared_A"]{ background-color: @color_Compare_A; }
-        &[class^="measure_Compared_B"]{ background-color: @color_Compare_B; }
-        &[class^="measure_Compared_C"]{ background-color: @color_Compare_C; }
+        &[class^="measure_Compare_A"]{ background-color: @color_Compare_A; }
+        &[class^="measure_Compare_B"]{ background-color: @color_Compare_B; }
+        &[class^="measure_Compare_C"]{ background-color: @color_Compare_C; }
       }
 
       &.totalGlyph{ // Breadcrumb
@@ -1898,8 +1899,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           height: 1px;
           pointer-events: none;
         }
-        > [class^="measure_Highlighted"]{ transform: inherit; }
-        > [class^="measure_Compared"]{ height: 1px; }
+        > [class^="measure_Highlight"]{ transform: inherit; }
+        > [class^="measure_Compare"]{ height: 1px; }
       }
 
       &.catGlyph{
@@ -1910,8 +1911,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .calc(height, ~"100% - 8px");
         }
         > [class^="measure_Active"]{ pointer-events: none; }
-        > [class^="measure_Compared"]{ height: 1px; }
-        > [class^="measure_Highlighted"]{ height: 1px; }
+        > [class^="measure_Compare"]{ height: 1px; }
+        > [class^="measure_Highlight"]{ height: 1px; }
         > .clickArea > .lockButton{
           display: block;
           .calc(top, ~"50% - 5px");
@@ -1947,15 +1948,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .transition(~'all 500ms linear');
         }
         > .measure_Active { fill: @color_bars; }
-        > .measure_Highlighted { fill: @color_bar_preview; }
-        > [class^="measure_Compared_"]{ 
+        > .measure_Highlight{ fill: @color_bar_preview; }
+        > .measure_Compare_A{ stroke: @color_Compare_A; }
+        > .measure_Compare_B{ stroke: @color_Compare_B; }
+        > .measure_Compare_C{ stroke: @color_Compare_C; }
+        > [class^="measure_Compare"]{ 
           fill: none;
           stroke-width: 1px;
           opacity: 0;
         }
-        > .measure_Compared_A{ stroke: @color_Compare_A; }
-        > .measure_Compared_B{ stroke: @color_Compare_B; }
-        > .measure_Compared_C{ stroke: @color_Compare_C; }
         &[activesize="0"]{ display: none; }
         &:not([activesize="0"]) > .setPairBackground{ opacity: 1; }
       } // .setPairGlyph
@@ -2232,11 +2233,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 4px;
           height: 7px;
         }
-        > .bl_Active     { background-color: @color_bars; }
-        > .bl_Highlighted{ background-color: @color_bar_preview; }
-        > .bl_Compared_A { background-color: @color_Compare_A; }
-        > .bl_Compared_B { background-color: @color_Compare_B; }
-        > .bl_Compared_C { background-color: darken(@color_Compare_C, 40%); }
+        > .bl_Active    { background-color: @color_bars; }
+        > .bl_Highlight { background-color: @color_bar_preview; }
+        > .bl_Compare_A { background-color: @color_Compare_A; }
+        > .bl_Compare_B { background-color: @color_Compare_B; }
+        > .bl_Compare_C { background-color: darken(@color_Compare_C, 40%); }
       }
     }
     .summaryConfig_UnitName{
@@ -2338,7 +2339,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.q_10_90 { background-color: lighten(@color_bars, 15%); }
       }
     }
-    .percentileChart_Highlighted{ 
+    .percentileChart_Highlight{ 
       border-top: solid 1px lightgray;
       background-color: white;
       pointer-events: none;
@@ -2349,35 +2350,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.q_10_90 { background-color: lighten(@color_bar_preview, 30%); }
       }
     }
-    *[class^="percentileChart_Compared"]{ 
+    *[class^="percentileChart_Compare"]{ 
       display: none;
       pointer-events: all; // mouse-over can be applied...
       background-color: white;
       border-top: solid 1px #EEEEEE;
     }
-    .percentileChart_Compared_A{ 
-      > .quantile{
-        &.q_40_60 { background-color: lighten(@color_Compare_A, 20%); }
-        &.q_30_70 { background-color: lighten(@color_Compare_A, 30%); }
-        &.q_20_80 { background-color: lighten(@color_Compare_A, 40%); }
-        &.q_10_90 { background-color: lighten(@color_Compare_A, 50%); }
-      }
+    .percentileChart_Compare_A > .quantile{
+      &.q_40_60 { background-color: lighten(@color_Compare_A, 20%); }
+      &.q_30_70 { background-color: lighten(@color_Compare_A, 30%); }
+      &.q_20_80 { background-color: lighten(@color_Compare_A, 40%); }
+      &.q_10_90 { background-color: lighten(@color_Compare_A, 50%); }
     }
-    .percentileChart_Compared_B{ 
-      > .quantile{
-        &.q_40_60 { background-color: darken(@color_Compare_B, 10%); }
-        &.q_30_70 { background-color: darken(@color_Compare_B, 2%); }
-        &.q_20_80 { background-color: lighten(@color_Compare_B, 12%); }
-        &.q_10_90 { background-color: lighten(@color_Compare_B, 25%); }
-      }
+    .percentileChart_Compare_B > .quantile{
+      &.q_40_60 { background-color: darken(@color_Compare_B, 10%); }
+      &.q_30_70 { background-color: darken(@color_Compare_B, 2%); }
+      &.q_20_80 { background-color: lighten(@color_Compare_B, 12%); }
+      &.q_10_90 { background-color: lighten(@color_Compare_B, 25%); }
     }
-    .percentileChart_Compared_C{ 
-      > .quantile{
-        &.q_40_60 { background-color: darken(@color_Compare_C, 65%); }
-        &.q_30_70 { background-color: darken(@color_Compare_C, 57%); }
-        &.q_20_80 { background-color: darken(@color_Compare_C, 50%); }
-        &.q_10_90 { background-color: darken(@color_Compare_C, 40%); }
-      }
+    .percentileChart_Compare_C > .quantile{
+      &.q_40_60 { background-color: darken(@color_Compare_C, 65%); }
+      &.q_30_70 { background-color: darken(@color_Compare_C, 57%); }
+      &.q_20_80 { background-color: darken(@color_Compare_C, 50%); }
+      &.q_10_90 { background-color: darken(@color_Compare_C, 40%); }
     }
 
     // PERCENTILE CHART STYLES - END
@@ -2738,13 +2733,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .timeSVG{
                       .transition(~'opacity 500ms linear');
                       //overflow: visible;
-                      > [class^="measure_Highlighted_"]{ opacity: 0; }
-                      > [class^="measure_Compared_"]{ opacity: 0; }
-                      > .measure_Active_Line      { stroke: @color_bars; }
-                      > .measure_Highlighted_Line { stroke: @color_bar_preview; }
-                      > .measure_Compared_Line_A  { stroke: @color_Compare_A; }
-                      > .measure_Compared_Line_B  { stroke: @color_Compare_B; }
-                      > .measure_Compared_Line_C  { stroke: @color_Compare_C; }
+                      > [class^="measure_Highlight_"]{ opacity: 0; }
+                      > [class^="measure_Compare_"]{ opacity: 0; }
+                      > .measure_Active_Line    { stroke: @color_bars; }
+                      > .measure_Highlight_Line { stroke: @color_bar_preview; }
+                      > .measure_Compare_Line_A { stroke: @color_Compare_A; }
+                      > .measure_Compare_Line_B { stroke: @color_Compare_B; }
+                      > .measure_Compare_Line_C { stroke: @color_Compare_C; }
                       
                       > [class$="measure_"]{ stroke-width: 1.5px; }
                       > .measure_Total_Area{
@@ -2754,14 +2749,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         fill: lighten(@color_bars, 10%);
                         stroke: @color_bars;
                       }
-                      > .measure_Highlighted_Area{
+                      > .measure_Highlight_Area{
                         fill: fadeout(@color_bar_preview,70%);
                         stroke: @color_bar_preview;
                       }
-                      > [class^="measure_Compared_Area_"] { stroke-width: 2px;}
-                      > .measure_Compared_Area_A{ stroke: @color_Compare_A; }
-                      > .measure_Compared_Area_B{ stroke: @color_Compare_B; }
-                      > .measure_Compared_Area_C{ stroke: @color_Compare_C; }
+                      > [class^="measure_Compare_Area_"] { stroke-width: 2px;}
+                      > .measure_Compare_Area_A{ stroke: @color_Compare_A; }
+                      > .measure_Compare_Area_B{ stroke: @color_Compare_B; }
+                      > .measure_Compare_Area_C{ stroke: @color_Compare_C; }
                     }
                     > .aggrGroup{
                       position: absolute;
@@ -3076,6 +3071,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph{
             &[selected="0"][selection="selected"] .notButton{ display: inline; opacity: 1 }
           }
+          .setMatrixButton{ display: inline-block !important; }
         }
         &[filtered_range=true] .clearFilterButton.rangeFilter{
           display:inline-block;
@@ -3297,13 +3293,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    &[measureLabelType="Compared_A"]{
+    &[measureLabelType="Compare_A"]{
       .aggrGlyph > .measureLabel{ color: @color_Compare_A !important; }
     }
-    &[measureLabelType="Compared_B"]{
+    &[measureLabelType="Compare_B"]{
       .aggrGlyph > .measureLabel{ color: darken(@color_Compare_B, 10%) !important; }
     }
-    &[measureLabelType="Compared_C"]{
+    &[measureLabelType="Compare_C"]{
       .aggrGlyph > .measureLabel{ 
         color: darken(@color_Compare_C, 10%) !important; 
         text-shadow: 0px 0px 1px black, 0px 0px 1px black;
@@ -3311,7 +3307,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     &[selectHighlight]{
-      .percentileChart_Highlighted{ display: block !important; }
+      .percentileChart_Highlight{ display: block !important; }
       .aggrGlyph > .measureLabel{ 
         color: orangered;
         fill: orangered;
@@ -3323,7 +3319,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           fill: black;
         }
       }
-      .timeSVG > [class^="measure_Highlighted_"]{ opacity: 1 !important; }
+      .timeSVG > [class^="measure_Highlight_"]{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
       &:not([relativeMode]) .mapGlyph > .aggr.preview{
         opacity: 1;
@@ -3393,30 +3389,53 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .recordMap_Base{
         height: 100%;
         background: white;
-        .spatialQuery_Highlight{ display: none; }
-        .spatialQuery_Filter{ 
+        .spatialQueryBox{
           display: none;
+          position: absolute;
+          border-width: 2px;
+          border-style: solid;
+          z-index: 800;
+          pointer-events: none;
+          > .clearSelection{
+            display: none;
+            position: absolute;
+            right: -0.5em;
+            top: -0.5em;
+            background-color: white;
+            pointer-events: all;
+            border-radius: 1em;
+            font-size: 1.2em;
+            height: 15px;
+            width: 15px;
+            line-height: 0.9em;
+          }
+          &:hover{ 
+            border-color: orangered !important;
+            color: orangered;
+            cursor: pointer;
+          }
           &[active]{
             display: block;
-            fill: none;
-            stroke-width: 2;
-            &:hover{ stroke-width: 4px; }
+            > .clearSelection{ display: block; }
+            //background-color: initial;
           }
+
+          &.spatialQueryBox_Filter   { border-color: #b1bdc5; box-shadow : 0px 0px 20px #5A7283; }
+          &.spatialQueryBox_Highlight{ border-color: #ff7800; box-shadow : 0px 0px 5px darken(#ff7800, 20%); }
+          &.spatialQueryBox_Compare_A{ border-color: @color_Compare_A; box-shadow : 0px 0px 20px @color_Compare_A; }
+          &.spatialQueryBox_Compare_B{ border-color: @color_Compare_B; box-shadow : 0px 0px 20px @color_Compare_B; }
+          &.spatialQueryBox_Compare_C{ border-color: @color_Compare_C; box-shadow : 0px 0px 10px #7A7A77, 0px 0px 10px #7A7A77; }
         }
-        &[drawing]{
+        &[drawSelect]{
           cursor: cell !important;
           .leaflet-overlay-pane{ pointer-events: none; }
-          .leaflet-interactive{ pointer-events: none; }
+          .leaflet-interactive { pointer-events: none; }
         }
-        &[drawingFilter]{
-          .spatialQuery_Filter{ 
-            display: block;
-          }
+        &[drawSelect="Filter"]{
+          .spatialQueryBox_Filter{ display: block; }
         }
-        &[drawingHighlight]{
-          .spatialQuery_Highlight{ 
-            display: block;
-          }
+        &[drawSelect="Highlight"]{
+          .spatialQueryBox_Highlight{ display: block; }
         }
       }
 
@@ -3533,9 +3552,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[mapMouseControl="draw"]{
           .mapMouseControl:after{ content: "\f096" } // fa-square-o
           .mapMouseControl:hover:after{ content: "\f255" } // fa-hand-rock-o
-          .recordMap_Base{
-            cursor: default;
-          }
+          .recordMap_Base{ cursor: crosshair; }
         }
 
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
