@@ -35,15 +35,16 @@ $(document).ready( function(){
       { name: "Dataset", value: "dataset", panel: "right", collapsed: true},
       { name: "HPI Score", value: "HPI", collapsed: true},
       { name: "Wikipedia Views", value: "TotalPageViews", panel: "middle", collapsed: true},
-      { name: "Birth Year", value: "birthyear", panel: "middle"},
+      { name: "Birth Year", value: "birthyear", panel: "middle", timeFormat: "%Y"},
     ],
     recordDisplay: {
       sortBy: 'HPI Score',
-      showRank: true,
       textSearch: "name",
+      displayType: 'grid',
       recordView: function(){
-        return this.name + 
-          " <a class='fa fa-external-link extLink' href='http://pantheon.media.mit.edu/people/"+this.name+"' target='_blank'> info</a>";
+        var img = "<img class='thumbImg' src='http://pantheon.media.mit.edu/people/"+this.en_curid+".jpg'>";
+        var link = "<a href='http://pantheon.media.mit.edu/people/"+this.name+"' target='_blank'>";
+        return link+"<span class='thumbnail'>"+img+"</span><span class='name'>"+this.name+"</span></a>";
       }
     }
   });
@@ -53,13 +54,15 @@ $(document).ready( function(){
 #demo_Browser{
   height: calc(100vh - 100px);
 }
-.extLink{
-  font-size: 0.8em;
-  color: gray;
-}
-.extLink:hover{
+.kshfRecord{ width: 130px; }
+.name{
+  display: block;
+  text-align: center;
   color: black;
-  text-shadow: 1px 1px 1px gray;
+  font-weight: 600;
+}
+img.thumbImg{ 
+  border-radius: 8px;
 }
 </style>
 	</head>
