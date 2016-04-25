@@ -48,7 +48,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_Compare_C: #FFFEDC; // purple; //#222222;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
-@color_chart_background_highlight: rgba(211, 217, 197, 1);
 @color_preview: lighten(orangered, 10%); //#B2B227;
 
 @color_query_and: #1D4870;
@@ -341,16 +340,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       z-index: 10;
     }
 
-    .editableTextContainer{
-      > .editableText:focus{
-        background-color: white;
-        box-shadow: 0 0 3px #2CABCF;
-        border-color: #2CABCF;
-        border-style: solid;
-        border-width: 1px;
-        outline: 0 none;
-        margin: 0px;
-      }
+    .editableText:focus{
+      background-color: white;
+      box-shadow: 0 0 3px #2CABCF;
+      border-color: #2CABCF;
+      border-style: solid;
+      border-width: 1px;
+      outline: 0 none;
+      margin: 0px;
     }
 
     > .attributePanel{
@@ -3662,6 +3659,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .recordRank{
               vertical-align: top;
               margin-right: 2px;
+              position: absolute;
             }
             > .content{ display: block; }
             > .recordToggleDetail{

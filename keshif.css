@@ -416,7 +416,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   z-index: 10;
 }
-.kshf .editableTextContainer > .editableText:focus {
+.kshf .editableText:focus {
   background-color: white;
   box-shadow: 0 0 3px #2CABCF;
   border-color: #2CABCF;
@@ -4525,6 +4525,7 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup > .kshfRecord > .recordRank {
   vertical-align: top;
   margin-right: 2px;
+  position: absolute;
 }
 .kshf .recordDisplay[displayType="grid"][hasrecordview="true"] .recordGroup > .kshfRecord > .content {
   display: block;
