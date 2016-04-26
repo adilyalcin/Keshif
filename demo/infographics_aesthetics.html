@@ -68,7 +68,7 @@ google.setOnLoadCallback(function(){
       browser2 = new kshf.Browser({
         domID: "#browser_participants",
         barChartWidth: 90,
-        itemName: "Pacticipants",
+        recordName: "Pacticipants",
         source: {
           callback: function(browser){ 
             browser.primaryTableName = "Participants",
@@ -121,7 +121,7 @@ function showBrowsers(v){
       domID: "#browser_responses",
       barChartWidth: 100,
       leftPanelLabelWidth: 200,
-      itemName: "Responses",
+      recordName: "Responses",
       source: {
         callback: function(browser){ 
           browser.primaryTableName = "Responses",

@@ -14,7 +14,7 @@ var browser_configs = {
     browser: {
       barChartWidth: 90,
       leftPanelLabelWidth: 180,
-      itemName: "Les Misérables Chapters",
+      recordName: "Les Misérables Chapters",
       source: {
         gdocId: '1nMU5gL16rDXdDIDRs6bvTRMoUuhdd3vmeaVi2WVv0pE',
         tables: ["Chapters", "Characters"]
@@ -55,7 +55,7 @@ var browser_configs = {
       leftPanelLabelWidth: 140,
       rightPanelLabelWidth: 100,
       barChartWidth: 80,
-      itemName: "Movies",
+      recordName: "Movies",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies_radialset" },
       summaries: [
         { name: "Genres",
@@ -108,7 +108,7 @@ var browser_configs = {
         " A collection of simpsons characters and their attributes.",
     browser: {
       leftPanelLabelWidth: 110,
-      itemName: "Characters in the Simpsons",
+      recordName: "Characters in the Simpsons",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "simpsons" },
       summaries: [
         { name: "Features",
@@ -166,7 +166,7 @@ var browser_configs = {
     browser: {
       barChartWidth: 90,
       leftPanelLabelWidth: 200,
-      itemName: "Actors",
+      recordName: "Actors",
       source: {
         url: "http://grantland.com/features/the-hbo-recycling-program/",
         // http://zgrossbart.github.io/hborecycling/
@@ -275,7 +275,7 @@ var browser_configs = {
     credits: "<a href='http://www.bloomberg.com/infographics/2014-08-21/top-data-breaches.html' target='blnk'>Bloomberg</a> - "+
         "Data Breaches in the U.S.",
     browser: {
-      itemName: "Data Breaches",
+      recordName: "Data Breaches",
       leftPanelLabelWidth: 140,
       rightPanelLabelWidth: 150,
       barChartWidth: 70,
@@ -324,7 +324,7 @@ var browser_configs = {
       barChartWidth: 90,
       leftPanelLabelWidth: 100,
       rightPanelLabelWidth: 90,
-      itemName: "TED Talks",
+      recordName: "TED Talks",
       source: {
         gdocId: '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
         tables: "Talks"
@@ -363,7 +363,7 @@ var browser_configs = {
     browser: {
       categoryTextWidth: 200,
       rightPanelLabelWidth: 100,
-      itemName: "Papers",
+      recordName: "Papers",
       source: {
         url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
         dirPath: googleDriveDir+"acm_",
@@ -402,7 +402,7 @@ var browser_configs = {
     browser: {
       categoryTextWidth: 170,
       rightPanelLabelWidth: 100,
-      itemName: "Papers",
+      recordName: "Papers",
       source: {
         url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
         dirPath: googleDriveDir+"acm_",
@@ -438,7 +438,7 @@ var browser_configs = {
         ": Visualizing Boolean Set-Typed Data using Direct Manipulation. R. Sadana, T. Major, A. Dove, J. Stasko",
     browser: {
       leftPanelLabelWidth: 140,
-      itemName: "Compounds",
+      recordName: "Compounds",
       source:{
         callback: function(browser){
           browser.primaryTableName = "Compounds";
@@ -501,7 +501,7 @@ var browser_configs = {
         "Social graph data for co-usage of multiple online social platforms.",
     browser: {
       middlePanelLabelWidth: 110,
-      itemName: "People",
+      recordName: "People",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: {name:"socialgraph", id:"Name"} },
       summaries:[
         { name: "Sets", panel: "middle",
@@ -530,7 +530,7 @@ var browser_configs = {
     credits: "<a href='http://cs.brown.edu/people/alexpap/faculty_dataset.html' target='_blank'>Data</a> made available by <b>A. Papoutsaki et. al</b>, Brown University, Providence, RI, USA.",
     browser: {
       barChartWidth: 90,
-      itemName: "CS Faculty",
+      recordName: "CS Faculty",
       leftPanelLabelWidth: 120,
       source: {
         url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
@@ -571,7 +571,7 @@ var browser_configs = {
     width: 680,
     credits: "<a href='http://cs.brown.edu/people/alexpap/faculty_dataset.html' target='_blank'>Data</a> made available by <b>A. Papoutsaki et. al</b>, Brown University, Providence, RI, USA.",
     browser: {
-      itemName: "CS Faculty",
+      recordName: "CS Faculty",
       leftPanelLabelWidth: 250,
       source: {
         url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
@@ -609,7 +609,7 @@ var browser_configs = {
     width: 650,
     browser: {
       categoryTextWidth: 150,
-      itemName: "Countries",
+      recordName: "Countries",
       source: {
         url: "http://jmatchparser.sourceforge.net/",
         callback: function(browser){
@@ -643,7 +643,7 @@ var browser_configs = {
             ": Visualizing Boolean Set-Typed Data using Direct Manipulation. R. Sadana, T. Major, A. Dove, J. Stasko",
         browser: {
             leftPanelLabelWidth: 190,
-            itemName: "Senators",
+            recordName: "Senators",
             source: {
                 url: "http://www.cc.gatech.edu/gvu/ii/setvis/onset/",
                 callback:function(browser){
@@ -704,7 +704,7 @@ var browser_configs = {
         "Glioblastoma Multiforme Mutation Analysis, filtered for 100 most mutated genes.",
     browser: {
       leftPanelLabelWidth: 110,
-      itemName: "Mutations",
+      recordName: "Mutations",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "gbm_mutated_top100" },
       summaries: [
         { name: "Genes",
@@ -735,7 +735,7 @@ var browser_configs = {
     width: 550,
     browser: {
       middlePanelLabelWidth: 200,
-      itemName: "cpds vs protein fam",
+      recordName: "cpds vs protein fam",
       source:{
         url:upsetSourceURL,
         dirPath: googleDriveDir+"set_",
@@ -771,7 +771,7 @@ var browser_configs = {
     credits: "<a href='http://dx.doi.org/10.1073/pnas.1012741107' target='_blank'>Gleeson et al.<a> Protein binding of small molecules.",
     browser: {
       leftPanelLabelWidth: 110,
-      itemName: "cpds vs protein table",
+      recordName: "cpds vs protein table",
       source:{
         url:upsetSourceURL,
         dirPath: googleDriveDir+"set_",

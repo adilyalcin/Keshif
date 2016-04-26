@@ -3060,7 +3060,7 @@ kshf.Browser = function(options){
     this.readyCb = options.readyCb;
     this.preview_not = false;
 
-    this.itemName = options.itemName || "";
+    this.recordName = options.itemName || options.recordName || "";
     if(options.itemDisplay) options.recordDisplay = options.itemDisplay;
 
     if(typeof this.options.enableAuthoring === "undefined") this.options.enableAuthoring = false;
@@ -3355,7 +3355,7 @@ kshf.Browser.prototype = {
           .attr("selected", function(summary){ return summary===me.measureSummary?"true":null })
           .html(function(summary){ return summary.summaryName; })
 
-      m.append("span").attr("class","measureSelectBox_Content_RecordName").html(" of "+this.itemName);
+      m.append("span").attr("class","measureSelectBox_Content_RecordName").html(" of "+this.recordName);
     },
     /** -- */
     closeMeasureSelectBox: function(){
@@ -3425,13 +3425,13 @@ kshf.Browser.prototype = {
         .on("blur",function(){
           this.parentNode.setAttribute("edittitle",false);
           this.setAttribute("contenteditable", false);
-          me.itemName = this.textContent;
+          me.recordName = this.textContent;
         })
         .on("keydown",function(){
           if(event.keyCode===13){ // ENTER
             this.parentNode.setAttribute("edittitle",false);
             this.setAttribute("contenteditable", false);
-            me.itemName = this.textContent;
+            me.recordName = this.textContent;
           }
         })
         .on("click",function(){
@@ -3448,7 +3448,7 @@ kshf.Browser.prototype = {
             var parentDOM = d3.select(this.parentNode);
             var v=parentDOM.select(".recordName")[0][0];
             v.setAttribute("contenteditable",false);
-            me.itemName = this.textContent;
+            me.recordName = this.textContent;
           }
         });
 
@@ -4426,7 +4426,7 @@ kshf.Browser.prototype = {
       this.records = kshf.dt[this.primaryTableName];
       this.records.forEach(function(r){ this.allRecordsAggr.addRecord(r); },this);
       
-      if(this.itemName==="") this.itemName = this.primaryTableName;
+      if(this.recordName==="") this.recordName = this.primaryTableName;
 
       var me=this;
       this.panel_overlay.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
@@ -4618,7 +4618,7 @@ kshf.Browser.prototype = {
           this.setMeasureFunction(summary,"Sum");
         }
 
-        this.DOM.recordName.html(this.itemName);
+        this.DOM.recordName.html(this.recordName);
 
         if(this.source.url){
           this.DOM.datasource.style("display","inline-block").attr("href",this.source.url);
@@ -5230,7 +5230,7 @@ kshf.Browser.prototype = {
     exportConfig: function(){
       var config = {};
       config.domID = this.domID;
-      config.itemName = this.itemName;
+      config.recordName = this.recordName;
       config.source = this.source;
       delete config.source.loadedTableCount;
       config.summaries = [];
@@ -5890,7 +5890,7 @@ kshf.Summary_Base.prototype = {
       .each(function(d){
         this.tipsy = new Tipsy(this, {
           gravity: 'ne', title: function(){
-            return "Use to "+me.browser.recordDisplay.getRecordEncoding()+" "+me.browser.itemName;
+            return "Use to "+me.browser.recordDisplay.getRecordEncoding()+" "+me.browser.recordName;
           }
         });
       })
@@ -6032,7 +6032,7 @@ kshf.Summary_Base.prototype = {
         this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
           var x = me.browser.getMeasureLabel(me.missingValueAggr, me);
           // TODO: Number should depend on filtering state, and also reflect percentage-mode
-          return "<b>"+x+"</b> "+me.browser.getMeasureFuncTypeText()+me.browser.itemName+" "+kshf.lang.cur.NoData; 
+          return "<b>"+x+"</b> "+me.browser.getMeasureFuncTypeText()+me.browser.recordName+" "+kshf.lang.cur.NoData; 
         }});
       })
       .on("mouseover",function(){
@@ -7895,7 +7895,7 @@ var Summary_Categorical_functions = {
               gravity: 'e',
               title: function(){ 
                 return "<span class='mapItemName'>"+me.catLabel_Func.call(_cat.data)+"</span>"+
-                  me.browser.getMeasureLabel(_cat)+" "+me.browser.itemName;
+                  me.browser.getMeasureLabel(_cat)+" "+me.browser.recordName;
               }
             });
           })
@@ -10643,7 +10643,7 @@ var Summary_Clique_functions = {
     this.gridPan_x=0;
 
     // Update sorting options of setListSummary (adding relatednesness metric...)
-    this.setListSummary.catSortBy[0].name = this.browser.itemName+" #";
+    this.setListSummary.catSortBy[0].name = this.browser.recordName+" #";
     this.setListSummary.insertSortingOption({
       name: "Relatedness",
       value: function(category){ return -category.MST.index; },
