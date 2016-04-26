@@ -1288,21 +1288,23 @@ kshf.RecordDisplay.prototype = {
       };
 
       this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
+      var zoomInit;
 
       this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], kshf.map.config )
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
         .on("viewreset",function(){ 
           me.map_projectRecords();
         })
-        .on("movestart",function(){ 
-          me.DOM.recordGroup.style("display","none");
+        .on("movestart",function(){
+          zoomInit = this.getZoom();
+          me.DOM.recordMap_SVG.style("opacity",0.3);
           me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display","none");
         })
         .on("move",function(){
           // console.log("MapZoom: "+me.leafletRecordMap.getZoom());
         })
         .on("moveend",function(){
-          me.DOM.recordGroup.style("display","block");
+          me.DOM.recordMap_SVG.style("opacity",null);
           me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display",null);
           me.refreshViz_Compare_All();
           me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
@@ -1320,7 +1322,7 @@ kshf.RecordDisplay.prototype = {
               var bounds = me.browser['flexAggr_'+d].bounds;
               if(bounds) updateRectangle.call(this,bounds);
             });
-          me.map_projectRecords();
+          if(this.getZoom()!==zoomInit) me.map_projectRecords();
         });
 
       this.recordGeoPath = d3.geo.path().projection( 
@@ -8173,6 +8175,7 @@ var Summary_Categorical_functions = {
         return; 
       }
 
+      var zoomInit;
       // See http://leaflet-extras.github.io/leaflet-providers/preview/ for alternative layers
       this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0], kshf.map.config )
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig ) )
@@ -8180,15 +8183,16 @@ var Summary_Categorical_functions = {
           me.map_projectCategories()
         })
         .on("movestart",function(){
-          me.DOM.aggrGlyphs.style("display","none");
+          zoomInit = this.getZoom();
+          me.DOM.catMap_SVG.style("opacity",0.3);
         })
         .on("move",function(){
           // console.log("MapZoom: "+me.leafletAttrMap.getZoom());
           // me.map_projectCategories()
         })
         .on("moveend",function(){
-          me.DOM.aggrGlyphs.style("display","block");
-          me.map_projectCategories()
+          me.DOM.catMap_SVG.style("opacity",null);
+          if(zoomInit !== this.getZoom()) me.map_projectCategories();
         })
         ;
 
