@@ -8817,6 +8817,10 @@ var Summary_Interval_functions = {
           min: Math.floor(this.intervalRange.org.min),
           max: Math.ceil(this.intervalRange.org.max)
         };
+
+        if(this.scaleType==='log' && this.intervalRange.total.min===0){
+          this.intervalRange.total.min = this.intervalRange.org.min;
+        }
       }
 
       if(this.stepTicks){
@@ -8881,10 +8885,8 @@ var Summary_Interval_functions = {
             }
             return v;
           },this);
-          if(x!==this.filteredItems.length){ // Some records are filtered bc they were 0.
-            this.updateIntervalRange_Total();
-            this.resetFilterRangeToTotal();
-          }
+          this.updateIntervalRange_Total();
+          this.resetFilterRangeToTotal();
         }
       }
       this.updateScaleAndBins(true);
@@ -9099,7 +9101,7 @@ var Summary_Interval_functions = {
     /** -- */
     setUnitName: function(v){
       this.unitName = v;
-      if(this.unitName) this.DOM.unitNameInput[0][0].value = this.unitName;
+      if(this.unitName && this.DOM.unitNameInput) this.DOM.unitNameInput[0][0].value = this.unitName;
       this.refreshValueTickLabels();
       if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
         this.browser.recordDisplay.refreshRecordSortLabels();
