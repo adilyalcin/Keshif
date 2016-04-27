@@ -18,20 +18,17 @@
     <script type="text/javascript" src="./demo/js/demo.js" charset="utf-8"></script>
     <script type="text/javascript" src="./AggreSet/jquery.colorbox-min.js" charset="utf-8"></script>
 
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+
     <script type="text/javascript">
 
-var loaded=false;
 socialShare = false;
-
 $(document).ready(function(){
   $(".youtube").colorbox({iframe:true, width:920, height:600, scalePhotos: true});
   loadDemoBrowser();
 });
 
 var loadDemoBrowser = function(){
-  if(loaded) return;
-  loaded=true;
-
   browser = new kshf.Browser({
     domID: "#livedemo",
     categoryTextWidth: 150,
@@ -50,17 +47,14 @@ var loadDemoBrowser = function(){
         description: "Relative code complexity of demo source",
         catSortBy: "id",
         catLabel: function(){
-          var r="";
-          switch(this.id){
-            case 1: r="A breeze "; break;
-            case 2: r="Simple "; break; 
-            case 3: r="Intermediate "; break;
-            case 4: r="Detailed "; break;
-            case 5: r="Fully featured "; break;
-          }
-          // Add star's
-          r+=Array(this.id+1).join("<span class='fa fa-star' style='font-size: 0.7em;'></span>")
-          return r;
+          return ({
+            1: "A breeze",
+            2: "Simple",
+            3: "Intermediate",
+            4: "Detailed",
+            5: "Fully featured",
+          })[this.id] + " "
+            + Array(this.id+1).join("<span class='fa fa-star' style='font-size: 0.7em;'></span>");
         }},
       { name: "Summary Types", panel: 'right',
         value: function(){
@@ -96,7 +90,6 @@ var loadDemoBrowser = function(){
                   r.push("Dynamic Sizing <span class='fa fa-arrows-alt'></span>");
               return r;
           }*/
-      //{ name: "Created At", panel: "right", value: function(){ return this.Authored.getFullYear(); } }
       { name: "Authored", panel: "right" }
     ],
     itemDisplay: {
@@ -111,7 +104,6 @@ var loadDemoBrowser = function(){
           var str='';
           str+="<a target='_blank' href='./demo/"+this["Link"]+"'>";
             str+="<span class='thumbnail'><img class='theImage' src='demo/demo_img/"+link+".png')></span>";
-  //          str+="<div class=\"iteminfo iteminfo_0\">";
             str+="<span class='demoTitle'>"+this["Name"]+"</span>";
             str+="</a>";
           str+="<span class='demoIcons'>";
@@ -141,182 +133,242 @@ var loadDemoBrowser = function(){
 };
 	</script>
 	<style>
-body{
-    margin: 0;
-    padding: 0;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 63.125%;
-    /* translate 1.0em to 10px, 1.5em to 15px, etc. */
-    color: #222;
+
+/*
+* Skeleton V2.0.4
+* Copyright 2014, Dave Gamache
+* www.getskeleton.com
+* Free to use under the MIT license.
+* http://www.opensource.org/licenses/mit-license.php
+* 12/29/2014
+*/
+
+
+/* Table of contents
+––––––––––––––––––––––––––––––––––––––––––––––––––
+- Grid
+- Base Styles
+- Typography
+- Links
+- Buttons
+- Forms
+- Lists
+- Code
+- Tables
+- Spacing
+- Utilities
+- Clearing
+- Media Queries
+*/
+
+
+/* Grid
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+.column,
+.columns {
+  width: 100%;
+  float: left;
+  box-sizing: border-box; }
+
+/* For devices larger than 400px */
+@media (min-width: 400px) {
+  .container {
+    width: 85%;
+    padding: 0; }
 }
 
-/****************************************
- * body / content Sections
- ****************************************/
+/* For devices larger than 550px */
+@media (min-width: 550px) {
+  .container {
+    width: 80%; }
+  .column,
+  .columns {
+    margin-left: 4%; }
+  .column:first-child,
+  .columns:first-child {
+    margin-left: 0; }
+
+  .one.column,
+  .one.columns                    { width: 4.66666666667%; }
+  .two.columns                    { width: 13.3333333333%; }
+  .three.columns                  { width: 22%;            }
+  .four.columns                   { width: 30.6666666667%; }
+  .five.columns                   { width: 39.3333333333%; }
+  .six.columns                    { width: 48%;            }
+  .seven.columns                  { width: 56.6666666667%; }
+  .eight.columns                  { width: 65.3333333333%; }
+  .nine.columns                   { width: 74.0%;          }
+  .ten.columns                    { width: 82.6666666667%; }
+  .eleven.columns                 { width: 91.3333333333%; }
+  .twelve.columns                 { width: 100%; margin-left: 0; }
+
+  .one-third.column               { width: 30.6666666667%; }
+  .two-thirds.column              { width: 65.3333333333%; }
+
+  .one-half.column                { width: 48%; }
+
+  /* Offsets */
+  .offset-by-one.column,
+  .offset-by-one.columns          { margin-left: 8.66666666667%; }
+  .offset-by-two.column,
+  .offset-by-two.columns          { margin-left: 17.3333333333%; }
+  .offset-by-three.column,
+  .offset-by-three.columns        { margin-left: 26%;            }
+  .offset-by-four.column,
+  .offset-by-four.columns         { margin-left: 34.6666666667%; }
+  .offset-by-five.column,
+  .offset-by-five.columns         { margin-left: 43.3333333333%; }
+  .offset-by-six.column,
+  .offset-by-six.columns          { margin-left: 52%;            }
+  .offset-by-seven.column,
+  .offset-by-seven.columns        { margin-left: 60.6666666667%; }
+  .offset-by-eight.column,
+  .offset-by-eight.columns        { margin-left: 69.3333333333%; }
+  .offset-by-nine.column,
+  .offset-by-nine.columns         { margin-left: 78.0%;          }
+  .offset-by-ten.column,
+  .offset-by-ten.columns          { margin-left: 86.6666666667%; }
+  .offset-by-eleven.column,
+  .offset-by-eleven.columns       { margin-left: 95.3333333333%; }
+
+  .offset-by-one-third.column,
+  .offset-by-one-third.columns    { margin-left: 34.6666666667%; }
+  .offset-by-two-thirds.column,
+  .offset-by-two-thirds.columns   { margin-left: 69.3333333333%; }
+
+  .offset-by-one-half.column,
+  .offset-by-one-half.columns     { margin-left: 52%; }
+
+}
+
+
+/* Base Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+/* NOTE
+html is set to 62.5% so that all the REM measurements throughout Skeleton
+are based on 10px sizing. So basically 1.5rem = 15px :) */
+html {
+  font-size: 62.5%; }
+body {
+  font-size: 1.5em; /* currently ems cause chrome bug misinterpreting rems on body element */
+  line-height: 1.6;
+  font-weight: 400;
+  color: #222; }
+
+
+/* Typography
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-weight: 300; }
+h1 { font-size: 4.0rem; line-height: 1.2;  letter-spacing: -.1rem;}
+h2 { font-size: 3.6rem; line-height: 1.25; letter-spacing: -.1rem; }
+h3 { font-size: 3.0rem; line-height: 1.3;  letter-spacing: -.1rem; }
+h4 { font-size: 2.4rem; line-height: 1.35; letter-spacing: -.08rem; }
+h5 { font-size: 1.8rem; line-height: 1.5;  letter-spacing: -.05rem; }
+h6 { font-size: 1.5rem; line-height: 1.6;  letter-spacing: 0; }
+
+/* Larger than phablet */
+@media (min-width: 550px) {
+  h1 { font-size: 5.0rem; }
+  h2 { font-size: 4.2rem; }
+  h3 { font-size: 3.6rem; }
+  h4 { font-size: 3.0rem; }
+  h5 { font-size: 2.4rem; }
+  h6 { font-size: 1.5rem; }
+}
+
+/* Utilities
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
+.u-max-full-width {
+  max-width: 100%;
+  box-sizing: border-box; }
+.u-pull-right {
+  float: right; }
+.u-pull-left {
+  float: left; }
+
+/* Clearing
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+/* Self Clearing Goodness */
+.container:after,
+.row:after,
+.u-cf {
+  content: "";
+  display: table;
+  clear: both; }
+
+/* Larger than mobile */
+@media (min-width: 400px) {}
+
+/* Larger than phablet (also point when grid becomes active) */
+@media (min-width: 550px) {}
+
+/* Larger than tablet */
+@media (min-width: 750px) {}
+
+/* Larger than desktop */
+@media (min-width: 1000px) {}
+
+/* Larger than Desktop HD */
+@media (min-width: 1200px) {}
+
+/* CUSTOM STUFF */
 
 h2{
-    margin: 0 0 15px 0;
-    color: #8AB422;
-    font-size: 1.2em;
-    font-family: Helvetica, Verdana, Arial, sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-}
-
-h3{
-    clear: both;
-    margin: 0 0 15px 0;
-    font-size: 1em;
-    line-height: 1.4em;
-    font-weight: bold;
-    color: #222222;
-}
-
-h4
-{
-    margin: 15px 0 3px 0;
-    font-size: 1em;
-    font-weight: bold;
+  margin: 15px 0 10px 0;
+  color: #8AB422;
+  font-size: 1.4em;
+  font-family: Helvetica, Verdana, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
 }
 
 /*  Text  */
-p
-{
-    margin: 0 0 15px 0;
-    line-height: 1.4em;
-}
-
-blockquote 
-{ 
-    margin: 0 30px; 
-    line-height: 1.4em;
-}
-
 /*  Lists */
-ul, ol
-{
-    margin: 3px 0 18px;
-    padding: 0;
-    font-size: 1em;
-    line-height: 1.1em;
+ul{
+  padding-left: 1em;
+  margin: 0px;
 }
 
-ul ul, ul ol, ol ol, ol ul { font-size: 1em; }
-
-ul li
-{
-    margin: 5px 0;
-    list-style: none;
+ul li {
+  margin: 5px 0;
 }
-
-ol li { margin: 5px 0 5px 35px; }
 
 /*  Links */
-a
-{
-    color: #476F88;
-    text-decoration: underline;
-}
-
-.attention {
-    color: #C31C5F;
-    font-weight: bold;
-}
-
-.nowrap {
-    white-space: nowrap;
-}
-
-/* Images */
-img { border: none; }
-.imgR { float: right; }
-.imgL { float: left; }
-
-/****************************************
- * Tables
- ****************************************/
-
-table, tr, th, td
-{
-    margin: 0;
-    padding: 0;
-    border: 0;
+a {
+  color: #476F88;
+  text-decoration: underline;
 }
 
 /************************ 
  * Misc
  ************************/
 
-/* 
-    Hide rules for accesibility.
-*/
-
-hr { display: none; }
-
-.row 
-{
-    clear: both;
-    padding-top: 5px;
-}
-
-.row span.label 
-{
-    float: left;
-    width: 9em;
-    text-align: left;   
-    font-weight: bold;
-}
-
-div.row span.value
-{
-    float: left;
-    text-align: left;
-}
-
-.featureList{
-    cursor: default;
-/*    margin-top:20px; */
-}
-.featureList > li{
-    margin-top: 20px;
-}
-.featureList > li:hover >i:before{
-    color: green;
-}
-.titleee{
-  padding-top: 5px;
-  text-align: center;
-  font-size: 1.3em;
-  padding-bottom: 5px;
-  border-bottom: solid 1px lightgray;
-}
-      
 my-email::after {
   content: attr(data-domain);
 }
 my-email::before {
   content: attr(data-user) "\0040";
 }
-h1, .h1 {
-    font-size: 1.7em;
-    font-weight: normal;
-    color: #727365;
-    letter-spacing: .12em;
-}
-
-#mypage {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 15px;
-  font-size: 1.3em;
-  /* max-width: 800px; */
-  width: 1100px;
-  position: relative;
-}
 #livedemo {
   margin: 0 auto;
   height: 490px;
   font-size: 12pt;
+  line-height: initial;
 }
 
 .tutorialLink{
@@ -328,14 +380,6 @@ h1, .h1 {
   color: orangered;
 }
 
-
-.iteminfo a{
-  color:#606060;
-  font-style:italic;
-}
-.iteminfo_0 span{
-  font-size: 0.7em;
-}
 
 .content{
   width: 131px;
@@ -421,7 +465,7 @@ a:hover > .demoTitle{
   text-align:center;
   font-weight:bold;
   padding:5px 40px;
-  font-size:0.8rem;
+  font-size:1em;
   line-height:1.5rem;
   position:relative;
   transition:0.5s;
@@ -467,9 +511,6 @@ a:hover > .demoTitle{
 }
 
 
-.affilLogo{
-  margin-left: 10px;
-}
 .affilLogoFilter{
   margin-left: 10px;
   -webkit-filter: grayscale(100%);
@@ -488,14 +529,12 @@ a:hover > .demoTitle{
 
 #logo_umd{
   width: 50px;
-  float: right;
 }
 #logo_cs{
   background: url('./demo/img/umd_cs_white.png');
   background-size: 41px 50px;
   height: 50px;
   width: 41px;
-  float: right;
   display: inline-block;
 }
 #logo_cs:hover{
@@ -504,29 +543,6 @@ a:hover > .demoTitle{
 }
 #logo_hcil{
   width: 50px;
-  float: right;
-}
-
-.h1{
-  cursor: default;
-}
-.asterix{
-  font-size: 0.7em;
-  font-style: italic;
-  font-weight: 300;
-  letter-spacing: 0em;
-  vertical-align: top;
-  display: inline-block;
-}
-.asterix:hover{
-  border-top: solid 1px #727365;
-  margin-top: -1px;
-}
-.asterix:hover .asterix_text{
-  display: inline-block;
-}
-.asterix_text{
-  display: none;
 }
 
 /*
@@ -588,207 +604,278 @@ a:hover > .demoTitle{
         .cboxSlideshow_off #cboxSlideshow{background-position:-150px -25px; right:27px;}
         .cboxSlideshow_off #cboxSlideshow:hover{background-position:-125px 0px;}
 
-    </style>
+body{
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.header{
+  margin-top: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: solid 1px lightgray;
+}
+.header .affiliations{
+  text-align: right;
+}
+.header .title{
+  font-size: 1.7em;
+  line-height: 1.05em;
+  color: #515152;
+}
+.affilLogo{
+  margin-left: 10px;
+}
+
+.descr_text{
+  opacity: 0;
+  font-size: 0.5em;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: 0em;
+  vertical-align: top;
+  display: inline-block;
+  -webkit-transition: opacity 150ms linear;
+  -moz-transition: opacity 150ms linear;
+  -o-transition: opacity 150ms linear;
+  transition: opacity 150ms linear;
+}
+.header:hover .descr_text{ opacity: 1; }
+.hitLine{
+  padding-top: 5px;
+  text-align: center;
+  font-size: 1.2em;
+  border-bottom: solid 1px lightgray;
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#forkongithub .fa-github{ font-size:1.5em; }
+
+.media_coverage > li{
+  margin-bottom: 0.8em;
+}
+.featureRow{
+  margin-bottom: 1em;
+}
+.featureRow > .columns{
+  text-align: center;
+  border-top: solid 1px lightgray;
+  padding-top: 5px;
+}
+
+</style>
 	 
 </head>
 
 <body>
 
-<span id="forkongithub">
-  <a href="https://github.com/adilyalcin/keshif" target='_blank' class='forkText'>
-  <span class="fa fa-star" style="font-size: 1.5em"></span> 
-    Open Source 
-  <span class="fa fa-github fa" style="font-size: 1.5em"></span></a></span>
-
-<!-- banner -->
-<!--#include virtual="/hcil/_includes/banner.html"-->
-<div style="clear:both"></div>
-
-<div id="mypage">
-<img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">
-<a href='http://www.umd.edu' target='_blank'>
-  <img src="./AggreSet/img/logo_umd.png" id="logo_umd" 
-    class="affilLogo affilLogoFilter" title="University of Maryland, College Park"></a>
-<a href='http://www.cs.umd.edu' target='_blank'>
-  <span id="logo_cs" class="affilLogo" title="Computer Science Department"></span></a>
-<a href='http://www.cs.umd.edu/hcil' target='_blank'>
-  <img src="./AggreSet/img/logo_hcil.gif" id="logo_hcil" 
-    class="affilLogo affilLogoFilter" title="Human Computer Interaction Lab"></a>
-
-<span class='h1'>
-<strong>Keshif</strong> <span class="asterix"><span class="asterix_label">*</span> <span class="asterix_text">Keşif (keshif) means <b>discovery and exploration</b> in Turkish.</span></span>
-</br>
-Data Made Explorable</span>
-
-
-<div class="titleee">
-  Explore and understand your data - interactively, visually, rapidly, and <b>easily</b> <span class='fa fa-magic'></span>.<br></div>
-
-<div style='text-align:center; margin: 5px 10px 10px 10px; font-size: 1.2em;'>
-  <span class='fa fa-eye' style='font-size: 1.4em;'></span> Explore sample datasets below using Keshif
-  | 
-  <span class='youtube tutorialLink' href="https://www.youtube.com/embed/3Hmvms-1grU"> 
-    <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> Learn with 5-minute tutorial </span>
-  |
-  <a class='tutorialLink' href="./demo/YourData" target='_blank'> 
-    <span class='fa fa-upload' style='font-size: 1.4em;'></span> Explore your data </a>
-  |
-  <a class='tutorialLink' href="http://www.github.com/adilyalcin/keshif" target='_blank'> 
-    <span class='fa fa-code' style='font-size: 1.4em;'></span> Get the code</a>
-    <iframe src="http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small" allowtransparency="true" frameborder="0" scrolling="0" width="90px" height="20px" style='position:relative; top:3px;'></iframe>
-
+<div id="forkongithub">
+  <a href="https://github.com/adilyalcin/keshif" target='_blank'> Open Source <i class="fa fa-github"></i></a>
   </div>
 
-<div id="livedemo"></div> 
+<div class="container">
+  <div class="row header">
+    <div class="eight columns title">
+      <img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">
+      <div>
+        <span style='letter-spacing: 3px; font-weight: 700'>Keshif</span>
+        <span class="descr_text">* Keşif means <b>discovery &amp; exploration</b> in Turkish.</span>
+        </div>
+      <span style='font-size: 0.7em; font-weight: 300; color: #7D7D7D;'>Data Made Explorable</span>
+      </div>
+    <div class="four columns affiliations">
+      <a href='https://www.twitter.com/keshifjs' target='_blank' class='fa fa-twitter'
+        style='font-size: 2em; text-decoration: none; vertical-align: top; margin-top: 10px'></a>
+      <a href='http://www.umd.edu' target='_blank'>
+        <img src="./AggreSet/img/logo_umd.png" id="logo_umd" 
+          class="affilLogo affilLogoFilter" title="University of Maryland, College Park"></a>
+      <a href='http://www.cs.umd.edu' target='_blank'>
+        <span id="logo_cs" class="affilLogo" title="Computer Science Department"></span></a>
+      <a href='http://www.cs.umd.edu/hcil' target='_blank'>
+        <img src="./AggreSet/img/logo_hcil.gif" id="logo_hcil" 
+          class="affilLogo affilLogoFilter" title="Human Computer Interaction Lab"></a>
+      </div>
+    </div>
+  <div class="row">
+    <div class="twelve columns hitLine">
+        <b>The fastest way from your data to insights</b> - enabled by effective visual and interactive dialogue with data.<br>
+        <!--Explore and understand your data - interactively, visually, rapidly, and <b>easily</b> <span class='fa fa-magic'></span>.<br>-->
+      </div>
+    </div>
+  <div class="row">
+    <div class="twelve columns" style='text-align:center; margin: 5px 10px 10px 10px;'>
+      <i class='fa fa-eye' style='font-size: 1.4em;'></i> Explore sample datasets 
+        <i class='fa fa-arrow-down'></i> with Keshif
+      | 
+      <span class='youtube tutorialLink' href="https://www.youtube.com/embed/3Hmvms-1grU"> 
+        <span class='fa fa-youtube-play' style='font-size: 1.4em;'></span> Learn with 5-minute tutorial </span>
+      |
+      <a class='tutorialLink' href="./demo/YourData" target='_blank'> 
+        <span class='fa fa-upload' style='font-size: 1.4em;'></span> Explore your data </a>
+      |
+      <a class='tutorialLink' href="http://www.github.com/adilyalcin/keshif" target='_blank'> 
+        Get the code</a>
+        <iframe src="http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small" allowtransparency="true" frameborder="0" scrolling="0" width="65px" height="20px" style='position:relative; top:3px;'></iframe>
+
+      </div>
+    </div>
+</div>
+
+<div style="margin: 5px 80px 15px 80px">
+  <div id="livedemo"></div></div>
+
+<div class="container">
+  <div class="row featureRow">
+    <div class="eight columns"><b>Explore and discover rich trends and relations.</b>
+      It is as simple as: 
+        mouse-over to highlight <i class='fa fa-mouse-pointer'></i>, 
+        click to filter <i class='fa fa-filter'></i>,
+        lock to compare <i class='fa fa-lock'></i>.
+      Change measures by count, sum, average. See overview and most relevant first, then get details.
+      </div>
+    <div class="four columns"><b>Focus on your intuitive dialogue with data</b>, 
+      not on which chart type / color to use, how to calculate, etc.
+      </div>
+    </div>
+  <div class="row featureRow">
+    <div class="four columns">
+      <b>Charts that are easy to read.</b><br>
+      Effective bar-charts, histograms, line charts, 
+        <a href='./demo/dc_homicides' target='_blank'>maps</a>, 
+        <a href='./AggreSet' target='_blank'>matrices</a>, and 
+        <a href='./demo/vispubdata' target='_blank'>networks</a>.
+        Designed to match data &amp; you.
+        </div>
+    <div class="four columns"><b>Interaction that is easy to learn.</b>
+      Minimal features are designed to work together to create a powerful tool for data exploration.
+      </div>
+    <div class="four columns">
+      <b>Browsers that are easy to create.</b>
+      Import data. Author browser by drag-and-drop.
+      Customize attributes. Save as Gist. Share with unique URL.
+      </div>
+    <!-- <li><i class="fa-li fa fa-check-square"></i><b>Load your structured data in a flexible pipeline, built for the web.</b> Keshif can automatically import data from Google Sheets and CSV/TEXT files. You can write custom data importers in JavaScript to load JSON, XML, HTML, or even BibTeX. Check the demo listing to find demos using various data resource types.</li> -->
+    </div>
+  <div class="row featureRow">
+    <div class="eight columns">A design that is <b>consistent, unified, fully synchronized, and
+      <a href='http://localhost/keshif/demo/NYPL' target='_blank'>scalable</a></b>.<br>
+      It <i>just works</i> for many datasets in tabular (spreadsheet) form.<br>
+        Learn once, use many times for rapid data exploration.</div>
+      <div class="four columns"><b>Built for the open web.</b><br> Customizable with HTML, JS, and CSS. 
+        Based on simple <a href="https://github.com/adilyalcin/Keshif/wiki" target="_blank">JS config API</a>. 
+        </div>
+
+    </div>
+
+  <div class="row">
+    <div class="eight columns">
+      <h2>Publications</h2>
+      <b><a href="./AggreSet/" target='_blank'>AggreSet</a>: Rich and Scalable Set Exploration using Visualizations of Element Aggregations</b>. M. Adil Yalçın &amp; Niklas Elmqvist &amp; Ben Bederson. <a href='http://dx.doi.org/10.1109/TVCG.2015.2467051' target='_blank'>IEEE Transactions on Visualization and Computer Graphics</a> (INFOVIS 2015)
+
+      <h2>Media Coverage</h2>
+
+      <ul class="media_coverage">
+        <li><b><a href="http://datadrivenjournalism.net/resources/keshif.me" target="_blank">
+        DataDrivenJournalism.net - Interview with Adil Yalcin</a></b> - Oct 2015</li>
+        <li><a href="http://mobilitylab.org/2015/07/13/transit-data-gets-more-intriguing-as-the-way-its-presented-improves/" target='_blank'>Transit Data Gets More Intriguing As the Way It’s Presented Improves</a> - Mobility Lab, July 2015</li>
+        <li><a href="http://www.informationisbeautifulawards.com/showcase?ccategory=interactive&challenge=2&page=1&pcategory=short-list&type=challenges" target="_blank">Safety First: A Story on Restaurant Food Poisonings</a> - Shortlisted, Information is Beautiful Awards, Food Poisoning Challenge, 2015.</li>
+        <li><a href="http://toolsfortheweb.net/javascript/visual-and-interactive-data-via-keshif/" target="_blank">Visual and Interactive Data via Keshif</a> - Tools for the Web, June 2015</li>
+        <!--
+        <a href="http://datadrivenjournalism.net/resources/overview_328_analysis_and_visualization_tools_and_counting" target='_blank'>Overview: 328 Analysis and Visualization Tools (and counting)</a> - DataDrivenJournalism.net, Sept. 2015<br><br>-->
+
+      </ul>
+
+      <h2>Mentions</h2>
+      <ul class="media_coverage">
+        <li><b>Cited</b> by <a href='https://github.com/fabian-beck/survis' target='_blank'>Visual Analysis and Dissemination of Scientific Literature Collections with SurVis</a>, by F. Beck, S. Koch, and D. Weiskopf. IEEE Transactions on Visualization and Computer Graphics (VAST). 2016</li>
+        <li><b>Cited</b> by <a href='https://tampub.uta.fi/bitstream/handle/10024/97846/GRADU-1438162264.pdf' target='_blank'>Web-based Information Visualization Using JavaScript</a>, by S. Güldamlasıoğlu. M.Sc. Thesis. Uni. of Tampere, School of Info. Sciences. 2015.</li>
+        <li><b>Course note</b> at <a href='http://www.cc.gatech.edu/~stasko/7450/Notes/systems.pdf' target='_blank'>CS 7450 - Information Visualization</a> by J. Stasko. Georgia Tech.</li>
+        <li><b>Course note</b> at <a href='http://vis.berkeley.edu/courses/cs294-10-fa14/wiki/images/4/40/Lec294-10-20140929.pdf' target='_blank'>CS 294-10: Visualization</a> by M. Agrawala, J. Hullman. University of California, Berkeley.</li>
+        <li><b>Resource</b> at <a href='http://www.cs.ubc.ca/group/infovis/resources.shtml' target='_blank'>InfoVis Group</a> at the University of British Columbia (T. Munzner)</li>
+        <li><b>Supporting tool</b> for the OCSD proposal <a href='http://ocsdnet.org/wp-content/uploads/2015/01/FOR-UPLOAD_Universite-Laval.pdf' target='_blank'>Open science as a collective tool of empowerment and cognitive justice in Haiti and French-speaking Africa : building the roadmap</a></li>
+        <li><b>Mentioned</b> by D. Robbin. <a href='http://www.slideshare.net/danielrobbins/applying-design-thinking-to-a-job-search'>Applying Design Thinking to a Job Search</a> presentation as the <a href='https://twitter.com/hcil_umd/status/713047677236342786' target='_blank'>"fastest #datavis tool to get up &amp; running!"</a></li>
+        <li><b>Featured</b> in <a href='https://news.ycombinator.com/item?id=11232996' target='_blank'>Hackernews</a> &amp; <a href='https://www.reddit.com/r/dataisbeautiful/comments/49ibkv/the_44_us_presidents_by_party_affiliation/' target='_blank'>Reddit</a> with discussions.</li>
+
+        <!--
+        Undergrad thesis based on keshif
+        - http://chunw.github.io/uploads/undergrad_thesis_technical.pdf
+
+        Veri gazateciligi araclari - kaynaklar
+        http://www.verigazeteciligi.com/turkiye-gazeteciler-sendikasinda-tgs-17-ekimde-veri-gazeteciligi-atolyesi-duzenlenecek/
+
+        Short tutorial:
+        - http://www.dualimpulse.com/data-made-explorable/
+
+        Mention:
+        - Visualizing library data with d3
+          https://wiki.harvard.edu/confluence/download/attachments/177834701/ABCD%20Library%20D3%202015.04.27.pdf
+        - QS Visualization - Links & Notes, by labs@quantifiedself.com
+          https://docs.google.com/document/d/1hbOAzf8cTXasf0ZaK9Or6nKGQp1LMmRYNIbwugM6kEQ/edit
+        - http://data-journalism-tools.silk.co/page/Keshif
+        - http://yunus.hacettepe.edu.tr/~umutal/lesson/bby375/2016/375-002.pdf
+
+        Chatter:
+         - http://sourceforge.net/p/semediawiki/mailman/message/33101735/
+         - http://bkmrk-this.com/2016/03/data-made-explorable/
+         
+        -->
+      </ul>
+
+      </div>
+    <div class="four columns">
+        <a class="twitter-timeline" href="https://twitter.com/keshifjs/timelines/684351432254959616" data-widget-id="684388434421612546">Tweets</a>
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+      </div>
+    </div>
+
+  <div class="row">
+    <div class="six columns">
+      <h2>Designed &amp; Developed By</h2>
+      <i class='fa fa-user'></i> <a href="http://adilyalcin.me/">M. Adil Yalçın</a> - Ph.D. Candidate, Human Computer Interaction Lab, Computer Science, UMD - College Park
+      <h2>Advised By</h2>
+      <i class='fa fa-user'></i> <a href="https://sites.umiacs.umd.edu/elm/" target="_blank">Niklas Elmqvist</a> - 
+        Associate Professor, iSchool, UMD - College Park<br>
+      <i class='fa fa-user'></i> <a href="http://www.cs.umd.edu/~bederson/" target="_blank">Ben Bederson</a> - 
+        Professor, Computer Science, UMD - College Park
 
 
-<!-- Overview -->
-<div style="margin-top:25px">
-<!--<h2 id="overview">Overview</h2>-->
+      </div>
+    <div class="six columns">
+      <h2 id="license">License</h2>
 
+      Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license <a href="https://raw.githubusercontent.com/adilyalcin/Keshif/master/LICENSE">
+          <span class='fa fa-external-link'></span></a></a>.<br>
+      <span class='fa fa-copyright'></span> 2016 University of Maryland
 
-<!--Easy
-Explore
-Understand
-Data
-Visual
-Summaries-->
+      <h2>Notes</h2>
 
-<ul class="fa-ul featureList">
-    <li><i class="fa-li fa fa-check-square"></i><b>Create summaries of data properties.</b> Keshif will present your data in its effective visual design.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>Discover relations</b> in your data rapidly. <b>Highlight</b> relations by mouse over. <b>Compare</b> records by locking your selection. </i>Keshif <b>synchronizes</b> all selections.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy scalability by design</b>. Keshif avoids visualization techniques that cannot scale. Explore data as long as it can be fully loaded to your web browser.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>Enjoy consistency</b>. Keshif solves your exploration needs for a wide range of datasets in a single unified visual and interactive design.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>Focus on your data and your questions. </b> Don't worry about picking the right visualization and doing the math. Keshif does it for you.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>See the overview and the most relevant first.</b> After each step, the most relevant results and data properties are shown.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>Load your structured data in a flexible pipeline, built for the web.</b> Keshif can automatically import data from Google Sheets and CSV/TEXT files. You can write custom data importers in JavaScript to load JSON, XML, HTML, or even BibTeX. Check the demo listing to find demos using various data resource types.</li>
-    
-    <li><i class="fa-li fa fa-check-square"></i><b>Define your browser using a simple <a href="https://github.com/adilyalcin/Keshif/wiki#wiki-api-documentation" target="_blank">configuration API</a></b>, including the data source, the properties to summaries, and how to display records individually.</li>
+      <ul>
+        <li>
+          Partially supported by the <a href="http://sesync.org" target="_blank">National Socio-Environmental Synthesis Center (SESYNC)</a> through a grant from <a href="http://www.nfs.gov" target="_blank">NSF</a> to <a href="http://www.umd.edu" target="_blank">UMD</a> 
+            <span style='color:gray'>#DBI-1052875</span> (2015-...)
+        </li>
+        <li>
+            Partially supported by 
+            <a href="http://www.huawei.com/" target="_blank"> Huawei</a> (2013-2014)</li>
+        <!--<li> <i class="fa-li fa fa-bullseye"></i>
+            <a href="http://www.cs.umd.edu/hcil/members/arose">Anne Rose</a>, 
+            Contributor (2013-2014), Faculty Research Assistant, UMIACS, University of Maryland</li>-->
+      </ul>
+      </div>
+    </div>
 
-</ul>
+  <div class="row" style='margin-bottom: 3em;'>
+    <div class="twelve columns">
+      <h2>Contact</h2>
+      <i class='fa fa-mail-reply-all'></i> Join the <a href='https://groups.google.com/forum/#!forum/keshif' target='_blank'><b>maillist</b></a> to share your question or use cases of Keshif.<br>
+
+      <i class='fa fa-exclamation-circle'></i> Post to <a href='https://github.com/adilyalcin/Keshif/issues' target='_blank'><b>Github Issues</b></a> to share your bug reports or specific feature requests.<br>
+
+      <i class='fa fa-envelope'></i> For other inquiries, contact <my-email data-user="yalcin" data-domain="umd.edu"></my-email>.
+      </div>
+    </div>
 
 </div>
 
-
-<span style="width:300px; display: inline-block; float: right;">
-  <a class="twitter-timeline" href="https://twitter.com/keshifjs/timelines/684351432254959616" data-widget-id="684388434421612546">Tweets</a>
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-</span>
-
-</br>
-<h2>Publications</h2>
-<b><a href="./AggreSet/" target='_blank'>AggreSet</a>: Rich and Scalable Set Exploration using Visualizations of Element Aggregations</b>. M. Adil Yalçın &amp; Niklas Elmqvist &amp; Ben Bederson. <a href='http://dx.doi.org/10.1109/TVCG.2015.2467051' target='_blank'>IEEE Transactions on Visualization and Computer Graphics</a> (INFOVIS 2015)
-
-</br></br>
-<h2>Media Coverage</h2>
-<b><a href="http://datadrivenjournalism.net/resources/keshif.me" target="_blank">
-  DataDrivenJournalism.net - Interview with Adil Yalcin</a>, Oct 2015</b>
-<br><br>
-
-<a href="http://mobilitylab.org/2015/07/13/transit-data-gets-more-intriguing-as-the-way-its-presented-improves/" target='_blank'>Transit Data Gets More Intriguing As the Way It’s Presented Improves</a> - Mobility Lab, July 2015<br><br>
-
-<!--
-<a href="http://datadrivenjournalism.net/resources/overview_328_analysis_and_visualization_tools_and_counting" target='_blank'>Overview: 328 Analysis and Visualization Tools (and counting)</a> - DataDrivenJournalism.net, Sept. 2015<br><br>-->
-
-<a href="http://www.informationisbeautifulawards.com/showcase?ccategory=interactive&challenge=2&page=1&pcategory=short-list&type=challenges" target="_blank">Safety First: A Story on Restaurant Food Poisonings</a>, Shortlisted, Information is Beautiful Awards, Food Poisoning Challenge, 2015.<br><br>
-
-<a href="http://toolsfortheweb.net/javascript/visual-and-interactive-data-via-keshif/" target="_blank">Visual and Interactive Data via Keshif</a>, Tools for the Web, June 2015
-
-<br><br>
-<h2>Contact</h2>
-<i class='fa fa-mail-reply-all'></i> Join the <a href='https://groups.google.com/forum/#!forum/keshif' target='_blank'><b>maillist</b></a> to share your general question, comment, suggestion, or use cases of Keshif.<br><br>
-
-<i class='fa fa-exclamation-circle'></i> Post to <a href='https://github.com/adilyalcin/Keshif/issues' target='_blank'><b>Github Issues</b></a> to share your bug reports or specific feature requests.<br><br>
-
-<i class='fa fa-envelope'></i> For other inquiries, contact <my-email data-user="yalcin" data-domain="umd.edu"></my-email>.<br><br>
-
-<h2>Mentions</h2>
-
-<b>Cited</b> by <a href='https://github.com/fabian-beck/survis' target='_blank'>Visual Analysis and Dissemination of Scientific Literature Collections with SurVis</a>, by Fabian Beck, Sebastian Koch, and Daniel Weiskopf. IEEE Transactions on Visualization and Computer Graphics (VAST). 2016 <br><br>
-
-<b>Cited</b> by <a href='https://tampub.uta.fi/bitstream/handle/10024/97846/GRADU-1438162264.pdf' target='_blank'>Web-based Information Visualization Using JavaScript</a>, by Selin Güldamlasıoğlu. M.Sc. Thesis. University of Tampere, School of Information Sciences. 2015.<br><br>
-
-<b>Course note</b> mentioned at <a href='http://www.cc.gatech.edu/~stasko/7450/Notes/systems.pdf' target='_blank'>CS 7450, Information Visualization</a> by John Stasko. Georgia Tech.<br><br>
-
-<b>Course note</b> mentioned at <a href='http://vis.berkeley.edu/courses/cs294-10-fa14/wiki/images/4/40/Lec294-10-20140929.pdf' target='_blank'>CS 294-10: Visualization</a> by Maneesh Agrawala, Jessica Hullman. University of California, Berkeley.<br><br>
-
-<b>Resource</b> at <a href='http://www.cs.ubc.ca/group/infovis/resources.shtml' target='_blank'>InfoVis Group</a>, The University of British Columbia (Tamara Munzner et al.)<br><br>
-
-<b>Supporting tool</b> for the OCSD proposal <a href='http://ocsdnet.org/wp-content/uploads/2015/01/FOR-UPLOAD_Universite-Laval.pdf' target='_blank'>Open science as a collective tool of empowerment and cognitive justice in Haiti and French-speaking Africa : building the roadmap</a><br><br>
-
-<b>Mentioned</b> in Daniel Robbin's <a href='http://www.slideshare.net/danielrobbins/applying-design-thinking-to-a-job-search'>Applying Design Thinking to a Job Search</a> presentation as the <a href='https://twitter.com/hcil_umd/status/713047677236342786' target='_blank'>"fastest #datavis tool to get up &amp; running!"</a><br><br>
-
-<b>Featured</b> in <a href='https://news.ycombinator.com/item?id=11232996' target='_blank'>Hackernews</a> and
-
-<a href='https://www.reddit.com/r/dataisbeautiful/comments/49ibkv/the_44_us_presidents_by_party_affiliation/' target='_blank'>Reddit</a> with discussions.<br><br>
-<!--
-Undergrad thesis based on keshif
-- http://chunw.github.io/uploads/undergrad_thesis_technical.pdf
-
-Veri gazateciligi araclari - kaynaklar
-http://www.verigazeteciligi.com/turkiye-gazeteciler-sendikasinda-tgs-17-ekimde-veri-gazeteciligi-atolyesi-duzenlenecek/
-
-Short tutorial:
-- http://www.dualimpulse.com/data-made-explorable/
-
-Mention:
-- Visualizing library data with d3
-  https://wiki.harvard.edu/confluence/download/attachments/177834701/ABCD%20Library%20D3%202015.04.27.pdf
-- QS Visualization - Links & Notes, by labs@quantifiedself.com
-  https://docs.google.com/document/d/1hbOAzf8cTXasf0ZaK9Or6nKGQp1LMmRYNIbwugM6kEQ/edit
-- http://data-journalism-tools.silk.co/page/Keshif
-- http://yunus.hacettepe.edu.tr/~umutal/lesson/bby375/2016/375-002.pdf
-
-Chatter:
- - http://sourceforge.net/p/semediawiki/mailman/message/33101735/
- - http://bkmrk-this.com/2016/03/data-made-explorable/
- 
--->
-
-<h2>Designed &amp; Developed By</h2>
-<i class='fa fa-user'></i> <a href="http://adilyalcin.me/">M. Adil Yalçın</a> - Ph.D. Candidate, Human Computer Interaction Lab, Computer Science, University of Maryland, College Park
-
-</br></br>
-<h2>Advised By</h2>
-<i class='fa fa-user'></i> <a href="https://sites.umiacs.umd.edu/elm/" target="_blank">Niklas Elmqvist</a> - 
-  Associate Professor, iSchool, University of Maryland, College Park<br><br>
-<i class='fa fa-user'></i> <a href="http://www.cs.umd.edu/~bederson/" target="_blank">Ben Bederson</a> - 
-  Professor, Computer Science, University of Maryland, College Park
-
-</br></br>
-<h2 id="license">License</h2>
-
-Released under <a href="http://opensource.org/licenses/BSD-3-Clause">BSD license <a href="https://raw.githubusercontent.com/adilyalcin/Keshif/master/LICENSE">
-    <span class='fa fa-external-link'></span></a></a>.
-<span class='fa fa-copyright'></span> 2016 University of Maryland
-
-
-</br></br>
-<h2 id="sponsors">History</h2>
-
-<ul class="fa-ul">
-  <li><i class="fa-li fa fa-bullseye"></i>
-    Partially supported by the <a href="http://sesync.org" target="_blank">National Socio-Environmental Synthesis Center (SESYNC)</a> through a grant from <a href="http://www.nfs.gov" target="_blank">NSF</a> to <a href="http://www.umd.edu" target="_blank">UMD</a> 
-      <span style='color:gray'>#DBI-1052875</span> (2015-...)
-  </li>
-  <li> <i class="fa-li fa fa-bullseye"></i>
-      Partially supported by 
-      <a href="http://www.huawei.com/" target="_blank"> Huawei</a> (2013-2014)</li>
-  <li> <i class="fa-li fa fa-bullseye"></i>
-      <a href="http://www.cs.umd.edu/hcil/members/arose">Anne Rose</a>, 
-      Contributor (2013-2014), Faculty Research Assistant, UMIACS, University of Maryland</li>
-</ul>
-
-<br/><br/>
-</div>
-
-<!-- Go to www.addthis.com/dashboard to customize your tools -->
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e" async="async"></script>
 </body>
 </html>
