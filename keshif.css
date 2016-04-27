@@ -929,8 +929,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic .measureSelectBox {
   display: none;
   position: absolute;
-  left: 5px;
-  top: 1.6em;
+  left: 0px;
+  top: 0px;
+  margin-top: 22px;
   z-index: 2000;
   background-color: white;
   font-size: 0.9em;
@@ -958,6 +959,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-radius: 4px 4px 0px 0px;
   border-bottom: solid 1px gray;
   white-space: nowrap;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
 }
 .kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content {
   display: block;
@@ -3196,7 +3200,6 @@ height:calc(100% - 8px);
   vertical-align: top;
   line-height: 16px;
   left: 0px;
-  height: 100%;
   padding-right: 2px;
   z-index: 21;
   font-size: 0.8em;

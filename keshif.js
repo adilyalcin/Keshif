@@ -3311,13 +3311,32 @@ kshf.Browser.prototype = {
     insertDOM_measureSelect: function(){
       var me=this;
       if(this.DOM.measureSelectBox) return;
-      this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox");
+      this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox")
+        .style("left","0px")
+        .style("top","0px");
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.Close }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("click",function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
-      this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure");
+      this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure")
+        .on("mousedown", function (d, i) {
+          var initPos = d3.mouse(d3.select("body")[0][0]);
+          var DOM = me.DOM.measureSelectBox[0][0];
+          var initX = parseInt(DOM.style.left);
+          var initY = parseInt(DOM.style.top);
+          me.DOM.root.attr("drag_cursor","grabbing")
+          .on("mousemove", function() {
+            var newPos = d3.mouse(d3.select("body")[0][0]);
+            DOM.style.left = Math.max(0,initX-initPos[0]+newPos[0])+"px";
+            DOM.style.top = Math.max(0,initY-initPos[1]+newPos[1])+"px";
+          }).on("mouseup", function(){
+            me.DOM.root
+              .attr("drag_cursor",null)
+              .on("mousemove", null).on("mouseup", null);
+          });
+         d3.event.preventDefault();
+     });
 
       var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
       m.append("span").attr("class","measureSelectBox_Content_FuncType")
@@ -3715,7 +3734,7 @@ kshf.Browser.prototype = {
           "<img src='http://www.keshif.me/AggreSet/img/logo_hcil.gif' style='height:50px; float: left'></a>";
         creditString += " <a href='http://www.umd.edu' target='_blank'>"+
           "<img src='http://www.keshif.me/AggreSet/img/logo_umd.png' style='height:50px; float: right'></a>";
-        creditString += "Developed &amp; designed by: ";
+        creditString += "Designed &amp; developed by: ";
         creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a><br>";
         creditString += "Advised by: <br>";
         creditString += " <a class='advName' href='https://sites.umiacs.umd.edu/elm/' target='_blank'>Niklas Elmqvist</a> &amp; ";
