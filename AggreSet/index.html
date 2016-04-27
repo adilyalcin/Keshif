@@ -33,7 +33,7 @@ function loadDemo(config){
   if(config.browser.itemDisplay) 
     config.browser.itemDisplay.detailsToggle = 'off';
 
-  config.browser.readyCb = function(browser){
+  config.browser.onReady = function(browser){
     var degreePanel = (browser.panels.left.summaries.length!==0)?"left":"middle";
     var setListSummary = browser.panels[degreePanel].summaries[0];
 

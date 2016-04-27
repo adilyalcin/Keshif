@@ -142,7 +142,7 @@ google.setOnLoadCallback(function(){
           //"<img src='http://api.artsmia.org/images/"+this.id+"/small.jpg' class='thumb'></a>";
           "<img src='http://1.api.artsmia.org/"+this.id+".jpg' class='thumb'></a>";
       },
-      domCb: function(d){
+      onDOM: function(d){
         d3.select(d.DOM.record.childNodes[2].childNodes[0].childNodes[0])
           .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: d.data.Title}); })
           .on("mouseover",function(){ this.tipsy.show(); })

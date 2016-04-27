@@ -184,8 +184,8 @@ google.setOnLoadCallback(function(){
       fileType: 'csv',
       tables: "NYPL_PIC"
     },
-    loadedCb: function(){
-      browser.records.forEach(function(r){
+    onLoad: function(){
+      this.records.forEach(function(r){
         if(r.data.BeginDate===0) delete r.data.BeginDate;
         var EndDate = r.data.EndDate;
         if(EndDate && EndDate>2016){

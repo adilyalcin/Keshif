@@ -28,7 +28,7 @@ $(document).ready( function(){
       fileType: "json",
       tables: "bookdownloads"
     },
-    loadedCb: function(){
+    onLoad: function(){
       this.records.forEach(function(record){ record.data = moment(record.data, "YYYY-MM-DD HH:mm:ss"); });
     },
     summaries: [

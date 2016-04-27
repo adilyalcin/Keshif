@@ -29,21 +29,6 @@ $(document).ready(function() {
       gdocId: '1XxWOlo_YwXV8kyMEF1cO4oSFIQI5mw9ldpksK2EVHWQ',
       tables: "Participants"
     },
-    readyCb: function(browser){
-      $(".kshfRecord .content").click(function(){
-        this.parentNode.__data__.setRecordDetails(true);
-      });
-    },
-    loadedCb: function(){
-      kshf.Util.cellToArray(kshf.dt.Participants, 
-        ['q_08_principaux_problèmes_époque_mondiale+',
-         'q_19_principes_guider_scientifiques_travaux+',
-         'q_29_principaux_médias_scientifiques_québécois_consultés+',
-         'q_30_organismes_scientifiques_connus+',
-         'q_35_finalités_prioritaires+',
-         'q_36_domaines_prioritaires+'],
-        /\b\s+/, false);
-    },
     summaries: [
       { name: "Sexe",
         panel: 'middle',
@@ -79,7 +64,7 @@ $(document).ready(function() {
         value: 'q_07_domaine_emploi',
         description: "Le principal secteur dans lequel vous travaillez :" },
       { name: "Principaux Problèmes Époque Mondiale",
-        value: 'q_08_principaux_problèmes_époque_mondiale+',
+        value: 'q_08_principaux_problèmes_époque_mondiale+', catSplit: /\b\s+/,
         description: "Selon vous, quels sont les principaux problèmes de notre époque, à l’échelle mondiale? (en choisir trois au maximum)" },
 /*      },{
         name: 'L’accès à l’information scientifique',
@@ -87,7 +72,7 @@ $(document).ready(function() {
         facets: [*/
       { name: "Principes Guider Scientifiques Travaux",
         panel: 'middle',
-        value: 'q_19_principes_guider_scientifiques_travaux+',
+        value: 'q_19_principes_guider_scientifiques_travaux+', catSplit: /\b\s+/,
         description: "Quels sont les principes essentiels qui devraient guider les scientifiques dans leurs travaux ? (choix de trois au maximum)" },
       { name: "Respect des Principes",
         panel: 'middle',
@@ -105,12 +90,12 @@ $(document).ready(function() {
       {
         name: "Principaux Médias Sci. Québécois Consultés",
         panel: "right",
-        value: 'q_29_principaux_médias_scientifiques_québécois_consultés+',
+        value: 'q_29_principaux_médias_scientifiques_québécois_consultés+', catSplit: /\b\s+/,
         description: "Quels sont les médias scientifiques québécois que vous consultez le plus souvent? (en choisir trois au maximum)" },
       {
         name: "Organismes Scientifiques Connus",
         panel: "right",
-        value: 'q_30_organismes_scientifiques_connus+',
+        value: 'q_30_organismes_scientifiques_connus+', catSplit: /\b\s+/,
         description: "Quels sont les organismes québécois de communication scientifiques que vous connaissez le mieux? (en choisir trois au maximum)" },
 /*        ]
       },{
@@ -119,11 +104,11 @@ $(document).ready(function() {
           facets: [*/
       { name: "Finalités Prioritaires",
         panel: "right",
-        value: 'q_35_finalités_prioritaires+',
+        value: 'q_35_finalités_prioritaires+', catSplit: /\b\s+/,
         description: "La recherche scientifique peut avoir plusieurs finalités. Quelles sont les finalités qui vous paraissent prioritaires? (en choisir trois au maximum)" },
       { name: "Domaines Prioritaires",
         panel: "right",
-        value: 'q_36_domaines_prioritaires+',
+        value: 'q_36_domaines_prioritaires+', catSplit: /\b\s+/,
         description: "Choisissez un maximum de cinq domaines de recherche qui devraient mobiliser les gouvernements et les scientifiques de manière prioritaire actuellement : la recherche sur..." },
       { name: "Financement Privé ou Public",
         panel: "right",
@@ -147,9 +132,14 @@ $(document).ready(function() {
       detailsToggle: "one",
       textSearch: { name: 'content', value: 'Question_ouverte q_41_commentaires_généraux_questionnaire'},
       recordView: function(){ 
-          var v=this['Question_ouverte q_41_commentaires_généraux_questionnaire'];
-          return (v===null) ? "-" : v;
-      }
+        var v=this['Question_ouverte q_41_commentaires_généraux_questionnaire'];
+        return (v===null) ? "-" : v;
+      },
+      onDOM: function(browser){
+        d3.select(d.DOM.record).select(".content").on("click",function(){
+          this.parentNode.__data__.setRecordDetails(true);
+        });
+      },
     }
   });
 });

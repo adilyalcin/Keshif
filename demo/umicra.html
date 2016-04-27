@@ -28,8 +28,9 @@ google.setOnLoadCallback(function(){
       gdocId: '16Gjj2jR9GEplbP71TAzOPKpjWlIpOZUvOl78gtv63dg',
       tables: ["Publications", "Research Topics", "Study Type", "Study Design", "Regulatory Domain", "Authors"]
     },
-    loadedCb: function(browser){
-  		kshf.Util.cellToArray(kshf.dt.Publications, ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
+    onLoad: function(){
+  		kshf.Util.cellToArray(kshf.dt.Publications, 
+        ['Study Design','Regulatory Domains','Research Topics'], /\s*\+\s*/,false);
       kshf.Util.cellToArray(kshf.dt.Publications, ['Authors']);
     },
     summaries: [
@@ -111,7 +112,7 @@ google.setOnLoadCallback(function(){
 
         return str;
       },
-      domCb: function(d){
+      onDOM: function(d){
         d3.select(d.DOM.record).select(".pubMain").on("click",function(){
           d.setRecordDetails(!d.showDetails);
         });

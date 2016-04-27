@@ -37,7 +37,7 @@ google.setOnLoadCallback(function(){
         browser.loadCharts();
       }
     }, 
-    loadedCb: function(){
+    onLoad: function(){
       kshf.dt.VentureCapitalLandscape2011.forEach(function(item){
         item.data.Raised = parseInt(item.data.Raised);
         if(isNaN(item.data.Raised) || item.data.Raised===undefined || item.data.Raised===null){
@@ -57,8 +57,7 @@ google.setOnLoadCallback(function(){
       { name: "City" },
       { name: "State", panel: "middle", viewAs: "map",
         catLabel: function(){ return US_States.index_code[this.id].name; },
-        catMap: function(){ return US_States.index_code[this.id].geo; },
-        },
+        catMap: function(){ return US_States.index_code[this.id].geo; } },
       { name: "RoundBusStat", panel: "right" },
       { name: "RoundClassDescr", panel: "right" },
       { name: "Raised", panel: "right", unitName: "$" }

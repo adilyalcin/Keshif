@@ -152,7 +152,7 @@ google.setOnLoadCallback(function(){
       tables: "Universities",
       callback: loadData
     },
-    loadedCb: function(d){
+    onLoad: function(){
       // Add group information to the Universities
       kshf.dt.Universities.forEach(function(u){
         var name = u.data['institution name'];

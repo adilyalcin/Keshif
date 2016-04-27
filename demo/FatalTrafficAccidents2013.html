@@ -38,8 +38,8 @@ $(document).ready( function() {
         browser.loadCharts();
       }
     },
-    loadedCb: function(){
-      kshf.dt.TrafficAccidents2013.forEach(function(a){
+    onLoad: function(){
+      this.records.forEach(function(a){
         delete a.data.YEAR;
         delete a.data.RAIL;
         delete a.data.MILEPT;

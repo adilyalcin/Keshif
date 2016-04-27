@@ -30,7 +30,7 @@ google.setOnLoadCallback(function(){
       gdocId: '1R2CqmUzsBFD7PwC4Mk3GROozNjGDa8gEo0ySUoL-9To',
       tables: {name:"Papers", id:"IEEE XPLORE Number"} // IEEE XPLORE Number is unique per paper
     },
-    loadedCb: function(){
+    onLoad: function(){
       kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";", false);
       kshf.Util.cellToArray(kshf.dt.Papers, ['References'], ";", false);
 

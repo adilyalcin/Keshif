@@ -70,7 +70,7 @@ $(document).ready( function(){
       gdocId: '13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E',
       tables: 'Visualization Tools'
     },
-    loadedCb: function(browser){
+    onLoad: function(){
 			kshf.Util.cellToArray(kshf.dt["Visualization Tools"], 
 				['Author','Cost','Programming','Tags','Data-Procs.'], /\s*\+\s*/,false);
       kshf.dt["Visualization Tools"].forEach(function(d){
@@ -272,7 +272,7 @@ $(document).ready( function(){
             str+="<span class='tool_features'>"+this.Programming.join(" + ")+" </span>";
         return str;
       },
-      domCb: function(d){
+      onDOM: function(d){
         d3.select(d.DOM.record).select(".toolInfo").on("click",function(){
           if(d.showDetails===undefined) d.showDetails = false;
         	d.setRecordDetails(!d.showDetails);
@@ -290,7 +290,7 @@ $(document).ready( function(){
         gdocId: '13H77ewqswroMtshWjDZkmcAEvFeRmEjrr-w9E2WHU-E',
         tables: 'Visualization Books'
       },
-      loadedCb: function(browser){
+      onLoad: function(){
         kshf.Util.cellToArray(kshf.dt["Visualization Books"], ['Authors','Tags'], /\s*\+\s*/,false);
       },
       summaries: [

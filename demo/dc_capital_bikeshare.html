@@ -27,11 +27,11 @@ google.setOnLoadCallback(function(){
       gdocId: '18p2AnNPea-wWDDcNSnl_nr-SPDIfrJuSu1JLlkVFhC4',
       tables: "Trips"
     },
-    readyCb: function(){
-      browser.summaries_by_name["Day of Month"].height_hist_max = 80;
-      browser.summaries_by_name["Total Duration"].height_hist_max = 80;
-      browser.summaries_by_name["Trip Start Hour"].height_hist_max = 80;
-      browser.updateLayout();
+    onReady: function(){
+      this.summaries_by_name["Day of Month"].height_hist_max = 80;
+      this.summaries_by_name["Total Duration"].height_hist_max = 80;
+      this.summaries_by_name["Trip Start Hour"].height_hist_max = 80;
+      this.updateLayout();
     },
     summaries: [
       { name: "Subscription Type", panel: 'middle' },

@@ -26,11 +26,11 @@ google.setOnLoadCallback(function(){
       gdocId: '10kG383iIt3MD5ThEnkEISZFg24OEtPdJz2tkqe8Hjcg',
       tables: "Showcases"
     },
-    loadedCb: function(){
+    onLoad: function(){
       kshf.Util.cellToArray(kshf.dt.Showcases, ['RelatedTo'], /\*/, true);
-      kshf.dt.Showcases.forEach(function(d){
-          var i=d.data.Title.indexOf(" by ");
-          if(i>0) d.data.Title = d.data.Title.substr(0,i);
+      this.records.forEach(function(d){
+        var i=d.data.Title.indexOf(" by ");
+        if(i>0) d.data.Title = d.data.Title.substr(0,i);
       });
     },
     summaries: [

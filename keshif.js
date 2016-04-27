@@ -2490,9 +2490,9 @@ kshf.RecordDisplay.prototype = {
           });
       }
 
-      // Call the domCb function for all the records that have been inserted to the page
-      if(this.config.domCb) {
-        newRecords.each(function(record){ me.config.domCb.call(record.data,record); });
+      // Call the onDOM function for all the records that have been inserted to the page
+      if(this.config.onDOM) {
+        newRecords.each(function(record){ me.config.onDOM.call(record.data,record); });
       }
 
       this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
@@ -3057,7 +3057,7 @@ kshf.Browser = function(options){
     this.flexAggr_Compare_C.init();
 
     // Callbacks
-    this.readyCb = options.readyCb;
+    this.onReady = options.onReady || options.readyCb;
     this.preview_not = false;
 
     this.recordName = options.itemName || options.recordName || "";
@@ -3172,7 +3172,7 @@ kshf.Browser.prototype = {
       this.summaries.splice(indexFrom,1);
 
       delete this.summaries_by_name[summary.summaryName];
-      if(this.summaryColumn) delete this.summaries_by_name[summary.summaryColumn];
+      if(summary.summaryColumn) delete this.summaries_by_name[summary.summaryColumn];
     },
     /** -- */
     getAttribTypeFromFunc: function(attribFunc){
@@ -4441,13 +4441,15 @@ kshf.Browser.prototype = {
           helpin = new Helpin(this);
         }
 
-        if(this.options.loadedCb){
-          if(typeof this.options.loadedCb === "string" && this.options.loadedCb.substr(0,8)==="function"){
+        if(this.options.loadedCb) this.options.onLoad = this.options.loadedCb; // deprecated option name
+
+        if(this.options.onLoad){
+          if(typeof this.options.onLoad === "string" && this.options.onLoad.substr(0,8)==="function"){
             // Evaluate string to a function!!
-            eval("\"use strict\"; this.options.loadedCb = "+this.options.loadedCb);
+            eval("\"use strict\"; this.options.onLoad = "+this.options.onLoad);
           }
-          if(typeof this.options.loadedCb === "function") {
-            this.options.loadedCb.call(this);
+          if(typeof this.options.onLoad === "function") {
+            this.options.onLoad.call(this);
           }
         }
 
@@ -4672,11 +4674,11 @@ kshf.Browser.prototype = {
           this.recordDisplay.initializeNetwork();
         }
 
-        if(typeof this.readyCb === "string" && this.readyCb.substr(0,8)==="function"){
-          eval("\"use strict\"; this.readyCb = "+this.readyCb);
+        if(typeof this.onReady === "string" && this.onReady.substr(0,8)==="function"){
+          eval("\"use strict\"; this.onReady = "+this.onReady);
         }
-        if(typeof this.readyCb === "function") {
-          this.readyCb(this);
+        if(typeof this.onReady === "function") {
+          this.onReady();
         }
         this.finalized = true;
 
@@ -5238,12 +5240,12 @@ kshf.Browser.prototype = {
       config.rightPanelLabelWidth = this.panels.right.width_catLabel;
       config.middlePanelLabelWidth = this.panels.middle.width_catLabel;
 
-      if(typeof this.options.loadedCb === "function"){
-        config.loadedCb = this.options.loadedCb.toString();
+      if(typeof this.options.onLoad === "function"){
+        config.onLoad = this.options.onLoad.toString();
       }
 
-      if(typeof this.readyCb === "function"){
-        config.readyCb = this.readyCb.toString();
+      if(typeof this.onReady === "function"){
+        config.onReady = this.onReady.toString();
       }
 
       ['left', 'right', 'middle', 'bottom'].forEach(function(p){

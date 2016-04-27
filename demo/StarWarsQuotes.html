@@ -39,8 +39,8 @@ google.setOnLoadCallback(function(){
       gdocId: '1C8oK7ar2kCeUnwVDEGSvMzJYOI2qeWlN37bpcHiUOpo',
       tables: "Character Lines"
     },
-    loadedCb: function(){
-      kshf.dt["Character Lines"].forEach(function(d){
+    onLoad: function(){
+      this.records.forEach(function(d){
         d.data.Character = kshf.Util.toProperCase(d.data.Character);
         if(d.data.Character==="C3-Po") d.data.Character = "C3-PO";
         d.data["% of Film"] = d.data['% of Film']*100;

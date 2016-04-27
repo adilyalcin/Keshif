@@ -26,8 +26,8 @@ google.setOnLoadCallback(function () {
       gdocId: '0Ai6LdDWgaqgNdGVnN2xKckQ5dlJpS2lnTDJvaThjQ2c',
       tables: "Publications"
     },
-    loadedCb: function(){
-      kshf.dt.Publications.forEach(function(publication){
+    onLoad: function(){
+      this.records.forEach(function(publication){
         publication.data.time = new Date(moment(publication.data.id.substring(7,9),"YY"));
       });
     },

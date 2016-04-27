@@ -28,22 +28,21 @@ google.setOnLoadCallback(function(){
       fileType: 'json',
       tables: "KnightGrants"
     },
-    loadedCb: function(){
-      browser.records.forEach(function(item){
-        if(item.data.Meta){
-          var amount = item.data.Meta.Amount;
+    onLoad: function(){
+      this.records.forEach(function(d){
+        if(d.data.Meta){
+          var amount = d.data.Meta.Amount;
           if(amount)
-            item.data.Amount = parseInt(amount.replace(",","").replace("$",""));
-          if(item.data.Meta["Date Awarded"])
-            item.data["Award Date"] = dateParser.parse(item.data.Meta["Date Awarded"]);
-          item.data.Community = item.data.Meta.Community;
-          if(item.data.Meta["Focus Area"]) {
-            item.data["Focus Areas"] = item.data.Meta["Focus Area"];
-          } else if(item.data.Meta["Focus Areas"]) {
-            item.data["Focus Areas"] = item.data.Meta["Focus Areas"].split(", ");
+            d.data.Amount = parseInt(amount.replace(",","").replace("$",""));
+          if(d.data.Meta["Date Awarded"])
+            d.data["Award Date"] = dateParser.parse(d.data.Meta["Date Awarded"]);
+          d.data.Community = d.data.Meta.Community;
+          if(d.data.Meta["Focus Area"]) {
+            d.data["Focus Areas"] = d.data.Meta["Focus Area"];
+          } else if(d.data.Meta["Focus Areas"]) {
+            d.data["Focus Areas"] = d.data.Meta["Focus Areas"].split(", ");
           }
         }
-        // parse the amount
       });
     },
     summaries: [

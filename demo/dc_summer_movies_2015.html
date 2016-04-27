@@ -70,17 +70,16 @@ $(document).ready( function(){
       tables: ["Screenings", "Series"],
       callback: loadMovies
     },
-    loadedCb: function(){
-      // expand cell content - movie*genres and series*features
+    onLoad: function(){
       kshf.Util.cellToArray(kshf.dt.Movies, ['Genre'], /\b,\s+/, false);
-      kshf.Util.cellToArray(kshf.dt.Series, ['Features'], ",", false);
     },
-    readyCb: function(browser){
+    onReady: function(){
+      var browser = this;
       $(".movieName").click(function(){
         browser.recordDisplay.showListItemDetails(this.parentNode.__data__);
       });
 
-      browser.recordDisplay.DOM.recordGroup
+      this.recordDisplay.DOM.recordGroup
         .insert("img",":first-child").attr("class","film").attr("src","img/film.png");
 
       if("geolocation" in navigator) {
@@ -96,8 +95,8 @@ $(document).ready( function(){
       for(var i=0; i<5; i++){
           kshf.dt.Screenings[i].setRecordDetails(true);
       }
-      browser.summaries_by_name.Date.height_hist_max = 60;
-      browser.updateLayout();
+      this.summaries_by_name.Date.height_hist_max = 60;
+      this.updateLayout();
     },
     summaries: [
       { name: "Movie", value: "Movie", collapsed: true },

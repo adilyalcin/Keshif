@@ -15,10 +15,7 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
-
 $(document).ready(function(){
-  var frmt = d3.format(".2s");
-    
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Awards",
@@ -33,9 +30,9 @@ $(document).ready(function(){
         {name:"nsf_orgs", id:"code"},
       ],
     },
-    loadedCb: function(){
+    onLoad: function(){
       // If you downloaded using csv file, convert award amount field
-      kshf.dt.nsfawards.forEach(function(d){
+      this.records.forEach(function(d){
         d.data.AwardedAmountToDate = parseInt(d.data.AwardedAmountToDate.replace(/[^0-9]+/g,""))/100;
       });
     },
@@ -58,7 +55,7 @@ $(document).ready(function(){
         { name: 'Awarded Amount',
           label: function(){
             var v=this.AwardedAmountToDate;
-            return (v===undefined) ? "-" : frmt(v);
+            return (v===undefined) ? "-" : d3.format(".2s")(v);
           }
         },
       textSearch: 'Title',

@@ -40,7 +40,7 @@ google.setOnLoadCallback(function(){
       gdocId: '1zmtJuAfh2foJD1Ha4Ppiuisq4Wx5DDUt61zwiCjf500',
       tables: {name:"Companies", id:'Stock'}
     },
-    loadedCb: function(){
+    onLoad: function(){
       this.records.forEach(function(record){
         record.data.Cash *= 1000000000;
         record.data.Debt *= 1000000000;

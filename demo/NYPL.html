@@ -70,7 +70,7 @@ $(document).ready( function() {
           "<img src='http://images.nypl.org/index.php?id="+this.imgURL+"&t=t' class='thumb'></a>";
       },
       /*
-      domCb: function(d){
+      onDOM: function(d){
         d3.select(d.DOM.record.childNodes[2].childNodes[0].childNodes[0])
           .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'n', title: d.data.Title}); })
           .on("mouseover",function(){ this.tipsy.show(); })

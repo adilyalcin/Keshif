@@ -32,7 +32,7 @@ function shuffle(array) {
   return array;
 };
 
-function loaded(browser){
+function loaded(){
     kshf.dt.Outbreaks.forEach(function(o){
         o.data['Contributing Factors'] = []; // empty array
     });
@@ -89,7 +89,7 @@ google.setOnLoadCallback(function(){
       gdocId: '1RsaL3mPunz_DDHv2Gc7DBxa8O6VLoa4LxlOuvoGi_KA',
       tables: ["Outbreaks", "Contributing Factors", "Pathogens/Toxins"]
     },
-    loadedCb: loaded,
+    onLoad: loaded,
     summaries: [
       { name: "<i class='fa fa-globe'></i> National Cuisine", value: 'National Cuisine', panel: "middle",
         description: "Other cuisines, cuisine types in smaller representative numbers (kebab, French, Greek, Spanish, Mexican, Thai, Japanese, Danish, vegetarian) and mixed cuisines (premises serving more than one type of cuisine)." },

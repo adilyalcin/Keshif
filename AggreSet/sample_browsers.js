@@ -329,7 +329,7 @@ var browser_configs = {
         gdocId: '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
         tables: "Talks"
       },
-      loadedCb: function(){
+      onLoad: function(){
         kshf.dt.Talks.forEach(function(d){
           var views = d.data.Views;
           if(views[views.length-1]==="M") {
@@ -805,8 +805,8 @@ var browser_configs = {
                 gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
                 tables: ["Publications", "Authors", "AuthorTypes"]
             },
-            loadedCb: function(){
-                kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors']);
+            onLoad: function(){
+              kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors']);
             },
             summaries: [
                 {   name: "Coauthors",

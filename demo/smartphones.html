@@ -30,7 +30,7 @@ $(document).ready( function() {
       fileType: 'json',
       tables: 'smartphones'
     },
-    loadedCb: function(){
+    onLoad: function(){
       this.records.forEach(function(phone){
         phone = phone.data;
         // convert string to int...

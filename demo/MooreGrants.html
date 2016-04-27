@@ -29,7 +29,7 @@ google.setOnLoadCallback(function(){
       fileType: 'json',
       tables: "MooreGrants"
     },
-    loadedCb: function(){
+    onLoad: function(){
       this.records.forEach(function(record){
         record.data.Date = dateFormat.parse(record.data.Date);
       });

@@ -16,8 +16,6 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  var currencyFormat = d3.format("s");
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
@@ -31,13 +29,9 @@ google.setOnLoadCallback(function(){
       fileType: 'json',
       tables: "BillionairesByForbes"
     },
-    loadedCb: function(){
-      kshf.dt.BillionairesByForbes.forEach(function(v){
-        if(v.data.worth) {
-          v.data.Worth = v.data.worth*1000000;
-        } else {
-          v.data.Worth = null;
-        }
+    onLoad: function(){
+      this.records.forEach(function(d){
+        d.data.Worth = (d.data.worth) ? d.data.worth*1000000 : null;
       });
     },
     summaries: [
@@ -50,7 +44,7 @@ google.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortColWidth: 50,
-      sortBy: { name: "Worth", label: function(){ return currencyFormat(this.Worth).replace("G","B"); }},
+      sortBy: { name: "Worth", label: function(){ return d3.format("s")(this.Worth).replace("G","B"); }},
       showRank: true,
       textSearch: "name",
       recordView: function(){ 

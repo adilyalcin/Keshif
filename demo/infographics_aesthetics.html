@@ -34,7 +34,7 @@ google.setOnLoadCallback(function(){
       gdocId: '1TkomROX3z9p-na5-SGXbE08iU1KbwlkldBJ5ls93XSk',
       tables: ["Stimulus", "Participants", "Responses"]
     },
-    loadedCb: function(browser){
+    onLoad: function(){
       kshf.dt.Stimulus.forEach(function(stimulus){
         stimulus.data.responses = [];
       });
@@ -63,7 +63,7 @@ google.setOnLoadCallback(function(){
         stimulus.data.phase_2_avg = d3.mean(stimulus.data.phase_2_data);
       });
     },
-    readyCb: function(browser){
+    onReady: function(){
       // Participant browser
       browser2 = new kshf.Browser({
         domID: "#browser_participants",

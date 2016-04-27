@@ -55,9 +55,7 @@ $(document).ready( function(){
           "<span class='title'>"+this.caption+"</span>"
           ;
       },
-      domCb: function(d){ 
-        d.DOM.record.setAttribute("title",this.pabstract);
-      }
+      onDOM: function(d){ d.DOM.record.setAttribute("title",this.pabstract); }
     }
   });
 });

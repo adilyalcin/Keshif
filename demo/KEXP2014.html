@@ -31,8 +31,8 @@ $(document).ready( function(){
         {name:"Shows", fastMode:true, dynamicTyping:false, id:"Show"},
       ],
     },
-    loadedCb: function(){
-      kshf.dt.Songs.forEach(function(song){
+    onLoad: function(){
+      this.records.forEach(function(song){
         var m=moment(song.data.Date, "YYYY/MM/DD/hhA");
         if(m.year()<1950) return;
         song.data["Release Year"] = parseInt(song.data["Release Year"]);

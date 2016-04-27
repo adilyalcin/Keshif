@@ -88,7 +88,7 @@ google.setOnLoadCallback(function(){
         // Institution
         return str;
       },
-      domCb: function(d){
+      onDOM: function(d){
         d3.select(d.DOM.record).select(".fa-magic")
           .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: function(){ return d.data.skills.toString(); }}); })
           .on("mouseover",function(){ this.tipsy.show(); })

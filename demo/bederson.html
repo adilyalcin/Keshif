@@ -25,14 +25,14 @@ google.setOnLoadCallback(function() {
       gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
       tables: [ "Publications", "Venues", "Authors", "Keywords", "VenueTypes", "AuthorTypes" ]
     },
-    loadedCb: function(){
+    onLoad: function(){
       kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors', 'Topics']);
     },
-    readyCb: function(){
+    onReady: function(){
       $(".paperName").click(function(d){
         d.currentTarget.parentNode.parentNode.parentNode.__data__.setRecordDetails();
       });
-      kshf.dt.Publications[0].setRecordDetails(true);
+      this.records[0].setRecordDetails(true);
     },
     summaries: [
       { name: "Topics", catTableName: "Keywords", catLabel: "keyword" },

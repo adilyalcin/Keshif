@@ -88,11 +88,6 @@ $(document).ready(function() {
       gdocId: '12jV8FupDdNBTYcAPo8Ui27qPQ9pIz_6PN3w4RJdPkOg',
       tables: {name:"Participants", id:'Participants'}
     },
-    readyCb: function(browser){
-      $(".kshfRecord .content").click(function(){
-        this.parentNode.__data__.setRecordDetails(true);
-      });
-    },
     summaries: [
       {   name: "Capture Link Source", collapsed: true, value: columns[7]
       },{ name: "Area of Interest",
@@ -240,6 +235,11 @@ $(document).ready(function() {
       recordView: function(){ 
         if(this[columns[11]]===null) return "-";
         return this[columns[11]];
+      },
+      onDOM: function(browser){
+        d3.select(d.DOM.record).select(".content").on("click",function(){
+          this.parentNode.__data__.setRecordDetails(true);
+        });
       }
     }
   });

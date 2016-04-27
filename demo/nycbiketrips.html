@@ -32,8 +32,8 @@ google.setOnLoadCallback(function(){
       // gdocId: '1ftMNd_WmRYlvxxQS0eqCBwnJ-3vM1Z1oEEWpNA8FjtE',
       tables: ["Trips", "Stations"]
     },
-    loadedCb: function(){
-      kshf.dt.Trips.forEach(function(trip){
+    onLoad: function(){
+      this.records.forEach(function(trip){
         trip.data.TimeStart = moment(trip.data.Time_Start,"M/D/YY HH:mm"); // 2/28/14 21:07
         delete trip.data.Time_Start; // Remove unused variable
       })

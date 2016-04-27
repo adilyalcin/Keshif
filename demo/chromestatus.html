@@ -37,7 +37,7 @@ $(document).ready( function(){
       fileType: 'json',
       tables: "chromefeatures"
     },
-    loadedCb: function(){
+    onLoad: function(){
       this.records.forEach(function(record){
         record.data.name = record.data.name.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
       });

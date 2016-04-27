@@ -26,33 +26,17 @@ google.setOnLoadCallback(function(){
       gdocId: '1ZVabBN65bCtUDURAjiZBeFddXzJT2gjN3HQNZa2adLk',
       tables: "Responses"
     },
-    readyCb: function(){
+    onReady: function(){
       this.setPercentMode(true);
     },
     summaries: [
       { name: "Country" },
       { name: "Age",
-        catSortBy: [
-          '< 20' ,
-          '20-24',
-          '25-29',
-          '30-34',
-          '35-39',
-          '40-50',
-          '51-60',
-          '> 60' ,
-          'Prefer not to disclose',
-        ] },
+        catSortBy: [ '< 20', '20-24', '25-29', '30-34', '35-39', '40-50', '51-60', '> 60', 'Prefer not to disclose' ] },
       { name: "Gender", },
       { name: "Occupation" },
       { name: "Years IT / Programming Experience", 
-        catSortBy: [
-          'Less than 1 year',
-          '1 - 2 years',
-          '2 - 5 years',
-          '6 - 10 years',
-          '11+ years'
-        ] },
+        catSortBy: [ 'Less than 1 year', '1 - 2 years', '2 - 5 years', '6 - 10 years', '11+ years' ] },
 //    { name: "Desktop Operating System" },
       { name: "Training & Education", catSplit: "|" },
       { name: "Current Language", catSplit: "|", panel:'middle', minAggrValue: 2 },
@@ -64,13 +48,7 @@ google.setOnLoadCallback(function(){
       { name: "Prefered Source Control", panel:'middle', collapsed: true },
       { name: "Why use Stack Overflow", catSplit: "|", panel:'middle', collapsed: true },
       { name: "How often are Stack Overflow's answers helpful", panel:'middle', collapsed: true, 
-        catSortBy: [
-          'Always',
-          'Usually',
-          'Sometimes',
-          'Rarely',
-          'Never',
-        ] },
+        catSortBy: [ 'Always', 'Usually', 'Sometimes', 'Rarely', 'Never' ] },
       { name: "Why answer?", catSplit: "|", panel:'middle' },
       { name: "Employment Status", panel:'right' },
       { name: "Compensation", panel:'right', 
@@ -90,12 +68,7 @@ google.setOnLoadCallback(function(){
       { name: "Industry", panel:'right' },
       { name: "Job Satisfaction", panel:'right' },
       { name: "Remote Status", panel:'right', collapsed: true,
-        catSortBy: [
-          'Full-time Remote',
-          'Part-time Remote',
-          'I rarely work remote',
-          "Never"
-        ] },
+        catSortBy: [ 'Full-time Remote', 'Part-time Remote', 'I rarely work remote', 'Never' ] },
 //    { name: "Open to new job opportunities" },
 //    { name: "Most important aspect of new job opportunity" },
       { name: "How many caffeinated beverages per day?", panel:'middle' },
