@@ -61,13 +61,16 @@ var kshf = {
     attribPanelWidth: 220,
     previewTimeoutMS: 250,
     map: {
-      // 'http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png'
-      // 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-      // 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
-      // 'http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png'
-      // 'http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png'
-      // 'http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg'
-      // 'http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg'
+      // http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
+      // http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+      // http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png
+      // http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png
+      // http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png
+      // http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg
+      // http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg
+      // http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png
+      // http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png
+      // http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png
       tileTemplate: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
       config: {
         maxBoundsViscosity: 1, 
@@ -77,7 +80,8 @@ var kshf = {
         /*continuousWorld: true, crs: L.CRS.EPSG3857 */
       },
       tileConfig: { 
-        attribution: 'Map data © <a href="http://openstreetmap.org">OpenStreetMap</a>',
+        attribution: '© <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'+
+          ' contributors, © <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
         subdomains: 'abcd',
         maxZoom: 19,
         //noWrap: true
@@ -4162,10 +4166,14 @@ kshf.Browser.prototype = {
     /** -- */
     updateRecordDetailPanel: function(record){
       var str="";
-      for(var column in record.data){
-        var v=record.data[column];
-        if(v===undefined || v===null) continue;
-        str+="<b>"+column+":</b> "+ v.toString()+"<br>";
+      if(this.recordDisplay.config && this.recordDisplay.config.onDetail){
+        str = this.recordDisplay.config.onDetail.call(record);
+      } else {
+        for(var column in record.data){
+          var v=record.data[column];
+          if(v===undefined || v===null) continue;
+          str+="<b>"+column+":</b> "+ v.toString()+"<br>";
+        }
       }
       this.DOM.overlay_recordDetails_content.html(str);
       this.panel_overlay.attr("show","recordDetails");
