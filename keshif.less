@@ -1490,14 +1490,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
                 }
             }
-            > .overlay_credit{
+            > .overlay_infobox{
               display:none;
               width: 390px;
               height: 200px;
               position: absolute;
               top: 0; left: 0; bottom: 0; right: 0;
               cursor: default;
-              div.header{
+              > .infobox-header{
                 background-color:rgb(216, 221, 212);
                 width:100%;
                 padding-top: 5px;
@@ -1546,7 +1546,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               > .background{ opacity: 0; }
             }
             &[show="loading"]   > .overlay_loading{ display: inline-block; }
-            &[show="credit"]    > .overlay_credit { display: inline-block; }
+            &[show="infobox"]   > .overlay_infobox{ display: inline-block; }
             &[show="source"]    > .overlay_source { display: inline-block; }
             &[show="help"]      > .overlay_help   { .display(flex); }
             &[show="answer"] {

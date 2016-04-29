@@ -248,49 +248,6 @@ var kshf = {
       cur: null // Will be set to en if not defined before a browser is loaded
     },
 
-    LOG: {
-        // Note: id parameter is integer alwats, info is string
-        CONFIG                 : 1,
-        // Filtering state
-        // param: resultCt, selected(selected # of attribs, sep by x), filtered(filtered filter ids)
-        FILTER_ADD             : 10,
-        FILTER_CLEAR           : 11,
-        // Filtering extra information, send in addition to filtering state messages above
-        FILTER_CLEAR_ALL       : 12, // param: -
-        FILTER_ATTR_ADD_AND    : 13, // param: id (filterID), info (attribID)
-        FILTER_ATTR_ADD_OR     : 14, // param: id (filterID), info (attribID)
-        FILTER_ATTR_ADD_ONE    : 15,
-        FILTER_ATTR_ADD_OR_ALL : 16, // param: id (filterID)
-        FILTER_ATTR_ADD_NOT    : 17, // param: id (filterID), info (attribID)
-        FILTER_ATTR_EXACT      : 18, // param: id (filterID), info (attribID)
-        FILTER_ATTR_UNSELECT   : 19, // param: id (filterID), info (attribID)
-        FILTER_TEXTSEARCH      : 20, // param: id (filterID), info (query text)
-        FILTER_INTRVL_HANDLE   : 21, // param: id (filterID) (TODO: Include range)
-        FILTER_INTRVL_BIN      : 22, // param: id (filterID)
-        FILTER_CLEAR_X         : 23, // param: id (filterID)
-        FILTER_CLEAR_CRUMB     : 24, // param: id (filterID)
-        FILTER_PREVIEW         : 25, // param: id (filterID), info (attribID for cat, histogram range (AxB) for interval)
-        // Facet specific non-filtering interactions
-        FACET_COLLAPSE         : 40, // param: id (facetID)
-        FACET_SHOW             : 41, // param: id (facetID)
-        FACET_SORT             : 42, // param: id (facetID), info (sortID)
-        FACET_SCROLL_TOP       : 43, // param: id (facetID)
-        FACET_SCROLL_MORE      : 44, // param: id (facetID)
-        // List specific interactions
-        LIST_SORT              : 50, // param: info (sortID)
-        LIST_SCROLL_TOP        : 51, // param: -
-        LIST_SHOWMORE          : 52, // param: info (itemCount)
-        LIST_SORT_INV          : 53, // param: -
-        // Item specific interactions
-        ITEM_DETAIL_ON         : 60, // param: info (itemID)
-        ITEM_DETAIL_OFF        : 61, // param: info (itemID)
-        // Generic interactions
-        DATASOURCE             : 70, // param: -
-        INFOBOX                : 71, // param: -
-        CLOSEPAGE              : 72, // param: -
-        BARCHARTWIDTH          : 73, // param: info (width)
-        RESIZE                 : 74, // param: -
-    },
     Util: {
         sortFunc_List_String: function(a, b){
             return a.localeCompare(b);
@@ -3666,11 +3623,11 @@ kshf.Browser.prototype = {
           }
         });
       // Info & Credits
-      rightBoxes.append("span").attr("class","fa fa-info-circle credits")
+      rightBoxes.append("span").attr("class","fa fa-info-circle")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); me.panel_overlay.attr("show","credit"); });
+        .on("click",    function(){ this.tipsy.hide(); me.panel_overlay.attr("show","infobox"); });
       // Fullscreen
       rightBoxes.append("span").attr("class","fa fa-arrows-alt fullscreen")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen }); })
@@ -3730,7 +3687,7 @@ kshf.Browser.prototype = {
     insertDOM_Infobox: function(){
         var me=this;
         var creditString="";
-        creditString += "<div class='header'>Data Made Explorable - by "+
+        creditString += "<div class='infobox-header'>Data Made Explorable - by "+
           "<a target='_blank' href='http://www.keshif.me' class='libName'>Keshif</a></div>";
 
         creditString += "<div class='boxinbox' style='padding: 0px 15px'>";
@@ -3790,13 +3747,13 @@ kshf.Browser.prototype = {
         this.DOM.status_text_sub_dynamic = hmmm.append("span").attr("class","status_text_sub dynamic");
 
         // CREDITS 
-        var overlay_credit = this.panel_overlay.append("div").attr("class","overlay_content overlay_credit");
-        overlay_credit.append("div").attr("class","overlay_Close fa fa-times fa-times-circle")
+        var overlay_infobox = this.panel_overlay.append("div").attr("class","overlay_content overlay_infobox");
+        overlay_infobox.append("div").attr("class","overlay_Close fa fa-times fa-times-circle")
           .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.Close }); })
           .on("mouseenter",function(){ this.tipsy.show(); })
           .on("mouseleave",function(){ this.tipsy.hide(); })
           .on("click",function(){ me.panel_overlay.attr("show","none"); });
-        overlay_credit.append("div").attr("class","all-the-credits").html(creditString);
+        overlay_infobox.append("div").html(creditString);
 
         this.insertSourceBox();
 

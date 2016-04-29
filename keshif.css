@@ -1864,7 +1864,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay > .overlay_loading div.status_text > .status_text_sub {
   margin-left: 5px;
 }
-.kshf .panel.panel_overlay > .overlay_credit {
+.kshf .panel.panel_overlay > .overlay_infobox {
   display: none;
   width: 390px;
   height: 200px;
@@ -1875,7 +1875,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: 0;
   cursor: default;
 }
-.kshf .panel.panel_overlay > .overlay_credit div.header {
+.kshf .panel.panel_overlay > .overlay_infobox > .infobox-header {
   background-color: #d8ddd4;
   width: 100%;
   padding-top: 5px;
@@ -1883,11 +1883,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top-right-radius: 15px;
   border-bottom: solid 2px #3c5e43;
 }
-.kshf .panel.panel_overlay > .overlay_credit .boxinbox {
+.kshf .panel.panel_overlay > .overlay_infobox .boxinbox {
   margin-top: 10px;
   font-size: 0.9em;
 }
-.kshf .panel.panel_overlay > .overlay_credit .boxinbox a.myName {
+.kshf .panel.panel_overlay > .overlay_infobox .boxinbox a.myName {
   display: inline-block;
   font-size: 1.1em;
   margin: 5px 10px;
@@ -1895,19 +1895,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 600;
   font-style: normal;
 }
-.kshf .panel.panel_overlay > .overlay_credit .boxinbox a.advName {
+.kshf .panel.panel_overlay > .overlay_infobox .boxinbox a.advName {
   color: black;
 }
-.kshf .panel.panel_overlay > .overlay_credit .libName {
+.kshf .panel.panel_overlay > .overlay_infobox .libName {
   font-size: 1.3em;
   font-weight: 700;
   color: black;
   text-decoration: none;
 }
-.kshf .panel.panel_overlay > .overlay_credit .libName:hover {
+.kshf .panel.panel_overlay > .overlay_infobox .libName:hover {
   color: orangered;
 }
-.kshf .panel.panel_overlay > .overlay_credit .project_fund {
+.kshf .panel.panel_overlay > .overlay_infobox .project_fund {
   clear: both;
   margin-top: 1em;
   text-align: center;
@@ -1929,7 +1929,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay[show="loading"] > .overlay_loading {
   display: inline-block;
 }
-.kshf .panel.panel_overlay[show="credit"] > .overlay_credit {
+.kshf .panel.panel_overlay[show="infobox"] > .overlay_infobox {
   display: inline-block;
 }
 .kshf .panel.panel_overlay[show="source"] > .overlay_source {
