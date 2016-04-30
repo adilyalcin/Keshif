@@ -61,16 +61,13 @@ $(document).ready( function() {
       tables: "DataGov"
     },
     summaries: [
-      { name: "Topics", 
-        value: function(){ return this.topics; },
-        catLabel: iconMapping},
+      { name: "Topics", value: function(){ return this.topics; }, catLabel: iconMapping},
       { name: "Total Views", value: "tracking_total" },
       { name: "Recent Views", value: "tracking_recent" },
       { name: "<i class='fa fa-file'></i> Formats", value: "formats" },
       { name: "<i class='fa fa-university'></i> Organization", value: "organization", panel: 'right'},
       { name: "<i class='fa fa-tag'></i> Tags", value: "tags", panel: 'right', minAggrValue: 20},
-      { name: "<i class='fa fa-legal'></i> License", value: "license_id", panel: "right", collapsed: true
-        }
+      { name: "<i class='fa fa-legal'></i> License", value: "license_id", panel: "right", collapsed: true }
     ],
     recordDisplay: {
       sortColWidth: 53,

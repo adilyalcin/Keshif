@@ -40,8 +40,8 @@ google.setOnLoadCallback(function(){
       { name: "Land Size", value: "Land Square Feet", unitName: "ft<sup>2</sup>", panel: "right"},
       { name: "Gross Size", value: "Gross Square Feet", unitName: "ft<sup>2</sup>", panel: "right"},
 
-      { name: "Year Built", panel: "middle", scaleType: "linear"},
-      { name: "Total Units", scaleType: "log", panel: "middle"},
+      { name: "Year Built", panel: "middle", timeFormat: "%Y"},
+      { name: "Total Units", panel: "middle"},
       { name: "Residential Units", panel: "middle", collapsed: true},
       { name: "Commercial Units", panel: "middle", collapsed: true},
       { name: "Sale Price", unitName: "$", panel: "middle"},
@@ -62,10 +62,9 @@ google.setOnLoadCallback(function(){
       <div id="demo_Infobox">
         Data from
         <a href='http://www1.nyc.gov/site/finance/taxes/property-rolling-sales-data.page' target='blank'>
-          NYC Department of Finance
-        </a>.
+          NYC Department of Finance</a>.
 
-        Also visualized by <a href='' target='blank'></a>
+        Also visualized by <a href='https://twitter.com/pgilks' target='blank'>Peter Gilks</a>
         at 
         <a href='http://paintbynumbersblog.blogspot.com/2015/04/real-estate-of-mind-exploring-new-york.html' target='blank'>here</a>
         and

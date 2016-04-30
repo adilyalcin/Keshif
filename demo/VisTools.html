@@ -41,27 +41,9 @@ function isOpenSource(d){
 	}
 };
 
-function resizeBrowser(minWidth, minHeight){
-  if(minWidth) {
-    $('#vistools_div').width($(window).width()-minWidth);
-    $('#visbooks_div').width($(window).width()-minWidth);
-  }
-  if(minHeight) {
-    $('#vistools_div').height($(window).height()-minHeight);
-    $('#visbooks_div').height($(window).height()-minHeight);
-  }
-};
-
 var book_browser=null;
 
 $(document).ready( function(){
-	resizeBrowser(30,90);
-	$(window).resize(function(){
-	  resizeBrowser(30,90);
-	  tool_browser.updateLayout();
-    if(book_browser) book_browser.updateLayout();
-	});
-
 	tool_browser = new kshf.Browser({
     domID: "#vistools_div",
     recordName: "Data-Visualization Tools",
@@ -519,6 +501,11 @@ $(document).ready( function(){
   .showConfigButton{
     display: none !important;
   }
+  .browser_style{
+    margin: 0 auto;
+    width: calc(100% - 20px);
+    height: calc(100vh - 85px);
+  }
 
 </style>
 	</head>
@@ -528,8 +515,8 @@ $(document).ready( function(){
       <span class="browser_select" show="books">Books</span>
       </div>
     <div class="contents">
-      <div id="vistools_div"></div>
-      <div id="visbooks_div"></div>
+      <div id="vistools_div" class='browser_style'></div>
+      <div id="visbooks_div" class='browser_style'></div>
       </div>
 
     <div id="demo_Infobox">

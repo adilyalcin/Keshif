@@ -1,10 +1,11 @@
 @import "../../lesshat";
 
 html, body {
-    min-height: 100%;
-    min-height: 100vh;
-    margin:0px;
-    padding: 0px;
+  min-height: 100%;
+  min-height: 100vh;
+  margin:0px;
+  padding: 0px;
+  background-color: #FBFAF7;
 }
 .contents {
 	padding-top: 45px;
@@ -237,37 +238,6 @@ html, body {
   .fa{ color:gray; }
   &:before{ .infobox_icon; }
   &:after{ .infobox_icon; }
-}
-
-.comment_popup{
-    position: fixed;
-    top: 5px;
-    left: 5px;
-    cursor: pointer;
-    .fa-stack{
-        float:left;
-        clear:left;
-        height: 1.5em;
-        margin-top: -15px;
-        margin-left: -15px;
-        font-size: 2em;
-    }
-    .fa-comment{
-        color: rgb(255, 205, 46);
-    }
-    .texttt{
-        font-family: sans-serif;
-        font-weight: 300;
-        font-size: 0.8em;
-    }
-    &:hover{
-    	.texttt{
-    	    color: orangered;
-    	}
-    	.fa-comment{
-    	    color: orangered;
-    	}
-    }
 }
 
 .addthis-smartlayers-desktop{

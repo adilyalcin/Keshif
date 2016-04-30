@@ -4,6 +4,7 @@ body {
   min-height: 100vh;
   margin: 0px;
   padding: 0px;
+  background-color: #FBFAF7;
 }
 .contents {
   padding-top: 45px;
@@ -246,34 +247,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   content: "\f05a";
   color: gray;
-}
-.comment_popup {
-  position: fixed;
-  top: 5px;
-  left: 5px;
-  cursor: pointer;
-}
-.comment_popup .fa-stack {
-  float: left;
-  clear: left;
-  height: 1.5em;
-  margin-top: -15px;
-  margin-left: -15px;
-  font-size: 2em;
-}
-.comment_popup .fa-comment {
-  color: #ffcd2e;
-}
-.comment_popup .texttt {
-  font-family: sans-serif;
-  font-weight: 300;
-  font-size: 0.8em;
-}
-.comment_popup:hover .texttt {
-  color: orangered;
-}
-.comment_popup:hover .fa-comment {
-  color: orangered;
 }
 .addthis-smartlayers-desktop {
   display: none;

@@ -35,7 +35,7 @@ google.setOnLoadCallback(function(){
       });
     },
     summaries: [
-      {name: "Gender", value: "gender", catLabel: function(){ return (this.id==="M"?"Male":"Female")+" "+getIcon(this.id); }},
+      {name: "Gender", value: "gender", catLabel: { "M": "Male "+getIcon("m"), "F": "Female "+getIcon("f") } },
       {name: "Industry", value: "industry"},
       {name: "Age", value: "age", panel: "right"},
       {name: "Worth", unitName: "$", panel: "right"},

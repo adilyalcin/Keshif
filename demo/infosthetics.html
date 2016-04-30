@@ -33,7 +33,7 @@ $(document).ready( function(){
       { name: "Date", panel: 'bottom' }
     ],
     recordDisplay: {
-      sortBy: { title: 'Date', label: function(){ return moment(this.Date).format("MMM Do, YY"); }, inverse: true },
+      sortBy: { title: 'Date', inverse: true },
       textSearch: "Title",
       displayType: 'grid',
       maxVisibleItems_Default: 50,

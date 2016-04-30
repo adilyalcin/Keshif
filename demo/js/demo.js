@@ -3,36 +3,31 @@ var socialShare = true;
 // turn on rubbon by default
 var githubButton = false;
 
-function resizeBrowser(minWidth, minHeight){
-    if(minWidth) $('#demo_Browser').width($(window).width()-minWidth);
-    if(minHeight) $('#demo_Browser').height($(window).height()-minHeight);
-};
-
 var getIcon = function(v){
-    var iconName="";
-    switch(v.toLowerCase()){
-        case "male": 
-        case "m": 
-            iconName = "male"; break;
-        case "female": 
-        case "f": 
-            iconName = "female"; break;
-        case "organization": 
-            iconName = "university"; break;
-        case "medicine": 
-            iconName = "stethoscope"; break;
-        case "economics": 
-            iconName = "money"; break;
-        case "literature": 
-            iconName = "book"; break;
-        case "physics": 
-            iconName = "bolt"; break;
-        case "chemistry": 
-            iconName = "flask"; break;
-        case "peace": 
-            iconName = "flag-o"; break;
-    }
-    return "<span class='fa fa-"+iconName+"'></span>";
+  var iconName="";
+  switch(v.toLowerCase()){
+    case "male": 
+    case "m": 
+      iconName = "male"; break;
+    case "female": 
+    case "f": 
+      iconName = "female"; break;
+    case "organization": 
+      iconName = "university"; break;
+    case "medicine": 
+      iconName = "stethoscope"; break;
+    case "economics": 
+      iconName = "money"; break;
+    case "literature": 
+      iconName = "book"; break;
+    case "physics": 
+      iconName = "bolt"; break;
+    case "chemistry": 
+      iconName = "flask"; break;
+    case "peace": 
+      iconName = "flag-o"; break;
+  }
+  return "<span class='fa fa-"+iconName+"'></span>";
 };
 
 var US_States = { 
@@ -442,7 +437,7 @@ kshf.Countries = {
   ],
   loadGeo: function(){
     $.ajax({
-      // Load state geometries
+      // Load world country geometries
       url: 'data/world-countries.json',
       async: false,
       success: function(topojsonData){
@@ -462,163 +457,28 @@ kshf.Countries.data.forEach(function(s){
   kshf.Countries.index_name [s.name ] = s;
 });
 
-
 function getCountryName(v){
   var country = kshf.Countries.index_alpha[v];
   if(country) return country.name;
   return "Unknown: "+v;
 }
 
-function writeCookie(name,value,days){
-    var date, expires;
-    if (days) {
-        date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        expires = "; expires=" + date.toGMTString();
-    }else{
-        expires = "";
-    }
-    document.cookie = name + "=" + value + expires + "; path=/";
+function printPeopleIcons(){
+  var str="";
+  for(var i=0; i<this.id; i++) str+="<i class='fa fa-male'></i>";
+  return str;
 };
-
-function readCookie(name){
-    var i, c, ca, nameEQ = name + "=";
-    ca = document.cookie.split(';');
-    for(i=0;i < ca.length;i++) {
-        c = ca[i];
-        while (c.charAt(0)==' ') {
-            c = c.substring(1,c.length);
-        }
-        if (c.indexOf(nameEQ) == 0) {
-            return c.substring(nameEQ.length,c.length);
-        }
-    }
-    return '';
-};
-
-var printPeopleIcons = function(){
-    var str="";
-    for(var i=0; i<this.id; i++) str+="<i class='fa fa-male'></i>";
-    return str;
-};
-
-function noop(){};
-
-// Logging
-var isMobile = {
-    Android    : function() { return navigator.userAgent.match(/Android/i); },
-    BlackBerry : function() { return navigator.userAgent.match(/BlackBerry/i); },
-    iOS        : function() { return navigator.userAgent.match(/iPhone|iPad|iPod/i); },
-    Opera      : function() { return navigator.userAgent.match(/Opera Mini/i); },
-    Windows    : function() { return navigator.userAgent.match(/IEMobile/i); },
-    any        : function() {
-        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-    }
-};
-var logIf = {
-    WindowSize : function(){ // minimum 950 x 500 (timeline is shown with 4 categories)
-        // Using HTML document size (Device screen.width & screen.height is not important)
-        var w=this.dom.width();
-        var h=this.dom.height();
-        return (w>950) && (h>500) /* && (w>h)*/;
-    },
-    Desktop : function(){ // skip: Android, Blackberry, iPhone, iPad, iPod, Opera Mini, IEMobile
-        return isMobile.any()===null;
-    },
-    NoTouch : function(){ // skip browsers supporting touch events.
-        return !Modernizr.touch; 
-    },
-    setSessionID : function(t){
-        if(this.Check!==undefined) return;
-        if(t!==undefined){
-            this.dom = $(t);
-        }
-        document.getElementsByTagName("body")[0].onmousemove = null;
-        this.sessionID_Cookie = readCookie('sessionId');
-        if(this.sessionID_Cookie === '') {
-            var ran  = window.event.clientX*Math.random();
-            var ran2 = window.event.clientY*Math.random();
-            this.sessionID_Cookie = Math.floor((ran+ran2)*10000000000000);
-            writeCookie('sessionId', this.sessionID_Cookie, 365);
-        } else {
-            this.sessionID_Cookie = parseInt(this.sessionID_Cookie);
-        }
-        this.sessionID_Now = Math.floor(Math.random()*10000000000000);
-        this.All();
-    },
-    host : function(){
-        switch(document.location.hostname){
-            case "localhost": return true;
-            case "adilyalcin.github.io": return true;
-            case "www.cs.umd.edu": return true;
-            case "cs.umd.edu": return true;
-            case "www.keshif.me": return true;
-            case "keshif.me": return true;
-        }
-        return false;
-    },
-    All : function(){
-        var tmp = this.Check;
-        this.Check = 
-            (typeof demoID === 'number') && 
-            this.WindowSize() && 
-            this.Desktop() && 
-            this.NoTouch() && 
-            this.host()===true && 
-            (this.sessionID_Cookie!==null)
-            ;
-        if(this.Check===true && tmp === undefined) {
-            this.loadTs = Date.now();
-            sendLog(kshf.LOG.CONFIG,
-                { height:this.dom.height(),width:this.dom.width(),agent:navigator.userAgent}, this.loadTs);
-        }
-        return this.Check;
-    },
-    dom: $(window),
-    sessionID_Cookie: null,
-    sessionID_Now: null,
-    Check : undefined,
-    loadTs: null,
-};
-
-var sendLog = function(actID, dt, ts){
-    if(logIf.Check!==true) return;
-    if(ts===undefined){ ts = Date.now()-logIf.loadTs; }
-    var _dt = {
-        'demoID': demoID,
-        'actID' : actID,
-        'ses_Cki' : logIf.sessionID_Cookie,
-        'ses_Now': logIf.sessionID_Now,
-        'ts'    : ts,
-    };
-    // custom data to be sent
-    if(dt){ for (var key in dt) { _dt[key]=dt[key]; } }
-    $.ajax({
-        type: "GET",
-        dataType: "jsonp",
-        cache: true,
-        jsonp: false,
-        url: (document.location.hostname!=="localhost")?"http://keshiftracker.appspot.com":"http://localhost:9090/",
-        data: _dt
-    });
-};;
 
 $(document).ready(function(){
   window.onresize = function(){ kshf.handleResize(); };
-
     if(document.location.hostname!=="localhost"){
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-        ga('create', 'UA-54042831-2', 'auto');
-        ga('send', 'pageview');
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-54042831-2', 'auto');
+      ga('send', 'pageview');
     }
-    var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
-    var pageName = window.location.pathname.split("/");
-    pageName = pageName[pageName.length-1];
-    if(pageName.indexOf("html")===-1) pageName+=".html";
 
     if(socialShare===true){
-      var body = d3.select("body");
-      var demoHeader = body.append("div").attr("class","demoHeader");
+      var demoHeader = d3.select("body").append("div").attr("class","demoHeader");
       
       var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
       keshif_logo.append("img").attr("class","keshif_logo_img").attr("src","./img/logo.png");
@@ -626,9 +486,12 @@ $(document).ready(function(){
 
       demoHeader.append("div").attr("class","addthis_sharing_toolbox");
 
-      var openSource = demoHeader.append("div").attr("class","openSource")
-        ;
-      //openSource.append("span").attr("class","fa fa-github");
+      var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
+      var pageName = window.location.pathname.split("/");
+      pageName = pageName[pageName.length-1];
+      if(pageName.indexOf("html")===-1) pageName+=".html";
+
+      var openSource = demoHeader.append("div").attr("class","openSource");
       openSource.append("iframe")
         .attr("src","http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small")
         .attr("frameborder",0)
@@ -637,19 +500,15 @@ $(document).ready(function(){
         .attr("height","20px")
         .style("position","relative")
         .style("top","3px");
-      var y = openSource.append("a").attr("class","openSourceLabel")
-        .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code");
-        //y.append("span").attr("class","sdsdsds").html("Get<br>Code");
-          y.append("span").attr("class","fa fa-code");
+      openSource.append("a").attr("class","openSourceLabel")
+        .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code")
+          .append("span").attr("class","fa fa-code");
 
-      var s = document.createElement("script");
-      s.type = "text/javascript";
-      s.src = "//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e";
-      s.async = "async";
-      $("body").append(s);
+      d3.select("body").append("script").attr("type","text/javascript").attr("async","async")
+        .attr("src","//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e");
 
       WebFontConfig = {
-          google: { families: [ 'Montserrat:400,500,300,100,700:latin', ] }
+        google: { families: [ 'Montserrat:400,500,300,100,700:latin', ] }
       };
       var wf = document.createElement('script');
       wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
@@ -660,42 +519,16 @@ $(document).ready(function(){
       s.parentNode.insertBefore(wf, s);
     }
 
-    d3.select("head").append("link")
-        .attr("rel","icon")
-        .attr("href","./img/favicon.png")
-        .attr("type","image/png");
+  // Add favicon to all demos
+  d3.select("head").append("link").attr("rel","icon").attr("type","image/png")
+    .attr("href","http://keshif.me/demo/img/favicon.png");
 
-
-    if($("body").fancybox && false){
-
-        var com_dom = d3.select("body").append("span").attr("class","comment_popup").attr("href",
-            "https://docs.google.com/forms/d/1OohNaCzV42jHFtqTxVaci3CISGiR6znYTvEozFm2z7k/viewform?embedded=true");
-
-        var com_dom_stack = com_dom.append("span").attr("class","fa-stack");
-            com_dom_stack.append("i").attr("class","fa fa-stack-1x fa-comment");
-            com_dom_stack.append("i").attr("class","fa fa-stack-1x fa-comment-o");
-        com_dom.append("br");
-        com_dom.append("span").attr("class","texttt").html("Share<br>your<br>feedback");
-
-        $(".comment_popup").fancybox({
-            type: 'iframe',
-            width: 600,
-            height: 300,
-            closeBtn: true,
-            iframe: { 
-                preload: true
-            }
-        });
-    }
-
-    if(githubButton===true){
-        var s = document.createElement("script");
-        s.src = "https://buttons.github.io/buttons.js";
-        s.id  = "github-bjs";
-        s.async = "async";
-        $("body").append(s);
-    }
+  if(githubButton===true){
+    var s = document.createElement("script");
+    s.src = "https://buttons.github.io/buttons.js";
+    s.id  = "github-bjs";
+    s.async = "async";
+    $("body").append(s);
+  }
 });
-
-
 
