@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Prince Hits on The Hot 100 - Billboard </title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <link href="http://fonts.googleapis.com/css?family=Josefin+Slab" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 130,
+    source: {
+      gdocId: '1m5rA4VAT_K-hfowWw-67Mp_hnMagCuCmQUyGCFIIUPA',
+      tables: "Prince Hits"
+    },
+    summaries: [
+      { name: "Album" },
+      { name: "Peak Position", panel: 'right' },
+      { name: "Weeks on Chart", panel: 'right' },
+      { name: "Last Week's Position", panel: 'right', collapsed: true },
+      { name: "Date", panel: 'bottom' }
+    ],
+    recordDisplay: {
+      sortColWidth: 40,
+      sortBy: { name: "Peak Position", inverse: true},
+      textSearch: "Song",
+      recordView: function(){ 
+        return "<div class='Song'>"+this.Song+"</div> "+
+          "<span class='Album'>"+this.Album+"</span> - "+
+          "<span class='Info'>"+
+            "<i class='fa fa-calendar'></i>"+d3.time.format("%B %e, %Y")(this.Date)+" - "+
+            "<i class='fa fa-history'></i>"+this['Weeks on Chart']+" weeks - "+
+            "Peak <i class='fa fa-arrow-circle-o-up'></i>"+this['Peak Position']+" - "+
+          "</span>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser {
+  max-width: 1070px;
+  max-height: 680px;
+}
+.loveLogo{ height: 1.1em; }
+.demoHeader{ background-color: purple; }
+.Song{
+  font-family: Josefin Slab;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 1.2em;
+  padding-top: 2px;
+}
+.Album{
+  text-decoration: none;
+  font-weight: 300;
+  font-size: 1em;
+}
+.Info{
+  text-decoration: none;
+  font-weight: 200;
+  font-size: 0.8em;
+}
+.Info > .fa{
+  font-size: 0.8em;
+  color: gray;
+  margin: 0px 3px;
+}
+
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">
+        <img src='./img/Prince_logo.svg' class='loveLogo'>
+        Prince Hits on Billboard The Hot 100
+        <img src='./img/Prince_logo.svg' class='loveLogo'>
+        </div>
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
+</html>
