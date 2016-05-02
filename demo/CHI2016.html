@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>CHI2016 Program</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+
+function loadData(browser){
+  browser.primaryTableName = "Papers";
+
+  var urlBase = 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/CHI2016/';
+
+  kshf.dt.Papers = [];
+  kshf.dt_id.Papers = {};
+
+  $.ajax({
+    url: urlBase+'papers.json',
+    dataType: "json",
+    async: false,
+    success: function(data){
+      var id=0;
+      for(var key in data){
+        var paper = data[key];
+        paper.key = key;
+        paper.id = id++;
+        if(paper.authors){
+          var r=[];
+          paper.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.name)); });
+          paper.Authors = r;
+        }
+        var item = new kshf.Record(paper,"id");
+        kshf.dt.Papers.push(item);
+        kshf.dt_id.Papers[key] = item;
+      }
+    }
+  });
+  $.ajax({
+    url: urlBase+"sessions.json",
+    dataType: "json",
+    async: false,
+    success: function(data){
+      for(var key in data){
+        var session = data[key];
+        session.key = key;
+        session.submissions.forEach(function(submissionKey){
+          var paper = kshf.dt_id.Papers[submissionKey];
+          // add session information to the paper
+          if(paper) paper.data.session = session;
+        });
+      }
+    }
+  });
+  browser.loadCharts();
+};
+
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 180,
+    rightPanelLabelWidth: 210,
+    recordName: "Papers & Notes",
+    source: {
+      url: "http://confer.csail.mit.edu/chi2015/papers",
+      callback: loadData
+    },
+    summaries: [
+      { name: "Venue", value: "type"},
+      { name: "Type", value: "subtype"},
+      { name: "Highlights",
+        value: function(){
+          var r=[];
+          if(this.award) r.push("Awarded <i class='fa fa-trophy paperIcon'>");
+          if(this.hm) r.push("Honorable Mention <i class='fa fa-certificate paperIcon'>");
+          return r;
+        }},
+      { name: "Keywords", minAggrValue: 2, panel: 'right',
+        value: function(){
+          if(this.keywords===undefined) return;
+          var r=[];
+          this.keywords.forEach(function(keyword){ r.push(kshf.Util.toProperCase(keyword)); });
+          return r;
+        },},
+/*      { name: "Authors" }},*/
+      { name: "Author Institution", 
+        value: function(){
+          if(this.authors===undefined) return;
+          var r=[];
+          this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.institution)); });
+          return r;
+        },},
+      { name: "Author Country", 
+        value: function(){
+          if(this.authors===undefined) return;
+          var r=[];
+          this.authors.forEach(function(author){ r.push(kshf.Util.toProperCase(author.country)); });
+          return r;
+        }},
+      { name: "Session Title", panel: 'right', collapsed: true,
+        value: function(){ if(this.session) return this.session.s_title; },},
+      { name: "Session Day", panel: 'right', 
+        value: function(){ if(this.session) return this.session.day; },
+        catSortBy: _demo.DayOfWeek_id },
+      { name: "Session Time",  panel: 'right',
+        value: function(){ if(this.session) return this.session.time; },
+        catSortBy: [ "9:30-10:50", "11:30-12:50", "14:30-15:50", "16:30-17:50", ]
+      }
+    ],
+    recordDisplay: {
+      sortBy: {
+        name: "Time", inverse: true,
+        value: function(){
+          if(this.session) {
+            var v=100*({ 'Monday': 0, 'Tuesday': 1, 'Wednesday': 2, 'Thursday': 3})[this.session.day];
+            v += ({ "9:30-10:50": 0, "11:30-12:50": 1, "14:30-15:50": 2, "16:30-17:50": 3})[this.session.time];
+            return v;
+          }
+          return 999999;
+        },
+        label: function(){
+          if(this.session){
+            return this.session.day + "<br>" + 
+              "<span style='font-size: 100'>"+this.session.time+"</span>";
+          }
+          return "-";
+        }
+      },
+      sortColWidth: 74,
+      textSearch: 'title',
+      recordView: function(){
+        var str="";
+        if(this.award) str+="<i class='fa fa-trophy paperIcon' title='Awarded'></i>";
+        if(this.hm) str+="<i class='fa fa-certificate paperIcon' title='Honorable Mention'></i>";
+        str+=this.title;
+        if(this.cAndB) str+="<span class='cAndB'><i class='fa fa-flash'></i>"+this.cAndB+"</span>";
+        str+="<div>";
+
+        if(this.Authors){
+          str+="<span class='authors'><i class='fa fa-user'></i>"+this.Authors.join(", ")+"</span>";
+        }
+        if(this.session){
+          str+="<span class='room'><i class='fa fa-map-marker'></i>Room "+this.session.room+"</span>";
+        }
+
+        str+="</div>";
+
+        return str;
+      }
+    }
+  });
+});
+    </script>
+<style type="text/css" media="screen">
+.paperIcon{
+  width: 15px;
+  font-size: 0.9em;
+}
+.fa-trophy{
+  color: gold;
+  text-shadow: 0px 0px 1px black;
+}
+.fa-certificate{
+  color: silver;
+  text-shadow: 0px 0px 1px black;
+}
+.cAndB{
+  display: block;
+  font-weight: 300;
+  font-size: 0.8em;
+  padding-left: 5px;
+}
+.authors{
+  display: inline-block;
+  font-size: 0.8em;
+  font-weight: 400;
+  padding-left: 5px;
+}
+.room{ 
+  margin-left: 10px;
+  font-size: 0.8em;
+  font-weight: 300;
+}
+.kshfRecord .fa{
+  color: gray;
+  width: 15px;
+  text-align: center;
+}
+.demoHeader{
+  background-color: #880099;
+}
+.chiLogo{
+  height: 1.1em;
+  background-color: white;
+  padding: 1px;
+  display: inline-block;
+  vertical-align: top;
+}
+</style>
+    </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">
+        <img src='https://upload.wikimedia.org/wikipedia/commons/6/67/CHI_2016_logo.svg' class='chiLogo'>
+        CHI2016 Program
+        <img src='https://upload.wikimedia.org/wikipedia/commons/6/67/CHI_2016_logo.svg' class='chiLogo'>
+        </div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data based on <a href="http://confer.csail.mit.edu/chi2016/papers" target='_blank'>Confer - CHI2016</a>. 
+      Data browser created by <a href='http://www.keshif.me'>Keshif</a>.
+      </div>
+    </body>
+</html>
