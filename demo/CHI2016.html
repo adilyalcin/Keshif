@@ -92,7 +92,7 @@ google.setOnLoadCallback(function(){
           this.keywords.forEach(function(keyword){ r.push(kshf.Util.toProperCase(keyword)); });
           return r;
         },},
-/*      { name: "Authors" }},*/
+      { name: "Authors", collapsed: true, },
       { name: "Author Institution", 
         value: function(){
           if(this.authors===undefined) return;
