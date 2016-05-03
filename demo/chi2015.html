@@ -31,12 +31,14 @@ function loadData(browser){
     dataType: "json",
     async: false,
     success: function(data){
+      var id=0;
       for(var key in data){
         var paper = data[key];
         if(paper.subtype===undefined) continue;
         if(paper.subtype!=="Paper" && paper.subtype!=="Note") continue;
         paper.key = key;
-        var item = new kshf.Record(paper,"key");
+        paper.id = id++;
+        var item = new kshf.Record(paper,"id");
         kshf.dt.Papers.push(item);
         kshf.dt_id.Papers[key] = item;
       }
@@ -116,12 +118,7 @@ google.setOnLoadCallback(function(){
         catSortBy: _demo.DayOfWeek_id },
       { name: "Session Time",  panel: 'right',
         value: function(){ if(this.session) return this.session.time; },
-        catSortBy: [
-           "9:30-10:50",
-          "11:30-12:50",
-          "14:30-15:50",
-          "16:30-17:50",
-        ]
+        catSortBy: [ "9:30-10:50", "11:30-12:50", "14:30-15:50", "16:30-17:50", ]
       }
     ],
     recordDisplay: {
