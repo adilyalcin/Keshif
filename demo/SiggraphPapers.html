@@ -78,7 +78,7 @@ $(document).ready( function() {
       { name: "Keywords", catLabel: function(){ return keywords[this.id].text; } },
       { name: "Citation Count" },
       { name: "Citation Count (internal)", value: function(){ if(this.CitedBy) return this.CitedBy.length; } },
-      { name: "Year", value: "year", timeFormat: "%Y", panel: "bottom" }
+      { name: "Year", timeFormat: "%Y", panel: "bottom" }
     ],
     recordDisplay: {
       sortBy: "Citation Count",
