@@ -37,28 +37,8 @@ function loadDemo(config){
     var degreePanel = (this.panels.left.summaries.length!==0)?"left":"middle";
     var setListSummary = this.panels[degreePanel].summaries[0];
 
-    if(config.name==="YourData"){
-      var setColumn = this.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
-      if(setColumn==="") return; // Cannot show set-matrix
-      setListSummary = this.summaries_by_name[setColumn];
-
-      setListSummary.addToPanel(this.panels.left);
-
-      this.summaries.forEach(function(summary){
-        if(summary.summaryName===this.items[0].idIndex) return;
-        if(summary.type==='interval'){
-          summary.addToPanel(this.panels.middle);
-          summary.setCollapsed(true);
-        }
-        if(summary.type==='categorical' && !summary.hasMultiValueItem){
-          summary.addToPanel(this.panels.middle);
-          summary.setCollapsed(true);
-        }
-      },this);
-    } else {
-      d3.select("#credits_wrapper").style("display","block");
-      d3.select("#credits").html(config.credits);
-    }
+    d3.select("#credits_wrapper").style("display","block");
+    d3.select("#credits").html(config.credits);
     
     {  // Add the degree sumary
       var setDegreeSummary = this.createSummary(
@@ -121,17 +101,6 @@ $(document).ready( function(){
     loadDemo(browser_configs[v]);
   });
 
-  $("#YourData").click(function(){
-    loadDemo({
-      name: "YourData",
-      browser:{
-        leftPanelLabelWidth: 160,
-        rightPanelLabelWidth: 140,
-        middlePanelLabelWidth: 140,
-      }
-    });
-  });
-
   $("#AboutButton").click(function(){
     var d=d3.select("#aboutBox").style("display");
     d3.select("#aboutBox").style("display", d==="block"?"none":"block");
@@ -190,6 +159,7 @@ html, body{
   min-height: 100%;
   margin: 0px;
   padding: 0px;
+  background-color: #FBFAF7;
 }
 #theBrowserDIV {
   position: absolute !important;
@@ -367,7 +337,7 @@ html, body{
 }
 #aboutBox{
   width: 750px;
-  height: 500px;
+  height: 550px;
   position: absolute;
   left: calc(50% - 370px);
   top: 50px;
@@ -545,8 +515,6 @@ html, body{
         .cboxSlideshow_off #cboxSlideshow{background-position:-150px -25px; right:27px;}
         .cboxSlideshow_off #cboxSlideshow:hover{background-position:-125px 0px;}
 
-
-
 </style>
 </head>
 <body>
@@ -556,8 +524,9 @@ html, body{
       <div class="set-selector-wrapper"> 
         <div class="loadDataset_header">
           <span class="headerOption" id="AboutButton"><span class='fa fa-info'></span> About</span>
-          <span class="headerOption" id="YourData">
-            <span class='fa fa-cloud-upload'></span> Import your data</span>
+          <span class="headerOption">
+            <span class='fa fa-cloud-upload'></span> 
+              <a href='../demo/YourData' target='_blank' style='color:black'>Import your data</a></span>
           <span class="headerOption" id="SampleData" ready="false">
             <span class='fa fa-arrow-up'></span> Load sample data</span>
         </div>
@@ -596,10 +565,14 @@ html, body{
       </span>
 
       <div style='margin: 20px;'>
-        <b>Use AggreSet now!</b><br> &nbsp; &nbsp;Load a sample data, or import <i>your</i> data
-          using the lower-left menu. <span class='fa fa-info-circle' id='import_privacy'></span><br><br>
+        <b style='color: orangered;'>Use AggreSet now!</b><br>
+          &nbsp; &nbsp;Load a sample data, or import <i>your</i> data
+          using the lower-left menu. <span class='fa fa-info-circle' id='import_privacy'></span><br>
+          &nbsp; &nbsp;<u>AggreSet is now fully integrated into Keshif!</u><br>
+          &nbsp; &nbsp;<u>Just click on <i class='fa fa-tags'></i> to open set matrix.</u>
+        <br><br>
 
-        To appear in IEEE Trans. Visualization &amp; Comp. Graphics 
+        Published in IEEE Trans. Visualization &amp; Comp. Graphics 
           <a href="http://ieeevis.org/year/2015/info/vis-welcome/welcome" target="_blank" class="author_link">(Proc. InfoVis 2015)</a>
           <br><br>
 
@@ -609,20 +582,14 @@ html, body{
           <a href="https://sites.umiacs.umd.edu/elm/" target="_blank" class="author_link">Niklas Elmqvist</a>, and
           <a href="http://www.cs.umd.edu/~bederson/" target="_blank" class="author_link">Ben Bederson</a><br><br>
 
-          <div style=" margin-left: 20px;">
-        <span class='fa fa-file-pdf-o'></span> 
-          <a href="http://www.cs.umd.edu/~yalcin/papers/AggreSet.pdf" target="_blank" class="author_link">Pre-Print Paper</a><br>
-
-        <span style="display:inline-block; margin-top: 10px;">
-          <span class='fa fa-youtube-play'></span> 
-            <a class='youtube author_link' href="https://www.youtube.com/embed/rcqozpaaGhM">Teaser Video (30-sec)</a> 
-
-          <span class='fa fa-youtube-play' style="margin-left: 20px;"></span> 
-            <a class='youtube author_link' href="https://www.youtube.com/embed/cSSAvDAre-E">Overview Video (5-minute)</a>
-          </span>
-          </div>
-        <br>
-      </div>
+<div style=" margin-left: 20px; line-height: 1.5em">
+  <span class='fa fa-file-pdf-o'></span> 
+    <a href="http://www.cs.umd.edu/~yalcin/papers/AggreSet.pdf" target="_blank" class="author_link">Pre-Print Paper</a><br>
+    <span class='fa fa-youtube-play'></span> 
+      <a class='youtube author_link' href="https://www.youtube.com/embed/rcqozpaaGhM">Teaser Video (30 seconds)</a><br>
+    <span class='fa fa-youtube-play'></span> 
+      <a class='youtube author_link' href="https://www.youtube.com/embed/cSSAvDAre-E">Overview Video (5 minutes)</a>
+  </div>
 
       <a href='http://www.umd.edu' target='_blank'>
         <img src="./img/logo_umd.png" id="logo_umd" class="logo"></a>
