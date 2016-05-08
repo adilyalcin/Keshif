@@ -33,19 +33,19 @@ function loadDemo(config){
   if(config.browser.itemDisplay) 
     config.browser.itemDisplay.detailsToggle = 'off';
 
-  config.browser.onReady = function(browser){
-    var degreePanel = (browser.panels.left.summaries.length!==0)?"left":"middle";
-    var setListSummary = browser.panels[degreePanel].summaries[0];
+  config.browser.onReady = function(){
+    var degreePanel = (this.panels.left.summaries.length!==0)?"left":"middle";
+    var setListSummary = this.panels[degreePanel].summaries[0];
 
     if(config.name==="YourData"){
-      var setColumn = browser.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
+      var setColumn = this.DOM.infobox_source.select(".sheetColumn_Splitter")[0][0].value;
       if(setColumn==="") return; // Cannot show set-matrix
-      setListSummary = browser.summaries_by_name[setColumn];
+      setListSummary = this.summaries_by_name[setColumn];
 
       setListSummary.addToPanel(this.panels.left);
 
-      browser.summaries.forEach(function(summary){
-        if(summary.summaryName===browser.items[0].idIndex) return;
+      this.summaries.forEach(function(summary){
+        if(summary.summaryName===this.items[0].idIndex) return;
         if(summary.type==='interval'){
           summary.addToPanel(this.panels.middle);
           summary.setCollapsed(true);
@@ -61,7 +61,7 @@ function loadDemo(config){
     }
     
     {  // Add the degree sumary
-      var setDegreeSummary = browser.createSummary(
+      var setDegreeSummary = this.createSummary(
         "# of "+setListSummary.summaryName,
         function(d){
           var arr=d._valueCache[setListSummary.summaryID];
@@ -69,7 +69,7 @@ function loadDemo(config){
         }
       );
       if(config.id==="teaser") degreePanel = "right";
-      setDegreeSummary.addToPanel(browser.panels[degreePanel],1);
+      setDegreeSummary.addToPanel(this.panels[degreePanel],1);
     }
     setListSummary.setShowSetMatrix(true);
     setListSummary.setSummary.setPosition("left");
@@ -83,8 +83,8 @@ function loadDemo(config){
 
     setListSummary.setShowSetMatrix(true);
 
-    browser.updateLayout();
-    browser.panels.left.updateSummariesWidth();
+    this.updateLayout();
+    this.panels.left.updateSummariesWidth();
   };
 
   browser = new kshf.Browser(config.browser); 
