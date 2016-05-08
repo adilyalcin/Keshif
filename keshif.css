@@ -1619,7 +1619,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay > .overlay_source {
   background-color: white;
   width: 550px;
-  height: 270px;
+  height: 200px;
   position: absolute;
   top: 0;
   left: 0;

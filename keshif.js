@@ -3793,7 +3793,18 @@ kshf.Browser.prototype = {
         this.DOM.overlay_source = this.panel_overlay.append("div").attr("class","overlay_content overlay_source")
             .attr("selected_source_type",source_type);
 
-        this.DOM.overlay_source.append("div").attr("class","sourceHeader").text("Where's your data?");
+        this.DOM.overlay_source.append("div").attr("class","sourceHeader").text("Where's your data?")
+          .append("span").attr("class","fa fa-info-circle")
+            .each(function(summary){
+              this.tipsy = new Tipsy(this, {
+                gravity: 's', title: function(){ 
+                  return "<b>Confidentiality</b>: This website does not track the data you import.<br> You can "+
+                    "use the source code to host your data and the browser locally.";
+                }
+              });
+            })
+            .on("mouseenter",function(){ this.tipsy.show(); })
+            .on("mouseleave",function(){ this.tipsy.hide(); });;
 
         var source_wrapper = this.DOM.overlay_source.append("div").attr("class","source_wrapper");
 
@@ -3922,7 +3933,7 @@ kshf.Browser.prototype = {
                   case "GoogleSheet": return "The link to your Google Sheet";
                   case "GoogleDrive": return "The link to *hosted* Google Drive folder";
                   case "Dropbox":     return "The link to your *Public* Dropbox folder";
-                  case "LocalFile":   return "Select your CSV/TSV/JSON file or drag-and-drop here.";
+                  case "LocalFile":   return "Select your CSV/TSV/JSON file<br> or drag-and-drop here.";
                 }
                 return "(Unknown source type)";
               }
@@ -3936,8 +3947,7 @@ kshf.Browser.prototype = {
         var sheetInfo = this.DOM.overlay_source.append("div").attr("class","sheetInfo");
 
         x = sheetInfo.append("div").attr("class","sheet_wrapper")
-            x.append("div").attr("class","subheading tableHeader")
-            ;
+            x.append("div").attr("class","subheading tableHeader");
 
         x = sheetInfo.append("div").attr("class","sheet_wrapper sheetName_wrapper")
             x.append("span").attr("class","subheading").text("Name");
@@ -9185,11 +9195,12 @@ var Summary_Interval_functions = {
             .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
             .each(function(){
               this.tipsy = new Tipsy(this, {
-                gravity: 'sw',
+                gravity: 's',
                 title: function(){
-                  return "<span style='font-weight:300'>"+qb[0]+"% - "+qb[1]+"% percentile: </span>"+
-                    "<span style='font-weight:500'>"+me.quantile_val[distr+qb[0]]+"</span> - "+
-                    "<span style='font-weight:500'>"+me.quantile_val[distr+qb[1]]+"</span>";
+                  return "<span style='font-weight:300; "+
+                      "text-decoration: underline'><b>"+qb[0]+"</b>% - <b>"+qb[1]+"</b>% Percentile:<br></span>"+
+                    "<span style='font-weight:500'>"+me.intervalTickPrint(me.quantile_val[distr+qb[0]])+"</span> - "+
+                    "<span style='font-weight:500'>"+me.intervalTickPrint(me.quantile_val[distr+qb[1]])+"</span>";
                 }
               })
             })
@@ -9233,7 +9244,7 @@ var Summary_Interval_functions = {
             .attr("class","quantile q_pos q_"+q)
             .each(function(){
               this.tipsy = new Tipsy(this, {
-                gravity: 's', title: function(){ return "Median: "+ me.quantile_val[distr+q]; }
+                gravity: 's', title: function(){ return "<u>Median:</u><br> "+ me.quantile_val[distr+q]; }
               });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
@@ -9857,8 +9868,16 @@ var Summary_Interval_functions = {
           var r = me.valueScale.range()[1]/9;
           this._minValue = me.valueScale.invert(d*r);
           this._maxValue = me.valueScale.invert((d+1)*r);
+
+          if(!me.hasFloat){
+            this._minValue = Math.floor(this._minValue);
+            this._maxValue = Math.ceil(this._maxValue);
+          }
+
           this.tipsy = new Tipsy(this, {
-            gravity: 's', title: function(){ return Math.round(this._minValue)+" to "+Math.round(this._maxValue); }
+            gravity: 's', title: function(){
+              return "<b>"+me.intervalTickPrint(this._minValue)+"</b> to "+
+                "<b>"+me.intervalTickPrint(this._maxValue);+"</b>"; }
           });
         })
         .on("mouseenter",function(d,i){ 
@@ -9866,18 +9885,15 @@ var Summary_Interval_functions = {
           this.style.borderColor = (i<4)?"black":"white";
 
           var r = me.valueScale.range()[1]/9;
-          var _minValue = me.valueScale.invert(d*r);
-          var _maxValue = me.valueScale.invert((d+1)*r);
-
           var records = [];
           me.filteredItems.forEach(function(record){ 
             var v = me.getRecordValue(record);
-            if(v>=_minValue && v<=_maxValue) records.push(record);
-          });
+            if(v>=this._minValue && v<=this._maxValue) records.push(record);
+          },this);
           me.browser.flexAggr_Highlight.summary = me;
           me.browser.flexAggr_Highlight.records = records;
-          me.browser.flexAggr_Highlight.minV = _minValue;
-          me.browser.flexAggr_Highlight.maxV = _maxValue;
+          me.browser.flexAggr_Highlight.minV = this._minValue;
+          me.browser.flexAggr_Highlight.maxV = this._maxValue;
           me.highlightRangeLimits_Active = true;
           me.browser.setSelect_Highlight();
         })

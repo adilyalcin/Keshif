@@ -1291,21 +1291,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .overlay_source{
                 background-color:white;
                 width: 550px;
-                height: 270px;
+                height: 200px;
                 position: absolute;
                 top: 0; left: 0; bottom: 0; right: 0;
 
                 .fa-info-circle{
-                    color: gray;
-                    cursor: pointer;
-                    padding: 0px 5px;
-                    &:hover{ color: black; }
+                  color: gray;
+                  cursor: pointer;
+                  padding: 0px 5px;
+                  &:hover{ color: black; }
                 }
 
                 > .sourceHeader{
-                    font-weight: 700;
-                    font-size: 1.3em;
-                    margin: 5px 5px 0px 5px;
+                  font-weight: 700;
+                  font-size: 1.3em;
+                  margin: 5px 5px 0px 5px;
                 }
 
                 > .source_wrapper{
@@ -1318,38 +1318,38 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .sourceOptions{ margin-bottom: 3px; }
                     .gdocLink{ width: 350px; }
                     .fileLink{
-                        width: 350px;
-                        display: none;
+                      width: 350px;
+                      display: none;
                     }
                     .sourceOption{
-                        display: inline-block;
-                        border: solid 1px lightgray;
-                        padding: 2px 4px;
-                        border-radius: 7px;
-                        font-weight: 300;
-                        margin: 0px 2px;
-                        font-size: 0.8em;
-                        cursor: pointer;
-                        color: rgb(160, 160, 160);
-                        &:hover{
-                            color: black;
-                            box-shadow: 0px 0px 1px gray;
-                        }
+                      display: inline-block;
+                      border: solid 1px lightgray;
+                      padding: 2px 4px;
+                      border-radius: 7px;
+                      font-weight: 300;
+                      margin: 0px 2px;
+                      font-size: 0.8em;
+                      cursor: pointer;
+                      color: rgb(160, 160, 160);
+                      &:hover{
+                        color: black;
+                        box-shadow: 0px 0px 1px gray;
+                      }
                     }
                     .gdocLink_ready{
-                        opacity: 0;
-                        pointer-events: none;
+                      opacity: 0;
+                      pointer-events: none;
+                      &:before{
+                        content: "\f057"; // X
+                        color: red;
+                      }
+                      &[ready=true]{
+                        pointer-events: all;
                         &:before{
-                            content: "\f057"; // X
-                            color: red;
+                          content: "\f058"; // Check
+                          color: green;
                         }
-                        &[ready=true]{
-                            pointer-events: all;
-                            &:before{
-                                content: "\f058"; // Check
-                                color: green;
-                            }
-                        }
+                      }
                     }
                 }
                 &[selected_source_type="GoogleSheet"] {
