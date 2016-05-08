@@ -110,18 +110,6 @@ $(document).ready( function(){
     d3.select("#aboutBox").style("display", "none");
   });
 
-  d3.select("#import_privacy")
-    .each(function(summary){
-      this.tipsy = new Tipsy(this, {
-        gravity: 's', title: function(){ 
-          return "<b>Confidentiality</b>: This website does not track the data you import.<br> You can "+
-            "use the source code to host your data and the browser locally.";
-        }
-      });
-    })
-    .on("mouseenter",function(){ this.tipsy.show(); })
-    .on("mouseleave",function(){ this.tipsy.hide(); });;
-
   d3.select(".firstAuthor")
     .each(function(summary){
       this.tipsy = new Tipsy(this, {
@@ -410,14 +398,6 @@ html, body{
   color: orangered;
 }
 
-#import_privacy{
-  color: gray;
-  cursor: pointer;
-}
-#import_privacy:hover{
-  color: black;
-}
-
 #aboutBox .logo{
   opacity: 0.8;
   -webkit-filter: grayscale(100%);
@@ -565,11 +545,11 @@ html, body{
       </span>
 
       <div style='margin: 20px;'>
-        <b style='color: orangered;'>Use AggreSet now!</b><br>
-          &nbsp; &nbsp;Load a sample data, or import <i>your</i> data
-          using the lower-left menu. <span class='fa fa-info-circle' id='import_privacy'></span><br>
-          &nbsp; &nbsp;<u>AggreSet is now fully integrated into Keshif!</u><br>
-          &nbsp; &nbsp;<u>Just click on <i class='fa fa-tags'></i> to open set matrix.</u>
+        <b style='color: orangered;'>Use AggreSet now!</b>
+          - Load a sample data, or 
+            <a href='../demo/YourData' target='_blank' style='color: black'>import your data</a>.<br><br>
+          <b>AggreSet is now fully integrated into Keshif!</b><br>
+          &nbsp; &nbsp;Just click on <i class='fa fa-tags'></i> to open set matrix for multi-valued categorical summaries.
         <br><br>
 
         Published in IEEE Trans. Visualization &amp; Comp. Graphics 
