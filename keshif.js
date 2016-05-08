@@ -1729,6 +1729,9 @@ kshf.RecordDisplay.prototype = {
             title: '<b><u>Enter</u></b> to filter <i class="fa fa-filter"></i>.<br><br>'+
             '<b><u>Shift+Enter</u></b> to lock <i class="fa fa-lock"></i>.' }); 
         })
+        .on("blur",function(){
+          this.tipsy.hide();
+        })
         .on("keyup",function(){
           var x = this;
           me.textFilter.filterStr = x.value.toLowerCase();
@@ -3286,18 +3289,22 @@ kshf.Browser.prototype = {
           var DOM = me.DOM.measureSelectBox[0][0];
           var initX = parseInt(DOM.style.left);
           var initY = parseInt(DOM.style.top);
-          me.DOM.root.attr("drag_cursor","grabbing")
+          var boxWidth  = DOM.getBoundingClientRect().width;
+          var boxHeight = DOM.getBoundingClientRect().height;
+          var maxWidth  = me.DOM.root[0][0].getBoundingClientRect().width  - boxWidth;
+          var maxHeight = me.DOM.root[0][0].getBoundingClientRect().height - boxHeight;
+          me.DOM.root.attr("drag_cursor","mbing")
           .on("mousemove", function() {
             var newPos = d3.mouse(d3.select("body")[0][0]);
-            DOM.style.left = Math.max(0,initX-initPos[0]+newPos[0])+"px";
-            DOM.style.top = Math.max(0,initY-initPos[1]+newPos[1])+"px";
+            DOM.style.left = Math.min(maxWidth , Math.max(0, initX-initPos[0]+newPos[0] ))+"px";
+            DOM.style.top  = Math.min(maxHeight, Math.max(0, initY-initPos[1]+newPos[1] ))+"px";
           }).on("mouseup", function(){
             me.DOM.root
               .attr("drag_cursor",null)
               .on("mousemove", null).on("mouseup", null);
           });
          d3.event.preventDefault();
-     });
+        });
 
       var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
       m.append("span").attr("class","measureSelectBox_Content_FuncType")
@@ -3732,7 +3739,7 @@ kshf.Browser.prototype = {
                 me.panel_overlay.select(".overlay_help").attr("attention",false);
                 me.panel_overlay.select(".overlay_answer").attr("attention",false);
               }, 1200);
-            } else if(activePanel!=="loading" && activePanel!=="none"){
+            } else if(activePanel!=="loading" && activePanel!=="none" && activePanel !== "source"){
               me.panel_overlay.attr("show","none");
             }
           });
@@ -3945,7 +3952,7 @@ kshf.Browser.prototype = {
                                 v="The file name in the folder.";
                             if(source_type==="Dropbox")
                                 v="The file name in the folder.";
-                            v+="<br>Also describes what each data row represents"
+                            v+="<br>A noun that describes a data row."
                             return v;
                         }
                     });
@@ -3966,18 +3973,6 @@ kshf.Browser.prototype = {
                 DOMfileType.append("option").attr("value","tsv").text("tsv");
                 DOMfileType.append("option").attr("value","json").text("json");
 
-        x = sheetInfo.append("div").attr("class","sheet_wrapper sheetColumn_ID_wrapper")
-            x.append("span").attr("class","subheading").text("ID column");
-            x.append("span").attr("class","fa fa-info-circle")
-              .each(function(summary){
-                this.tipsy = new Tipsy(this, {
-                  gravity: 's', title: "The column that uniquely identifies each item.<br><br>If no such column, skip."
-                });
-              })
-              .on("mouseenter",function(){ this.tipsy.show(); })
-              .on("mouseleave",function(){ this.tipsy.hide(); });
-        this.DOM.sheetColumn_ID = x.append("input").attr("class","sheetColumn_ID").attr("type","text").attr("placeholder","id");
-
         var actionButton = this.DOM.overlay_source.append("div").attr("class","actionButton")
           .text("Explore it with Keshif")
           .attr("disabled",true)
@@ -3987,8 +3982,7 @@ kshf.Browser.prototype = {
               return;
             }
             me.options.enableAuthoring = true; // Enable authoring on data load
-            var sheetID = me.DOM.sheetColumn_ID[0][0].value;
-            if(sheetID==="") sheetID = "id";
+            var sheetID = "id";
             switch(source_type){
               case "GoogleSheet":
                 me.loadSource({
@@ -9462,10 +9456,7 @@ var Summary_Interval_functions = {
           this.intervalTickPrint = function(d){
             if(!me.hasFloat && d<10) return d;
             if(!me.hasFloat && Math.abs(ticks[1]-ticks[0])<1000) return d;
-            var x= d3Formating(d);
-            if(x.indexOf(".00")!==-1) x = x.replace(".00","");
-            if(x.indexOf(".0")!==-1) x = x.replace(".0","");
-            return x;
+            return d3Formating(d);
           }
         }
 

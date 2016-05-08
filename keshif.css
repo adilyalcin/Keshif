@@ -47,6 +47,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
+  background-color: white;
+  box-shadow: 0px 0px 10px white;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -413,7 +415,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: margin-left 700ms ease-in-out;
   transition: margin-left 700ms ease-in-out;
   margin-left: 0px;
-  background-color: white;
   z-index: 10;
 }
 .kshf .editableText:focus {
@@ -1751,9 +1752,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_overlay > .overlay_source > .sheetInfo > .sheet_wrapper {
   margin: 0 auto;
-}
-.kshf .panel.panel_overlay > .overlay_source > .sheetInfo .sheetColumn_ID {
-  width: 60px;
 }
 .kshf .panel.panel_overlay > .overlay_source > .sheetInfo .subheading {
   width: 110px;
@@ -3503,12 +3501,12 @@ top:calc(50% - 8px);
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.measureAxis_1 {
   left: -25px;
-  padding-right: 1px;
+  padding-right: 2px;
   text-align: right;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .tickGroup > .tick > .text.measureAxis_2 {
   right: -25px;
-  padding-left: 1px;
+  padding-left: 2px;
   text-align: left;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .mapColorBar {
@@ -4597,7 +4595,7 @@ top:calc(50% - 8px);
   display: inline-block;
 }
 .kshf .recordDisplay[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
-  content: "\f140";
+  content: "\f05a";
 }
 .kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;

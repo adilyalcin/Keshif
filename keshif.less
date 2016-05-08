@@ -69,6 +69,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     //font-family: Helvetica, Arial, sans-serif;
     text-rendering: optimizeLegibility; // People say this has big performance drawbacks
 
+    background-color: white;
+    box-shadow: 0px 0px 10px white;
+
     .box-sizing(border-box);
     *{ .box-sizing(border-box); }
 
@@ -336,7 +339,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     > .panel_Wrapper{
       .transition(margin-left 700ms ease-in-out);
       margin-left: 0px;
-      background-color: white;
       z-index: 10;
     }
 
@@ -1400,7 +1402,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     margin-top: 5px;
                   }
                   > .sheet_wrapper{ margin: 0 auto; }
-                  .sheetColumn_ID{ width: 60px; }
                   .subheading{
                     width: 110px;
                     display: inline-block;
@@ -2828,12 +2829,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                               top: -3px;
                               &.measureAxis_1{
                                 left: -25px;
-                                padding-right: 1px;
+                                padding-right: 2px;
                                 text-align: right;
                               }
                               &.measureAxis_2{
                                 right: -25px;
-                                padding-left: 1px;
+                                padding-left: 2px;
                                 text-align: left;
                               }
                             }
@@ -3711,7 +3712,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail{
         display: inline-block;
-        > .item_details_toggle:before{ content: "\f140"; }
+        > .item_details_toggle:before{ content: "\f05a"; } // new: info-circle old bullseye
       }
       &[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail{
         display: inline-block;
