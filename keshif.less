@@ -135,7 +135,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
       .recordInfo{ pointer-events: none !important; }
-      .summaryName_text{ pointer-events: all !important; }
+      .summaryName_text{ 
+        cursor: text;
+        &:hover {
+          cursor: text;
+          margin: -1px;
+          border: solid 1px gray;
+        }
+      }
       .summaryConfig_UnitName{ display: block;}
       .recordDisplay{
         &:hover .buttonRecordViewRemove{ display: block; }
@@ -1743,12 +1750,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           text-overflow: ellipsis;
           font-size: 0.9em;
           padding: 0px 3px;
-          pointer-events: none;
-          cursor: text;
-          &:hover {
-            margin: -1px;
-            border: solid 1px gray;
-          }
+          cursor: default;
           &:focus{
             background-color: white;
             box-shadow: 0 0 3px #2CABCF;

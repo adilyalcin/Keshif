@@ -5808,7 +5808,10 @@ kshf.Summary_Base.prototype = {
       this.DOM.summaryName_text = this.DOM.summaryName.append("span").attr("class","summaryName_text editableText")
         .attr("contenteditable",false)
         .each(function(summary){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditTitle }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseover",function(){
+          if(!me.browser.authoringMode) return;
+          this.tipsy.show();
+        })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
         .on("mousedown", function(){
           // stop dragging event start
@@ -5816,6 +5819,7 @@ kshf.Summary_Base.prototype = {
           d3.event.preventDefault();
         })
         .on("click", function(){
+          if(!me.browser.authoringMode) return;
           var curState=this.parentNode.getAttribute("edittitle");
           if(curState===null || curState==="false"){
             this.parentNode.setAttribute("edittitle",true);

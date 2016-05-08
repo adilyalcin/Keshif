@@ -151,7 +151,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: none !important;
 }
 .kshf[authoringMode] .summaryName_text {
-  pointer-events: all !important;
+  cursor: text;
+}
+.kshf[authoringMode] .summaryName_text:hover {
+  cursor: text;
+  margin: -1px;
+  border: solid 1px gray;
 }
 .kshf[authoringMode] .summaryConfig_UnitName {
   display: block;
@@ -2163,12 +2168,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-overflow: ellipsis;
   font-size: 0.9em;
   padding: 0px 3px;
-  pointer-events: none;
-  cursor: text;
-}
-.kshf .headerGroup .summaryName > .summaryName_text:hover {
-  margin: -1px;
-  border: solid 1px gray;
+  cursor: default;
 }
 .kshf .headerGroup .summaryName > .summaryName_text:focus {
   background-color: white;
