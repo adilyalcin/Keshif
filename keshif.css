@@ -3616,7 +3616,6 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base {
   display: block;
   position: absolute;
-  box-shadow: inset 0px 0px 2px gray;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
@@ -3628,7 +3627,7 @@ top:calc(50% - 8px);
   height: 3px;
   top: 3px;
   left: 1px;
-  background-color: lightgray;
+  background-color: #D4D4D4;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active {
   display: none;
@@ -3725,10 +3724,15 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
   position: absolute;
   top: -10px;
-  height: 10px;
-  border-left: solid 1px #a0a0a0;
+  height: 8px;
+  border-left: solid 1px #646464;
   display: block;
   pointer-events: none;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick[minor] .line {
+  border-color: #bbbbbb;
+  height: 6px;
+  top: -9px;
 }
 .kshf .kshfSummary[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse {
   opacity: 1;

@@ -9679,16 +9679,40 @@ var Summary_Interval_functions = {
     refreshValueTickPos: function(){
       var me=this;
       this.DOM.labelGroup.style("left", (this.stepTicks ? (this.aggrWidth/2) : 0)+"px");
-      this.DOM.labelGroup.selectAll(".tick").style("left",function(d){ return me.valueScale(d)+"px"; });
+      this.DOM.labelGroup.selectAll(".tick").style("left",function(d){ return me.valueScale(d.v)+"px"; });
     },
     /** -- */
     updateValueTicks: function(){
       var me=this;
       this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove(); // remove all existing ticks
-      var ddd = this.DOM.labelGroup.selectAll(".tick").data(this.intervalTicks);
-      var ddd_enter = ddd.enter().append("span").attr("class","tick");
+
+      // Insert middle-ticks to show that this is log-scale
+      var ticks = [];
+      if(this.scaleType==="log"){
+        ticks = [{v: this.intervalTicks[0], l:true}];
+        for(var i=1 ; i < this.intervalTicks.length ; i++){
+          var _min = me.valueScale(this.intervalTicks[i-1]);
+          var _max = me.valueScale(this.intervalTicks[i]);
+          [1,1,1].forEach(function(){
+            var x = (_min+_max)/2;
+            ticks.push( {v: me.valueScale.invert(x), l:false } );
+            _min = x;
+          });
+          ticks.push({v: this.intervalTicks[i], l: true});
+        }
+      } else { 
+        this.intervalTicks.forEach(function(p){
+          ticks.push({v: p, l: true});
+        });
+      }
+      
+      var ddd = this.DOM.labelGroup.selectAll(".tick").data(ticks);
+      var ddd_enter = ddd.enter().append("span").attr("class","tick")
+        .attr("minor",function(d){ return d.l?null:true; });
       ddd_enter.append("span").attr("class","line");
-      ddd_enter.append("span").attr("class","text")
+      ddd_enter
+        .filter(function(d){ return d.l; })
+        .append("span").attr("class","text")
         .each(function(d){
           this.bin = null;
           me.histBins.every(function(bin){
@@ -9717,7 +9741,7 @@ var Summary_Interval_functions = {
       var me=this;
       if(this.DOM.labelGroup===undefined) return;
       this.DOM.labelGroup.selectAll(".tick .text").html(function(d){ 
-        return me.printWithUnitName( me.intervalTickPrint(d) ); 
+        return me.printWithUnitName( me.intervalTickPrint(d.v) ); 
       });
     },
     /** -- */
