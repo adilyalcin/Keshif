@@ -2583,7 +2583,7 @@ top:calc(50% - 5px);
 .kshf .aggrGlyph.mapGlyph[selection="selected"] > .aggr.preview {
   display: none;
 }
-.kshf .aggrGlyph.mapGlyph[selection="onRecord"] > .aggr.active {
+.kshf .aggrGlyph.mapGlyph[selection="onRecord"] > .measure_Active {
   -webkit-transition: fill 200ms ease-in-out;
   -moz-transition: fill 200ms ease-in-out;
   -o-transition: fill 200ms ease-in-out;
