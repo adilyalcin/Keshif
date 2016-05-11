@@ -81,7 +81,7 @@ var kshf = {
       },
       tileConfig: { 
         attribution: '© <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'+
-          ' contributors, © <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
+          ' contributors &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
         subdomains: 'abcd',
         maxZoom: 19,
         //noWrap: true
@@ -3134,6 +3134,15 @@ kshf.Browser.prototype = {
       });
       if(indexFrom===-1) return; // given summary is not within this panel
       this.summaries.splice(indexFrom,1);
+
+      // if the summary is within the record display sorting list, remove!
+      if(this.recordDisplay){
+        var sortIndex = this.recordDisplay.sortingOpts.indexOf(summary);
+        if(sortIndex!==-1){
+          this.recordDisplay.sortingOpts.splice(sortIndex,1);
+          this.recordDisplay.refreshSortingOptions();
+        }
+      }
 
       delete this.summaries_by_name[summary.summaryName];
       if(summary.summaryColumn) delete this.summaries_by_name[summary.summaryColumn];
