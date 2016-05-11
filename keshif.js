@@ -9725,7 +9725,7 @@ var Summary_Interval_functions = {
         .each(function(d){
           this.bin = null;
           me.histBins.every(function(bin){
-            if(bin.minV===d) {
+            if(bin.minV===d.v) {
               this.bin = bin;
               return false;
             }
