@@ -182,6 +182,7 @@ var _demo = {
 // ISO 3166-1 alpha-2
 kshf.Countries = {
   index_alpha: {},
+  index_alpha3: {},
   index_num: {},
   index_name: {},
   data: [
