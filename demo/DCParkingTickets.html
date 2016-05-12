@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DC Parking Violation Tickets in May 2015</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+$(document).ready( function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 150,
+    itemName: "Parking Tickets",
+    leftPanelLabelWidth: 170,
+    middlePanelLabelWidth: 300,
+    rightPanelLabelWidth: 170,
+    source: {
+      url: "http://opendata.dc.gov/datasets/f3336832f98d4ccab272c2d3eb1ed3bc_4",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: "csv",
+      tables: "DCParkingTickets_2015May"
+/*      gdocId: '1wf7fsZgPIVb75uGqdGQQageZYd7L0CBCt9aPtOYDgy0', tables: "Parking Tickets"*/
+    },
+    summaries: [
+      { name: "State of the License Plate", value: "RP_PLATE_STATE", 
+        catLabel: function(){ 
+          return (US_States.index_code[this.id]) ? US_States.index_code[this.id].name : this.id; } 
+        },
+      { name: "Violation Code", value: "VIOLATION_CODE", panel: 'middle',
+        catLabel: {
+          'P675': "TAXICAB CRUISING LIGHTS",
+          'P427': "LOADING ZONE, OVERTIME PARKING BY CMV VALID DECAL",
+          'P425': "CMV- NON LOAD ZONE METER W/O ANNUAL OR DAY PASS",
+          'P421': "COMMERCIAL PMT PARK DECAL, FAIL DISPLAY PROPERLY",
+          'P419': "STREETCAR-PARK, STOP STAND VEH GUIDEWAY/PLATFORM",
+          'P418': "STREETCAR-PARK, STOP STAND VEH GUIDEWAY/PLATFORM",
+          'P417': "NON-TAXI ON HACK STAND",
+          'P414': "VEHICLE ON PRIVATE/PUBLIC PROP W/O CONSENT 2D OFF",
+          'P412': "VEHICLE HAUL TRASH, DEBRIS OR JUNK",
+          'P410': "VEHICLE > 22 PUBLIC ST FRT DWELLING,SCHOOL, HOSP",
+          'P409': "VEH >15 PASS, PUBLIC ST FRT DWELLING, SCH, HOSP,",
+          'P403': "NO PARKING EXC. ELECTRIC VEHICLE BEING CHARGED",
+          'P390': "OVERSIZED VEHICLE AT METER BZ",
+          'P386': "RELOCATE TOW FEE",
+          'P385': "STOPPING, STANDING OR PARKING VEHICLE IN BIKE LANE",
+          'P373': "NOT PARKED IN PARKING METER SPACE BZ",
+          'P371': "FAIL DISPLAY MULTI SPACE RECEIPT PROPERLY BE",
+          'P361': "COMMERCIAL MOTOR VEHICLE - NOT OUT OF SERVICE",
+          'P360': "COMMERCIAL MOTOR VEHICLE - OUT OF SERVICE",
+          'P346': "VALET PARKING/STAGING ZONE",
+          'P344': "VEHICLE ON PRIVATE/PUBLIC PROPERTY WITHOUT CONSENT",
+          'P338': "DANGEROUS VEHICLE ON PRIV/PUBLIC PROP VIOL 1",
+          'P334': "ABANDON VEHICLE ON PUBLIC/PRIVATE PROPERTY VIOL 3",
+          'P333': "ABANDON VEHICLE ON PUBLIC/PRIVATE PROPERTY VIOL 2",
+          'P332': "ABANDON VEHICLE ON PUBLIC/PRIVATE PROPERTY VIOL 1",
+          'P331': "TINTED WINDOWS",
+          'P330': "PERMIT UNLICENSED HACKER",
+          'P322': "PARK OVERTIME IN TIMED ZONE",
+          'P321': "FAIL TO SET EMERGENCY BRAKE",
+          'P320': "PARKED IN DRIVEWAY OR ALLEY TO OBSTRUCT SIDEWALK",
+          'P319': "PARK IN BUS STOP OR ZONE DURING RUSH HOUR",
+          'P318': "PARK IN MEDIAN, ISLAND, OR SAFETY ZONE",
+          'P316': "IMPROPER DISPLAY OF TAGS",
+          'P315': "ILLEGIBLE TAGS.",
+          'P314': "FAIL TO PROPERLY AFFIX VALIDATION STICKERS",
+          'P313': "FAIL TO DISPLAY RECIPROCITY STICKER",
+          'P311': "PARK BETWEEN ISLAND OR SAFETY ZONE",
+          'P309': "FAIL TO DISPLAY RESIDENTIAL PARKING PERMIT",
+          'P307': "PARK IN RESERVED SPACE FOR MOTORCYCLES ONLY",
+          'P306': "PARK ON MEDIAN, ISLAND, OR SAFETY ZONE",
+          'P304': "INDIVID W/ DISABILITIES ONLY UNAUTH. USE RSRVD SP",
+          'P303': "RESERVED RESIDENTIAL SPACE PERSONS W/ DISABILTIES",
+          'P302': "GOVERNMENT VEHICLE PARKING ONLY",
+          'P301': "PARK AT CURB IN LOADING ZONE",
+          'P300': "FAIL TO TURN WHEEL TO CURB.",
+          'P289': "FAIL TO PROPERLY DISPLAY MULTISPACE METER RECEIPT",
+          'P288': "ILLEGAL AT METER",
+          'P287': "OVERTIME AT A MULTISPACE METER IN A LOADING ZONE",
+          'P286': "IMPROP DISPLAY MULTISPACE RCPT IN LOADING ZONE",
+          'P285': "FAIL TO DISPLAY METER RECEIPT IN A LOADING ZONE",
+          'P284': "EXPIRED MULTISPACE METER RECEIPT IN LOADING ZONE",
+          'P282': "PARKED IN A RESERVED CAR SHARING SPACE",
+          'P281': "FAIL TO DISPLAY A MULTISPACE METER RECEIPT",
+          'P280': "EXPIRATION TIME ON METER RECEIPT LAPSED",
+          'P278': "FAIL TO DISPLAY MULTI-SPACE METER RECEIPT PROPERLY",
+          'P271': "NO STOPPING ANYTIME",
+          'P270': "NO STOPPING OR STANDING ANYTIME",
+          'P269': "NO STANDING ANYTIME",
+          'P259': "NO STOPPING OR STANDING IN PM RUSH HOUR ZONE",
+          'P250': "FAIL TO SECURE TAGS IN THE DISTRICT OF COLUMBIA",
+          'P239': "EXPIRED HANDICAP METER",
+          'P206': "TAXICAB DISPLAYING IMPROPER INSIGNIA",
+          'P205': "TAXICAB FAIL TO EXHIBIT LICENSE",
+          'P200': "PARK TOO CLOSE APPROACHING INTERSECTION",
+          'P199': "PARK IN A DESIGNATED ENTRANCE",
+          'P198': "PARK WITHIN 20 FEET OF A BUS STOP OR ZONE",
+          'P192': "EXCEED GROSS WEIGHT INDICATED ON IRP REGISTRATION",
+          'P190': "FAIL TO REGISTER APPORTIONABLE VEHICLE UNDER IRP",
+          'P173': "NO PARKING STREET CLEANING",
+          'P172': "FAILURE TO SECURE DC TAGS",
+          'P170': "FAILURE TO DISPLAY CURRENT TAGS",
+          'P169': "NO REAR TAGS.",
+          'P168': "NO FRONT TAGS.",
+          'P161': "PARKING ON SNOW EMERGENCY ROUTE WHEN PROHIBITED",
+          'P159': "NO STOPPING OR STANDING IN AM RUSH HOUR ZONE",
+          'P158': "UNSAFE TIRES",
+          'P157': "MAKING NON EMERGENCY REPAIRS ON ROADWAY",
+          'P151': "LOADS NOT SECURED",
+          'P127': "TAXICAB FAIL TO PULL TO CURB",
+          'P123': "TAXICAB PARKED OFF TAXI STAND",
+          'P122': "DRIVER MORE THAN FIVE FEET FROM TAXI",
+          'P121': "TAXICAB NO MANIFEST",
+          'P120': "TAXICAB LOITERING.",
+          'P113': "FAIL TO DISPLAY CURRENT INSPECTION STICKER",
+          'P112': "FAIL TO REPORT FOR INSPECTION.",
+          'P111': "EXPIRED INSPECTION REJECTION STICKER",
+          'P110': "FAIL TO PROPERLY DISPLAY INSPECTION STICKER SIGN",
+          'P104': "FAIL TO DISPLAY CURRENT DC VEHICLE TAGS",
+          'P095': "DRIVE TRUCK ON RESTRICTED ROUTE",
+          'P093': "OBSTRUCTED TAGS.",
+          'P090': "IMPROPERLY DISPLAYED TAGS",
+          'P077': "MOTOR RUNNING UNATTENDED",
+          'P076': "",
+          'P067': "",
+          'P063': "PARK FOR PURPOSE OF VEHICLE SALE OR REPAIR",
+          'P059': "PARK IN A FIRE LANE",
+          'P058': "NO STANDING COMMERCIAL VEHICLE",
+          'P057': "NO PARKING SPECIFIC HOURS",
+          'P056': "NO PARKING 7 AM TO 6:30 PM",
+          'P055': "NO PARKING ANYTIME",
+          'P054': "PARKED ON DESIGNATED VENDOR AREA",
+          'P053': "PARKED LESS THAN 3 FEET FROM ANOTHER VEHICLE",
+          'P051': "COMM VEH MORE THAN 22 FEET IN FRONT OF RESIDENCE",
+          'P050': "PARKED WITHIN 25 FEET OF A STOP SIGN",
+          'P048': "PARK ON SIGHTSEEING STAND",
+          'P047': "PARK ON SIDEWALK OR AREA RESERVED FOR PEDESTRIANS",
+          'P046': "PARK IN SCHOOL ZONE",
+          'P045': "PARK IN RESERVED EMBASSY SPACE",
+          'P044': "PARK IN RESERVED SPACE",
+          'P043': "PARK TO REDUCE ROADWAY TO LESS THAN 10 FEET",
+          'P042': "PARK ON PUBLIC SPACE",
+          'P041': "PARK ON PRIVATE OR PUBLIC PROPERTY",
+          'P040': "FAIL TO PARK PARALLEL",
+          'P039': "PARK AT EXPIRED METER",
+          'P037': "PARK OVERTIME AT A METER",
+          'P036': "PARK IN OFFICIAL PARKING PERMIT ONLY SPACE",
+          'P035': "NOT PARKED IN A METER SPACE",
+          'P034': "FAIL TO DEPOSIT COIN IN METER",
+          'P032': "OVERSIZED COMM VEHICLE PARKED AT A METER",
+          'P031': "UNAUTHORIZED VEHICLE IN LOADING ZONE",
+          'P030': "NO SIGNAL DEVICE",
+          'P029': "PARK WITH LEFT WHEEL TO THE CURB",
+          'P028': "PARK IN AN UNLIGHTED AREA (PARKING AREA)",
+          'P027': "PARK IN AN UNDESIGNATED SPACE",
+          'P026': "PARK ON A LAWN",
+          'P025': "PARK LESS THAN 40 FEET FROM AN INTERSECTION",
+          'P024': "PARK LESS THAN 25 FEET FROM AN INTERSECTION",
+          'P023': "OBSTRUCT AN INTERSECTION",
+          'P022': "PARK ON TAXICAB STAND",
+          'P020': "PARK WITHIN 10 FEET OF A FIRE HYDRANT",
+          'P019': "PARK WITHIN 20 FEET OF A FIREHOUSE ENTRANCE",
+          'P018': "OBSTRUCTING FIRE ESCAPE",
+          'P017': "EXCESSIVE IDLING.",
+          'P016': "OPP OR BESIDE CONTRUCTION SITE OBSTRUCTING TRAFFIC",
+          'P015': "OBSTRUCTING ENTRANCE OF PKG GARAGE, DOOR OR GATE",
+          'P014': "EMERGENCY NO PARKING",
+          'P013': "PARK WITHIN 5 FEET OF DRIVEWAY OR ALLEY",
+          'P012': "DISOBEYING OFFICIAL SIGN",
+          'P011': "PARK MORE THAN 12 INCHES FROM CURB",
+          'P010': "OBSTRUCTING CROSSWALK",
+          'P007': "PARK IN A BUS ZONE",
+          'P005': "PARK ON OR UNDER AN ELEVATED STRUCTURE",
+          'P004': "PARK VEHICLE IN FRONT OF A BARRICADE",
+          'P003': "RESIDENTIAL PERMIT PKING BEYOND LIMIT W/O PERMIT",
+          'P002': "STAND OR PARK IN ALLEY",
+          'P001': "PARK ABREAST OF ANOTHER VEHICLE",
+        }},
+      { name: "Car Body Style", value: "BODY_STYLE", panel: 'right' },
+      { name: "Time of Day", 
+        value: function(){ return Math.floor(this.ISSUE_TIME/100); }, 
+        panel: 'right', unitName: ":00" },
+      { name: "Date", value: "TICKET_ISSUE_DATE", timeFormat: "%m/%d/%y", panel: 'bottom' },
+    ]
+  });
+});
+    </script>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">DC Parking Violation Tickets in May 2015</div>
+      <div id="demo_Browser"></div>
+      </div>
+    <div id="demo_Infobox">
+      Data from <a href='http://opendata.dc.gov/datasets/f3336832f98d4ccab272c2d3eb1ed3bc_4'
+        target='_blank'>opendata.dc.gov</a>.
+      </div>
+  </body>
+</html>
