@@ -1878,7 +1878,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: 0;
   cursor: default;
 }
-.kshf .panel.panel_overlay > .overlay_infobox > .infobox-header {
+.kshf .panel.panel_overlay > .overlay_infobox .infobox-header {
   background-color: #d8ddd4;
   width: 100%;
   padding-top: 5px;
@@ -1912,7 +1912,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel.panel_overlay > .overlay_infobox .project_fund {
   clear: both;
-  margin-top: 1em;
+  margin-top: 1.5em;
   text-align: center;
   font-size: 0.8em;
   font-weight: 300;
@@ -2753,6 +2753,11 @@ top:calc(50% - 5px);
   font-weight: 300;
   text-align: center;
   margin-bottom: 1px;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .summaryConfig .configOption {
   cursor: pointer;
@@ -3871,9 +3876,6 @@ top:calc(50% - 8px);
   top: 0px;
   background-color: white;
 }
-.kshf .kshfSummary.setPairSummary[position="left"] .configOpt {
-  right: 2px;
-}
 .kshf .kshfSummary.setPairSummary[position="left"] .sizeLegend {
   left: 10px;
 }
@@ -3886,9 +3888,6 @@ top:calc(50% - 8px);
 .kshf .kshfSummary.setPairSummary[position="left"] .setMatrixWidthAdjust {
   left: 0px;
 }
-.kshf .kshfSummary.setPairSummary[position="right"] .configOpt {
-  left: 2px;
-}
 .kshf .kshfSummary.setPairSummary[position="right"] .sizeLegend {
   right: 0px;
 }
@@ -3900,6 +3899,9 @@ top:calc(50% - 8px);
 }
 .kshf .kshfSummary.setPairSummary[position="right"] .setMatrixWidthAdjust {
   right: 0px;
+}
+.kshf .kshfSummary.setPairSummary > .headerGroup > .summaryIcons {
+  display: none;
 }
 .kshf .kshfSummary.setPairSummary > .headerGroup > .header_display_control > .buttonSummaryRemove {
   display: none !important;
@@ -4691,11 +4693,12 @@ top:calc(50% - 8px);
   display: block;
   position: relative;
   text-align: center;
-  border-bottom: dotted 1px lightgray;
-  margin-bottom: -1px;
+  border-bottom: solid 1px #E9E9E9;
+  margin-top: -1px;
 }
 .kshf .Summary_Set > .summaryControls > .strengthControl {
   font-size: 0.7em;
+  margin-top: 2px;
   display: inline-block;
   background-color: #eaeaea;
   border-width: 1px 2px 1px 1px;
@@ -4703,7 +4706,7 @@ top:calc(50% - 8px);
   border-color: #DFDFDF;
   border-radius: 15px;
   cursor: default;
-  padding: 1px 3px;
+  padding: 0px 3px;
   color: #474747;
   cursor: pointer;
   -webkit-user-select: none;
@@ -4729,56 +4732,9 @@ top:calc(50% - 8px);
 .kshf .Summary_Set > .summaryControls > .strengthControl > .strengthText {
   padding: 0px 2px;
 }
-.kshf .Summary_Set > .summaryControls > .configOpt {
-  display: inline-block;
-  position: absolute;
-  top: 0px;
-  font-size: 0.8em;
-  background-color: #eaeaea;
-  cursor: pointer;
-  border: 0px solid #eaeaea;
-  border-radius: 15px;
-  cursor: default;
-}
-.kshf .Summary_Set > .summaryControls > .configOpt .sdsdssds {
-  color: gray;
-  font-size: 0.9em;
-  margin-right: 2px;
-}
-.kshf .Summary_Set > .summaryControls > .configOpt > .configOpt_icon {
-  font-size: 1em;
-  vertical-align: middle;
-  background-color: white;
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  text-align: center;
-  border-style: solid;
-  border-radius: 20px;
-  border-color: white;
-  border-width: 0px;
-  margin: 1px;
-}
-.kshf .Summary_Set > .summaryControls > .configOpt > .configOpt_label {
-  color: #474747;
-  display: none;
-  font-size: 0.9em;
-  padding-left: 3px;
-  height: 15px;
-}
-.kshf .Summary_Set > .summaryControls > .configOpt > .configOpt_label > .fa {
-  margin-right: 3px;
-}
-.kshf .Summary_Set > .summaryControls > .configOpt.configRowHeight .fa:hover {
-  color: orangered;
-  cursor: pointer;
-}
-.kshf .Summary_Set > .summaryControls > .configOpt:hover > .configOpt_label {
-  display: inline;
-}
 .kshf .Summary_Set > .summaryControls svg.sizeLegend {
   position: absolute;
-  margin-top: 4px;
+  bottom: -30px;
   overflow: visible;
   cursor: default;
   -webkit-user-select: none;
@@ -4826,7 +4782,6 @@ top:calc(50% - 8px);
 }
 .kshf .Summary_Set > svg.setMatrix {
   display: block;
-  border-right: dotted 1px lightgray;
 }
 .kshf .Summary_Set .rows {
   position: relative;
@@ -4897,16 +4852,17 @@ top:calc(50% - 8px);
   opacity: 0.3;
 }
 .kshf .Summary_Set > .belowMatrix {
-  position: relative;
   height: 18px;
+  padding-top: 2px;
+  cursor: default;
+  border-top: solid 1px #E9E9E9;
 }
 .kshf .Summary_Set > .belowMatrix > .matrixInfo {
   font-size: 0.7em;
   color: #919191;
   margin: 0px 3px;
   display: inline-block;
-  cursor: default;
-  font-style: italic;
+  vertical-align: top;
 }
 .kshf .Summary_Set > .belowMatrix > .matrixInfo > .circleeee {
   width: 10px;

@@ -1505,7 +1505,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               position: absolute;
               top: 0; left: 0; bottom: 0; right: 0;
               cursor: default;
-              > .infobox-header{
+              .infobox-header{
                 background-color:rgb(216, 221, 212);
                 width:100%;
                 padding-top: 5px;
@@ -1537,7 +1537,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               }
               .project_fund {
                 clear: both;
-                margin-top: 1em;
+                margin-top: 1.5em;
                 text-align: center;
                 font-size: 0.8em;
                 font-weight: 300;
@@ -2219,6 +2219,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-weight: 300;
         text-align: center;
         margin-bottom: 1px;
+        cursor: default;
+        .user-select(none);
       }
       .configOption{
         //background-color: white;
@@ -3165,20 +3167,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         top: 0px;
         background-color: white;
         &[position="left"]{
-          .configOpt{ right: 2px; }
           .sizeLegend{ left: 10px; }
           .belowMatrix{ text-align: right; }
           .rows > .row > .label{ text-anchor: end; }
           .setMatrixWidthAdjust{ left: 0px;}
         }
         &[position="right"]{
-          .configOpt{ left: 2px; }
           .sizeLegend{ right: 0px; }
           .belowMatrix{ text-align: left; }
           .rows > .row > .label{ text-anchor: start; }
           .setMatrixWidthAdjust{ right: 0px;}
         }
-        > .headerGroup > .header_display_control > .buttonSummaryRemove{ display: none !important; }
+        > .headerGroup {
+          > .summaryIcons{ display: none;}
+          > .header_display_control > .buttonSummaryRemove{ display: none !important; }
+        }
       }
       &[show_set_matrix=true] > .kshfSummary.setPairSummary{ display: block; }
 
@@ -3790,10 +3793,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         position: relative;
         text-align: center;
-        border-bottom: dotted 1px lightgray;
-        margin-bottom: -1px;
+        border-bottom: solid 1px #E9E9E9;
+        margin-top: -1px;
         > .strengthControl{
           font-size: 0.7em;
+          margin-top: 2px;
           display: inline-block;
           background-color: #eaeaea;
           cursor: pointer;
@@ -3802,7 +3806,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           border-color: #DFDFDF;
           border-radius: 15px;
           cursor: default;
-          padding: 1px 3px;
+          padding: 0px 3px;
           color: #474747;
           cursor: pointer;
           .user-select(none);
@@ -3817,55 +3821,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
           >.strengthText{ padding: 0px 2px; }
         }
-        > .configOpt{
-          display: inline-block;
-          position: absolute;
-          top: 0px;
-          font-size: 0.8em;
-          background-color: rgb(234, 234, 234);
-          cursor: pointer;
-          border: 0px solid rgb(234, 234, 234);
-          border-radius: 15px;
-          cursor: default;
-          .sdsdssds{
-            color: gray;
-            font-size: 0.9em;
-            margin-right: 2px;
-          }
-          > .configOpt_icon{
-            font-size: 1em;
-            vertical-align: middle;
-            background-color: white;
-            display: inline-block;
-            width: 15px;
-            height: 15px;
-            text-align: center;
-            border-style: solid;
-            border-radius: 20px;
-            border-color: white;
-            border-width: 0px;
-            margin: 1px;
-          }
-          > .configOpt_label{
-            color: rgb(71, 71, 71);
-            display: none;
-            font-size: 0.9em;
-            padding-left: 3px;
-            height: 15px;
-            > .fa{ margin-right: 3px; }
-          }
-          &.configRowHeight{
-            .fa:hover{
-              color: orangered;
-              cursor: pointer;
-            }
-          }
-          &:hover > .configOpt_label{ display: inline; }
-        }
 
         svg.sizeLegend{
           position: absolute;
-          margin-top: 4px;
+          bottom: -30px;
           overflow: visible;
           cursor: default;
           .user-select(none);
@@ -3915,7 +3874,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       > svg.setMatrix{
         display: block;
-        border-right: dotted 1px lightgray;
       }
 
       .rows{
@@ -3972,15 +3930,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[show_gridlines='false'] .rows > .row > .line{ opacity: 0.3; }
 
       > .belowMatrix{
-        position: relative;
         height: 18px;
+        padding-top: 2px;
+        cursor: default;
+        border-top: solid 1px #E9E9E9;
         >.matrixInfo{
           font-size: 0.7em;
           color: #919191;
           margin: 0px 3px;
           display: inline-block;
-          cursor: default;
-          font-style: italic;
+          vertical-align: top;
           >.circleeee{
             width:10px;
             height: 10px;

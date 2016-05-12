@@ -3703,8 +3703,7 @@ kshf.Browser.prototype = {
     insertDOM_Infobox: function(){
         var me=this;
         var creditString="";
-        creditString += "<div class='infobox-header'>Data Made Explorable - by "+
-          "<a target='_blank' href='http://www.keshif.me' class='libName'>Keshif</a></div>";
+        creditString += "<div class='infobox-header'><a target='_blank' href='http://www.keshif.me' class='libName'>Keshif</a> - Data Made Explorable</div>";
 
         creditString += "<div class='boxinbox' style='padding: 0px 15px'>";
         creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'>"+
@@ -3733,7 +3732,7 @@ kshf.Browser.prototype = {
         creditString += " <a style='color:black;' href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a></span>";
         creditString += "</div>";
 
-        creditString += "<div class='project_fund'>Keshif (<i>keşif</i>) means discovery/exploration in Turkish.</div>";
+        creditString += "<div class='project_fund'><b>Keşif</b> (Turkish): Discovery &amp; exploration</div>";
 
         this.panel_overlay = this.DOM.root.append("div").attr("class", "panel panel_overlay");
 
@@ -5870,14 +5869,6 @@ kshf.Summary_Base.prototype = {
 
     this.DOM.summaryIcons = this.DOM.headerGroup.append("span").attr("class","summaryIcons");
 
-    this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
-      .each(function(d){
-        this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Show pairwise relations within "+me.summaryName+"" });
-      })
-      .on("mouseover",function(){ this.tipsy.show(); })
-      .on("mouseout" ,function(){ this.tipsy.hide(); })
-      .on("click",function(){ me.setShowSetMatrix(!me.show_set_matrix); });
-
     this.DOM.summaryConfigControl = this.DOM.summaryIcons.append("span")
       .attr("class","summaryConfigControl fa fa-gear")
       .each(function(d){  this.tipsy = new Tipsy(this, { gravity:'ne', title: "Configure" }); })
@@ -5887,6 +5878,14 @@ kshf.Summary_Base.prototype = {
         this.tipsy.hide();
         me.DOM.root.attr("showConfig",me.DOM.root.attr("showConfig")==="false");
       });
+
+    this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
+      .each(function(d){
+        this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Show/Hide pair-wise relations" });
+      })
+      .on("mouseover",function(){ this.tipsy.show(); })
+      .on("mouseout" ,function(){ this.tipsy.hide(); })
+      .on("click",function(){ me.setShowSetMatrix(!me.show_set_matrix); });
 
     this.DOM.summaryForRecordDisplay = this.DOM.summaryIcons.append("span")
       .attr("class", "useForRecordDisplay fa")
@@ -6015,6 +6014,9 @@ kshf.Summary_Base.prototype = {
         this.refreshViz_All();
         this.refreshMeasureLabel();
       }
+    }
+    if(this.setSummary){
+      this.setShowSetMatrix(false);
     }
   },
   /** -- */
@@ -6821,16 +6823,27 @@ var Summary_Categorical_functions = {
 
     this.DOM.summaryConfig_CatHeight = this.DOM.summaryConfig.append("div")
       .attr("class","summaryConfig_CatHeight summaryConfig_Option");
-    this.DOM.summaryConfig_CatHeight.append("span").html("<i class='fa fa-arrows-v'></i> Category Height: ");
+    this.DOM.summaryConfig_CatHeight.append("span").html("<i class='fa fa-arrows-v'></i> Row Height: ");
     x = this.DOM.summaryConfig_CatHeight.append("span").attr("class","optionGroup");
     x.selectAll(".configOption").data(
-      [ {l:"Short",v:18}, {l:"Long", v:35} ])
+      [ 
+        {l:"<i class='fa fa-minus'></i>", v: "minus"},
+        {l:"Short",v:18}, 
+        {l:"Long", v:35},
+        {l:"<i class='fa fa-plus'></i>", v: "plus"},
+      ])
       .enter()
       .append("span").attr("class",function(d){ return "configOption pos_"+d.v;})
       .attr("active",function(d){ return d.v===me.heightRow_category; })
       .html(function(d){ return d.l; })
       .on("click", function(d){ 
-        me.setHeight_Category(d.v);
+        if(d.v==="minus"){
+          me.setHeight_Category(me.heightRow_category-1);
+        } else if(d.v==="plus"){
+          me.setHeight_Category(me.heightRow_category+1);
+        } else {
+          me.setHeight_Category(d.v);
+        }
       })
 
     this.DOM.inited = true;
@@ -7116,9 +7129,7 @@ var Summary_Categorical_functions = {
 
     /** -- */
     setHeight_Category: function(h){
-      var me=this;
-      this.heightRow_category = h;
-
+      this.heightRow_category = Math.min(50, Math.max(10,h));
       if(this.viewType==='list') {
         this.refreshHeight_Category();
       } else {
@@ -9031,6 +9042,10 @@ var Summary_Interval_functions = {
             }
             var maxPos = d3.max([this.initPos, pointerPosition]);
             var minPos = d3.min([this.initPos, pointerPosition]);
+            if(me.scaleType!=="time" && !me.hasFloat){
+              maxPos = Math.round(maxPos);
+              minPos = Math.round(minPos);
+            }
             me.highlightRangeLimits_Active = true;
             // Set preview selection
             var records = [];
@@ -10751,17 +10766,12 @@ var Summary_Clique_functions = {
         var myHeight = me.getHeight();
         body.on("mousemove", function() {
           var mouseDif = d3.mouse(body[0][0])[0]-mouseInit_x;
-          console.log("mouseNew_x: "+d3.mouse(body[0][0])[0]);
-        var targetWidth = initWidth-mouseDif;
-        var targetAngle_Rad = Math.atan(myHeight/targetWidth);
-        var targetAngle_Deg = 90-(targetAngle_Rad*180)/Math.PI;
-        targetAngle_Deg = Math.min(Math.max(targetAngle_Deg,30),60);
-        me.noanim = true;
-        me.summaryWidth = (me.position==="left") ? initWidth-mouseDif : initWidth+mouseDif;
-        me.checkWidth();
-        me.refreshWindowSize();
-        me.refreshRow_LineWidths();
-        me.refreshSetPair_Position();
+          me.noanim = true;
+          me.summaryWidth = (me.position==="left") ? initWidth-mouseDif : initWidth+mouseDif;
+          me.checkWidth();
+          me.refreshWindowSize();
+          me.refreshRow_LineWidths();
+          me.refreshSetPair_Position();
         }).on("mouseup", function(){
           browser.DOM.root.style('cursor','default');
           me.DOM.setPairGroup.attr("animate_position",true);
@@ -10783,12 +10793,11 @@ var Summary_Clique_functions = {
 
     /** BELOW THE MATRIX **/
     this.DOM.belowMatrix = this.DOM.chartRoot.append("div").attr("class","belowMatrix");
-    this.DOM.belowMatrix.append("div").attr("class","border_line");
 
     this.DOM.pairCount = this.DOM.belowMatrix.append("span").attr("class","pairCount matrixInfo");
-    this.DOM.pairCount.append("span").attr("class","circleeee");
     this.DOM.pairCount_Text = this.DOM.pairCount.append("span").attr("class","pairCount_Text")
-      .text(""+this._setPairs.length+" pairs ("+Math.round(100*this._setPairs.length/this.getSetPairCount_Total())+"%)");
+      .html("<i class='fa fa-circle' style='color: #b1bdc5;'></i> "+
+        this._setPairs.length+" Pairs ("+Math.round(100*this._setPairs.length/this.getSetPairCount_Total())+"%)");
 
     this.DOM.subsetCount = this.DOM.belowMatrix.append("span").attr("class","subsetCount matrixInfo");
     this.DOM.subsetCount.append("span").attr("class","circleeee borrderr");
@@ -10923,7 +10932,7 @@ var Summary_Clique_functions = {
   /** -- */
   checkWidth: function(){
     var minv=210;
-    var maxv=Math.max(minv,this.getHeight())+60;
+    var maxv=Math.max(minv,this.getHeight())+160;
     this.summaryWidth = Math.min(maxv,Math.max(minv,this.summaryWidth));
   },
   /** -- */
@@ -10938,10 +10947,13 @@ var Summary_Clique_functions = {
     this.DOM.summaryControls = this.DOM.chartRoot.append("div").attr("class","summaryControls")
       .style("height",(this.setListSummary.getHeight_Config())+"px"); // TODO: remove
 
-    var buttonTop = (this.setListSummary.getHeight_Config()-18)/2;
     this.DOM.strengthControl = this.DOM.summaryControls.append("span").attr("class","strengthControl")
-      .on("click",function(){ me.browser.setScaleMode(me.browser.ratioModeActive!==true); })
-      .style("margin-top",buttonTop+"px");
+      .each(function(d,i){
+        this.tipsy = new Tipsy(this, { gravity: "n", title: "Color <i class='fa fa-circle'></i> by pair-wise strength" });
+      })
+      .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
+      .on("mouseout" ,function(){ this.tipsy.hide(); })
+      .on("click",function(){ me.browser.setScaleMode(me.browser.ratioModeActive!==true); });
 
     // ******************* STRENGTH CONFIG
     this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Weak");
@@ -10953,28 +10965,6 @@ var Summary_Clique_functions = {
 
     this.DOM.legendHeader = this.DOM.scaleLegend_SVG.append("text").attr("class","legendHeader").text("#");
     this.DOM.legend_Group = this.DOM.scaleLegend_SVG.append("g");
-
-    // ******************* ROW HEIGHT CONFIG
-    var domRowHeightControl = this.DOM.summaryControls.append("span").attr("class","configRowHeight configOpt");
-    var sdad = domRowHeightControl.append("span").attr("class","configOpt_label")
-    domRowHeightControl.append("span").attr("class","configOpt_icon")
-      .append("span").attr("class","fa fa-search-plus");
-    sdad.append("span").attr("class","sdsdssds").text("Zoom");
-    sdad.append("span").attr("class","fa fa-plus").on("mousedown",function(){
-      // TODO: Keep calling as long as the mouse is clicked - to a certain limit
-      me.setListSummary.setHeight_Category(me.getRowHeight()+1);
-      d3.event.stopPropagation();
-    });
-    sdad.append("span").attr("class","fa fa-minus").on("mousedown",function(){
-      // TODO: Keep calling as long as the mouse is clicked - to a certain limit
-      me.setListSummary.setHeight_Category(me.getRowHeight()-1);
-      d3.event.stopPropagation();
-    });
-    sdad.append("span").attr("class","fa fa-arrows-alt").on("mousedown",function(){
-      // TODO: Keep calling as long as the mouse is clicked - to a certain limit
-      me.setListSummary.setHeight_Category(10);
-      d3.event.stopPropagation();
-    });
   },
   /** -- */
   insertRows: function(){
