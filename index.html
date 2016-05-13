@@ -45,7 +45,7 @@ var loadDemoBrowser = function(){
       { name: "Keywords", panel: 'left', catSplit: " + " },
       { name: "# of Records", value: "# of Items", showPercentile: true, panel: 'left', intervalScale: "log"},
       { name: "Data Source Type", value: "Source", catSplit: " + ", panel: 'left', collapsed: true },
-      { name: "Config. Complexity", value: "Code Complexity", panel: 'right',
+      { name: "Config Complexity", value: "Code Complexity", panel: 'right',
         description: "Relative code complexity of demo source",
         catSortBy: "id",
         catLabel: function(){
@@ -635,7 +635,6 @@ body{
 .descr_text{
   opacity: 0;
   font-size: 0.5em;
-  font-style: italic;
   font-weight: 300;
   letter-spacing: 0em;
   vertical-align: top;
@@ -676,6 +675,12 @@ body{
 #twitter-widget-0{
   height: 800px !important;
 }
+.socialMedia{
+  font-size: 2em; text-decoration: none; vertical-align: top; margin-top: 10px;
+}
+.socialMedia:hover{
+  text-shadow: 0px 0px 3px #753D00;
+}
 
 </style>
 	 
@@ -689,20 +694,20 @@ body{
 
 <div class="container">
   <div class="row header">
-    <div class="eight columns title">
+    <div class="eight columns title" style='cursor: default;'>
       <img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">
       <div>
         <span style='letter-spacing: 3px; font-weight: 700'>Keshif</span>
-        <span class="descr_text">* Keşif means <b>discovery &amp; exploration</b> in Turkish.</span>
+        <span class="descr_text">Keşif (Turkish): <b>Discovery &amp; exploration</b>.
+          Made with <i class='fa fa-heart' style='color:orangered;'></i></span>
         </div>
       <span style='font-size: 0.7em; font-weight: 300; color: #7D7D7D;'>Data <b>M</b>ade <b>E</b>xplorable</span>
       </div>
     <div class="four columns affiliations">
-      <a href='https://www.facebook.com/keshifme' target='_blank' class='fa fa-facebook'
-        style='font-size: 2em; text-decoration: none; vertical-align: top; margin-top: 10px; color: #4c66a4;
-          margin-right: 10px;'></a>
-      <a href='https://www.twitter.com/keshifme' target='_blank' class='fa fa-twitter'
-        style='font-size: 2em; text-decoration: none; vertical-align: top; margin-top: 10px; color: #00aced'></a>
+      <a href='https://www.facebook.com/keshifme' target='_blank' class='fa fa-facebook socialMedia'
+        style='color: #4c66a4; margin-right: 10px;'></a>
+      <a href='https://www.twitter.com/keshifme' target='_blank' class='fa fa-twitter socialMedia'
+        style='color: #00aced'></a>
       <a href='http://www.umd.edu' target='_blank'>
         <img src="./AggreSet/img/logo_umd.png" id="logo_umd" 
           class="affilLogo affilLogoFilter" title="University of Maryland, College Park"></a>
@@ -738,8 +743,9 @@ body{
     </div>
 </div>
 
-<div style="margin: 5px 80px 15px 80px">
-  <div id="livedemo"></div></div>
+  <div class="container" style='margin-bottom:1em'><div id="livedemo"></div></div>
+    <!--<div style="margin: 5px 80px 15px 80px">
+      <div id="livedemo"></div></div>-->
 
 <div class="container">
   <div class="row featureRow">
@@ -769,16 +775,16 @@ body{
     <div class="four columns">
       <b>Browsers that are easy to create.</b>
       Import data. Author browser by drag-and-drop.
-      Customize attributes. Save as Gist. Share with unique URL.
+      Customize attributes. Save as Gist. Share the URL. Done!
       </div>
     <!-- <li><i class="fa-li fa fa-check-square"></i><b>Load your structured data in a flexible pipeline, built for the web.</b> Keshif can automatically import data from Google Sheets and CSV/TEXT files. You can write custom data importers in JavaScript to load JSON, XML, HTML, or even BibTeX. Check the demo listing to find demos using various data resource types.</li> -->
     </div>
   <div class="row featureRow">
-    <div class="eight columns">A design that is <b>consistent, unified, fully synchronized, and
-      <a href='http://localhost/keshif/demo/NYPL' target='_blank'>scalable</a></b>.<br>
-      It <i>just works</i> for many datasets in tabular (spreadsheet) form.<br>
+    <div class="eight columns"><b>Consistent, unified, fully synchronized, and
+      <a href='http://localhost/keshif/demo/NYPL' target='_blank'>scalable</a></b> design.<br>
+      Keshif <i>just works</i> for many datasets in a tabular (spreadsheet) form.<br>
         Learn once, use many times for rapid data exploration.</div>
-      <div class="four columns"><b>Built for the open web.</b><br> Customizable with HTML, JS, and CSS. 
+      <div class="four columns"><b>Built for the open web.</b><br> Customize with HTML, JS, and CSS. 
         Based on simple <a href="https://github.com/adilyalcin/Keshif/wiki" target="_blank">JS config API</a>. 
         </div>
 
