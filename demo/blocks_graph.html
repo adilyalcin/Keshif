@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>bl.ocks.org network</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,400,300,600,700' rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 190,
+    rightPanelLabelWidth: 170,
+    recordName: "bl.ocks.org examples",
+    source: {
+      callback: function(browser){
+        $.ajax({
+          url: "./data/blocks_graph.json",
+          success: function(data){
+            browser.primaryTableName = "examples";
+            kshf.dt.examples = [];
+            kshf.dt_id.examples = {};
+            var _id=0;
+            data.nodes.forEach(function(r){
+              r._id = _id++;
+              r.links = [];
+              var d = new kshf.Record(r,"_id");
+              kshf.dt.examples.push(d);
+              kshf.dt_id.examples[r.id] = d;
+            });
+            data.links.forEach(function(l){
+              var src = kshf.dt_id.examples[l.source];
+              var trg = kshf.dt_id.examples[l.target];
+              src.data.links.push(l.target);
+              //trg.data.links.push(src);
+            });
+            browser.loadCharts();
+          }
+        });
+      }
+    },
+    summaries: [
+      { name: "user" },
+      { name: "Link count", value: function(){ return this.links.length; }}
+    ],
+    recordDisplay: {
+      sortBy: "Link count",
+      sortColWidth: 45,
+      linkBy: "links",
+      textSearch: "description",
+      recordView: "description",
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">bl.ocks.org network</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox" align="center">
+      Data from 
+      <a href="http://bl.ocks.org/mbostock/afecf1ce04644ad9036ca146d2084895" target="_blank">Blocks Graph</a>
+      by Mike Bostock
+      </div>
+  </body>
+</html>

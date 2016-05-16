@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Machine Learning Repository at UCI</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    categoryTextWidth: 150,
+    source: {
+      gdocId: '1Gd8phYnKktQnhVNRFqGgVd4R2gx7Q2_YaGxdFub0VWM',
+      tables: "Datasets"
+    },
+    summaries: [
+      { name: "Attribute Types", catSplit: ", "},
+      { name: "Data Types", catSplit: ", " },
+      { name: "Default Task", catSplit: ", "},
+      { name: "# Attributes", panel: "right"},
+      { name: "# Instances", panel: "right"},
+      { name: "Year", timeFormat: "%Y", layout: "bottom"}
+    ],
+    recordDisplay: {
+      sortBy: "Year",
+      sortColWidth: 70,
+      textSearch: "Name",
+      recordView: function(){
+        return this.Name + 
+          " <a href='https://archive.ics.uci.edu/ml/datasets/"+this.Name+"' target='_blank' class='link'>Open</a>";
+      }
+    }
+  });
+});
+</script>
+<style id="kshfStyle">
+.link{
+  font-weight: 300;
+  font-size: 0.8em;
+}
+</style>
+	</head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">Machine Learning Datasets Repository</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data drom
+      <a href="https://archive.ics.uci.edu/ml/datasets.html" target='_blank'>
+        UC Irvine Machine Learning Repository</a>.
+      </div>
+  </body>
+</html>
