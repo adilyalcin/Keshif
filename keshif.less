@@ -82,16 +82,41 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
     &[noanim=false]{
-      .chartAxis_Measure {
+      .chartAxis_Measure{
         .transition(@layout_animation);
         .tick{ .transition(~'transform 500ms ease-out'); }
       }
       .wrapper{ .transition(~'height 700ms ease-in-out'); }
       .panels_Above{ .transition(~'height 700ms ease-in-out'); }
       .controlLine {
-        > .base { .transition(@bar_animation); }
+        > .base{   .transition(@bar_animation); }
         > .handle{ .transition(@bar_animation); }
       }
+    }
+    &[adjustWidth="true"]{
+      cursor: ew-resize;
+    }
+    &[pointerEvents="true"]{
+      .scaleModeControl{
+        pointer-events: all;
+      }
+      .kshfSummary > .wrapper > {
+        .summaryInterval > .intervalSlider{ 
+          pointer-events: all;
+        }
+        .summaryCategorical > .aggrGroup > .catGlyph > .clickArea{
+          pointer-events: all;
+        }
+      }
+      .aggrGlyph{
+        &.rangeGlyph{
+          > span[class^="measure_Active"]{ pointer-events: all; }
+          > .measureLabel{ pointer-events: all; }
+        }
+      }
+    }
+    &[pointerEvents="false"]{
+      pointer-events: none;
     }
     &[drag_cursor="grab"]{
       cursor: -moz-grab;
@@ -339,7 +364,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       margin-top: 1px;
       opacity: 0.7;
       &.AndOrNot_And{ background-color: @color_query_and; }
-      &.AndOrNot_Or{ background-color: @color_query_or; }
+      &.AndOrNot_Or{  background-color: @color_query_or;  }
       &.AndOrNot_Not{ background-color: @color_query_not; }
     }
 
@@ -628,7 +653,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-width: 0px;
         color: #cb5454;
         background-color:rgba(244, 244, 244,0);
-        pointer-events: all;
         margin: 2px 0px 0px 0px;
         cursor: text;
         &:focus{
@@ -701,7 +725,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-color: rgb(239, 234, 223);
         box-shadow: 0px 0px 2px #B8AF9A;
         margin-bottom: 4px;
-        padding-bottom: 2px;
+        padding-bottom: 3px;
         // ***************************************************************************
         // MEASURE SELECT BOX
         > .measureSelectBox_Wrapper{
@@ -812,19 +836,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         > .breadcrumbs{
             .flex(1);
-            padding: 2px 2px 4px 5px;
+            padding: 0px 2px 4px 5px;
             font-size: 0.8em;
             vertical-align: top;
+            > .saveSelection{
+              display: none;
+              cursor: pointer;
+              height: 1em;
+              font-size: 1.1em;
+              margin: 3px 0px;
+              vertical-align: top;
+              &:hover{
+                color: orangered;
+              }
+              &[active=true]{
+                display: inline-block;
+              }
+            }
             > .crumb{
               display: inline-block;
               position: relative;
               cursor: pointer;
               color: rgb(37, 33, 18);
               font-weight: 300;
-              // border: 1px rgb(104, 91, 43) solid;
-              box-shadow: 1px 1px 1px rgb(78, 71, 43);
+              // 
+              //box-shadow: 1px 1px 1px rgb(78, 71, 43);
               background-color: rgba(255,255,255,0.5);
               margin-right: 5px;
+              margin-top: 1px;
               padding-left: 2px;
               max-width: 0px;
               .transition(~"all 250ms linear");
@@ -833,18 +872,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
                 white-space: nowrap;
                 overflow: hidden;
-                margin-left: 13px;
+                margin-left: 14px;
                 margin-right: 2px;
                 > .crumbHeader{
-                  padding: 1px;
-                  font-size: 1em;
                   font-weight: 700;
                   &:after{ content: ': '; }
                 }
                 > .crumbDetails{
-                  padding:1px 0px 1px 0px;
+                  margin-right: 2px;
                   display: inline;
-                  > b{ font-weight: 700; }
                   > .unitName{ font-weight: 300; }
                 }
               }
@@ -864,20 +900,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               &[ready=true]{ max-width: 100%; }
               &[ready=false]{ max-width: 0px; }
               &.crumbMode_Filter {
+                border: solid 1px #788D9B;
                 > .clearCrumbButton {
                   background-color: #788D9B;
-                  border: solid 1px #788D9B;
-                  > .fa::before{ content: "\f0b0"; } // cross
+                  > .fa::before{ content: "\f0b0"; } // filter
                 }
               }
               &.crumbMode_Highlight {
+                border: solid 1px orangered;
                 > .clearCrumbButton {
                   background-color: orangered;
-                  border: solid 1px orangered;
                   > .fa::before{ 
                     content: "\f245";
                     position: relative;
-                    top: 0px;
+                    top: 1px;
                     left: 1px;
                   } // mouse pointer
                 }
@@ -890,11 +926,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   top: 1px;
                 }
               }
-              &[class*='crumbMode_Compare_A'] > .clearCrumbButton { background-color: @color_Compare_A; }
-              &[class*='crumbMode_Compare_B'] > .clearCrumbButton { background-color: @color_Compare_B; }
-              &[class*='crumbMode_Compare_C'] > .clearCrumbButton { 
-                background-color: @color_Compare_C; 
-                color: black;
+              &[class*='crumbMode_Compare_A'] {
+                border: solid 1px @color_Compare_A;
+                > .clearCrumbButton { background-color: @color_Compare_A; }
+              }
+              &[class*='crumbMode_Compare_B'] {
+                border: solid 1px @color_Compare_B;
+                > .clearCrumbButton { background-color: @color_Compare_B; }
+              }
+              &[class*='crumbMode_Compare_C'] {
+                border: solid 1px darken(@color_Compare_C, 40%);
+                > .clearCrumbButton { 
+                  background-color: @color_Compare_C; 
+                  color: black;
+                }
               }
               &:hover{
                 background-color: rgba(255,255,255,1.0);
@@ -905,32 +950,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
         }
         > .filterClearAll{
-            opacity: 0;
-            pointer-events: none;
-            position: relative;
-            top: 2px;
-            height: 1em;
-            cursor: pointer;
-            color: #252112;
-            font-weight: 300;
-            border: 1px #685b2b solid;
-            background-color: #E9E2CE;
-            white-space: nowrap;
-            .transition(~"background-color 100ms linear, opacity 300ms linear");
-            .title{
-              padding: 0px 2px;
-              font-size: 0.8em;
-              font-weight: 500;
-              vertical-align: top;
-            }
-            &:hover{
-              background-color: white;
-              box-shadow: none;
-            }
-            &[active=true]{
-              opacity: 1;
-              pointer-events: all;
-            }
+          display: none;
+          position: relative;
+          top: 2px;
+          height: 1em;
+          cursor: pointer;
+          color: #252112;
+          font-weight: 300;
+          border: 1px #685b2b solid;
+          background-color: #E9E2CE;
+          white-space: nowrap;
+          .transition(~"background-color 100ms linear, opacity 300ms linear");
+          .title{
+            padding: 0px 2px;
+            font-size: 0.8em;
+            font-weight: 500;
+            vertical-align: top;
+          }
+          &:hover{
+            background-color: white;
+            box-shadow: none;
+          }
+          &[active=true]{
+            display: inline-block;
+          }
         }
         > .rightBoxes{
           font-size: 1.0em;
@@ -943,7 +986,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &:hover{ color: #cb5454; }
           }
           > .showConfigButton{
-            display: none;
+            display: inline-block;
             &:hover{
               animation: fa-spin 2s infinite linear;
               -webkit-animation: fa-spin 2s infinite linear;
@@ -963,25 +1006,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .attribDragBox{
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        min-height: 21px;
-        // height: 22px; // auto... (based on text within)
-        width: 200px;
-        .background-image(~"linear-gradient(right, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);");
-        //background-color: lightgray;
-        border-radius: 3px;
-        border: solid 1px lightgray;
-        box-shadow: 5px 5px 20px gray;
-        display: none;
-        z-index: 400;
-        text-align: center;
-        font-weight: 500;
-        font-size: 0.9em;
-        cursor: default;
-        text-rendering: initial;
-        pointer-events: none;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      min-height: 21px;
+      // height: 22px; // auto... (based on text within)
+      width: 200px;
+      .background-image(~"linear-gradient(right, rgba(245, 245, 245, 1) 0%, rgba(241, 241, 241, 1) 20%, rgba(241, 241, 241, 1) 80%, rgba(245, 245, 245, 1) 100%);");
+      //background-color: lightgray;
+      border-radius: 3px;
+      border: solid 1px lightgray;
+      box-shadow: 5px 5px 20px gray;
+      display: none;
+      z-index: 400;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.9em;
+      cursor: default;
+      text-rendering: initial;
+      pointer-events: none;
     }
 
     > .warningBox_wrapper{
@@ -996,48 +1039,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .transition(~'opacity 500ms ease-in-out, top 500ms');
         > .warningBox{
           display: inline-block;
-            background-color: #F8EE82;
-            border-radius: 5px;
+          background-color: #F8EE82;
+          border-radius: 5px;
+          font-size: 0.8em;
+          font-weight: 100;
+          padding: 2px 5px;
+          border: solid 1px rgb(214, 206, 121);
+          box-shadow: 1px 1px 3px gray;
+          > .warningText{
+            cursor: default;
+            > a{
+              color: #665F17;
+              font-weight: 500;
+            }
+          }
+          > .dismiss{
+            margin-left: 5px;
+            color: gray;
+            cursor: pointer;
+            text-decoration: underline;
             font-size: 0.8em;
-            font-weight: 100;
-            padding: 2px 5px;
-            border: solid 1px rgb(214, 206, 121);
-            box-shadow: 1px 1px 3px gray;
-            > .warningText{
-              cursor: default;
-              > a{
-                color: #665F17;
-                font-weight: 500;
-              }
-            }
-            > .dismiss{
-              margin-left: 5px;
-              color: gray;
-              cursor: pointer;
-              text-decoration: underline;
-              font-size: 0.8em;
-              &:hover{ color: orangered; }
-            }
+            &:hover{ color: orangered; }
+          }
         }
         &[shown=true]{
-            opacity: 1;
-            top: 5px;
-            pointer-events: all;
+          opacity: 1;
+          top: 5px;
+          pointer-events: all;
         }
     }
 
     > .pointerBlock{
-        position: fixed;
-        left: 0px;
-        top: 0px;
-        width: 100%;
-        height: 100%;
-        z-index: -10;
-        pointer-events: none;
-        &[active]{
-            z-index: 700;
-            pointer-events: all;
-        }
+      position: fixed;
+      left: 0px;
+      top: 0px;
+      width: 100%;
+      height: 100%;
+      z-index: -10;
+      pointer-events: none;
+      &[active]{
+        z-index: 700;
+        pointer-events: all;
+      }
     }
 
     .panel {
@@ -1613,7 +1656,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: none;
         vertical-align: top;
         pointer-events: all;
-        box-shadow: 0px 0px 1px #474940;
+        // box-shadow: 0px 0px 1px #474940;
         margin-top: 1px;
         font-size: 0.8em;
         > .fa-times{
@@ -1681,7 +1724,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       left: 0px;
       top: 0px;
       cursor: pointer;
-      pointer-events: all;
       background-color: #E0E4D7;
       border: solid 1px #B7CAAF;
       border-radius: 5px;
@@ -1775,7 +1817,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height: 14px;
         width: 14px;
         line-height: 13px;
-        margin-right: 3px;
       }
       .summaryIcons{
         top: 3px;
@@ -1872,7 +1913,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[class^="measure_Active"]{
           background-color: @color_bars;
           cursor: pointer;
-          pointer-events: all;
         }
         &[class^="measure_Total"]{
           background-color: @color_distr_total;
@@ -2005,7 +2045,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 100%;
           text-align: center;
           cursor: pointer;
-          pointer-events: all;
           .transition(~'transform 700ms ease-in-out');
         }
       } // .rangeGlyph
@@ -2328,7 +2367,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &:hover{
             border-style: solid;
             border-width: 1px 0px 1px 0px;
-            border-color: darken(@color_bars, 20%);
+            border-color: orangered; // darken(@color_bars, 20%);
             top: -2px;
             // make the size 1px larger on top and bottom, display the border.
             //height: calc(~"100% + 2px");
@@ -2549,7 +2588,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       left: 0px;
                       display: inline-block;
                       vertical-align: top;
-                      pointer-events: all;
                       // Note: The height of clickable area is the same as height of the bar!
                       margin-top:4px;
                       margin-bottom:4px;
@@ -2751,7 +2789,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         fill: #EEF0F2;
                       }
                       > .measure_Active_Area{
-                        fill: lighten(@color_bars, 10%);
+                        fill: lighten(@color_bars, 11%);
                         stroke: @color_bars;
                       }
                       > .measure_Highlight_Area{
@@ -2873,7 +2911,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .intervalSlider{
                     position:relative;
-                    pointer-events: all;
                     > .zoomControl{
                       display: none;
                       position: absolute;
@@ -3166,13 +3203,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         top: 0px;
         background-color: white;
-        &[position="left"]{
+        &[popupSide="left"]{
           .sizeLegend{ left: 10px; }
           .belowMatrix{ text-align: right; }
           .rows > .row > .label{ text-anchor: end; }
           .setMatrixWidthAdjust{ left: 0px;}
         }
-        &[position="right"]{
+        &[popupSide="right"]{
           .sizeLegend{ right: 0px; }
           .belowMatrix{ text-align: left; }
           .rows > .row > .label{ text-anchor: start; }
@@ -3255,6 +3292,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .scaleModeControl{
           position: absolute;
+          left: auto;
           right: -57px;
           top: -1px;
           color: gray;
@@ -4186,12 +4224,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .mapPreviewAnimation_do () {
-    0% {
-      opacity: 0;
-    }
-    90%, 100% {
-      opacity: 1;
-    }
+  0% { opacity: 0; }
+  90%, 100% { opacity: 1; }
 }
 
 @-webkit-keyframes mapPreviewAnimation {.mapPreviewAnimation_do;}
@@ -4200,85 +4234,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @-o-keyframes mapPreviewAnimation {.mapPreviewAnimation_do;}
 @keyframes mapPreviewAnimation {.mapPreviewAnimation_do;}
 
-
-
 .tipsy {
-    font-size: 10px;
-    position: absolute;
-    padding: 5px;
-    z-index: 100000;
-    pointer-events: none;
-    .tipsy-inner {
-        font-family: Helvetica, Arial, sans-serif;
-        padding: 3px;
-        font-size: 1.2em;
-        background-color: #000;
-        color: #FFF;
-        max-width: 400px;
-        text-align: center;
-        font-weight: 300px;
-        border-radius: 3px;
-    }
-    .tipsy-inner{
-        span.big{
-            font-size: 1.4em;
-        }
-        span.action{
-            font-weight: 700;
-        }
-    }
-    .unitName{
-      margin-left: 1px;
-      margin-right: 1px;
-      color: lightgray;
-    }
-    .mapItemName{
-      display: block;
-      border-bottom: solid 1px white;
-      font-weight: 600;
-    }
-    .mapTooltipValue{
-      font-size: 0.9em;
-      font-weight: 500;
-    }
-    .mapTooltipLabel{
-      font-size: 0.9em;
-      font-weight: 300;
-    }
-
-    &.tipsyFilterAnd{
-        .tipsy-inner{
-            background-color: @color_query_and;
-        }
-        .tipsy-arrow{
-            border-color: @color_query_and;
-        }
-    }
-    &.tipsyFilterOr{
-        .tipsy-inner{
-            background-color: @color_query_or;
-        }
-        .tipsy-arrow{
-            border-color: @color_query_or;
-        }
-    }
-    &.tipsyFilterNot{
-        .tipsy-inner{
-            background-color: @color_query_not;
-        }
-        .tipsy-arrow{
-            border-color: @color_query_not;
-        }
-    }
-    &.tipsyFilterLock{
-        .tipsy-inner{
-            background-color: @color_Compare_A;
-        }
-        .tipsy-arrow{
-            border-color: @color_Compare_A;
-        }
-    }
-
+  font-size: 10px;
+  position: absolute;
+  padding: 5px;
+  z-index: 100000;
+  pointer-events: none;
+  .tipsy-inner {
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 3px;
+    font-size: 1.2em;
+    background-color: #000;
+    color: #FFF;
+    max-width: 400px;
+    text-align: center;
+    font-weight: 300px;
+    border-radius: 3px;
+  }
+  .unitName{
+    margin-left: 1px;
+    margin-right: 1px;
+    color: lightgray;
+  }
+  .mapItemName{
+    display: block;
+    border-bottom: solid 1px white;
+    font-weight: 600;
+  }
+  .mapTooltipValue{
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+  .mapTooltipLabel{
+    font-size: 0.9em;
+    font-weight: 300;
+  }
+  &.tipsyFilterLock{
+    .tipsy-inner{ background-color: @color_Compare_A; }
+    .tipsy-arrow{ border-color: @color_Compare_A; }
+  }
 }
 
 /* Uncomment for shadow */

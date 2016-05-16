@@ -98,6 +98,7 @@ var kshf = {
         ShowFullscreen: "Fullscreen",
         RemoveFilter: "Remove filter",
         RemoveAllFilters: "Remove all filters",
+        SaveSelection: "Save Selection",
         MinimizeSummary: "Close summary",
         OpenSummary: "Open summary",
         MaximizeSummary: "Maximize summary",
@@ -119,7 +120,7 @@ var kshf = {
         Percent: "Percent",
         PartOf: "Part-Of",
         Width: "Length",
-        DragToFilter: "Drag to filter",
+        DragToFilter: "Drag",
         And: "And",
         Or: "Or",
         Not: "Not",
@@ -160,7 +161,7 @@ var kshf = {
         Percent: "Yüzde",
         PartOf: "Görece",
         Width: "Genişlik",
-        DragToFilter: "Sürükle ve filtre",
+        DragToFilter: "Sürükle",
         And: "Ve",
         Or: "Veya",
         Not: "Değil",
@@ -237,7 +238,7 @@ var kshf = {
         Percent: "Percentuale",
         Relative: "Relativo",
         Width: "Larghezza",
-        DragToFilter: "Trascina per filtrare",
+        DragToFilter: "Trascina",
         And: "E",
         Or: "O",
         Not: "No",
@@ -708,11 +709,23 @@ kshf.Aggregate.prototype = {
     this.records.push(record);
     record._aggrCache.push(this);
     if(record.measure_Self===null || record.measure_Self===0) return;
-    this._measure.Total  += record.measure_Self;
+    this._measure.Total += record.measure_Self;
     this.recCnt.Total++;
     if(record.isWanted) {
       this._measure.Active += record.measure_Self;
       this.recCnt.Active++;
+    }
+  },
+  /** -- */
+  removeRecord: function(record){
+    this.records.splice(this.records.indexOf(record),1);
+    record._aggrCache.splice(record._aggrCache.indexOf(this),1);
+    if(record.measure_Self===null || record.measure_Self===0) return;
+    this._measure.Total -= record.measure_Self;
+    this.recCnt.Total--;
+    if(record.isWanted) {
+      this._measure.Active -= record.measure_Self;
+      this.recCnt.Active--;
     }
   },
   /** -- */
@@ -943,6 +956,10 @@ kshf.BreadCrumb.prototype = {
     // animate appear
     window.getComputedStyle(this.DOM[0][0]).opacity; // force redraw
     this.DOM.attr("ready",true);
+
+    // Push the save button to the end of list
+    var dom = this.browser.DOM.saveSelection[0][0];
+    dom.parentNode.appendChild(dom);
   },
 };
 
@@ -2889,8 +2906,8 @@ kshf.Panel.prototype = {
     this.width_catBars = _w_-this.width_catLabel-this.width_catMeasureLabel-kshf.scrollWidth;
   },
   /** -- */
-  collapseAllSummaries: function(){
-    this.summaries.forEach(function(summary){ summary.setCollapsed(true); });
+  collapseAllSummaries: function(exceptThisOne){
+    this.summaries.forEach(function(summary){ if(summary!==exceptThisOne) summary.setCollapsed(true); });
   },
   /** -- */
   setWidthCatLabel: function(_w_){
@@ -2953,167 +2970,178 @@ kshf.Panel.prototype = {
  * @constructor
  */
 kshf.Browser = function(options){
-    this.options = options;
+  this.options = options;
 
-    if(kshf.lang.cur===null) kshf.lang.cur = kshf.lang.en; // English is Default language
+  if(kshf.lang.cur===null) kshf.lang.cur = kshf.lang.en; // English is Default language
 
-    // BASIC OPTIONS
-    this.summaryCount = 0;
-    this.filterCount = 0;
-    this.summaries = [];
-    this.summaries_by_name = {};
-    this.panels = {};
+  // BASIC OPTIONS
+  this.summaryCount = 0;
+  this.filterCount = 0;
+  this.summaries = [];
+  this.summaries_by_name = {};
+  this.panels = {};
 
-    this.filters = [];
+  this.filters = [];
 
-    this.authoringMode = false;
+  this.authoringMode = false;
 
-    this.ratioModeActive = false;
-    this.percentModeActive = false;
-    this.isFullscreen = false;
+  this.ratioModeActive = false;
+  this.percentModeActive = false;
+  this.isFullscreen = false;
 
-    this.showDropZones = false;
+  this.showDropZones = false;
 
-    this.mapColorTheme = "converge";
-    this.measureFunc = "Count";
+  this.mapColorTheme = "converge";
+  this.measureFunc = "Count";
 
-    this.mouseSpeed = 0; // includes touch-screens...
+  this.mouseSpeed = 0; // includes touch-screens...
 
-    this.noAnim = false;
+  this.noAnim = false;
 
-    this.domID = options.domID;
+  this.domID = options.domID;
 
-    this.vizActive = {
-      Highlight: false,
-      Compare_A: false,
-      Compare_B: false,
-      Compare_C: false
-    };
+  this.vizActive = {
+    Highlight: false,
+    Compare_A: false,
+    Compare_B: false,
+    Compare_C: false
+  };
 
-    this.selectedAggr = {
-      Highlight: null,
-      Compare_A: null,
-      Compare_B: null,
-      Compare_C: null,
-    }
+  this.selectedAggr = {
+    Highlight: null,
+    Compare_A: null,
+    Compare_B: null,
+    Compare_C: null,
+  }
 
-    this.crumb_Highlight = new kshf.BreadCrumb(this,"Highlight");
-    this.crumb_Compare_A = new kshf.BreadCrumb(this,"Compare_A");
-    this.crumb_Compare_B = new kshf.BreadCrumb(this,"Compare_B");
-    this.crumb_Compare_C = new kshf.BreadCrumb(this,"Compare_C");
+  this.crumb_Highlight = new kshf.BreadCrumb(this,"Highlight");
+  this.crumb_Compare_A = new kshf.BreadCrumb(this,"Compare_A");
+  this.crumb_Compare_B = new kshf.BreadCrumb(this,"Compare_B");
+  this.crumb_Compare_C = new kshf.BreadCrumb(this,"Compare_C");
 
-    this.highlightSelectedSummary = null;
-    this.highlightCrumbTimeout_Hide = undefined;
+  this.highlightSelectedSummary = null;
+  this.highlightCrumbTimeout_Hide = undefined;
 
-    this.allAggregates = [];
 
-    this.allRecordsAggr = new kshf.Aggregate();
-    this.allRecordsAggr.init();
-    this.allAggregates.push(this.allRecordsAggr);
+  this.allRecordsAggr = new kshf.Aggregate();
+  this.allRecordsAggr.init();
 
-    this.flexAggr_Highlight = new kshf.Aggregate();
-    this.flexAggr_Compare_A = new kshf.Aggregate();
-    this.flexAggr_Compare_B = new kshf.Aggregate();
-    this.flexAggr_Compare_C = new kshf.Aggregate();
-    this.flexAggr_Highlight.init();
-    this.flexAggr_Compare_A.init();
-    this.flexAggr_Compare_B.init();
-    this.flexAggr_Compare_C.init();
+  this.flexAggr_Highlight = new kshf.Aggregate();
+  this.flexAggr_Compare_A = new kshf.Aggregate();
+  this.flexAggr_Compare_B = new kshf.Aggregate();
+  this.flexAggr_Compare_C = new kshf.Aggregate();
+  this.flexAggr_Highlight.init();
+  this.flexAggr_Compare_A.init();
+  this.flexAggr_Compare_B.init();
+  this.flexAggr_Compare_C.init();
 
-    // Callbacks
-    this.onReady = options.onReady || options.readyCb;
-    this.preview_not = false;
+  this.allAggregates = [];
+  this.allAggregates.push(this.allRecordsAggr);
 
-    this.recordName = options.itemName || options.recordName || "";
-    if(options.itemDisplay) options.recordDisplay = options.itemDisplay;
+  // Callbacks
+  this.onReady = options.onReady || options.readyCb;
+  if(typeof this.onReady === "string" && this.onReady.substr(0,8)==="function"){
+    eval("\"use strict\"; this.onReady = "+this.onReady);
+  }
 
-    if(typeof this.options.enableAuthoring === "undefined") this.options.enableAuthoring = false;
+  this.onLoad  = options.onLoad  || options.loadedCb;
+  if(typeof this.onLoad === "string" && this.onLoad.substr(0,8)==="function"){
+    eval("\"use strict\"; this.onLoad = "+this.onLoad);
+  }
 
-    var me=this;
-    this.DOM = {};
-    this.DOM.root = d3.select(this.domID)
-      .classed("kshf",true)
-      .attr("noanim",true)
-      .attr("measureFunc",this.measureFunc)
-      .style("position","relative")
-      .on("mousemove",function(d,e){
-        // Compute mouse moving speed, to adjust repsonsiveness
-        if(me.lastMouseMoveEvent===undefined){
-          me.lastMouseMoveEvent = d3.event;
-          return;
-        }
-        var timeDif = d3.event.timeStamp - me.lastMouseMoveEvent.timeStamp;
-        if(timeDif===0) return;
+  this.preview_not = false;
 
-        var xDif = Math.abs(d3.event.x - me.lastMouseMoveEvent.x);
-        var yDif = Math.abs(d3.event.y - me.lastMouseMoveEvent.y);
-        // controls highlight selection delay
-        me.mouseSpeed = Math.min( Math.sqrt(xDif*xDif + yDif*yDif) / timeDif , 2);
+  this.recordName = options.itemName || options.recordName || "";
+  if(options.itemDisplay) options.recordDisplay = options.itemDisplay;
 
+  if(typeof this.options.enableAuthoring === "undefined") this.options.enableAuthoring = false;
+
+  var me=this;
+  this.DOM = {};
+  this.DOM.root = d3.select(this.domID)
+    .classed("kshf",true)
+    .attr("noanim",true)
+    .attr("measureFunc",this.measureFunc)
+    .style("position","relative")
+    .attr("pointerEvents",true)
+    .on("mousemove",function(d,e){
+      // Compute mouse moving speed, to adjust repsonsiveness
+      if(me.lastMouseMoveEvent===undefined){
         me.lastMouseMoveEvent = d3.event;
-      });
+        return;
+      }
+      var timeDif = d3.event.timeStamp - me.lastMouseMoveEvent.timeStamp;
+      if(timeDif===0) return;
 
-    // remove any DOM elements under this domID, kshf takes complete control over what's inside
-    var rootDomNode = this.DOM.root[0][0];
-    while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
+      var xDif = Math.abs(d3.event.x - me.lastMouseMoveEvent.x);
+      var yDif = Math.abs(d3.event.y - me.lastMouseMoveEvent.y);
+      // controls highlight selection delay
+      me.mouseSpeed = Math.min( Math.sqrt(xDif*xDif + yDif*yDif) / timeDif , 2);
 
-    this.DOM.pointerBlock  = this.DOM.root.append("div").attr("class","pointerBlock");
-    this.DOM.attribDragBox = this.DOM.root.append("div").attr("class","attribDragBox");
-
-    this.insertDOM_Infobox();
-    this.insertDOM_WarningBox();
-
-    this.DOM.panel_Wrapper = this.DOM.root.append("div").attr("class","panel_Wrapper");
-
-    this.insertDOM_PanelBasic();
-
-    this.DOM.panelsTop = this.DOM.panel_Wrapper.append("div").attr("class","panels_Above");
-
-    this.panels.left = new kshf.Panel({
-      width_catLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
-      browser: this,
-      name: 'left',
-      parentDOM: this.DOM.panelsTop
+      me.lastMouseMoveEvent = d3.event;
     });
 
-    this.DOM.middleColumn = this.DOM.panelsTop.append("div").attr("class","middleColumn");
-    this.DOM.middleColumn.append("div").attr("class", "recordDisplay")
+  // remove any DOM elements under this domID, kshf takes complete control over what's inside
+  var rootDomNode = this.DOM.root[0][0];
+  while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
 
-    this.panels.middle = new kshf.Panel({
-      width_catLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
-      browser: this,
-      name: 'middle',
-      parentDOM: this.DOM.middleColumn
-    });
-    this.panels.right = new kshf.Panel({
-      width_catLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
-      browser: this,
-      name: 'right',
-      parentDOM: this.DOM.panelsTop
-    });
-    this.panels.bottom = new kshf.Panel({
-      width_catLabel : options.categoryTextWidth || 115,
-      browser: this,
-      name: 'bottom',
-      parentDOM: this.DOM.panel_Wrapper
-    });
+  this.DOM.pointerBlock  = this.DOM.root.append("div").attr("class","pointerBlock");
+  this.DOM.attribDragBox = this.DOM.root.append("div").attr("class","attribDragBox");
 
-    this.insertDOM_AttributePanel();
+  this.insertDOM_Infobox();
+  this.insertDOM_WarningBox();
 
-    this.DOM.root.selectAll(".panel").on("mouseleave",function(){
-      setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
-    });
+  this.DOM.panel_Wrapper = this.DOM.root.append("div").attr("class","panel_Wrapper");
 
-    kshf.loadFont();
+  this.insertDOM_PanelBasic();
 
-    kshf.browsers.push(this);
-    kshf.browser = this;
+  this.DOM.panelsTop = this.DOM.panel_Wrapper.append("div").attr("class","panels_Above");
 
-    if(options.source){
-      window.setTimeout(function() { me.loadSource(options.source); }, 10);
-    } else {
-      this.panel_overlay.attr("show","source");
-    }
+  this.panels.left = new kshf.Panel({
+    width_catLabel : options.leftPanelLabelWidth  || options.categoryTextWidth || 115,
+    browser: this,
+    name: 'left',
+    parentDOM: this.DOM.panelsTop
+  });
+
+  this.DOM.middleColumn = this.DOM.panelsTop.append("div").attr("class","middleColumn");
+  this.DOM.middleColumn.append("div").attr("class", "recordDisplay")
+
+  this.panels.middle = new kshf.Panel({
+    width_catLabel : options.middlePanelLabelWidth  || options.categoryTextWidth || 115,
+    browser: this,
+    name: 'middle',
+    parentDOM: this.DOM.middleColumn
+  });
+  this.panels.right = new kshf.Panel({
+    width_catLabel : options.rightPanelLabelWidth  || options.categoryTextWidth || 115,
+    browser: this,
+    name: 'right',
+    parentDOM: this.DOM.panelsTop
+  });
+  this.panels.bottom = new kshf.Panel({
+    width_catLabel : options.categoryTextWidth || 115,
+    browser: this,
+    name: 'bottom',
+    parentDOM: this.DOM.panel_Wrapper
+  });
+
+  this.insertDOM_AttributePanel();
+
+  this.DOM.root.selectAll(".panel").on("mouseleave",function(){
+    setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
+  });
+
+  kshf.loadFont();
+
+  kshf.browsers.push(this);
+  kshf.browser = this;
+
+  if(options.source){
+    window.setTimeout(function() { me.loadSource(options.source); }, 10);
+  } else {
+    this.panel_overlay.attr("show","source");
+  }
 };
 
 kshf.Browser.prototype = {
@@ -3294,6 +3322,8 @@ kshf.Browser.prototype = {
         .on("click",function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure")
         .on("mousedown", function (d, i) {
+          me.DOM.root.attr("pointerEvents",false);
+
           var initPos = d3.mouse(d3.select("body")[0][0]);
           var DOM = me.DOM.measureSelectBox[0][0];
           var initX = parseInt(DOM.style.left);
@@ -3302,15 +3332,15 @@ kshf.Browser.prototype = {
           var boxHeight = DOM.getBoundingClientRect().height;
           var maxWidth  = me.DOM.root[0][0].getBoundingClientRect().width  - boxWidth;
           var maxHeight = me.DOM.root[0][0].getBoundingClientRect().height - boxHeight;
-          me.DOM.root.attr("drag_cursor","mbing")
-          .on("mousemove", function() {
+          me.DOM.root.attr("drag_cursor","grabbing");
+
+          d3.select("body").on("mousemove", function() {
             var newPos = d3.mouse(d3.select("body")[0][0]);
             DOM.style.left = Math.min(maxWidth , Math.max(0, initX-initPos[0]+newPos[0] ))+"px";
             DOM.style.top  = Math.min(maxHeight, Math.max(0, initY-initPos[1]+newPos[1] ))+"px";
           }).on("mouseup", function(){
-            me.DOM.root
-              .attr("drag_cursor",null)
-              .on("mousemove", null).on("mouseup", null);
+            me.DOM.root.attr("pointerEvents",true).attr("drag_cursor",null);
+            d3.select("body").on("mousemove", null).on("mouseup", null);
           });
          d3.event.preventDefault();
         });
@@ -3449,6 +3479,15 @@ kshf.Browser.prototype = {
         });
 
       this.DOM.breadcrumbs = this.DOM.panel_Basic.append("span").attr("class","breadcrumbs");
+
+      this.DOM.saveSelection = this.DOM.breadcrumbs.append("span").attr("class", "saveSelection fa fa-floppy-o")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.SaveSelection }); })
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          this.tipsy.hide();
+          me.saveFilterSelection();
+        });
 
       this.initDOM_ClearAllFilters();
 
@@ -3687,6 +3726,7 @@ kshf.Browser.prototype = {
     /** --- */
     initDOM_ClearAllFilters: function(){
       var me=this;
+
       this.DOM.filterClearAll = this.DOM.panel_Basic.append("span").attr("class","filterClearAll")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.RemoveAllFilters }); })
         .on("mouseenter",function(){ this.tipsy.show(); })
@@ -4437,17 +4477,7 @@ kshf.Browser.prototype = {
           helpin = new Helpin(this);
         }
 
-        if(this.options.loadedCb) this.options.onLoad = this.options.loadedCb; // deprecated option name
-
-        if(this.options.onLoad){
-          if(typeof this.options.onLoad === "string" && this.options.onLoad.substr(0,8)==="function"){
-            // Evaluate string to a function!!
-            eval("\"use strict\"; this.options.onLoad = "+this.options.onLoad);
-          }
-          if(typeof this.options.onLoad === "function") {
-            this.options.onLoad.call(this);
-          }
-        }
+        if(this.onLoad) this.onLoad.call(this);
 
         // Create a summary for each existing column in the data
         for(var column in this.records[0].data){
@@ -4670,12 +4700,8 @@ kshf.Browser.prototype = {
           this.recordDisplay.initializeNetwork();
         }
 
-        if(typeof this.onReady === "string" && this.onReady.substr(0,8)==="function"){
-          eval("\"use strict\"; this.onReady = "+this.onReady);
-        }
-        if(typeof this.onReady === "function") {
-          this.onReady();
-        }
+        if(this.onReady) this.onReady();
+
         this.finalized = true;
 
         setTimeout(function(){ 
@@ -4762,6 +4788,78 @@ kshf.Browser.prototype = {
       summary.addToPanel(this.panels[target_panel]);
     },
     /** -- */
+    saveFilterSelection: function(){
+      var sumName="<i class='fa fa-floppy-o'></i> Saved Selections";
+      var summary = this.summaries_by_name[sumName];
+      if(summary===undefined){
+        summary = this.createSummary(sumName,null,"categorical");
+        summary.setCatLabel("name");
+        summary.setCatTooltip("name");
+        summary.addToPanel(this.panels.middle);
+      }
+
+      var longName = "";
+      browser.filters.forEach(function(filter){
+        if(!filter.isFiltered) return;
+        longName+="<b>"+filter.summary.summaryName+"</b>: "
+          + filter.summary.summaryFilter.filterView_Detail.call(filter.summary.summaryFilter)+" ";
+      });
+
+      var aggr = new kshf.Aggregate();
+      var catId = summary._cats.length;
+      aggr.init({ id: catId, name: longName},"id");
+      aggr.summary = summary;
+      this.allAggregates.push(aggr);
+
+      var multiValued_New = false;
+      this.records.forEach(function(record){ 
+        if(!record.isWanted) return;
+
+        var record_valueCache = record._valueCache[summary.summaryID];
+
+        if(record_valueCache===null){
+          record_valueCache = [];
+          record._valueCache[summary.summaryID] = record_valueCache;
+          summary.missingValueAggr.removeRecord(record);
+        } else {
+          // the record is listed under multiple aggregates (saved selections)
+          multiValued_New = true;
+        }
+
+        record_valueCache.push(catId);
+        aggr.addRecord(record);
+      });
+
+      if(!summary.isMultiValued && multiValued_New){
+        // now summary has multiple values
+        summary.DOM.root.attr("isMultiValued",true);
+        summary.isMultiValued = true;
+      }
+      if(summary.setSummary){
+        // TODO: Adjust set summary based on the new aggregate (category)
+
+      }
+
+      summary.catTable_id[aggr.id()] = aggr;
+      summary._cats.push(aggr);
+
+      if(summary._cats.length===1){
+        summary.init_DOM_Cat();
+      }
+
+      summary.updateCats();
+      summary.insertCategories();
+
+      if(summary.catSortBy.length===0) summary.setSortingOptions();
+      summary.catSortBy_Active.no_resort = false;
+
+      summary.updateCatSorting(0,true,true);
+      summary.refreshLabelWidth();
+      summary.refreshViz_Nugget();
+
+      this.updateLayout_Height();
+    },
+    /** -- */
     clearFilters_All: function(force){
       var me=this;
       if(this.skipSortingFacet){
@@ -4808,7 +4906,9 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refresh_filterClearAll: function(){
-      this.DOM.filterClearAll.attr("active", this.filters.some(function(filter){ return filter.isFiltered; }) );
+      var x = this.filters.filter(function(filter){ return filter.isFiltered; });
+      this.DOM.filterClearAll.attr("active", x.length>0);
+      this.DOM.saveSelection.attr("active", x.length>0);
     },
     /** Ratio mode is when glyphs scale to their max */
     setScaleMode: function(how){
@@ -5236,8 +5336,8 @@ kshf.Browser.prototype = {
       config.rightPanelLabelWidth = this.panels.right.width_catLabel;
       config.middlePanelLabelWidth = this.panels.middle.width_catLabel;
 
-      if(typeof this.options.onLoad === "function"){
-        config.onLoad = this.options.onLoad.toString();
+      if(typeof this.onLoad === "function"){
+        config.onLoad = this.onLoad.toString();
       }
 
       if(typeof this.onReady === "function"){
@@ -5632,16 +5732,7 @@ kshf.Summary_Base.prototype = {
         d3.event.stopPropagation();
         d3.event.preventDefault();
         if(me.isMultiValued && !me.hasDegreeSummary){
-          var summary = me.browser.createSummary(
-            "# of "+me.summaryName,
-            function(d){
-              var arr=d._valueCache[me.summaryID];
-              return (arr===null) ? null : arr.length;
-            },
-            'interval'
-          );
-          summary.initializeAggregates();
-          me.hasDegreeSummary = true;
+          me.createSetPairSummary();
           this.style.display = "none";
           return;
         }
@@ -5658,6 +5749,20 @@ kshf.Summary_Base.prototype = {
 
     this.refreshNuggetDisplay();
     if(this.aggr_initialized) this.refreshViz_Nugget();
+  },
+  /** -- */
+  createSetPairSummary: function(){
+    var setpair_summary = this.browser.createSummary(
+      "# of "+this.summaryName,
+      function(d){
+        var arr=d._valueCache[this.summaryID];
+        return (arr===null) ? null : arr.length;
+      },
+      'interval'
+    );
+    setpair_summary.initializeAggregates();
+    this.hasDegreeSummary = true;
+    this.style.display = "none";
   },
   /** -- */
   refreshNuggetDisplay: function(){
@@ -5775,8 +5880,8 @@ kshf.Summary_Base.prototype = {
         })
         .on("click",function(){
           this.tipsy.hide();
-          me.panel.collapseAllSummaries();
-          me.setCollapsedAndLayout(false); // uncollapse this one
+          me.panel.collapseAllSummaries(me);
+          me.browser.updateLayout_Height();
         });
 
       header_display_control.append("span").attr("class","buttonSummaryRemove fa fa-remove")
@@ -6508,12 +6613,11 @@ var Summary_Categorical_functions = {
     this.catSplit = catSplit;
     if(this.aggr_initialized){
       // Remove existing aggregations
-      {
-        var aggrs=this.browser.allAggregates;
-        this._cats.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
-        if(this.DOM.aggrGroup)
-          this.DOM.aggrGroup.selectAll(".aggrGlyph").data([]).exit().remove();
-      }
+      var aggrs=this.browser.allAggregates;
+      this._cats.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
+      if(this.DOM.aggrGroup)
+        this.DOM.aggrGroup.selectAll(".aggrGlyph").data([]).exit().remove();
+
       this.mapToAggregates();
       this.updateCats();
       this.insertCategories();
@@ -6732,24 +6836,6 @@ var Summary_Categorical_functions = {
     }
 
     this.isMultiValued = maxDegree>1;
-
-    // add degree summary if attrib has multi-value records and set-vis is enabled
-    if(this.isMultiValued && this.enableSetVis){
-      this.browser.addSummary(
-        {
-          name:"<i class='fa fa-hand-o-up'></i> # of "+this.summaryName,
-          value: function(record){
-            var arr=record._valueCache[me.summaryID];
-            if(arr===null) return null; // maps to no items
-            return arr.length;
-          },
-          collapsed: true,
-          type: 'interval',
-          panel: this.panel
-        },
-        this.browser.primaryTableName
-      );
-    }
 
     this.updateCats();
 
@@ -7124,7 +7210,7 @@ var Summary_Categorical_functions = {
       }
 
       this.categoriesHeight = Math.min( newHeight, this.heightRow_category*this.catCount_Visible);
-      if(this.cbSetHeight && attribHeight_old!==this.categoriesHeight) this.cbSetHeight(this);
+      if(this.onCatHeight && attribHeight_old!==this.categoriesHeight) this.onCatHeight(this);
     },
 
     /** -- */
@@ -7158,7 +7244,7 @@ var Summary_Categorical_functions = {
       this.DOM.summaryConfig_CatHeight.selectAll(".configOption").attr("active",false);
       this.DOM.summaryConfig_CatHeight.selectAll(".pos_"+this.heightRow_category).attr("active",true);
 
-      if(this.cbSetHeight) this.cbSetHeight(this);
+      if(this.onCatHeight) this.onCatHeight(this);
 
       setTimeout(function(){ me.browser.setNoAnim(false); },100);
     },
@@ -7980,7 +8066,7 @@ var Summary_Categorical_functions = {
       this.DOM.aggrGlyphs
         .style("visibility",function(_cat){ return _cat.isVisible?"visible":"hidden"; })
         .style("display",function(_cat){ return _cat.isVisible?"block":"none"; });
-      if(this.onCategoryCull) this.onCategoryCull.call(this);
+      if(this.onCatCull) this.onCatCull.call(this);
     },
     /** -- */
     updateCatSorting: function(sortDelay,force,noAnim){
@@ -8002,7 +8088,7 @@ var Summary_Categorical_functions = {
       this.updateCatIsVisible();
 
       var xRemoveOffset = -100; // disappear direction, depends on the panel location
-      if(this.cbFacetSort) this.cbFacetSort.call(this);
+      if(this.onCatSort) this.onCatSort.call(this);
 
       // Categories outside the view are invisible, expand the background box and makes the scroll bar visible if necessary.
       this.DOM.chartBackground.style("height",this.getHeight_VisibleAttrib()+"px");
@@ -9982,100 +10068,99 @@ var Summary_Interval_functions = {
       var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
         .on("mousedown", function(){
           if(d3.event.which !== 1) return; // only respond to left-click
-          me.browser.setNoAnim(true);
+          me.browser.DOM.root.attr("adjustWidth",true).attr("pointerEvents",false);
           var e=this.parentNode;
           var initPos = me.valueScale.invert(d3.mouse(e)[0]);
-          d3.select("body").style('cursor','ew-resize')
-            .on("mousemove", function() {
-              var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-              // This sets the filter range based on the first click & current mouse position
-              me.summaryFilter.active.min = d3.min([initPos,targetPos]);
-              me.summaryFilter.active.max = d3.max([initPos,targetPos]);
+          d3.select("body").on("mousemove", function(){
+            var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+            // This sets the filter range based on the first click & current mouse position
+            me.summaryFilter.active.min = d3.min([initPos,targetPos]);
+            me.summaryFilter.active.max = d3.max([initPos,targetPos]);
 
-              me.checkFilterRange();
-              me.refreshIntervalSlider();
-              // wait half second to update
-              if(this.timer) clearTimeout(this.timer);
-              this.timer = setTimeout(function(){
-                if(me.isFiltered_min() || me.isFiltered_max()){
-                  me.summaryFilter.filteredBin = undefined;
-                  me.summaryFilter.addFilter();
-                } else {
-                  me.summaryFilter.clearFilter();
-                }
-              },250);
-            }).on("mouseup", function(){
-              me.browser.setNoAnim(false);
-              d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-            });
+            me.checkFilterRange();
+            me.refreshIntervalSlider();
+            // wait half second to update
+            if(this.timer) clearTimeout(this.timer);
+            this.timer = setTimeout(function(){
+              if(me.isFiltered_min() || me.isFiltered_max()){
+                me.summaryFilter.filteredBin = undefined;
+                me.summaryFilter.addFilter();
+              } else {
+                me.summaryFilter.clearFilter();
+              }
+            },250);
+          }).on("mouseup", function(){
+            me.browser.DOM.root.attr("adjustWidth",null).attr("pointerEvents",true);;
+            d3.select("body").on("mousemove",null).on("mouseup",null);
+          });
           d3.event.preventDefault();
         });
 
       controlLine.append("span").attr("class","base total");
-
-      // drag
       controlLine.append("span").attr("class","base active")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter }); })
         // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
         // because the size of the bar is set by scaling, not through width....
-        //.on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout" ,function(){ this.tipsy.hide(); })
         .on("mousedown", function(){
           this.tipsy.hide();
           if(d3.event.which !== 1) return; // only respond to left-click
           if(me.scaleType==='time') return; // time is not supported for now.
+
+          me.browser.DOM.root.attr("adjustWidth",true).attr("pointerEvents",false);
+
           var e=this.parentNode;
           var initMin = me.summaryFilter.active.min;
           var initMax = me.summaryFilter.active.max;
           var initRange= initMax - initMin;
           var initPos = d3.mouse(e)[0];
 
-          d3.select("body").style('cursor','ew-resize')
-            .on("mousemove", function() {
+          d3.select("body").on("mousemove", function() {
+            if(me.scaleType==='log'){
+              var targetDif = d3.mouse(e)[0]-initPos;
+              me.summaryFilter.active.min = me.valueScale.invert(me.valueScale(initMin)+targetDif);
+              me.summaryFilter.active.max = me.valueScale.invert(me.valueScale(initMax)+targetDif);
 
-              if(me.scaleType==='log'){
-                var targetDif = d3.mouse(e)[0]-initPos;
-                me.summaryFilter.active.min = me.valueScale.invert(me.valueScale(initMin)+targetDif);
-                me.summaryFilter.active.max = me.valueScale.invert(me.valueScale(initMax)+targetDif);
+            } else if(me.scaleType==='time'){
+              // TODO
+              return;
 
-              } else if(me.scaleType==='time'){
-                // TODO
-                return;
+            } else {
+              var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+              var targetDif = Math.round(targetPos-me.valueScale.invert(initPos));
 
-              } else {
-                var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-                var targetDif = Math.round(targetPos-me.valueScale.invert(initPos));
+              me.summaryFilter.active.min = initMin+targetDif;
+              me.summaryFilter.active.max = initMax+targetDif;
 
-                me.summaryFilter.active.min = initMin+targetDif;
-                me.summaryFilter.active.max = initMax+targetDif;
-
-                // Limit the active filter to expand beyond the current min/max of the view.
-                if(me.summaryFilter.active.min<me.intervalRange.active.min){
-                  me.summaryFilter.active.min=me.intervalRange.active.min;
-                  me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
-                }
-                if(me.summaryFilter.active.max>me.intervalRange.getActiveMax()){
-                  me.summaryFilter.active.max=me.intervalRange.getActiveMax();
-                  me.summaryFilter.active.min=me.intervalRange.getActiveMax()-initRange;
-                }
+              // Limit the active filter to expand beyond the current min/max of the view.
+              if(me.summaryFilter.active.min<me.intervalRange.active.min){
+                me.summaryFilter.active.min=me.intervalRange.active.min;
+                me.summaryFilter.active.max=me.intervalRange.active.min+initRange;
               }
+              if(me.summaryFilter.active.max>me.intervalRange.getActiveMax()){
+                me.summaryFilter.active.max=me.intervalRange.getActiveMax();
+                me.summaryFilter.active.min=me.intervalRange.getActiveMax()-initRange;
+              }
+            }
 
-              me.checkFilterRange();
-              me.refreshIntervalSlider();
+            me.checkFilterRange();
+            me.refreshIntervalSlider();
 
-              // wait half second to update
-              if(this.timer) clearTimeout(this.timer);
-              this.timer = setTimeout(function(){
-                if(me.isFiltered_min() || me.isFiltered_max()){
-                  me.summaryFilter.filteredBin = undefined;
-                  me.summaryFilter.addFilter();
-                } else{
-                  me.summaryFilter.clearFilter();
-                }
-              },200);
-            }).on("mouseup", function(){
-              d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-            });
+            // wait half second to update
+            if(this.timer) clearTimeout(this.timer);
+            this.timer = setTimeout(function(){
+              if(me.isFiltered_min() || me.isFiltered_max()){
+                me.summaryFilter.filteredBin = undefined;
+                me.summaryFilter.addFilter();
+              } else{
+                me.summaryFilter.clearFilter();
+              }
+            },200);
+          }).on("mouseup", function(){
+            me.browser.DOM.root.attr("adjustWidth",null).attr("pointerEvents",true);;
+            d3.select("body").on("mousemove",null).on("mouseup",null);
+          });
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
@@ -10091,36 +10176,38 @@ var Summary_Interval_functions = {
           this.tipsy.hide();
           if(d3.event.which !== 1) return; // only respond to left-click
 
+          me.browser.DOM.root.attr("adjustWidth",true).attr("pointerEvents",false);
+
           var mee = this;
           var e=this.parentNode;
-          d3.select("body").style('cursor','ew-resize')
-            .on("mousemove", function() {
-              mee.dragging = true;
-              var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
-              me.summaryFilter.active[d] = targetPos;
-              // Swap is min > max
-              if(me.summaryFilter.active.min>me.summaryFilter.active.max){
-                var t=me.summaryFilter.active.min;
-                me.summaryFilter.active.min = me.summaryFilter.active.max;
-                me.summaryFilter.active.max = t;
-                  if(d==='min') d='max'; else d='min';
+          d3.select("body").on("mousemove", function() {
+            mee.dragging = true;
+            var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
+            me.summaryFilter.active[d] = targetPos;
+            // Swap is min > max
+            if(me.summaryFilter.active.min>me.summaryFilter.active.max){
+              var t=me.summaryFilter.active.min;
+              me.summaryFilter.active.min = me.summaryFilter.active.max;
+              me.summaryFilter.active.max = t;
+                if(d==='min') d='max'; else d='min';
+            }
+            me.checkFilterRange();
+            me.refreshIntervalSlider();
+            // wait half second to update
+            if(this.timer) clearTimeout(this.timer);
+            this.timer = setTimeout( function(){
+              if(me.isFiltered_min() || me.isFiltered_max()){
+                me.summaryFilter.filteredBin = undefined;
+                me.summaryFilter.addFilter();
+              } else {
+                me.summaryFilter.clearFilter();
               }
-              me.checkFilterRange();
-              me.refreshIntervalSlider();
-              // wait half second to update
-              if(this.timer) clearTimeout(this.timer);
-              this.timer = setTimeout( function(){
-                if(me.isFiltered_min() || me.isFiltered_max()){
-                  me.summaryFilter.filteredBin = undefined;
-                  me.summaryFilter.addFilter();
-                } else {
-                  me.summaryFilter.clearFilter();
-                }
-              },200);
-            }).on("mouseup", function(){
-              mee.dragging = false;
-              d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
-            });
+            },200);
+          }).on("mouseup", function(){
+            mee.dragging = false;
+            me.browser.DOM.root.attr("adjustWidth",null).attr("pointerEvents",true);;
+            d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
+          });
           d3.event.preventDefault();
           d3.event.stopPropagation();
         })
@@ -10677,12 +10764,10 @@ var Summary_Clique_functions = {
     kshf.Summary_Base.prototype.initialize.call(this,browser,"Relations in "+setListSummary.summaryName);
     var me = this;
     this.setListSummary = setListSummary;
-    this.panel = this.setListSummary.panel;
 
-    if(side) this.position = side;
-    else{
-      this.position = (this.panel.name==="left") ? "right" : "left";
-    }
+    this.panel = this.setListSummary.panel; // so that inBrowser() would work correctly. Hmmm...
+
+    this.popupSide = side ? side : ( (this.setListSummary.panel.name==="left") ? "right" : "left" );
 
     this.pausePanning=false;
     this.gridPan_x=0;
@@ -10695,27 +10780,23 @@ var Summary_Clique_functions = {
       prep: function(){ me.updatePerceptualOrder(); }
     });
     this.setListSummary.refreshCatSortOptions();
-    this.setListSummary.DOM.optionSelect.attr("dir","rtl"); // quick hack: right-align the sorting label
 
-    this.setListSummary.cbFacetSort = function(){
+    this.setListSummary.onCatSort = function(){
       me.refreshWindowSize();
       me.refreshRow();
       me.DOM.setPairGroup.attr("animate_position",false);
       me.refreshSetPair_Position();
       setTimeout(function(){ me.DOM.setPairGroup.attr("animate_position",true); },1000);
     };
-    this.setListSummary.onCategoryCull = function(){
+    this.setListSummary.onCatCull = function(){
       if(me.pausePanning) return;
       me.checkPan();
       me.refreshSVGViewBox();
     };
-    this.setListSummary.cbSetHeight = function(){
-      // update self
+    this.setListSummary.onCatHeight = function(){
       me.updateWidthFromHeight();
       me.updateSetPairScale();
       
-      // do not show number labels if the row height is small
-      me.DOM.chartRoot.attr("showNumberLabels",me.getRowHeight()>=30);
       me.DOM.chartRoot.attr("show_gridlines",(me.getRowHeight()>15));
       
       me.DOM.setPairGroup.attr("animate_position",false);
@@ -10741,7 +10822,7 @@ var Summary_Clique_functions = {
     this.DOM.root = this.setListSummary.DOM.root.insert("div",":first-child")
       .attr("class","kshfSummary setPairSummary")
       .attr("filtered",false)
-      .attr("position",this.position);
+      .attr("popupSide",this.popupSide);
 
     // Use keshif's standard header
     this.insertHeader();
@@ -10752,33 +10833,32 @@ var Summary_Clique_functions = {
       .attr("noanim",false)
       .attr("show_gridlines",true);
 
-    var body=d3.select("body");
     this.DOM.chartRoot.append("span").attr("class","setMatrixWidthAdjust")
-      .attr("title","Drag to adjust panel width")
+      .attr("title","Drag to adjust width")
       .on("mousedown", function (d, i) {
         if(d3.event.which !== 1) return; // only respond to left-click
-        browser.DOM.root.style('cursor','ew-resize');
+        browser.DOM.root.attr('adjustWidth',true).attr("pointerEvents",false);
         me.DOM.root.attr('noanim',true);
         me.DOM.setPairGroup.attr("animate_position",false);
-        var mouseInit_x = d3.mouse(body[0][0])[0];
+        var mouseInit_x = d3.mouse(d3.select("body")[0][0])[0];
         console.log("mouseInit_x: "+mouseInit_x);
         var initWidth = me.getWidth();
         var myHeight = me.getHeight();
-        body.on("mousemove", function() {
-          var mouseDif = d3.mouse(body[0][0])[0]-mouseInit_x;
+        d3.select("body").on("mousemove", function() {
+          var mouseDif = d3.mouse(d3.select("body")[0][0])[0]-mouseInit_x;
           me.noanim = true;
-          me.summaryWidth = (me.position==="left") ? initWidth-mouseDif : initWidth+mouseDif;
+          me.summaryWidth = (me.popupSide==="left") ? initWidth-mouseDif : initWidth+mouseDif;
           me.checkWidth();
           me.refreshWindowSize();
           me.refreshRow_LineWidths();
           me.refreshSetPair_Position();
         }).on("mouseup", function(){
-          browser.DOM.root.style('cursor','default');
+          browser.DOM.root.attr('adjustWidth',null).attr("pointerEvents",true);
           me.DOM.setPairGroup.attr("animate_position",true);
           me.DOM.root.attr('noanim',false);
           me.noanim = false;
           // unregister mouse-move callbacks
-          body.on("mousemove", null).on("mouseup", null);
+          d3.select("body").on("mousemove", null).on("mouseup", null);
         });
         d3.event.preventDefault();
       })
@@ -10812,6 +10892,7 @@ var Summary_Clique_functions = {
 
         background_dom.style.cursor = "all-scroll";
         me.browser.DOM.pointerBlock.attr("active","");
+        me.browser.DOM.root.attr("pointerEvents",false);
 
         var mouseInitPos = d3.mouse(background_dom);
         var gridPan_x_init = me.gridPan_x;
@@ -10826,39 +10907,40 @@ var Summary_Clique_functions = {
 
         me.pausePanning = true;
 
-        me.browser.DOM.root.on("mousemove", function() {
-            var mouseMovePos = d3.mouse(background_dom);
-            var difX = mouseMovePos[0]-mouseInitPos[0];
-            var difY = mouseMovePos[1]-mouseInitPos[1];
+        d3.select("body").on("mousemove", function() {
+          var mouseMovePos = d3.mouse(background_dom);
+          var difX = mouseMovePos[0]-mouseInitPos[0];
+          var difY = mouseMovePos[1]-mouseInitPos[1];
 
-            if(me.position==="right") {
-              difX *= -1;
-            }
+          if(me.popupSide==="right") {
+            difX *= -1;
+          }
 
-            me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
-            me.checkPan();
+          me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
+          me.checkPan();
 
-            var maxHeight = me.setListSummary.heightRow_category*me.setListSummary._cats.length - h;
+          var maxHeight = me.setListSummary.heightRow_category*me.setListSummary._cats.length - h;
 
-            var t = initT-difY;
-                t = Math.min(maxHeight,Math.max(0,t));
-            var r = initR-difX;
-                r = Math.min(0,Math.max(r,-t));
+          var t = initT-difY;
+              t = Math.min(maxHeight,Math.max(0,t));
+          var r = initR-difX;
+              r = Math.min(0,Math.max(r,-t));
 
-            if(me.position==="right") r = -r;
+          if(me.popupSide==="right") r = -r;
 
-            me.DOM.setMatrixSVG.attr("viewBox",r+" "+t+" "+w+" "+h);
+          me.DOM.setMatrixSVG.attr("viewBox",r+" "+t+" "+w+" "+h);
 
-            scrollDom.scrollTop = Math.max(0,initScrollPos-difY);
+          scrollDom.scrollTop = Math.max(0,initScrollPos-difY);
 
           d3.event.preventDefault();
           d3.event.stopPropagation();
         }).on("mouseup", function(){
           me.pausePanning = false;
           background_dom.style.cursor = "default";
-            me.browser.DOM.root.on("mousemove", null).on("mouseup", null);
-            me.browser.DOM.pointerBlock.attr("active",null);
-            me.refreshLabel_Vert_Show();
+          me.browser.DOM.root.attr("pointerEvents",true);
+          d3.select("body").on("mousemove", null).on("mouseup", null);
+          me.browser.DOM.pointerBlock.attr("active",null);
+          me.refreshLabel_Vert_Show();
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
@@ -11082,7 +11164,7 @@ var Summary_Clique_functions = {
       .attr("transform",function(d){
         var i=d.orderIndex;
         var x=totalWidth-((i+0.5)*me.setPairDiameter)-2;
-        if(me.position==="right") x = totalWidth-x-4;
+        if(me.popupSide==="right") x = totalWidth-x-4;
         var y=((me.setListSummary.catCount_Visible-i-1)*me.setPairDiameter);
         y-=setListSummary.getHeight_VisibleAttrib()-setListSummary.scrollTop_cache-totalHeight;
         return "translate("+x+" "+y+") rotate(-90)";//" rotate(45) ";
@@ -11308,16 +11390,16 @@ var Summary_Clique_functions = {
       .attr("width",w*50)
       .attr("height",h*50);
     this.DOM.root
-      .style(this.position,(-w)+"px")
-      .style(this.position==="left"?"right":"left","initial");
+      .style(this.popupSide,(-w)+"px")
+      .style(this.popupSide==="left"?"right":"left","initial");
       ;
     if(!this.pausePanning) this.refreshSVGViewBox();
   },
   /** -- */
-  setPosition: function(p){
-    if(p===this.position) return;
-    this.position = p;
-    this.DOM.root.attr("position",this.position);
+  setPopupSide: function(p){
+    if(p===this.popupSide) return;
+    this.popupSide = p;
+    this.DOM.root.attr("popupSide",this.popupSide);
     this.refreshWindowSize();
     this.refreshRow_LineWidths();
     this.refreshSetPair_Position();
@@ -11328,10 +11410,10 @@ var Summary_Clique_functions = {
     var h=this.getHeight();
     var t=this.setListSummary.scrollTop_cache;
     var r;
-    if(this.position==="left"){
+    if(this.popupSide==="left"){
       r=Math.min(-t-this.gridPan_x,0); // r cannot be positive
     }
-    if(this.position==="right"){
+    if(this.popupSide==="right"){
       r=Math.max(t+this.gridPan_x,0);
     }
     this.DOM.setMatrixSVG.attr("width",w).attr("height",h).attr("viewBox",r+" "+t+" "+w+" "+h);
@@ -11418,21 +11500,21 @@ var Summary_Clique_functions = {
       var height=((me.setListSummary.catCount_Visible-i-1)*setPairDiameter);
       var right=((i+0.5)*setPairDiameter);
       var m=totalWidth-right;
-      if(me.position==="right") m = right;
+      if(me.popupSide==="right") m = right;
       this.setAttribute("x1",m);
       this.setAttribute("x2",m);
       this.setAttribute("y2",height);
     });
     // horizontal
     this.DOM.line_horz
-      .attr("x2",(this.position==="left")?totalWidth : 0)
+      .attr("x2",(this.popupSide==="left")?totalWidth : 0)
       .attr("x1",function(d){
         var m = ((d.orderIndex+0.5)*setPairDiameter);
-        return (me.position==="left") ? (totalWidth-m) : m;
+        return (me.popupSide==="left") ? (totalWidth-m) : m;
       });
     this.DOM.line_horz_label.attr("transform",function(d){
       var m=((d.orderIndex+0.5)*setPairDiameter)+2;
-      if(me.position==="left") m = totalWidth-m;
+      if(me.popupSide==="left") m = totalWidth-m;
       return "translate("+m+" 0)";
     });
   },
@@ -11454,7 +11536,7 @@ var Summary_Clique_functions = {
       var i1 = setPair.set_1.orderIndex;
       var i2 = setPair.set_2.orderIndex;
       var left = (Math.min(i1,i2)+0.5)*me.setPairDiameter;
-      if(me.position==="left") left = w-left;
+      if(me.popupSide==="left") left = w-left;
       var top  = (Math.max(i1,i2)+0.5)*me.setPairDiameter;
       kshf.Util.setTransform(this,"translate("+left+"px,"+top+"px)");
     });
