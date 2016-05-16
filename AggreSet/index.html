@@ -34,7 +34,7 @@ function loadDemo(config){
     config.browser.itemDisplay.detailsToggle = 'off';
 
   config.browser.onReady = function(){
-    var degreePanel = (this.panels.left.summaries.length!==0)?"left":"middle";
+    var degreePanel = (this.panels.right.summaries.length!==0)?"right":"middle";
     var setListSummary = this.panels[degreePanel].summaries[0];
 
     d3.select("#credits_wrapper").style("display","block");
@@ -52,7 +52,7 @@ function loadDemo(config){
       setDegreeSummary.addToPanel(this.panels[degreePanel],1);
     }
     setListSummary.setShowSetMatrix(true);
-    setListSummary.setSummary.setPosition("left");
+    setListSummary.setSummary.setPopupSide("right");
 
     if(config.id==="socialgraph" || config.id==="CpdsVsProteinFam" || config.id==="tedTalks" || config.id==="simpsons"){
       theSetSummary.setListSummary.setHeight_Category(40);
@@ -64,7 +64,7 @@ function loadDemo(config){
     setListSummary.setShowSetMatrix(true);
 
     this.updateLayout();
-    this.panels.left.updateSummariesWidth();
+    this.panels.right.updateSummariesWidth();
   };
 
   browser = new kshf.Browser(config.browser); 
@@ -151,9 +151,9 @@ html, body{
 }
 #theBrowserDIV {
   position: absolute !important;
-  right: 15px;
+  left: 10px;
+  right: auto !important;
   top: 10px;
-  left: auto !important;
   overflow-y: visible !important;
   z-index: 400;
   height: calc(100vh - 40px);
@@ -222,20 +222,20 @@ html, body{
 .nav-ui{
   font-family: 'Roboto', sans-serif;
   position: fixed;
-  left: 5px;
+  right: 5px;
   bottom: 5px;
   z-index: 600;
   background-color: rgba(255,255,255,1);
   border: solid 1px gray;
   box-shadow: 1px 1px 2px gray;
-  border-top-right-radius: 20px;
-  border-top-left-radius: 7px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 7px;
   border-bottom-right-radius: 7px;
 }
 
 .nav-ui-size{
   position: absolute;
-  right: 7px;
+  left: 7px;
   top: 7px;
   cursor: pointer;
 }
@@ -258,11 +258,12 @@ html, body{
   color: orangered;
 }
 .loadDataset_header{
-  padding-left: 5px;
+  text-align: right;
+  padding-right: 5px;
   padding-top: 3px;
   background-color: #EEE;
-  border-top-right-radius: 20px;
-  border-top-left-radius: 7px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 7px;
   border-bottom: solid 1px lightgray;
 }
 .showConfigButton{
@@ -304,7 +305,7 @@ html, body{
   display: none;
   position: fixed;
   bottom: 5px;
-  right: 5px;
+  left: 5px;
   font-style: italic;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
@@ -546,29 +547,28 @@ html, body{
 
       <div style='margin: 20px;'>
         <b style='color: orangered;'>Use AggreSet now!</b>
-          - Load a sample data, or 
+          Load a sample data below, or 
             <a href='../demo/YourData' target='_blank' style='color: black'>import your data</a>.<br><br>
           <b>AggreSet is now fully integrated into Keshif!</b><br>
           &nbsp; &nbsp;Just click on <i class='fa fa-tags'></i> to open set matrix for multi-valued categorical summaries.
         <br><br>
 
-        Published in IEEE Trans. Visualization &amp; Comp. Graphics 
-          <a href="http://ieeevis.org/year/2015/info/vis-welcome/welcome" target="_blank" class="author_link">(Proc. InfoVis 2015)</a>
-          <br><br>
-
-        <b>Authors:</b> 
+        <b><i class='fa fa-users'></i> Authors:</b> 
           <a href="http://www.adilyalcin.me" target="_blank" class="author_link">M. Adil Yalçın</a>
             <span class='fa fa-code firstAuthor'></span>,
           <a href="https://sites.umiacs.umd.edu/elm/" target="_blank" class="author_link">Niklas Elmqvist</a>, and
           <a href="http://www.cs.umd.edu/~bederson/" target="_blank" class="author_link">Ben Bederson</a><br><br>
 
-<div style=" margin-left: 20px; line-height: 1.5em">
+<div style="line-height: 1.5em">
+  <span class='fa fa-youtube-play'></span> 
+    <a class='youtube author_link' href="https://www.youtube.com/embed/rcqozpaaGhM">Teaser Video (30 seconds)</a><br>
+  <span class='fa fa-youtube-play'></span> 
+    <a class='youtube author_link' href="https://www.youtube.com/embed/cSSAvDAre-E">Overview Video (5 minutes)</a><br><br>
   <span class='fa fa-file-pdf-o'></span> 
-    <a href="http://www.cs.umd.edu/~yalcin/papers/AggreSet.pdf" target="_blank" class="author_link">Pre-Print Paper</a><br>
-    <span class='fa fa-youtube-play'></span> 
-      <a class='youtube author_link' href="https://www.youtube.com/embed/rcqozpaaGhM">Teaser Video (30 seconds)</a><br>
-    <span class='fa fa-youtube-play'></span> 
-      <a class='youtube author_link' href="https://www.youtube.com/embed/cSSAvDAre-E">Overview Video (5 minutes)</a>
+    <a href="http://www.cs.umd.edu/~yalcin/papers/AggreSet.pdf" target="_blank" class="author_link">Pre-Print Paper</a>
+    <span style='font-size: 0.9em'>
+    (Published in <a href="http://dx.doi.org/10.1109/TVCG.2015.2467051" target='_blank' class="author_link">
+    IEEE Trans. Visualization &amp; Comp. Graphics - InfoVis 2015)</a></span><br>
   </div>
 
       <a href='http://www.umd.edu' target='_blank'>
@@ -576,19 +576,12 @@ html, body{
       <a href='http://www.cs.umd.edu/hcil' target='_blank'>
         <img src="./img/logo_hcil.gif" id="logo_hcil" class="logo"></a>
 
-      <!-- 
-        Author information: Email / twitter
-      -->
-
-      
-      <div class="getCode">Made with <span class='fa fa-heart-o'></span><br> Hosted at
-        <a href='https://github.com/adilyalcin/Keshif/tree/master/AggreSet' target='_blank' class='fa fa-github'></a><br>
+      <div class="getCode">Made with <span class='fa fa-heart-o'></span><br>
         <iframe src="https://ghbtns.com/github-btn.html?user=adilyalcin&repo=keshif&type=star&count=true&size=small" frameborder="0" scrolling="0" width="90px" height="20px"></iframe><br>
         <iframe src="https://ghbtns.com/github-btn.html?user=adilyalcin&repo=keshif&type=fork&count=true&size=small" frameborder="0" scrolling="0" width="90px" height="20px"></iframe>
         </div>
 
       <img class="aboutBackground" src="./img/landing.png">
-
   </div>
   </body>
 </html>

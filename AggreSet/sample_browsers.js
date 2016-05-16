@@ -13,15 +13,20 @@ var browser_configs = {
             "Stanford GraphBase</a> (C) 1993 Stanford University. Les Misérables by Victor Hugo.",
     browser: {
       barChartWidth: 90,
-      leftPanelLabelWidth: 180,
+      rightPanelLabelWidth: 180,
       recordName: "Les Misérables Chapters",
       source: {
         gdocId: '1nMU5gL16rDXdDIDRs6bvTRMoUuhdd3vmeaVi2WVv0pE',
         tables: ["Chapters", "Characters"]
       },
       summaries: [
-        { name: "Characters", catSplit: /,|;/g, catLabel: function(){ return kshf.dt_id.Characters[this.id].data.Name; }},
-        { name: "Volume", collapsed: true, catSortBy: "id", catLabel: function(){ return "Volume "+this.id;} }
+        { name: "Characters", catSplit: /,|;/g, 
+          panel: "right",
+          catLabel: function(){ 
+            if(kshf.dt_id.Characters[this.id]) return kshf.dt_id.Characters[this.id].data.Name;
+          }},
+        { name: "Volume", panel: "right", 
+          collapsed: true, catSortBy: "id", catLabel: function(){ return "Volume "+this.id;} }
       ],
       recordDisplay: {
         sortColWidth: 45,
@@ -52,13 +57,13 @@ var browser_configs = {
     credits: "<a href='http://grouplens.org/datasets/movielens/' target='_blank'>MovieLens</a> "+
         "ratings dataset. Curated and filtered by <a href='http://www.cvast.tuwien.ac.at/~bilal' target='_blank'>Alsallakh</a>.",
     browser: {
-      leftPanelLabelWidth: 140,
-      rightPanelLabelWidth: 100,
+      rightPanelLabelWidth: 140,
+      leftPanelLabelWidth: 100,
       barChartWidth: 80,
       recordName: "Movies",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies_radialset" },
       summaries: [
-        { name: "Genres",
+        { name: "Genres", panel: "right",
           value: function(){
             var genres=[];
             for(var x in this){
@@ -70,10 +75,9 @@ var browser_configs = {
               if(this[x]==1) genres.push(x);
             }
             return genres;
-          },
-          enableSetVis: true },
-        { name: "Rating", value: "AvgRating", panel: 'right' },
-        { name: "Watched", value: "Watches", panel: 'right', intervalScale: 'log' },
+          }},
+        { name: "Rating", value: "AvgRating", panel: 'left' },
+        { name: "Watched", value: "Watches", panel: 'left', intervalScale: 'log' },
         { name: "Release Year", panel: 'bottom', 
           value: function(){ return this.ReleaseDate; } }
       ],
@@ -107,11 +111,11 @@ var browser_configs = {
     credits: "Author: <a href='http://alexander-lex.net/' target='_blank'>Alexander Lex</a>."+
         " A collection of simpsons characters and their attributes.",
     browser: {
-      leftPanelLabelWidth: 110,
+      rightPanelLabelWidth: 110,
       recordName: "Characters in the Simpsons",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "simpsons" },
       summaries: [
-        { name: "Features",
+        { name: "Features", panel: "right",
           value: function(){
               var r=[];
               if(this.School===1) r.push("Goes to school");
@@ -122,7 +126,7 @@ var browser_configs = {
               if(this['Power Plant']===1) r.push("Power Plant");
               return r;
           }},
-        "Age"
+        { name: "Age", panel: "right"}
       ],
       recordDisplay: {
         sortColWidth: 45,
@@ -165,7 +169,7 @@ var browser_configs = {
         "The HBO Recycling Program</a>. Research: S. Schube, D. Savitzky / Also <a href='http://zgrossbart.github.io/hborecycling/' target='_blank'>visualized</a> by Zack Grossbart",
     browser: {
       barChartWidth: 90,
-      leftPanelLabelWidth: 200,
+      rightPanelLabelWidth: 200,
       recordName: "Actors",
       source: {
         url: "http://grantland.com/features/the-hbo-recycling-program/",
@@ -254,7 +258,7 @@ var browser_configs = {
           browser.loadCharts();
         }
       },
-      summaries: [{ name: "HBO Shows", panel: "left" }],
+      summaries: [{ name: "HBO Shows", panel: "right" }],
       recordDisplay: {
         sortColWidth: 15,
         sortBy: { name: '# of HBO Shows', value: function(){ return this["HBO Shows"].length } },
@@ -276,15 +280,15 @@ var browser_configs = {
         "Data Breaches in the U.S.",
     browser: {
       recordName: "Data Breaches",
-      leftPanelLabelWidth: 140,
-      rightPanelLabelWidth: 150,
+      rightPanelLabelWidth: 140,
+      leftPanelLabelWidth: 150,
       barChartWidth: 70,
       source: {
         gdocId: '14vd0RHPy-JyetjppxJ4R5UywaeszV0HR599MX91KkjI',
         tables: "Breaches"
       },
       summaries:[
-        { name: "Record Types", catSplit: ",",
+        { name: "Record Types", catSplit: ",", panel: "right",
           catLabel: {
             'NAM': 'Name',
             'PII': 'Personally Iden. Info.',
@@ -301,9 +305,9 @@ var browser_configs = {
             'PHO': 'Phone',
             '1 MILLAN DOLLAR': "1M $"
           } },
-        { name: "Type", panel: 'right' },
-        { name: "Industry", panel: 'right' },
-        { name: "Source", panel: 'right' },
+        { name: "Type", panel: 'left' },
+        { name: "Industry", panel: 'left' },
+        { name: "Source", panel: 'left' },
         { name: "Date", panel: "bottom" }
       ],
       recordDisplay: {
@@ -322,8 +326,8 @@ var browser_configs = {
     credits: "<a href='https://www.ted.com/talks' target='_blank'>TED Talks</a>",
     browser: {
       barChartWidth: 90,
-      leftPanelLabelWidth: 100,
-      rightPanelLabelWidth: 90,
+      rightPanelLabelWidth: 100,
+      leftPanelLabelWidth: 90,
       recordName: "TED Talks",
       source: {
         gdocId: '1N5Pk58GmTYAPSC6biWL8K2auf40jYbAQRstKeEWO8yY',
@@ -341,7 +345,7 @@ var browser_configs = {
         })
       },
       summaries: [
-        { name: "Feelings", catSplit: "+" },
+        { name: "Feelings", catSplit: "+", panel: "right" },
         { name: "Views", panel: "bottom" }
       ],
       recordDisplay: {
@@ -362,7 +366,7 @@ var browser_configs = {
         "ACM Multi-label Dataset (2008 version)</a>, A. P. Santos, F. Rodrigues. Multi-label Hierarchical Text Classification using the ACM Taxonomy.",
     browser: {
       categoryTextWidth: 200,
-      rightPanelLabelWidth: 100,
+      leftPanelLabelWidth: 100,
       recordName: "Papers",
       source: {
         url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
@@ -401,7 +405,7 @@ var browser_configs = {
         "ACM Multi-label Dataset (2008 version)</a>, A. P. Santos, F. Rodrigues. Multi-label Hierarchical Text Classification using the ACM Taxonomy.",
     browser: {
       categoryTextWidth: 170,
-      rightPanelLabelWidth: 100,
+      leftPanelLabelWidth: 100,
       recordName: "Papers",
       source: {
         url: "http://www.psantos.com.pt/files/trabalhos-academicos/2007-2008-tmei/",
@@ -437,7 +441,7 @@ var browser_configs = {
     credits: "<a href='http://www.cc.gatech.edu/gvu/ii/setvis/' target='_blank'>OnSet</a>"+
         ": Visualizing Boolean Set-Typed Data using Direct Manipulation. R. Sadana, T. Major, A. Dove, J. Stasko",
     browser: {
-      leftPanelLabelWidth: 140,
+      rightPanelLabelWidth: 140,
       recordName: "Compounds",
       source:{
         callback: function(browser){
@@ -471,8 +475,8 @@ var browser_configs = {
         }
       },
       summaries:[
-        { name: "Samples", value: function(){ return this[0]; } },
-        { name: "Sharks",
+        { name: "Samples", value: function(){ return this[0]; }, panel: "right" },
+        { name: "Sharks", panel: "right",
           description: "The compount appears with the shark if any sample taken from that shark includes that compound",
           value: function(){
             var r=[];
@@ -531,7 +535,7 @@ var browser_configs = {
     browser: {
       barChartWidth: 90,
       recordName: "CS Faculty",
-      leftPanelLabelWidth: 120,
+      rightPanelLabelWidth: 120,
       source: {
         url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
         dirPath: '../demo/data/',
@@ -539,7 +543,7 @@ var browser_configs = {
         tables: "cs_faculty"
       },
       summaries: [
-        { name: "<i class='fa fa-globe'></i> Former Countries",
+        { name: "<i class='fa fa-globe'></i> Former Countries", panel: "right",
           description: "For each CS faculty, lists the countries that s/he received her degrees from",
           value: function(){
             var r=[];
@@ -572,7 +576,7 @@ var browser_configs = {
     credits: "<a href='http://cs.brown.edu/people/alexpap/faculty_dataset.html' target='_blank'>Data</a> made available by <b>A. Papoutsaki et. al</b>, Brown University, Providence, RI, USA.",
     browser: {
       recordName: "CS Faculty",
-      leftPanelLabelWidth: 250,
+      rightPanelLabelWidth: 250,
       source: {
         url: "http://cs.brown.edu/people/alexpap/faculty_dataset.html",
         dirPath: '../demo/data/',
@@ -580,7 +584,7 @@ var browser_configs = {
         tables: "cs_faculty"
       },
       summaries: [
-        { name: "<i class='fa fa-globe'></i> Universities Attanded",
+        { name: "<i class='fa fa-globe'></i> Universities Attanded", panel: "right",
           description: "For each CS faculty, lists the countries that s/he received her degrees from",
           value: function(){
             var r=[];
@@ -624,8 +628,8 @@ var browser_configs = {
         }
       },
       summaries: [
-        { name: "Border countries" },
-        { name: "RegionID", panel: "left", collapsed: true }
+        { name: "Border countries", panel: "right" },
+        { name: "RegionID", panel: "right", collapsed: true }
       ],
       recordDisplay: {
         sortColWidth: 40,
@@ -634,66 +638,63 @@ var browser_configs = {
       }
     }
   },
-    senate: {
-        title: "Senate Votings",
-        items: "100 Senators",
-        sets: "110 votings",
-        attribs: "Party",
-        credits: "<a href='http://www.cc.gatech.edu/gvu/ii/setvis/' target='_blank'>OnSet</a>"+
-            ": Visualizing Boolean Set-Typed Data using Direct Manipulation. R. Sadana, T. Major, A. Dove, J. Stasko",
-        browser: {
-            leftPanelLabelWidth: 190,
-            recordName: "Senators",
-            source: {
-                url: "http://www.cc.gatech.edu/gvu/ii/setvis/onset/",
-                callback:function(browser){
-                    browser.primaryTableName = "Senators";
+  senate: {
+    title: "Senate Votings",
+    items: "100 Senators",
+    sets: "110 votings",
+    attribs: "Party",
+    credits: "<a href='http://www.cc.gatech.edu/gvu/ii/setvis/' target='_blank'>OnSet</a>"+
+        ": Visualizing Boolean Set-Typed Data using Direct Manipulation. R. Sadana, T. Major, A. Dove, J. Stasko",
+    browser: {
+      rightPanelLabelWidth: 190,
+      recordName: "Senators",
+      source: {
+        url: "http://www.cc.gatech.edu/gvu/ii/setvis/onset/",
+        callback:function(browser){
+          browser.primaryTableName = "Senators";
 
-                    kshf.dt.Senators = [];
-                    var arr = kshf.dt.Senators;
+          kshf.dt.Senators = [];
+          var arr = kshf.dt.Senators;
 
-                    $.ajax({
-                        //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-                        // url: "./data_private/dc_homicides.json", // original source
-                        url: "../demo/data/set_senate_onset.csv",
-                        error: function(e,f){
-                            console.log(e+" - "+f);
-                        },
-                        success: function(data){
-                            data.split("\n").forEach(function(line, i){
-                                var s=line.split(",");
-                                var d={Name:s[0], Votes:[], id:i};
-                                for(var k=1; k<s.length; k++){
-                                    s[k] = s[k].trim();
-                                    if(s[k]==="") continue;
-                                    d.Votes.push(s[k]);
-                                }
-                                var item = new kshf.Record(d,"id");
-                                arr.push(item);
-                            });
-                            browser.loadCharts();
-                        }
-                    });
+          $.ajax({
+            //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+            // url: "./data_private/dc_homicides.json", // original source
+            url: "../demo/data/set_senate_onset.csv",
+            success: function(data){
+              data.split("\n").forEach(function(line, i){
+                var s=line.split(",");
+                var d={Name:s[0], Votes:[], id:i};
+                for(var k=1; k<s.length; k++){
+                  s[k] = s[k].trim();
+                  if(s[k]==="") continue;
+                  d.Votes.push(s[k]);
                 }
-            },
-            summaries: [
-                {   name: "Votes",
-                },{ name: "Party",
-                    value: function(){
-                        switch(this.Name.split(" ")[1].substr(1,1)){
-                            case "D": return "Democrat";
-                            case "R": return "Republican"
-                        }
-                    }
-                }
-            ],
-            recordDisplay: {
-                sortColWidth: 65,
-                sortBy: [ {title: '# Votes', value:function(){ return this.Votes.length; }} ],
-                recordView: "Name"
+                var item = new kshf.Record(d,"id");
+                arr.push(item);
+              });
+              browser.loadCharts();
             }
+          });
         }
-    },
+      },
+      summaries: [
+        { name: "Votes", panel: "right" },
+        { name: "Party", panel: "right",
+          value: function(){
+            switch(this.Name.split(" ")[1].substr(1,1)){
+              case "D": return "Democrat";
+              case "R": return "Republican"
+            }
+          }
+        }
+      ],
+      recordDisplay: {
+        sortColWidth: 65,
+        sortBy: [ {title: '# Votes', value:function(){ return this.Votes.length; }} ],
+        recordView: "Name"
+      }
+    }
+  },
   mutations: {
     title: "Mutations in Glioblastoma",
     sets: "100 genes",
@@ -703,11 +704,11 @@ var browser_configs = {
     credits: "<a href='http://dx.doi.org/10.7908/C1HD7SP0' target='_blank'>TCGA Consortium</a> "+
         "Glioblastoma Multiforme Mutation Analysis, filtered for 100 most mutated genes.",
     browser: {
-      leftPanelLabelWidth: 110,
+      rightPanelLabelWidth: 110,
       recordName: "Mutations",
       source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "gbm_mutated_top100" },
       summaries: [
-        { name: "Genes",
+        { name: "Genes", panel: "right",
           value: function(d){
             var r=[];
             for(x in this){
@@ -770,7 +771,7 @@ var browser_configs = {
     attribs: "",
     credits: "<a href='http://dx.doi.org/10.1073/pnas.1012741107' target='_blank'>Gleeson et al.<a> Protein binding of small molecules.",
     browser: {
-      leftPanelLabelWidth: 110,
+      rightPanelLabelWidth: 110,
       recordName: "cpds vs protein table",
       source:{
         url:upsetSourceURL,
@@ -793,47 +794,47 @@ var browser_configs = {
       ]
     }
   },
-    bederson: {
-        title: "Ben Bederson's Coauthors",
-        sets: "169 Co-Authors",
-        items: "146 Papers",
-        attribs: "",
-        browser: {
-            categoryTextWidth:135,
-            barChartWidth: 100,
-            source: {
-                gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
-                tables: ["Publications", "Authors", "AuthorTypes"]
-            },
-            onLoad: function(){
-              kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors']);
-            },
-            summaries: [
-                {   name: "Coauthors",
-                    value: function(){
-                        var BEDERSON_ID = 3;
-                        var authors = this.Coauthors;
-                        // remove Ben Bederson's ID
-                        newAuthors = [];
-                        for(i=0 ; i<authors.length ; i++){
-                            if(authors[i]!==BEDERSON_ID) newAuthors.push(authors[i]);
-                        }
-                        return newAuthors;
-                    },
-                    catTableName: "Authors",
-                    catLabel: function(){ return this.first_names[0]+". "+this.last_name; },
-                    catTooltip: function(){ return this.first_names+" "+this.last_name; },
-                }
-            ],
-            recordDisplay: {
-                sortColWidth: 45,
-                sortBy: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
-                textSearch: 'title',
-                detailsToggle: "One",
-                recordView: "title"
+  bederson: {
+    title: "Ben Bederson's Coauthors",
+    sets: "169 Co-Authors",
+    items: "146 Papers",
+    attribs: "",
+    browser: {
+      categoryTextWidth:135,
+      barChartWidth: 100,
+      source: {
+        gdocId: '0Ai6LdDWgaqgNdEp1aHBzSTg0T0RJVURqWVNGOGNkNXc',
+        tables: ["Publications", "Authors", "AuthorTypes"]
+      },
+      onLoad: function(){
+        kshf.Util.cellToArray(kshf.dt.Publications, ['Coauthors']);
+      },
+      summaries: [
+        { name: "Coauthors", panel: "right",
+          value: function(){
+            var BEDERSON_ID = 3;
+            var authors = this.Coauthors;
+            // remove Ben Bederson's ID
+            newAuthors = [];
+            for(i=0 ; i<authors.length ; i++){
+              if(authors[i]!==BEDERSON_ID) newAuthors.push(authors[i]);
             }
+            return newAuthors;
+          },
+          catTableName: "Authors",
+          catLabel:   function(){ return this.first_names[0]+". "+this.last_name; },
+          catTooltip: function(){ return this.first_names+" "+this.last_name; },
         }
-    },
+      ],
+      recordDisplay: {
+        sortColWidth: 45,
+        sortBy: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
+        textSearch: 'title',
+        detailsToggle: "One",
+        recordView: "title"
+      }
+    }
+  },
     teaser: {
         title: "Paper Teaser",
         sets: "XX",
@@ -841,8 +842,8 @@ var browser_configs = {
         attribs: "XX",
         width: 800,
         browser: {
-            leftPanelLabelWidth: 100,
             rightPanelLabelWidth: 100,
+            leftPanelLabelWidth: 100,
             barChartWidth: 80,
             source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies" },
             summaries: [
@@ -858,8 +859,7 @@ var browser_configs = {
                             if(this[x]==1) r.push(x);
                         }
                         return r;
-                    },
-                    enableSetVis: true
+                    }
                 },{ name: "Rating", value: "AvgRating", panel: 'right'
                 }
             ],
