@@ -30,15 +30,16 @@ google.setOnLoadCallback(function(){
       tables: "Datasets"
     },
     summaries: [
-      { name: "Attribute Types", catSplit: ", "},
+      { name: "Attribute Types", catSplit: ", " },
       { name: "Data Types", catSplit: ", " },
-      { name: "Default Task", catSplit: ", "},
-      { name: "# Attributes", panel: "right"},
-      { name: "# Instances", panel: "right"},
-      { name: "Year", timeFormat: "%Y", layout: "bottom"}
+      { name: "Default Task", catSplit: ", " },
+      { name: "# Attributes", panel: "right" },
+      { name: "# Instances", panel: "right" },
+      { name: "Area", collapsed: true, panel: "right" },
+      { name: "Year Donated", timeFormat: "%Y", layout: "bottom" }
     ],
     recordDisplay: {
-      sortBy: "Year",
+      sortBy: "Year Donated",
       sortColWidth: 70,
       textSearch: "Name",
       recordView: function(){
@@ -52,7 +53,20 @@ google.setOnLoadCallback(function(){
 <style id="kshfStyle">
 .link{
   font-weight: 300;
-  font-size: 0.8em;
+  font-size: 0.6em;
+  background-color: #E4E4E4;
+  padding: 1px 2px;
+  text-decoration: none;
+  border-radius: 5px;
+  color: black;
+  vertical-align: top;
+  border: solid 1px lightgray;
+  margin-top: 2px;
+  display: inline-block;
+}
+.link:hover{ 
+  color: orangered; 
+  border-color: orangered;
 }
 </style>
 	</head>
@@ -63,7 +77,7 @@ google.setOnLoadCallback(function(){
       </div>
 
     <div id="demo_Infobox">
-      Data drom
+      Data from
       <a href="https://archive.ics.uci.edu/ml/datasets.html" target='_blank'>
         UC Irvine Machine Learning Repository</a>.
       </div>
