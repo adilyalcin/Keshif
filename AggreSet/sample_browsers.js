@@ -487,7 +487,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 65,
-        sortBy: [ {title: '#samples', value:function(){ return this[0].length; }} ],
+        sortBy: {title: '#samples', value: function(){ return this[0].length; } },
         displayType: 'grid',
         maxVisibleItems_Default: 2000,
         detailsToggle: "off",
@@ -690,7 +690,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 65,
-        sortBy: [ {title: '# Votes', value:function(){ return this.Votes.length; }} ],
+        sortBy: {title: '# Votes', value: function(){ return this.Votes.length; }},
         recordView: "Name"
       }
     }
@@ -835,46 +835,44 @@ var browser_configs = {
       }
     }
   },
-    teaser: {
-        title: "Paper Teaser",
-        sets: "XX",
-        items: "XX",
-        attribs: "XX",
-        width: 800,
-        browser: {
-            rightPanelLabelWidth: 100,
-            leftPanelLabelWidth: 100,
-            barChartWidth: 80,
-            source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies" },
-            summaries: [
-                {   name: "Genres",
-                    value: function(){
-                        var r=[];
-                        for(var x in this){
-                            if(x==="Name") continue;
-                            if(x==="ReleaseDate") continue;
-                            if(x==="AvgRating") continue;
-                            if(x==="Watches") continue;
-                            if(x==="id") continue;
-                            if(this[x]==1) r.push(x);
-                        }
-                        return r;
-                    }
-                },{ name: "Rating", value: "AvgRating", panel: 'right'
-                }
-            ],
-            recordDisplay: {
-                sortColWidth: 50,
-                detailsToggle: 'off',
-                sortBy: ['Rating', 'Watched'],
-                recordView: function(){ return "<i class='fa fa-film'></i> "+this.Name; }
+  teaser: {
+    title: "Paper Teaser",
+    sets: "XX",
+    items: "XX",
+    attribs: "XX",
+    width: 800,
+    browser: {
+      rightPanelLabelWidth: 100,
+      leftPanelLabelWidth: 100,
+      barChartWidth: 80,
+      source:{ url:upsetSourceURL, dirPath:localDirPath_set_, fileType:'csv', tables: "movies" },
+      summaries: [
+        { name: "Genres",
+          value: function(){
+            var r=[];
+            for(var x in this){
+              if(x==="Name") continue;
+              if(x==="ReleaseDate") continue;
+              if(x==="AvgRating") continue;
+              if(x==="Watches") continue;
+              if(x==="id") continue;
+              if(this[x]==1) r.push(x);
             }
-        }
-    },
+            return r;
+          } },
+        { name: "Rating", value: "AvgRating", panel: 'right' }
+      ],
+      recordDisplay: {
+        sortColWidth: 50,
+        detailsToggle: 'off',
+        sortBy: ['Rating', 'Watched'],
+        recordView: function(){ return "<i class='fa fa-film'></i> "+this.Name; }
+      }
+    }
+  }
+};
 
-    };
-
-    function loadFactbook(facts, factBrowser){
+function loadFactbook(facts, factBrowser){
     var tableName = "Countries";
     factBrowser.primaryTableName = tableName;
     kshf.dt[tableName] = [];
