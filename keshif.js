@@ -897,6 +897,7 @@ kshf.BreadCrumb.prototype = {
         return;
       }
     }
+    details = "" + details; // convert to string, in case the return value is a number...
     if(details) this.DOM.select(".crumbDetails").html(details.replace(/<br>/g," "));
   },
   removeCrumb: function(){
@@ -1274,6 +1275,7 @@ kshf.RecordDisplay.prototype = {
           me.map_projectRecords();
         })
         .on("movestart",function(){
+          me.browser.DOM.root.attr("pointerEvents",false);
           zoomInit = this.getZoom();
           me.DOM.recordMap_SVG.style("opacity",0.3);
           me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display","none");
@@ -1282,6 +1284,7 @@ kshf.RecordDisplay.prototype = {
           // console.log("MapZoom: "+me.leafletRecordMap.getZoom());
         })
         .on("moveend",function(){
+          me.browser.DOM.root.attr("pointerEvents",true);
           me.DOM.recordMap_SVG.style("opacity",null);
           me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display",null);
           me.refreshViz_Compare_All();
@@ -1340,7 +1343,7 @@ kshf.RecordDisplay.prototype = {
 
       this.drawSelect = false;
       this.DOM.recordMap_Base.select(".leaflet-tile-pane")
-        .on("mousedown",function(){ 
+        .on("mousedown",function(){
           if(me.mapMouseControl!=="draw") return;
           if(me.drawSelect==="Highlight") return;
           var mousePos = d3.mouse(this);  
@@ -4799,7 +4802,7 @@ kshf.Browser.prototype = {
       }
 
       var longName = "";
-      browser.filters.forEach(function(filter){
+      this.filters.forEach(function(filter){
         if(!filter.isFiltered) return;
         longName+="<b>"+filter.summary.summaryName+"</b>: "
           + filter.summary.summaryFilter.filterView_Detail.call(filter.summary.summaryFilter)+" ";
@@ -9176,6 +9179,30 @@ var Summary_Interval_functions = {
         this.DOM.timeSVG = this.DOM.histogram.append("svg").attr("class","timeSVG")
           .attr("xmlns","http://www.w3.org/2000/svg")
           .style("margin-left",(this.width_barGap)+"px");
+
+        var x = this.DOM.timeSVG.append('defs')
+          .selectAll("marker")
+          .data([ 
+            'kshfLineChartTip_Active', 
+            'kshfLineChartTip_Highlight', 
+            'kshfLineChartTip_Compare_A', 
+            'kshfLineChartTip_Compare_B', 
+            'kshfLineChartTip_Compare_C',
+          ]).enter()
+          .append('marker')
+          .attr('id', function(d){ return d; })
+          .attr('patternUnits', 'userSpaceOnUse')
+          .attr('viewBox', "0 0 20 20")
+          .attr('refX', 10)
+          .attr('refY', 10)
+          .attr('markerUnits', 'strokeWidth')
+          .attr('markerWidth', 9)
+          .attr('markerHeight', 9)
+          .attr('orient', "auto")
+          .append('circle')
+            .attr("r",5)
+            .attr("cx",10)
+            .attr("cy",10);
       }
 
       this.insertChartAxis_Measure(this.DOM.histogram, 'w', 'nw');
@@ -9747,7 +9774,7 @@ var Summary_Interval_functions = {
       if(this.scaleType==='time' && this.DOM.root) {
         // delete existing DOM:
         // TODO: Find  a way to avoid this?
-        this.DOM.timeSVG.selectAll("*").remove();
+        this.DOM.timeSVG.selectAll('[class^="measure_"]').remove();
 
         this.DOM.measure_Total_Area = this.DOM.timeSVG
           .append("path").attr("class","measure_Total_Area").datum(this.histBins);
@@ -9755,29 +9782,29 @@ var Summary_Interval_functions = {
           .append("path").attr("class","measure_Active_Area").datum(this.histBins);
         this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll(".measure_Active_Line")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Active_Line");
+          .enter().append("line").attr("class","measure_Active_Line").attr("marker-end","url(#kshfLineChartTip_Active)");
 
         this.DOM.measure_Highlight_Area = this.DOM.timeSVG
           .append("path").attr("class","measure_Highlight_Area").datum(this.histBins);
         this.DOM.measure_Highlight_Line = this.DOM.timeSVG.selectAll(".measure_Highlight_Line")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Highlight_Line");
+          .enter().append("line").attr("class","measure_Highlight_Line").attr("marker-end","url(#kshfLineChartTip_Highlight)");
 
         this.DOM.measure_Compare_Area_A = this.DOM.timeSVG
           .append("path").attr("class","measure_Compare_Area_A measure_Compare_A").datum(this.histBins);
         this.DOM.measure_Compare_Line_A = this.DOM.timeSVG.selectAll(".measure_Compare_Line_A")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Compare_Line_A measure_Compare_A");
+          .enter().append("line").attr("class","measure_Compare_Line_A measure_Compare_A").attr("marker-end","url(#kshfLineChartTip_Compare_A)");
         this.DOM.measure_Compare_Area_B = this.DOM.timeSVG
           .append("path").attr("class","measure_Compare_Area_B measure_Compare_B").datum(this.histBins);
         this.DOM.measure_Compare_Line_B = this.DOM.timeSVG.selectAll(".measure_Compare_Line_B")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Compare_Line_B measure_Compare_B");
+          .enter().append("line").attr("class","measure_Compare_Line_B measure_Compare_B").attr("marker-end","url(#kshfLineChartTip_Compare_B)");
         this.DOM.measure_Compare_Area_C = this.DOM.timeSVG
           .append("path").attr("class","measure_Compare_Area_C measure_Compare_C").datum(this.histBins);
         this.DOM.measure_Compare_Line_C = this.DOM.timeSVG.selectAll(".measure_Compare_Line_C")
           .data(this.histBins, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Compare_Line_C measure_Compare_C");
+          .enter().append("line").attr("class","measure_Compare_Line_C measure_Compare_C").attr("marker-end","url(#kshfLineChartTip_Compare_C)");
       }
 
       this.insertBins();

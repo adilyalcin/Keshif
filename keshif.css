@@ -2066,7 +2066,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.8em;
 }
 .kshf .clearFilterButton.inSummary > .fa-times {
-  top: -1px;
   position: relative;
 }
 .kshf .clearFilterButton.allFilter {
@@ -5185,8 +5184,20 @@ top:calc(50% - 8px);
   margin-right: 2px;
   vertical-align: top;
 }
-.kshf .leaflet-container {
-  font: inherit;
+.kshf #kshfLineChartTip_Active {
+  fill: #94a4af;
+}
+.kshf #kshfLineChartTip_Highlight {
+  fill: #ff4500;
+}
+.kshf #kshfLineChartTip_Compare_A {
+  fill: #1c2f2f;
+}
+.kshf #kshfLineChartTip_Compare_B {
+  fill: #25aa15;
+}
+.kshf #kshfLineChartTip_Compare_C {
+  fill: #fff810;
 }
 @-webkit-keyframes stretchdelay {
   0%,

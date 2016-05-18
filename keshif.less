@@ -1085,92 +1085,86 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .panel {
         > .dropZone_between_wrapper{
-            display: none;
-            .flex-grow(1);
-            position: relative;
-            margin-top: 2px;
-            z-index: 340;
+          display: none;
+          .flex-grow(1);
+          position: relative;
+          margin-top: 2px;
+          z-index: 340;
+          border-radius: 5px;
+          //background-color: rgb(152, 157, 162);
+          //height: 0px;
+          width: calc(~"100% - 3px");
+          .transition(flex-grow 450ms ease-in-out, background-color 250ms linear, width 500ms ease-in-out);
+          > .dropZone_between{
+            overflow: hidden;
             border-radius: 5px;
-            //background-color: rgb(152, 157, 162);
-            //height: 0px;
-            width: calc(~"100% - 3px");
-            .transition(flex-grow 450ms ease-in-out, background-color 250ms linear, width 500ms ease-in-out);
-            > .dropZone_between{
-                overflow: hidden;
-                border-radius: 5px;
-                border: solid 1px rgb(173, 180, 186);
-                box-shadow: 1px 1px 1px rgb(173, 179, 183);
-                position: relative;
-                height: 22px;
-                text-align: center;
-                overflow: hidden;
-                > .dropText{
-                    vertical-align: top;
-                    margin-top: 2px;
-                }
+            border: solid 1px rgb(173, 180, 186);
+            box-shadow: 1px 1px 1px rgb(173, 179, 183);
+            position: relative;
+            height: 22px;
+            text-align: center;
+            overflow: hidden;
+            > .dropText{
+              vertical-align: top;
+              margin-top: 2px;
             }
-            &[hovered=true]{
-                .flex-grow(4);
-                position: relative;
-                background-color: rgba(217, 224, 230, 0.7);
-                > .dropZone_between{
-                    > .dropIcon{
-                        color: orangered;
-                    }
-                }
-            }
+          }
+          &[hovered=true]{
+            .flex-grow(4);
+            position: relative;
+            background-color: rgba(217, 224, 230, 0.7);
+            > .dropZone_between > .dropIcon{ color: orangered; }
+          }
         }
         .dropZone{
-            background-color: rgba(217, 224, 230, 0.7);
-            text-align: center;
-            &[readyToDrop=true]{
-                background-color: rgb(255, 188, 163);
-                border-color: orangered;
-                cursor: s-resize;
-                > .dropText{
-                    display: inline-block;
-                }
-            }
+          background-color: rgba(217, 224, 230, 0.7);
+          text-align: center;
+          &[readyToDrop=true]{
+            background-color: rgb(255, 188, 163);
+            border-color: orangered;
+            cursor: s-resize;
+            > .dropText{ display: inline-block; }
+          }
         }
         .dropZone_summary{
-            z-index: 250;
-            position: relative;
-            cursor: default;
-            .transition(~"background-color 100ms linear, width 300ms ease-in-out");
-            &:hover{ background-color: rgb(255, 188, 163); }
-            > .dropIcon{
-                margin: 0px;
-                font-size: 1.5em;
-                font-weight: 700;
-                color: #7E8A96;
-                text-shadow: 1px 1px 1px #B6BCC2;
-            }
-        }
-        > .dropZone_panel{
-            display: none;
-            border-color: gray;
-            border-style: solid;
-            border-width: 0px;
-            // border-radius: 10px; // Set depending on the pane;
-            position: absolute;
-            z-index: 230;
-        }
-        .dropIcon{
-            pointer-events: none;
+          z-index: 250;
+          position: relative;
+          cursor: default;
+          .transition(~"background-color 100ms linear, width 300ms ease-in-out");
+          &:hover{ background-color: rgb(255, 188, 163); }
+          > .dropIcon{
             margin: 0px;
-            font-size: 2em;
+            font-size: 1.5em;
+            font-weight: 700;
             color: #7E8A96;
             text-shadow: 1px 1px 1px #B6BCC2;
-            display: inline-block;
+          }
+        }
+        > .dropZone_panel{
+          display: none;
+          border-color: gray;
+          border-style: solid;
+          border-width: 0px;
+          // border-radius: 10px; // Set depending on the pane;
+          position: absolute;
+          z-index: 230;
+        }
+        .dropIcon{
+          pointer-events: none;
+          margin: 0px;
+          font-size: 2em;
+          color: #7E8A96;
+          text-shadow: 1px 1px 1px #B6BCC2;
+          display: inline-block;
         }
         .dropText{
-            display: none;
-            margin-left: 4px;
-            font-size: 1.0em;
-            font-weight: 300;
+          display: none;
+          margin-left: 4px;
+          font-size: 1.0em;
+          font-weight: 300;
         }
         &[hidebars=true] {
-            .catGlyph{ display:none; }
+          .catGlyph{ display:none; }
         }
         &[hidebaraxis=true] {
           .summaryCategorical{
@@ -1179,101 +1173,95 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         > .panelAdjustWidth{
-            display: none;
-            opacity: 0;
-            position: absolute;
-            height: 100%;
-            width: 0px;
-            top: 0px;
-            border-width: 0px 2px 0px 0px;
-            border-style: dotted;
-            border-color: lightgray;
-            cursor: col-resize;
-            opacity: 0.8;
-            z-index: 10;
-            pointer-events: all;
-            &:hover{ border-color: gray; border-style: dashed; }
-            &[dragging]{ 
-                border-color: gray; 
-                border-style: dashed;
-                display: block;
-            }
+          display: none;
+          opacity: 0;
+          position: absolute;
+          height: 100%;
+          width: 0px;
+          top: 0px;
+          border-width: 0px 2px 0px 0px;
+          border-style: dotted;
+          border-color: lightgray;
+          cursor: col-resize;
+          opacity: 0.8;
+          z-index: 10;
+          pointer-events: all;
+          &:hover{ border-color: gray; border-style: dashed; }
+          &[dragging]{ 
+            border-color: gray; 
+            border-style: dashed;
+            display: block;
+          }
         }
         &.panel_bottom{
-            .display(flex);
-            .flex-direction(column);
+          .display(flex);
+          .flex-direction(column);
+          width: 100%;
+          position: relative;
+          > .dropZone_panel{
+            bottom: 0px;
+            height: 30px;
             width: 100%;
-            position: relative;
-            > .dropZone_panel{
-                bottom: 0px;
-                height: 30px;
-                width: 100%;
-                border-radius: 30px 30px 0px 0px;
-                border-top-width: 2px;
+            border-radius: 30px 30px 0px 0px;
+            border-top-width: 2px;
+          }
+          > .dropZone_between_wrapper > .dropZone_between{
+            > .dropIcon{ display: inline-block; }
+            > .dropText{
+              display: inline-block;
+              vertical-align: top;
             }
-            > .dropZone_between_wrapper > .dropZone_between{
-                > .dropIcon{
-                    display: inline-block;
-                }
-                > .dropText{
-                    display: inline-block;
-                    vertical-align: top;
-                }
-            }
+          }
         }
         &.panel_side{
-            .display(flex);
-            .flex-direction(column);
-            z-index: 9;
-            vertical-align: top;
-            position: relative;
+          .display(flex);
+          .flex-direction(column);
+          z-index: 9;
+          vertical-align: top;
+          position: relative;
+          height: 100%;
+          > .dropZone_panel{
+            top: 0px;
             height: 100%;
-            > .dropZone_panel{
-                top: 0px;
-                height: 100%;
-                width: 50px;
-                z-index: 231; // above the middle panel
-                > .dropIcon{
-                    margin-top: 150px;
-                    top: 200px;
-                }
+            width: 50px;
+            z-index: 231; // above the middle panel
+            > .dropIcon{
+              margin-top: 150px;
+              top: 200px;
             }
+          }
         }
         &.panel_left{
-            > .dropZone_panel{
-                left: 0px;
-                border-radius: 0px 40px 40px 0px;
-                border-right-width: 2px;
-            }
-            > .panelAdjustWidth{
-                right: -2px;
-            }
+          > .dropZone_panel{
+            left: 0px;
+            border-radius: 0px 40px 40px 0px;
+            border-right-width: 2px;
+          }
+          > .panelAdjustWidth{ right: -2px; }
         }
         &.panel_right{
-            > .dropZone_panel{
-                right: 0px;
-                border-radius: 40px 0px 0px 40px;
-                border-left-width: 2px;
-            }
-            > .panelAdjustWidth{
-                left: -2px;
-            }
+          > .dropZone_panel{
+            right: 0px;
+            border-radius: 40px 0px 0px 40px;
+            border-left-width: 2px;
+          }
+          > .panelAdjustWidth{ left: -2px; }
         }
         &.panel_middle{
-            .display(flex);
-            .flex-direction(column);
-            .flex(1);
-            position: relative;
-            vertical-align: top;
-            position: relative;
-            > .dropZone_panel{
-                bottom: 0px;
-                height: 100%;
-                width: 100%;
-                left: 0px;
-                border-radius: 40px 40px 0px 0px;
-                border-top-width: 2px;
-            }
+          .display(flex);
+          .flex-direction(column);
+          .flex(1);
+          position: relative;
+          vertical-align: top;
+          position: relative;
+          > .dropZone_panel{
+            bottom: 0px;
+            height: 100%;
+            width: 100%;
+            left: 0px;
+            border-radius: 40px 40px 0px 0px;
+            border-top-width: 2px;
+          }
         }
         &.panel_resize{
           position: absolute;
@@ -1660,7 +1648,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-top: 1px;
         font-size: 0.8em;
         > .fa-times{
-          top: -1px;
           position: relative;
         }
       }
@@ -2229,7 +2216,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[rec_compared^="C"]{
         background-color: darken(@color_Compare_C, 10%);
-        border: solid 1px darken(@color_Compare_C,40%) !important;
+        border: solid 1px darken(@color_Compare_C, 40%) !important;
         &[selection="highlighted"]{
           .background-image( linear-gradient(to right, 
             darken(@color_Compare_C, 10%) 0%, darken(@color_Compare_C, 10%) 20%, 
@@ -4203,9 +4190,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       vertical-align: top;
     }
 
-    .leaflet-container{
-      font: inherit;
-    }
+    #kshfLineChartTip_Active   { fill: darken(@color_bars, 10%); }
+    #kshfLineChartTip_Highlight{ fill: darken(@color_bar_preview, 10%); }
+    #kshfLineChartTip_Compare_A{ fill: darken(@color_Compare_A, 10%); }
+    #kshfLineChartTip_Compare_B{ fill: darken(@color_Compare_B, 10%); }
+    #kshfLineChartTip_Compare_C{ fill: darken(@color_Compare_C, 40%); }
 }
 
 @-webkit-keyframes stretchdelay {.stretchdelay_do;}
