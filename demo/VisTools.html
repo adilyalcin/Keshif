@@ -289,7 +289,7 @@ $(document).ready( function(){
             return this.Year+ this['★'].length*3000;
           },
           label: function(){
-            if(this['★']===null) return this.Year;
+            if(this['★']===null) return ""+this.Year;
             return "<span class='book_stars'>"+this['★'] + "</span>" + this.Year;
           } },
         sortColWidth: 100,
