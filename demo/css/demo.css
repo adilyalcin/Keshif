@@ -14,9 +14,6 @@ body {
   width: calc(100% - 20px);
   height: calc(100vh - 73px);
 }
-.showConfigButton {
-  display: inline-block !important;
-}
 .demoHeader {
   position: fixed;
   top: 0px;
