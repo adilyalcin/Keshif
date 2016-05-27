@@ -682,6 +682,29 @@ body{
   text-shadow: 0px 0px 3px #753D00;
 }
 
+.descr_text > .fa-heart {
+  color: #ee4545;
+  font-size: 0.8em;
+  text-shadow: 0px 0px 2px #969696;
+  -webkit-animation: heartBeat 700ms alternate;
+  -moz-animation: heartBeat 700ms alternate;
+  -o-animation: heartBeat 700ms alternate;
+  animation: heartBeat 700ms alternate;
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  -o-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;
+  -moz-animation-timing-function: ease-in-out;
+  -o-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  display: inline-block;
+}
+@-webkit-keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgb(238, 69, 69);}}
+@-moz-keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgb(238, 69, 69);}}
+@-o-keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgb(238, 69, 69);}}
+@keyframes heartBeat{ 0%{text-shadow: 0px 0px 5px white;} 100%{text-shadow: 0px 0px 5px rgb(238, 69, 69);};
+
 </style>
 	 
 </head>
@@ -797,11 +820,20 @@ body{
 
       <h2>Media Coverage</h2>
 
+
       <ul class="media_coverage">
+        <li><b><a href="https://www.techchange.org/2016/05/26/a-tool-that-gets-you-from-data-to-insights-keshif/" target="_blank">
+        A Tool that Gets You From Data to Insights: Keshif</a></b> - 
+          <a href='http://www.techchange.org' target='_blank'>TechChange.org</a> Blog, May 2016</li>
+
+
         <li><b><a href="http://datadrivenjournalism.net/resources/keshif.me" target="_blank">
         DataDrivenJournalism.net - Interview with Adil Yalçın</a></b> - Oct 2015</li>
+
         <li><a href="http://mobilitylab.org/2015/07/13/transit-data-gets-more-intriguing-as-the-way-its-presented-improves/" target='_blank'>Transit Data Gets More Intriguing As the Way It’s Presented Improves</a> - Mobility Lab, July 2015</li>
+
         <li><a href="http://www.informationisbeautifulawards.com/showcase?ccategory=interactive&challenge=2&page=1&pcategory=short-list&type=challenges" target="_blank">Safety First: A Story on Restaurant Food Poisonings</a> - Shortlisted, Information is Beautiful Awards, Food Poisoning Challenge, 2015.</li>
+
         <li><a href="http://toolsfortheweb.net/javascript/visual-and-interactive-data-via-keshif/" target="_blank">Visual and Interactive Data via Keshif</a> - Tools for the Web, June 2015</li>
         <!--
         <a href="http://datadrivenjournalism.net/resources/overview_328_analysis_and_visualization_tools_and_counting" target='_blank'>Overview: 328 Analysis and Visualization Tools (and counting)</a> - DataDrivenJournalism.net, Sept. 2015<br><br>-->
