@@ -89,7 +89,7 @@ right:calc(50% - 310px);
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock {
   margin: 2px 4px;
   border: solid 1px lightgray;
-  border-radius: 1em;
+  border-radius: 6px;
   cursor: pointer;
   position: relative;
   display: block;
@@ -153,10 +153,7 @@ right:calc(50% - 310px);
   right: 10px;
   top: 10px;
   box-shadow: 0px 0px 20px black;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true][pos="bottom"] {
-  top: inherit;
-  bottom: 10px;
+  margin: initial;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true][attention=true] {
   -webkit-animation: attention 0.3s 2 ease-in-out;
@@ -170,6 +167,11 @@ right:calc(50% - 310px);
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock > .hideNonRelevant {
   display: none;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock > .TextSearchBlock {
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock .SearchTextBox {
   display: none;

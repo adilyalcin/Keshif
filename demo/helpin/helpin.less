@@ -72,7 +72,7 @@
     > .QuestionBlock{
       margin: 2px 4px;
       border: solid 1px lightgray;
-      border-radius: 1em;
+      border-radius: 6px;
       cursor: pointer;
       position: relative;
       display: block;
@@ -130,10 +130,7 @@
     right: 10px;
     top: 10px;
     box-shadow: 0px 0px 20px black;
-    &[pos="bottom"]{
-      top: inherit;
-      bottom: 10px;
-    }
+    margin: initial;
     &[attention=true]{
       .animation(attention 0.3s 2 ease-in-out);
       box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
@@ -144,6 +141,11 @@
       //display: none;
       > .QuestionTypes{ display: none; }
       > .hideNonRelevant{ display: none; }
+      > .TextSearchBlock{
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+        cursor: grab;
+      }
       .SearchTextBox{ display: none; }
     }
     > .answer_box{

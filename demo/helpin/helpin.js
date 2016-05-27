@@ -14,7 +14,7 @@ var questions = [
   {
     q: "Highlight-select to preview",
     actions: "Explore+Highlight+Select",
-    topics: "Aggregate+Selection",
+    topics: "Aggregate",
     relevance: "At least one summary in browser",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ return summary.panel; });
@@ -23,7 +23,7 @@ var questions = [
   {
     q: "Filter-select to focus",
     actions: "Explore+Filter+Select",
-    topics: "Aggregate+Selection",
+    topics: "Aggregate",
     relevance: "At least one summary in browser",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ return summary.panel; });
@@ -33,7 +33,7 @@ var questions = [
     q: "Lock-select to compare",
     actions: "Explore+Compare+Lock+Select",
     relevance: "At least one summary in browser",
-    topics: "Aggregate+Selection",
+    topics: "Aggregate",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ return summary.panel; });
     }
@@ -41,16 +41,16 @@ var questions = [
   {
     q: "Unlock a locked (compared) selection",
     actions: "Explore+Lock+Select",
-    topics: "Aggregate+Selection",
+    topics: "Aggregate+Breadcrumb",
     relevance: "An active locked (compared) selection",
     isRelevant: function(){
-      if(this.selectedAggr.Compared_A) return this.selectedAggr.Compared_A;
-      if(this.selectedAggr.Compared_B) return this.selectedAggr.Compared_B;
-      if(this.selectedAggr.Compared_C) return this.selectedAggr.Compared_C;
+      if(this.selectedAggr.Compare_A) return this.selectedAggr.Compare_A;
+      if(this.selectedAggr.Compare_B) return this.selectedAggr.Compare_B;
+      if(this.selectedAggr.Compare_C) return this.selectedAggr.Compare_C;
       return false;
     },
     activate: function(){
-      var DOM_breadcrumbs = this.DOM.breadcrumbs.selectAll('[class*="crumbMode_Compared_"]');
+      var DOM_breadcrumbs = this.DOM.breadcrumbs.selectAll('[class*="crumbMode_Compare_"]');
       if(DOM_breadcrumbs[0].length>0){
         helpin.highlightBox(DOM_breadcrumbs,"Click the <b>breadcrumb</b>.","n");
         var compare_X =  DOM_breadcrumbs[0][0].classList[1].substr(10)
@@ -63,23 +63,12 @@ var questions = [
     // TODO: Filtering also unlocks all active selections.
   },
   {
-    q: "Filter on multiple categories using and - or - not",
+    q: "Filter with multiple categories using And - Or - Not",
     actions: "Explore+Filter+Select",
     topics: "Category",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ return summary.panel && summary.type==="categorical"; });
     },
-    activate: function(){
-      var DOM_breadcrumbs = this.DOM.breadcrumbs.selectAll('[class*="crumbMode_Compared_"]');
-      if(DOM_breadcrumbs[0].length>0){
-        helpin.highlightBox(DOM_breadcrumbs,"Click the <b>breadcrumb</b>.","n");
-        var compare_X =  DOM_breadcrumbs[0][0].classList[1].substr(10)
-        var DOM_icon = d3.select(this.selectedAggr[compare_X].DOM.aggrGlyph).select(".lockButton");
-        kshf.activeTipsy = null;
-        helpin.highlightBox(DOM_icon, 
-          "Or, click the <i class='fa fa-unlock-alt'></i> icon.","n");
-      }
-    }
   },
   {
     q: "Select Map Regions",
@@ -90,29 +79,31 @@ var questions = [
     }
   },
   {
-    q: "Adjust Range Selection",
-    actions: "Explore+Adjust",
+    q: "Adjust range selection",
+    actions: "Explore+Adjust+Select",
     topics: "Time Summary+Number Summary",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ 
         return summary.panel && summary.type==="interval" && summary.isFiltered(); 
       });
+    },
+    activate: function(q){
+      var s = q.isRelevant.call(this);
+      helpin.highlightBox(
+        s.DOM.root.selectAll(".base.active[filtered=true]"),
+        "Click & drag the range bar <br> to move it forward/backward.","s"
+      );
+      kshf.activeTipsy = null;
+      helpin.highlightBox(
+        s.DOM.root.selectAll(".rangeLimitOnChart"),
+        "Click & drag the end-points<br> to adjust the limits.","s"
+      );
     }
   },
   {
-    q: "Set or Edit Unit Name of Numeric Attribute",
-    actions: "Set+Edit",
-    topics: "Number Summary+Attribute",
-    isRelevant: function(){
-      return this.authoringMode && _getR(this.summaries,function(summary){ 
-        return summary.panel && summary.type==="interval" && !summary.isTimeStamp();
-      });
-    },
-  },
-  {
-    q: "Save Filtering",
-    actions: "Explore+Save+Store+Filter",
-    topics: "Selection",
+    q: "Save Filtering Selection",
+    actions: "Explore+Save+Filter",
+    topics: "",
     isRelevant: function(){ 
       return this.filters.forEach(function(filter){ return filter.isFiltered; });
     },
@@ -131,7 +122,7 @@ var questions = [
         helpin.highlightBox(
           r.DOM.catTextSearch,
           "Type your categorical text search here.<br><br>"+
-          "The categories that match will be selected <br>and filter the data.");
+          "The categories that match will be selected <br>to filter the records.");
       }
     }
   },
@@ -148,87 +139,109 @@ var questions = [
       if(r){
         helpin.highlightBox(
           browser.recordDisplay.DOM.recordTextSearch,
-          "<b>Type your text seach here.</b><br><br>"+
-          "The records will be filtered based on your query.<br>"+
+          "<b>Type your record text seach here.</b><br><br>"+
+          "As you type, matching records will be highlighted.<br><br>"+
+          "<b>Enter</b> to filter records.<br>"+
+          "<b>Shift+Enter</b> to select for comparison.<br>"+
           "If you type multiple words, you can specify <br>"+
-          "if <b>all</b> or <b>some</b> words need to match with a record.","n");
+          "if <b>all</b> or <b>some</b> words need to match a record.","n");
       }
     }
   },
   {
-    q: "Explore missing attribute values",
+    q: "Explore records with missing/invalid values",
     actions: "Explore+Select",
     topics: "Attribute+Missing Value",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){
-        return summary.panel && summary.missingValueAggr.records.length>0;
+        return summary.inBrowser() && summary.missingValueAggr.records.length>0;
       });
     },
     activate: function(q){
       var DOM = [[]];
       this.summaries.forEach(function(summary){
-        if(summary.panel && summary.missingValueAggr.records.length>0){
+        if(summary.inBrowser() && summary.missingValueAggr.records.length>0){
           DOM[0] = DOM[0].concat(summary.DOM.missingValueAggr[0]);
         }
       });
       helpin.highlightBox(
         DOM,
-        "A summary has <i class='fa fa-ban'></i> icon if there are some records with no/invalid value.<br>"+
-        "Darker color means there are more records.<br>"+
-        "Mouse-over to highlight these records, <br>click to filter, or shift+click to compare.");
+        "<i class='fa fa-ban'></i> icon is visible when<br> some records have missing/invalid values.<br><br>"+
+        //"Darker color means there are more records.<br>"+
+        "<i class='fa fa-mouse-pointer'></i> <b>Mouse-over</b> to highlight. <br>"+
+        "<i class='fa fa-filter'></i> <b>Click</b> to filter<br>"+
+        "<i class='fa fa-lock'></i> <b>Shift+click</b> to compare.");
     }
   },
   {
-    q: "Change measure labels across absolute # & percentage % values",
+    q: "Change measure labels to percentage(%) or absolute(#) values",
     actions: "Explore+Change",
     topics: "Measure Label+Measurement",
     isRelevant: function(){
-      return _getR(this.summaries, function(summary){ return summary.panel; });
+      return _getR(this.summaries, function(summary){ return summary.inBrowser(); });
     },
     activate: function(q){
       var r = q.isRelevant.call(this);
       if(r){
         helpin.highlightBox(
           this.DOM.root.selectAll(".measurePercentControl"),
-          "Click this icon (# %).<br><br>"+
+          "Click this icon.<br><br>"+
           "Note: Only absolute values are applicable<br> in 'average' aggregate measure."
           );
       }
     }
   },
   {
-    q: "Change measure function (count vs. sum/total vs. average)",
+    q: "Change measure function: Count - Sum/Total - Average",
     actions: "Explore+Change",
-    topics: "Measure Function+Measurement"
+    topics: "Measure Function+Measurement",
+    // TODO - multiple steps
+    activate: function(){
+      helpin.highlightBox(
+        this.DOM.recordInfo,
+        "Click here.","n"
+        );
+      // Note: Your options are numeric attributes with non-negative values.
+    }
   },
   {
-    q: "Change scale mode across absolute vs. part-of",
+    q: "Change measurement scale mode to part-of or absolute",
     actions: "Explore+Change+View",
     topics: "Scale Mode+Measurement",
     isRelevant: function(){
-      return _getR(this.summaries, function(summary){ return summary.panel; });
+      return _getR(this.summaries, function(summary){ return summary.inBrowser(); });
     },
     activate: function(q){
-      var r = q.isRelevant.call(this);
-      if(r){
-        this.showScaleModeControls(true);
-        helpin.highlightBox(
-          this.DOM.root.selectAll(".scaleModeControl"),
-          "Click chart axis area.<br><br>"+
-          "Part-of scale is designed for highlight and compare selections."
-          );
-      }
+      this.showScaleModeControls(true);
+      helpin.highlightBox(
+        this.DOM.root.selectAll(".scaleModeControl"),
+        "Click chart axis area.<br><br>"+
+        "Part-of scale is designed for highlight and compare selections."
+        );
     },
     deactivate: function(){
       this.showScaleModeControls(false);
     }
   },
   {
-    q: "Change the Summary View Mode",
+    q: "Change category view mode to map or list",
     actions: "Explore+Change+View",
     topics: "Summary View+Categorical Summary+Map",
     isRelevant: function(){
-      return _getR(this.summaries, function(summary){ return summary.panel & summary.catMap; });
+      return _getR(this.summaries, function(summary){ return summary.inBrowser() && summary.catMap; });
+    },
+    activate: function(q){
+      var DOM = [[]];
+      this.summaries.forEach(function(summary){
+        if(summary.inBrowser() && summary.catMap){
+          DOM[0] = DOM[0].concat(summary.DOM.summaryViewAs[0]);
+        }
+      });
+      helpin.highlightBox(
+        DOM,
+        "Click chart axis area.<br><br>"+
+        "Part-of scale is designed for highlight and compare selections.","e"
+        );
     }
   },
   {
@@ -244,7 +257,7 @@ var questions = [
       var r = _getR(browser.records, function(record){ return record.isWanted; });
       if(r){
         helpin.highlightBox(
-          d3.select(r.DOM.record).select(".recordToggleDetail"),
+          d3.select(r.DOM.record).select(".recordToggleDetail > .item_details_toggle"),
           "Click this icon to open a popup panel<br> that shows all record attributes.","n");
       }
     }
@@ -260,9 +273,9 @@ var questions = [
     }
   },
   {
-    q: "Remove a filter selection on a summary.",
+    q: "Remove filter selection on a summary",
     actions: "Explore+Remove+Filter",
-    topics: "Selection",
+    topics: "Selection+Breadcrumb",
     other: "Clear",// use in text search?
     isRelevant: function(){ 
       return _getR(this.filters, function(filter){ return filter.isFiltered; });
@@ -270,12 +283,17 @@ var questions = [
     activate: function(){
       helpin.highlightBox(
         this.DOM.root.selectAll(".kshf .kshfSummary[filtered=true] > .headerGroup .clearFilterButton"),
-        "Click here"
+        "Or, <b>Click</b> <i class='fa fa-times'></i>.","e"
         );
+      kshf.activeTipsy = null;
+      var DOM_breadcrumbs = this.DOM.breadcrumbs.selectAll('[class*="crumbMode_Filter"]');
+      if(DOM_breadcrumbs[0].length>0){
+        helpin.highlightBox(DOM_breadcrumbs,"<b>Click</b> the breadcrumb.","n");
+      }
     }
   },
   {
-    q: "Remove a Category Selection",
+    q: "Remove filtering on a category",
     actions: "Explore+Remove+Filter",
     topics: "Selection+Category+Categorical Summary",
     other: "Clear",
@@ -288,7 +306,7 @@ var questions = [
   {
     q: "Clear All Filtering / Show all Records",
     actions: "Explore+Remove+Filter",
-    topics: "Browser",
+    topics: "Browser+Breadcrumb",
     posBottom: true,
     isRelevant: function(){ 
       return _getR(this.filters, function(filter){ return filter.isFiltered; });
@@ -324,8 +342,48 @@ var questions = [
     actions: "Explore+Sort",
     topics: "Categorical Summary+Category",
     isRelevant: function(){
-      return this.summaries.some(function(summary){ return summary.panel && summary.showTextSearch; });
+      return _getR(this.summaries, function(summary){ 
+        return summary.panel && 
+          summary.type==="categorical" && 
+          summary.configRowCount>0 && 
+          summary.catSortBy_Active.no_resort===false;
+      });
+    },
+    activate: function(){
+      var DOM = [[]];
+      this.summaries.forEach(function(summary){
+        if(summary.panel && 
+          summary.type==="categorical" && 
+          summary.configRowCount>0 && 
+          summary.catSortBy_Active.no_resort===false){
+            DOM[0].push(summary.DOM.catSortButton[0][0]);
+            summary.DOM.catSortButton.style("opacity",1);
+        }
+      });
+      helpin.highlightBox( DOM,
+         "Click this icon.<br><br>"+
+         "It appears when you mouse-over the summary<br>"+
+         "and if categories can be sorted in reverse.","n");
+    },
+    deactivate: function(){
+      this.summaries.forEach(function(summary){
+        if(summary.panel && 
+          summary.type==="categorical" && 
+          summary.configRowCount>0 && 
+          summary.catSortBy_Active.no_resort===false){
+            summary.DOM.catSortButton.style("opacity",null);
+        }
+      });
     }
+  },
+  {
+    q: "Change record view mode to list, map or network",
+    action: "Explore+Change+View",
+    topics: "Record Display+Map",
+    isRelevant: function(){
+      return this.recordDisplay.recordViewSummary !== null
+        && ( this.recordDisplay.config.geo || this.recordDisplay.config.linkBy );
+    },
   },
   {
     q: "Change record sorting",
@@ -339,7 +397,7 @@ var questions = [
       helpin.highlightBox(
         this.recordDisplay.DOM.root.select(".listSortOptionSelect"),
         "Click here.<br><br>"+
-        "Sorting options include numeric or time attributes only.",
+        "Note: Records can be sorted by number or time summaries.",
         "n");
       // Also highlight the 
       kshf.activeTipsy = null;
@@ -348,7 +406,7 @@ var questions = [
       helpin.highlightBox(
         DOM,
         "Or, click <i class='fa fa-sort'></i> in summary header.</i><br><br>"+
-        "This icon is shown when you mouse-over the summary.",
+        "This icon is shown when<br> you mouse-over the summary.",
         "ne");
     },
     deactivate: function(){
@@ -358,19 +416,29 @@ var questions = [
     // TODO: Sorting is actually color in maps or networks...
   },
   {
-    q: "Zoom in Interval Range Selection",
+    q: "Zoom in / out of active range filtering",
     actions: "Zoom+Navigate",
     topics: "Time Summary+Number Summary",
     isRelevant: function(){
-      return _getR(this.summaries, 
-        function(summary){ 
-          return summary.panel && summary.type==="interval" &&
-            summary.isFiltered(); 
-        }) ;
+      return _getR(this.summaries, function(summary){ 
+        return summary.panel && summary.type==="interval" && summary.isFiltered(); 
+      }) ;
+    },
+    // Note: You can zoom only into filtered range. You cannot zoom beyond maximum resolution of time data.
+    activate: function(q){
+      var s = q.isRelevant.call(this);
+      var DOM = s.DOM.root.select(".zoomControl");
+      DOM.style("display","block");
+      helpin.highlightBox( DOM, "Click here", "s" );
+    },
+    deactivate: function(q){
+      var s = q.isRelevant.call(this);
+      var DOM = s.DOM.root.select(".zoomControl");
+      DOM.style("display",null);
     }
   },
   {
-    q: "Navigate / Pan / Zoom in Maps",
+    q: "Navigate (pan and zoom) in maps",
     actions: "View+Navigate+Pan+Zoom",
     topics: "Map+Record Display",
     isRelevant: function(){
@@ -380,21 +448,33 @@ var questions = [
     }
   },
   {
-    q: "Show / Hide Set Summary",
+    q: "Show / Hide set (pairwise) summary",
     actions: "Explore+Show+Hide",
     topics: "Set Summary",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ return summary.panel && summary.isMultiValued; }); 
+    },
+    activate: function(q){
+      var DOM = this.DOM.root.selectAll(".kshfSummary[isMultiValued=true] .setMatrixButton");
+      DOM.style("display","inline-block");
+      helpin.highlightBox( DOM,
+        "Click this icon.<br><br>"+
+        "This button is only visible if <br>"+
+        "some record have multiple categories.","n");
+    },
+    deactivate: function(){
+      var DOM = this.DOM.root.selectAll(".kshfSummary[isMultiValued=true] .setMatrixButton");
+      DOM.style("display",null);
     }
   },
   {
-    q: "Show / hide percentiles",
+    q: "Show / hide percentile ranges in number or time summaries",
     actions: "Explore+Show+Hide",
     topics: "Percentile Chart+Number Summary",
-    isRelevant: function(){ 
+    isRelevant: function(){
       return _getR(this.summaries, 
         function(summary){ 
-          return summary.panel && summary.type==="interval" && !summary.isTimeStamp();
+          return summary.inBrowser() && summary.type==="interval" && !summary.isTimeStamp();
         });
     }
   },
@@ -403,7 +483,7 @@ var questions = [
     actions: "Layout+Open",
     topics: "Summary+Time Summary",
     isRelevant: function(){
-      return _getR(this.summaries, function(summary){ return summary.panel && summary.collapsed; });
+      return _getR(this.summaries, function(summary){ return summary.inBrowser() && summary.collapsed; });
     },
     activate: function(q){
       helpin.highlightBox(
@@ -416,7 +496,7 @@ var questions = [
     actions: "Layout+Close",
     topics: "Summary+Time Summary",
     isRelevant: function(){
-      return _getR(this.summaries, function(summary){ return summary.panel && !summary.collapsed; });
+      return _getR(this.summaries, function(summary){ return summary.inBrowser() && !summary.collapsed; });
     },
     activate: function(q){
       var DOM = this.DOM.root.selectAll(".kshfSummary[collapsed=false] .buttonSummaryCollapse");
@@ -424,7 +504,7 @@ var questions = [
       helpin.highlightBox(
         DOM,
         "Click this icon.<br><br>"+
-        "The icon is shown when you move mouse over an open summary.");
+        "The icon is shown when<br> you mouse-over on an open summary.");
     }
   },
   {
@@ -433,7 +513,7 @@ var questions = [
     topics: "Summary+Categorical Summary",
     isRelevant: function(){
       return _getR(this.summaries, function(summary){ 
-        return summary.panel && summary.type==="categorical" && 
+        return summary.inBrowser() && summary.type==="categorical" && 
           summary.collapsed===false && !summary.areAllCatsInDisplay();
       });
     },
@@ -443,8 +523,8 @@ var questions = [
         );
       DOM.style("opacity",1);
       helpin.highlightBox(DOM,
-        "Click here.<br><br>"+
-        "The icon is shown when you mouse-over an open summary<br> with some categories that did not fit in the view."
+        "Click <i class='fa fa-arrows-alt'></i> icon.<br><br>"+
+        "The icon is shown when you mouse-over a summary<br> with some categories that are out of view."
         );
     },
     deactivate: function(){
@@ -458,14 +538,14 @@ var questions = [
     actions: "Configure",
     topics: "Summary",
     isRelevant: function(){
-      return _getR(this.summaries, function(summary){ return summary.panel; });
+      return _getR(this.summaries, function(summary){ return summary.inBrowser(); });
     },
     activate: function(q){
       var DOM =this.DOM.root.selectAll(".summaryConfigControl");
       DOM.style("display","inline-block");
       helpin.highlightBox(
         DOM,
-        "Click this icon.<br><br>"+
+        "<b>Click <i class='fa fa-gear'></i></b>.<br><br>"+
         "Note: Summary must be open before you configure it.","n");
     },
     deactivate: function(){
@@ -506,6 +586,7 @@ var questions = [
     isRelevant: function(){
       return this.authoringMode;
     }
+    // Double click - drag&drop
   },
   {
     q: "Remove a summary from browser",
@@ -549,7 +630,7 @@ var questions = [
     }
   },
   {
-    q: "Split categories by separator",
+    q: "Split categories by a separator",
     actions: "Explore+Author+Split+Edit",
     topics: "Category",
     isRelevant: function(){
@@ -565,23 +646,52 @@ var questions = [
     }
   },
   {
+    q: "Set or Edit Unit Name of Numeric Attribute",
+    actions: "Set+Edit",
+    topics: "Number Summary+Attribute",
+    isRelevant: function(){
+      return this.authoringMode && _getR(this.summaries,function(summary){ 
+        return summary.panel && summary.type==="interval" && !summary.isTimeStamp();
+      });
+    },
+  },
+  {
     q: "Extract time component (month, day, hour...)",
     actions: "Explore+Author+Parse+Edit+Extract",
     topics: "Time Summary",
     isRelevant: function(){ 
-      return _getR(this.summaries, function(summary){ 
+      return this.authoringMode && _getR(this.summaries, function(summary){ 
         return summary.panel && summary.type==="interval" && summary.isTimeStamp();
       });
     }
   },
   {
-    q: "Edit attribute name",
+    q: "Rename summary",
     actions: "Layout+Rename+Edit",
     topics: "Attribute+Summary",
     other: 'Change',
     isRelevant: function(){
       return this.authoringMode;
     }
+    // Click on the name in authoring mode.
+  },
+  {
+    q: "See measurements of a locked (compared) selection",
+    actions: "Compare",
+    topics: "Aggregate+Measurement+Breadcrumb",
+    isRelevant: function(){
+      if(this.selectedAggr.Compared_A) return this.selectedAggr.Compared_A;
+      if(this.selectedAggr.Compared_B) return this.selectedAggr.Compared_B;
+      if(this.selectedAggr.Compared_C) return this.selectedAggr.Compared_C;
+      return false;
+    },
+    activate: function(){
+      var DOM_breadcrumbs = this.DOM.breadcrumbs.selectAll('[class*="crumbMode_Compared_"]');
+      if(DOM_breadcrumbs[0].length>0){
+        helpin.highlightBox(DOM_breadcrumbs,"Mouse-over the <b>breadcrumb</b>.","n");
+      }
+    }
+
   },
 /*  {
     q: "Clear text search",
@@ -596,7 +706,7 @@ var questions = [
     actions: "Import"
   },*/
   {
-    q: "Save Browser Configuration",
+    q: "Save browser configuration",
     actions: 'save',
     isRelevant: function(){
       return this.authoringMode;
@@ -611,7 +721,7 @@ var questions = [
     }
   },
   {
-    q: "Save as Public/Private",
+    q: "Change Gist upload mode to private or public",
     isRelevant: function(){
       return kshf.gistLogin;
     }
@@ -747,7 +857,7 @@ Helpin.prototype = {
   },
   initDOM_ClosePanel: function(){
     this.DOM.root.append("div").attr("class","overlay_Close fa fa-times-circle")
-      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.Close }); })
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.Close }); })
       .on("mouseenter",function(){ this.tipsy.show(); })
       .on("mouseleave",function(){ this.tipsy.hide(); })
       .on("click",function(){ 
@@ -766,7 +876,31 @@ Helpin.prototype = {
   },
   initDOM_TextSearch: function(){
     var me=this;
-    this.DOM.TextSearchBlock = this.DOM.SearchBlock.append("div").attr("class","TextSearchBlock");
+    var browser = this.browser;
+    this.DOM.TextSearchBlock = this.DOM.SearchBlock.append("div").attr("class","TextSearchBlock")
+      .on("mousedown", function (d, i) {
+        var initPos = d3.mouse(d3.select("body")[0][0]);
+        var DOM = me.DOM.root[0][0];
+        me.DOM.root.style("transition","none");
+        var initX = parseInt(DOM.style.right);
+        var initY = parseInt(DOM.style.top);
+        var boxWidth  = DOM.getBoundingClientRect().width;
+        var boxHeight = DOM.getBoundingClientRect().height;
+        var maxWidth  = browser.DOM.root[0][0].getBoundingClientRect().width  - boxWidth;
+        var maxHeight = browser.DOM.root[0][0].getBoundingClientRect().height - boxHeight;
+        browser.DOM.root.attr("drag_cursor","mbing")
+        .on("mousemove", function() {
+          var newPos = d3.mouse(d3.select("body")[0][0]);
+          DOM.style.right = Math.min(maxWidth,  Math.max(0, initX+initPos[0]-newPos[0] ))+"px";
+          DOM.style.top   = Math.min(maxHeight, Math.max(0, initY-initPos[1]+newPos[1] ))+"px";
+        }).on("mouseup", function(){
+          me.DOM.root.style("transition",null);
+          browser.DOM.root
+            .attr("drag_cursor",null)
+            .on("mousemove", null).on("mouseup", null);
+        });
+       d3.event.preventDefault();
+      });
     this.DOM.TextSearchBlock.append("span").html("How do I ");
     this.DOM.TextSearchBlock.append("input")
       .attr("type","text")
@@ -850,6 +984,9 @@ Helpin.prototype = {
         .append("div").attr("class","QuestionBlock")
         .each(function(question){ question.DOM = d3.select(this); })
         .on("click", function(q){
+          if(me.selectedQuestion===q){
+            return;
+          }
           var isRelevant = q.isRelevant.call(me.browser);
           if(isRelevant===undefined || isRelevant===null || isRelevant === false){
             alert("The questions is not relevant for your data or view, because: \n"+q.relevance);
@@ -857,8 +994,9 @@ Helpin.prototype = {
           }
           if(q.activate) {
             me.selectedQuestion = q;
-            me.DOM.root.attr("question",true);
-            me.DOM.root.attr("pos",q.posBottom?"bottom":"top");
+            me.DOM.root.attr("question",true)
+              .style("top","10px")
+              .style("right","10px");
             this.setAttribute("selected",true);
             me.browser.panel_overlay.attr("show","answer");
             q.activate.call(me.browser, q);
@@ -912,6 +1050,7 @@ Helpin.prototype = {
   closeQuestion: function(){
     if(this.selectedQuestion===null) return;
     this.DOM.answers.selectAll(".highlightBox").remove();
+    this.DOM.root.style("right",null).style("top",null);
     if(kshf.activeTipsy) kshf.activeTipsy.hide();
     this.selectedQuestion.DOM.attr("selected",null);
     if(this.selectedQuestion.deactivate) this.selectedQuestion.deactivate.call(this.browser, this.selectedQuestion);
