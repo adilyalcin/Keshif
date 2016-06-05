@@ -3,6 +3,8 @@ var socialShare = true;
 // turn on rubbon by default
 var githubButton = false;
 
+var browser;
+
 var getIcon = function(v){
   var iconName="";
   switch(v.toLowerCase()){
