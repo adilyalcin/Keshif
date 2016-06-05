@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Airbnb - Washington D.C. Listings, Oct. 2015</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    itemName: "Listings",
+    source: {
+      gdocId: "17XNciT8g_Pdu2E9bEZxa90EvEmPtBwo1gkRmDSAcHiU",
+      tables: "Listings"
+    },
+    summaries: [
+      { name : "Neighborhood",
+        value: "neighbourhood_cleansed",
+        catSplit: ", " },
+      { name : "Room Type",
+        value: "room_type" },
+      { name : "Property Type",
+        value: "property_type",
+        collapsed: true },
+      { name : "Number of Beds",
+        value: "beds" },
+      { name : "Bed Type",
+        value: "bed_type",
+        collapsed: true },
+      { name : "Number of Bedrooms",
+        value: "bedrooms",
+        collapsed: true },
+      { name : "Number of Bathrooms",
+        value: "bathrooms" },
+
+      { name: "Amenities",
+        panel: "right",
+        value: function(){
+          return this.amenities.replace(/\{/g,"").replace(/\}/g,"").replace(/\"/g,"").split(",");
+        } },
+      { name : "Review Rating",
+        panel: "right",
+        value: "review_scores_rating",
+        "intervalScale": "linear" },
+      { name : "First Review Date",
+        panel: "right",
+        value: "first_review",
+        collapsed: true },
+      { name : "Number of Reviews",
+        panel: "right",
+        value: "number_of_reviews",
+        collapsed: true },
+      { name : "Host Response Time",
+        panel: "right",
+        value: "host_response_time" },
+      { name : "Cancellation Policy",
+        panel: "right",
+        value: "cancellation_policy" },
+      { name : "Minimum Number of Nights",
+        panel: "right",
+        value: "minimum_nights",
+        collapsed: true },
+      { name : "Maximum Number of Nights",
+        panel: "right",
+        value: "maximum_nights",
+        collapsed: true },
+
+      { name : "Price Per Night",
+        panel: "middle",
+        value: "price",
+        unitName: "$" },
+      { name : "Price Per Week",
+        panel: "middle",
+        value: "weekly_price",
+        collapsed: true,
+        unitName: "$" },
+      { name : "Price Per Month",
+        panel: "middle",
+        value: "monthly_price",
+        collapsed: true,
+        unitName: "$" },
+      { name : "Cleaning Fee",
+        panel: "middle",
+        value: "cleaning_fee",
+        collapsed: true,
+        unitName: "$" },
+      { name : "Security Deposit",
+        panel: "middle",
+        value: "security_deposit",
+        collapsed: true,
+        unitName: "$" },
+      { name : "Extra Person Fee",
+        panel: "middle",
+        value: "extra_people",
+        collapsed: true,
+        unitName: "$"
+      }
+    ],
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 160,
+    middlePanelLabelWidth: 160,
+    recordDisplay: {
+      displayType: "grid",
+      sortBy: "Price Per Night",
+      sortColWidth: 48,
+      detailsToggle: "off",
+      textSearch: "name",
+      recordView: function(){
+        return "<a target='_blank' href='https://www.airbnb.com/rooms/"+this.id+"'>"+
+          "<span class='thumbnail'>"+
+            "<img class='thumbImg' src='"+this.medium_url+"'></span></a>"+
+          "<span class='title'>"+this.name+"</span>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser {
+}
+.kshfRecord{ width: 130px; }
+.content{ padding: 3px; }
+.thumbImg{
+  max-height: 81px;
+  border-radius: 10px;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">Airbnb - Washington D.C. Listings, Oct. 2015</div>
+      <div id="demo_Browser"></div>
+
+      <div id="demo_Infobox">
+        Data compiled by <a href='https://twitter.com/pgilks' target='blank'>@pgilks</a>, and visualized 
+          <a href='http://paintbynumbersblog.blogspot.co.uk/2013/05/the-hopometer-visualising-beer-strength.html'>here</a>.
+        Also visualized at <a href='http://vizable.tableau.com/blog#which-beer-to-drink-on-stpatricksday-32' target='_blank'>Vizable</a>.
+        </div>
+      </div>
+  </body>
+</html>
