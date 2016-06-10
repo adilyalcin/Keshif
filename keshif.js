@@ -4350,31 +4350,29 @@ kshf.Browser.prototype = {
     loadTable_CSV: function(tableDescr){
       var me=this;
 
-      function processCSVText(data){
-        if(kshf.dt[tableDescr.name]){
-          me.incrementLoadedTableCount();
-          return;
-        }
-        var arr = [];
-        var idColumn = tableDescr.id;
-
-        var config = {};
-        config.dynamicTyping = true;
-        config.header = true; // header setting can be turned off
-        if(tableDescr.header===false) config.header = false;
-        if(tableDescr.preview!==undefined) config.preview = tableDescr.preview;
-        if(tableDescr.fastMode!==undefined) config.fastMode = tableDescr.fastMode;
-        if(tableDescr.dynamicTyping!==undefined) config.dynamicTyping = tableDescr.dynamicTyping;
-
-        var parsedData = Papa.parse(data, config);
-
-        parsedData.data.forEach(function(row,i){
-          if(row[idColumn]===undefined) row[idColumn] = i;
-          arr.push(new kshf.Record(row,idColumn));
-        })
-
-        me.finishDataLoad(tableDescr, arr);
+      if(kshf.dt[tableDescr.name]){
+        me.incrementLoadedTableCount();
+        return;
       }
+
+      var config = {};
+      config.dynamicTyping = true;
+      config.header = true; // header setting can be turned off
+      if(tableDescr.header===false) config.header = false;
+      if(tableDescr.preview!==undefined) config.preview = tableDescr.preview;
+      if(tableDescr.fastMode!==undefined) config.fastMode = tableDescr.fastMode;
+      if(tableDescr.dynamicTyping!==undefined) config.dynamicTyping = tableDescr.dynamicTyping;
+
+      var _i=0, arr = [], idColumn = tableDescr.id;
+      config.chunk = function(_rows){
+        _rows.data.forEach(function(row){
+          if(row[idColumn]===undefined) row[idColumn] = _i++;
+          arr.push(new kshf.Record(row,idColumn));
+        });
+      };
+      config.complete = function(){
+        me.finishDataLoad(tableDescr, arr);
+      };
 
       if(tableDescr instanceof File){
         // Load using FileReader
@@ -4382,14 +4380,23 @@ kshf.Browser.prototype = {
         reader.onload = function(e) { processCSVText(e.target.result); };
         reader.readAsText(tableDescr);
       } else {
-        // Load using URL
-        $.ajax({
-          url: this.source.dirPath+tableDescr.name+"."+this.source.fileType,
-          type: "GET",
-          async: (this.source.callback===undefined)?true:false,
-          contentType: "text/csv",
-          success: processCSVText
-        });
+        if(tableDescr.stream){
+          // TODO: if there is a callback function, do it synchronously
+          config.download = true;
+          Papa.parse(
+            this.source.dirPath+tableDescr.name+"."+this.source.fileType,
+            config);
+        } else {
+          $.ajax({
+            url: this.source.dirPath+tableDescr.name+"."+this.source.fileType,
+            type: "GET",
+            async: (this.source.callback===undefined)?true:false,
+            contentType: "text/csv",
+            success: function(data){
+              Papa.parse(data,config);
+            }
+          });
+        }
       }
     },
     /** Note: Requires json root to be an array, and each object will be passed to keshif item. */
@@ -9467,7 +9474,7 @@ var Summary_Interval_functions = {
                 format: '%e'
               },{
                 type: 'day',
-                step: 7,
+                step: 4,
                 format: function(v){
                   var suffix = kshf.Util.ordinal_suffix_of(v.getUTCDate());
                   var first=d3.time.format.utc("%-b")(v);
