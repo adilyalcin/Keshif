@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Statement of Disbursements, 2016 Q1</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+
+$(document).ready( function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    categoryTextWidth: 250,
+    itemName: "Disbursements",
+    source: {
+      url: "http://disbursements.house.gov/archive.shtml",
+      //dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      dirPath: './data/',
+      fileType: 'csv',
+      tables: "JAN-MAR-2016-SOD-DETAIL-GRID",
+    },
+    summaries: [
+      { name: "Program", value: "PROGRAM" },
+      { name: "Category", value: "SORT SUBTOTAL DESCRIPTION" },
+      { name: "Sort Sequence", value: "SORT SEQUENCE", collapsed: true },
+      
+      { name: "Spending Organization", value: "ORGANIZATION", panel: "right" },
+      { name: "Vendor", value: function(){ var v= this["VENDOR NAME"]; if (v) return v.trim(); }, 
+        panel: "right", minAggrValue: 100 },
+      { name: "Data Source", value: "DATA SOURCE", collapsed: true, panel: "right" },
+
+      { name: "Amount", 
+        value: function(){ return Math.max(2,Math.abs(this.AMOUNT)); }, 
+        panel: "middle", unitName: "$"
+        },
+
+      { name: "Transaction Date", value: "TRANSACTION DATE", timeFormat: "%d-%b-%y", panel: "bottom" },
+    ],
+    recordDisplay: {
+      sortBy: "Transaction Date",
+      sortColWidth: 70,
+      textSearch: "DESCRIPTION",
+      recordView: "DESCRIPTION"
+    }
+  });
+});
+</script>
+<style id="kshfStyle">
+//#demo_Browser{ max-width: 950px;  }
+</style>
+	</head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">Statement of Disbursements, 2016 Q1</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from 
+        <a href='http://disbursements.house.gov/archive.shtml' target='_blank'>
+          Statement of Disbursements Archive</a> - United States House of Representatives
+      </div>
+  </body>
+</html>
