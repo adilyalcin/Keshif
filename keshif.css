@@ -1088,6 +1088,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .saveSelection {
   display: none;
   cursor: pointer;
+  color: gray;
   height: 1em;
   font-size: 1.1em;
   margin: 3px 0px;
@@ -1268,6 +1269,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: none;
   text-decoration: none;
   color: #635d46;
+}
+.kshf .panel_Basic:hover .saveSelection {
+  color: black;
 }
 .kshf .panels_Above {
   display: -webkit-box;
@@ -3275,6 +3279,7 @@ top:calc(50% - 8px);
   pointer-events: none;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph .filterButtons {
+  float: left;
   white-space: nowrap;
   cursor: pointer;
   vertical-align: top;

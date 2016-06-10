@@ -842,16 +842,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .saveSelection{
               display: none;
               cursor: pointer;
+              color: gray;
               height: 1em;
               font-size: 1.1em;
               margin: 3px 0px;
               vertical-align: top;
-              &:hover{
-                color: orangered;
-              }
-              &[active=true]{
-                display: inline-block;
-              }
+              &:hover{ color: orangered; }
+              &[active=true]{ display: inline-block; }
             }
             > .crumb{
               display: inline-block;
@@ -998,6 +995,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: #635d46; // if dom type is a, it will show visited links in different color
           }
         } // rightBoxes
+
+        &:hover .saveSelection{ color: black; }
     }
 
     .panels_Above{
@@ -2631,6 +2630,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
 
                     .filterButtons{
+                      float: left;
                       white-space: nowrap;
                       cursor: pointer;
                       vertical-align: top;
