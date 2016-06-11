@@ -239,9 +239,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[relativeMode] .chartAxis_Measure > .tick > .text::after {
   content: "%";
 }
-.kshf[relativeMode] .scaleBound::after {
-  content: "%";
-}
 .kshf[relativeMode] .highlightedAggrValuePointer {
   display: block;
 }

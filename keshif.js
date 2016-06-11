@@ -5285,6 +5285,19 @@ kshf.Browser.prototype = {
       this.recordDisplay.refreshWidth(widthMiddlePanel);
     },
     /** -- */
+    getTickLabel: function(_val){
+      _val = Math.round(_val);
+      if(this.ratioModeActive || this.percentModeActive){
+        return _val.toFixed(0)+"<span class='unitName'>%</span>";
+      } else if(this.measureSummary){
+        // Print with the measure summary unit
+        return this.measureSummary.printWithUnitName(kshf.Util.formatForItemCount(
+          _val),(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g") );
+      } else {
+        return kshf.Util.formatForItemCount(_val);
+      }
+    },
+    /** -- */
     getMeasureLabel: function(aggr,summary){
       var _val;
       if(!(aggr instanceof kshf.Aggregate)){
@@ -5313,8 +5326,6 @@ kshf.Browser.prototype = {
           }
         }
       }
-
-      if(_val<0) _val=0; // TODO? There is it, again... Just sanity I guess
 
       if(this.measureFunc!=="Count"){ // Avg or Sum
         _val = Math.round(_val);
@@ -7332,21 +7343,22 @@ var Summary_Categorical_functions = {
       }
     },
     /** -- */
-    refreshMapColorScaleBounds: function(){
-      var maxAggr_Active = this.getMaxAggr_Active();
-      var boundMin, boundMax;
-      if(this.browser.percentModeActive){
-        boundMin = 0;
-        boundMax = 100*maxAggr_Active/this.browser.allRecordsAggr.measure('Active');
-      } else {
-        boundMin = d3.min(this._cats, function(_cat){ return _cat.measure('Active'); }), 
-        boundMax = maxAggr_Active;
+    refreshMapColorScaleBounds: function(boundMin, boundMax){
+      if(boundMin===undefined && boundMax===undefined){
+        var maxAggr_Active = this.getMaxAggr_Active();
+        if(this.browser.ratioModeActive || this.browser.percentModeActive){
+          boundMin = 0;
+          boundMax = 100*maxAggr_Active/this.browser.allRecordsAggr.measure('Active');
+        } else {
+          boundMin = d3.min(this._cats, function(_cat){ return _cat.measure('Active'); }), 
+          boundMax = maxAggr_Active;
+        }
       }
       
       this.mapColorScale = d3.scale.linear().range([0, 9]).domain([boundMin, boundMax]);
 
-      this.DOM.catMapColorScale.select(".boundMin").html( this.browser.getMeasureLabel(boundMin,this) );
-      this.DOM.catMapColorScale.select(".boundMax").html( this.browser.getMeasureLabel(boundMax,this) );
+      this.DOM.catMapColorScale.select(".boundMin").html( this.browser.getTickLabel(boundMin) );
+      this.DOM.catMapColorScale.select(".boundMax").html( this.browser.getTickLabel(boundMax) );
     },
     /** -- */
     refreshViz_Active: function(){
@@ -7450,13 +7462,8 @@ var Summary_Categorical_functions = {
               return (_cat._measure.Active===0) ? null : 100*_cat.ratioHighlightToActive();
             }) : 
             d3.max(this._cats, function(_cat){ return _cat.measure('Highlight'); });
-          
-          this.DOM.catMapColorScale.select(".boundMin").text(Math.round(boundMin));
-          this.DOM.catMapColorScale.select(".boundMax").text(Math.round(boundMax));
 
-          this.mapColorScale = d3.scale.linear()
-            .range([0, 9])
-            .domain([boundMin,boundMax]);
+          this.refreshMapColorScaleBounds(boundMin, boundMax);
         }
 
         var allRecordsAggr_measure_Active = me.browser.allRecordsAggr.measure('Active');
@@ -7510,14 +7517,14 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_Axis: function(){
-      if(this.isEmpty()) return;
+      if(this.isEmpty() || this.collapsed) return;
+      
       var me=this;
-
-      var tickValues, posFunc, transformFunc, maxValue, chartWidth = this.getWidth_CatChart();
-
+      var tickValues, posFunc, transformFunc;
+      var chartWidth = this.getWidth_CatChart();
       var axis_Scale = this.chartScale_Measure;
 
-      function setCustomAxis(){
+      function setCustomAxis(maxValue){
         axis_Scale = d3.scale.linear()
           .rangeRound([0, chartWidth])
           .nice(me.chartAxis_Measure_TickSkip())
@@ -7526,56 +7533,57 @@ var Summary_Categorical_functions = {
       };
 
       if(this.browser.ratioModeActive) {
-        maxValue = 100;
-        setCustomAxis();
+        setCustomAxis( 100 );
       } else if(this.browser.percentModeActive) {
-        maxValue = Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
-        setCustomAxis();
+        setCustomAxis( Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active')) );
       }
 
       // GET TICK VALUES ***********************************************************
       tickValues = axis_Scale.ticks(this.chartAxis_Measure_TickSkip());
-      // remove 0-tick
-      tickValues = tickValues.filter(function(d){return d!==0;});
-      // Remove non-integer values from count
+      if(this.browser.measureFunc==="Count" || true){ 
+        // remove 0-tick // TODO: The minimum value can be below zero, and you may wish to label 0-line
+        tickValues = tickValues.filter(function(d){ return d!==0; });
+      }
+      // Remove non-integer values is appropriate
       if((this.browser.measureFunc==="Count") || (this.browser.measureFunc==="Sum" && !this.browser.measureSummary.hasFloat)){
-        tickValues = tickValues.filter(function(d){return d%1===0;});
+        tickValues = tickValues.filter(function(d){ return d%1===0; });
       }
 
-      var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick").data(tickValues,function(i){return i;});
+      var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick")
+        .data(tickValues,function(i){return i;});
+      // Remove old ones
+      tickDoms.exit().remove();
+      // Add new ones
+      var tickData_new=tickDoms.enter().append("span").attr("class","tick");
 
-      transformFunc = function(d){
-        kshf.Util.setTransform(this,"translateX("+(axis_Scale(d)-0.5)+"px)");
-      }
-
-      var x=this.browser.noAnim;
-
-      if(x===false) this.browser.setNoAnim(true);
-      var tickData_new=tickDoms.enter().append("span").attr("class","tick").each(transformFunc);
-      if(x===false) this.browser.setNoAnim(false);
-
-      // translate the ticks horizontally on scale
       tickData_new.append("span").attr("class","line longRefLine")
         .style("top","-"+(this.categoriesHeight+3)+"px")
         .style("height",(this.categoriesHeight-1)+"px");
-
       tickData_new.append("span").attr("class","text measureAxis_1");
-
-      this.DOM.wrapper.attr("showMeasureAxis_2", this.configRowCount>0?"true":null);
-
       if(this.configRowCount>0){
-        var h=this.categoriesHeight;
-        var hm=tickData_new.append("span").attr("class","text measureAxis_2").style("top",(-h-21)+"px");
-        this.DOM.chartAxis_Measure.selectAll(".scaleModeControl.measureAxis_2").style("top",(h-14)+"px");
+        tickData_new.append("span").attr("class","text measureAxis_2").style("top",(-this.categoriesHeight-21)+"px");
+        this.DOM.chartAxis_Measure.selectAll(".scaleModeControl.measureAxis_2").style("top",(this.categoriesHeight-14)+"px");
       }
 
-      this.DOM.chartAxis_Measure_TickGroup.selectAll(".text").html(function(d){ return me.browser.getMeasureLabel(d); });
+      // Place the doms at the zero-point, so their position can be animated.
+      tickData_new.each(function(){ kshf.Util.setTransform(this,"translatex(0px)"); });
+
+      // set text of each label
+      this.DOM.chartAxis_Measure_TickGroup.selectAll(".text")
+        .html(function(d){ return me.browser.getTickLabel(d); });
 
       setTimeout(function(){
-        me.DOM.chartAxis_Measure.selectAll("span.tick").style("opacity",1).each(transformFunc);
-      });
+        var transformFunc = function(d){
+          kshf.Util.setTransform(this,"translateX("+(axis_Scale(d)-0.5)+"px)");
+        }
 
-      tickDoms.exit().remove();
+        var x=this.browser.noAnim;
+        if(x===false) this.browser.setNoAnim(true);
+        me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
+        if(x===false) this.browser.setNoAnim(false);
+
+        me.DOM.wrapper.attr("showMeasureAxis_2", this.configRowCount>0?"true":null);
+      });
     },
     /** -- */
     refreshLabelWidth: function(){
@@ -8186,7 +8194,9 @@ var Summary_Categorical_functions = {
       if(this.getMaxAggr_Active()>100000){
         ticksSkip = width/30;
       }
-      if(this.browser.percentModeActive){
+      if(this.browser.ratioModeActive){
+        ticksSkip /= 1.1
+      } else if(this.browser.percentModeActive){
         ticksSkip /= 1.1;
       }
       return ticksSkip;
@@ -8367,9 +8377,7 @@ var Summary_Categorical_functions = {
 
       this.DOM.catMapColorScale.append("span").attr("class","scaleBound boundMin");
       this.DOM.catMapColorScale.append("span").attr("class","scaleBound boundMax");
-
-      this.DOM.catMapColorScale.append("span")
-        .attr("class","scaleModeControl fa fa-arrows-h")
+      this.DOM.catMapColorScale.append("span").attr("class","scaleModeControl fa fa-arrows-h")
         .each(function(){
           this.tipsy = new Tipsy(this, {
             gravity: 'e', title: function(){
@@ -8389,7 +8397,6 @@ var Summary_Categorical_functions = {
           me.browser.showScaleModeControls(false);
           this.tipsy.hide();
         });
-
       this.DOM.catMapColorScale.append("span").attr("class","measurePercentControl")
         .each(function(){
           this.tipsy = new Tipsy(this, {
@@ -10567,42 +10574,48 @@ var Summary_Interval_functions = {
     /** -- */
     refreshViz_Axis: function(){
       if(this.isEmpty() || this.collapsed) return;
-      var me = this, tickValues, maxValue;
-
+      
+      var me = this;
+      var tickValues, maxValue;
       var chartAxis_Measure_TickSkip = me.height_hist/17;
+      var axis_Scale = this.chartScale_Measure;
 
       if(this.browser.ratioModeActive || this.browser.percentModeActive) {
         maxValue = (this.browser.ratioModeActive) ? 100
           : Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
-        tickValues = d3.scale.linear()
+        axis_Scale = d3.scale.linear()
           .rangeRound([0, this.height_hist])
           .domain([0,maxValue])
-          .clamp(true)
-          .ticks(chartAxis_Measure_TickSkip);
-      } else {
-        tickValues = this.chartScale_Measure.ticks(chartAxis_Measure_TickSkip);
+          .clamp(true);
       }
 
-      // remove non-integer values & 0...
-      tickValues = tickValues.filter(function(d){return d%1===0&&d!==0;});
+      // GET TICK VALUES ***********************************************************
+      tickValues = axis_Scale.ticks(chartAxis_Measure_TickSkip);
+      if(this.browser.measureFunc==="Count" || true){ 
+        // remove 0-tick // TODO: The minimum value can be below zero, and you may wish to label 0-line
+        tickValues = tickValues.filter(function(d){ return d!==0; });
+      }
+      // Remove non-integer values is appropriate
+      if((this.browser.measureFunc==="Count") || (this.browser.measureFunc==="Sum" && !this.browser.measureSummary.hasFloat)){
+        tickValues = tickValues.filter(function(d){ return d%1===0; });
+      }
 
       var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick")
-          .data(tickValues,function(i){return i;});
+        .data(tickValues,function(i){return i;});
+      // remove old ones
       tickDoms.exit().remove();
+      // add new ones
       var tickData_new=tickDoms.enter().append("span").attr("class","tick");
 
-      // translate the ticks horizontally on scale
       tickData_new.append("span").attr("class","line");
       tickData_new.append("span").attr("class","text measureAxis_1");
       tickData_new.append("span").attr("class","text measureAxis_2");
 
-      // Place the doms at the bottom of the histogram, so their position is animated?
-      tickData_new.each(function(){
-        kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
-      });
+      // Place the doms at the bottom of the histogram, so their position is animated.
+      tickData_new.each(function(){ kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)"); });
 
-      this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick > span.text")
-        .html(function(d){ return me.browser.getMeasureLabel(d); });
+      this.DOM.chartAxis_Measure_TickGroup.selectAll(".text")
+        .html(function(d){ return me.browser.getTickLabel(d); });
 
       setTimeout(function(){
         var transformFunc;
