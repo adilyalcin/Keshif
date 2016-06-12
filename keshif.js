@@ -4377,7 +4377,7 @@ kshf.Browser.prototype = {
       if(tableDescr instanceof File){
         // Load using FileReader
         var reader = new FileReader();
-        reader.onload = function(e) { processCSVText(e.target.result); };
+        reader.onload = function(e) { Papa.parse(e.target.result,config); };
         reader.readAsText(tableDescr);
       } else {
         if(tableDescr.stream){
@@ -5291,8 +5291,7 @@ kshf.Browser.prototype = {
         return _val.toFixed(0)+"<span class='unitName'>%</span>";
       } else if(this.measureSummary){
         // Print with the measure summary unit
-        return this.measureSummary.printWithUnitName(kshf.Util.formatForItemCount(
-          _val),(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g") );
+        return this.measureSummary.printWithUnitName(kshf.Util.formatForItemCount(_val));
       } else {
         return kshf.Util.formatForItemCount(_val);
       }
