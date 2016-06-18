@@ -21,21 +21,19 @@ $(document).ready( function(){
     domID: "#demo_Browser",
     barChartWidth: 150,
     recordName: "Parking Tickets",
-    leftPanelLabelWidth: 170,
-    middlePanelLabelWidth: 300,
+    leftPanelLabelWidth: 150,
+    middlePanelLabelWidth: 320,
     rightPanelLabelWidth: 170,
     source: {
       url: "http://opendata.dc.gov/datasets/f3336832f98d4ccab272c2d3eb1ed3bc_4",
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: "csv",
       tables: "DCParkingTickets_2015May"
-/*      gdocId: '1wf7fsZgPIVb75uGqdGQQageZYd7L0CBCt9aPtOYDgy0', tables: "Parking Tickets"*/
     },
     summaries: [
       { name: "State of the License Plate", value: "RP_PLATE_STATE", 
-        catLabel: function(){ 
-          return (US_States.index_code[this.id]) ? US_States.index_code[this.id].name : this.id; } 
-        },
+        catLabel: function(){ return (US_States.index_code[this.id]) ? US_States.index_code[this.id].name : this.id; } },
+      { name: "Car Body Style", value: "BODY_STYLE" },
       { name: "Violation Code", value: "VIOLATION_CODE", panel: 'middle',
         catLabel: {
           'P675': "TAXICAB CRUISING LIGHTS",
@@ -185,11 +183,14 @@ $(document).ready( function(){
           'P002': "STAND OR PARK IN ALLEY",
           'P001': "PARK ABREAST OF ANOTHER VEHICLE",
         }},
-      { name: "Car Body Style", value: "BODY_STYLE", panel: 'right' },
       { name: "Time of Day", 
         value: function(){ return Math.floor(this.ISSUE_TIME/100); }, 
         panel: 'right', unitName: ":00" },
       { name: "Date", value: "TICKET_ISSUE_DATE", timeFormat: "%m/%d/%y", panel: 'bottom' },
+      { name: "Day of Week", panel: 'right', catSortBy: "id", catLabel: _demo.DayOfWeek,
+        value: function(r){ 
+          return r._valueCache[9].getDay(); // 9's cache holds the date value...
+        } }
     ]
   });
 });
