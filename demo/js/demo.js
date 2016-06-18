@@ -485,7 +485,7 @@ $(document).ready(function(){
       var demoHeader = d3.select("body").append("div").attr("class","demoHeader");
       
       var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
-      keshif_logo.append("img").attr("class","keshif_logo_img").attr("src","./img/logo.png");
+      keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).style({width: "30px", height: "30px", float: "left"});
       keshif_logo.append("span").attr("class","keshif_logo_content").html("<strong>Keshif</strong></br>Data Made Explorable");
 
       demoHeader.append("div").attr("class","addthis_sharing_toolbox");

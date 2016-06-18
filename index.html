@@ -27,6 +27,7 @@
 socialShare = false;
 $(document).ready(function(){
   $(".youtube").colorbox({iframe:true, width:920, height:600, scalePhotos: true});
+  $("#THELOGO").html(kshf.kshfLogo);
   loadDemoBrowser();
 });
 
@@ -718,9 +719,10 @@ body{
 <div class="container">
   <div class="row header">
     <div class="eight columns title" style='cursor: default;'>
-      <img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">
+      <!--<img src="./demo/img/logo.png" style="height:50px; width:50px; float:left;">-->
       <div>
-        <span style='letter-spacing: 3px; font-weight: 700'>Keshif</span>
+        <span style='letter-spacing: 3px; font-weight: 700'>
+          <span id="THELOGO" style='height:50px; width:50px; float:left;'></span>Keshif</span>
         <span class="descr_text">Keşif (Turkish): <b>Discovery &amp; exploration</b>.
           Made with <i class='fa fa-heart' style='color:orangered;'></i></span>
         </div>
@@ -793,7 +795,7 @@ body{
         Designed to match data &amp; you.
         </div>
     <div class="four columns"><b>Interaction that is easy to learn.</b>
-      Minimal features are designed to work together to create a powerful tool for data exploration.
+      Minimal features are designed to work together to create a more powerful tool for data exploration.
       </div>
     <div class="four columns">
       <b>Browsers that are easy to create.</b>
@@ -805,8 +807,8 @@ body{
   <div class="row featureRow">
     <div class="eight columns"><b>Consistent, unified, fully synchronized, and
       <a href='http://localhost/keshif/demo/NYPL' target='_blank'>scalable</a></b> design.<br>
-      Keshif <i>just works</i> for many datasets in a tabular (spreadsheet) form.<br>
-        Learn once, use many times for rapid data exploration.</div>
+      Keshif <i>just works</i> for many tabular (spreadsheet) datasets.<br>
+        Learn once, use many times to explore your data rapidly.</div>
       <div class="four columns"><b>Built for the open web.</b><br> Customize with HTML, JS, and CSS. 
         Based on simple <a href="https://github.com/adilyalcin/Keshif/wiki" target="_blank">JS config API</a>. 
         </div>

@@ -37,399 +37,374 @@ if(typeof google !== 'undefined'){
   google.load('visualization', '1', {'packages': []});
 }
 
-/*!
-  * Bowser - a browser detector
-  * https://github.com/ded/bowser
-  * MIT License | (c) Dustin Diaz 2015
-  */
-!function(e,t){typeof module!="undefined"&&module.exports?module.exports=t():typeof define=="function"&&define.amd?define(t):this[e]=t()}("bowser",function(){function t(t){function n(e){var n=t.match(e);return n&&n.length>1&&n[1]||""}function r(e){var n=t.match(e);return n&&n.length>1&&n[2]||""}var i=n(/(ipod|iphone|ipad)/i).toLowerCase(),s=/like android/i.test(t),o=!s&&/android/i.test(t),u=/CrOS/.test(t),a=n(/edge\/(\d+(\.\d+)?)/i),f=n(/version\/(\d+(\.\d+)?)/i),l=/tablet/i.test(t),c=!l&&/[^-]mobi/i.test(t),h;/opera|opr/i.test(t)?h={name:"Opera",opera:e,version:f||n(/(?:opera|opr)[\s\/](\d+(\.\d+)?)/i)}:/yabrowser/i.test(t)?h={name:"Yandex Browser",yandexbrowser:e,version:f||n(/(?:yabrowser)[\s\/](\d+(\.\d+)?)/i)}:/windows phone/i.test(t)?(h={name:"Windows Phone",windowsphone:e},a?(h.msedge=e,h.version=a):(h.msie=e,h.version=n(/iemobile\/(\d+(\.\d+)?)/i))):/msie|trident/i.test(t)?h={name:"Internet Explorer",msie:e,version:n(/(?:msie |rv:)(\d+(\.\d+)?)/i)}:u?h={name:"Chrome",chromeBook:e,chrome:e,version:n(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)}:/chrome.+? edge/i.test(t)?h={name:"Microsoft Edge",msedge:e,version:a}:/chrome|crios|crmo/i.test(t)?h={name:"Chrome",chrome:e,version:n(/(?:chrome|crios|crmo)\/(\d+(\.\d+)?)/i)}:i?(h={name:i=="iphone"?"iPhone":i=="ipad"?"iPad":"iPod"},f&&(h.version=f)):/sailfish/i.test(t)?h={name:"Sailfish",sailfish:e,version:n(/sailfish\s?browser\/(\d+(\.\d+)?)/i)}:/seamonkey\//i.test(t)?h={name:"SeaMonkey",seamonkey:e,version:n(/seamonkey\/(\d+(\.\d+)?)/i)}:/firefox|iceweasel/i.test(t)?(h={name:"Firefox",firefox:e,version:n(/(?:firefox|iceweasel)[ \/](\d+(\.\d+)?)/i)},/\((mobile|tablet);[^\)]*rv:[\d\.]+\)/i.test(t)&&(h.firefoxos=e)):/silk/i.test(t)?h={name:"Amazon Silk",silk:e,version:n(/silk\/(\d+(\.\d+)?)/i)}:o?h={name:"Android",version:f}:/phantom/i.test(t)?h={name:"PhantomJS",phantom:e,version:n(/phantomjs\/(\d+(\.\d+)?)/i)}:/blackberry|\bbb\d+/i.test(t)||/rim\stablet/i.test(t)?h={name:"BlackBerry",blackberry:e,version:f||n(/blackberry[\d]+\/(\d+(\.\d+)?)/i)}:/(web|hpw)os/i.test(t)?(h={name:"WebOS",webos:e,version:f||n(/w(?:eb)?osbrowser\/(\d+(\.\d+)?)/i)},/touchpad\//i.test(t)&&(h.touchpad=e)):/bada/i.test(t)?h={name:"Bada",bada:e,version:n(/dolfin\/(\d+(\.\d+)?)/i)}:/tizen/i.test(t)?h={name:"Tizen",tizen:e,version:n(/(?:tizen\s?)?browser\/(\d+(\.\d+)?)/i)||f}:/safari/i.test(t)?h={name:"Safari",safari:e,version:f}:h={name:n(/^(.*)\/(.*) /),version:r(/^(.*)\/(.*) /)},!h.msedge&&/(apple)?webkit/i.test(t)?(h.name=h.name||"Webkit",h.webkit=e,!h.version&&f&&(h.version=f)):!h.opera&&/gecko\//i.test(t)&&(h.name=h.name||"Gecko",h.gecko=e,h.version=h.version||n(/gecko\/(\d+(\.\d+)?)/i)),!h.msedge&&(o||h.silk)?h.android=e:i&&(h[i]=e,h.ios=e);var p="";h.windowsphone?p=n(/windows phone (?:os)?\s?(\d+(\.\d+)*)/i):i?(p=n(/os (\d+([_\s]\d+)*) like mac os x/i),p=p.replace(/[_\s]/g,".")):o?p=n(/android[ \/-](\d+(\.\d+)*)/i):h.webos?p=n(/(?:web|hpw)os\/(\d+(\.\d+)*)/i):h.blackberry?p=n(/rim\stablet\sos\s(\d+(\.\d+)*)/i):h.bada?p=n(/bada\/(\d+(\.\d+)*)/i):h.tizen&&(p=n(/tizen[\/\s](\d+(\.\d+)*)/i)),p&&(h.osversion=p);var d=p.split(".")[0];if(l||i=="ipad"||o&&(d==3||d==4&&!c)||h.silk)h.tablet=e;else if(c||i=="iphone"||i=="ipod"||o||h.blackberry||h.webos||h.bada)h.mobile=e;return h.msedge||h.msie&&h.version>=10||h.yandexbrowser&&h.version>=15||h.chrome&&h.version>=20||h.firefox&&h.version>=20||h.safari&&h.version>=6||h.opera&&h.version>=10||h.ios&&h.osversion&&h.osversion.split(".")[0]>=6||h.blackberry&&h.version>=10.1?h.a=e:h.msie&&h.version<10||h.chrome&&h.version<20||h.firefox&&h.version<20||h.safari&&h.version<6||h.opera&&h.version<10||h.ios&&h.osversion&&h.osversion.split(".")[0]<6?h.c=e:h.x=e,h}var e=!0,n=t(typeof navigator!="undefined"?navigator.userAgent:"");return n.test=function(e){for(var t=0;t<e.length;++t){var r=e[t];if(typeof r=="string"&&r in n)return!0}return!1},n._detect=t,n})
-
-// kshf namespace
 var kshf = {
-    surrogateCtor: function() {},
-    // http://stackoverflow.com/questions/4152931/javascript-inheritance-call-super-constructor-or-use-prototype-chain
-    extendClass: function(base, sub) {
-      // Copy the prototype from the base to setup inheritance
-      this.surrogateCtor.prototype = base.prototype;
-      // Tricky huh?
-      sub.prototype = new this.surrogateCtor();
-      // Remember the constructor property was set wrong, let's fix it
-      sub.prototype.constructor = sub;
-    },
-    maxVisibleItems_Default: 100,
-    scrollWidth: 19,
-    attribPanelWidth: 220,
-    previewTimeoutMS: 250,
-    map: {
-      // http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
-      // http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
-      // http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png
-      // http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png
-      // http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png
-      // http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg
-      // http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg
-      // http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png
-      // http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png
-      // http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png
-      tileTemplate: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-      config: {
-        maxBoundsViscosity: 1, 
-        boxZoom: false,
-        touchZoom: false,
-        doubleClickZoom: false,
-        /*continuousWorld: true, crs: L.CRS.EPSG3857 */
-      },
-      tileConfig: { 
-        attribution: '© <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'+
-          ' contributors &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
-        subdomains: 'abcd',
-        maxZoom: 19,
-        //noWrap: true
-      }
-    },
-    browsers: [],
-    dt: {},
-    dt_id: {},
-    lang: {
-      en: {
-        ModifyBrowser: "Modify browser",
-        OpenDataSource: "Open data source",
-        ShowInfoCredits: "Show info &amp; credits",
-        ShowFullscreen: "Fullscreen",
-        RemoveFilter: "Remove filter",
-        RemoveAllFilters: "Remove all filters",
-        SaveSelection: "Save Selection",
-        MinimizeSummary: "Close summary",
-        OpenSummary: "Open summary",
-        MaximizeSummary: "Maximize summary",
-        RemoveSummary: "Remove summary",
-        ReverseOrder: "Reverse order",
-        Reorder: "Reorder",
-        ShowMoreInfo: "Show more info",
-        Percentiles: "Percentiles",
-        LockToCompare: "Lock to compare",
-        Unlock: "Unlock",
-        Search: "Search",
-        CreatingBrowser: "Creating Keshif Browser",
-        Rows: "Rows",
-        More: "More",
-        LoadingData: "Loading data sources",
-        ShowAll: "Show All",
-        ScrollToTop: "Top",
-        Absolute: "Absolute",
-        Percent: "Percent",
-        PartOf: "Part-Of",
-        Width: "Length",
-        DragToFilter: "Drag",
-        And: "And",
-        Or: "Or",
-        Not: "Not",
-        EditTitle: "Rename",
-        ResizeBrowser: "Resize browser",
-        RemoveRecords: "Remove record view",
-        EditFormula: "Edit formula",
-        NoData: "(no data)",
-        ZoomToFit: "Zoom to fit",
-        Close: "Close",
-        Help: "Help"
-      },
-      tr: {
-        ModifyBrowser: "Tarayıcıyı düzenle",
-        OpenDataSource: "Veri kaynağını aç",
-        ShowInfoCredits: "Bilgi",
-        ShowFullscreen: "Tam ekran",
-        RemoveFilter: "Filtreyi kaldır",
-        RemoveAllFilters: "Tüm filtreleri kaldır",
-        MinimizeSummary: "Özeti ufalt",
-        OpenSummary: "Özeti aç",
-        MaximizeSummary: "Özeti büyüt",
-        RemoveSummary: "Özeti kaldır",
-        ReverseOrder: "Ters sırala",
-        Reorder: "Yeniden sırala",
-        ShowMoreInfo: "Daha fazla bilgi",
-        Percentiles: "Yüzdeler",
-        LockToCompare: "Kilitle ve karşılaştır",
-        Unlock: "Kilidi kaldır",
-        Search: "Ara",
-        LoadingData: "Veriler yükleniyor...",
-        CreatingBrowser: "Keşif arayüzü oluşturuluyor...",
-        Rows: "Satır",
-        More: "Daha",
-        ShowAll: "Hepsi",
-        ScrollToTop: "Yukarı",
-        Absolute: "Net",
-        Percent: "Yüzde",
-        PartOf: "Görece",
-        Width: "Genişlik",
-        DragToFilter: "Sürükle",
-        And: "Ve",
-        Or: "Veya",
-        Not: "Değil",
-        EditTitle: "Değiştir",
-        ResizeBrowser: "Boyutlandır",
-        RemoveRecords: "Kayıtları kaldır",
-        EditFormula: "Formülü değiştir",
-        NoData: "(verisiz)",
-        ZoomToFit: "Oto-yakınlaş",
-        Close: "Kapat",
-        Help: "Yardim"
-      },
-      fr: {
-        ModifyBrowser: "Modifier le navigateur",
-        OpenDataSource: "Ouvrir la source de données",
-        ShowInfoCredits: "Afficher les credits",
-        RemoveFilter: "Supprimer le filtre",
-        RemoveAllFilters: "Supprimer tous les filtres",
-        MinimizeSummary: "Réduire le sommaire",
-        OpenSummary: "Ouvrir le sommaire",
-        MaximizeSummary: "Agrandir le sommaire",
-        RemoveSummary: "??",
-        ReverseOrder: "Inverser l'ordre",
-        Reorder: "Réorganiser",
-        ShowMoreInfo: "Plus d'informations",
-        Percentiles: "Percentiles",
-        LockToCompare: "Bloquer pour comparer",
-        Unlock: "Débloquer",
-        Search: "Rechercher",
-        CreatingBrowser: "Création du navigateur",
-        Rows: "Lignes",
-        More: "Plus",
-        LoadingData: "Chargement des données",
-        ShowAll: "Supprimer les filtres",
-        ScrollToTop: "Début",
-        Absolute: "Absolue",
-        Percent: "Pourcentage",
-        PartOf: "Part-Of",
-        Width: "Largeur",
-        DragToFilter: "??",
-        And: "??",
-        Or: "??",
-        Not: "??",
-        EditFormula: "Edit Formula",
-        NoData: "(no data)",
-        ZoomToFit: "Zoom to fit"
-      },
-      // translation by github@nelsonmau
-      it: {
-        ModifyBrowser: "Modifica il browser",
-        OpenDataSource: "Fonte Open Data",
-        ShowInfoCredits: "Mostra info e crediti",
-        ShowFullscreen: "Schermo intero",
-        RemoveFilter: "Rimuovi il filtro",
-        RemoveAllFilters: "Rimuovi tutti i filtri",
-        MinimizeSummary: "Chiudi il sommario",
-        OpenSummary: "Apri il sommario",
-        MaximizeSummary: "Massimizza il sommario",
-        RemoveSummary: "Rimuovi il sommario",
-        ReverseOrder: "Ordine inverso",
-        Reorder: "Riordina",
-        ShowMoreInfo: "Mostra più informazioni",
-        Percentiles: "Percentuali",
-        LockToCompare: "Blocca per confrontare",
-        Unlock: "Sblocca",
-        Search: "Cerca",
-        CreatingBrowser: "Browser in preparazione - Keshif",
-        Rows: "Righe",
-        More: "Di più",
-        LoadingData: "Carimento delle fonti dati",
-        ShowAll: "Mostra tutto",
-        ScrollToTop: "Torna su",
-        Absolute: "Assoluto",
-        Percent: "Percentuale",
-        Relative: "Relativo",
-        Width: "Larghezza",
-        DragToFilter: "Trascina",
-        And: "E",
-        Or: "O",
-        Not: "No",
-        EditTitle: "Modifica",
-        ResizeBrowser: "Ridimensiona il browser",
-        RemoveRecords: "Rimuovi la visualizzazione dei record"
-      },
-      cur: null // Will be set to en if not defined before a browser is loaded
-    },
+  browsers: [],
+  dt: {},
+  dt_id: {},
 
-    Util: {
-        sortFunc_List_String: function(a, b){
-            return a.localeCompare(b);
-        },
-        sortFunc_List_Date: function(a, b){
-            if(a===null) return -1;
-            if(b===null) return 1;
-            return b.getTime() - a.getTime(); // recent first
-        },
-        sortFunc_List_Number: function(a, b){
-            return b - a;
-        },
-        /** Given a list of columns which hold multiple IDs, breaks them into an array */
-        cellToArray: function(dt, columns, splitExpr){
-            if(splitExpr===undefined){
-                splitExpr = /\b\s+/;
-            }
-            var j;
-            dt.forEach(function(p){
-                p = p.data;
-                columns.forEach(function(column){
-                    var list = p[column];
-                    if(list===null) return;
-                    if(typeof list==="number") {
-                        p[column] = ""+list;
-                        return;
-                    }
-                    var list2 = list.split(splitExpr);
-                    list = [];
-                    // remove empty "" records
-                    for(j=0; j<list2.length; j++){
-                        list2[j] = list2[j].trim();
-                        if(list2[j]!=="") list.push(list2[j]);
-                    }
-                    p[column] = list;
-                });
-            });
-        },
-        baseMeasureFormat: d3.format(".2s"),
-        /** You should only display at most 3 digits + k/m/etc */
-        formatForItemCount: function(n){
-            if(n<1000) {
-                return n;
-            }
-            return kshf.Util.baseMeasureFormat(n);
-            if(n<1000000) {
-                // 1,000-999,999
-                var thousands=n/1000;
-                if(thousands<10){
-                    return (Math.floor(n/100)/10)+"k";
-                }
-                return Math.floor(thousands)+"k";
-            }
-            if(n<1000000000) return Math.floor(n/1000000)+"m";
-            return n;
-        },
-        clearArray: function(arr){
-          while(arr.length > 0) arr.pop();
-        },
-        ignoreScrollEvents: false,
-        scrollToPos_do: function(scrollDom, targetPos){
-          scrollDom = scrollDom[0][0];
-          kshf.Util.ignoreScrollEvents = true;
-          // scroll to top
-          var startTime = null;
-          var scrollInit = scrollDom.scrollTop;
-          var easeFunc = d3.ease('cubic-in-out');
-          var scrollTime = 500;
-          var animateToTop = function(timestamp){
-            var progress;
-            if(startTime===null) startTime = timestamp;
-            // complete animation in 500 ms
-            progress = (timestamp - startTime)/scrollTime;
-            var m=easeFunc(progress);
-            scrollDom.scrollTop = (1-m)*scrollInit+m*targetPos;
-            if(scrollDom.scrollTop!==targetPos){
-              window.requestAnimationFrame(animateToTop);
-            } else {
-              kshf.Util.ignoreScrollEvents = false;
-            }
-          };
+  maxVisibleItems_Default: 100,
+  scrollWidth: 19,
+  attribPanelWidth: 220,
+
+  map: {
+    // http://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png
+    // http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+    // http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png
+    // http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png
+    // http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png
+    // http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg
+    // http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg
+    // http://otile{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png
+    // http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png
+    // http://otile{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.png
+    tileTemplate: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+    wrapLongitude: 170,
+    config: {
+      maxBoundsViscosity: 1, 
+      boxZoom: false,
+      touchZoom: false,
+      doubleClickZoom: false,
+      /*continuousWorld: true, crs: L.CRS.EPSG3857 */
+    },
+    tileConfig: { 
+      attribution: '© <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'+
+        ' contributors &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
+      subdomains: 'abcd',
+      maxZoom: 19,
+      //noWrap: true
+    }
+  },
+
+  lang: {
+    en: {
+      ModifyBrowser: "Modify browser",
+      OpenDataSource: "Open data source",
+      ShowInfoCredits: "Show info &amp; credits",
+      ShowFullscreen: "Fullscreen",
+      RemoveFilter: "Remove filter",
+      RemoveAllFilters: "Remove all filters",
+      SaveSelection: "Save Selection",
+      MinimizeSummary: "Close summary",
+      OpenSummary: "Open summary",
+      MaximizeSummary: "Maximize summary",
+      RemoveSummary: "Remove summary",
+      ReverseOrder: "Reverse order",
+      Reorder: "Reorder",
+      ShowMoreInfo: "Show more info",
+      Percentiles: "Percentiles",
+      LockToCompare: "Lock to compare",
+      Unlock: "Unlock",
+      Search: "Search",
+      CreatingBrowser: "Creating Keshif Browser",
+      Rows: "Rows",
+      More: "More",
+      LoadingData: "Loading data sources",
+      ShowAll: "Show All",
+      ScrollToTop: "Top",
+      Absolute: "Absolute",
+      Percent: "Percent",
+      PartOf: "Part-Of",
+      Width: "Length",
+      DragToFilter: "Drag",
+      And: "And",
+      Or: "Or",
+      Not: "Not",
+      EditTitle: "Rename",
+      ResizeBrowser: "Resize browser",
+      RemoveRecords: "Remove record view",
+      EditFormula: "Edit formula",
+      NoData: "(no data)",
+      ZoomToFit: "Zoom to fit",
+      Close: "Close",
+      Help: "Help"
+    },
+    tr: {
+      ModifyBrowser: "Tarayıcıyı düzenle",
+      OpenDataSource: "Veri kaynağını aç",
+      ShowInfoCredits: "Bilgi",
+      ShowFullscreen: "Tam ekran",
+      RemoveFilter: "Filtreyi kaldır",
+      RemoveAllFilters: "Tüm filtreleri kaldır",
+      MinimizeSummary: "Özeti ufalt",
+      OpenSummary: "Özeti aç",
+      MaximizeSummary: "Özeti büyüt",
+      RemoveSummary: "Özeti kaldır",
+      ReverseOrder: "Ters sırala",
+      Reorder: "Yeniden sırala",
+      ShowMoreInfo: "Daha fazla bilgi",
+      Percentiles: "Yüzdeler",
+      LockToCompare: "Kilitle ve karşılaştır",
+      Unlock: "Kilidi kaldır",
+      Search: "Ara",
+      LoadingData: "Veriler yükleniyor...",
+      CreatingBrowser: "Keşif arayüzü oluşturuluyor...",
+      Rows: "Satır",
+      More: "Daha",
+      ShowAll: "Hepsi",
+      ScrollToTop: "Yukarı",
+      Absolute: "Net",
+      Percent: "Yüzde",
+      PartOf: "Görece",
+      Width: "Genişlik",
+      DragToFilter: "Sürükle",
+      And: "Ve",
+      Or: "Veya",
+      Not: "Değil",
+      EditTitle: "Değiştir",
+      ResizeBrowser: "Boyutlandır",
+      RemoveRecords: "Kayıtları kaldır",
+      EditFormula: "Formülü değiştir",
+      NoData: "(verisiz)",
+      ZoomToFit: "Oto-yakınlaş",
+      Close: "Kapat",
+      Help: "Yardim"
+    },
+    fr: {
+      ModifyBrowser: "Modifier le navigateur",
+      OpenDataSource: "Ouvrir la source de données",
+      ShowInfoCredits: "Afficher les credits",
+      RemoveFilter: "Supprimer le filtre",
+      RemoveAllFilters: "Supprimer tous les filtres",
+      MinimizeSummary: "Réduire le sommaire",
+      OpenSummary: "Ouvrir le sommaire",
+      MaximizeSummary: "Agrandir le sommaire",
+      RemoveSummary: "??",
+      ReverseOrder: "Inverser l'ordre",
+      Reorder: "Réorganiser",
+      ShowMoreInfo: "Plus d'informations",
+      Percentiles: "Percentiles",
+      LockToCompare: "Bloquer pour comparer",
+      Unlock: "Débloquer",
+      Search: "Rechercher",
+      CreatingBrowser: "Création du navigateur",
+      Rows: "Lignes",
+      More: "Plus",
+      LoadingData: "Chargement des données",
+      ShowAll: "Supprimer les filtres",
+      ScrollToTop: "Début",
+      Absolute: "Absolue",
+      Percent: "Pourcentage",
+      PartOf: "Part-Of",
+      Width: "Largeur",
+      DragToFilter: "??",
+      And: "??",
+      Or: "??",
+      Not: "??",
+      EditFormula: "Edit Formula",
+      NoData: "(no data)",
+      ZoomToFit: "Zoom to fit"
+    },
+    // translation by github@nelsonmau
+    it: {
+      ModifyBrowser: "Modifica il browser",
+      OpenDataSource: "Fonte Open Data",
+      ShowInfoCredits: "Mostra info e crediti",
+      ShowFullscreen: "Schermo intero",
+      RemoveFilter: "Rimuovi il filtro",
+      RemoveAllFilters: "Rimuovi tutti i filtri",
+      MinimizeSummary: "Chiudi il sommario",
+      OpenSummary: "Apri il sommario",
+      MaximizeSummary: "Massimizza il sommario",
+      RemoveSummary: "Rimuovi il sommario",
+      ReverseOrder: "Ordine inverso",
+      Reorder: "Riordina",
+      ShowMoreInfo: "Mostra più informazioni",
+      Percentiles: "Percentuali",
+      LockToCompare: "Blocca per confrontare",
+      Unlock: "Sblocca",
+      Search: "Cerca",
+      CreatingBrowser: "Browser in preparazione - Keshif",
+      Rows: "Righe",
+      More: "Di più",
+      LoadingData: "Carimento delle fonti dati",
+      ShowAll: "Mostra tutto",
+      ScrollToTop: "Torna su",
+      Absolute: "Assoluto",
+      Percent: "Percentuale",
+      Relative: "Relativo",
+      Width: "Larghezza",
+      DragToFilter: "Trascina",
+      And: "E",
+      Or: "O",
+      Not: "No",
+      EditTitle: "Modifica",
+      ResizeBrowser: "Ridimensiona il browser",
+      RemoveRecords: "Rimuovi la visualizzazione dei record"
+    },
+    cur: null // Will be set to en if not defined before a browser is loaded
+  },
+
+  Util: {
+    sortFunc_List_String: function(a, b){
+      return a.localeCompare(b);
+    },
+    sortFunc_List_Date: function(a, b){
+      if(a===null) return -1;
+      if(b===null) return 1;
+      return b.getTime() - a.getTime(); // recent first
+    },
+    sortFunc_List_Number: function(a, b){
+      return b - a;
+    },
+    /** Given a list of columns which hold multiple IDs, breaks them into an array */
+    cellToArray: function(dt, columns, splitExpr){
+      if(splitExpr===undefined) splitExpr = /\b\s+/;
+      var j;
+      dt.forEach(function(p){
+        p = p.data;
+        columns.forEach(function(column){
+          var list = p[column];
+          if(list===null) return;
+          if(typeof list==="number") {
+            p[column] = ""+list;
+            return;
+          }
+          var list2 = list.split(splitExpr);
+          list = [];
+          // remove empty "" records
+          for(j=0; j<list2.length; j++){
+            list2[j] = list2[j].trim();
+            if(list2[j]!=="") list.push(list2[j]);
+          }
+          p[column] = list;
+        });
+      });
+    },
+    baseMeasureFormat: d3.format(".2s"),
+    /** You should only display at most 3 digits + k/m/etc */
+    formatForItemCount: function(n){
+      if(n<1000) return n;
+      return kshf.Util.baseMeasureFormat(n);
+    },
+    clearArray: function(arr){
+      while(arr.length > 0) arr.pop();
+    },
+    ignoreScrollEvents: false,
+    scrollToPos_do: function(scrollDom, targetPos){
+      scrollDom = scrollDom[0][0];
+      kshf.Util.ignoreScrollEvents = true;
+      // scroll to top
+      var startTime = null;
+      var scrollInit = scrollDom.scrollTop;
+      var easeFunc = d3.ease('cubic-in-out');
+      var scrollTime = 500;
+      var animateToTop = function(timestamp){
+        var progress;
+        if(startTime===null) startTime = timestamp;
+        // complete animation in 500 ms
+        progress = (timestamp - startTime)/scrollTime;
+        var m=easeFunc(progress);
+        scrollDom.scrollTop = (1-m)*scrollInit+m*targetPos;
+        if(scrollDom.scrollTop!==targetPos){
           window.requestAnimationFrame(animateToTop);
-        },
-        toProperCase: function(str){
-          return str.toLowerCase().replace(/\b[a-z]/g,function(f){return f.toUpperCase()});
-        },
-        setTransform: function(dom,transform){
-          dom.style.webkitTransform = transform;
-          dom.style.MozTransform = transform;
-          dom.style.msTransform = transform;
-          dom.style.OTransform = transform;
-          dom.style.transform = transform;
-        },
-        // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
-        ordinal_suffix_of: function(i) {
-          var j = i % 10,
-              k = i % 100;
-          if (j == 1 && k != 11) {
-              return i + "st";
-          }
-          if (j == 2 && k != 12) {
-              return i + "nd";
-          }
-          if (j == 3 && k != 13) {
-              return i + "rd";
-          }
-          return i + "th";
-        },
-    },
-    fontLoaded: false,
-    loadFont: function(){
-      if(this.fontLoaded===true) return;
-      WebFontConfig = {
-        google: { families: [ 'Roboto:400,500,300,100,700:latin', 'Montserrat:400,700:latin' ] }
-      };
-      var wf = document.createElement('script');
-      wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-      wf.type = 'text/javascript';
-      wf.async = 'true';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(wf, s);
-      this.fontLoaded = true;
-    },
-    handleResize: function(){
-      this.browsers.forEach(function(browser){ browser.updateLayout(); });
-    },
-    activeTipsy: undefined,
-    colorScale : {
-        converge: [
-            d3.rgb('#ffffd9'),
-            d3.rgb('#edf8b1'),
-            d3.rgb('#c7e9b4'),
-            d3.rgb('#7fcdbb'),
-            d3.rgb('#41b6c4'),
-            d3.rgb('#1d91c0'),
-            d3.rgb('#225ea8'),
-            d3.rgb('#253494'),
-            d3.rgb('#081d58')],
-        diverge: [
-            d3.rgb('#8c510a'),
-            d3.rgb('#bf812d'),
-            d3.rgb('#dfc27d'),
-            d3.rgb('#f6e8c3'),
-            d3.rgb('#f5f5f5'),
-            d3.rgb('#c7eae5'),
-            d3.rgb('#80cdc1'),
-            d3.rgb('#35978f'),
-            d3.rgb('#01665e')]
-    },
-    /* -- */
-    intersects: function(d3bound, leafletbound){
-      // d3bound: [​[left, bottom], [right, top]​]
-      // leafletBound._southWest.lat
-      // leafletBound._southWest.long
-      // leafletBound._northEast.lat
-      // leafletBound._northEast.long
-      if(d3bound[0][0]>leafletbound._northEast.lng) return false;
-      if(d3bound[0][1]>leafletbound._northEast.lat) return false;
-      if(d3bound[1][0]<leafletbound._southWest.lng) return false;
-      if(d3bound[1][1]<leafletbound._southWest.lat) return false;
-      return true;
-    },
-    /** -- */
-    gistPublic: true,
-    gistLogin: false,
-    getGistLogin: function(){
-      if(this.githubToken===undefined) return;
-      $.ajax( 'https://api.github.com/user',
-        { method: "GET",
-          async: true,
-          dataType: "json",
-          headers: {Authorization: "token "+kshf.githubToken},
-          success: function(response){ 
-            kshf.gistLogin = response.login;
-          }
+        } else {
+          kshf.Util.ignoreScrollEvents = false;
         }
-      );
+      };
+      window.requestAnimationFrame(animateToTop);
     },
-    /** -- TEMP! Not a good design here! TODO change */
-    wrapLongitude: 170
+    toProperCase: function(str){
+      return str.toLowerCase().replace(/\b[a-z]/g,function(f){return f.toUpperCase()});
+    },
+    setTransform: function(dom,transform){
+      dom.style.webkitTransform = transform;
+      dom.style.MozTransform = transform;
+      dom.style.msTransform = transform;
+      dom.style.OTransform = transform;
+      dom.style.transform = transform;
+    },
+    // http://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+    ordinal_suffix_of: function(i) {
+      var j = i % 10, k = i % 100;
+      if (j == 1 && k != 11) return i + "st";
+      if (j == 2 && k != 12) return i + "nd";
+      if (j == 3 && k != 13) return i + "rd";
+      return i + "th";
+    },
+  },
+
+  /** -- */
+  fontLoaded: false,
+  loadFont: function(){
+    if(this.fontLoaded===true) return;
+    WebFontConfig = {
+      google: { families: [ 'Roboto:400,500,300,100,700:latin', 'Montserrat:400,700:latin' ] }
+    };
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+      '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+    this.fontLoaded = true;
+  },
+
+  handleResize: function(){
+    this.browsers.forEach(function(browser){ browser.updateLayout(); });
+  },
+
+  activeTipsy: undefined,
+  colorScale : {
+    converge: [
+      d3.rgb('#ffffd9'),
+      d3.rgb('#edf8b1'),
+      d3.rgb('#c7e9b4'),
+      d3.rgb('#7fcdbb'),
+      d3.rgb('#41b6c4'),
+      d3.rgb('#1d91c0'),
+      d3.rgb('#225ea8'),
+      d3.rgb('#253494'),
+      d3.rgb('#081d58')],
+    diverge: [
+      d3.rgb('#8c510a'),
+      d3.rgb('#bf812d'),
+      d3.rgb('#dfc27d'),
+      d3.rgb('#f6e8c3'),
+      d3.rgb('#f5f5f5'),
+      d3.rgb('#c7eae5'),
+      d3.rgb('#80cdc1'),
+      d3.rgb('#35978f'),
+      d3.rgb('#01665e')]
+  },
+
+  /* -- */
+  intersects: function(d3bound, leafletbound){
+    // d3bound: [​[left, bottom], [right, top]​]
+    // leafletBound._southWest.lat
+    // leafletBound._southWest.long
+    // leafletBound._northEast.lat
+    // leafletBound._northEast.long
+    if(d3bound[0][0]>leafletbound._northEast.lng) return false;
+    if(d3bound[0][1]>leafletbound._northEast.lat) return false;
+    if(d3bound[1][0]<leafletbound._southWest.lng) return false;
+    if(d3bound[1][1]<leafletbound._southWest.lat) return false;
+    return true;
+  },
+
+  /** -- */
+  gistPublic: true,
+  gistLogin: false,
+  getGistLogin: function(){
+    if(this.githubToken===undefined) return;
+    $.ajax( 'https://api.github.com/user',
+      { method: "GET",
+        async: true,
+        dataType: "json",
+        headers: {Authorization: "token "+kshf.githubToken},
+        success: function(response){ 
+          kshf.gistLogin = response.login;
+        }
+      }
+    );
+  },
+
+  kshfLogo: '<svg class="kshfLogo" viewBox="0 0 200 200">'+
+    '<rect    class="kshfLogo_C1 kshfLogo_B" x="37.2" y="49.1" width="128.5" height="39.7" transform="matrix(-0.7071 0.7071 -0.7071 -0.7071 222.0549 46.0355)" />'+
+    '<polygon class="kshfLogo_C1 kshfLogo_B" points="42.5,100.6 71,72 163,164.4 134.5,193" />'+
+    '<polygon class="kshfLogo_C1 " points="132.2,13 53.5,91.3 79.3,117 158,38.7" />'+
+    '<rect    class="kshfLogo_C2 kshfLogo_B" x="55.1" y="6.4" width="38.3" height="188.8" />'+
+    '</svg>'
 };
 
 // tipsy, facebook style tooltips for jquery
@@ -1206,8 +1181,8 @@ kshf.RecordDisplay.prototype = {
         var b = record._geoBound_;
         if(isNaN(b[0][0])) return;
         // Change wrapping (US World wrap issue)
-        if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
-        if(b[1][0]>kshf.wrapLongitude) b[1][0]-=360;
+        if(b[0][0]>kshf.map.wrapLongitude) b[0][0]-=360;
+        if(b[1][0]>kshf.map.wrapLongitude) b[1][0]-=360;
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
@@ -1310,7 +1285,7 @@ kshf.RecordDisplay.prototype = {
         d3.geo.transform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
-            if(x>kshf.wrapLongitude) x-=360;
+            if(x>kshf.map.wrapLongitude) x-=360;
             var point = me.leafletRecordMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }
@@ -3680,18 +3655,19 @@ kshf.Browser.prototype = {
             alert("We are working on to provide better help to your exploration. Check again soon!");
           }
         });
-      // Info & Credits
-      rightBoxes.append("span").attr("class","fa fa-info-circle")
-        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); me.panel_overlay.attr("show","infobox"); });
       // Fullscreen
       rightBoxes.append("span").attr("class","fa fa-arrows-alt fullscreen")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen }); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("click",    function(){ this.tipsy.hide(); me.showFullscreen();});
+      // Info & Credits
+      var x = rightBoxes.append("span").attr("class","logoHost")//.attr("class","fa fa-info-circle")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",    function(){ this.tipsy.hide(); me.panel_overlay.attr("show","infobox"); })
+        .html(kshf.kshfLogo);
 
       // Total glyph - row
       var adsdasda = this.DOM.panel_Basic.append("div").attr("class","totalGlyph aggrGlyph");
@@ -3746,10 +3722,13 @@ kshf.Browser.prototype = {
     insertDOM_Infobox: function(){
         var me=this;
         var creditString="";
-        creditString += "<div class='infobox-header'><a target='_blank' href='http://www.keshif.me' class='libName'>Keshif</a> - Data Made Explorable</div>";
+        creditString += "<div class='infobox-header'><a target='_blank' href='http://www.keshif.me' class='libName'>";
+        creditString += kshf.kshfLogo;
+
+        creditString += " Keshif</a> - Data Made Explorable</div>";
 
         creditString += "<div class='boxinbox' style='padding: 0px 15px'>";
-        creditString += " <a href='http://www.cs.umd.edu/hcil/' target='_blank'>"+
+        creditString += " <a href='http://hcil.umd.edu/' target='_blank'>"+
           "<img src='http://www.keshif.me/AggreSet/img/logo_hcil.gif' style='height:50px; float: left'></a>";
         creditString += " <a href='http://www.umd.edu' target='_blank'>"+
           "<img src='http://www.keshif.me/AggreSet/img/logo_umd.png' style='height:50px; float: right'></a>";
@@ -3810,7 +3789,7 @@ kshf.Browser.prototype = {
           .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.Close }); })
           .on("mouseenter",function(){ this.tipsy.show(); })
           .on("mouseleave",function(){ this.tipsy.hide(); })
-          .on("click",function(){ me.panel_overlay.attr("show","none"); });
+          .on("click",function(){ this.tipsy.hide(); me.panel_overlay.attr("show","none"); });
         overlay_infobox.append("div").html(creditString);
 
         this.insertSourceBox();
@@ -4082,7 +4061,7 @@ kshf.Browser.prototype = {
       this.DOM.attributePanel = this.DOM.root.append("div").attr("class","attributePanel");
       
       var xx= this.DOM.attributePanel.append("div").attr("class","attributePanelHeader");
-      xx.append("span").text("Available Attributes");
+      xx.append("span").text("Available Summaries");
       xx.append("span").attr("class","hidePanel fa fa-times")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
         .on("mouseover",function(){ this.tipsy.show(); })
@@ -5286,7 +5265,9 @@ kshf.Browser.prototype = {
     },
     /** -- */
     getTickLabel: function(_val){
-      _val = Math.round(_val);
+      if((this.measureFunc==="Count") || (this.measureFunc==="Sum" && !this.measureSummary.hasFloat)){
+        _val = Math.round(_val);
+      }
       if(this.ratioModeActive || this.percentModeActive){
         return _val.toFixed(0)+"<span class='unitName'>%</span>";
       } else if(this.measureSummary){
@@ -8236,8 +8217,8 @@ var Summary_Categorical_functions = {
         var b = d3.geo.bounds(feature);
         if(isNaN(b[0][0])) return;
         // Change wrapping
-        if(b[0][0]>kshf.wrapLongitude) b[0][0]-=360;
-        if(b[1][0]>kshf.wrapLongitude) b[1][0]-=360;
+        if(b[0][0]>kshf.map.wrapLongitude) b[0][0]-=360;
+        if(b[1][0]>kshf.map.wrapLongitude) b[1][0]-=360;
         bs.push(L.latLng(b[0][1], b[0][0]));
         bs.push(L.latLng(b[1][1], b[1][0]));
       });
@@ -8321,7 +8302,7 @@ var Summary_Categorical_functions = {
         d3.geo.transform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
-            if(x>kshf.wrapLongitude) x-=360;
+            if(x>kshf.map.wrapLongitude) x-=360;
             var point = me.leafletAttrMap.latLngToLayerPoint(new L.LatLng(y, x));
             this.stream.point(point.x, point.y);
           }

@@ -59,6 +59,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_set_containment: rgb(64, 0, 255);
 @color_setPair_background: rgba(234, 234, 234, 0.5);
 
+.kshfLogo{
+  display: inline-block;
+  > .kshfLogo_C1{
+    .transition(~'fill 300ms linear');
+    fill:#FF6925; 
+  }
+  > .kshfLogo_C2{
+    .transition(~'fill 300ms linear');
+    fill:#7295BE;
+  }
+  > .kshfLogo_B{
+    stroke: black;
+    stroke-width: 4px;
+  }
+  &:hover{
+    > .kshfLogo_C1{ fill:#7295BE; }
+    > .kshfLogo_C2{ fill:#FF6925; }
+  }
+}
+
+
 .kshf{
     .display(flex);
     .flex-direction(column);
@@ -994,6 +1015,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             text-decoration: none;
             color: #635d46; // if dom type is a, it will show visited links in different color
           }
+          > .logoHost{
+            margin-left: 2px;
+            cursor: pointer;
+            > .kshfLogo{
+              width: 1.1em;
+              height: 1.1em;
+              display: inline-block;
+              vertical-align: top;
+              &:hover{
+                border-radius: 1em;
+                border: solid 1px gray;
+              }
+            }
+          }
         } // rightBoxes
 
         &:hover .saveSelection{ color: black; }
@@ -1564,6 +1599,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 color: black;
                 text-decoration: none;
                 &:hover{ color: orangered; }
+                > .kshfLogo{
+                  height: 1em;
+                  vertical-align: top;
+                }
               }
               .project_fund {
                 clear: both;
