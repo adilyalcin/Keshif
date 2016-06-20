@@ -84,7 +84,7 @@ var kshf = {
       RemoveFilter: "Remove filter",
       RemoveAllFilters: "Remove all filters",
       SaveSelection: "Save Selection",
-      MinimizeSummary: "Close summary",
+      MinimizeSummary: "Minimize summary",
       OpenSummary: "Open summary",
       MaximizeSummary: "Maximize summary",
       RemoveSummary: "Remove summary",
@@ -1863,6 +1863,9 @@ kshf.RecordDisplay.prototype = {
         this.spatialFilter.summary = this.recordViewSummary;
         this.recordViewSummary.summaryFilter = this.spatialFilter;
       }
+
+      // TODO: Delete existing record DOM's and regenerate them
+      this.DOM.recordGroup.selectAll(".kshfRecord").data([]).exit().remove();
 
       if(this.displayType==='list' || this.displayType==="grid"){
         this.sortRecords();
@@ -4606,7 +4609,7 @@ kshf.Browser.prototype = {
           }
 
           if(summary.type==='interval'){
-            summary.unitName = facetDescr.unitName || summary.unitName;
+            if(typeof facetDescr.unitName === "string") summary.setUnitName(facetDescr.unitName);
             if(facetDescr.showPercentile) {
               summary.showPercentileChart(facetDescr.showPercentile);
             }
@@ -5797,51 +5800,50 @@ kshf.Summary_Base.prototype = {
       var me = this;
 
       this.DOM.headerGroup = this.DOM.root.append("div").attr("class","headerGroup")
-          .on("mousedown", function(){
-              if(d3.event.which !== 1) return; // only respond to left-click
-              if(!me.browser.authoringMode) {
-                  d3.event.preventDefault();
-                  return;
+        .on("mousedown", function(){
+          if(d3.event.which !== 1) return; // only respond to left-click
+          if(!me.browser.authoringMode) {
+            d3.event.preventDefault();
+            return;
+          }
+          var _this = this;
+          var _this_nextSibling = _this.parentNode.nextSibling;
+          var _this_previousSibling = _this.parentNode.previousSibling;
+          var moved = false;
+          d3.select("body")
+            .style('cursor','move')
+            .on("keydown", function(){
+              if(event.keyCode===27){ // ESP key
+                _this.style.opacity = null;
+                me.browser.clearDropZones();
               }
-              var _this = this;
-              var _this_nextSibling = _this.parentNode.nextSibling;
-              var _this_previousSibling = _this.parentNode.previousSibling;
-              var moved = false;
-              d3.select("body")
-                  .style('cursor','move')
-                  .on("keydown", function(){
-                      if(event.keyCode===27){ // ESP key
-                          _this.style.opacity = null;
-                          me.browser.clearDropZones();
-                      }
-                  })
-                  .on("mousemove", function(){
-                      if(!moved){
-                          _this_nextSibling.style.display = "none";
-                          _this_previousSibling.style.display = "none";
-                          _this.parentNode.style.opacity = 0.5;
-                          me.browser.prepareDropZones(me,"browser");
-                          moved = true;
-                      }
-                      var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
-                      kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
-                          "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
-                      d3.event.stopPropagation();
-                      d3.event.preventDefault();
-                  })
-                  .on("mouseup", function(){
-                      // Mouse up on the body
-                      me.browser.clearDropZones();
-                      if(me.panel!==undefined || true) {
-                          _this.parentNode.style.opacity = null;
-                          _this_nextSibling.style.display = "";
-                          _this_previousSibling.style.display = "";
-                      }
-                      d3.event.preventDefault();
-                  });
+            })
+            .on("mousemove", function(){
+              if(!moved){
+                _this_nextSibling.style.display = "none";
+                _this_previousSibling.style.display = "none";
+                _this.parentNode.style.opacity = 0.5;
+                me.browser.prepareDropZones(me,"browser");
+                moved = true;
+              }
+              var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
+              kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
+                "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
+              d3.event.stopPropagation();
               d3.event.preventDefault();
-          })
-          ;
+            })
+            .on("mouseup", function(){
+              // Mouse up on the body
+              me.browser.clearDropZones();
+              if(me.panel!==undefined || true) {
+                _this.parentNode.style.opacity = null;
+                _this_nextSibling.style.display = "";
+                _this_previousSibling.style.display = "";
+              }
+              d3.event.preventDefault();
+            });
+          d3.event.preventDefault();
+        });
 
       var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
 
@@ -8460,30 +8462,32 @@ var Summary_Interval_functions = {
       var me = this;
 
       // pixel width settings...
-      this.height_hist = 1; // Initial width (will be updated later...)
-      this.height_hist_min = 10; // Minimum possible histogram height
-      this.height_hist_max = 100; // Maximim possible histogram height
-      this.height_slider = 12; // Slider height
-      this.height_labels = 13; // Height for labels
-      this.height_hist_topGap = 12; // Height for histogram gap on top.
-
-      this.width_barGap = 2; // The width between neighboring histgoram bars
+      this.height_hist        = 1;   // Initial width (will be updated later...)
+      this.height_hist_min    = 10;  // Minimum possible histogram height
+      this.height_hist_max    = 100; // Maximim possible histogram height
+      this.height_slider      = 12;  // Slider height
+      this.height_labels      = 13;  // Height for labels
+      this.height_hist_topGap = 12;  // Height for histogram gap on top.
+      this.height_recEncoding = 20;  // Record encoding chart height
+      this.height_percentile  = 32;  // Percentile chart height
+      this.width_barGap       = 2;   // The width between neighboring histgoram bars
       this.width_measureAxisLabel = 30; // ..
-
-      this.optimumTickWidth = 45;
+      this.optimumTickWidth   = 45;
 
       this.hasFloat = false;
       this.timeTyped = { 
         base: false,
         maxDateRes: function(){
-          if(this.day) return "day";
+          if(this.hour ) return "hour";
+          if(this.day  ) return "day";
           if(this.month) return "month";
-          if(this.year) return "year";
+          if(this.year ) return "year";
         },
         minDateRes: function(){
-          if(this.year) return "year";
+          if(this.year ) return "year";
           if(this.month) return "month";
-          if(this.day) return "day";
+          if(this.day  ) return "day";
+          if(this.hour ) return "hour";
         }
       };
 
@@ -8494,9 +8498,6 @@ var Summary_Interval_functions = {
       this.invertColorScale = false;
 
       this.highlightRangeLimits_Active = false;
-
-      this.quantile_val = {};
-      this.quantile_pos = {};
 
       this.histBins = [];
       this.intervalTicks = [];
@@ -8520,12 +8521,100 @@ var Summary_Interval_functions = {
       };
 
       if(this.records.length<=1000) this.initializeAggregates();
+
+      // only used if type is numeric (not timestamp)
+      this.quantile_val = {};
+      this.quantile_pos = {};
+
+      this.timeAxis_XFunc = function(aggr){ 
+        //return me.valueScale(aggr.minV) + me.getWidth_Bin()/2;
+        return (me.valueScale(aggr.minV) + me.valueScale(aggr.maxV))/2;
+      };
+    },
+    /** -- */
+    isEmpty: function(){
+      return this._isEmpty;
+    },
+    /** -- */
+    getHeight_Extra: function(){
+      return 7+
+        this.height_hist_topGap+
+        this.height_labels+
+        this.height_slider+
+        this.getHeight_Percentile()+
+        this.getHeight_RecordEncoding();
+    },
+    /** -- */
+    getHeight_Extra_max: function(){
+      return 7+
+        this.height_hist_topGap+
+        this.height_labels+
+        this.height_slider+
+        this.height_recEncoding
+        this.height_percentile;
+    },
+    /** -- */
+    getHeight_RecordEncoding: function(){
+      if(this.usedForSorting && this.browser.recordDisplay) {
+        if(this.browser.recordDisplay.displayType==='map' || this.browser.recordDisplay.displayType==='nodelink')
+          return this.height_recEncoding; 
+      }
+      return 0;
+    },
+    /** -- */
+    getHeight_Content: function(){
+      return this.height_hist + this.getHeight_Extra();
+    },
+    /** -- */
+    getHeight_Percentile: function(){
+      return this.percentileChartVisible ? this.height_percentile : 0;
+    },
+    /** -- */
+    getHeight_RangeMax: function(){
+      return this.height_hist_max + this.getHeight_Header() + this.getHeight_Extra_max();
+    },
+    /** -- */
+    getHeight_RangeMin: function(){
+      return this.height_hist_min + this.getHeight_Header() + this.getHeight_Extra_max();
+    },
+    /** -- */
+    getWidth_Chart: function(){
+      if(!this.inBrowser()) return 30;
+      return this.getWidth() - this.width_measureAxisLabel -
+        ( this.getWidth()>400 ? this.width_measureAxisLabel : 11 );
+    },
+    /** -- */
+    getWidth_OptimumTick: function(){
+      if(!this.inBrowser()) return 10;
+      return this.optimumTickWidth;
+    },
+    /** -- */
+    getWidth_Bin: function(){
+      return this.aggrWidth-this.width_barGap*2;
+    },
+    /** -- */
+    isFiltered_min: function(){
+      if(this.summaryFilter.active.min>this.intervalRange.total.min) return true;
+      if(this.scaleType==='log') return this.isFiltered_max();
+      return false;
+    },
+    /** -- */
+    isFiltered_max: function(){
+      return this.summaryFilter.active.max<this.intervalRange.getTotalMax();
+    },
+    /** -- */
+    getMaxAggr_Total: function(){
+      return d3.max(this.histBins,function(aggr){ return aggr.measure('Total'); });
+    },
+    /** -- */
+    getMaxAggr_Active: function(){
+      return d3.max(this.histBins,function(aggr){ return aggr.measure('Active'); });
     },
     /** -- */
     isTimeStamp: function(){
       return this.timeTyped.base;
     },
-    /** TODO: Only relevant is timeStamp-- */
+    /** -- */
     createMonthSummary: function(){
       if(!this.isTimeStamp()) return;
       if(this.summary_sub_month) return this.summary_sub_month;
@@ -8543,7 +8632,7 @@ var Summary_Interval_functions = {
       this.summary_sub_month.initializeAggregates();
       return this.summary_sub_month;
     },
-    /** TODO: Only relevant is timeStamp-- */
+    /** -- */
     createDaySummary: function(){
       if(!this.isTimeStamp()) return;
       if(this.summary_sub_day) return this.summary_sub_day;
@@ -8561,7 +8650,7 @@ var Summary_Interval_functions = {
       this.summary_sub_day.initializeAggregates();
       return this.summary_sub_day;
     },
-    /** TODO: Only relevant is timeStamp-- */
+    /** -- */
     createHourSummary: function(){
       if(!this.isTimeStamp()) return;
       if(this.summary_sub_hour) return this.summary_sub_hour;
@@ -8635,10 +8724,8 @@ var Summary_Interval_functions = {
         this.timeTyped.print = d3.time.format.utc(f);
       }
 
-      // Figure out lowest and highest time 
-
       // remove records that map to null / undefined
-      this.filteredItems = this.records.filter(function(record){
+      this.filteredRecords = this.records.filter(function(record){
         var v = me.getRecordValue(record);
         return (v!==undefined && v!==null);
       });
@@ -8647,7 +8734,7 @@ var Summary_Interval_functions = {
       var sortValue = this.isTimeStamp()?
         function(a){ return me.getRecordValue(a).getTime(); }:
         function(a){ return me.getRecordValue(a); };
-      this.filteredItems.sort(function(a,b){ return sortValue(a)-sortValue(b);});
+      this.filteredRecords.sort(function(a,b){ return sortValue(a)-sortValue(b); });
 
       this.updateIntervalRange_Total();
 
@@ -8657,10 +8744,6 @@ var Summary_Interval_functions = {
       this.aggr_initialized = true;
       this.refreshViz_Nugget();
       this.refreshViz_EmptyRecords();
-    },
-    /** -- */
-    isEmpty: function(){
-      return this._isEmpty;
     },
     /** -- */
     setStepTicks: function(v){
@@ -8706,7 +8789,7 @@ var Summary_Interval_functions = {
         var v = record._valueCache[me.summaryID];
         if(v>=me.intervalRange.active.min && v<me.intervalRange.getActiveMax()) return v; // value is within filtered range
       };
-      var deviation   = d3.deviation(this.filteredItems, inViewRecords);
+      var deviation   = d3.deviation(this.filteredRecords, inViewRecords);
       var activeRange = this.intervalRange.getActiveMax()-this.intervalRange.active.min;
 
       var _width_ = this.getWidth_Chart();
@@ -8900,8 +8983,8 @@ var Summary_Interval_functions = {
     /** -- */
     updateIntervalRange_Total: function(){
       this.intervalRange.org = {
-        min: d3.min(this.filteredItems,this.getRecordValue),
-        max: d3.max(this.filteredItems,this.getRecordValue)
+        min: d3.min(this.filteredRecords,this.getRecordValue),
+        max: d3.max(this.filteredRecords,this.getRecordValue)
       }
 
       this._isEmpty = this.intervalRange.org.min===undefined;
@@ -8950,7 +9033,6 @@ var Summary_Interval_functions = {
       this.summaryFilter.active.min = Math.max(this.summaryFilter.active.min, this.intervalRange.active.min);
       this.summaryFilter.active.max = Math.min(this.summaryFilter.active.max, this.intervalRange.getActiveMax());
     },
-
     /** -- */
     setScaleType: function(t,force){
       var me=this;
@@ -8971,13 +9053,13 @@ var Summary_Interval_functions = {
         this.DOM.summaryInterval.attr("scaleType",this.scaleType);
       }
 
-      if(this.filteredItems === undefined) return;
+      if(this.filteredRecords === undefined) return;
 
       // remove records with value:0 (because log(0) is invalid)
       if(this.scaleType==='log'){
         if(this.intervalRange.total.min<=0){
-          var x=this.filteredItems.length;
-          this.filteredItems = this.filteredItems.filter(function(record){ 
+          var x=this.filteredRecords.length;
+          this.filteredRecords = this.filteredRecords.filter(function(record){ 
             var v=this.getRecordValue(record)!==0;
             if(v===false) {
               record._valueCache[this.summaryID] = null;
@@ -8994,87 +9076,13 @@ var Summary_Interval_functions = {
       if(this.usedForSorting) this.browser.recordDisplay.refreshRecordColors();
     },
     /** -- */
-    getHeight_RecordEncoding: function(){
-      if(this.usedForSorting===false) return 0;
-      if(this.browser.recordDisplay===undefined) return 0;
-      if(this.browser.recordDisplay.displayType==='map') return 20; 
-      if(this.browser.recordDisplay.displayType==='nodelink') return 20; 
-      return 0;
-    },
-    /** -- */
-    getHeight_Content: function(){
-      return this.height_hist + this.getHeight_Extra();
-    },
-    /** -- */
-    getHeight_Percentile: function(){
-      return this.percentileChartVisible ? 32 : 0;
-    },
-    /** -- */
-    getHeight_Extra: function(){
-      return 7+
-        this.height_hist_topGap+
-        this.height_labels+
-        this.height_slider+
-        this.getHeight_Percentile()+
-        this.getHeight_RecordEncoding();
-    },
-    /** -- */
-    getHeight_Extra_max: function(){
-      return 7+
-        this.height_hist_topGap+
-        this.height_slider+
-        50;
-    },
-    /** -- */
-    getHeight_RangeMax: function(){
-      return this.height_hist_max + this.getHeight_Header() + this.getHeight_Extra_max();
-    },
-    /** -- */
-    getHeight_RangeMin: function(){
-      return this.height_hist_min + this.getHeight_Header() + this.getHeight_Extra_max();
-    },
-    /** -- */
-    getWidth_Chart: function(){
-      if(this.panel===undefined) return 30;
-      return this.getWidth() - this.width_measureAxisLabel -
-        ( this.getWidth()>400 ? this.width_measureAxisLabel : 11 );
-    },
-    /** -- */
-    getWidth_OptimumTick: function(){
-      if(this.panel===undefined) return 10;
-      return this.optimumTickWidth;
-    },
-    /** -- */
-    getWidth_Bin: function(){
-      return this.aggrWidth-this.width_barGap*2;
-    },
-    /** -- */
-    isFiltered_min: function(){
-      if(this.summaryFilter.active.min>this.intervalRange.total.min) return true;
-      if(this.scaleType==='log') return this.isFiltered_max();
-      return false;
-    },
-    /** -- */
-    isFiltered_max: function(){
-      return this.summaryFilter.active.max<this.intervalRange.getTotalMax();
-    },
-    /** -- */
-    getMaxAggr_Total: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.measure('Total'); });
-    },
-    /** -- */
-    getMaxAggr_Active: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.measure('Active'); });
-    },
-    /** -- */
     refreshPercentileChart: function(){
       this.DOM.percentileGroup
         .style("opacity",this.percentileChartVisible?1:0)
         .attr("percentileChartVisible",this.percentileChartVisible);
       if(this.percentileChartVisible){
-        this.DOM.percentileGroup.style("height",30+"px");
+        this.DOM.percentileGroup.style("height",(this.height_percentile-2)+"px");
       }
-
       this.DOM.summaryConfig.selectAll(".summaryConfig_Percentile .configOption").attr("active",false);
       this.DOM.summaryConfig.selectAll(".summaryConfig_Percentile .pos_"+this.percentileChartVisible).attr("active",true);
     },
@@ -9132,7 +9140,7 @@ var Summary_Interval_functions = {
             me.highlightRangeLimits_Active = true;
             // Set preview selection
             var records = [];
-            me.filteredItems.forEach(function(record){ 
+            me.filteredRecords.forEach(function(record){ 
               var v = me.getRecordValue(record);
               if(v>=minPos && v<=maxPos) records.push(record);
               else record.remForHighlight(true);
@@ -9338,7 +9346,7 @@ var Summary_Interval_functions = {
             .on("mouseover",function(){ 
               this.tipsy.show();
               var records = [];
-              me.filteredItems.forEach(function(record){ 
+              me.filteredRecords.forEach(function(record){ 
                 var v = me.getRecordValue(record);
                 if(v>=me.quantile_val[distr+qb[0]] && v<=me.quantile_val[distr+qb[1]]) records.push(record);
               });
@@ -9699,7 +9707,7 @@ var Summary_Interval_functions = {
         this.histBins.pop(); // remove last bin
 
         // distribute records across bins
-        this.filteredItems.forEach(function(record){
+        this.filteredRecords.forEach(function(record){
           var v = this.getRecordValue(record);
           // DO NOT CHANGE BELOW
           if(v===null || v===undefined || v<this.intervalRange.active.min || v>this.intervalRange.getActiveMax()) return;
@@ -9943,15 +9951,12 @@ var Summary_Interval_functions = {
         .on("click",function(aggr){ me.onAggrClick(aggr); });
 
       ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
-        newBins.append("span").attr("class","measure_"+m);
+        newBins.append("span").attr("class","measure_"+m)
+          .on("mouseover" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); })
+          .on("mouseleave",function(){ me.browser.refreshMeasureLabels(); });
       });
 
-      newBins.selectAll("[class^='measure_Compare_']")
-        .on("mouseover" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); })
-        .on("mouseleave",function(){ me.browser.refreshMeasureLabels(); });
-
       newBins.append("span").attr("class","total_tip");
-
       newBins.append("span").attr("class","lockButton fa")
         .each(function(aggr){
           this.tipsy = new Tipsy(this, {
@@ -9980,15 +9985,13 @@ var Summary_Interval_functions = {
         kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
       });
 
-      this.DOM.aggrGlyphs    = this.DOM.histogram_bins.selectAll(".aggrGlyph");
-
+      this.DOM.aggrGlyphs      = this.DOM.histogram_bins.selectAll(".aggrGlyph");
       this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
       this.DOM.measureTotalTip = this.DOM.aggrGlyphs.selectAll(".total_tip");
+      this.DOM.lockButton      = this.DOM.aggrGlyphs.selectAll(".lockButton");
       ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
         this.DOM["measure_"+m] = this.DOM.aggrGlyphs.selectAll(".measure_"+m);
       },this);
-
-      this.DOM.lockButton = this.DOM.aggrGlyphs.selectAll(".lockButton");
     },
     /** -- */
     map_refreshColorScale: function(){
@@ -10041,7 +10044,7 @@ var Summary_Interval_functions = {
 
           var r = me.valueScale.range()[1]/9;
           var records = [];
-          me.filteredItems.forEach(function(record){ 
+          me.filteredRecords.forEach(function(record){ 
             var v = me.getRecordValue(record);
             if(v>=this._minValue && v<=this._maxValue) records.push(record);
           },this);
@@ -10081,10 +10084,7 @@ var Summary_Interval_functions = {
         })
         .on("mouseenter",function(){ this.tipsy.show(); })
         .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          this.tipsy.hide();
-          me.setZoomed(this.getAttribute("sign")==="plus");
-        });
+        .on("click",     function(){ this.tipsy.hide(); me.setZoomed(this.getAttribute("sign")==="plus"); });
 
       var controlLine = this.DOM.intervalSlider.append("div").attr("class","controlLine")
         .on("mousedown", function(){
@@ -10252,9 +10252,15 @@ var Summary_Interval_functions = {
     refreshBins_Translate: function(){
       var me=this;
       var offset = (this.stepTicks)? this.width_barGap : 0;
-      this.DOM.aggrGlyphs
-        .style("width",this.getWidth_Bin()+"px")
-        .each(function(aggr){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(aggr.minV)+offset)+"px)"); });
+      if(this.scaleType==="time"){
+        this.DOM.aggrGlyphs
+          .style("width",function(aggr){ return (me.valueScale(aggr.maxV)-me.valueScale(aggr.minV))+"px"; })
+          .each(function(aggr){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(aggr.minV)+ 1)+"px)"); });;
+      } else {
+        this.DOM.aggrGlyphs
+          .style("width",this.getWidth_Bin()+"px")
+          .each(function(aggr){ kshf.Util.setTransform(this,"translateX("+(me.valueScale(aggr.minV)+offset)+"px)"); });
+      }
     },
     /** -- */
     refreshViz_Scale: function(){
@@ -10274,12 +10280,16 @@ var Summary_Interval_functions = {
       };
 
       if(this.scaleType==='time'){
-        var durationTime=this.browser.noAnim?0:700;
-        this.timeSVGLine = d3.svg.area().interpolate("cardinal")
-          .x(function(aggr){ return me.valueScale(aggr.minV)+width/2; })
-          .y0(me.height_hist)
-          .y1(function(aggr){ return (aggr._measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr)); });
-        this.DOM.measure_Total_Area.transition().duration(durationTime).attr("d", this.timeSVGLine);
+        this.DOM.measure_Total_Area
+          .transition().duration(this.browser.noAnim?0:700)
+          .attr("d", 
+            d3.svg.area().interpolate("cardinal")
+              .x(this.timeAxis_XFunc)
+              .y0(me.height_hist)
+              .y1(function(aggr){ 
+                return (aggr._measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr));
+              }));
+          ;
       } else {
         this.DOM.measure_Total.each(function(aggr){
           kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+heightTotal(aggr)+")");
@@ -10318,18 +10328,20 @@ var Summary_Interval_functions = {
       // Time (line chart) update
       if(this.scaleType==='time'){
         var durationTime = this.browser.noAnim ? 0 : 700;
-        var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
-        this.timeSVGLine = d3.svg.area().interpolate("cardinal")
-          .x(xFunc).y0(me.height_hist+2)
-          .y1(function(aggr){
-              return (aggr._measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1);
-          });
-
-        this.DOM.measure_Active_Area.transition().duration(durationTime).attr("d", this.timeSVGLine);
+        this.DOM.measure_Active_Area
+          .transition().duration(durationTime)
+          .attr("d", 
+            d3.svg.area().interpolate("cardinal")
+              .x (this.timeAxis_XFunc)
+              .y0(me.height_hist+2)
+              .y1(function(aggr){
+                  return (aggr._measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1);
+              })
+            );
 
         this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
-          .attr("x1",xFunc)
-          .attr("x2",xFunc)
+          .attr("x1",this.timeAxis_XFunc)
+          .attr("x2",this.timeAxis_XFunc)
           .attr("y1",function(aggr){ return me.height_hist+3; })
           .attr("y2",function(aggr){
             return (aggr._measure.Active===0) ? (me.height_hist+3) : (me.height_hist - heightActive(aggr)+1);
@@ -10398,14 +10410,17 @@ var Summary_Interval_functions = {
         var yFunc = function(aggr){
           return (aggr._measure[compId]===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr));
         };
-        var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
 
         var dTime = 200;
-        this.timeSVGLine = d3.svg.area().interpolate("cardinal").x(xFunc).y(yFunc);
-        this.DOM["measure_Compare_Area_"+cT].transition().duration(dTime).attr("d", this.timeSVGLine);
+        this.DOM["measure_Compare_Area_"+cT]
+          .transition().duration(dTime)
+          .attr("d", d3.svg.area().interpolate("cardinal").x(this.timeAxis_XFunc).y(yFunc));
+
         this.DOM["measure_Compare_Line_"+cT].transition().duration(dTime)
-          .attr("y1",me.height_hist+3 ).attr("y2",yFunc)
-          .attr("x1",xFunc).attr("x2",xFunc);
+          .attr("y1",me.height_hist+3 )
+          .attr("y2",yFunc)
+          .attr("x1",this.timeAxis_XFunc)
+          .attr("x2",this.timeAxis_XFunc);
         return;
       }
 
@@ -10487,18 +10502,19 @@ var Summary_Interval_functions = {
         var yFunc = function(aggr){
           return (aggr._measure.Highlight===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
         };
-        var xFunc = function(aggr){ return me.valueScale(aggr.minV)+width/2; };
         var dTime=200;
-        this.timeSVGLine = d3.svg.area().interpolate("cardinal")
-          .x(xFunc)
-          .y0(me.height_hist+2)
-          .y1(yFunc);
-        this.DOM.measure_Highlight_Area.transition().duration(dTime).attr("d", this.timeSVGLine);
+        this.DOM.measure_Highlight_Area
+          .transition().duration(dTime)
+          .attr("d", 
+            d3.svg.area().interpolate("cardinal")
+              .x(this.timeAxis_XFunc)
+              .y0(me.height_hist+2)
+              .y1(yFunc));
         this.DOM.measure_Highlight_Line.transition().duration(dTime)
           .attr("y1",me.height_hist+3)
           .attr("y2",yFunc)
-          .attr("x1",xFunc)
-          .attr("x2",xFunc);
+          .attr("x1",this.timeAxis_XFunc)
+          .attr("x2",this.timeAxis_XFunc);
       } else {
         if(!this.browser.vizActive.Highlight){
           var xx = (width / (totalC+1));
@@ -10640,11 +10656,10 @@ var Summary_Interval_functions = {
           this.style.left = minPos+"px";
           this.style.width = (maxPos-minPos)+"px";
           //kshf.Util.setTransform(this,"translateX("+minPos+"px) scaleX("+(maxPos-minPos)+")");
+          // Rendering update slowdown if the above translation is used. Weird...
         });
       this.DOM.intervalSlider.selectAll(".handle")
-        .each(function(d){
-          kshf.Util.setTransform(this,"translateX("+((d==="min")?minPos:maxPos)+"px)");
-        });
+        .each(function(d){ kshf.Util.setTransform(this,"translateX("+((d==="min")?minPos:maxPos)+"px)"); });
     },
     /** -- */
     refreshHeight: function(){
@@ -10758,7 +10773,7 @@ var Summary_Interval_functions = {
           if(v!==null) values.push(v);
         }); */
       }
-      this.filteredItems.forEach(collectFunc);
+      this.filteredRecords.forEach(collectFunc);
 
       [10,20,30,40,50,60,70,80,90].forEach(function(q){
         var x =d3.quantile(values,q/100);

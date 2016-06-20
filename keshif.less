@@ -250,15 +250,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[selectCompare_A]{
       .measure_Compare_A{ opacity: 1 !important; pointer-events: all !important; }
-      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_A{ display: block; }
+      .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_A{ display: block; }
     }
     &[selectCompare_B]{
       .measure_Compare_B{ opacity: 1 !important; pointer-events: all !important;}
-      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_B{ display: block; }
+      .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_B{ display: block; }
     }
     &[selectCompare_C]{
       .measure_Compare_C{ opacity: 1 !important; pointer-events: all !important;}
-      .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_C{ display: block; }
+      .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C{ display: block; }
     }
     &[recordDisplayMapping="sort"]{
       .kshfSummary[summary_type="interval"] {
@@ -327,13 +327,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[dropSource="browser"]{
         > .attributePanel > .attributeList > .dropZone_AttribList{ display: block; }
       }
-      &[dropattrtype~="unique"] {
+      //&[dropattrtype~="unique"] {
         .recordDisplay[hasRecordView="false"]{
           .flex(1);
           min-height: 50px;
         }
         .dropZone_recordView{ display: block !important; }
-      }
+      //}
       &[dropattrtype~="categorical"][dropattrtype~="singlevalue"] {
         .dropZone_textSearch{ display: block !important; }
       }
@@ -2355,8 +2355,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: none;
       }
       // Fixed height for active selection: So it covers the whole chart. Compare selections will be on top.
-      &[percentilechartvisible="Basic"] > .percentileChart_Active > .quantile{ height: 11px; }
-      &[percentilechartvisible="Extended"] > .percentileChart_Active > .quantile{ height: 28px; }
+      &[percentileChartVisible="Basic"] > .percentileChart_Active > .quantile{ height: 11px; }
+      &[percentileChartVisible="Extended"] > .percentileChart_Active > .quantile{ height: 28px; }
       &:hover > .percentileTitle{ display: block; }
     } // percentileGroup
 
@@ -3144,7 +3144,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph{
             &[selected="0"][selection="selected"] .notButton{ display: inline; opacity: 1 }
           }
-          .setMatrixButton{ display: inline-block !important; }
+          &:hover .setMatrixButton{ display: inline-block !important; }
         }
         &[filtered_range=true] .clearFilterButton.rangeFilter{
           display:inline-block;

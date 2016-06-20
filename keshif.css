@@ -302,21 +302,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompare_A] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_A {
+.kshf[selectCompare_A] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_A {
   display: block;
 }
 .kshf[selectCompare_B] .measure_Compare_B {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompare_B] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_B {
+.kshf[selectCompare_B] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_B {
   display: block;
 }
 .kshf[selectCompare_C] .measure_Compare_C {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompare_C] .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Compare_C {
+.kshf[selectCompare_C] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C {
   display: block;
 }
 .kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:before {
@@ -385,7 +385,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showDropZone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
-.kshf[showDropZone=true][dropattrtype~="unique"] .recordDisplay[hasRecordView="false"] {
+.kshf[showDropZone=true] .recordDisplay[hasRecordView="false"] {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -393,7 +393,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   min-height: 50px;
 }
-.kshf[showDropZone=true][dropattrtype~="unique"] .dropZone_recordView {
+.kshf[showDropZone=true] .dropZone_recordView {
   display: block !important;
 }
 .kshf[showDropZone=true][dropattrtype~="categorical"][dropattrtype~="singlevalue"] .dropZone_textSearch {
@@ -2931,10 +2931,10 @@ top:calc(50% - 5px);
   pointer-events: none;
   display: none;
 }
-.kshf .percentileGroup[percentilechartvisible="Basic"] > .percentileChart_Active > .quantile {
+.kshf .percentileGroup[percentileChartVisible="Basic"] > .percentileChart_Active > .quantile {
   height: 11px;
 }
-.kshf .percentileGroup[percentilechartvisible="Extended"] > .percentileChart_Active > .quantile {
+.kshf .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Active > .quantile {
   height: 28px;
 }
 .kshf .percentileGroup:hover > .percentileTitle {
@@ -3873,7 +3873,7 @@ top:calc(50% - 8px);
   display: inline;
   opacity: 1;
 }
-.kshf .kshfSummary[isMultiValued=true] .setMatrixButton {
+.kshf .kshfSummary[isMultiValued=true]:hover .setMatrixButton {
   display: inline-block !important;
 }
 .kshf .kshfSummary[filtered_range=true] .clearFilterButton.rangeFilter {
