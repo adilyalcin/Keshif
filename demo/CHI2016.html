@@ -75,8 +75,23 @@ google.setOnLoadCallback(function(){
       url: "http://confer.csail.mit.edu/chi2015/papers",
       callback: loadData
     },
+    onReady: function(){
+      if(window.location.hash!==""){
+        if(window.location.hash==="#UMD"){
+          var summary = this.summaries_by_name["Author Institution"];
+          summary.onCatClick(summary._cats[14]);
+
+          this.summaries_by_name["Authors"].setCollapsed(false);
+          this.summaries_by_name["Authors"].updateCatSorting(0,true,true);
+
+          this.summaries_by_name["Author Country"].setCollapsed(true);
+          var me=this;
+          setTimeout(function(){me.updateLayout();},250);
+        }
+      }
+    },
     summaries: [
-      { name: "Venue", value: "type"},
+      //{ name: "Venue", value: "type"},
       { name: "Type", value: "subtype"},
       { name: "Highlights",
         value: function(){
