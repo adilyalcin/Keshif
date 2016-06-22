@@ -40,8 +40,8 @@ $(document).ready( function() {
         phone.att_pixels_y = 1*phone.att_pixels_y;
         phone.RAM = 1*phone.att_ram;
         phone['Screen Size'] = 1*phone.att_screen_size;
-        phone.SDCard = 1*phone.att_sd_card;
-        phone.Storage = 1*phone.att_storage;
+        if(phone.att_sd_card) phone.SDCard = 1*phone.att_sd_card;
+        if(phone.att_storage) phone.Storage = 1*phone.att_storage;
         phone.Weight = 1*phone.att_weight;
         phone.Price = 1*phone.price;
         phone.Brand = phone.att_brand;
