@@ -2603,9 +2603,6 @@ top:calc(50% - 5px);
   color: #969da3;
   font-size: 0.7em;
 }
-.kshf .aggrGlyph > .measureLabel > .unitName {
-  margin-left: 0px;
-}
 .kshf .aggrGlyph[showlock="true"] .lockButton {
   pointer-events: all !important;
   opacity: 1;

@@ -2724,7 +2724,7 @@ kshf.Panel.prototype = {
       else
         this.summaries.splice(index,0,summary);
       this.DOM.root.attr("hasSummaries",true);
-      this.updateWidth_QueryPreview();
+      this.updateWidth_MeasureLabel();
       this.refreshAdjustWidth();
     } else { // summary was in the panel. Change position
       this.summaries.splice(curIndex,1);
@@ -2750,7 +2750,7 @@ kshf.Panel.prototype = {
     if(this.summaries.length===0) {
       this.DOM.root.attr("hasSummaries",false);
     } else {
-      this.updateWidth_QueryPreview();
+      this.updateWidth_MeasureLabel();
     }
     summary.panel = undefined;
     this.refreshAdjustWidth();
@@ -2881,7 +2881,7 @@ kshf.Panel.prototype = {
   },
   /** -- */
   setTotalWidth: function(_w_){
-    this.width_catBars = _w_-this.width_catLabel-this.width_catMeasureLabel-kshf.scrollWidth;
+    this.width_catBars = _w_ - this.width_catLabel - this.width_catMeasureLabel - kshf.scrollWidth;
   },
   /** -- */
   collapseAllSummaries: function(exceptThisOne){
@@ -2916,30 +2916,46 @@ kshf.Panel.prototype = {
     this.summaries.forEach(function(summary){ summary.refreshWidth(); });
   },
   /** --- */
-  updateWidth_QueryPreview: function(){
+  updateWidth_MeasureLabel: function(){
     var maxTotalCount = d3.max(this.summaries, function(summary){
+      if(summary.type!=="categorical") return 0; // only align categorical summaries
       if(summary.getMaxAggr_Total===undefined) return 0;
       return summary.getMaxAggr_Total();
     });
 
-    var oldPreviewWidth = this.width_catMeasureLabel;
+    if(maxTotalCount===0){
+      this.width_catMeasureLabel = 0;
+      return;
+    }
+
+    var _w_total_ = this.getWidth_Total();
+
+    var width_old = this.width_catMeasureLabel;
 
     this.width_catMeasureLabel = 10;
+    // compute number of digits
     var digits = 1;
-    while(maxTotalCount>9){
-      digits++;
-      maxTotalCount = Math.floor(maxTotalCount/10);
-    }
-    if(digits>3) {
+    while(maxTotalCount>9){ digits++; maxTotalCount = Math.floor(maxTotalCount/10); }
+    if(digits>3){
       digits = 2;
       this.width_catMeasureLabel+=4; // "." character is used to split. It takes some space
     }
     this.width_catMeasureLabel += digits*6;
 
-    if(oldPreviewWidth!==this.width_catMeasureLabel){
+    // TODO: Account for the unitName displayed
+    if(this.browser.measureFunc!=="Count" && this.browser.measureSummary){
+      if(this.browser.measureSummary.unitName){
+        // TODO: Use the rendered width, instead of 7
+        var unitNameWidth = 2 + this.browser.measureSummary.unitName.length*7;
+        this.width_catMeasureLabel += unitNameWidth;
+      }
+    }
+
+    if(width_old!==this.width_catMeasureLabel){
       this.summaries.forEach(function(summary){
         if(summary.refreshLabelWidth) summary.refreshLabelWidth();
       });
+      this.setWidthCatBars( _w_total_ - this.width_catLabel - this.width_catMeasureLabel - kshf.scrollWidth );
     }
   },
 };
@@ -3040,8 +3056,8 @@ kshf.Browser = function(options){
     .classed("kshf",true)
     .attr("noanim",true)
     .attr("measureFunc",this.measureFunc)
-    .style("position","relative")
     .attr("pointerEvents",true)
+    .style("position","relative")
     .on("mousemove",function(d,e){
       // Compute mouse moving speed, to adjust repsonsiveness
       if(me.lastMouseMoveEvent===undefined){
@@ -3281,7 +3297,7 @@ kshf.Browser.prototype = {
           && summary.scaleType!=='time' 
           // && summary.panel!==undefined
           && summary.intervalRange.total
-          && summary.intervalRange.total.min>=0
+          //&& summary.intervalRange.total.min>=0
           && summary.summaryName !== this.records[0].idIndex
           ;
       },this);
@@ -3291,8 +3307,7 @@ kshf.Browser.prototype = {
       var me=this;
       if(this.DOM.measureSelectBox) return;
       this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox")
-        .style("left","0px")
-        .style("top","0px");
+        .style({ left: "0px", top: "0px" });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.Close }); })
         .on("mouseover",function(){ this.tipsy.show(); })
@@ -4624,15 +4639,14 @@ kshf.Browser.prototype = {
           }
         },this);
 
-        this.panels.left.updateWidth_QueryPreview();
-        this.panels.right.updateWidth_QueryPreview();
-        this.panels.middle.updateWidth_QueryPreview();
+        this.panels.left.updateWidth_MeasureLabel();
+        this.panels.right.updateWidth_MeasureLabel();
+        this.panels.middle.updateWidth_MeasureLabel();
 
         this.recordDisplay = new kshf.RecordDisplay(this,this.options.recordDisplay||{});
 
         if(this.options.measure){
-          var summary = this.summaries_by_name[this.options.measure];
-          this.setMeasureFunction(summary,"Sum");
+          this.setMeasureFunction(this.summaries_by_name[this.options.measure],"Sum");
         }
 
         this.DOM.recordName.html(this.recordName);
@@ -4646,21 +4660,21 @@ kshf.Browser.prototype = {
         this.loaded = true;
 
         var x = function(){
-            var totalWidth = this.divWidth;
-            var colCount = 0;
-            if(this.panels.left.summaries.length>0){
-                totalWidth-=this.panels.left.width_catLabel+kshf.scrollWidth+this.panels.left.width_catMeasureLabel;
-                colCount++;
-            }
-            if(this.panels.right.summaries.length>0){
-                totalWidth-=this.panels.right.width_catLabel+kshf.scrollWidth+this.panels.right.width_catMeasureLabel;
-                colCount++;
-            }
-            if(this.panels.middle.summaries.length>0){
-                totalWidth-=this.panels.middle.width_catLabel+kshf.scrollWidth+this.panels.middle.width_catMeasureLabel;
-                colCount++;
-            }
-            return Math.floor((totalWidth)/8);
+          var totalWidth = this.divWidth;
+          var colCount = 0;
+          if(this.panels.left.summaries.length>0){
+            totalWidth-=this.panels.left.width_catLabel+kshf.scrollWidth+this.panels.left.width_catMeasureLabel;
+            colCount++;
+          }
+          if(this.panels.right.summaries.length>0){
+            totalWidth-=this.panels.right.width_catLabel+kshf.scrollWidth+this.panels.right.width_catMeasureLabel;
+            colCount++;
+          }
+          if(this.panels.middle.summaries.length>0){
+            totalWidth-=this.panels.middle.width_catLabel+kshf.scrollWidth+this.panels.middle.width_catMeasureLabel;
+            colCount++;
+          }
+          return Math.floor((totalWidth)/8);
         };
         var defaultBarChartWidth = x.call(this);
 
@@ -5074,6 +5088,7 @@ kshf.Browser.prototype = {
         summary.initializeAggregates();
         this.records.forEach(function(record){ record.measure_Self = summary.getRecordValue(record); });
       }
+
       this.DOM.measureFuncType.html(this.getMeasureFuncTypeText());
 
       this.DOM.root.attr("measureFunc",this.measureFunc);
@@ -5087,6 +5102,12 @@ kshf.Browser.prototype = {
       this.allAggregates.forEach(function(aggr){ aggr.resetAggregateMeasures(); });
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.update_Records_Wanted_Count();
+
+      // measure labels need to be updated in all cases, numbers might change, unit names may be added...
+      this.panels.left.updateWidth_MeasureLabel();
+      this.panels.right.updateWidth_MeasureLabel();
+      this.panels.middle.updateWidth_MeasureLabel();
+      this.panels.bottom.updateWidth_MeasureLabel();
     },
     /** -- */
     checkBrowserZoomLevel: function(){
@@ -5261,7 +5282,7 @@ kshf.Browser.prototype = {
 
       this.DOM.middleColumn.style("width",widthMiddlePanel+"px");
 
-      this.recordDisplay.refreshWidth(widthMiddlePanel);
+      if(this.recordDisplay) this.recordDisplay.refreshWidth(widthMiddlePanel);
     },
     /** -- */
     getTickLabel: function(_val){
@@ -6315,9 +6336,8 @@ var Summary_Categorical_functions = {
     var totalWidth= 25;
     var maxAggregate_Total = this.getMaxAggr_Total();
     nuggetChart.selectAll(".nuggetBar").data(this._cats).enter()
-      .append("span")
-      .attr("class","nuggetBar")
-      .style("width",function(cat){ return totalWidth*(cat.records.length/maxAggregate_Total)+"px"; });
+      .append("span").attr("class","nuggetBar")
+        .style("width",function(cat){ return totalWidth*(cat.records.length/maxAggregate_Total)+"px"; });
 
     this.DOM.nugget.select(".nuggetInfo").html(
       "<span class='fa fa-tag"+(this.isMultiValued?"s":"")+"'></span><br>"+
@@ -6364,6 +6384,10 @@ var Summary_Categorical_functions = {
   /** -- */
   getWidth_Label: function(){
     return this.panel.width_catLabel;
+  },
+  /** --  Label text + the measure text */
+  getWidth_TotalText: function(){
+    return this.panel.width_catLabel + this.panel.width_catMeasureLabel;
   },
   /** -- */
   getWidth_CatChart: function(){
@@ -6891,15 +6915,15 @@ var Summary_Categorical_functions = {
 
     this.insertRoot(beforeDOM);
 
-    this.DOM.root
-      .attr("filtered_or",0)
-      .attr("filtered_and",0)
-      .attr("filtered_not",0)
-      .attr("filtered_total",0)
-      .attr("isMultiValued",this.isMultiValued)
-      .attr("summary_type","categorical")
-      .attr("hasMap",this.catMap!==undefined)
-      .attr("viewType",this.viewType);
+    this.DOM.root.attr({
+      filtered_or: 0,
+      filtered_and: 0,
+      filtered_not: 0,
+      filtered_total: 0,
+      isMultiValued: this.isMultiValued,
+      summary_type: 'categorical',
+      hasMap: this.catMap!==undefined,
+      viewType: this.viewType });
 
     this.insertHeader();
 
@@ -7283,9 +7307,8 @@ var Summary_Categorical_functions = {
       if(this.DOM.summaryCategorical===undefined) return;
       this.updateChartScale_Measure();
       this.DOM.summaryCategorical.style("width",this.getWidth()+"px");
-      this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".scaleModeControl")
-        .style("width",(this.getWidth()-this.panel.width_catMeasureLabel-this.getWidth_Label()-kshf.scrollWidth+5)+"px");
+      this.DOM.summaryName.style("max-width",(this.getWidth()- 40)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".scaleModeControl").style("width",(this.getWidth_CatChart()+5)+"px");
       this.refreshViz_Axis();
     },
     /** -- */
@@ -7297,7 +7320,7 @@ var Summary_Categorical_functions = {
         this.DOM.measureTotalTip.style("opacity",0);
       } else {
         var me = this;
-        var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
+        var width_Text = this.getWidth_TotalText();
         this.DOM.measure_Total.each(function(_cat){
           kshf.Util.setTransform(this, "translateX("+width_Text+"px) scaleX("+me.chartScale_Measure(_cat.measure('Total'))+")");
         });
@@ -7377,7 +7400,7 @@ var Summary_Categorical_functions = {
       }
       
       var maxWidth = this.chartScale_Measure.range()[1];
-      var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
+      var width_Text = this.getWidth_TotalText();
 
       this.DOM.measure_Active.each(function(_cat){
         kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX("+(ratioMode?
@@ -7409,16 +7432,16 @@ var Summary_Categorical_functions = {
       var ratioMode = this.browser.ratioModeActive;
       var isThisIt = this===this.browser.highlightSelectedSummary;
       var maxWidth = this.chartScale_Measure.range()[1];
-      var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
+      var width_Text = this.getWidth_TotalText();
 
       if(this.browser.vizActive.Highlight){
         if(this.browser.ratioModeActive) {
           if(this.viewType==='map'){
             //this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlight)/9))+"%");
           } else {
-            this.DOM.highlightedMeasureValue
-              .style("opacity",1)
-              .style("left",(this.browser.allRecordsAggr.ratioHighlightToTotal()*maxWidth)+"px");
+            this.DOM.highlightedMeasureValue.style({
+              opacity: 1,
+              left: (this.browser.allRecordsAggr.ratioHighlightToTotal()*maxWidth)+"px" });
           }
         }
       } else {
@@ -7480,7 +7503,7 @@ var Summary_Categorical_functions = {
     refreshViz_Compare: function(cT, curGroup, totalGroups){
       if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
       var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
-      var width_Text = this.getWidth_Label()+this.panel.width_catMeasureLabel;
+      var width_Text = this.getWidth_TotalText();
       var _translateX = "translateX("+width_Text+"px) ";
       var barHeight = (this.heightRow_category-8)/totalGroups;
       var _translateY = "translateY("+(barHeight*(curGroup+1))+"px)";
@@ -7566,20 +7589,22 @@ var Summary_Categorical_functions = {
       if(this.isEmpty()) return;
       if(this.DOM.summaryCategorical===undefined) return;
       
-      var labelWidth = this.getWidth_Label();
-      var barChartMinX = labelWidth + this.panel.width_catMeasureLabel;
+      var width_Label = this.getWidth_Label();
+      var width_totalText = this.getWidth_TotalText();
 
-      this.DOM.chartCatLabelResize.style("left",(labelWidth+1)+"px");
-      this.DOM.summaryCategorical.selectAll(".hasLabelWidth").style("width",labelWidth+"px");
-      this.DOM.measureLabel
-        .style("left",labelWidth+"px")
-        .style("width",this.panel.width_catMeasureLabel+"px");
-      this.DOM.chartAxis_Measure.each(function(){
-        kshf.Util.setTransform(this,"translateX("+barChartMinX+"px)");
+      this.DOM.chartCatLabelResize.style("left",(width_Label+1)+"px");
+      this.DOM.summaryCategorical.selectAll(".hasLabelWidth").style("width",width_Label+"px");
+      this.DOM.measureLabel.style({
+        left:  width_Label+"px",
+        width: this.panel.width_catMeasureLabel+"px"
       });
-      this.DOM.catSortButton
-        .style("left",labelWidth+"px")
-        .style("width",this.panel.width_catMeasureLabel+"px");
+      this.DOM.chartAxis_Measure.each(function(){
+        kshf.Util.setTransform(this,"translateX("+width_totalText+"px)");
+      });
+      this.DOM.catSortButton.style({
+        left: width_Label+"px",
+        width: this.panel.width_catMeasureLabel+"px"
+      });
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
@@ -7959,27 +7984,22 @@ var Summary_Categorical_functions = {
           .on("mouseout", function(_cat){ me.onCatLeave_OR(_cat); })
           .on("click",    function(_cat){ me.onCatClick_OR(_cat); });
 
-        this.DOM.theLabel = domAttrLabel.append("span").attr("class","theLabel").html(function(_cat){
-          return me.catLabel_Func.call(_cat.data);
-        });
-        DOM_cats_new.append("span").attr("class", "measureLabel");
+        domAttrLabel.append("span").attr("class","theLabel").html(function(aggr){ return me.catLabel_Func.call(aggr.data); });
+        DOM_cats_new.append("span").attr("class","measureLabel");
 
         ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
-          DOM_cats_new.append("span").attr("class", "measure_"+m);
+          DOM_cats_new.append("span").attr("class", "measure_"+m)
+            .on("mouseover" ,function(){ 
+              me.browser.refreshMeasureLabels(this.classList[0].substr(8)); 
+              d3.event.preventDefault();
+              d3.event.stopPropagation();
+            })
+            .on("mouseleave",function(){
+              me.browser.refreshMeasureLabels();
+              d3.event.preventDefault();
+              d3.event.stopPropagation();
+            });
         });
-
-        DOM_cats_new.selectAll("[class^='measure_Compare_']")
-          .on("mouseover" ,function(){ 
-            me.browser.refreshMeasureLabels(this.classList[0].substr(8)); 
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-          })
-          .on("mouseleave",function(){
-            me.browser.refreshMeasureLabels();
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-          });
-
         DOM_cats_new.append("span").attr("class", "total_tip");
 
       } else {
@@ -8011,10 +8031,8 @@ var Summary_Categorical_functions = {
             me.onCatLeave(_cat);
           });
 
-        DOM_cats_new.append("path").attr("class", "measure_Active");
-
-        DOM_cats_new.select(".measure_Active").on("click", function(aggr){ me.onCatClick(aggr); });
-        DOM_cats_new.append("text").attr("class", "measureLabel"); // label on top of (after) all the rest
+        DOM_cats_new.append("path").attr("class","measure_Active").on("click", function(aggr){ me.onCatClick(aggr); });
+        DOM_cats_new.append("text").attr("class","measureLabel"); // label on top of (after) all the rest
       }
       this.refreshDOMcats();
     },
@@ -8029,6 +8047,7 @@ var Summary_Categorical_functions = {
       },this);
 
       if(this.viewType==='list'){
+        this.DOM.theLabel        = this.DOM.aggrGlyphs.selectAll(".theLabel");
         this.DOM.attribClickArea = this.DOM.aggrGlyphs.selectAll(".clickArea");
         this.DOM.lockButton      = this.DOM.aggrGlyphs.selectAll(".lockButton");
       }
@@ -8057,9 +8076,9 @@ var Summary_Categorical_functions = {
     /** -- */
     cullAttribs: function(){
       if(this.viewType==='map') return; // no culling on maps, for now.  
-      this.DOM.aggrGlyphs
-        .style("visibility",function(_cat){ return _cat.isVisible?"visible":"hidden"; })
-        .style("display",function(_cat){ return _cat.isVisible?"block":"none"; });
+      this.DOM.aggrGlyphs.style({
+        visibility: function(_cat){ return _cat.isVisible?"visible":"hidden"; },
+        display   : function(_cat){ return _cat.isVisible?"block"  :"none"  ; }} );
       if(this.onCatCull) this.onCatCull.call(this);
     },
     /** -- */
@@ -9241,6 +9260,7 @@ var Summary_Interval_functions = {
     /** -- */
     printWithUnitName: function(v,noDiv){
       if(v instanceof Date) return this.timeTyped.print(v);
+      v = v.toLocaleString();
       if(this.unitName){
         var s = noDiv ? this.unitName : ("<span class='unitName'>"+this.unitName+"</span>");
         return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s); // currency comes before
@@ -9946,8 +9966,16 @@ var Summary_Interval_functions = {
 
       ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
         newBins.append("span").attr("class","measure_"+m)
-          .on("mouseover" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); })
-          .on("mouseleave",function(){ me.browser.refreshMeasureLabels(); });
+          .on("mouseover" ,function(){ 
+            me.browser.refreshMeasureLabels(this.classList[0].substr(8));
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+          })
+          .on("mouseleave",function(){ 
+            me.browser.refreshMeasureLabels(); 
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+          });
       });
 
       newBins.append("span").attr("class","total_tip");
@@ -10677,14 +10705,13 @@ var Summary_Interval_functions = {
       
       this.DOM.wrapper.attr("showMeasureAxis_2",wideChart?"true":null);
 
-      this.DOM.summaryInterval
-        .style("width",this.getWidth()+"px")
-        .style("padding-left", this.width_measureAxisLabel+"px")
-        .style("padding-right", ( wideChart ? this.width_measureAxisLabel : 11)+"px");
+      this.DOM.summaryInterval.style({
+        'width'        : this.getWidth()+"px",
+        'padding-left' : this.width_measureAxisLabel+"px",
+        'padding-right': ( wideChart ? this.width_measureAxisLabel : 11)+"px" });
       
       this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
-      if(this.DOM.timeSVG)
-          this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
+      if(this.DOM.timeSVG) this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
     },
     /** -- */
     setHeight: function(targetHeight){
@@ -10704,9 +10731,9 @@ var Summary_Interval_functions = {
       this.refreshHeight();
 
       this.DOM.labelGroup.style("height",this.height_labels+"px");
-      this.DOM.intervalSlider.selectAll(".rangeLimitOnChart")
-        .style("height",(this.height_hist+13)+"px")
-        .style("top",(-this.height_hist-13)+"px");
+      this.DOM.intervalSlider.selectAll(".rangeLimitOnChart").style({
+        height: ( this.height_hist+13)+"px",
+        top:    (-this.height_hist-13)+"px" });
       this.DOM.highlightRangeLimits.style("height",this.height_hist+"px");
     },
     /** -- */
@@ -11428,7 +11455,6 @@ var Summary_Clique_functions = {
     this.DOM.root
       .style(this.popupSide,(-w)+"px")
       .style(this.popupSide==="left"?"right":"left","initial");
-      ;
     if(!this.pausePanning) this.refreshSVGViewBox();
   },
   /** -- */
