@@ -8491,7 +8491,7 @@ var Summary_Interval_functions = {
       this.timeTyped = { 
         base: false,
         maxDateRes: function(){
-          if(this.hour ) return "hour";
+          //if(this.hour ) return "hour";
           if(this.day  ) return "day";
           if(this.month) return "month";
           if(this.year ) return "year";
@@ -8500,7 +8500,7 @@ var Summary_Interval_functions = {
           if(this.year ) return "year";
           if(this.month) return "month";
           if(this.day  ) return "day";
-          if(this.hour ) return "hour";
+          //if(this.hour ) return "hour";
         }
       };
 
