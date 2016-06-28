@@ -547,6 +547,19 @@ body{
   background-color: #FBFAF7;
 }
 
+.pageSectionA{
+  color: black;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 100;
+  cursor: pointer;
+  margin: 0px;
+}
+.pageSectionA:hover{
+  color: orangered;
+  text-decoration: underline;
+}
+
 .descr_text{
   opacity: 0;
   font-size: 1em;
@@ -597,6 +610,7 @@ body{
   background-color: #eaeaea;
   z-index: 1000;
   box-shadow: 0px 0px 15px #222;
+  cursor: default;
 }
 
 .page-Header-Pills{
@@ -612,17 +626,6 @@ body{
   width: 40px;
   margin: 5px;
   float: left;
-}
-
-.page-Section{
-  display: inline-block;
-  font-weight: 100;
-  cursor: pointer;
-  margin: 0px 10px;
-}
-.page-Section:hover{
-  text-decoration: underline;
-  color: orangered;
 }
 
 .page-Header-Affiliations{
@@ -654,7 +657,7 @@ body{
   padding: 20px 0px;
   box-shadow: inset 0px -3px 3px white;
   cursor: default;
-  background: url("./demo/img/index/background.jpg");
+  background: url("./demo/img/index/background.jpg"); /* https://stocksnap.io/photo/DWLWL9USBG */
   background-size: cover;
   background-blend-mode: lighten;
   text-shadow: 0px 0px 3px black;
@@ -814,19 +817,19 @@ a:hover > .demoImage{
     <span style='font-size: 0.7em; font-weight: 300; color: #7D7D7D;'>Data <b>M</b>ade <b>E</b>xplorable</span>
   </span>
   <span class='page-Header-Pills'>
-    <span class='page-Section'><a href='#Section-UseCases'>Use Cases</a></span> |
-    <span class='page-Section'><a href='#Section-Features'>Features</a></span> |
-    <span class='page-Section'><a href="#Section-Media">Media Coverage</a></span> |
-    <span class='page-Section'><a href='#Section-Demo'>Demo and Examples</a></span> |
-    <span class='page-Section'><a href="#Section-Contact">Contact</a></span>
+    <a class='pageSectionA' href='#Section-UseCases'>Use Cases</a> |
+    <a class='pageSectionA' href='#Section-Features'>Features</a> |
+    <a class='pageSectionA' href="#Section-Media">Media Coverage</a> |
+    <a class='pageSectionA' href='#Section-Demo'>Demo and Examples</a> |
+    <a class='pageSectionA' href="#Section-Contact">Contact</a>
   </span>
   <span class='page-Header-Affiliations'>
     <a href='https://www.facebook.com/keshifme' target='_blank' class='fa fa-facebook socialMedia'
-      style='color: #4c66a4; margin-right: 10px;'></a>
+      style='color: #4c66a4;'></a>
     <a href='https://www.twitter.com/keshifme' target='_blank' class='fa fa-twitter socialMedia'
-      style='color: #00aced'></a>
+      style='color: #00aced;'></a>
     <a href='https://www.github.com/adilyalcin/keshif' target='_blank' class='fa fa-github socialMedia'
-      style='color: black'></a>
+      style='color: black;'></a>
     <a href='http://www.cs.umd.edu/hcil' target='_blank'>
       <img src="./AggreSet/img/logo_hcil.gif" class="affilLogo affilLogoFilter" title="Human Computer Interaction Lab"></a>
     <a href='http://www.cs.umd.edu' target='_blank'>
@@ -934,7 +937,7 @@ a:hover > .demoImage{
           <img class='userLogo' src='./demo/img/index/logo_apa.jpg'></a></div>
       <div class="two columns UsedBySample">
         <div class='userLogo' style='background-color: white; height: 128px;  overflow: hidden;'>
-        <a href='http://umicra.com/' target='_blank'><b>UMICRA</b> <br>
+        <a href='http://umicra.com/' target='_blank'><b>UMICRA</b><br>
           <span style='font-size: 0.7em'>University of Maryland Inspection and Compliance Research Archive</span></a>
           </div>
           </div>
