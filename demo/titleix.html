@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Title IX Sexual Assault Investigations in U.S. Colleges.</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
+    <script type="text/javascript">
+
+$(document).ready( function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    recordName: "Investigations",
+    leftPanelLabelWidth: 220,
+    rightPanelLabelWidth: 120,
+    source: {
+      url: "http://apps.washingtonpost.com/investigative/homicides/",
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      fileType: "json",
+      tables: "titleix"
+    },
+    summaries: [
+      { name: "college", panel: "left" },
+      { name: "State", value: "state_name", panel: "right" },
+      { name: "Sector", value: "sector", panel: "right" },
+      { name: "Status", value: "status", panel: "right" },
+      { name: "Start Time", panel: "bottom",
+        value: function(){ return d3.time.format("%Y-%m-%d").parse(this.opened); },
+      }
+    ],
+    recordDisplay: {
+      sortBy: "Start Time",
+      sortColWidth: 70,
+      recordView: function(){
+        return "<a style='color: black' href='http://projects.chronicle.com/titleix/campus/"+
+          this.college.replace(/[\.\(\)]+/g,"").replace(/\s+/g,"-")+
+          "' target='_blank'>" + this.college + "</a> - "+
+          "<span style='font-size: 0.9em; font-weight: 300'>" + this.state_name + "</span>";
+      }
+    }
+  });
+});
+</script>
+<style id="kshfStyle">
+#demo_Browser{ max-width: 1150px;  }
+</style>
+	</head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">Title IX Sexual Assault Investigations in U.S. Colleges.</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data source: <b>U.S. Department of Education</b>. 
+      Data compiled by: <b>The Chronicle of Higher Education</b>.
+      <a href="http://projects.chronicle.com/titleix/about/" target='_blank'>Learn more about this data and methods</a>.
+      </div>
+  </body>
+</html>
