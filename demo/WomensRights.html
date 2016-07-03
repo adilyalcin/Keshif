@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Women Rights By Country</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 140,
+    rightPanelLabelWidth: 400,
+    source: {
+      gdocId: '1bXVNc2CiYMaG-oQxYX2_KlFnosPVmHAnCe_9zR_-NUU',
+      tables: "Countries"
+    },
+    readyCb: function(){
+      var s= this.summaries_by_name["Women's Rights"];
+      s.setShowSetMatrix(true);
+      s.setSummary.setPopupSide("right");
+    },
+    summaries: [
+      { name: "Women's Rights", panel: "right",
+        value: function(){
+          var r=[];
+          if(this["Legal abortion to save the woman's life"]==="Yes"){ 
+            r.push("Legal abortion to save the woman's life"); }
+          if(this["Legal abortion to preserve physical health "]==="Yes"){ 
+            r.push("Legal abortion to preserve physical health "); }
+          if(this["Legal abortion to preserve mental health"]==="Yes"){ 
+            r.push("Legal abortion to preserve mental health"); }
+          if(this["Legal abortion in cases of rape or incest"]==="Yes"){ 
+            r.push("Legal abortion in cases of rape or incest"); }
+          if(this["Legal abortion in cases of foetal impairment"]==="Yes"){ 
+            r.push("Legal abortion in cases of foetal impairment"); }
+          if(this["Legal abortion for economic or social reasons"]==="Yes"){ 
+            r.push("Legal abortion for economic or social reasons"); }
+          if(this["Legal abortion on request"]==="Yes"){ 
+            r.push("Legal abortion on request"); }
+          if(this["Legislation for domestic violence"]==="Yes"){ 
+            r.push("Legislation for domestic violence"); }
+          if(this["Specialized court or procedure for domestic violence cases"]==="Yes"){ 
+            r.push("Specialized court or procedure for domestic violence cases"); }
+          if(this["Protection of women in unmarried intimate relationships"]==="Yes"){ 
+            r.push("Protection of women in unmarried intimate relationships"); }
+          if(this["Legislation on emotional abuse"]==="Yes"){ 
+            r.push("Legislation on emotional abuse"); }
+          if(this["Legislation on financial abuse"]==="Yes"){ 
+            r.push("Legislation on financial abuse"); }
+          if(this["Legislation on physical abuse"]==="Yes"){ 
+            r.push("Legislation on physical abuse"); }
+          if(this["Legislation on sexual abuse"]==="Yes"){ 
+            r.push("Legislation on sexual abuse"); }
+          if(this["Legislation on sexual harassment"]==="Yes"){ 
+            r.push("Legislation on sexual harassment"); }
+          if(this["Criminal sanctions for sexual harassment"]==="Yes"){ 
+            r.push("Criminal sanctions for sexual harassment"); }
+          if(this["Governmental office tasked with addressing sexual harassment"]==="Yes"){ 
+            r.push("Governmental office tasked with addressing sexual harassment"); }
+          if(this["Legislation on sexual harassment in education"]==="Yes"){ 
+            r.push("Legislation on sexual harassment in education"); }
+          if(this["Legislation on sexual harassment in employment"]==="Yes"){ 
+            r.push("Legislation on sexual harassment in employment"); }
+          if(this["Legislation on sexual harassment in public spaces"]==="Yes"){ 
+            r.push("Legislation on sexual harassment in public spaces"); }
+          if(this["Legislation on sexual harassment in service provision"]==="Yes"){ 
+            r.push("Legislation on sexual harassment in service provision"); }
+          if(this["Criminal sanctions for sexual harassment in employment"]==="Yes"){ 
+            r.push("Criminal sanctions for sexual harassment in employment"); }
+          if(this["A non-discrimination clause in the constitution"]==="Yes"){ 
+            r.push("A non-discrimination clause in the constitution"); }
+          if(this["Non-discrimination clause in the constitution that mention gender"]==="Yes"){ 
+            r.push("Non-discrimination clause in the constitution that mention gender"); }
+          if(this["Constitution guarantees equality before the law"]==="Yes"){ 
+            r.push("Constitution guarantees equality before the law"); }
+          if(this["Unmarried woman can confer citizenship to her children in the same way as a man"]==="Yes"){ 
+            r.push("Unmarried woman can confer citizenship to her children in the same way as a man"); }
+          if(this["A married woman confer citizenship to her children in the same way as a man"]==="Yes"){ 
+            r.push("A married woman confer citizenship to her children in the same way as a man"); }
+          if(this["Married women required by law to obey their husbands"]==="No"){ 
+            r.push("Married women are not required by law to obey their husbands"); }
+          if(this["Equal ownership rights to property for married women"]==="Yes"){ 
+            r.push("Equal ownership rights to property for married women"); }
+          if(this["Equal inheritance rights to property for daughters"]==="Yes"){ 
+            r.push("Equal inheritance rights to property for daughters"); }
+          if(this["Equal inheritance rights to property for female surviving spouses"]==="Yes"){ 
+            r.push("Equal inheritance rights to property for female surviving spouses"); }
+          if(this["Law mandates paid or unpaid maternity leave"]==="Yes"){ 
+            r.push("Law mandates paid or unpaid maternity leave"); }
+          if(this["Law mandates paid or unpaid paternity leave"]==="Yes"){ 
+            r.push("Law mandates paid or unpaid paternity leave"); }
+          if(this["Law mandate for equal remuneration for men and women for work of equal value"]==="Yes"){ 
+            r.push("Law mandate for equal remuneration for men and women for work of equal value"); }
+          if(this["Laws mandate for non-discrimination based on gender in hiring"]==="Yes"){ 
+            r.push("Laws mandate for non-discrimination based on gender in hiring"); }
+          if(this["Illegal for an employer to ask about family status during a job interview"]==="Yes"){ 
+            r.push("Illegal for an employer to ask about family status during a job interview"); }
+          if(this["Laws penalizing or preventing the dismissal of pregnant women"]==="Yes"){ 
+            r.push("Laws penalizing or preventing the dismissal of pregnant women"); }
+          if(this["Employers required to provide break time for nursing mothers"]==="Yes"){ 
+            r.push("Employers required to provide break time for nursing mothers"); }
+          return r;
+        }
+      },
+      { name: "Number of Rights", panel: "right", collapsed: true,
+        value: function(d){ 
+          if(d._valueCache[42]===null) return 0;
+          return d._valueCache[42].length;
+        } },
+      { name: "Region", panel: "right" }
+    ],
+    recordDisplay: {
+      sortBy: "Number of Rights",
+      maxVisibleItems_Default: 200,
+      sortColWidth: 35,
+      textSearch: "Country",
+      recordView: "Country"
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser {
+  width: 805px;
+  height: calc(100vh - 90px);
+}
+</style>
+  </head>
+  <body>
+  <div class="contents">
+    <div id="demo_PageTitle" align="center">Women's Rights Report</div>
+    <div style='position: absolute; left: 10px'><div id="demo_Browser"></div></div>
+    </div>
+
+    <div id="demo_Infobox">
+      Data from UN Women's 2011 Progress of the World's Women report (for abortion policies), and from The World Bank 
+      for other indicators.<br>
+
+      Submitted to <a href='http://www.vizwiz.com/p/makeover-monday-challenges.html' target='_blank'>#MakeOverMonday Week 12</a>.
+
+      Also visualized by <a href='http://www.theguardian.com/global-development/ng-interactive/2014/feb/04/womens-rights-country-by-country-interactive' target='_blank'>The Guardian</a>.
+      </div>
+
+  </body>
+</html>
