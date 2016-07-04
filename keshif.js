@@ -84,13 +84,13 @@ var kshf = {
       RemoveFilter: "Remove filter",
       RemoveAllFilters: "Remove all filters",
       SaveSelection: "Save Selection",
-      MinimizeSummary: "Minimize summary",
-      OpenSummary: "Open summary",
-      MaximizeSummary: "Maximize summary",
-      RemoveSummary: "Remove summary",
+      MinimizeSummary: "Minimize",
+      OpenSummary: "Open",
+      MaximizeSummary: "Maximize",
+      RemoveSummary: "Remove",
       ReverseOrder: "Reverse order",
       Reorder: "Reorder",
-      ShowMoreInfo: "Show more info",
+      ShowMoreInfo: "Show record info",
       Percentiles: "Percentiles",
       LockToCompare: "Lock to compare",
       Unlock: "Unlock",
@@ -111,7 +111,7 @@ var kshf = {
       Not: "Not",
       EditTitle: "Rename",
       ResizeBrowser: "Resize browser",
-      RemoveRecords: "Remove record view",
+      RemoveRecords: "Remove record panel",
       EditFormula: "Edit formula",
       NoData: "(no data)",
       ZoomToFit: "Zoom to fit",
@@ -125,14 +125,14 @@ var kshf = {
       ShowFullscreen: "Tam ekran",
       RemoveFilter: "Filtreyi kaldır",
       RemoveAllFilters: "Tüm filtreleri kaldır",
-      MinimizeSummary: "Özeti ufalt",
-      OpenSummary: "Özeti aç",
-      MaximizeSummary: "Özeti büyüt",
-      RemoveSummary: "Özeti kaldır",
+      MinimizeSummary: "Ufalt",
+      OpenSummary: "Aç",
+      MaximizeSummary: "Büyüt",
+      RemoveSummary: "Kaldır",
       ReverseOrder: "Ters sırala",
       Reorder: "Yeniden sırala",
       ShowMoreInfo: "Daha fazla bilgi",
-      Percentiles: "Yüzdeler",
+      Percentiles: "Yüzde",
       LockToCompare: "Kilitle ve karşılaştır",
       Unlock: "Kilidi kaldır",
       Search: "Ara",
@@ -439,6 +439,10 @@ Tipsy.prototype = {
     jq_tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
     jq_tip.remove().css({top: 0, left: 0, visibility: 'hidden', display: 'block'}).prependTo(document.body);
 
+    if (this.options.className) {
+      jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
+    }
+
     var pos = $.extend({}, this.jq_element.offset(), {
         width: this.jq_element[0].offsetWidth,
         height: this.jq_element[0].offsetHeight
@@ -477,9 +481,6 @@ Tipsy.prototype = {
 
     jq_tip.css(tp).addClass('tipsy-' + gravity);
     jq_tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
-    if (this.options.className) {
-      jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
-    }
 
     jq_tip.stop().css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: 1},200);
   },
@@ -1302,15 +1303,15 @@ kshf.RecordDisplay.prototype = {
                   title: (d==="Filter") ? kshf.lang.cur.RemoveFilter : kshf.lang.cur.Unlock
                 });
               })
-              .on("mouseover",function(){ this.tipsy.show(); })
-              .on("mouseout", function(){ this.tipsy.hide(); })
-              .on("click",function(d){
-                this.tipsy.hide();
+              .on("mouseenter", function(){ this.tipsy.show(); })
+              .on("mouseleave", function(){ this.tipsy.hide(); })
+              .on("click", function(d){
                 if(d==="Filter"){
                   me.spatialFilter.clearFilter();
                 } else if(d!=="Highlight"){
                   me.browser.clearSelect_Compare(d.substr(8), true);
                 }
+                this.tipsy.hide();
               });
 
       this.drawSelect = false;
@@ -1597,23 +1598,24 @@ kshf.RecordDisplay.prototype = {
       
       this.map_refreshColorScaleBins();
 
-      this.DOM.recordDisplayHeader.append("div").attr("class","itemRank_control fa")
+      this.DOM.itemRank_control = this.DOM.recordDisplayHeader.append("div").attr("class","itemRank_control fa")
         .each(function(){
           this.tipsy = new Tipsy(this, {gravity: 'n', 
             title: function(){ return (me.showRank?"Hide":"Show")+" ranking"; }});
         })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); me.setShowRank(!me.showRank); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.setShowRank(!me.showRank); });
 
       this.initDOM_SortSelect();
       this.initDOM_GlobalTextSearch();
 
-      this.DOM.recordDisplayHeader.append("div").attr("class","buttonRecordViewRemove fa fa-times")
+      this.DOM.buttonRecordViewRemove = this.DOM.recordDisplayHeader.append("div")
+        .attr("class","buttonRecordViewRemove fa fa-times")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); me.removeRecordViewSummary(); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.removeRecordViewSummary(); });
 
       var x= this.DOM.recordDisplayHeader.append("span");
       x.append("span").text("View: ").attr("class","recordView_HeaderSet");
@@ -1626,9 +1628,9 @@ kshf.RecordDisplay.prototype = {
         .each(function(d){ 
           this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return "View as "+d.v; } }); 
         })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(d){ me.viewAs(d.v); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(d){ this.tipsy.hide(); me.viewAs(d.v); });
 
       this.DOM.scrollToTop = this.DOM.recordDisplayHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
@@ -3645,23 +3647,23 @@ kshf.Browser.prototype = {
         });
 
       // Authoring
-      rightBoxes.append("span").attr("class","showConfigButton fa fa-cog")
+      this.DOM.authorButton = rightBoxes.append("span").attr("class","authorButton fa fa-cog")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.ModifyBrowser }); })
-        .on("mouseover", function(){ this.tipsy.show(); })
-        .on("mouseout" , function(){ this.tipsy.hide(); })
-        .on("click",     function(){ this.tipsy.hide(); me.enableAuthoring(); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.enableAuthoring(); });
       // Datasource
       this.DOM.datasource = rightBoxes.append("a").attr("class","fa fa-table datasource")
         .attr("target","_blank")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.OpenDataSource }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); });
       // Help
       rightBoxes.append("span").attr("class","fa fa-question-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.Help }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",function(){
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){
           this.tipsy.hide();
           if(typeof helpin !== 'undefined'){
             me.panel_overlay.attr("show","help");
@@ -3729,9 +3731,9 @@ kshf.Browser.prototype = {
           this.tipsy.hide();
           me.clearFilters_All();
         });
-      this.DOM.filterClearAll.append("span").attr("class","title").text(kshf.lang.cur.ShowAll);
-      this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter")
-        .append("span").attr("class","fa fa-times");
+      this.DOM.filterClearAll.append("span").attr("class","title").html(
+        kshf.lang.cur.ShowAll+ " <i class='fa fa-filter' style='vertical-align: top'></i>");
+      //this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter").append("span").attr("class","fa");
     },
     /* -- */
     insertDOM_Infobox: function(){
@@ -3774,7 +3776,7 @@ kshf.Browser.prototype = {
         this.panel_overlay = this.DOM.root.append("div").attr("class", "panel panel_overlay");
 
         // BACKGROUND 
-        this.panel_overlay.append("div").attr("class","background")
+        this.DOM.kshfBackground = this.panel_overlay.append("div").attr("class","kshfBackground")
           .on("click",function(){
             var activePanel = this.parentNode.getAttribute("show");
             if(activePanel==="answer"){
@@ -3838,7 +3840,7 @@ kshf.Browser.prototype = {
         this.DOM.overlay_source = this.panel_overlay.append("div").attr("class","overlay_content overlay_source")
             .attr("selected_source_type",source_type);
 
-        this.DOM.overlay_source.append("div").attr("class","sourceHeader").text("Where's your data?")
+        this.DOM.overlay_source.append("div").attr("class","sourceHeader").text("Import your data")
           .append("span").attr("class","fa fa-info-circle")
             .each(function(summary){
               this.tipsy = new Tipsy(this, {
@@ -4068,6 +4070,13 @@ kshf.Browser.prototype = {
                 break;
             }
           });
+
+          this.DOM.overlay_source.append("div").attr("class","dataImportNotes").html(
+            "<i class='fa fa-file-text'></i> <a href='https://github.com/adilyalcin/Keshif/wiki/Docs:-Loading-Data' target='_blank'>"+
+              "Documentation for data sources and the programming interface</a><br>"+
+            "<i class='fa fa-file-text'></i> <a href='https://github.com/adilyalcin/Keshif/wiki/Guidelines-for-Data-Preparation' target='_blank'>"+
+              "Guidelines for Data Preparation</a>"
+            );    
     },
     /** -- */
     insertDOM_AttributePanel: function(){
@@ -5815,205 +5824,184 @@ kshf.Summary_Base.prototype = {
   },
   /** -- */
   insertHeader: function(){
-      var me = this;
+    var me = this;
 
-      this.DOM.headerGroup = this.DOM.root.append("div").attr("class","headerGroup")
-        .on("mousedown", function(){
-          if(d3.event.which !== 1) return; // only respond to left-click
-          if(!me.browser.authoringMode) {
-            d3.event.preventDefault();
-            return;
-          }
-          var _this = this;
-          var _this_nextSibling = _this.parentNode.nextSibling;
-          var _this_previousSibling = _this.parentNode.previousSibling;
-          var moved = false;
-          d3.select("body")
-            .style('cursor','move')
-            .on("keydown", function(){
-              if(event.keyCode===27){ // ESP key
-                _this.style.opacity = null;
-                me.browser.clearDropZones();
-              }
-            })
-            .on("mousemove", function(){
-              if(!moved){
-                _this_nextSibling.style.display = "none";
-                _this_previousSibling.style.display = "none";
-                _this.parentNode.style.opacity = 0.5;
-                me.browser.prepareDropZones(me,"browser");
-                moved = true;
-              }
-              var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
-              kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
-                "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
-              d3.event.stopPropagation();
-              d3.event.preventDefault();
-            })
-            .on("mouseup", function(){
-              // Mouse up on the body
+    this.DOM.headerGroup = this.DOM.root.append("div").attr("class","headerGroup")
+      .on("mousedown", function(){
+        if(d3.event.which !== 1) return; // only respond to left-click
+        if(!me.browser.authoringMode) {
+          d3.event.preventDefault();
+          return;
+        }
+        var _this = this;
+        var _this_nextSibling = _this.parentNode.nextSibling;
+        var _this_previousSibling = _this.parentNode.previousSibling;
+        var moved = false;
+        d3.select("body")
+          .style('cursor','move')
+          .on("keydown", function(){
+            if(event.keyCode===27){ // ESP key
+              _this.style.opacity = null;
               me.browser.clearDropZones();
-              if(me.panel!==undefined || true) {
-                _this.parentNode.style.opacity = null;
-                _this_nextSibling.style.display = "";
-                _this_previousSibling.style.display = "";
-              }
-              d3.event.preventDefault();
-            });
-          d3.event.preventDefault();
-        });
-
-      var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
-
-      header_display_control.append("span").attr("class","buttonSummaryCollapse fa fa-collapse")
-          .each(function(){
-            this.tipsy = new Tipsy(this, {
-              gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-              title: function(){ return me.collapsed?kshf.lang.cur.OpenSummary:kshf.lang.cur.MinimizeSummary; }
-            })
-          })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("mousedown", function(){
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-          })
-          .on("click",function(){
-            this.tipsy.hide();
-            if(me instanceof kshf.Summary_Set){
-              me.setListSummary.setShowSetMatrix(false);
-            } else {
-              me.setCollapsedAndLayout(!me.collapsed);
             }
-          });
-
-      header_display_control.append("span").attr("class","buttonSummaryExpand fa fa-arrows-alt")
-        .each(function(){
-          this.tipsy = new Tipsy(this, {
-            gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.MaximizeSummary
-          });
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("mousedown", function(){
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        })
-        .on("click",function(){
-          this.tipsy.hide();
-          me.panel.collapseAllSummaries(me);
-          me.browser.updateLayout_Height();
-        });
-
-      header_display_control.append("span").attr("class","buttonSummaryRemove fa fa-remove")
-        .each(function(){
-          this.tipsy = new Tipsy(this, {
-            gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.RemoveSummary
-          });
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("mousedown", function(){
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        })
-        .on("click",function(){
-          this.tipsy.hide();
-          me.removeFromPanel();
-          me.clearDOM();
-          me.browser.updateLayout();
-        });
-
-      this.DOM.summaryName = this.DOM.headerGroup.append("span")
-        .attr("class","summaryName")
-        .attr("edittitle",false)
-        .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); });
-
-      this.DOM.summaryName.append("span").attr("class","chartFilterButtonParent").append("div")
-          .attr("class","clearFilterButton rowFilter inSummary")
-          .each(function(d){
-            this.tipsy = new Tipsy(this, {
-              gravity: function(){ return me.panelOrder!==0?'s':'n'; },
-              title: kshf.lang.cur.RemoveFilter
-            });
           })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("mousedown", function(){
-            d3.event.preventDefault();
+          .on("mousemove", function(){
+            if(!moved){
+              _this_nextSibling.style.display = "none";
+              _this_previousSibling.style.display = "none";
+              _this.parentNode.style.opacity = 0.5;
+              me.browser.prepareDropZones(me,"browser");
+              moved = true;
+            }
+            var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
+            kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
+              "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
             d3.event.stopPropagation();
+            d3.event.preventDefault();
           })
-          .on("click", function(){
-            this.tipsy.hide();
-            me.summaryFilter.clearFilter();
-          })
-          .append("span").attr("class","fa fa-times");
+          .on("mouseup", function(){
+            // Mouse up on the body
+            me.browser.clearDropZones();
+            if(me.panel!==undefined || true) {
+              _this.parentNode.style.opacity = null;
+              _this_nextSibling.style.display = "";
+              _this_previousSibling.style.display = "";
+            }
+            d3.event.preventDefault();
+          });
+        d3.event.preventDefault();
+      });
 
-      this.DOM.summaryName_text = this.DOM.summaryName.append("span").attr("class","summaryName_text editableText")
-        .attr("contenteditable",false)
-        .each(function(summary){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditTitle }); })
-        .on("mouseover",function(){
-          if(!me.browser.authoringMode) return;
-          this.tipsy.show();
+    var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
+
+    this.DOM.buttonSummaryCollapse = header_display_control.append("span")
+      .attr("class","buttonSummaryCollapse fa fa-collapse")
+      .each(function(){
+        this.tipsy = new Tipsy(this, {
+          gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
+          title: function(){ return me.collapsed?kshf.lang.cur.OpenSummary:kshf.lang.cur.MinimizeSummary; }
         })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("mousedown", function(){
-          // stop dragging event start
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        })
-        .on("click", function(){
-          if(!me.browser.authoringMode) return;
-          var curState=this.parentNode.getAttribute("edittitle");
-          if(curState===null || curState==="false"){
-            this.parentNode.setAttribute("edittitle",true);
-            var parentDOM = d3.select(this.parentNode);
-            var v=parentDOM.select(".summaryName_text")[0][0];
-            v.setAttribute("contenteditable",true);
-            v.focus();
-          } else {
-            this.parentNode.setAttribute("edittitle",false);
-            var parentDOM = d3.select(this.parentNode);
-            var v=parentDOM.select(".summaryName_text")[0][0];
-            v.setAttribute("contenteditable",false);
-            me.browser.changeSummaryName(me.summaryName,v.textContent);
-          }
-        })
-        .on("blur",function(){
+      })
+      .on("mouseover", function(){ this.tipsy.show(); })
+      .on("mouseout" , function(){ this.tipsy.hide(); })
+      .on("click",     function(){ this.tipsy.hide();
+        if(me instanceof kshf.Summary_Set){
+          me.setListSummary.setShowSetMatrix(false);
+        } else {
+          me.setCollapsedAndLayout(!me.collapsed);
+        }
+      });
+
+    this.DOM.buttonSummaryExpand = header_display_control.append("span")
+      .attr("class","buttonSummaryExpand fa fa-arrows-alt")
+      .each(function(){
+        this.tipsy = new Tipsy(this, {
+          gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.MaximizeSummary
+        });
+      })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
+        me.panel.collapseAllSummaries(me);
+        me.browser.updateLayout_Height();
+      });
+
+    this.DOM.buttonSummaryRemove = header_display_control.append("span")
+      .attr("class","buttonSummaryRemove fa fa-remove")
+      .each(function(){
+        this.tipsy = new Tipsy(this, {
+          gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.RemoveSummary
+        });
+      })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
+        me.removeFromPanel();
+        me.clearDOM();
+        me.browser.updateLayout();
+      });
+
+    this.DOM.summaryName = this.DOM.headerGroup.append("span")
+      .attr("class","summaryName")
+      .attr("edittitle",false)
+      .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); });
+
+    this.DOM.clearFilterButton = this.DOM.summaryName.append("span").attr("class","chartFilterButtonParent").append("div")
+      .attr("class","clearFilterButton rowFilter inSummary")
+      .each(function(d){
+        this.tipsy = new Tipsy(this, {
+          gravity: function(){ return me.panelOrder!==0?'s':'n'; }, title: kshf.lang.cur.RemoveFilter
+        });
+      })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide(); me.summaryFilter.clearFilter(); });
+    this.DOM.clearFilterButton.append("span").attr("class","fa");
+
+    this.DOM.summaryName_text = this.DOM.summaryName.append("span").attr("class","summaryName_text editableText")
+      .attr("contenteditable",false)
+      .each(function(summary){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditTitle }); })
+      .on("mouseenter",function(){
+        if(!me.browser.authoringMode) return;
+        this.tipsy.show();
+      })
+      .on("mouseleave",function(){ this.tipsy.hide(); })
+      .on("mousedown", function(){
+        // stop dragging event start
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+      })
+      .on("click", function(){
+        if(!me.browser.authoringMode) return;
+        var curState=this.parentNode.getAttribute("edittitle");
+        if(curState===null || curState==="false"){
+          this.parentNode.setAttribute("edittitle",true);
+          var parentDOM = d3.select(this.parentNode);
+          var v=parentDOM.select(".summaryName_text")[0][0];
+          v.setAttribute("contenteditable",true);
+          v.focus();
+        } else {
+          this.parentNode.setAttribute("edittitle",false);
+          var parentDOM = d3.select(this.parentNode);
+          var v=parentDOM.select(".summaryName_text")[0][0];
+          v.setAttribute("contenteditable",false);
+          me.browser.changeSummaryName(me.summaryName,v.textContent);
+        }
+      })
+      .on("blur",function(){
+        this.parentNode.setAttribute("edittitle",false);
+        this.setAttribute("contenteditable", false);
+        me.browser.changeSummaryName(me.summaryName,this.textContent);
+      })
+      .on("keydown",function(){
+        if(event.keyCode===13){ // ENTER
           this.parentNode.setAttribute("edittitle",false);
           this.setAttribute("contenteditable", false);
           me.browser.changeSummaryName(me.summaryName,this.textContent);
-        })
-        .on("keydown",function(){
-          if(event.keyCode===13){ // ENTER
-            this.parentNode.setAttribute("edittitle",false);
-            this.setAttribute("contenteditable", false);
-            me.browser.changeSummaryName(me.summaryName,this.textContent);
-          }
-        })
-        .html(this.summaryName);
+        }
+      })
+      .html(this.summaryName);
 
     this.DOM.summaryIcons = this.DOM.headerGroup.append("span").attr("class","summaryIcons");
 
     this.DOM.summaryConfigControl = this.DOM.summaryIcons.append("span")
       .attr("class","summaryConfigControl fa fa-gear")
-      .each(function(d){  this.tipsy = new Tipsy(this, { gravity:'ne', title: "Configure" }); })
-      .on("mouseover",function(d){ this.tipsy.show(); })
-      .on("mouseout" ,function(d){ this.tipsy.hide(); })
-      .on("click",function(d){
-        this.tipsy.hide();
+      .each(function(){  this.tipsy = new Tipsy(this, { gravity:'ne', title: "Configure" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
         me.DOM.root.attr("showConfig",me.DOM.root.attr("showConfig")==="false");
       });
 
-    this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
+    this.DOM.setMatrixButton = this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
       .each(function(d){
         this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Show/Hide pair-wise relations" });
       })
-      .on("mouseover",function(){ this.tipsy.show(); })
-      .on("mouseout" ,function(){ this.tipsy.hide(); })
-      .on("click",function(){ me.setShowSetMatrix(!me.show_set_matrix); });
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide(); me.setShowSetMatrix(!me.show_set_matrix); });
 
-    this.DOM.summaryForRecordDisplay = this.DOM.summaryIcons.append("span")
+    this.DOM.useForRecordDisplay = this.DOM.summaryIcons.append("span")
       .attr("class", "useForRecordDisplay fa")
       .each(function(d){
         this.tipsy = new Tipsy(this, {
@@ -6022,9 +6010,9 @@ kshf.Summary_Base.prototype = {
           }
         });
       })
-      .on("mouseover",function(d){ this.tipsy.show(); })
-      .on("mouseout" ,function(d){ this.tipsy.hide(); })
-      .on("click",function(d){
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
         if(me.browser.recordDisplay.recordViewSummary===null) return;
         me.browser.recordDisplay.setSortingOpt_Active(me);
         me.browser.recordDisplay.refreshSortingOptions();
@@ -6038,19 +6026,18 @@ kshf.Summary_Base.prototype = {
           title: function(){ return "View as "+(me.viewType==='list'?'Map':'List'); }
         });
       })
-      .on("mouseover",function(d){ this.tipsy.show(); })
-      .on("mouseout" ,function(d){ this.tipsy.hide(); })
-      .on("click",function(d){
-        this.tipsy.hide();
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
         this.setAttribute("viewAs",me.viewType);
         me.viewAs( (me.viewType==='list') ? 'map' : 'list' );
       });
 
     this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
       .attr("class","summaryDescription fa fa-info-circle")
-      .each(function(d){  this.tipsy = new Tipsy(this, { gravity:'ne', title:function(){return me.description;} }); })
-      .on("mouseover",function(d){ this.tipsy.show(); })
-      .on("mouseout" ,function(d){ this.tipsy.hide(); });
+      .each(function(){  this.tipsy = new Tipsy(this, { gravity:'ne', title:function(){return me.description;} }); })
+      .on("mouseover",function(){ this.tipsy.show(); })
+      .on("mouseout" ,function(){ this.tipsy.hide(); });
 
     this.setDescription(this.description);
 
@@ -6066,11 +6053,11 @@ kshf.Summary_Base.prototype = {
     if(this.DOM.summaryDescription===undefined) return;
     this.DOM.summaryDescription.style("display",this.description===undefined?null:"inline");
   },
-  /** -- */
+  /** -- Shared - Summary Base -- */
   insertChartAxis_Measure: function(dom, pos1, pos2){
     var me=this;
     this.DOM.chartAxis_Measure = dom.append("div").attr("class","chartAxis_Measure");
-    this.DOM.chartAxis_Measure.append("span").attr("class","measurePercentControl")
+    this.DOM.measurePercentControl = this.DOM.chartAxis_Measure.append("span").attr("class","measurePercentControl")
       .each(function(){
         this.tipsy = new Tipsy(this, {
           gravity: pos1, title: function(){
@@ -6078,21 +6065,12 @@ kshf.Summary_Base.prototype = {
           },
         })
       })
-      .on("click",function(){
-        this.tipsy.hide();
-        me.browser.setPercentLabelMode(!me.browser.percentModeActive);
-      })
-      .on("mouseover",function(){
-        me.browser.DOM.root.selectAll(".measurePercentControl").attr("highlight",true);
-        this.tipsy.show();
-      })
-      .on("mouseout",function(){
-        me.browser.DOM.root.selectAll(".measurePercentControl").attr("highlight",false);
-        this.tipsy.hide();
-      });
+      .on("click",      function(){ this.tipsy.hide(); me.browser.setPercentLabelMode(!me.browser.percentModeActive); })
+      .on("mouseenter", function(){ this.tipsy.show(); me.browser.DOM.root.attr("measurePercentControl",true); })
+      .on("mouseleave", function(){ this.tipsy.hide(); me.browser.DOM.root.attr("measurePercentControl",null); });
 
     // Two controls, one for each side of the scale
-    this.DOM.chartAxis_Measure.selectAll(".scaleModeControl").data(["1","2"])
+    this.DOM.scaleModeControl = this.DOM.chartAxis_Measure.selectAll(".scaleModeControl").data(["1","2"])
       .enter().append("span")
         .attr("class",function(d){ return "scaleModeControl measureAxis_"+d; })
         .each(function(d){
@@ -6105,18 +6083,9 @@ kshf.Summary_Base.prototype = {
             },
           });
         })
-        .on("click",function(){ 
-          this.tipsy.hide();
-          me.browser.setScaleMode(!me.browser.ratioModeActive);
-        })
-        .on("mouseover",function(){
-          me.browser.showScaleModeControls(true);
-          this.tipsy.show();
-        })
-        .on("mouseout",function(){
-          me.browser.showScaleModeControls(false);
-          this.tipsy.hide();
-        });
+        .on("click",      function(){ this.tipsy.hide(); me.browser.setScaleMode(!me.browser.ratioModeActive); })
+        .on("mouseenter", function(){ this.tipsy.show(); me.browser.showScaleModeControls(true);  })
+        .on("mouseleave", function(){ this.tipsy.hide(); me.browser.showScaleModeControls(false); });
 
     this.DOM.chartAxis_Measure_TickGroup = this.DOM.chartAxis_Measure.append("div").attr("class","tickGroup");
 
@@ -6960,91 +6929,90 @@ var Summary_Categorical_functions = {
   },
     /** -- */
     init_DOM_Cat: function(){
-        var me=this;
-        this.DOM.summaryCategorical = this.DOM.wrapper.append("div").attr("class","summaryCategorical");
+      var me=this;
+      this.DOM.summaryCategorical = this.DOM.wrapper.append("div").attr("class","summaryCategorical");
 
-        this.DOM.summaryControls = this.DOM.summaryCategorical.append("div").attr("class","summaryControls");
-        this.initDOM_CatTextSearch();
-        this.initDOM_CatSortButton();
-        this.initDOM_CatSortOpts();
+      this.DOM.summaryControls = this.DOM.summaryCategorical.append("div").attr("class","summaryControls");
+      this.initDOM_CatTextSearch();
+      this.initDOM_CatSortButton();
+      this.initDOM_CatSortOpts();
 
-        if(this.showTextSearch) this.DOM.catTextSearch.style("display","block");
+      if(this.showTextSearch) this.DOM.catTextSearch.style("display","block");
 
-        this.refreshConfigRowCount();
+      this.refreshConfigRowCount();
 
-        this.DOM.scrollToTop = this.DOM.summaryCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
-          .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("click",function(d){
-            this.tipsy.hide();
-            kshf.Util.scrollToPos_do(me.DOM.aggrGroup,0);
+      this.DOM.scrollToTop = this.DOM.summaryCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("click",function(d){
+          this.tipsy.hide();
+          kshf.Util.scrollToPos_do(me.DOM.aggrGroup,0);
+        });
+
+      this.DOM.aggrGroup = this.DOM.summaryCategorical.append("div").attr("class","aggrGroup")
+        .on("mousedown",function(){
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("scroll",function(d){
+          if(kshf.Util.ignoreScrollEvents===true) return;
+          me.scrollTop_cache = me.DOM.aggrGroup[0][0].scrollTop;
+
+          me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
+
+          me.DOM.chartCatLabelResize.style("top",me.scrollTop_cache+"px");
+          me.firstCatIndexInView = Math.floor(me.scrollTop_cache/me.heightRow_category);
+          me.refreshScrollDisplayMore(me.firstCatIndexInView+me.catCount_InDisplay);
+          me.updateCatIsVisible();
+          me.cullAttribs();
+          me.refreshMeasureLabel();
+        });
+      this.DOM.aggrGroup_list = this.DOM.aggrGroup;
+
+      this.DOM.catMap_Base = this.DOM.summaryCategorical.append("div").attr("class","catMap_Base");
+
+      // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
+      this.DOM.chartBackground = this.DOM.aggrGroup.append("span").attr("class","chartBackground");
+
+      this.DOM.chartCatLabelResize = this.DOM.chartBackground.append("span").attr("class","chartCatLabelResize dragWidthHandle")
+        .on("mousedown", function (d, i) {
+          var resizeDOM = this;
+          me.panel.DOM.root.attr("catLabelDragging",true);
+
+          me.browser.DOM.pointerBlock.attr("active","");
+          me.browser.DOM.root.style('cursor','col-resize');
+          me.browser.setNoAnim(true);
+          var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
+          var initWidth = me.panel.width_catLabel;
+
+          d3.select("body").on("mousemove", function() {
+            var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
+            me.panel.setWidthCatLabel(initWidth+mouseDown_x_diff);
+          }).on("mouseup", function(){
+            me.panel.DOM.root.attr("catLabelDragging",false);
+            me.browser.DOM.pointerBlock.attr("active",null);
+            me.browser.DOM.root.style('cursor','default');
+            me.browser.setNoAnim(false);
+            d3.select("body").on("mousemove", null).on("mouseup", null);
           });
+         d3.event.preventDefault();
+       });
 
-        this.DOM.aggrGroup = this.DOM.summaryCategorical.append("div").attr("class","aggrGroup")
-          .on("mousedown",function(){
-            d3.event.stopPropagation();
-            d3.event.preventDefault();
-          })
-          .on("scroll",function(d){
-            if(kshf.Util.ignoreScrollEvents===true) return;
-            me.scrollTop_cache = me.DOM.aggrGroup[0][0].scrollTop;
+      this.DOM.belowCatChart = this.DOM.summaryCategorical.append("div").attr("class","belowCatChart");
 
-            me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
+      this.insertChartAxis_Measure(this.DOM.belowCatChart,'e','e');
 
-            me.firstCatIndexInView = Math.floor(me.scrollTop_cache/me.heightRow_category);
-            me.refreshScrollDisplayMore(me.firstCatIndexInView+me.catCount_InDisplay);
-            me.updateCatIsVisible();
-            me.cullAttribs();
-            me.refreshMeasureLabel();
-          });
-        this.DOM.aggrGroup_list = this.DOM.aggrGroup;
+      this.DOM.scroll_display_more = this.DOM.belowCatChart.append("div")
+        .attr("class","hasLabelWidth scroll_display_more")
+        .on("click",function(){
+          kshf.Util.scrollToPos_do(
+            me.DOM.aggrGroup, me.DOM.aggrGroup[0][0].scrollTop+me.heightRow_category);
+        });
 
-        this.DOM.catMap_Base = this.DOM.summaryCategorical.append("div").attr("class","catMap_Base");
-
-        // with this, I make sure that the (scrollable) div height is correctly set to visible number of categories
-        this.DOM.chartBackground = this.DOM.aggrGroup.append("span").attr("class","chartBackground");
-
-        this.DOM.chartCatLabelResize = this.DOM.chartBackground.append("span").attr("class","chartCatLabelResize dragWidthHandle")
-            .on("mousedown", function (d, i) {
-                var resizeDOM = this;
-                me.panel.DOM.root.attr("catLabelDragging",true);
-
-                me.browser.DOM.pointerBlock.attr("active","");
-                me.browser.DOM.root.style('cursor','col-resize');
-                me.browser.setNoAnim(true);
-                var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
-                var initWidth = me.panel.width_catLabel;
-
-                d3.select("body").on("mousemove", function() {
-                    var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
-                    me.panel.setWidthCatLabel(initWidth+mouseDown_x_diff);
-                }).on("mouseup", function(){
-                    me.panel.DOM.root.attr("catLabelDragging",false);
-                    me.browser.DOM.pointerBlock.attr("active",null);
-                    me.browser.DOM.root.style('cursor','default');
-                    me.browser.setNoAnim(false);
-                    d3.select("body").on("mousemove", null).on("mouseup", null);
-                });
-               d3.event.preventDefault();
-           });
-
-        this.DOM.belowCatChart = this.DOM.summaryCategorical.append("div").attr("class","belowCatChart");
-
-        this.insertChartAxis_Measure(this.DOM.belowCatChart,'e','e');
-
-        this.DOM.scroll_display_more = this.DOM.belowCatChart.append("div")
-          .attr("class","hasLabelWidth scroll_display_more")
-          .on("click",function(){
-            kshf.Util.scrollToPos_do(
-              me.DOM.aggrGroup, me.DOM.aggrGroup[0][0].scrollTop+me.heightRow_category);
-          });
-
-        this.insertCategories();
-
-        this.refreshLabelWidth();
-
-        this.updateCatSorting(0,true,true);
+      this.insertCategories();
+      this.refreshLabelWidth();
+      this.updateCatSorting(0,true,true);
     },
     /** -- */
     initDOM_CatSortButton: function(){
@@ -7263,7 +7231,6 @@ var Summary_Categorical_functions = {
       this.DOM.aggrGlyphs.selectAll(".categoryLabel").style("padding-top",(this.heightRow_category/2-8)+"px");
 
       this.DOM.chartBackground.style("height",this.getHeight_VisibleAttrib()+"px");
-      this.DOM.chartCatLabelResize.style("height",this.getHeight_VisibleAttrib()+"px");
 
       this.DOM.summaryConfig_CatHeight.selectAll(".configOption").attr("active",false);
       this.DOM.summaryConfig_CatHeight.selectAll(".pos_"+this.heightRow_category).attr("active",true);
@@ -7646,6 +7613,7 @@ var Summary_Categorical_functions = {
       var h=this.categoriesHeight;
       this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
       this.DOM.aggrGroup.style("height",h+"px");
+      this.DOM.chartCatLabelResize.style("height",h+"px");
       this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
       this.DOM.chartAxis_Measure.selectAll(".longRefLine").style("top",(-h+1)+"px").style("height",(h-2)+"px");
@@ -8374,44 +8342,24 @@ var Summary_Categorical_functions = {
       this.DOM.catMapColorScale.append("span").attr("class","scaleBound boundMax");
       this.DOM.catMapColorScale.append("span").attr("class","scaleModeControl fa fa-arrows-h")
         .each(function(){
-          this.tipsy = new Tipsy(this, {
-            gravity: 'e', title: function(){
-              return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'PartOf']+" "+kshf.lang.cur.Width;
-            }
+          this.tipsy = new Tipsy(this, { gravity: 'e', title: function(){
+            return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'PartOf']+" "+kshf.lang.cur.Width; }
           });
         })
-        .on("click",function(){ 
-          this.tipsy.hide();
-          me.browser.setScaleMode(!me.browser.ratioModeActive);
-        })
-        .on("mouseover",function(){
-          me.browser.showScaleModeControls(true);
-          this.tipsy.show();
-        })
-        .on("mouseout",function(){
-          me.browser.showScaleModeControls(false);
-          this.tipsy.hide();
-        });
-      this.DOM.catMapColorScale.append("span").attr("class","measurePercentControl")
+        .on("mouseenter", function(){ this.tipsy.show(); me.browser.showScaleModeControls(true); })
+        .on("mouseleave", function(){ this.tipsy.hide(); me.browser.showScaleModeControls(false); })
+        .on("click",      function(){ this.tipsy.hide(); me.browser.setScaleMode(!me.browser.ratioModeActive); });
+      this.DOM.scaleModeControl = this.DOM.root.selectAll("scaleModeControl");
+
+      this.DOM.measurePercentControl = this.DOM.catMapColorScale.append("span").attr("class","measurePercentControl")
         .each(function(){
-          this.tipsy = new Tipsy(this, {
-            gravity: 'w', title: function(){
-              return "<span class='fa fa-eye'></span> "+kshf.lang.cur[(me.browser.percentModeActive?'Absolute':'Percent')];
-            },
-          })
+          this.tipsy = new Tipsy(this, { gravity: 'w', title: function(){
+            return "<span class='fa fa-eye'></span> "+kshf.lang.cur[(me.browser.percentModeActive?'Absolute':'Percent')]; },
+          });
         })
-        .on("click",function(){
-          this.tipsy.hide();
-          me.browser.setPercentLabelMode(!me.browser.percentModeActive);
-        })
-        .on("mouseover",function(){
-          me.browser.DOM.root.selectAll(".measurePercentControl").attr("highlight",true);
-          this.tipsy.show();
-        })
-        .on("mouseout",function(){
-          me.browser.DOM.root.selectAll(".measurePercentControl").attr("highlight",false);
-          this.tipsy.hide();
-        });
+        .on("mouseenter", function(){ this.tipsy.show(); me.browser.DOM.root.attr("measurePercentControl",true); })
+        .on("mouseleave", function(){ this.tipsy.hide(); me.browser.DOM.root.attr("measurePercentControl",null); })
+        .on("click",      function(){ this.tipsy.hide(); me.browser.setPercentLabelMode(!me.browser.percentModeActive); });
 
       this.DOM.highlightedMeasureValue = this.DOM.catMapColorScale.append("span").attr("class","highlightedMeasureValue");
       this.DOM.highlightedMeasureValue.append("div").attr('class','fa fa-mouse-pointer highlightedAggrValuePointer');
@@ -8428,12 +8376,8 @@ var Summary_Categorical_functions = {
             }
           });
         })
-        .on("mouseenter",function(d){ 
-          this.tipsy.show(); 
-        })
-        .on("mouseleave",function(){ 
-          this.tipsy.hide();
-        });
+        .on("mouseenter",function(){ this.tipsy.show(); })
+        .on("mouseleave",function(){ this.tipsy.hide(); });
 
       // Set height
       var h = this.categoriesHeight;
@@ -9992,7 +9936,6 @@ var Summary_Interval_functions = {
           d3.event.stopPropagation();
         })
         .on("mouseenter",function(aggr){
-          this.tipsy.options.className = "tipsyFilterLock";
           this.tipsy.hide();
           this.tipsy.show();
           d3.event.stopPropagation();
@@ -10140,7 +10083,8 @@ var Summary_Interval_functions = {
         });
 
       controlLine.append("span").attr("class","base total");
-      controlLine.append("span").attr("class","base active")
+
+      this.DOM.activeBaseRange = controlLine.append("span").attr("class","base active")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter }); })
         // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
         // because the size of the bar is set by scaling, not through width....
@@ -10208,7 +10152,7 @@ var Summary_Interval_functions = {
           d3.event.stopPropagation();
         });
 
-      controlLine.selectAll(".handle").data(['min','max']).enter()
+      var XYZ = controlLine.selectAll(".handle").data(['min','max']).enter()
         .append("span").attr("class",function(d){ return "handle "+d; })
         .each(function(d,i){
           this.tipsy = new Tipsy(this, { gravity: i==0?"w":"e", title: kshf.lang.cur.DragToFilter });
@@ -10253,8 +10197,8 @@ var Summary_Interval_functions = {
           });
           d3.event.preventDefault();
           d3.event.stopPropagation();
-        })
-        .append("span").attr("class","rangeLimitOnChart");
+        });
+      this.DOM.rangeLimitOnChart = XYZ.append("span").attr("class","rangeLimitOnChart");
 
       this.DOM.recordValue = controlLine.append("div").attr("class","recordValue");
       this.DOM.recordValue.append("span").attr("class","recordValueScaleMark");
@@ -10731,7 +10675,7 @@ var Summary_Interval_functions = {
       this.refreshHeight();
 
       this.DOM.labelGroup.style("height",this.height_labels+"px");
-      this.DOM.intervalSlider.selectAll(".rangeLimitOnChart").style({
+      this.DOM.rangeLimitOnChart.style({
         height: ( this.height_hist+13)+"px",
         top:    (-this.height_hist-13)+"px" });
       this.DOM.highlightRangeLimits.style("height",this.height_hist+"px");

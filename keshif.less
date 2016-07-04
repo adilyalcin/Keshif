@@ -206,9 +206,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .measureFunction_Count{ color: black !important; font-weight: 600; }
     }
     &[measurefunc="Avg"]{
-      .measurePercentControl{ pointer-events: none !important; }
+      .measurePercentControl{ 
+        pointer-events: none !important;
+        &:after{ content: "Avg" !important; }
+      }
       .scaleModeControl{ pointer-events: none !important; }
-      .measurePercentControl:after{ content: "Avg" !important; }
       .measureFunction_Avg{ color: black !important; font-weight: 600; }
       .measureSelectBox_Content_RecordName{ margin-top: 2.4em}
     }
@@ -223,7 +225,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[highlight="true"]::after{ content: '#'; }
       }
       .chartAxis_Measure > .tick > .text:after{ content: "%"; }
-      //.scaleBound::after{ content: "%"; }
     }
     &[relativeMode]{
       .chartAxis_Measure > .tick > .text::after{ content: "%"; }
@@ -857,7 +858,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         > .breadcrumbs{
             .flex(1);
-            padding: 0px 2px 4px 5px;
+            padding: 1px 2px 4px 4px;
             font-size: 0.8em;
             vertical-align: top;
             > .saveSelection{
@@ -877,12 +878,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
               cursor: pointer;
               color: rgb(37, 33, 18);
               font-weight: 300;
-              // 
               //box-shadow: 1px 1px 1px rgb(78, 71, 43);
               background-color: rgba(255,255,255,0.5);
-              margin-right: 5px;
+              margin-right: 4px;
               margin-top: 1px;
-              padding-left: 2px;
               max-width: 0px;
               .transition(~"all 250ms linear");
               > .crumbText{
@@ -890,8 +889,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 display: block;
                 white-space: nowrap;
                 overflow: hidden;
-                margin-left: 14px;
-                margin-right: 2px;
+                margin-left: 15px;
+                margin-right: 1px;
                 > .crumbHeader{
                   font-weight: 700;
                   &:after{ content: ': '; }
@@ -921,7 +920,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 border: solid 1px #788D9B;
                 > .clearCrumbButton {
                   background-color: #788D9B;
-                  > .fa::before{ content: "\f0b0"; } // filter
+                  font-size: 1em;
+                  padding: 0px;
+                  > .fa:before{ content: "\f0b0"; } // filter
                 }
               }
               &.crumbMode_Highlight {
@@ -973,25 +974,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           top: 2px;
           height: 1em;
           cursor: pointer;
-          color: #252112;
+          color: white;
           font-weight: 300;
           border: 1px #685b2b solid;
-          background-color: #E9E2CE;
+          background-color: #685b2b;
           white-space: nowrap;
           .transition(~"background-color 100ms linear, opacity 300ms linear");
           .title{
             padding: 0px 2px;
-            font-size: 0.8em;
-            font-weight: 500;
+            font-size: 0.7em;
+            font-weight: 300;
             vertical-align: top;
           }
           &:hover{
-            background-color: white;
-            box-shadow: none;
+            text-decoration: underline;
           }
-          &[active=true]{
-            display: inline-block;
-          }
+          &[active=true]{ display: inline-block; }
         }
         > .rightBoxes{
           font-size: 1.0em;
@@ -1003,7 +1001,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-left: 4px;
             &:hover{ color: #cb5454; }
           }
-          > .showConfigButton{
+          > .authorButton{
             display: inline-block;
             &:hover{
               animation: fa-spin 2s infinite linear;
@@ -1316,16 +1314,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           height: 100%;
           width: 100%;
           z-index: 2000;
-          transform: scale(1);
           text-align: center;
           .transition(~'transform 500ms ease-in-out, opacity 500ms');
 
-            > .background{
+            > .kshfBackground{
               width: 100%;
               height: 100%;
               z-index: -2;
-              background: #0b0b0b;
-              opacity: 0.8;
+              background-color: black;
+              opacity: 0.7;
               position: absolute;
               .transition(~'opacity 0.5s');
               border-radius: 5px;
@@ -1349,6 +1346,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 top: 3px;
                 cursor: pointer;
                 color: gray;
+                padding: 1px;
                 &:hover{ color: orangered; }
               }
             }
@@ -1356,9 +1354,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .overlay_source{
                 background-color:white;
                 width: 550px;
-                height: 200px;
                 position: absolute;
-                top: 0; left: 0; bottom: 0; right: 0;
+                top: 50px; left: 0; right: 0;
 
                 .fa-info-circle{
                   color: gray;
@@ -1374,48 +1371,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
 
                 > .source_wrapper{
-                    width: 530px;
+                  width: 530px;
+                  display: inline-block;
+                  margin: 5px 5px 15px 5px;
+                  padding: 5px;
+                  border: solid 1px lightgray;
+                  border-radius: 5px;
+                  > .sourceOptions{ margin-bottom: 3px; }
+                  .gdocLink{ width: 350px; }
+                  .fileLink{
+                    width: 350px;
+                    display: none;
+                  }
+                  .sourceOption{
                     display: inline-block;
-                    margin: 5px;
-                    padding: 5px;
                     border: solid 1px lightgray;
-                    border-radius: 5px;
-                    > .sourceOptions{ margin-bottom: 3px; }
-                    .gdocLink{ width: 350px; }
-                    .fileLink{
-                      width: 350px;
-                      display: none;
+                    padding: 2px 4px;
+                    border-radius: 7px;
+                    font-weight: 300;
+                    margin: 0px 2px;
+                    font-size: 0.8em;
+                    cursor: pointer;
+                    color: rgb(160, 160, 160);
+                    &:hover{
+                      color: black;
+                      box-shadow: 0px 0px 1px gray;
                     }
-                    .sourceOption{
-                      display: inline-block;
-                      border: solid 1px lightgray;
-                      padding: 2px 4px;
-                      border-radius: 7px;
-                      font-weight: 300;
-                      margin: 0px 2px;
-                      font-size: 0.8em;
-                      cursor: pointer;
-                      color: rgb(160, 160, 160);
-                      &:hover{
-                        color: black;
-                        box-shadow: 0px 0px 1px gray;
-                      }
+                  }
+                  .gdocLink_ready{
+                    opacity: 0;
+                    pointer-events: none;
+                    &:before{
+                      content: "\f057"; // X
+                      color: red;
                     }
-                    .gdocLink_ready{
-                      opacity: 0;
-                      pointer-events: none;
+                    &[ready=true]{
+                      pointer-events: all;
                       &:before{
-                        content: "\f057"; // X
-                        color: red;
-                      }
-                      &[ready=true]{
-                        pointer-events: all;
-                        &:before{
-                          content: "\f058"; // Check
-                          color: green;
-                        }
+                        content: "\f058"; // Check
+                        color: green;
                       }
                     }
+                  }
                 }
                 &[selected_source_type="GoogleSheet"] {
                   .sourceOption[source_type="GoogleSheet"]{
@@ -1497,7 +1494,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   display: inline-block;
                   border: solid 1px gray;
                   padding: 5px;
-                  margin: 5px;
+                  margin: 15px;
                   border-radius: 5px;
                   background-color: white;
                   font-weight: 300;
@@ -1512,6 +1509,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     box-shadow: 1px 1px 1px gray;
                     background-color: #EEE;
                   }
+                }
+
+                > .dataImportNotes{
+                  font-size: 0.8em;
+                  font-weight: 300;
+                  border-top: solid 1px lightgray;
+                  padding: 10px;
+                  margin-top: 10px;
+                  line-height: 2em;
+                  > a{ color: black; }
                 }
             }
 
@@ -1620,7 +1627,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &[show="none"]{
               pointer-events: none;
-              > .background{ opacity: 0; }
+              > .kshfBackground{ opacity: 0; }
             }
             &[show="loading"]   > .overlay_loading{ display: inline-block; }
             &[show="infobox"]   > .overlay_infobox{ display: inline-block; }
@@ -1629,10 +1636,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             &[show="answer"] {
               > .overlay_help    { .display(flex); }
               > .overlay_answer  { 
-                .display(flex);
-                pointer-events: none;
+                display: block;
               }
-              > .background{ opacity: 0; }
+              > .kshfBackground{ 
+                // TODO!
+                opacity: 0.3;
+                //mix-blend-mode: lighten;
+                //-webkit-mask-image: url(http://img-fotki.yandex.ru/get/9492/5091629.9d/0_80e74_9f303e3d_M.png), linear-gradient(-45deg, black 20%, transparent 50%);
+                //-webkit-mask-repeat: space;
+              }
             }
             &[show="recordDetails"]{
               > .overlay_recordDetails{
@@ -1669,13 +1681,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
 
-      background-color: #635d46;
-      color: #eeebe0;
-      border: solid 1px #635d46;
+      background-color: #788D9B;
+      border: solid 1px #788D9B;
+      color: white;
+
+      > .fa::before{ content: "\f0b0"; } // filter
 
       &:hover{
-        background-color: #B6AF96;
-        color: #635d46;
+        background-color: white;
+        color: #788D9B;
+        > .fa:before{ content: "\f00d"; } // cross
       }
 
       &.inSummary{
@@ -1685,9 +1700,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // box-shadow: 0px 0px 1px #474940;
         margin-top: 1px;
         font-size: 0.8em;
-        > .fa-times{
-          position: relative;
-        }
       }
       &.allFilter{
         display: inline-block;
@@ -1712,7 +1724,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .transition(background-color 250ms linear, border-color 250ms linear);
       // Changed when percentView is on
       &:after{ content: '#'; }
-      &[highlight="true"]{
+    }
+
+    &[measurePercentControl]{
+      .measurePercentControl{
         color: orangered;
         background-color: rgba(211, 217, 197, 1);
         border: solid 1px rgba(153, 171, 146, 1);
@@ -1780,11 +1795,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .summaryConfigControl{
-      display: none;
-      color: gray;
-    }
-
     .headerGroup{
       position: relative;
       text-align: center;
@@ -1839,9 +1849,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       .clearFilterButton.rowFilter{
         pointer-events: all;
-        height: 14px;
-        width: 14px;
-        line-height: 12px;
+        height: 16px;
+        width: 16px;
+        line-height: 14px;
+        top: -1px;
+        position: relative;
       }
       .summaryIcons{
         top: 3px;
@@ -1849,19 +1861,25 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         font-size: 0.9em;
         > .fa{
+          display: none;
           color: gray;
           cursor: pointer;
           margin-left: 2px;
           vertical-align: top;
+          .transition(~'opacity 500ms linear');
           &:hover{ color: orangered; }
+          &[helpin] { opacity: 1; }
+        }
+        > .summaryConfigControl{
+          display: inline-block;
+          color: gray;
+          opacity: 0;
         }
         > .summaryDescription{
-          display: none;
           cursor: default;
+          &:hover{ color: black; }
         }
         > .summaryViewAs{
-          display: none;
-          cursor: pointer;
           width: 15px;
           text-align: center;
           &[viewAs="map"]:before{ content: "\f0ca"; } // globe
@@ -1869,9 +1887,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
           &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
         }
-        > .useForRecordDisplay{ display: none; }
-        > .setMatrixButton{ display: none; }
+        > .useForRecordDisplay{ 
+          opacity: 0;
+        }
+        > .setMatrixButton{
+          &[helpin]{ display: inline-block; }
+        }
       }
+
       > .header_display_control{
         display: block;
         position: absolute;
@@ -1891,8 +1914,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           height: 14px;
           width: 13px;
           height: 13px;
-          .transition(~'color 250ms linear, opacity 100ms linear ');
+          .transition(~'color 250ms linear, opacity 500ms linear ');
           &:hover{ color: orangered; }
+          &[helpin]{ opacity: 1; }
         }
         > .buttonSummaryCollapse::before{ content: "\f066"; }
         > .buttonSummaryRemove{ display: none; }
@@ -2203,10 +2227,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         cursor: pointer;
         font-weight: 700;
         > .item_details_toggle{
-          .transition(~'transform 500ms');
+          padding: 0px;
           color: gray;
           position: relative;
-          &:hover{ color:black; }
+          .transition(~'transform 500ms');
+          &:hover{ color: orangered; }
         }
       }
       &[details="true"]{
@@ -2215,7 +2240,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           display: inline-block;
           .rotate(180deg);
         }
-        .item_details{ display:block; }
+        .item_details{ display: block; }
       }
       &[details="false"]{
         .item_details_toggle{ display: inline-block; }
@@ -2521,6 +2546,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &:before{ content: "\f161"; }
                     &[inverse='true']:before{ content: "\f160" !important; }
                     &[resort="true"]:before{ content: "\f175" !important; }
+                    &[helpin]{ opacity: 1; }
                   }
 
                   > .sortOptionSelectGroup{
@@ -2601,6 +2627,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       display: none;
                       height: 100%;
                       z-index: 25;
+                      &[helpin]{ display: block; }
                     }
                   }
 
@@ -2947,6 +2974,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       &:hover{ color: black; }
                       &[sign="plus"]:before{ content: "\f00e"; }// zoom-plus
                       &[sign="minus"]:before{ content: "\f010"; } // zoom-minus
+                      &[helpin]{ display: block;}
                     }
                     > .controlLine {
                         height: 11px;
@@ -3170,7 +3198,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[usedForSorting="true"]{
         .headerGroup .summaryIcons > .useForRecordDisplay{
-          display: inline-block;
+          opacity: 1;
           color: black;
         }
       }
@@ -3197,15 +3225,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       &[summary_type='interval']{
-        &:hover .headerGroup .summaryIcons > .useForRecordDisplay{ display: inline-block; }
+        .headerGroup .summaryIcons > .useForRecordDisplay{ display: inline-block; }
+        &:hover .headerGroup .summaryIcons > .useForRecordDisplay{ opacity: 1; }
       }
 
       &[collapsed=false]{
         &[viewType='bar']:hover {
-          .summaryConfigControl{ display: inline-block !important; }
+          .summaryConfigControl{ opacity: 1 !important; }
         }
         &[summary_type='categorical'][viewType='list']:hover {
-          .summaryConfigControl{ display: inline-block !important; }
+          .summaryConfigControl{ opacity: 1 !important; }
         }
         > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand { display: inline-block !important; }
       }
@@ -3216,8 +3245,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           pointer-events: all;
         }
         .summaryConfigControl{ 
-          display: inline-block;
-          color: black;
+          opacity: 1 !important;
+          color: black !important;
           -webkit-animation: fa-spin 4s infinite linear;
           animation: fa-spin 4s infinite linear;
         }
@@ -4295,10 +4324,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   .mapTooltipLabel{
     font-size: 0.9em;
     font-weight: 300;
-  }
-  &.tipsyFilterLock{
-    .tipsy-inner{ background-color: @color_Compare_A; }
-    .tipsy-arrow{ border-color: @color_Compare_A; }
   }
 }
 

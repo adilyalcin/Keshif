@@ -231,11 +231,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[measurefunc="Avg"] .measurePercentControl {
   pointer-events: none !important;
 }
-.kshf[measurefunc="Avg"] .scaleModeControl {
-  pointer-events: none !important;
-}
 .kshf[measurefunc="Avg"] .measurePercentControl:after {
   content: "Avg" !important;
+}
+.kshf[measurefunc="Avg"] .scaleModeControl {
+  pointer-events: none !important;
 }
 .kshf[measurefunc="Avg"] .measureFunction_Avg {
   color: black !important;
@@ -1105,7 +1105,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
-  padding: 0px 2px 4px 5px;
+  padding: 1px 2px 4px 4px;
   font-size: 0.8em;
   vertical-align: top;
 }
@@ -1131,9 +1131,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #252112;
   font-weight: 300;
   background-color: rgba(255, 255, 255, 0.5);
-  margin-right: 5px;
+  margin-right: 4px;
   margin-top: 1px;
-  padding-left: 2px;
   max-width: 0px;
   -webkit-transition: all 250ms linear;
   -moz-transition: all 250ms linear;
@@ -1145,8 +1144,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   white-space: nowrap;
   overflow: hidden;
-  margin-left: 14px;
-  margin-right: 2px;
+  margin-left: 15px;
+  margin-right: 1px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbHeader {
   font-weight: 700;
@@ -1190,8 +1189,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton {
   background-color: #788D9B;
+  font-size: 1em;
+  padding: 0px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton > .fa:before {
   content: "\f0b0";
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight {
@@ -1246,10 +1247,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 2px;
   height: 1em;
   cursor: pointer;
-  color: #252112;
+  color: white;
   font-weight: 300;
   border: 1px #685b2b solid;
-  background-color: #E9E2CE;
+  background-color: #685b2b;
   white-space: nowrap;
   -webkit-transition: background-color 100ms linear, opacity 300ms linear;
   -moz-transition: background-color 100ms linear, opacity 300ms linear;
@@ -1258,13 +1259,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .filterClearAll .title {
   padding: 0px 2px;
-  font-size: 0.8em;
-  font-weight: 500;
+  font-size: 0.7em;
+  font-weight: 300;
   vertical-align: top;
 }
 .kshf .panel_Basic > .filterClearAll:hover {
-  background-color: white;
-  box-shadow: none;
+  text-decoration: underline;
 }
 .kshf .panel_Basic > .filterClearAll[active=true] {
   display: inline-block;
@@ -1282,10 +1282,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .rightBoxes > .fa:hover {
   color: #cb5454;
 }
-.kshf .panel_Basic > .rightBoxes > .showConfigButton {
+.kshf .panel_Basic > .rightBoxes > .authorButton {
   display: inline-block;
 }
-.kshf .panel_Basic > .rightBoxes > .showConfigButton:hover {
+.kshf .panel_Basic > .rightBoxes > .authorButton:hover {
   animation: fa-spin 2s infinite linear;
   -webkit-animation: fa-spin 2s infinite linear;
 }
@@ -1654,19 +1654,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
   width: 100%;
   z-index: 2000;
-  transform: scale(1);
   text-align: center;
   -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 500ms;
   -moz-transition: -moz-transform 500ms ease-in-out, opacity 500ms;
   -o-transition: -o-transform 500ms ease-in-out, opacity 500ms;
   transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 500ms;
 }
-.kshf .panel.panel_overlay > .background {
+.kshf .panel.panel_overlay > .kshfBackground {
   width: 100%;
   height: 100%;
   z-index: -2;
-  background: #0b0b0b;
-  opacity: 0.8;
+  background-color: black;
+  opacity: 0.7;
   position: absolute;
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
@@ -1694,6 +1693,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 3px;
   cursor: pointer;
   color: gray;
+  padding: 1px;
 }
 .kshf .panel.panel_overlay > .overlay_content > .overlay_Close:hover {
   color: orangered;
@@ -1701,11 +1701,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay > .overlay_source {
   background-color: white;
   width: 550px;
-  height: 200px;
   position: absolute;
-  top: 0;
+  top: 50px;
   left: 0;
-  bottom: 0;
   right: 0;
 }
 .kshf .panel.panel_overlay > .overlay_source .fa-info-circle {
@@ -1724,7 +1722,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay > .overlay_source > .source_wrapper {
   width: 530px;
   display: inline-block;
-  margin: 5px;
+  margin: 5px 5px 15px 5px;
   padding: 5px;
   border: solid 1px lightgray;
   border-radius: 5px;
@@ -1871,7 +1869,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   border: solid 1px gray;
   padding: 5px;
-  margin: 5px;
+  margin: 15px;
   border-radius: 5px;
   background-color: white;
   font-weight: 300;
@@ -1885,6 +1883,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
   box-shadow: 1px 1px 1px gray;
   background-color: #EEE;
+}
+.kshf .panel.panel_overlay > .overlay_source > .dataImportNotes {
+  font-size: 0.8em;
+  font-weight: 300;
+  border-top: solid 1px lightgray;
+  padding: 10px;
+  margin-top: 10px;
+  line-height: 2em;
+}
+.kshf .panel.panel_overlay > .overlay_source > .dataImportNotes > a {
+  color: black;
 }
 .kshf .panel.panel_overlay > .overlay_loading {
   width: 300px;
@@ -2012,7 +2021,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay[show="none"] {
   pointer-events: none;
 }
-.kshf .panel.panel_overlay[show="none"] > .background {
+.kshf .panel.panel_overlay[show="none"] > .kshfBackground {
   opacity: 0;
 }
 .kshf .panel.panel_overlay[show="loading"] > .overlay_loading {
@@ -2039,15 +2048,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: flex;
 }
 .kshf .panel.panel_overlay[show="answer"] > .overlay_answer {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  pointer-events: none;
+  display: block;
 }
-.kshf .panel.panel_overlay[show="answer"] > .background {
-  opacity: 0;
+.kshf .panel.panel_overlay[show="answer"] > .kshfBackground {
+  opacity: 0.3;
 }
 .kshf .panel.panel_overlay[show="recordDetails"] > .overlay_recordDetails {
   -webkit-animation: recordDetails 500ms forwards;
@@ -2096,13 +2100,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
   -o-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
   transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  background-color: #635d46;
-  color: #eeebe0;
-  border: solid 1px #635d46;
+  background-color: #788D9B;
+  border: solid 1px #788D9B;
+  color: white;
+}
+.kshf .clearFilterButton > .fa::before {
+  content: "\f0b0";
 }
 .kshf .clearFilterButton:hover {
-  background-color: #B6AF96;
-  color: #635d46;
+  background-color: white;
+  color: #788D9B;
+}
+.kshf .clearFilterButton:hover > .fa:before {
+  content: "\f00d";
 }
 .kshf .clearFilterButton.inSummary {
   display: none;
@@ -2110,9 +2120,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   pointer-events: all;
   margin-top: 1px;
   font-size: 0.8em;
-}
-.kshf .clearFilterButton.inSummary > .fa-times {
-  position: relative;
 }
 .kshf .clearFilterButton.allFilter {
   display: inline-block;
@@ -2140,12 +2147,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .measurePercentControl:after {
   content: '#';
 }
-.kshf .measurePercentControl[highlight="true"] {
+.kshf[measurePercentControl] .measurePercentControl {
   color: orangered;
   background-color: #d3d9c5;
   border: solid 1px #99ab92;
 }
-.kshf .measurePercentControl[highlight="true"]:after {
+.kshf[measurePercentControl] .measurePercentControl:after {
   content: '%';
 }
 .kshf .chartAxis_Measure {
@@ -2217,10 +2224,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-top: none;
   border-bottom: none;
 }
-.kshf .summaryConfigControl {
-  display: none;
-  color: gray;
-}
 .kshf .headerGroup {
   position: relative;
   text-align: center;
@@ -2274,9 +2277,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .headerGroup .clearFilterButton.rowFilter {
   pointer-events: all;
-  height: 14px;
-  width: 14px;
-  line-height: 12px;
+  height: 16px;
+  width: 16px;
+  line-height: 14px;
+  top: -1px;
+  position: relative;
 }
 .kshf .headerGroup .summaryIcons {
   top: 3px;
@@ -2285,21 +2290,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.9em;
 }
 .kshf .headerGroup .summaryIcons > .fa {
+  display: none;
   color: gray;
   cursor: pointer;
   margin-left: 2px;
   vertical-align: top;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
 }
 .kshf .headerGroup .summaryIcons > .fa:hover {
   color: orangered;
 }
+.kshf .headerGroup .summaryIcons > .fa[helpin] {
+  opacity: 1;
+}
+.kshf .headerGroup .summaryIcons > .summaryConfigControl {
+  display: inline-block;
+  color: gray;
+  opacity: 0;
+}
 .kshf .headerGroup .summaryIcons > .summaryDescription {
-  display: none;
   cursor: default;
 }
+.kshf .headerGroup .summaryIcons > .summaryDescription:hover {
+  color: black;
+}
 .kshf .headerGroup .summaryIcons > .summaryViewAs {
-  display: none;
-  cursor: pointer;
   width: 15px;
   text-align: center;
 }
@@ -2316,10 +2334,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "\f0ca";
 }
 .kshf .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: none;
+  opacity: 0;
 }
-.kshf .headerGroup .summaryIcons > .setMatrixButton {
-  display: none;
+.kshf .headerGroup .summaryIcons > .setMatrixButton[helpin] {
+  display: inline-block;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -2348,13 +2366,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 14px;
   width: 13px;
   height: 13px;
-  -webkit-transition: color 250ms linear, opacity 100ms linear ;
-  -moz-transition: color 250ms linear, opacity 100ms linear ;
-  -o-transition: color 250ms linear, opacity 100ms linear ;
-  transition: color 250ms linear, opacity 100ms linear ;
+  -webkit-transition: color 250ms linear, opacity 500ms linear ;
+  -moz-transition: color 250ms linear, opacity 500ms linear ;
+  -o-transition: color 250ms linear, opacity 500ms linear ;
+  transition: color 250ms linear, opacity 500ms linear ;
 }
 .kshf .headerGroup > .header_display_control > .fa:hover {
   color: orangered;
+}
+.kshf .headerGroup > .header_display_control > .fa[helpin] {
+  opacity: 1;
 }
 .kshf .headerGroup > .header_display_control > .buttonSummaryCollapse::before {
   content: "\f066";
@@ -2730,15 +2751,16 @@ top:calc(50% - 5px);
   font-weight: 700;
 }
 .kshf div.kshfRecord > .recordToggleDetail > .item_details_toggle {
+  padding: 0px;
+  color: gray;
+  position: relative;
   -webkit-transition: -webkit-transform 500ms;
   -moz-transition: -moz-transform 500ms;
   -o-transition: -o-transform 500ms;
   transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
-  color: gray;
-  position: relative;
 }
 .kshf div.kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
-  color: black;
+  color: orangered;
 }
 .kshf div.kshfRecord[details="true"] {
   max-height: none;
@@ -3163,6 +3185,9 @@ top:calc(50% - 5px);
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton[resort="true"]:before {
   content: "\f175" !important;
 }
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton[helpin] {
+  opacity: 1;
+}
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup {
   display: block;
   vertical-align: top;
@@ -3252,6 +3277,9 @@ top:calc(50% - 5px);
   display: none;
   height: 100%;
   z-index: 25;
+}
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .chartBackground > .chartCatLabelResize[helpin] {
+  display: block;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph {
   white-space: nowrap;
@@ -3653,6 +3681,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl[sign="minus"]:before {
   content: "\f010";
 }
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl[helpin] {
+  display: block;
+}
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine {
   height: 11px;
   cursor: ew-resize;
@@ -3889,7 +3920,7 @@ top:calc(50% - 8px);
   display: inline-block;
 }
 .kshf .kshfSummary[usedForSorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: inline-block;
+  opacity: 1;
   color: black;
 }
 .kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
@@ -3923,14 +3954,17 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[viewType="line"] .summaryConfig_UnitName {
   display: none;
 }
-.kshf .kshfSummary[summary_type='interval']:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf .kshfSummary[summary_type='interval'] .headerGroup .summaryIcons > .useForRecordDisplay {
   display: inline-block;
 }
+.kshf .kshfSummary[summary_type='interval']:hover .headerGroup .summaryIcons > .useForRecordDisplay {
+  opacity: 1;
+}
 .kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
-  display: inline-block !important;
+  opacity: 1 !important;
 }
 .kshf .kshfSummary[collapsed=false][summary_type='categorical'][viewType='list']:hover .summaryConfigControl {
-  display: inline-block !important;
+  opacity: 1 !important;
 }
 .kshf .kshfSummary[collapsed=false] > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand {
   display: inline-block !important;
@@ -3941,8 +3975,8 @@ top:calc(50% - 8px);
   pointer-events: all;
 }
 .kshf .kshfSummary[showConfig=true] .summaryConfigControl {
-  display: inline-block;
-  color: black;
+  opacity: 1 !important;
+  color: black !important;
   -webkit-animation: fa-spin 4s infinite linear;
   animation: fa-spin 4s infinite linear;
 }
@@ -5418,12 +5452,6 @@ top:calc(50% - 8px);
 .tipsy .mapTooltipLabel {
   font-size: 0.9em;
   font-weight: 300;
-}
-.tipsy.tipsyFilterLock .tipsy-inner {
-  background-color: #2f4f4f;
-}
-.tipsy.tipsyFilterLock .tipsy-arrow {
-  border-color: #2f4f4f;
 }
 /* Uncomment for shadow */
 /*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
