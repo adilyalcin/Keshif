@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DCMetroMetrics - Unit Status Database</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+
+    <link rel="image_src" href="./demo_img/Kobe30kShots_thumb.png" />
+    <meta property="og:image" content="http://www.keshif.me/demo/demo_img/Kobe30kShots_thumb.png" />
+
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+$(document).ready(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 120,
+    recordName: "Unit Status Info",
+    leftPanelLabelWidth: 150,
+    middlePanelLabelWidth: 200,
+    rightPanelLabelWidth: 220,
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/DCMetroMetrics/',
+      fileType: 'csv',
+      tables: "unit_statuses_edit"
+    },
+    summaries: [
+      { name: "unit_id", panel: "middle" },
+      { name: "time", timeFormat: "%Y-%m-%dT%H:%M:%S", panel: "bottom" },
+      //{ name: "end_time", timeFormat: "" },
+      //{ name: "duration", timeFormat: "" },
+      { name: "update_type" },
+      { name: "Symptom Category", value: "symptom_category", panel: "right" },
+      { name: "Symptom Description", value: "symptom_description", panel: "right" },
+    ],
+  });
+});
+    </script>
+<style id="kshfStyle">
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">DCMetroMetrics - Unit Status Database</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from <a href="http://www.dcmetrometrics.com/" target="_blank"> http://www.dcmetrometrics.com/ </a>.
+    </div>
+  </body>
+</html>

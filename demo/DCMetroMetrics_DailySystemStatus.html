@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DCMetroMetrics - Daily System Status Database</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+
+    <link rel="image_src" href="./demo_img/Kobe30kShots_thumb.png" />
+    <meta property="og:image" content="http://www.keshif.me/demo/demo_img/Kobe30kShots_thumb.png" />
+
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+$(document).ready(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 120,
+    recordName: "Unit Status Info",
+    leftPanelLabelWidth: 150,
+    middlePanelLabelWidth: 200,
+    rightPanelLabelWidth: 220,
+    source: {
+      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/DCMetroMetrics/',
+      fileType: 'csv',
+      tables: "daily_system_reports"
+    },
+    summaries: [
+      { name: "Escalator availability", value: "escalators_availability", panel: "middle", intervalScale: "linear" },
+      { name: "Escalators - # Fixes", 
+        value: function(){ if(this.escalators_num_fixes>0) return this.escalators_num_fixes; } },
+      { name: "Escalators - # Inspections", 
+        value: function(){ if(this.escalators_num_inspections>0) return this.escalators_num_inspections; } },
+      { name: "Escalators - # Breaks", 
+        value: function(){ if(this.escalators_num_breaks>0) return this.escalators_num_breaks; } },
+      { name: "Escalators - # Units", collapsed: true,
+        value: function(){ if(this.escalators_num_units>0) return this.escalators_num_units; } },
+//      { name: "escalators_broken_time_percentage", value: "escalators_broken_time_percentage" },
+
+      { name: "Elevator Availability", value: "elevators_availability", panel: "middle" },
+      { name: "Elevator - # Fixes", panel: "right", 
+        value: function(){ if(this.elevators_num_fixes>0) return this.elevators_num_fixes; } },
+      { name: "Elevator - # Inspections", panel: "right", 
+        value: function(){ if(this.elevators_num_inspections>0) return this.elevators_num_inspections; } },
+      { name: "Elevator - # Breaks", panel: "right", 
+        value: function(){ if(this.elevators_num_breaks>0) return this.elevators_num_breaks; } },
+      { name: "Elevator - # Units", panel: "right", collapsed: true,
+        value: function(){ if(this.elevators_num_units>0) return this.elevators_num_units; } },
+      // { name: "elevators_broken_time_percentage", value: "elevators_broken_time_percentage" },
+
+      { name: "day", value: "day", timeFormat: "%Y-%m-%d", panel: "bottom" },
+    ],
+  });
+});
+    </script>
+<style id="kshfStyle">
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">DCMetroMetrics - Daily System Status Database</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from <a href="http://www.dcmetrometrics.com/" target="_blank"> http://www.dcmetrometrics.com/ </a>.
+    </div>
+  </body>
+</html>
