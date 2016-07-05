@@ -477,7 +477,7 @@ a:hover > .demoTitle{
   margin-right: 10px;
 }
 .socialMedia:hover{
-  text-shadow: 0px 0px 3px red;
+  text-shadow: 0px 0px 3px gray;
 }
 
 
@@ -579,7 +579,7 @@ body{
   text-align: center;
   margin-top: 10px;
 }
-.Section-0:hover .descr_text{ opacity: 1; }
+.descr_text_hover:hover .descr_text{ opacity: 1; }
 
 .media_coverage {
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
@@ -804,6 +804,13 @@ a:hover > .demoImage{
   -moz-transition: margin-left 600ms ease-in-out;
 }
 
+.SectionAnchor{
+  position: relative;
+  top: -50px;
+  display: block;
+  height: 0px;
+}
+
 </style>
 	 
 </head>
@@ -841,7 +848,7 @@ a:hover > .demoImage{
 
 <div class="SectionBase Section-0">
   <div class="container">
-    <div class="row">
+    <div class="row descr_text_hover">
       <div class="twelve columns" id='sdsdsds'>
         <div style='font-size: 2.6em;'>
           <span class='KeshifLogo' id='BigLogo'></span><b>Keshif</b> : The fastest way from data to insights <i class='fa fa-play-circle'></i></div>
@@ -852,7 +859,7 @@ a:hover > .demoImage{
     <div class="Section-1">
       <div class="row">
         <div class="four columns">
-          <i class='fa fa-search-plus'></i> <b>Become the explorer of your data</b> with the best practices at your fingertips.</div>
+          <i class='fa fa-compass'></i> <b>Become the explorer of your data</b> with the best practices at your fingertips.</div>
         <div class="four columns">
           <i class='fa fa-hourglass-half'></i> <b>Save time</b> from figuring out how to create live visual charts and dashboards.</div>
         <div class="four columns">
@@ -877,8 +884,8 @@ a:hover > .demoImage{
   </div> <!-- .container -->
 </div>
 
-
-<div class="SectionBase Section-2" id="Section-UseCases">
+<span id="Section-UseCases" class='SectionAnchor'></span>
+<div class="SectionBase Section-2" >
   <div class="container">
     <div class="row">
       <div class="twelve columns"><h2><i class='fa fa-lightbulb-o'></i> Use Cases</h2></div>
@@ -945,8 +952,8 @@ a:hover > .demoImage{
   </div>
 </div>
 
-
-<div class="SectionBase" id='Section-Features'>
+<span id="Section-Features" class='SectionAnchor'></span>
+<div class="SectionBase">
   <div class="container" style='text-align: center;'>
     <div class="row">
       <div class="twelve columns"><h2><i class='fa fa-magic'></i> Features</h2></div>
@@ -1041,8 +1048,8 @@ a:hover > .demoImage{
   </div>
 </div>
 
-
-<div class="SectionBase SectionAltBlock" id='Section-Media'>
+<span id="Section-Media" class='SectionAnchor'></span>
+<div class="SectionBase SectionAltBlock">
   <div class="container">
     <div class="row">
       <div class="twelve columns"><h2><i class='fa fa-newspaper-o'></i>  Media Coverage</h2></div>
@@ -1145,7 +1152,8 @@ a:hover > .demoImage{
 </div>
 
 
-<div class="SectionBase" id="Section-Demo">
+<span id="Section-Demo" class='SectionAnchor'></span>
+<div class="SectionBase">
   <div class="container">
     <div class="row">
       <div class="twelve columns">
@@ -1158,7 +1166,8 @@ a:hover > .demoImage{
   </div>
 </div>
 
-<div class="SectionAltBlock SectionBase" id="Section-Contact">
+<span id="Section-Contact" class='SectionAnchor'></span>
+<div class="SectionAltBlock SectionBase">
   <div class="container">
     <div class="row">
       <div class="twelve columns">
