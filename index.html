@@ -48,6 +48,13 @@ $(document).ready(function(){
     d.attr("seeMore",d.attr("seeMore")!=="true");
   });
 
+  d3.selectAll(".pageSectionA").on("click",function(){
+    var DOM = d3.select("body")[0][0]
+    var targetPos = d3.select(this.getAttribute("scrollTo"))[0][0].offsetTop;
+    targetPos = Math.min(targetPos, DOM.scrollHeight - window.innerHeight );
+    kshf.Util.scrollToPos_do( d3.select("body"), targetPos );
+  });
+
   var autoScrollInterval = window.setInterval(function(){
     scrollToImage("chartTypesInfoBox", (curImgIndex.chartTypesInfoBox+1)%6);
     scrollToImage("AbsRelInfoBox", (curImgIndex.AbsRelInfoBox+1)%2);
@@ -824,11 +831,11 @@ a:hover > .demoImage{
     <span style='font-size: 0.7em; font-weight: 300; color: #7D7D7D;'>Data <b>M</b>ade <b>E</b>xplorable</span>
   </span>
   <span class='page-Header-Pills'>
-    <a class='pageSectionA' href='#Section-UseCases'>Use Cases</a> |
-    <a class='pageSectionA' href='#Section-Features'>Features</a> |
-    <a class='pageSectionA' href="#Section-Media">Media Coverage</a> |
-    <a class='pageSectionA' href='#Section-Demo'>Demo and Examples</a> |
-    <a class='pageSectionA' href="#Section-Contact">Contact</a>
+    <span class='pageSectionA' scrollTo='#Section-UseCases'>Use Cases</span> |
+    <span class='pageSectionA' scrollTo='#Section-Features'>Features</span> |
+    <span class='pageSectionA' scrollTo="#Section-Media">Media Coverage</span> |
+    <span class='pageSectionA' scrollTo='#Section-Demo'>Demo and Examples</span> |
+    <span class='pageSectionA' scrollTo="#Section-Contact">Contact</span>
   </span>
   <span class='page-Header-Affiliations'>
     <a href='https://www.facebook.com/keshifme' target='_blank' class='fa fa-facebook socialMedia'
