@@ -5,12 +5,35 @@
     position: absolute;
     border: solid 2px green;
     box-shadow: 0px 0px 5px green;
+    cursor: pointer;
   }
   &[attention=true]{
     .highlightBox{
       .animation(attention2 0.3s 2 ease-in-out);
     }
   }
+}
+
+.tipsy.tipsy-helpin {
+  > .tipsy-arrow{
+    border-color: white;
+  }
+  > .tipsy-inner{
+    padding: 6px;
+    border: solid 2px white;
+    border-radius: 6px;
+    color: black;
+    background-color: white;
+    box-shadow: 0px 0px 10px black;
+    font-size: 1.35em;
+    font-weight: 300;
+    > .fa{ font-size: 1.3em; }
+  }
+}
+
+
+.fa-histogram-flip{
+  .transform(~'scale(1, -1) rotate(90deg)');
 }
 
 .kshf .panel.panel_overlay > .overlay_content.overlay_help{
@@ -23,6 +46,115 @@
   font-family: Roboto, sans-serif;
   .flex-direction(column);
   .transition(all 500ms ease-in-out);
+  .user-select(none);
+
+  > .TopicInfoBlock{
+    display: none;
+    cursor: default;
+    position: relative;
+    > .TopicInfoHeader{
+      font-weight: 400;
+      border-bottom: solid 1px lightgray;
+      font-size: 1.1em;
+      margin-bottom: 3px;
+      position: relative;
+    }
+    > .TopicInfoShowHide{
+      font-weight: 300;
+      font-size: 0.9em;
+      cursor: pointer;
+      position: absolute;
+      right: 10px;
+      top: 1px;
+      &:before{ content: "(Hide)"; }
+      &:hover{ color: orangered; }
+    }
+    &[showBlockContent=false]{
+      > .TopicInfoBlockContent{ display: none; }
+      > .TopicInfoShowHide:before{ content: "(Show)"; }
+    }
+  }
+
+  > .SimilarTopicsBlock{
+    font-weight: 300;
+    font-size: 0.8em;
+    margin: 5px 0px;
+    padding: 0px 10px;
+    > .SimilarTopicsContent{
+      font-weight: 300;
+    }
+    .SimilarTopicItem{
+      margin: 5px;
+      text-align: left;
+    }
+    .SimilarTopicItemText{
+      cursor: pointer;  
+      &:hover{ 
+        color: orangered;
+        text-decoration: underline;
+      }
+    }
+    .SimilarTopicSelect{
+      cursor: pointer;
+      margin-left: 5px;
+      display: inline-block;
+      text-decoration: underline;
+      &:hover{ color: orangered; }
+      &:before{ content: "("; }
+      &:after { content: ")"; }
+    }
+  }
+
+  > .TopicRelWhenBlock{
+    display: none;
+    font-weight: 300;
+    font-size: 0.8em;
+    margin: 5px 0px;
+    padding: 0px 10px;
+    > .ContextContent{
+      text-align: left;
+      > .ContextItem{
+        margin: 5px;
+        > .RelevantIcon{
+          margin-right: 4px;
+        }
+        > .MakeRelevantTopic{
+          margin: 0px 5px;
+          color: black;
+          cursor: pointer;
+          text-decoration: underline;
+          &:before{ content: "( "; }
+          &:after { content: " )"; }
+        }
+        &[isRelevant=true]{
+          color: black;
+          > .fa:before{ color: green; } // 
+        }
+        &[isRelevant=false]{
+          color: red;
+          > .fa:before{ } // 
+        }
+        > .fa-times-circle{ color: red; }
+        > .fa-check-circle{ color: green; }
+      }
+    }
+  }
+
+  > .TopicMoreInfo{
+    display: none;
+    font-weight: 300;
+    font-size: 0.8em;
+    margin: 5px 0px;
+    padding: 0px 10px;
+    cursor: default;
+    > .TopicMoreInfoHeader{
+      font-weight: 500;
+      border-bottom: solid 1px lightgray;
+      font-size: 1.1em;
+      margin-bottom: 3px;
+    }
+    > .TopicMoreInfoContent{ }
+  }
 
   > .answer_box{
     display: none;
@@ -31,7 +163,7 @@
     font-weight: 300;
     border: solid 1px gray;
     border-radius: 10px;
-    font-size: 0.8em;
+    font-size: 0.9em;
     cursor: pointer;
     padding: 0px 3px;
     background-color: white;
@@ -70,7 +202,8 @@
 
     .flex(1);
     > .QuestionBlock{
-      margin: 2px 4px;
+      margin: 3px 4px;
+      padding: 4px;
       border: solid 1px lightgray;
       border-radius: 6px;
       cursor: pointer;
@@ -87,6 +220,7 @@
         color: gray;
       }
       > .QuestionText{
+        padding: 0px 40px;
         > .fa-question-circle{ 
           color: gray;
           margin: 0px 3px;
@@ -95,24 +229,24 @@
       > .QuestionIcons{
         position: absolute;
         right: 2px;
-        top: 0px;
+        top: 4px;
         .icon{ 
           font-size: 0.8em;
           font-weight: 300;
           margin-top: 4px;
           color: gray;
-          width: 14px;
+          width: 16px;
           text-align: center;
           vertical-align: top;
         }
       }
       &[outOfContext] {
-        cursor: default;
         > .notInContext{ display: block; }
       }
     }
   }
-  > .MoreInfo{
+  // See Keshif wiki & API...
+  > .MoreDocumentation{
     font-weight: 300;
     font-size: 0.7em;
     padding: 3px;
@@ -121,14 +255,14 @@
     overflow: hidden;
     .transition(all 500ms linear);
     .flex-shrink(0);
-    > .MoreInfoLink{ color: black;}
+    > .MoreInfoLink{ color: black; }
   }
 
   &[question=true]{
     height: initial;
     width: 370px;
-    right: 10px;
-    top: 10px;
+    .calc(right,~'50% - 170px');
+    top: 100px;
     box-shadow: 0px 0px 20px black;
     margin: initial;
     &[attention=true]{
@@ -151,19 +285,26 @@
     > .answer_box{
       display: block;
     }
-    > .MoreInfo{
-      //.flex(0);
-      display: none;
-    }
+    // See Keshif wiki & API...
+    > .MoreDocumentation{ display: none; }
+    > .TopicMoreInfo{ display: block; }
+    > .TopicRelWhenBlock{ display: block; }
     > .overlay_Close{ display: none; }
     > .Questions{
-      overflow: hidden;
       .flex(initial);
+      overflow: hidden;
+      padding: 10px 0px;
+      background-color: #f9f6f1;
       > .QuestionBlock{
         display: none;
         &[selected=true]{
-          display: block;
+          display: block !important;
+          font-weight: 500;
+          font-size: 1.1em;
+          border-width: 0px;
           &:hover{ background-color: inherit; cursor: default; }
+          > .QuestionIcons{ display: none; }
+          > .notInContext{ display: none; }
         }
       }
     }
@@ -180,7 +321,7 @@
   .display(flex);
   .flex-direction(row);
   > .TypeLabel{
-    width: 60px;
+    width: 75px;
     color: #cb5454;
     height: 1em;
     .flex-shrink(0);
@@ -198,7 +339,7 @@
     .flex(1);
   }
   &.ActionTypes > .TypeLabel:before{ content: "Actions" }
-  &.TopicTypes > .TypeLabel:before{ content: "Topics" }
+  &.TopicTypes > .TypeLabel:before{ content: "Keywords" }
 }
 .QuestionTypeSelect{
   display: inline-block;
@@ -236,9 +377,10 @@
 .TextSearchBlock{
   text-align: center;
   padding: 3px;
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
   padding-bottom: 3px;
+  font-family: sans-serif;
+  font-size: 1.2em;
   > .fa-search{
     color: gray;
     font-size: 0.8em;

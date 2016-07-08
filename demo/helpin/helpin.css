@@ -2,12 +2,36 @@
   position: absolute;
   border: solid 2px green;
   box-shadow: 0px 0px 5px green;
+  cursor: pointer;
 }
 .overlay_answer[attention=true] .highlightBox {
   -webkit-animation: attention2 0.3s 2 ease-in-out;
   -moz-animation: attention2 0.3s 2 ease-in-out;
   -o-animation: attention2 0.3s 2 ease-in-out;
   animation: attention2 0.3s 2 ease-in-out;
+}
+.tipsy.tipsy-helpin > .tipsy-arrow {
+  border-color: white;
+}
+.tipsy.tipsy-helpin > .tipsy-inner {
+  padding: 6px;
+  border: solid 2px white;
+  border-radius: 6px;
+  color: black;
+  background-color: white;
+  box-shadow: 0px 0px 10px black;
+  font-size: 1.35em;
+  font-weight: 300;
+}
+.tipsy.tipsy-helpin > .tipsy-inner > .fa {
+  font-size: 1.3em;
+}
+.fa-histogram-flip {
+  -webkit-transform: scale(1, -1) rotate(90deg);
+  -moz-transform: scale(1, -1) rotate(90deg);
+  -ms-transform: scale(1, -1) rotate(90deg);
+  -o-transform: scale(1, -1) rotate(90deg);
+  transform: scale(1, -1) rotate(90deg);
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help {
   width: 600px;
@@ -32,6 +56,134 @@ right:calc(50% - 310px);
   -moz-transition: all 500ms ease-in-out;
   -o-transition: all 500ms ease-in-out;
   transition: all 500ms ease-in-out;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock {
+  display: none;
+  cursor: default;
+  position: relative;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoHeader {
+  font-weight: 400;
+  border-bottom: solid 1px lightgray;
+  font-size: 1.1em;
+  margin-bottom: 3px;
+  position: relative;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoShowHide {
+  font-weight: 300;
+  font-size: 0.9em;
+  cursor: pointer;
+  position: absolute;
+  right: 10px;
+  top: 1px;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoShowHide:before {
+  content: "(Hide)";
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoShowHide:hover {
+  color: orangered;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoBlockContent {
+  display: none;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoShowHide:before {
+  content: "(Show)";
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock {
+  font-weight: 300;
+  font-size: 0.8em;
+  margin: 5px 0px;
+  padding: 0px 10px;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock > .SimilarTopicsContent {
+  font-weight: 300;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicItem {
+  margin: 5px;
+  text-align: left;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicItemText {
+  cursor: pointer;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicItemText:hover {
+  color: orangered;
+  text-decoration: underline;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect {
+  cursor: pointer;
+  margin-left: 5px;
+  display: inline-block;
+  text-decoration: underline;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:hover {
+  color: orangered;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:before {
+  content: "(";
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:after {
+  content: ")";
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock {
+  display: none;
+  font-weight: 300;
+  font-size: 0.8em;
+  margin: 5px 0px;
+  padding: 0px 10px;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent {
+  text-align: left;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem {
+  margin: 5px;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .RelevantIcon {
+  margin-right: 4px;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic {
+  margin: 0px 5px;
+  color: black;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:before {
+  content: "( ";
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:after {
+  content: " )";
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] {
+  color: black;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] > .fa:before {
+  color: green;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=false] {
+  color: red;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-times-circle {
+  color: red;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-check-circle {
+  color: green;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicMoreInfo {
+  display: none;
+  font-weight: 300;
+  font-size: 0.8em;
+  margin: 5px 0px;
+  padding: 0px 10px;
+  cursor: default;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicMoreInfo > .TopicMoreInfoHeader {
+  font-weight: 500;
+  border-bottom: solid 1px lightgray;
+  font-size: 1.1em;
+  margin-bottom: 3px;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .answer_box {
   display: none;
@@ -40,7 +192,7 @@ right:calc(50% - 310px);
   font-weight: 300;
   border: solid 1px gray;
   border-radius: 10px;
-  font-size: 0.8em;
+  font-size: 0.9em;
   cursor: pointer;
   padding: 0px 3px;
   background-color: white;
@@ -87,7 +239,8 @@ right:calc(50% - 310px);
   flex: 1;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock {
-  margin: 2px 4px;
+  margin: 3px 4px;
+  padding: 4px;
   border: solid 1px lightgray;
   border-radius: 6px;
   cursor: pointer;
@@ -106,6 +259,9 @@ right:calc(50% - 310px);
   text-align: center;
   color: gray;
 }
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionText {
+  padding: 0px 40px;
+}
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionText > .fa-question-circle {
   color: gray;
   margin: 0px 3px;
@@ -113,24 +269,21 @@ right:calc(50% - 310px);
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionIcons {
   position: absolute;
   right: 2px;
-  top: 0px;
+  top: 4px;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionIcons .icon {
   font-size: 0.8em;
   font-weight: 300;
   margin-top: 4px;
   color: gray;
-  width: 14px;
+  width: 16px;
   text-align: center;
   vertical-align: top;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock[outOfContext] {
-  cursor: default;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock[outOfContext] > .notInContext {
   display: block;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .MoreInfo {
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .MoreDocumentation {
   font-weight: 300;
   font-size: 0.7em;
   padding: 3px;
@@ -144,14 +297,18 @@ right:calc(50% - 310px);
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .MoreInfo > .MoreInfoLink {
+.kshf .panel.panel_overlay > .overlay_content.overlay_help > .MoreDocumentation > .MoreInfoLink {
   color: black;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] {
   height: initial;
   width: 370px;
-  right: 10px;
-  top: 10px;
+  -lh-property: 0;
+right:-webkit-calc(50% - 170px);
+right:-moz-calc(50% - 170px);
+right:calc(50% - 170px);
+;
+  top: 100px;
   box-shadow: 0px 0px 20px black;
   margin: initial;
 }
@@ -179,29 +336,46 @@ right:calc(50% - 310px);
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .answer_box {
   display: block;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .MoreInfo {
+.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .MoreDocumentation {
   display: none;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .TopicMoreInfo {
+  display: block;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .TopicRelWhenBlock {
+  display: block;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .overlay_Close {
   display: none;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions {
-  overflow: hidden;
   -webkit-box-flex: initial;
   -moz-box-flex: initial;
   -webkit-flex: initial;
   -ms-flex: initial;
   flex: initial;
+  overflow: hidden;
+  padding: 10px 0px;
+  background-color: #f9f6f1;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock {
   display: none;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true] {
-  display: block;
+  display: block !important;
+  font-weight: 500;
+  font-size: 1.1em;
+  border-width: 0px;
 }
 .kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true]:hover {
   background-color: inherit;
   cursor: default;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true] > .QuestionIcons {
+  display: none;
+}
+.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true] > .notInContext {
+  display: none;
 }
 .QuestionTypes {
   border-width: 1px 0px 1px 0px;
@@ -225,7 +399,7 @@ right:calc(50% - 310px);
   flex-direction: row;
 }
 .QuestionTypes > .TypeLabel {
-  width: 60px;
+  width: 75px;
   color: #cb5454;
   height: 1em;
   -webkit-flex-shrink: 0;
@@ -252,7 +426,7 @@ right:calc(50% - 310px);
   content: "Actions";
 }
 .QuestionTypes.TopicTypes > .TypeLabel:before {
-  content: "Topics";
+  content: "Keywords";
 }
 .QuestionTypeSelect {
   display: inline-block;
@@ -299,9 +473,10 @@ right:calc(50% - 310px);
 .TextSearchBlock {
   text-align: center;
   padding: 3px;
-  font-style: italic;
-  font-weight: 500;
+  font-weight: 600;
   padding-bottom: 3px;
+  font-family: sans-serif;
+  font-size: 1.2em;
 }
 .TextSearchBlock > .fa-search {
   color: gray;
