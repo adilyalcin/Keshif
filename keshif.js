@@ -1634,9 +1634,9 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.scrollToTop = this.DOM.recordDisplayHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); kshf.Util.scrollToPos_do(me.DOM.recordGroup,0); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); kshf.Util.scrollToPos_do(me.DOM.recordGroup,0); });
     },
     /** -- */
     setSpatialFilter: function(){
@@ -1802,9 +1802,9 @@ kshf.RecordDisplay.prototype = {
       this.DOM.recordTextSearch.append("span").attr("class","fa fa-times-circle clearSearchText")
         .attr("mode","and")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveFilter }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(){ this.tipsy.hide(); })
-        .on("click",function() { this.tipsy.hide(); me.textFilter.clearFilter(); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.textFilter.clearFilter(); });
       
       this.DOM.recordTextSearch.selectAll(".textSearchMode").data(["and","or"]).enter()
         .append("span")
@@ -1815,10 +1815,9 @@ kshf.RecordDisplay.prototype = {
               gravity: 'ne', 
               title: (d==="and") ? "All words<br> must appear." : "At least one word<br> must appear." });
           })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout",function(){ this.tipsy.hide(); })
-          .on("click",function(d) {
-            this.tipsy.hide();
+          .on("mouseenter", function(){ this.tipsy.show(); })
+          .on("mouseleave", function(){ this.tipsy.hide(); })
+          .on("click",    function(d) { this.tipsy.hide();
             me.DOM.recordTextSearch.attr("mode",d);
             me.textFilter.multiMode = d;
             me.textFilter.addFilter();
@@ -1832,9 +1831,10 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.NodeLinkAttrib.append("span").attr("class","fa fa-share-alt NodeLinkAttribIcon")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e',  title: "Show/Hide Links" }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(){ this.tipsy.hide(); })
-        .on("click",function(){ me.DOM.root.attr("hideLinks", me.DOM.root.attr("hideLinks")?null:true ); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide();
+          me.DOM.root.attr("hideLinks", me.DOM.root.attr("hideLinks")?null:true ); });
 
       var s = this.DOM.NodeLinkAttrib.append("select")
         .on("change",function(){
@@ -1927,9 +1927,10 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordDisplayHeader.append("span").attr("class","sortColumn sortButton fa")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout",function(){ this.tipsy.hide(); })
-        .on("click",function(d){
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          this.tipsy.hide();
           // NOTE: Only on list/grid views
           me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
           this.setAttribute("inverse",me.sortingOpt_Active.inverse);
@@ -2414,8 +2415,8 @@ kshf.RecordDisplay.prototype = {
               }
             });
           })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
+          .on("mouseenter", function(){ this.tipsy.show(); })
+          .on("mouseleave", function(){ this.tipsy.hide(); })
           .append("span").attr("class","item_details_toggle fa")
             .on("click", function(record){
               this.parentNode.tipsy.hide();
@@ -3312,9 +3313,9 @@ kshf.Browser.prototype = {
         .style({ left: "0px", top: "0px" });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.Close }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure")
         .on("mousedown", function (d, i) {
           me.DOM.root.attr("pointerEvents",false);
@@ -3491,8 +3492,8 @@ kshf.Browser.prototype = {
       if (typeof saveAs !== 'undefined') { // FileSaver.js is included
         rightBoxes.append("i").attr("class","saveBrowserConfig fa fa-download")
           .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Download Browser Configuration" }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout", function(){ this.tipsy.hide(); })
+          .on("mouseenter", function(){ this.tipsy.show(); })
+          .on("mouseleave", function(){ this.tipsy.hide(); })
           .on("click",function(){ 
             var c = JSON.stringify(me.exportConfig(),null,'  ');
             var blob = new Blob([c]);//, {type: "text/plain;charset=utf-8"});
@@ -3668,22 +3669,21 @@ kshf.Browser.prototype = {
           if(typeof helpin !== 'undefined'){
             me.panel_overlay.attr("show","help");
             helpin.initDOM();
-          } else {
-            alert("We are working on to provide better help to your exploration. Check again soon!");
           }
         });
+
       // Fullscreen
       rightBoxes.append("span").attr("class","fa fa-arrows-alt fullscreen")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); me.showFullscreen();});
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.showFullscreen();});
       // Info & Credits
       var x = rightBoxes.append("span").attr("class","logoHost")//.attr("class","fa fa-info-circle")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowInfoCredits }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",    function(){ this.tipsy.hide(); me.panel_overlay.attr("show","infobox"); })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.panel_overlay.attr("show","infobox"); })
         .html(kshf.kshfLogo);
 
       // Total glyph - row
@@ -4088,11 +4088,9 @@ kshf.Browser.prototype = {
       xx.append("span").text("Available Summaries");
       xx.append("span").attr("class","hidePanel fa fa-times")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "w", title: "Close panel" }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          me.enableAuthoring();
-        });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.enableAuthoring(); });
 
       var attributePanelControl = this.DOM.attributePanel.append("div").attr("class","attributePanelControl");
 
@@ -4132,9 +4130,9 @@ kshf.Browser.prototype = {
       attributePanelControl.append("span").attr("class","addAllSummaries")
         .append("span").attr("class","fa fa-magic") // fa-caret-square-o-right
           .each(function(){ this.tipsy = new Tipsy(this, { gravity: "e", title: "Add all to browser" }); })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("click",function(){ me.autoCreateBrowser(); });
+          .on("mouseenter", function(){ this.tipsy.show(); })
+          .on("mouseleave", function(){ this.tipsy.hide(); })
+          .on("click",      function(){ this.tipsy.hide(); me.autoCreateBrowser(); });
 
       this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
 
@@ -5882,9 +5880,9 @@ kshf.Summary_Base.prototype = {
           title: function(){ return me.collapsed?kshf.lang.cur.OpenSummary:kshf.lang.cur.MinimizeSummary; }
         })
       })
-      .on("mouseover", function(){ this.tipsy.show(); })
-      .on("mouseout" , function(){ this.tipsy.hide(); })
-      .on("click",     function(){ this.tipsy.hide();
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
         if(me instanceof kshf.Summary_Set){
           me.setListSummary.setShowSetMatrix(false);
         } else {
@@ -6036,8 +6034,8 @@ kshf.Summary_Base.prototype = {
     this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
       .attr("class","summaryDescription fa fa-info-circle")
       .each(function(){  this.tipsy = new Tipsy(this, { gravity:'ne', title:function(){return me.description;} }); })
-      .on("mouseover",function(){ this.tipsy.show(); })
-      .on("mouseout" ,function(){ this.tipsy.hide(); });
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); });
 
     this.setDescription(this.description);
 
@@ -6943,19 +6941,16 @@ var Summary_Categorical_functions = {
 
       this.DOM.scrollToTop = this.DOM.summaryCategorical.append("div").attr("class","scrollToTop fa fa-arrow-up")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("click",function(d){
-          this.tipsy.hide();
-          kshf.Util.scrollToPos_do(me.DOM.aggrGroup,0);
-        });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); kshf.Util.scrollToPos_do(me.DOM.aggrGroup,0); });
 
       this.DOM.aggrGroup = this.DOM.summaryCategorical.append("div").attr("class","aggrGroup")
         .on("mousedown",function(){
           d3.event.stopPropagation();
           d3.event.preventDefault();
         })
-        .on("scroll",function(d){
+        .on("scroll",function(){
           if(kshf.Util.ignoreScrollEvents===true) return;
           me.scrollTop_cache = me.DOM.aggrGroup[0][0].scrollTop;
 
@@ -7034,8 +7029,8 @@ var Summary_Categorical_functions = {
             gravity: 'w', title: function(){ return kshf.lang.cur[me.dirtySort?'Reorder':'ReverseOrder']; }
           });
         })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); });
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); });
       this.refreshSortButton();
     },
     /** -- */
@@ -7063,10 +7058,9 @@ var Summary_Categorical_functions = {
               gravity: 'nw', title: "Clear text search"
             });
           })
-          .on("mouseover",function(){ this.tipsy.show(); })
-          .on("mouseout" ,function(){ this.tipsy.hide(); })
-          .on("click",function() {
-            this.tipsy.hide();
+          .on("mouseenter", function(){ this.tipsy.show(); })
+          .on("mouseleave", function(){ this.tipsy.hide(); })
+          .on("click",      function(){ this.tipsy.hide();
             me.DOM.catTextSearchControl.attr("showClear",false);
             me.summaryFilter.clearFilter();
           });
