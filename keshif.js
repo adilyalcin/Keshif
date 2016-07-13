@@ -92,7 +92,7 @@ var kshf = {
       Reorder: "Reorder",
       ShowMoreInfo: "Show record info",
       Percentiles: "Percentiles",
-      LockToCompare: "Lock to compare",
+      LockToCompare: "Lock selection",
       Unlock: "Unlock",
       Search: "Search",
       CreatingBrowser: "Creating Keshif Browser",
@@ -923,7 +923,7 @@ kshf.BreadCrumb.prototype = {
         }
       });
 
-    this.DOM.append("span").attr("class","clearCrumbButton").append("span").attr("class","fa");
+    this.DOM.append("span").attr("class","clearCrumbButton fa");
     var y = this.DOM.append("span").attr("class","crumbText");
     y.append("span").attr("class","crumbHeader");
     y.append("span").attr("class","crumbDetails");
@@ -1925,7 +1925,8 @@ kshf.RecordDisplay.prototype = {
 
       this.refreshSortingOptions();
 
-      this.DOM.recordDisplayHeader.append("span").attr("class","sortColumn sortButton fa")
+      this.DOM.recordSortButton = this.DOM.recordDisplayHeader.append("span")
+        .attr("class","recordSortButton sortButton fa")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
@@ -1956,27 +1957,23 @@ kshf.RecordDisplay.prototype = {
     setSortColumnWidth: function(v){
       if(this.displayType!=='list') return;
       this.sortColWidth = Math.max(Math.min(v,110),30); // between 30 and 110 pixels
-      this.DOM.recordsSortCol.style("width",this.sortColWidth+"px");
+      this.DOM.recordSortCol.style("width",this.sortColWidth+"px");
       this.refreshAdjustSortColumnWidth();
+    },
+    /** -- */
+    getSortingLabel: function(d){
+      var s = this.sortingOpt_Active.sortLabel.call(d.data,d);
+      if(s===null || s===undefined) return "";
+      if(typeof s!=="string") s = this.sortColFormat(s);
+      return this.sortingOpt_Active.printWithUnitName(s);
     },
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
       if(this.displayType!=='list') return; // Only list-view allows sorting
-      if(d3_selection===undefined) d3_selection = this.DOM.recordsSortCol;
+      if(d3_selection===undefined) d3_selection = this.DOM.recordSortCol;
+
       var me=this;
-      var labelFunc=this.sortingOpt_Active.sortLabel;
-      var sortColformat = function(a){ return a.toLocaleString(); };
-      //d3.format(".s")
-      if(this.sortingOpt_Active.isTimeStamp()){
-        sortColformat = this.sortingOpt_Active.timeTyped.print;
-      }
-      d3_selection.html(function(d){
-        var s=labelFunc.call(d.data,d);
-        if(s===null || s===undefined) return "";
-        this.setAttribute("title",s);
-        if(typeof s!=="string") s = sortColformat(s);
-        return me.sortingOpt_Active.printWithUnitName(s);
-      });
+      d3_selection.html(function(d){ return me.getSortingLabel(d); });
     },
     /** -- */
     refreshSortingOptions: function(){
@@ -2048,6 +2045,12 @@ kshf.RecordDisplay.prototype = {
         var curHeight = this.sortingOpt_Active.getHeight();
         this.sortingOpt_Active.setAsRecordSorting();
         this.sortingOpt_Active.setHeight(curHeight);
+      }
+
+      // Sort column format function
+      this.sortColFormat = function(a){ return a.toLocaleString(); };
+      if(this.sortingOpt_Active.isTimeStamp()){
+        this.sortColFormat = this.sortingOpt_Active.timeTyped.print;
       }
 
       // If the record view summary is not set, no need to proceed with sorting or visual
@@ -2404,7 +2407,7 @@ kshf.RecordDisplay.prototype = {
           this.refreshRecordSortLabels(x);
         }
         // TOGGLE DETAIL
-        newRecords.append("div").attr("class","recordToggleDetail")
+        newRecords.append("div").attr("class","recordToggleDetail fa")
           .each(function(d){
             this.tipsy = new Tipsy(this, {
               gravity:'s',
@@ -2417,16 +2420,15 @@ kshf.RecordDisplay.prototype = {
           })
           .on("mouseenter", function(){ this.tipsy.show(); })
           .on("mouseleave", function(){ this.tipsy.hide(); })
-          .append("span").attr("class","item_details_toggle fa")
-            .on("click", function(record){
-              this.parentNode.tipsy.hide();
-              if(me.detailsToggle==="one" && me.displayType==='list'){
-                record.setRecordDetails(!record.showDetails);
-              }
-              if(me.detailsToggle==="zoom"){
-                me.browser.updateRecordDetailPanel(record);
-              }
-            });
+          .on("click", function(record){
+            this.tipsy.hide();
+            if(me.detailsToggle==="one" && me.displayType==='list'){
+              record.setRecordDetails(!record.showDetails);
+            }
+            if(me.detailsToggle==="zoom"){
+              me.browser.updateRecordDetailPanel(record);
+            }
+          });
 
         // Insert the custom content!
         // Note: the value was already evaluated and stored in the record object
@@ -2466,8 +2468,9 @@ kshf.RecordDisplay.prototype = {
       } else if(this.displayType==='nodelink'){
         this.refreshRecordColors();
       } else {
-        this.DOM.recordsSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
+        this.DOM.recordSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
         this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
+        this.DOM.recordToggleDetail = this.DOM.recordGroup.selectAll(".recordToggleDetail");
       }
 
       this.updateRecordVisibility();
@@ -3480,10 +3483,7 @@ kshf.Browser.prototype = {
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.SaveSelection }); })
         .on("mouseenter",function(){ this.tipsy.show(); })
         .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          this.tipsy.hide();
-          me.saveFilterSelection();
-        });
+        .on("click",     function(){ this.tipsy.hide(); me.saveFilterSelection(); });
 
       this.initDOM_ClearAllFilters();
 
@@ -3660,16 +3660,12 @@ kshf.Browser.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); });
       // Help
-      rightBoxes.append("span").attr("class","fa fa-question-circle")
+      this.DOM.showHelpIn = rightBoxes.append("span").attr("class","showHelpIn fa fa-question-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.Help }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
-        .on("click",      function(){
-          this.tipsy.hide();
-          if(typeof helpin !== 'undefined'){
-            me.panel_overlay.attr("show","help");
-            helpin.initDOM();
-          }
+        .on("click",      function(){ this.tipsy.hide();
+          if(typeof helpin !== 'undefined') helpin.initDOM(); else alert("We are working on offering you the best help soon.");
         });
 
       // Fullscreen
@@ -3727,13 +3723,9 @@ kshf.Browser.prototype = {
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.RemoveAllFilters }); })
         .on("mouseenter",function(){ this.tipsy.show(); })
         .on("mouseleave",function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          this.tipsy.hide();
-          me.clearFilters_All();
-        });
+        .on("click",     function(){ this.tipsy.hide(); me.clearFilters_All(); });
       this.DOM.filterClearAll.append("span").attr("class","title").html(
-        kshf.lang.cur.ShowAll+ " <i class='fa fa-filter' style='vertical-align: top'></i>");
-      //this.DOM.filterClearAll.append("div").attr("class","clearFilterButton allFilter").append("span").attr("class","fa");
+        "<i class='fa fa-filter' style='vertical-align: top'></i> "+kshf.lang.cur.ShowAll);
     },
     /* -- */
     insertDOM_Infobox: function(){
@@ -3779,16 +3771,8 @@ kshf.Browser.prototype = {
         this.DOM.kshfBackground = this.panel_overlay.append("div").attr("class","kshfBackground")
           .on("click",function(){
             var activePanel = this.parentNode.getAttribute("show");
-            if(activePanel==="answer"){
-              me.panel_overlay.select(".overlay_help").attr("attention",true);
-              me.panel_overlay.select(".overlay_answer").attr("attention",true);
-              setTimeout(function(){ 
-                me.panel_overlay.select(".overlay_help").attr("attention",false);
-                me.panel_overlay.select(".overlay_answer").attr("attention",false);
-              }, 1200);
-            } else if(activePanel!=="loading" && activePanel!=="none" && activePanel !== "source"){
+            if(activePanel==="recordDetails" || activePanel==="infobox" || activePanel==="help-browse")
               me.panel_overlay.attr("show","none");
-            }
           });
 
         // LOADING BOX
@@ -3823,7 +3807,7 @@ kshf.Browser.prototype = {
         // HELP
         this.panel_overlay.append("span").attr("class","overlay_content overlay_help");
         // ANSWER
-        this.panel_overlay.append("span").attr("class","overlay_content overlay_answer");
+        this.panel_overlay.append("span").attr("class","overlay_answer");
     },
     /** -- */
     insertSourceBox: function(){
@@ -4906,7 +4890,7 @@ kshf.Browser.prototype = {
       this.refresh_ActiveRecordCount();
     },
     /** -- */
-    updateAfterFilter: function () {
+    updateAfterFilter: function(){
       kshf.browser = this;
       this.clearSelect_Compare('A',true);
       this.clearSelect_Compare('B',true);
@@ -4915,10 +4899,13 @@ kshf.Browser.prototype = {
       this.recordDisplay.updateAfterFilter();
     },
     /** -- */
+    isFiltered: function(){
+      return this.filters.filter(function(filter){ return filter.isFiltered; }).length > 0;
+    },
+    /** -- */
     refresh_filterClearAll: function(){
-      var x = this.filters.filter(function(filter){ return filter.isFiltered; });
-      this.DOM.filterClearAll.attr("active", x.length>0);
-      this.DOM.saveSelection.attr("active", x.length>0);
+      this.DOM.filterClearAll.attr("active", this.isFiltered());
+      this.DOM.saveSelection.attr("active", this.isFiltered());
     },
     /** Ratio mode is when glyphs scale to their max */
     setScaleMode: function(how){
@@ -5812,13 +5799,17 @@ kshf.Summary_Base.prototype = {
   },
   /** -- */
   insertRoot: function(beforeDOM){
+    var me=this;
     this.DOM.root = this.panel.DOM.root.insert("div", function(){ return beforeDOM; });
     this.DOM.root
       .attr("class","kshfSummary")
       .attr("summary_id",this.summaryID)
       .attr("collapsed",this.collapsed)
       .attr("filtered",false)
-      .attr("showConfig",false);
+      .attr("showConfig",false)
+      .each(function(){
+        this.__data__ = me;
+      });
   },
   /** -- */
   insertHeader: function(){
@@ -5924,17 +5915,12 @@ kshf.Summary_Base.prototype = {
       .attr("edittitle",false)
       .on("click",function(){ if(me.collapsed) me.setCollapsedAndLayout(false); });
 
-    this.DOM.clearFilterButton = this.DOM.summaryName.append("span").attr("class","chartFilterButtonParent").append("div")
-      .attr("class","clearFilterButton rowFilter inSummary")
-      .each(function(d){
-        this.tipsy = new Tipsy(this, {
-          gravity: function(){ return me.panelOrder!==0?'s':'n'; }, title: kshf.lang.cur.RemoveFilter
-        });
-      })
+    this.DOM.clearFilterButton = this.DOM.summaryName.append("div")
+      .attr("class","clearFilterButton fa")
+      .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.RemoveFilter }); })
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",      function(){ this.tipsy.hide(); me.summaryFilter.clearFilter(); });
-    this.DOM.clearFilterButton.append("span").attr("class","fa");
 
     this.DOM.summaryName_text = this.DOM.summaryName.append("span").attr("class","summaryName_text editableText")
       .attr("contenteditable",false)
@@ -5988,7 +5974,17 @@ kshf.Summary_Base.prototype = {
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",      function(){ this.tipsy.hide();
-        me.DOM.root.attr("showConfig",me.DOM.root.attr("showConfig")==="false");
+        var open = me.DOM.root.attr("showConfig")==="false";
+        if(open){
+          if(me.browser.summaryWithOpenConfig){
+            // Close the open summary
+            me.browser.summaryWithOpenConfig.DOM.root.attr("showConfig",false);
+          }
+          me.browser.summaryWithOpenConfig = me;
+        } else {
+          me.browser.summaryWithOpenConfig = undefined;
+        }
+        me.DOM.root.attr("showConfig",open);
       });
 
     this.DOM.setMatrixButton = this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
@@ -6032,16 +6028,14 @@ kshf.Summary_Base.prototype = {
       });
 
     this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
-      .attr("class","summaryDescription fa fa-info-circle")
+      .attr("class","summaryDescription fa fa-info")
       .each(function(){  this.tipsy = new Tipsy(this, { gravity:'ne', title:function(){return me.description;} }); })
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); });
-
     this.setDescription(this.description);
 
     this.DOM.summaryConfig = this.DOM.root.append("div").attr("class","summaryConfig");
-
-    this.DOM.wrapper = this.DOM.root.append("div").attr("class","wrapper");
+    this.DOM.wrapper       = this.DOM.root.append("div").attr("class","wrapper");
 
     this.insertDOM_EmptyAggr();
   },
@@ -6049,7 +6043,7 @@ kshf.Summary_Base.prototype = {
   setDescription: function(description){
     this.description = description;
     if(this.DOM.summaryDescription===undefined) return;
-    this.DOM.summaryDescription.style("display",this.description===undefined?null:"inline");
+    this.DOM.summaryDescription.style("display",this.description===undefined?null:"inline-block");
   },
   /** -- Shared - Summary Base -- */
   insertChartAxis_Measure: function(dom, pos1, pos2){
@@ -6124,7 +6118,7 @@ kshf.Summary_Base.prototype = {
   /** -- */
   insertDOM_EmptyAggr: function(){
     var me = this;
-    this.DOM.missingValueAggr = this.DOM.wrapper.append("span").attr("class","missingValueAggr fa fa-ban")
+    this.DOM.missingValueAggr = this.DOM.wrapper.append("span").attr("class","missingValueAggr aggrGlyph fa fa-ban")
       .each(function(){
         me.missingValueAggr.DOM.aggrGlyph = this;
         this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){ 
@@ -9283,7 +9277,7 @@ var Summary_Interval_functions = {
 
         [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
           this.DOM.quantile[distr+qb[0]+"_"+qb[1]] = parent.append("span")
-            .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1])
+            .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1]+" aggrGlyph")
             .each(function(){
               this.tipsy = new Tipsy(this, {
                 gravity: 's',
@@ -9903,17 +9897,11 @@ var Summary_Interval_functions = {
         .on("click",function(aggr){ me.onAggrClick(aggr); });
 
       ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
-        newBins.append("span").attr("class","measure_"+m)
-          .on("mouseover" ,function(){ 
-            me.browser.refreshMeasureLabels(this.classList[0].substr(8));
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-          })
-          .on("mouseleave",function(){ 
-            me.browser.refreshMeasureLabels(); 
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-          });
+        var X = newBins.append("span").attr("class","measure_"+m);
+        if(m!=="Total" && m!=="Active" && m!=="Highlight"){
+          X.on("mouseenter" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); });
+          X.on("mouseleave", function(){ me.browser.refreshMeasureLabels("Active"); });
+        }
       });
 
       newBins.append("span").attr("class","total_tip");
@@ -10082,10 +10070,9 @@ var Summary_Interval_functions = {
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: "s", title: kshf.lang.cur.DragToFilter }); })
         // TODO: The problem is, the x-position (left-right) of the tooltip is not correctly calculated
         // because the size of the bar is set by scaling, not through width....
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
-        .on("mousedown", function(){
-          this.tipsy.hide();
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("mousedown",  function(){ this.tipsy.hide();
           if(d3.event.which !== 1) return; // only respond to left-click
           if(me.scaleType==='time') return; // time is not supported for now.
 
@@ -10146,23 +10133,26 @@ var Summary_Interval_functions = {
           d3.event.stopPropagation();
         });
 
-      var XYZ = controlLine.selectAll(".handle").data(['min','max']).enter()
-        .append("span").attr("class",function(d){ return "handle "+d; })
+      this.DOM.rangeHandle = controlLine.selectAll(".rangeHandle").data(['min','max']).enter()
+        .append("span").attr("class",function(d){ return "rangeHandle "+d; })
         .each(function(d,i){
           this.tipsy = new Tipsy(this, { gravity: i==0?"w":"e", title: kshf.lang.cur.DragToFilter });
         })
-        .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
-        .on("mouseout" ,function(){ this.tipsy.hide(); })
+        .on("mouseenter", function(){ if(!this.dragging){ this.tipsy.show(); this.setAttribute("dragging",true);} })
+        .on("mouseleave", function(){ if(!this.dragging){ 
+          this.tipsy.hide(); this.removeAttribute("dragging");
+        } })
         .on("mousedown", function(d,i){
           this.tipsy.hide();
           if(d3.event.which !== 1) return; // only respond to left-click
 
           me.browser.DOM.root.attr("adjustWidth",true).attr("pointerEvents",false);
+          this.setAttribute("dragging",true);
 
           var mee = this;
+          mee.dragging = true;
           var e=this.parentNode;
           d3.select("body").on("mousemove", function() {
-            mee.dragging = true;
             var targetPos = me.valueScale.invert(d3.mouse(e)[0]);
             me.summaryFilter.active[d] = targetPos;
             // Swap is min > max
@@ -10186,13 +10176,13 @@ var Summary_Interval_functions = {
             },200);
           }).on("mouseup", function(){
             mee.dragging = false;
+            mee.removeAttribute("dragging");
             me.browser.DOM.root.attr("adjustWidth",null).attr("pointerEvents",true);;
             d3.select("body").style('cursor','auto').on("mousemove",null).on("mouseup",null);
           });
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
-      this.DOM.rangeLimitOnChart = XYZ.append("span").attr("class","rangeLimitOnChart");
 
       this.DOM.recordValue = controlLine.append("div").attr("class","recordValue");
       this.DOM.recordValue.append("span").attr("class","recordValueScaleMark");
@@ -10618,7 +10608,7 @@ var Summary_Interval_functions = {
           //kshf.Util.setTransform(this,"translateX("+minPos+"px) scaleX("+(maxPos-minPos)+")");
           // Rendering update slowdown if the above translation is used. Weird...
         });
-      this.DOM.intervalSlider.selectAll(".handle")
+      this.DOM.intervalSlider.selectAll(".rangeHandle")
         .each(function(d){ kshf.Util.setTransform(this,"translateX("+((d==="min")?minPos:maxPos)+"px)"); });
     },
     /** -- */
@@ -10669,8 +10659,8 @@ var Summary_Interval_functions = {
       this.refreshHeight();
 
       this.DOM.labelGroup.style("height",this.height_labels+"px");
-      this.DOM.rangeLimitOnChart.style({
-        height: ( this.height_hist+13)+"px",
+      this.DOM.rangeHandle.style({
+        height: ( this.height_hist+23)+"px",
         top:    (-this.height_hist-13)+"px" });
       this.DOM.highlightRangeLimits.style("height",this.height_hist+"px");
     },

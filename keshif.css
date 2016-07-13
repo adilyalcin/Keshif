@@ -127,7 +127,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf[noanim=false] .controlLine > .handle {
+.kshf[noanim=false] .controlLine > .rangeHandle {
   -webkit-transition: -webkit-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -moz-transition: -moz-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
@@ -257,9 +257,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[percentLabelMode] .measurePercentControl::after {
   content: "%";
 }
-.kshf[percentLabelMode] .measurePercentControl[highlight="true"]::after {
-  content: '#';
-}
 .kshf[percentLabelMode] .chartAxis_Measure > .tick > .text:after {
   content: "%";
 }
@@ -319,13 +316,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[selectCompare_C] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C {
   display: block;
 }
-.kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:before {
+.kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .useForRecordDisplay:before {
   content: "\f0dc";
 }
-.kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:hover {
-  color: orangered;
+.kshf[recordDisplayMapping="sort"] .kshfSummary[summary_type="interval"] .useForRecordDisplay:hover {
+  color: #cb5454;
 }
-.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"] .useForRecordDisplay {
   position: relative;
   margin: 0;
   border: solid 1px white;
@@ -337,7 +334,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-size: 50% 50%;
   transition: 1s;
 }
-.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"] .headerGroup .summaryIcons > .useForRecordDisplay:hover {
+.kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"] .useForRecordDisplay:hover {
   transform: rotate(360deg);
 }
 .kshf[recordDisplayMapping="color"] .kshfSummary[summary_type="interval"][usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar {
@@ -431,7 +428,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   cursor: pointer;
 }
 .kshf .sortButton:hover {
-  color: #ff4500;
+  color: #cb5454;
 }
 .kshf .sortButton:before {
   content: "\f161";
@@ -1127,13 +1124,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb {
   display: inline-block;
   position: relative;
-  cursor: pointer;
-  color: #252112;
-  font-weight: 300;
-  background-color: rgba(255, 255, 255, 0.5);
   margin-right: 4px;
   margin-top: 1px;
+  cursor: pointer;
   max-width: 0px;
+  color: #252112;
+  background-color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
   -webkit-transition: all 250ms linear;
   -moz-transition: all 250ms linear;
   -o-transition: all 250ms linear;
@@ -1144,7 +1141,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   white-space: nowrap;
   overflow: hidden;
-  margin-left: 15px;
+  margin-left: 16px;
   margin-right: 1px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb > .crumbText > .crumbHeader {
@@ -1161,11 +1158,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-weight: 300;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb > .clearCrumbButton {
-  width: 14px;
+  width: 15px;
   height: 100%;
   position: absolute;
   pointer-events: none;
-  font-size: 11px;
+  font-size: 1em;
   padding: 1px;
   left: 0px;
   text-align: center;
@@ -1185,31 +1182,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   max-width: 0px;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter {
-  border: solid 1px #788D9B;
+  border: solid 1px #788d9b;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton {
-  background-color: #788D9B;
+  background-color: #788d9b;
   font-size: 1em;
-  padding: 0px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton > .fa:before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Filter > .clearCrumbButton::before {
   content: "\f0b0";
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight {
-  border: solid 1px orangered;
+  border: solid 1px #ff4500;
 }
 .kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight > .clearCrumbButton {
-  background-color: orangered;
+  background-color: #ff4500;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb.crumbMode_Highlight > .clearCrumbButton::before {
   content: "\f245";
   position: relative;
   top: 1px;
   left: 1px;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compare'] > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb[class*='crumbMode_Compare'] > .clearCrumbButton::before {
   content: "\f023";
-  font-size: 1.1em;
   position: relative;
   top: 1px;
 }
@@ -1238,7 +1233,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .breadcrumbs > .crumb:hover > .crumbText {
   text-decoration: line-through;
 }
-.kshf .panel_Basic > .breadcrumbs > .crumb:hover > .clearCrumbButton > .fa::before {
+.kshf .panel_Basic > .breadcrumbs > .crumb:hover > .clearCrumbButton::before {
   content: "\f00d";
 }
 .kshf .panel_Basic > .filterClearAll {
@@ -1281,6 +1276,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .rightBoxes > .fa:hover {
   color: #cb5454;
+}
+.kshf .panel_Basic > .rightBoxes > .showHelpIn {
+  -webkit-animation: helpInFlip 3s infinite ease-in-out;
+  -moz-animation: helpInFlip 3s infinite ease-in-out;
+  -o-animation: helpInFlip 3s infinite ease-in-out;
+  animation: helpInFlip 3s infinite ease-in-out;
 }
 .kshf .panel_Basic > .rightBoxes > .authorButton {
   display: inline-block;
@@ -1529,6 +1530,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-style: dashed;
   display: block;
 }
+.kshf .panel > .panelAdjustWidth[helpin] {
+  display: block;
+}
 .kshf .panel.panel_bottom {
   display: -webkit-box;
   display: -moz-box;
@@ -1665,13 +1669,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 100%;
   z-index: -2;
   background-color: black;
-  opacity: 0.7;
+  opacity: 0;
   position: absolute;
   -webkit-transition: opacity 0.5s;
   -moz-transition: opacity 0.5s;
   -o-transition: opacity 0.5s;
   transition: opacity 0.5s;
   border-radius: 5px;
+  pointer-events: none;
 }
 .kshf .panel.panel_overlay > .overlay_content {
   display: none;
@@ -2021,19 +2026,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay[show="none"] {
   pointer-events: none;
 }
-.kshf .panel.panel_overlay[show="none"] > .kshfBackground {
-  opacity: 0;
-}
 .kshf .panel.panel_overlay[show="loading"] > .overlay_loading {
   display: inline-block;
+}
+.kshf .panel.panel_overlay[show="loading"] > .kshfBackground {
+  opacity: 0.7;
+  pointer-events: all;
 }
 .kshf .panel.panel_overlay[show="infobox"] > .overlay_infobox {
   display: inline-block;
 }
+.kshf .panel.panel_overlay[show="infobox"] > .kshfBackground {
+  opacity: 0.7;
+  pointer-events: all;
+}
 .kshf .panel.panel_overlay[show="source"] > .overlay_source {
   display: inline-block;
 }
-.kshf .panel.panel_overlay[show="help"] > .overlay_help {
+.kshf .panel.panel_overlay[show="source"] > .kshfBackground {
+  opacity: 0.7;
+  pointer-events: all;
+}
+.kshf .panel.panel_overlay[show="help-browse"] > .kshfBackground {
+  opacity: 0.7;
+  pointer-events: all;
+}
+.kshf .panel.panel_overlay[show="help-browse"] > .overlay_help {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+.kshf .panel.panel_overlay[show="help-pointnlearn"] > .overlay_help {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2050,8 +2075,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel.panel_overlay[show="answer"] > .overlay_answer {
   display: block;
 }
-.kshf .panel.panel_overlay[show="answer"] > .kshfBackground {
-  opacity: 0.3;
+.kshf .panel.panel_overlay[show="recordDetails"] > .kshfBackground {
+  opacity: 0.7;
+  pointer-events: all;
 }
 .kshf .panel.panel_overlay[show="recordDetails"] > .overlay_recordDetails {
   -webkit-animation: recordDetails 500ms forwards;
@@ -2089,43 +2115,37 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   right: 1px;
 }
 .kshf .clearFilterButton {
-  width: 14px;
-  height: 100%;
   display: inline-block;
-  cursor: pointer;
+  opacity: 0;
+  background-color: #788d9b;
+  border: solid 1px #788d9b;
+  color: white;
+  height: 16px;
+  width: 16px;
+  line-height: 14px;
+  position: relative;
+  vertical-align: top;
+  font-size: 0.8em;
   font-weight: 700;
   font-size: 11px;
   text-align: center;
-  -webkit-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  -moz-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  -o-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  background-color: #788D9B;
-  border: solid 1px #788D9B;
-  color: white;
+  pointer-events: none;
+  cursor: pointer;
+  -webkit-transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
+  -moz-transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
+  -o-transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
+  transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
 }
-.kshf .clearFilterButton > .fa::before {
+.kshf .clearFilterButton:before {
   content: "\f0b0";
 }
 .kshf .clearFilterButton:hover {
   background-color: white;
-  color: #788D9B;
+  color: #cb5454;
+  border-color: #cb5454;
 }
-.kshf .clearFilterButton:hover > .fa:before {
+.kshf .clearFilterButton:hover:before {
   content: "\f00d";
-}
-.kshf .clearFilterButton.inSummary {
-  display: none;
-  vertical-align: top;
-  pointer-events: all;
-  margin-top: 1px;
-  font-size: 0.8em;
-}
-.kshf .clearFilterButton.allFilter {
-  display: inline-block;
-  vertical-align: top;
-  border-width: 0px 0px 0px 1px;
-  line-height: 16px;
 }
 .kshf .measurePercentControl {
   pointer-events: all;
@@ -2148,12 +2168,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: '#';
 }
 .kshf[measurePercentControl] .measurePercentControl {
-  color: orangered;
+  color: #cb5454;
   background-color: #d3d9c5;
   border: solid 1px #99ab92;
 }
 .kshf[measurePercentControl] .measurePercentControl:after {
   content: '%';
+}
+.kshf[measurePercentControl][percentLabelMode] .measurePercentControl::after {
+  content: "%";
 }
 .kshf .chartAxis_Measure {
   pointer-events: none;
@@ -2275,21 +2298,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup .save_filter_as_set:hover {
   color: black;
 }
-.kshf .headerGroup .clearFilterButton.rowFilter {
-  pointer-events: all;
-  height: 16px;
-  width: 16px;
-  line-height: 14px;
-  top: -1px;
-  position: relative;
-}
-.kshf .headerGroup .summaryIcons {
+.kshf .headerGroup > .summaryIcons {
   top: 3px;
   right: 2px;
   position: absolute;
   font-size: 0.9em;
 }
-.kshf .headerGroup .summaryIcons > .fa {
+.kshf .headerGroup > .summaryIcons > .fa {
   display: none;
   color: gray;
   cursor: pointer;
@@ -2300,43 +2315,46 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
-.kshf .headerGroup .summaryIcons > .fa:hover {
-  color: orangered;
+.kshf .headerGroup > .summaryIcons > .fa:hover {
+  color: #cb5454;
 }
-.kshf .headerGroup .summaryIcons > .fa[helpin] {
+.kshf .headerGroup > .summaryIcons > .fa[helpin] {
   opacity: 1;
 }
-.kshf .headerGroup .summaryIcons > .summaryConfigControl {
+.kshf .headerGroup > .summaryIcons > .summaryConfigControl {
   display: inline-block;
   color: gray;
   opacity: 0;
+  pointer-events: none;
 }
-.kshf .headerGroup .summaryIcons > .summaryDescription {
+.kshf .headerGroup > .summaryIcons > .summaryDescription {
   cursor: default;
+  width: 10px;
 }
-.kshf .headerGroup .summaryIcons > .summaryDescription:hover {
+.kshf .headerGroup > .summaryIcons > .summaryDescription:hover {
   color: black;
 }
-.kshf .headerGroup .summaryIcons > .summaryViewAs {
+.kshf .headerGroup > .summaryIcons > .summaryViewAs {
   width: 15px;
   text-align: center;
 }
-.kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="map"]:before {
+.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:before {
   content: "\f0ca";
 }
-.kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="map"]:hover:before {
+.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:hover:before {
   content: "\f0ac";
 }
-.kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="list"]:before {
+.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:before {
   content: "\f0ac";
 }
-.kshf .headerGroup .summaryIcons > .summaryViewAs[viewAs="list"]:hover:before {
+.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:hover:before {
   content: "\f0ca";
 }
-.kshf .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf .headerGroup > .summaryIcons > .useForRecordDisplay {
   opacity: 0;
+  pointer-events: none;
 }
-.kshf .headerGroup .summaryIcons > .setMatrixButton[helpin] {
+.kshf .headerGroup > .summaryIcons > .setMatrixButton[helpin] {
   display: inline-block;
 }
 .kshf .headerGroup > .header_display_control {
@@ -2345,10 +2363,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.9em;
   top: 3px;
   left: 2px;
-  -webkit-transition: color 250ms linear, opacity 100ms linear ;
-  -moz-transition: color 250ms linear, opacity 100ms linear ;
-  -o-transition: color 250ms linear, opacity 100ms linear ;
-  transition: color 250ms linear, opacity 100ms linear ;
+  -webkit-transition: color 250ms linear, opacity 100ms linear;
+  -moz-transition: color 250ms linear, opacity 100ms linear;
+  -o-transition: color 250ms linear, opacity 100ms linear;
+  transition: color 250ms linear, opacity 100ms linear;
   -webkit-transform-origin: 50% 50%;
   -moz-transform-origin: 50% 50%;
   -ms-transform-origin: 50% 50%;
@@ -2366,13 +2384,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 14px;
   width: 13px;
   height: 13px;
-  -webkit-transition: color 250ms linear, opacity 500ms linear ;
-  -moz-transition: color 250ms linear, opacity 500ms linear ;
-  -o-transition: color 250ms linear, opacity 500ms linear ;
-  transition: color 250ms linear, opacity 500ms linear ;
+  -webkit-transition: color 250ms linear, opacity 500ms linear;
+  -moz-transition: color 250ms linear, opacity 500ms linear;
+  -o-transition: color 250ms linear, opacity 500ms linear;
+  transition: color 250ms linear, opacity 500ms linear;
 }
 .kshf .headerGroup > .header_display_control > .fa:hover {
-  color: orangered;
+  color: #cb5454;
 }
 .kshf .headerGroup > .header_display_control > .fa[helpin] {
   opacity: 1;
@@ -2747,26 +2765,30 @@ top:calc(50% - 5px);
   display: none;
   vertical-align: top;
   width: 18px;
-  cursor: pointer;
   font-weight: 700;
-}
-.kshf div.kshfRecord > .recordToggleDetail > .item_details_toggle {
-  padding: 0px;
+  text-align: center;
   color: gray;
-  position: relative;
-  -webkit-transition: -webkit-transform 500ms;
-  -moz-transition: -moz-transform 500ms;
-  -o-transition: -o-transform 500ms;
-  transition: -webkit-transform 500ms,-moz-transform 500ms,-o-transform 500ms,transform 500ms;
+  cursor: pointer;
+  -webkit-transform-origin: 9px 9px;
+  -moz-transform-origin: 9px 9px;
+  -ms-transform-origin: 9px 9px;
+  -o-transform-origin: 9px 9px;
+  transform-origin: 9px 9px;
+  -webkit-transition: color 200ms linear, -webkit-transform 500ms ease-in-out;
+  -moz-transition: color 200ms linear, -moz-transform 500ms ease-in-out;
+  -o-transition: color 200ms linear, -o-transform 500ms ease-in-out;
+  transition: color 200ms linear,-webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out;
 }
-.kshf div.kshfRecord > .recordToggleDetail > .item_details_toggle:hover {
-  color: orangered;
+.kshf div.kshfRecord > .recordToggleDetail:hover {
+  color: #cb5454;
+}
+.kshf div.kshfRecord .item_details {
+  display: none;
 }
 .kshf div.kshfRecord[details="true"] {
   max-height: none;
 }
-.kshf div.kshfRecord[details="true"] .item_details_toggle {
-  display: inline-block;
+.kshf div.kshfRecord[details="true"] > .recordToggleDetail {
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
@@ -2775,12 +2797,6 @@ top:calc(50% - 5px);
 }
 .kshf div.kshfRecord[details="true"] .item_details {
   display: block;
-}
-.kshf div.kshfRecord[details="false"] .item_details_toggle {
-  display: inline-block;
-}
-.kshf div.kshfRecord[details="false"] .item_details {
-  display: none;
 }
 .kshf div.kshfRecord[selection^="onRecord"] {
   padding: 0px;
@@ -2948,7 +2964,12 @@ top:calc(50% - 5px);
   z-index: 120;
   color: gray;
   pointer-events: none;
-  display: none;
+  display: block;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
 }
 .kshf .percentileGroup[percentileChartVisible="Basic"] > .percentileChart_Active > .quantile {
   height: 11px;
@@ -2957,7 +2978,7 @@ top:calc(50% - 5px);
   height: 28px;
 }
 .kshf .percentileGroup:hover > .percentileTitle {
-  display: block;
+  opacity: 1;
 }
 .kshf *[class^="percentileChart"] {
   -webkit-box-flex: 1;
@@ -3174,7 +3195,7 @@ top:calc(50% - 5px);
   transition: opacity 200ms linear;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton:hover {
-  color: #ff4500;
+  color: #cb5454;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .catSortButton:before {
   content: "\f161";
@@ -3760,46 +3781,70 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active:hover {
   background-color: orangered !important;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle {
+  position: absolute;
+  cursor: col-resize;
+  z-index: 10;
+  top: 1px;
+  width: 5px;
+  pointer-events: none;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle::before {
+  content: "";
+  display: block;
   position: absolute;
   width: 6px;
   height: 8px;
+  bottom: 0px;
   background-color: white;
   border-width: 1px;
   border-color: black;
   border-style: solid;
+  pointer-events: all;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle::after {
+  content: "";
+  position: absolute;
+  display: none;
+  width: 5px;
+  -lh-property: 0;
+height:-webkit-calc(100% - 10px);
+height:-moz-calc(100% - 10px);
+height:calc(100% - 10px);
+;
   cursor: col-resize;
-  z-index: 10;
-  top: 1px;
+  box-shadow: 0px 0px 2px white, 0px 0px 4px white;
+  border-style: dotted;
+  border-width: 0px;
+  border-color: #30b8c4;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle:hover:after {
   background-color: orangered !important;
+  border-color: orangered !important;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.min {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle:hover:before {
+  border-color: orangered !important;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle.min {
   left: -5px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle.min:before {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.min > .rangeLimitOnChart {
-  left: 3px;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle.min:after {
+  border-right-width: 2px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.max {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle.max:before {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle.max > .rangeLimitOnChart {
-  left: -2px;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle.max:after {
+  border-left-width: 2px;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart {
-  position: absolute;
-  display: none;
-  width: 2px;
-  border-left: dotted 2px #30b8c4;
-  cursor: col-resize;
-  box-shadow: 0px 0px 2px white, 0px 0px 4px white;
-}
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .handle > .rangeLimitOnChart:hover {
-  border-left: solid 2px #30b8c4;
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle[dragging]:after {
+  border-style: solid;
+  background-color: #30b8c4;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup {
   cursor: default;
@@ -3877,9 +3922,13 @@ top:calc(50% - 8px);
   display: none;
 }
 .kshf .kshfSummary[filtered=true] > .headerGroup .clearFilterButton {
-  display: inline-block;
+  opacity: 1;
+  pointer-events: all;
 }
-.kshf .kshfSummary[filtered=true] .rangeLimitOnChart {
+.kshf .kshfSummary[filtered=true] .rangeHandle {
+  pointer-events: all !important;
+}
+.kshf .kshfSummary[filtered=true] .rangeHandle:after {
   display: block !important;
 }
 .kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
@@ -3907,9 +3956,6 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[isMultiValued=true]:hover .setMatrixButton {
   display: inline-block !important;
 }
-.kshf .kshfSummary[filtered_range=true] .clearFilterButton.rangeFilter {
-  display: inline-block;
-}
 .kshf .kshfSummary:hover > .headerGroup {
   box-shadow: 0px 0px 2px #646464, 0px 0px 5px #999;
 }
@@ -3922,8 +3968,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[hasMap="true"][collapsed="false"] .summaryViewAs {
   display: inline-block;
 }
-.kshf .kshfSummary[usedForSorting="true"] .headerGroup .summaryIcons > .useForRecordDisplay {
+.kshf .kshfSummary[usedForSorting="true"] .headerGroup > .summaryIcons > .useForRecordDisplay {
   opacity: 1;
+  pointer-events: all;
   color: black;
 }
 .kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
@@ -3957,17 +4004,20 @@ top:calc(50% - 8px);
 .kshf .kshfSummary[viewType="line"] .summaryConfig_UnitName {
   display: none;
 }
-.kshf .kshfSummary[summary_type='interval'] .headerGroup .summaryIcons > .useForRecordDisplay {
-  display: inline-block;
+.kshf .kshfSummary[summary_type='interval'] .useForRecordDisplay {
+  display: inline-block !important;
 }
-.kshf .kshfSummary[summary_type='interval']:hover .headerGroup .summaryIcons > .useForRecordDisplay {
-  opacity: 1;
+.kshf .kshfSummary[summary_type='interval']:hover .useForRecordDisplay {
+  opacity: 1 !important;
+  pointer-events: all !important;
 }
 .kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
   opacity: 1 !important;
+  pointer-events: all !important;
 }
 .kshf .kshfSummary[collapsed=false][summary_type='categorical'][viewType='list']:hover .summaryConfigControl {
   opacity: 1 !important;
+  pointer-events: all !important;
 }
 .kshf .kshfSummary[collapsed=false] > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand {
   display: inline-block !important;
@@ -3979,8 +4029,11 @@ top:calc(50% - 8px);
 }
 .kshf .kshfSummary[showConfig=true] .summaryConfigControl {
   opacity: 1 !important;
+  pointer-events: all !important;
   color: black !important;
   -webkit-animation: fa-spin 4s infinite linear;
+  -moz-animation: fa-spin 4s infinite linear;
+  -o-animation: fa-spin 4s infinite linear;
   animation: fa-spin 4s infinite linear;
 }
 .kshf .kshfSummary.setPairSummary {
@@ -4701,8 +4754,7 @@ top:calc(50% - 8px);
   padding-right: 2px;
 }
 .kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .recordToggleDetail {
-  width: 18px;
-  text-align: center;
+  padding-top: 1px;
 }
 .kshf .recordDisplay[displayType="list"][hasrecordview="true"] .kshfRecord > .content {
   -webkit-box-flex: 1;
@@ -4714,13 +4766,13 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .recordDisplay[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
+.kshf .recordDisplay[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail:before {
   content: "\f05a";
 }
 .kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail {
   display: inline-block;
 }
-.kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail > .item_details_toggle:before {
+.kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail:before {
   content: "\f078";
 }
 .kshf .recordDisplay[hasRecordView="false"] > .recordDisplayHeader {
@@ -4751,7 +4803,7 @@ top:calc(50% - 8px);
 .kshf .recordDisplay[hasRecordView="true"] > .dropZone_recordView {
   position: absolute;
 }
-.kshf .recordDisplay:hover > .recordDisplayHeader > .sortColumn {
+.kshf .recordDisplay:hover > .recordDisplayHeader > .recordSortButton {
   opacity: 1;
   pointer-events: all;
 }
@@ -5090,7 +5142,7 @@ top:calc(50% - 8px);
   width: 100%;
   bottom: 0px;
 }
-.kshf .recordDisplayHeader > .sortColumn {
+.kshf .recordDisplayHeader > .recordSortButton {
   opacity: 0;
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
@@ -5106,12 +5158,18 @@ top:calc(50% - 8px);
   -o-transition: opacity 250ms linear;
   transition: opacity 250ms linear;
 }
+.kshf .recordDisplayHeader > .recordSortButton[helpin] {
+  opacity: 1;
+}
 .kshf .recordDisplayHeader > .buttonRecordViewRemove {
   display: none;
   cursor: pointer;
 }
 .kshf .recordDisplayHeader > .buttonRecordViewRemove:hover {
   color: orangered;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewRemove[helpin] {
+  display: inline-block;
 }
 .kshf .recordDisplayHeader > .scrollToTop {
   padding-top: 2px;
@@ -5189,8 +5247,7 @@ top:calc(50% - 8px);
 }
 .kshf .recordDisplayHeader > .recordTextSearch > .searchIcon {
   display: none;
-  font-size: 0.8em;
-  padding-left: 1px;
+  font-size: 0.9em;
   color: #cb5454;
 }
 .kshf .recordDisplayHeader > .recordTextSearch > .clearSearchText {
@@ -5375,50 +5432,19 @@ top:calc(50% - 8px);
     background-color: #fa7746;
   }
 }
-@-webkit-keyframes mapPreviewAnimation {
-  0% {
-    opacity: 0;
-  }
-  90%,
-  100% {
-    opacity: 1;
-  }
+lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes mapPreviewAnimation{ 0% { opacity: 0; } 90%, 100% { opacity: 1; }}
+@-moz-keyframes mapPreviewAnimation{ 0% { opacity: 0; } 90%, 100% { opacity: 1; }}
+@-o-keyframes mapPreviewAnimation{ 0% { opacity: 0; } 90%, 100% { opacity: 1; }}
+@keyframes mapPreviewAnimation{ 0% { opacity: 0; } 90%, 100% { opacity: 1; };
 }
-@-moz-keyframes mapPreviewAnimation {
-  0% {
-    opacity: 0;
-  }
-  90%,
-  100% {
-    opacity: 1;
-  }
-}
-@-ms-keyframes mapPreviewAnimation {
-  0% {
-    opacity: 0;
-  }
-  90%,
-  100% {
-    opacity: 1;
-  }
-}
-@-o-keyframes mapPreviewAnimation {
-  0% {
-    opacity: 0;
-  }
-  90%,
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes mapPreviewAnimation {
-  0% {
-    opacity: 0;
-  }
-  90%,
-  100% {
-    opacity: 1;
-  }
+lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes helpInFlip{ 0%, 60%, 90%{ -webkit-transform: scale(1); } 80%{ -webkit-transform: scale(-1, 1); }}
+@-moz-keyframes helpInFlip{ 0%, 60%, 90%{ -moz-transform: scale(1); } 80%{ -moz-transform: scale(-1, 1); }}
+@-o-keyframes helpInFlip{ 0%, 60%, 90%{ -o-transform: scale(1); } 80%{ -o-transform: scale(-1, 1); }}
+@keyframes helpInFlip{ 0%, 60%, 90%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); } 80%{-webkit-transform: scale(-1, 1);-moz-transform: scale(-1, 1);-ms-transform: scale(-1, 1);transform: scale(-1, 1); };
 }
 .tipsy {
   font-size: 10px;
