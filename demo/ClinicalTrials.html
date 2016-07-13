@@ -41,11 +41,13 @@ $(document).ready( function(){
       { name: "Interventions", catSplit: "|", panel: 'right', minAggrValue: 200},
       { name: "Start Date", timeFormat: "%b-%y", panel: 'middle' },
       { name: "Completion Date", timeFormat: "%b-%y", panel: 'middle' },
-      { name: "Enrollment", panel: 'middle', unitName: "ppl" },
+      { name: "Enrollment ", value: function(){ if(this.Enrollment>=1) return this.Enrollment; }, 
+        panel: 'middle', unitName: "ppl" },
       //{ name: "Sponsor/Collaborators", catSplit: "|", minAggrValue: 100},
     ],
     recordDisplay: {
       sortBy: "Enrollment",
+      sortColWidth: 70,
       recordView: "Title"
     }
   });
