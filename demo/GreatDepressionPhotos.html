@@ -4,7 +4,6 @@
     <title>Photos from the Great Depression, United States, California , 1936-1944</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
@@ -15,7 +14,7 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
-$(document).ready( function(){
+document.addEventListener("DOMContentLoaded", function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 170,
@@ -33,7 +32,8 @@ $(document).ready( function(){
       { name: "Category", value: "van0" },
       { name: "County", value: "county", panel: "right"},
       { name: "Year", value: "year", panel: "right"},
-      { name: "Month", value: function(){ if(this.month) return this.month-1;}, panel: "right", catSortBy: "id", catLabel: _demo.Month },
+      { name: "Month", value: function(){ if(this.month) return this.month-1;}, 
+        panel: "right", catSortBy: "id", catLabel: _demo.Month },
       { name: "Date", value: "date", timeFormat: "%Y-%m", panel: "bottom" },
     ],
     recordDisplay: {

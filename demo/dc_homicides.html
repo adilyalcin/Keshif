@@ -22,7 +22,8 @@
     <script type="text/javascript">
 
 var neighborhoodRegions = {};
-function dataLoad(browser){
+function dataLoad(){
+  var browser = this;
   $.ajax({
     //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
     url: "./data/dc_homicides.json",

@@ -14,7 +14,8 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
-function dataLoad(browser){
+function dataLoad(){
+  var browser = this;
   $.ajax( {
     // Cannot load remote resouce because it is in another domain
     // url:"http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/data/PivotViewer.xml",

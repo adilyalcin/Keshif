@@ -4,7 +4,6 @@
     <title>Database of Federal Crowdsourcing and Citizen Science Projects</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
@@ -18,8 +17,11 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
+    <script type="text/javascript" src="./helpin/helpin.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./helpin/helpin.css" type="text/css">
+
     <script type="text/javascript">
-$(document).ready( function() {
+document.addEventListener("DOMContentLoaded", function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 100,
@@ -31,10 +33,7 @@ $(document).ready( function() {
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'json',
       tables: "ccsinventory_wilsoncenter",
-      callback: function(){
-        US_States.loadGeo();
-        browser.loadCharts();
-      }
+      callback: function(){ US_States.loadGeo(this); }
     },
     summaries: [
       { name: "Project Topic", value: "project_topic", catSplit: ", " },

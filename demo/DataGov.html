@@ -4,7 +4,6 @@
     <title>Data.Gov Datasets</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
@@ -25,7 +24,7 @@
     curl http://catalog.data.gov/api/3/action/package_search?rows=2000&start=1000 -o 1.json
 */
 
-$(document).ready( function() {
+document.addEventListener("DOMContentLoaded", function(){
   var iconMapping = {
     "Local Government": "Local Government <i class='datagov-icon icon-local-government'></i>",
     "Climate": "Climate <i class='datagov-icon icon-climate'></i>",

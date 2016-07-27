@@ -4,7 +4,6 @@
     <title>Fatal Traffic Accidents, USA, 2013</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
@@ -19,7 +18,7 @@
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
-$(document).ready( function() {
+document.addEventListener("DOMContentLoaded", function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 120,
@@ -32,10 +31,7 @@ $(document).ready( function() {
       //dirPath: './data/',
       fileType: 'csv',
       tables: "TrafficAccidents2013",
-      callback: function(){
-        US_States.loadGeo();
-        browser.loadCharts();
-      }
+      callback: function(){ US_States.loadGeo(this); }
     },
     onLoad: function(){
       this.records.forEach(function(a){
@@ -75,10 +71,10 @@ $(document).ready( function() {
       })
     },
     summaries: [
-      { name: "State", value: "STATE", layout: "left", 
+      { name: "State", value: "STATE", viewAs: "map", panel: 'middle',
         catLabel: function(){ return US_States.index_id[this.id].name; },
         catMap: function(){ return US_States.index_id[this.id].geo; } },
-      { name: "Route", value: "ROUTE", layout: "left", 
+      { name: "Route", value: "ROUTE", panel: "left", 
         catLabel: {
           1: "Interstate",
           2: "U.S. Highway",
@@ -90,7 +86,7 @@ $(document).ready( function() {
           8: "Other",
           9: "Unknown",
         }},
-      { name: "Relation to Trafficway", value: "REL_ROAD", layout: "left",
+      { name: "Relation to Trafficway", value: "REL_ROAD", panel: "left",
         catLabel: {
           1: "On Roadway",
           2: "On Shoulder",
@@ -106,7 +102,7 @@ $(document).ready( function() {
           99: "Unknown",
         },
         description: "The location of the crash as it relates to its position within or outside the trafficway."},
-      { name: "Type of Intersection", value: "TYP_INT", layout: "left",
+      { name: "Type of Intersection", value: "TYP_INT", panel: "left",
         catLabel: {
           1: "Not an Intersection",
           2: "Four-Way Intersection",
@@ -125,8 +121,8 @@ $(document).ready( function() {
           1: "Yes",
           9: "Unknown",
         },
-        description: "This data element identifies whether this crash occurred on a trafficway that is part of the National Highway System.", layout: "left"},
-      { name: "Work Zone", value: "WRK_ZONE", layout: "left",
+        description: "This data element identifies whether this crash occurred on a trafficway that is part of the National Highway System.", panel: "left"},
+      { name: "Work Zone", value: "WRK_ZONE", panel: "left",
         catLabel: {
           0: "None",
           1: "Construction",
@@ -152,7 +148,7 @@ $(document).ready( function() {
           99: "Unknown",
         },
       description: "The functional classification of the trafficway on which the crash occurred."},
-      { name: "First Harmful Event", value: "HARM_EV", layout: "middle",
+      { name: "First Harmful Event", value: "HARM_EV", layout: "middle", collapsed: true,
         catLabel: {
           1 : "Rollover/Overturn",
           2 : "Fire/Explosion",
@@ -239,7 +235,7 @@ $(document).ready( function() {
           99: "Unknown",
         },
         description: "The prevailing atmospheric conditions that existed at the time of the crash"},
-      { name: "School Bus Related", value: "SCH_BUS", layout: "middle",
+      { name: "School Bus Related", value: "SCH_BUS", panel: "left",
         catLabel: {
           0: "No",
           1: "Yes",
@@ -249,15 +245,15 @@ $(document).ready( function() {
         
 
 
-      { name: "Number of Fatalities that Occurred in the Crash", value: "FATALS", layout: "right"},
-      { name: "Number of Persons in Motor Vehicles in Transport (MVIT)", value: "PERMVIT", layout: "right",
+      { name: "Number of Fatalities that Occurred in the Crash", value: "FATALS", panel: "right"},
+      { name: "Number of Persons in Motor Vehicles in Transport (MVIT)", value: "PERMVIT", panel: "right",
         description: "The number of motorists in the crash. A motorist is a driver, passenger or unknown occupant type of a motor vehicle in-transport."},
-      { name: "Number of Vehicles in Crash", value: "VE_TOTAL", layout: "right"},
-      { name: "Number of Drunk Drivers", value: "DRUNK_DR", layout: "right", collapsed: true,
+      { name: "Number of Vehicles in Crash", value: "VE_TOTAL", panel: "right"},
+      { name: "Number of Drunk Drivers", value: "DRUNK_DR", panel: "right", collapsed: true,
         description: "The number of drunk drivers involved in the fatal crash"},
-      { name: "Month", value: "MONTH", layout: "right", catSortBy: "id", catLabel: _demo.Month,
+      { name: "Month", value: "MONTH", panel: "right", catSortBy: "id", catLabel: _demo.Month,
         description: "The functional classification of the trafficway on which the crash occurred."},
-      { name: "Day of Week", value: "DAY_WEEK", layout: "right", catSortBy: "id",
+      { name: "Day of Week", value: "DAY_WEEK", panel: "right", catSortBy: "id",
         catLabel: {
           1: "Sunday",
           2: "Monday",
@@ -270,15 +266,15 @@ $(document).ready( function() {
           9: "?",
         },
         description: "The functional classification of the trafficway on which the crash occurred."},
-      { name: "Hour of the Day", value: "HOUR", layout: "right"},
+      { name: "Hour of the Day", value: "HOUR", panel: "right"},
       
 
 
 
-      { name: "Number of Parked/Working Vehicles in the Crash", value: "PVH_INVL", layout: "none"},
-      { name: "Number of Forms Submitted for Persons Not in Motor Vehicles", value: "PEDS", layout: "none",
+      { name: "Number of Parked/Working Vehicles in the Crash", value: "PVH_INVL", panel: "none"},
+      { name: "Number of Forms Submitted for Persons Not in Motor Vehicles", value: "PEDS", panel: "none",
         description: "This data element counts the number of Person Forms (Not a Motor Vehicle Occupant) that are applicable to this case (i.e., non-occupants)"},
-      { name: "Roadway Function Class", value: "ROAD_FNC", layout: "none",
+      { name: "Roadway Function Class", value: "ROAD_FNC", panel: "none",
         catLabel: {
           1: "Rural - Principal Arterial – Interstate",
           2: "Rural - Principal Arterial – Other",
@@ -297,7 +293,7 @@ $(document).ready( function() {
           99: "Unknown",
         },
         description: "The functional classification of the trafficway on which the crash occurred."},
-      { name: "Special Jurisdiction", value: "SP_JUR", layout: "none",
+      { name: "Special Jurisdiction", value: "SP_JUR", panel: "none",
         catLabel: {
           0: "No Special Jurisdiction",
           1: "National Park Service",
@@ -309,9 +305,9 @@ $(document).ready( function() {
           9: "Unknown",
         }},
       
-      { name: "Day of Month", value: "DAY", layout: "none"},
-      { name: "Minute of the Hour", value: "MINUTE", layout: "none"},
-      { name: "Relation to Junction- Specific Location", value: "RELJCT2", layout: "none",
+      { name: "Day of Month", value: "DAY", panel: "none"},
+      { name: "Minute of the Hour", value: "MINUTE", panel: "none"},
+      { name: "Relation to Junction- Specific Location", value: "RELJCT2", panel: "none",
         catLabel: {
           1: "Non-Junction",
           2: "Intersection",
@@ -329,7 +325,7 @@ $(document).ready( function() {
           99: "Unknown",
         },
         description: "The crash's location with respect to presence in an interchange area"},
-      { name: "Relation to Junction- Within Interchange Area", value: "RELJCT1", layout: "none",
+      { name: "Relation to Junction- Within Interchange Area", value: "RELJCT1", panel: "none",
         catLabel: {
           0: "No",
           1: "Yes",

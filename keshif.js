@@ -387,16 +387,9 @@ var kshf = {
   gistLogin: false,
   getGistLogin: function(){
     if(this.githubToken===undefined) return;
-    $.ajax( 'https://api.github.com/user',
-      { method: "GET",
-        async: true,
-        dataType: "json",
-        headers: {Authorization: "token "+kshf.githubToken},
-        success: function(response){ 
-          kshf.gistLogin = response.login;
-        }
-      }
-    );
+    d3.xhr('https://api.github.com/user')
+      .header("Authorization","token "+kshf.githubToken)
+      .get(function(error, data){ kshf.gistLogin = JSON.parse(data.response.login); });
   },
 
   kshfLogo: '<svg class="kshfLogo" viewBox="0 0 200 200">'+
@@ -408,23 +401,21 @@ var kshf = {
 };
 
 // tipsy, facebook style tooltips for jquery
-// Modified / simplified version for internal Keshif use
+// Modified / simplified version for internal Keshif use, without jquery dependency
 // version 1.0.0a
 // (c) 2008-2010 jason frame [jason@onehackoranother.com]
 // released under the MIT license
 
 function Tipsy(element, options) {
-  this.jq_element = $(element);
-  this.options = $.extend(
-    { }, 
-    { className: null, gravity: 'n', },
-    options
-  );
+  this.jq_element = element;
+  this.options = options;
+  if(this.options.className === undefined) this.options.className = null;
+  if(this.options.gravity   === undefined) this.options.gravity   = 'n';
 };
 Tipsy.prototype = {
   show: function() {
     var maybeCall = function(thing, ctx) {
-        return (typeof thing == 'function') ? (thing.call(ctx)) : thing;
+      return (typeof thing == 'function') ? (thing.call(ctx)) : thing;
     };
 
     if(kshf.activeTipsy) kshf.activeTipsy.hide();
@@ -433,42 +424,40 @@ Tipsy.prototype = {
 
     var title = this.getTitle();
     if(!title) return;
-    var jq_tip = this.tip();
+    this.tip();
 
-    jq_tip.find('.tipsy-inner')['html'](title);
-    jq_tip[0].className = 'tipsy'; // reset classname in case of dynamic gravity
-    jq_tip.remove().css({top: 0, left: 0, visibility: 'hidden', display: 'block'}).prependTo(document.body);
+    this.jq_tipsy_inner.html(title);
+    this.jq_tip.attr("class","tipsy"); // reset classname in case of dynamic gravity
+    this.jq_tip.style({top: 0, left: 0, visibility: 'hidden', display: 'block'});
+    kshf.browser.DOM.root[0][0].appendChild(this.jq_tip[0][0]);
 
-    if (this.options.className) {
-      jq_tip.addClass(maybeCall(this.options.className, this.jq_element[0]));
+    if(this.options.className) {
+      this.jq_tip.attr("class", "tipsy "+maybeCall(this.options.className, this.jq_element));
     }
 
-    var pos = $.extend({}, this.jq_element.offset(), {
-        width: this.jq_element[0].offsetWidth,
-        height: this.jq_element[0].offsetHeight
-    });
+    var pos = this.jq_element.getBoundingClientRect();
 
-    var actualWidth = jq_tip[0].offsetWidth,
-        actualHeight = jq_tip[0].offsetHeight,
-        gravity = maybeCall(this.options.gravity, this.jq_element[0]);
+    var actualWidth = this.jq_tip[0][0].offsetWidth,
+        actualHeight = this.jq_tip[0][0].offsetHeight,
+        gravity = maybeCall(this.options.gravity, this.jq_element);
 
     this.tipWidth = actualWidth;
     this.tipHeight = actualHeight;
 
     var tp;
     switch (gravity.charAt(0)) {
-        case 'n':
-            tp = {top: pos.top + pos.height, left: pos.left + pos.width / 2 - actualWidth / 2};
-            break;
-        case 's':
-            tp = {top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2};
-            break;
-        case 'e':
-            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth};
-            break;
-        case 'w':
-            tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width};
-            break;
+      case 'n':
+        tp = {top: pos.top + pos.height, left: pos.left + pos.width / 2 - actualWidth / 2};
+        break;
+      case 's':
+        tp = {top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2};
+        break;
+      case 'e':
+        tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth};
+        break;
+      case 'w':
+        tp = {top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width};
+        break;
     }
 
     if (gravity.length == 2) {
@@ -479,30 +468,36 @@ Tipsy.prototype = {
       }
     }
 
-    jq_tip.css(tp).addClass('tipsy-' + gravity);
-    jq_tip.find('.tipsy-arrow')[0].className = 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0);
+    var browserPos = kshf.browser.DOM.root[0][0].getBoundingClientRect();
+    tp.left = tp.left - browserPos.left;
+    tp.top = tp.top - browserPos.top;
 
-    jq_tip.stop().css({opacity: 0, display: 'block', visibility: 'visible'}).animate({opacity: 1},200);
+    this.jq_tip
+      .style('left',tp.left+"px")
+      .style('top', tp.top +"px")
+      .attr("class", this.jq_tip.attr("class")+' tipsy-' + gravity);
+    this.jq_tipsy_arrow.attr("class", 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0));
+
+    this.jq_tip.style({opacity: 0, visibility: 'visible'}).transition().duration(200).style('opacity',1);
   },
   hide: function(){
     kshf.activeTipsy = undefined;
-    this.tip().stop().fadeOut(200,function() { $(this).remove(); });
+    if(this.jq_tip) this.jq_tip.transition().duration(200).style('opacity',0).remove();
   },
   getTitle: function() {
-    var title, jq_e = this.jq_element, o = this.options;
     var title, o = this.options;
     if (typeof o.title == 'string') {
       title = o.title;
     } else if (typeof o.title == 'function') {
-      title = o.title.call(jq_e[0]);
+      title = o.title.call(this.jq_element);
     }
-    title = ('' + title).replace(/(^\s*|\s*$)/, "");
-    return title;
+    return ('' + title).replace(/(^\s*|\s*$)/, "");
   },
   tip: function() {
     if(this.jq_tip) return this.jq_tip;
-    this.jq_tip = $('<div class="tipsy"></div>').html('<div class="tipsy-arrow"></div><div class="tipsy-inner"></div>');
-    this.jq_tip.data('tipsy-pointee', this.jq_element[0]);
+    this.jq_tip = d3.select(document.createElement("div")).attr("class","tipsy");
+    this.jq_tipsy_arrow = this.jq_tip.append("div").attr("class","tipsy-arrow");
+    this.jq_tipsy_inner = this.jq_tip.append("div").attr("class","tipsy-inner");
     return this.jq_tip;
   }
 };
@@ -849,7 +844,7 @@ kshf.BreadCrumb = function(browser, selectType){
   this.selectType = selectType;
 };
 kshf.BreadCrumb.prototype = {
-  isCompare: function(){
+  isCompareSelection: function(){
     return this.selectType.substr(0,7)==="Compare";
   },
   showCrumb: function(summary){
@@ -905,11 +900,11 @@ kshf.BreadCrumb.prototype = {
       })
       .on("mouseenter",function(){
         this.tipsy.show();
-        if(me.isCompare()) me.browser.refreshMeasureLabels(me.selectType);
+        if(me.isCompareSelection()) me.browser.refreshMeasureLabels(me.selectType);
       })
       .on("mouseleave",function(){
         this.tipsy.hide();
-        if(me.isCompare()) me.browser.refreshMeasureLabels();
+        if(me.isCompareSelection()) me.browser.refreshMeasureLabels();
       })
       .on("click",function(){
         this.tipsy.hide();
@@ -1495,9 +1490,7 @@ kshf.RecordDisplay.prototype = {
         .call(this.nodeZoomBehavior);
 
       var gggg = this.DOM.recordNodeLink_SVG.append("g");
-
-      this.DOM.linkGroup = gggg.append("g").attr("class","linkGroup");
-
+      this.DOM.linkGroup   = gggg.append("g").attr("class","linkGroup");
       this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup recordGroup_Node");
 
       this.DOM.NodeLinkControl = this.DOM.recordDisplayWrapper.append("span").attr("class","NodeLinkControl");
@@ -2348,8 +2341,8 @@ kshf.RecordDisplay.prototype = {
           var DOM = this;
           if(this.tipsy) {
             this.tipsy.show();
-            this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
 
           // mouse is moving fast, should wait a while...
@@ -2378,8 +2371,8 @@ kshf.RecordDisplay.prototype = {
         .on("mousemove", function(){
           this._mousemove = true;
           if(this.tipsy){
-            this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
         })
         .on("click",function(d){
@@ -2990,6 +2983,8 @@ kshf.Browser = function(options){
   this.isFullscreen = false;
 
   this.showDropZones = false;
+  this.asyncDataLoadedCnt = 0;
+  this.asyncDataWaitedCnt = 0;
 
   this.mapColorTheme = "converge";
   this.measureFunc = "Count";
@@ -3014,22 +3009,21 @@ kshf.Browser = function(options){
     Compare_C: null,
   }
 
+  this.highlightSelectedSummary = null;
+  this.highlightCrumbTimeout_Hide = undefined;
+
   this.crumb_Highlight = new kshf.BreadCrumb(this,"Highlight");
   this.crumb_Compare_A = new kshf.BreadCrumb(this,"Compare_A");
   this.crumb_Compare_B = new kshf.BreadCrumb(this,"Compare_B");
   this.crumb_Compare_C = new kshf.BreadCrumb(this,"Compare_C");
 
-  this.highlightSelectedSummary = null;
-  this.highlightCrumbTimeout_Hide = undefined;
-
-
-  this.allRecordsAggr = new kshf.Aggregate();
-  this.allRecordsAggr.init();
-
+  this.allRecordsAggr     = new kshf.Aggregate();
   this.flexAggr_Highlight = new kshf.Aggregate();
   this.flexAggr_Compare_A = new kshf.Aggregate();
   this.flexAggr_Compare_B = new kshf.Aggregate();
   this.flexAggr_Compare_C = new kshf.Aggregate();
+
+  this.allRecordsAggr    .init();
   this.flexAggr_Highlight.init();
   this.flexAggr_Compare_A.init();
   this.flexAggr_Compare_B.init();
@@ -3571,12 +3565,11 @@ kshf.Browser.prototype = {
           }
 
           function gist_createNew(){
-            $.ajax( 'https://api.github.com/gists',
-              { method: "POST",
-                dataType: 'json',
-                data: JSON.stringify(githubLoad),
-                headers: headers,
-                success: function(response){
+            var xhr = d3.xhr('https://api.github.com/gists');
+            if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
+            xhr.post( JSON.stringify(githubLoad), // data
+                function(error, data){ 
+                  var response = JSON.parse(data.response);
                   // Keep Gist Info (you may edit/fork it next)
                   kshf.gistInfo = response;
                   var gistURL = response.html_url;
@@ -3586,12 +3579,26 @@ kshf.Browser.prototype = {
                     "The browser is saved to "+
                     "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
                     "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
-                    )
-                },
-              },
-              'json'
-            );
+                    );
+                });
           };
+          function gist_sendEdit(){
+            var xhr = d3.xhr('https://api.github.com/gists/'+kshf.gistInfo.id);
+            if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
+            xhr.send('PATCH',JSON.stringify(githubLoad),
+              function(error, data){ 
+                var response = data.response;
+                var gistURL = response.html_url;
+                var gistID = gistURL.replace(/.*github.*\//g,'');
+                var keshifGist = "keshif.me/gist?"+gistID;
+                me.showWarning(
+                  "The browser is edited in "+
+                  "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
+                  "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
+                  );
+              });
+          };
+
 
           // UNAUTHORIZED / ANONYMOUS
           if(kshf.gistLogin===undefined){
@@ -3609,41 +3616,18 @@ kshf.Browser.prototype = {
           // AUTHOIZED, EXISTING GIST, FROM ANOTHER USER
           if(kshf.gistInfo.owner===undefined || kshf.gistInfo.owner.login !== kshf.gistLogin){
             // Fork it
-            $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id+"/forks", 
-              { method: "POST",
-                dataType: 'json',
-                data: JSON.stringify(githubLoad),
-                async: false,
-                headers: headers,
-                success: function(response){
-                  kshf.gistInfo = response; // ok, now my gist
-                },
-              },
-              'json'
-            );
-          }
-
-          // AUTHORIZED, EXISTING GIST, MY GIST
-          if(kshf.gistInfo.owner.login === kshf.gistLogin){
-            // edit
-            $.ajax( 'https://api.github.com/gists/'+kshf.gistInfo.id, 
-              { method: "PATCH",
-                dataType: 'json',
-                data: JSON.stringify(githubLoad),
-                headers: headers,
-                success: function(response){
-                  var gistURL = response.html_url;
-                  var gistID = gistURL.replace(/.*github.*\//g,'');
-                  var keshifGist = "keshif.me/gist?"+gistID;
-                  me.showWarning(
-                    "The browser is edited in "+
-                    "<a href='"+gistURL+"' target='_blank'>"+gistURL.replace("https://","")+"</a>.<br> "+
-                    "To load it again, visit <a href='http://"+keshifGist+"' target='_blank'>"+keshifGist+"</a>"
-                    )
-                },
-              },
-              'json'
-            );
+            var xhr = d3.xhr('https://api.github.com/gists'+kshf.gistInfo.id+"/forks");
+            if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
+            xhr.post( JSON.stringify(githubLoad), // data
+                function(error, data){ 
+                  kshf.gistInfo = JSON.parse(data.response); // ok, now my gist
+                  gist_sendEdit();
+                });
+          } else{
+            // AUTHORIZED, EXISTING GIST, MY GIST
+            if(kshf.gistInfo.owner.login === kshf.gistLogin){
+              gist_sendEdit();
+            }
           }
         });
 
@@ -3765,7 +3749,7 @@ kshf.Browser.prototype = {
 
         creditString += "<div class='project_fund'><b>Keşif</b> (Turkish): Discovery &amp; exploration</div>";
 
-        this.panel_overlay = this.DOM.root.append("div").attr("class", "panel panel_overlay");
+        this.panel_overlay = this.DOM.root.append("div").attr("class", "panel_overlay");
 
         // BACKGROUND 
         this.DOM.kshfBackground = this.panel_overlay.append("div").attr("class","kshfBackground")
@@ -4226,10 +4210,12 @@ kshf.Browser.prototype = {
     loadSource: function(v){
       this.source = v;
       this.panel_overlay.attr("show","loading");
+      
       // Compability with older versions.. Used to specify "sheets" instead of "tables"
       if(this.source.sheets){
-          this.source.tables = this.source.sheets;
+        this.source.tables = this.source.sheets;
       }
+
       if(this.source.tables){
         if(!Array.isArray(this.source.tables)) this.source.tables = [this.source.tables];
 
@@ -4265,9 +4251,10 @@ kshf.Browser.prototype = {
           }
         },this);
       } else {
-        if(this.source.callback) this.source.callback(this);
+        if(this.source.callback) this.source.callback.call(this,this);
       }
     },
+    /** -- */
     loadTable_Google: function(sheet){
       var me=this;
       var headers = sheet.headers ? sheet.headers : 1;
@@ -4372,15 +4359,13 @@ kshf.Browser.prototype = {
             this.source.dirPath+tableDescr.name+"."+this.source.fileType,
             config);
         } else {
-          $.ajax({
-            url: this.source.dirPath+tableDescr.name+"."+this.source.fileType,
-            type: "GET",
-            async: (this.source.callback===undefined)?true:false,
-            contentType: "text/csv",
-            success: function(data){
-              Papa.parse(data,config);
-            }
-          });
+          if(me.source.callback) me.asyncDataWaitedCnt++;
+          // TODO: If callback is defined, perform a SYNC request...
+          d3.xhr(this.source.dirPath+tableDescr.name+"."+this.source.fileType)
+            .get(function(error, data){ 
+              Papa.parse(data.response,config);
+              if(me.source.callback) me.asyncDataLoaded();
+            });
         }
       }
     },
@@ -4416,13 +4401,15 @@ kshf.Browser.prototype = {
         reader.onload = function(e) { processJSONText( JSON.parse(e.target.result)); };
         reader.readAsText(tableDescr);
       } else {
-        $.ajax({
-          url: this.source.dirPath+tableDescr.name+".json?dl=0",
-          type: "GET",
-          async: (this.source.callback===undefined)?true:false,
-          dataType: "json",
-          success: processJSONText
-        });
+        if(me.source.callback) me.asyncDataWaitedCnt++;
+        d3.xhr(this.source.dirPath+tableDescr.name+".json?dl=0")
+          .get(function(error, data){ 
+            try { 
+              processJSONText(JSON.parse(data.response)); 
+              if(me.source.callback) me.asyncDataLoaded();
+            }
+            catch (e) { alert("JSON Data could not be loaded/parsed correctly."); }
+          });
       }
     },
     /** -- */
@@ -4442,10 +4429,17 @@ kshf.Browser.prototype = {
 
       if(this.source.loadedTableCount===this.source.tables.length) {
         if(this.source.callback){
-          this.source.callback(this);
+          this.source.callback.call(this,this);
         } else {
           this.loadCharts();
         }
+      }
+    },
+    /** -- */
+    asyncDataLoaded: function(){
+      this.asyncDataLoadedCnt++;
+      if(this.asyncDataWaitedCnt===this.asyncDataLoadedCnt){
+        this.loadCharts();
       }
     },
     /** -- */
@@ -4711,10 +4705,7 @@ kshf.Browser.prototype = {
     /** -- */
     unregisterBodyCallbacks: function(){
       // TODO: Revert to previous handlers...
-      d3.select("body").style('cursor','auto')
-        .on("mousemove",null)
-        .on("mouseup",null)
-        .on("keydown",null);
+      d3.select("body").style('cursor',null).on("mousemove",null).on("mouseup",null).on("keydown",null);
     },
     /** -- */
     prepareDropZones: function(summary,source){
@@ -4831,7 +4822,6 @@ kshf.Browser.prototype = {
       }
       if(summary.setSummary){
         // TODO: Adjust set summary based on the new aggregate (category)
-
       }
 
       summary.catTable_id[aggr.id()] = aggr;
@@ -5803,13 +5793,11 @@ kshf.Summary_Base.prototype = {
     this.DOM.root = this.panel.DOM.root.insert("div", function(){ return beforeDOM; });
     this.DOM.root
       .attr("class","kshfSummary")
-      .attr("summary_id",this.summaryID)
+      .attr("summary_id",this.summaryID) // can be used to customize a specific summary using CSS
       .attr("collapsed",this.collapsed)
       .attr("filtered",false)
       .attr("showConfig",false)
-      .each(function(){
-        this.__data__ = me;
-      });
+      .each(function(){ this.__data__ = me; });
   },
   /** -- */
   insertHeader: function(){
@@ -7531,13 +7519,13 @@ var Summary_Categorical_functions = {
           kshf.Util.setTransform(this,"translateX("+(axis_Scale(d)-0.5)+"px)");
         }
 
-        var x=this.browser.noAnim;
-        if(x===false) this.browser.setNoAnim(true);
+        var x=me.browser.noAnim;
+        if(x===false) me.browser.setNoAnim(true);
         me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
-        if(x===false) this.browser.setNoAnim(false);
+        if(x===false) me.browser.setNoAnim(false);
 
-        me.DOM.wrapper.attr("showMeasureAxis_2", this.configRowCount>0?"true":null);
-      });
+        me.DOM.wrapper.attr("showMeasureAxis_2", me.configRowCount>0?"true":null);
+      }, 10 );
     },
     /** -- */
     refreshLabelWidth: function(){
@@ -7882,8 +7870,8 @@ var Summary_Categorical_functions = {
         .on("mousemove", function(){
           this._mousemove = true;
           if(this.tipsy){
-            this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
           }
         })
         .attr("title",me.catTooltip?function(_cat){ return me.catTooltip.call(_cat.data); }:null);
@@ -7972,8 +7960,8 @@ var Summary_Categorical_functions = {
           .on("mouseenter",function(_cat){
             if(this.tipsy) {
               this.tipsy.show();
-              this.tipsy.jq_tip[0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-              this.tipsy.jq_tip[0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+              this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
+              this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
             }
             if(me.browser.mouseSpeed<0.2) { 
               me.onCatEnter(_cat);
@@ -9247,20 +9235,20 @@ var Summary_Interval_functions = {
           .on("click", function(d){ me.setScaleType(d.v.toLowerCase(),true); })
       }
 
-      var summaryConfig_Percentile = this.DOM.summaryConfig.append("div")
+      this.DOM.summaryConfig_Percentile = this.DOM.summaryConfig.append("div")
         .attr("class","summaryConfig_Percentile summaryConfig_Option");
-      summaryConfig_Percentile.append("span").text("Percentile Charts: ")
-      x = summaryConfig_Percentile.append("span").attr("class","optionGroup");
-      x.selectAll(".configOption").data(
+      this.DOM.summaryConfig_Percentile.append("span").text("Percentile Chart: ")
+      this.DOM.summaryConfig_Percentile.append("span").attr("class","optionGroup")
+        .selectAll(".configOption").data(
         [ {l:"<i class='bl_Active'></i><i class='bl_Highlight'></i>"+
             "<i class='bl_Compare_A'></i><i class='bl_Compare_B'></i><i class='bl_Compare_C'></i> Show",v:"Extended"},
           {l:"<i class='fa fa-eye-slash'></i> Hide",v:false}
         ]).enter()
         .append("span")
-        .attr("class",function(d){ return "configOption pos_"+d.v;})
-        .attr("active",function(d){ return d.v===me.percentileChartVisible; })
-        .html(function(d){ return d.l; })
-        .on("click", function(d){ me.showPercentileChart(d.v); });
+          .attr("class",function(d){ return "configOption pos_"+d.v;})
+          .attr("active",function(d){ return d.v===me.percentileChartVisible; })
+          .html(function(d){ return d.l; })
+          .on("click", function(d){ me.showPercentileChart(d.v); });
     },
     /** -- */
     initDOM_Percentile: function(){
@@ -10730,7 +10718,9 @@ var Summary_Interval_functions = {
         this.quantile_pos[distr+q] = this.valueScale(x);
       },this);
 
-      this.DOM.percentileGroup.select(".percentileChart_"+distr).style("opacity",1);
+      this.DOM.percentileGroup.select(".percentileChart_"+distr)
+        .style("opacity",1)
+        .style("margin-left", (this.stepTicks) ? ((this.aggrWidth/2)+"px") : null);
 
       [10,20,30,40,50,60,70,80,90].forEach(function(q){
         kshf.Util.setTransform(this.DOM.quantile[distr+q][0][0],"translateX("+this.quantile_pos[distr+q]+"px)");

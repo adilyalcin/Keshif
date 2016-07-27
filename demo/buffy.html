@@ -19,87 +19,85 @@
     <meta property="og:title" content="Exploring Buffy The Vampire Slayer - Season 1" />
 
     <script type="text/javascript">
-function dataLoad(browser){
-    // SETUP EPISODE INFORMATION
-    kshf.dt.Episodes = [];
-    kshf.dt_id.Episodes = {};
-    g_episodes.forEach(function(ep){
-        var c=new kshf.Record(ep,"ep_id");
-        kshf.dt.Episodes.push(c);
-        kshf.dt_id.Episodes[c.id()] = c;
-    });
+function dataLoad(){
+  // SETUP EPISODE INFORMATION
+  kshf.dt.Episodes = [];
+  kshf.dt_id.Episodes = {};
+  g_episodes.forEach(function(ep){
+    var c=new kshf.Record(ep,"ep_id");
+    kshf.dt.Episodes.push(c);
+    kshf.dt_id.Episodes[c.id()] = c;
+  });
 
-    // SETUP CHARACTER INFORMATION
-    kshf.dt.Characters = [];
-    kshf.dt_id.Characters = {};
-    g_characters.forEach(function(character){
-        var c=new kshf.Record(character,"char_id");
-        kshf.dt.Characters.push(c);
-        kshf.dt_id.Characters[c.id()] = c;
-    });
+  // SETUP CHARACTER INFORMATION
+  kshf.dt.Characters = [];
+  kshf.dt_id.Characters = {};
+  g_characters.forEach(function(character){
+    var c=new kshf.Record(character,"char_id");
+    kshf.dt.Characters.push(c);
+    kshf.dt_id.Characters[c.id()] = c;
+  });
 
-    // SETUP PER-SECOND CHARACTER APPEARANCE
-    kshf.dt.Seconds = [];
-    var index = [];
-    for(var x=0; x<=12;x++){
-        index[x] = {};
-    }
-    var secondID=0;
-    // for each episode
-    g_appearances.forEach(function(episode,epNo){
-        // for each character
-        episode.forEach(function(ep_char){
-            var char_id = ep_char.char_id;
-            // for each appearance
-            ep_char.times.forEach(function(t){
-                // for each second
-                for(var second=t.ts; second<=t.te ; second++){
-                    var who = index[epNo][second];
-                    if(who===undefined){
-                        var i= new kshf.Record({
-                                'Episode': epNo+1,
-                                'Appears':[],
-                                'second':second,
-                                'Location':'?',
-                                'id':secondID
-                            },'id');
-                        kshf.dt.Seconds.push(i);
-                        index[epNo][second] = i;
-                        who = i;
-                    }
-                    who.data.Appears.push(char_id);
-                }
-            });
-        });
-    });
+  // SETUP PER-SECOND CHARACTER APPEARANCE
+  kshf.dt.Seconds = [];
+  var index = [];
+  for(var x=0; x<=12;x++) index[x] = {};
+  var secondID=0;
+  // for each episode
+  g_appearances.forEach(function(episode,epNo){
+      // for each character
+      episode.forEach(function(ep_char){
+          var char_id = ep_char.char_id;
+          // for each appearance
+          ep_char.times.forEach(function(t){
+              // for each second
+              for(var second=t.ts; second<=t.te ; second++){
+                  var who = index[epNo][second];
+                  if(who===undefined){
+                      var i= new kshf.Record({
+                              'Episode': epNo+1,
+                              'Appears':[],
+                              'second':second,
+                              'Location':'?',
+                              'id':secondID
+                          },'id');
+                      kshf.dt.Seconds.push(i);
+                      index[epNo][second] = i;
+                      who = i;
+                  }
+                  who.data.Appears.push(char_id);
+              }
+          });
+      });
+  });
 
-    // add locations per episode
-    // for each episode
-    g_locations.forEach(function(episode,epNo){
-        // for each character
-        episode.forEach(function(t){
-            // for each second
-            for(var second=t.ts; second<=t.te ; second++){
-                var who = index[epNo][second];
-                if(who===undefined){
-                    var i= new kshf.Record({
-                            'Episode': epNo+1,
-                            'Appears':[],
-                            'second':second,
-                            'Location':'?',
-                            'id':secondID
-                        },'id');
-                    kshf.dt.Seconds.push(i);
-                    index[epNo][second] = i;
-                    who = i;
-                }
-                who.data.Location = t.loc;
-            }
-        });
-    });
+  // add locations per episode
+  // for each episode
+  g_locations.forEach(function(episode,epNo){
+      // for each character
+      episode.forEach(function(t){
+          // for each second
+          for(var second=t.ts; second<=t.te ; second++){
+              var who = index[epNo][second];
+              if(who===undefined){
+                  var i= new kshf.Record({
+                          'Episode': epNo+1,
+                          'Appears':[],
+                          'second':second,
+                          'Location':'?',
+                          'id':secondID
+                      },'id');
+                  kshf.dt.Seconds.push(i);
+                  index[epNo][second] = i;
+                  who = i;
+              }
+              who.data.Location = t.loc;
+          }
+      });
+  });
 
-    browser.primaryTableName = "Seconds";
-    browser.loadCharts();
+  this.primaryTableName = "Seconds";
+  this.loadCharts();
 };
 
 $(document).ready(function(){

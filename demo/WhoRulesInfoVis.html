@@ -39,7 +39,8 @@ Number of people per role across the years
  - How large program committee gets, etc.
 
 */
-function loadData(browser){
+function loadData(){
+  var browser=this;
   $.ajax({
     url: './data/infovis_people_all.csv',
     async: false,

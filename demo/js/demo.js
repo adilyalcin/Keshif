@@ -1,7 +1,5 @@
 // turn on social share by default
 var socialShare = true;
-// turn on rubbon by default
-var githubButton = false;
 
 var browser;
 
@@ -101,19 +99,19 @@ var US_States = {
     {            id:89 , name: 'Kingman Reef' },
     {            id:95 , name: 'Palmyra Atoll' },
   ],
-  loadGeo: function(){
-    $.ajax({
-      // Load state geometries
-      url: 'data/us-counties-states-FIPS.json',
-      async: false,
-      success: function(topojsonData){
+  loadGeo: function(browser){
+    browser.asyncDataWaitedCnt++;
+    // Load US county geometries
+    d3.xhr('data/us-counties-states-FIPS.json')
+      .get(function(error, data){
+        var topojsonData = JSON.parse(data.response);
         topojson.feature(topojsonData, topojsonData.objects.states)
           .features.forEach(function(feature){
             var state = US_States.index_id[feature.id];
             if(state) state.geo = feature;
           });
-      }
-    });
+        browser.asyncDataLoaded();
+      });
   }
 };
 
@@ -438,19 +436,19 @@ kshf.Countries = {
     { alpha: 'ZM', alpha3: 'ZMB', num: 894, name: "Zambia" },
     { alpha: 'ZW', alpha3: 'ZWE', num: 716, name: "Zimbabwe" },
   ],
-  loadGeo: function(){
-    $.ajax({
-      // Load world country geometries
-      url: 'data/world-countries.json',
-      async: false,
-      success: function(topojsonData){
+  loadGeo: function(browser){
+    browser.asyncDataWaitedCnt++;
+    // Load world country geometries
+    d3.xhr('data/world-countries.json')
+      .get(function(error, data){
+        var topojsonData = JSON.parse(data.response);
         topojson.feature(topojsonData, topojsonData.objects.countries)
           .features.forEach(function(feature){
             var country = kshf.Countries.index_num[feature.id];
             if(country) country.geo = feature;
           });
-      }
-    });
+        browser.asyncDataLoaded();
+      });
   }
 };
 
@@ -473,7 +471,7 @@ function printPeopleIcons(){
   return str;
 };
 
-$(document).ready(function(){
+document.addEventListener('DOMContentLoaded',function(){/*fun code to run*/
   window.onresize = function(){ kshf.handleResize(); };
     if(document.location.hostname!=="localhost"){
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
@@ -527,12 +525,5 @@ $(document).ready(function(){
   d3.select("head").append("link").attr("rel","icon").attr("type","image/png")
     .attr("href","http://keshif.me/demo/img/favicon.png");
 
-  if(githubButton===true){
-    var s = document.createElement("script");
-    s.src = "https://buttons.github.io/buttons.js";
-    s.id  = "github-bjs";
-    s.async = "async";
-    $("body").append(s);
-  }
 });
 

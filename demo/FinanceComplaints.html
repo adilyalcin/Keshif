@@ -4,7 +4,6 @@
     <title>Consumer Complaint Database - 2015</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -35,7 +34,7 @@ function response(){
   return this.id;
 }
 
-$(document).ready( function(){
+document.addEventListener("DOMContentLoaded", function(){
   var dateFormat = d3.time.format("%m-%b-%Y");
 
   browser = new kshf.Browser({
@@ -49,10 +48,7 @@ $(document).ready( function(){
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'csv',
       tables: "Consumer_Complaints_2015",
-      callback: function(){
-        US_States.loadGeo();
-        browser.loadCharts();
-      }
+      callback: function(){ US_States.loadGeo(this); }
     },
     summaries: [
       { name: "Product", 

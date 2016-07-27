@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -28,15 +27,13 @@ google.setOnLoadCallback(function(){
     source: {
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/nycbiketrips_',
       fileType: 'csv',
-      // dirPath: './data/nycbiketrips_',
-      // gdocId: '1ftMNd_WmRYlvxxQS0eqCBwnJ-3vM1Z1oEEWpNA8FjtE',
       tables: ["Trips", "Stations"]
     },
     onLoad: function(){
       this.records.forEach(function(trip){
         trip.data.TimeStart = moment(trip.data.Time_Start,"M/D/YY HH:mm"); // 2/28/14 21:07
         delete trip.data.Time_Start; // Remove unused variable
-      })
+      });
     },
     summaries: [
       { name: "UserType", panel: 'middle', catLabel: function(){ return (this.id==="S")?"Subscriber":"Customer";} },

@@ -4,8 +4,6 @@
     <title>HBO Recycling - </title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -312,16 +310,7 @@ var HBO_data = {
     ]
 };
 
-function loadData(browser){
-  browser.primaryTableName = "Actors";
-  kshf.dt.Actors = [];
-  for(var actorName in HBO_data){
-    kshf.dt.Actors.push( new kshf.Record( {'Name':actorName, "HBO_Shows":HBO_data[actorName]}, 'Name') );
-  }
-  browser.loadCharts();
-};
-
-google.setOnLoadCallback(function(){
+document.addEventListener("DOMContentLoaded", function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
@@ -330,7 +319,14 @@ google.setOnLoadCallback(function(){
       // http://zgrossbart.github.io/hborecycling/
       // https://github.com/zgrossbart/hborecycling
       url: "http://grantland.com/features/the-hbo-recycling-program/",
-      callback: loadData
+      callback: function(){
+        this.primaryTableName = "Actors";
+        kshf.dt.Actors = [];
+        for(var actorName in HBO_data){
+          kshf.dt.Actors.push( new kshf.Record( {'Name':actorName, "HBO_Shows":HBO_data[actorName]}, 'Name') );
+        }
+        this.loadCharts();
+      }
     },
     summaries: ["HBO_Shows"],
     recordDisplay: {

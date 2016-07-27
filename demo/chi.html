@@ -16,10 +16,8 @@
 
     <script type="text/javascript">
 
-var paperBrowser;
-
-function loadData(browser){
-    browser.primaryTableName = "Articles";
+function loadData(){
+    this.primaryTableName = "Articles";
 
     kshf.dt.Articles = [];
     kshf.dt_id.Articles = {};
@@ -27,7 +25,6 @@ function loadData(browser){
     kshf.dt.People = [];
     kshf.dt_id.People = {};
 
-    paperBrowser = browser;
     var fileList = [
         /*"CHI1982",
         "CHI1983",
@@ -61,7 +58,7 @@ function loadData(browser){
             success: function(xmlData){ return loadProceeding(xmlData); }
         });
     });
-    paperBrowser.loadCharts();
+    this.loadCharts();
 };
 
 function loadProceeding(xmlData) {

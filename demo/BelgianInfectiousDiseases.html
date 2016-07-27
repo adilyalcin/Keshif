@@ -171,18 +171,18 @@ $(document).ready( function(){
       dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
       fileType: 'csv',
       tables: "epistat_public_cases",
-      callback: function(browser){
+      callback: function(){
+        var browser=this;
         $.ajax({
           // Load state geometries
           url: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/GeoJSONs/Belgium-provinces-unk.geo.json',
-          async: false,
           success: function(topojsonData){
             topojsonData.features.forEach(function(feature){
               ProvinceFeatures[feature.properties.name] = feature;
             });
+            browser.loadCharts();
           }
         });
-        browser.loadCharts();
       }
     },
     summaries: [
@@ -191,7 +191,8 @@ $(document).ready( function(){
         value: "NUTS2", 
         catLabel: ProvinceMap, 
         catMap: function(){ return ProvinceFeatures[ProvinceMap[this.id]]; },
-        panel: "middle" },
+        panel: "middle",
+        viewAs: "map"},
       { name: "Gender",
         value: function(){ 
           switch(this.Gender){
