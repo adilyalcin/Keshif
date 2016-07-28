@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function(){
       })
     },
     summaries: [
-      { name: "State", value: "STATE", viewAs: "map", panel: 'middle',
+      { name: "State", value: "STATE", viewAs: "map", panel: "middle", collapsed: true,
         catLabel: function(){ return US_States.index_id[this.id].name; },
         catMap: function(){ return US_States.index_id[this.id].geo; } },
       { name: "Route", value: "ROUTE", panel: "left", 
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function(){
       
 
 
-      { name: "Manner of Collision", value: "MAN_COLL", layout: "middle",
+      { name: "Manner of Collision", value: "MAN_COLL", layout: "middle", collapsed: true,
         catLabel: {
           0: "Not Collision with Motor Vehicle in Transport",
           1: "Front-to-Rear",
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function(){
           99: "Unknown ",
         },
         description: "The first injury or damage producing event of the crash"},
-      { name: "Light Condition", value: "LGT_COND", layout: "middle",
+      { name: "Light Condition", value: "LGT_COND", layout: "middle", collapsed: true,
         catLabel: {
           1: "Daylight",
           2: "Dark – Not Lighted",
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function(){
           9: "Unknown",
         },
         description: "The type/level of light that existed at the time of the crash"},
-      { name: "Weather Conditions", layout: "middle",
+      { name: "Weather Conditions", layout: "middle", collapsed: true,
         catLabel: {
           1: "Clear",
           0: "No Additional Atmospheric Conditions",

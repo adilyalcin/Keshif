@@ -16,7 +16,6 @@
 
     <script type="text/javascript">
 google.setOnLoadCallback(function(){
-  var dateFormat = d3.time.format("%m/%d/%y");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Permits",
@@ -25,8 +24,7 @@ google.setOnLoadCallback(function(){
     rightPanelLabelWidth: 250,
     source: {
       url: "https://data.nashville.gov/Development-and-Housing/Building-Permits-Official/3h5w-q8b7",
-      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
-      fileType: "csv",
+      gdocId: "1JGULCZP-0C4m9aL7jkAbkWTew5iwQnHiudNbysUvrvU",
       tables: "NashvilleBuildingPermits"
     },
     summaries: [
@@ -37,7 +35,7 @@ google.setOnLoadCallback(function(){
         catLabel: function(){ return kshf.Util.toProperCase(this.id); } },
       { name: "Construction Cost", value: "Const. Cost", unitName: "$", panel: "middle" },
       { name: "ZipCode", value: "Zip", type: "categorical", collapsed: true },
-      { name: "Date Issued", value: function(){ return dateFormat.parse(this["Date Issued"]); }, panel: "bottom" }
+      { name: "Date Issued", panel: "bottom" }
     ],
     recordDisplay:{
       sortColWidth: 65,
