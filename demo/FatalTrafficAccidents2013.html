@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function(){
       })
     },
     summaries: [
-      { name: "State", value: "STATE", viewAs: "map", panel: "middle", collapsed: true,
+      { name: "State", value: "STATE", viewAs: "map", panel: "middle",
         catLabel: function(){ return US_States.index_id[this.id].name; },
         catMap: function(){ return US_States.index_id[this.id].geo; } },
       { name: "Route", value: "ROUTE", panel: "left", 
