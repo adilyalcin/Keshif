@@ -126,8 +126,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .summaryInterval > .intervalSlider{ 
           pointer-events: all;
         }
-        .summaryCategorical > .aggrGroup > .catGlyph > .clickArea{
-          pointer-events: all;
+        .aggrGlyph { 
+          > .categoryLabel{ pointer-events: all; }
+          > .measureLabel{ pointer-events: all; }
+          > [class^="measure_"]{ pointer-events: all; }
         }
       }
       .aggrGlyph{
@@ -853,112 +855,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
 
         > .breadcrumbs{
-            .flex(1);
-            padding: 1px 2px 4px 4px;
-            font-size: 0.8em;
+          .flex(1);
+          padding: 1px 2px 4px 4px;
+          font-size: 0.8em;
+          vertical-align: top;
+          > .saveSelection{
+            display: none;
+            cursor: pointer;
+            color: gray;
+            height: 1em;
+            font-size: 1.1em;
+            margin: 3px 0px;
             vertical-align: top;
-            > .saveSelection{
-              display: none;
-              cursor: pointer;
-              color: gray;
-              height: 1em;
-              font-size: 1.1em;
-              margin: 3px 0px;
-              vertical-align: top;
-              &:hover{ color: orangered; }
-              &[active=true]{ display: inline-block; }
+            &:hover{ color: orangered; }
+            &[active=true]{ display: inline-block; }
+          }
+          > .breadCrumb{
+            cursor: pointer;
+            &:hover{
+              background-color: rgba(255,255,255,1.0);
+              > .crumbText{ text-decoration: line-through; }
+              > .breadCrumbIcon::before{ content: "\f00d"; } // cross
             }
-            > .crumb{
-              display: inline-block;
-              position: relative;
-              margin-right: 4px;
-              margin-top: 1px;
-              cursor: pointer;
-              max-width: 0px;
-              color: rgb(37, 33, 18);
-              background-color: rgba(255,255,255,0.5);
-              font-weight: 300;
-              .transition(all 250ms linear);
-              > .crumbText{
-                pointer-events: none;
-                display: block;
-                white-space: nowrap;
-                overflow: hidden;
-                margin-left: 16px;
-                margin-right: 1px;
-                > .crumbHeader{
-                  font-weight: 700;
-                  &:after{ content: ': '; }
-                }
-                > .crumbDetails{
-                  margin-right: 2px;
-                  display: inline;
-                  > .unitName{ font-weight: 300; }
-                }
-              }
-              > .clearCrumbButton{
-                width: 15px;
-                height: 100%;
-                position: absolute;
-                pointer-events: none;
-                font-size: 1em;
-                padding: 1px;
-                left: 0px;
-                text-align: center;
-                color: white;
-                .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
-              }
-              &[filtered=false]{ display: none; }
-              &[ready=true]{ max-width: 100%; }
-              &[ready=false]{ max-width: 0px; }
-              &.crumbMode_Filter {
-                border: solid 1px @color_filter_clear;
-                > .clearCrumbButton {
-                  background-color: @color_filter_clear;
-                  font-size: 1em;
-                  &::before{ content: "\f0b0"; } // filter
-                }
-              }
-              &.crumbMode_Highlight {
-                border: solid 1px @color_preview_clear;
-                > .clearCrumbButton {
-                  background-color: @color_preview_clear;
-                  &::before{ 
-                    content: "\f245";
-                    position: relative;
-                    top: 1px;
-                    left: 1px;
-                  } // mouse pointer
-                }
-              }
-              &[class*='crumbMode_Compare'] {
-                > .clearCrumbButton::before{ 
-                  content: "\f023"; // lock
-                  position: relative;
-                  top: 1px;
-                }
-              }
-              &[class*='crumbMode_Compare_A'] {
-                border: solid 1px @color_Compare_A;
-                > .clearCrumbButton { background-color: @color_Compare_A; }
-              }
-              &[class*='crumbMode_Compare_B'] {
-                border: solid 1px @color_Compare_B;
-                > .clearCrumbButton { background-color: @color_Compare_B; }
-              }
-              &[class*='crumbMode_Compare_C'] {
-                border: solid 1px darken(@color_Compare_C, 40%);
-                > .clearCrumbButton { 
-                  background-color: @color_Compare_C; 
-                  color: black;
-                }
-              }
-              &:hover{
-                background-color: rgba(255,255,255,1.0);
-                > .crumbText{ text-decoration: line-through; }
-                > .clearCrumbButton::before{ content: "\f00d"; } // cross
-              }
-            }
+          }
         }
         > .filterClearAll{
           display: none;
@@ -1107,6 +1026,92 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[active]{
         z-index: 700;
         pointer-events: all;
+      }
+    }
+
+    .breadCrumb{
+      display: inline-block;
+      position: relative;
+      margin-right: 4px;
+      margin-top: 1px;
+      max-width: 0px;
+      color: rgb(37, 33, 18);
+      background-color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      .transition(all 250ms linear);
+      > .crumbText{
+        pointer-events: none;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-left: 16px;
+        margin-right: 1px;
+        > .crumbHeader{
+          font-weight: 700;
+          &:after{ content: ': '; }
+        }
+        > .crumbDetails{
+          margin-right: 2px;
+          display: inline;
+          > .unitName{ font-weight: 300; }
+        }
+      }
+      > .breadCrumbIcon{
+        width: 15px;
+        height: 100%;
+        position: absolute;
+        pointer-events: none;
+        font-size: 1em;
+        padding: 1px;
+        left: 0px;
+        text-align: center;
+        color: white;
+        .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
+      }
+      &[filtered=false]{ display: none; }
+      &[ready=true]{ max-width: 100%; }
+      &[ready=false]{ max-width: 0px; }
+      &.crumbMode_Filter {
+        border: solid 1px @color_filter_clear;
+        > .breadCrumbIcon {
+          background-color: @color_filter_clear;
+          font-size: 1em;
+          &::before{ content: "\f0b0"; } // filter
+        }
+      }
+      &.crumbMode_Highlight {
+        border: solid 1px @color_preview_clear;
+        > .breadCrumbIcon {
+          background-color: @color_preview_clear;
+          &::before{ 
+            content: "\f245";
+            position: relative;
+            top: 1px;
+            left: 1px;
+          } // mouse pointer
+        }
+      }
+      &[class*='crumbMode_Compare'] {
+        > .breadCrumbIcon::before{ 
+          content: "\f023"; // lock
+          position: relative;
+          top: 1px;
+        }
+      }
+      &[class*='crumbMode_Compare_A'] {
+        border: solid 1px @color_Compare_A;
+        > .breadCrumbIcon { background-color: @color_Compare_A; }
+      }
+      &[class*='crumbMode_Compare_B'] {
+        border: solid 1px @color_Compare_B;
+        > .breadCrumbIcon { background-color: @color_Compare_B; }
+      }
+      &[class*='crumbMode_Compare_C'] {
+        border: solid 1px darken(@color_Compare_C, 40%);
+        > .breadCrumbIcon { 
+          background-color: darken(@color_Compare_C, 40%); 
+          color: black;
+        }
       }
     }
 
@@ -1562,8 +1567,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .overlay_infobox{
           display:none;
-          width: 390px;
-          height: 200px;
+          width: 330px;
+          height: 167px;
           position: absolute;
           top: 0; left: 0; bottom: 0; right: 0;
           cursor: default;
@@ -1588,6 +1593,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             a.advName{
               color: black;
+              font-size: 0.9em;
+              padding-top: 2px;
             }
           }
           .libName{
@@ -1645,7 +1652,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .overlay_answer {  display: block; }
         }
         &[show="recordDetails"]{
-          > .kshfBackground{ opacity: 0.7; pointer-events: all; }
+          > .kshfBackground{ opacity: 0.4; pointer-events: all; }
           > .overlay_recordDetails{
             .animation(recordDetails 500ms forwards);
             .animation-iteration-count(1);
@@ -1656,7 +1663,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // panel_overlay
 
     .hasLabelWidth{ text-align: right; }
-    .catBlock:not([selected="0"]) {
+    .catBlock[cFiltered] {
       .categoryLabel{ .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)"); }
       .item_count_wrapper{ .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)"); }
     }
@@ -1919,7 +1926,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       pointer-events: none;
       cursor: pointer;
       color: gray;
-      font-size: 0.9em;
+      font-size: 0.8em;
       z-index: 21;
       &:after{ content: "\f13e"; } // Lock
       &:hover:after{ content: "\f023"; } // Unlock
@@ -1945,7 +1952,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[class^="measure_"]{
           .transform-origin(0% 0%);
           .transition(@bar_animation);
-          pointer-events: none;
+          //pointer-events: none;
         }
         &[class^="measure_Active"]{
           background-color: @color_bars;
@@ -1987,34 +1994,38 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &.catGlyph{
         top: 0px;
         > [class^="measure_"]{
-          top: 4px;
           width: 1px;
           .calc(height, ~"100% - 8px");
+          vertical-align: top;
+          margin-top: 4px;
+          margin-bottom: 4px;
         }
-        > [class^="measure_Active"]{ pointer-events: none; }
+        //> [class^="measure_Active"]{ pointer-events: none; }
         > [class^="measure_Compare"]{ height: 1px; }
         > [class^="measure_Highlight"]{ height: 1px; }
-        > .clickArea > .lockButton{
+        > .lockButton{
           display: block;
           .calc(top, ~"50% - 5px");
           right: 1px;
+          padding-left: 2px;
+          position: absolute;
+          width: 10px;
+          &[inside]{ margin-left: -12px; }
         }
 
         > .total_tip{
-          /* right arrow */
-          border-top: 5px solid transparent;
-          border-bottom: 5px solid transparent;
-          border-left: 5px solid @color_distr_total;
-          background-color: initial;
-          top: 4px;
           position: absolute;
           display: inline-block;
-          // The sawtooth pattern
-/*          background: linear-gradient(-135deg, transparent 75%, @color_distr_total 75%) 0 50%,
+          width: 5px;
+          top: 4px;
+          height: calc(~'100% - 8px');
+
+          background-color: initial;
+          background: linear-gradient(-135deg, transparent 75%, @color_distr_total 75%) 0 50%,
           linear-gradient(-45deg, transparent 75%, @color_distr_total 75%) 0 50%;
           background-position: top left, top left;
           background-repeat: repeat;
-          background-size: 8px 8px; */
+          background-size: 10px 10px;
         }
       } // .catGlyph
 
@@ -2050,9 +2061,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .transform-origin(0% 100%);
           width: 1px;
           height: 1px;
+          cursor: pointer;
         }
         > .total_tip{
-          content: " ";
           display: block;
           position: absolute;
           top: -7px;
@@ -2068,11 +2079,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           background-size: 8px 8px;
         }
         > .lockButton{
-          // width: 100%;
           text-align: center;
+          // width: 100%;
           width: 16px;
           left: calc(~"50% - 8px");
-          font-size: 0.8em;
           &[inside]{ margin-top: 12px; }
         }
         > .measureLabel{
@@ -2131,7 +2141,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           stroke-linejoin: miter;
           pointer-events: none;
         }
-        &[selection="selected"] {
+        &[cSelection]:not([cSelection="onRecord"]) {
           > .measure_Active{
             cursor: pointer;
             stroke-width: 2px;
@@ -2141,7 +2151,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
           > .aggr.preview{ display: none; }
         }
-        &[selection="onRecord"] {
+        &[cSelection="onRecord"] {
           > .measure_Active{
             .transition(~'fill 200ms ease-in-out');
             stroke: darken(@color_onRecord_back, 80%);
@@ -2474,7 +2484,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding: 0px;
         background-color: lightgray;
       }
-      &[selection="onRecord"]{ 
+      &[cSelection="onRecord"]{ 
         color: black !important;
         border: solid 1px darken(@color_onRecord_back,20%);
         border-radius: 4px;
@@ -2617,21 +2627,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   > .catGlyph{
                     white-space: nowrap;
                     width: 100%;
-                    > .clickArea{
-                      position: absolute;
-                      left: 0px;
-                      display: inline-block;
-                      vertical-align: top;
-                      // Note: The height of clickable area is the same as height of the bar!
-                      margin-top:4px;
-                      margin-bottom:4px;
-                      .calc(height, ~"100% - 8px");
-                      position: absolute;
-                      font-size: 0.8em;
-                      font-weight: 300;
-                      width: 1px;
-                      left: 0px;
-                    }
+                    pointer-events: none;
                     > .categoryLabel{
                       position: absolute;
                       display: inline-block;
@@ -2643,25 +2639,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                       font-size: 0.8em;
                       font-weight: 300;
-                      cursor: default;
+                      cursor: inherit;
                       // display ... when text is too long
-                      pointer-events: none;
                       white-space: nowrap;
                       text-overflow: ellipsis;
                       overflow: hidden;
-                      > .theLabel{
-                        // And/Or/Not can come before...
-                        &:before{
+                      height: 100%;
+                      background-color: rgba(255,255,255,0);
+                      .transition(background-color 200ms linear);
+                      > .filterButtons{
+                        float: left;
+                        white-space: nowrap;
+                        cursor: pointer;
+                        vertical-align: top;
+                        //float: left;
+                        z-index: 100;
+                        pointer-events: all;
+                        > .filterButton{
+                          display: none;
+                          pointer-events: all;
+                          margin-right: 1px;
+                          margin-left: 2px;
+                          border-radius: 4px;
+                          vertical-align: top;
+                          position: relative;
+                          top: 1px;
+                          padding: 1px 3px 1px 3px;;
+                          line-height: 13px;
                           color: white;
                           font-weight: 300;
                           font-size: 0.7em;
-                          vertical-align: top;
-                          border-radius: 3px;
-                          padding: 1px 2px 0px 2px;
-                          margin: 0px 2px;
-                          opacity: 0.4;
+                          opacity: 0;
+                          .transition(opacity 500ms linear);
                         }
-                        .AndOrNot{ display: inline; }
+                        > .orButton {
+                          background-color: lighten(@color_query_or, 10%);
+                          &:hover { background-color: @color_query_or; }
+                        }
+                        > .notButton {
+                          background-color: rgb(166, 166, 166);
+                          &:hover { background-color: gray; }
+                        }
                       }
                     }
                     > .measureLabel{
@@ -2670,43 +2688,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       height: 16px;
                       padding-right: 1px;
                       .calc(top, ~"50% - 8px");
-
                       vertical-align: top;
                       text-align: right;
                       line-height: 18px;
-                      pointer-events: none;
-                    }
-
-                    .filterButtons{
-                      float: left;
-                      white-space: nowrap;
-                      cursor: pointer;
-                      vertical-align: top;
-                      //float: left;
                       z-index: 100;
+                      cursor: inherit;
                       pointer-events: all;
-                      > .filterButton{
-                        display: none;
-                        pointer-events: all;
-                        margin-right: 2px;
-                        border-radius: 4px;
-                        vertical-align: middle;
-                        padding: 1px 2px 0px 3px;
-                        line-height: 13px;
-                        color: white;
-                        font-weight: 300;
-                        font-size: 0.7em;
-                        opacity: 0;
-                        .transition(~'opacity 500ms linear');
-                      }
-                      > .orButton {
-                        background-color: lighten(@color_query_or, 10%);
-                        &:hover { background-color: @color_query_or; }
-                      }
-                      > .notButton {
-                        background-color: rgb(166, 166, 166);
-                        &:hover { background-color: gray; }
-                      }
                     }
 
                     &[activeItems='0'] .measureLabel{ visibility: hidden; }
@@ -2715,34 +2702,35 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       > .categoryLabel > .theLabel{ font-weight: 700; }
                     }
 
-                    &:not([selected="0"]) {
+                    &[cFiltered] {
+                      cursor: pointer;
                       > .categoryLabel > .theLabel{ font-weight: 700; }
-                      .clickArea{ cursor: pointer; }
                     }
                     // AND
-                    &[selected="1"]{
+                    &[cFiltered="AND"]{
                       > .categoryLabel {
                         background-color: #DEE2E5;
                         > .theLabel{ color: @color_query_and; }
                       }
                     }
                     // OR
-                    &[selected="2"]{
+                    &[cFiltered="OR"]{
                       > .categoryLabel {
                         background-color: #D8ECEE;
                         > .theLabel{ color: @color_query_or; }
                       }
-                      &[show-box=true]{
+                      &[showOR=true]{
                         > .categoryLabel > .filterButtons > .orButton { display: inline; opacity: 1; }
                       }
                     }
                     // NOT
-                    &[selected="-1"]{
-                      background-color: #E5E5E5;
-                      background-color: #D8ECEE;
-                      > .categoryLabel > .theLabel{ 
-                        color: @color_query_not;
-                        text-decoration: line-through;
+                    &[cFiltered="NOT"]{
+                      > .categoryLabel {
+                        background-color: #E5E5E5;
+                        > .theLabel{ 
+                          color: @color_query_not;
+                          text-decoration: line-through;
+                        }
                       }
                       > .categoryLabel > .filterButtons > .notButton{
                         display: inline;
@@ -2751,26 +2739,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       }
                     }
 
-                    &[selection^="selected"] {
-                      > .categoryLabel > .theLabel{ font-weight: 700 !important; }
-                      // Not selected
-                      &[selected="0"] {
-                        .clickArea { cursor: pointer; }
-                        &[selecttype="and"] > .categoryLabel > .theLabel{ color: @color_query_and; }
-                        &[selecttype="or" ] > .categoryLabel > .theLabel{ color: @color_query_or;  }
-                        &[selecttype="not"] > .categoryLabel > .theLabel{ color: @color_query_not; text-decoration: line-through; }
-                      }
-                    }
-                    &[selection="onRecord"] > .categoryLabel {
-                      font-weight: 700;
-                      background-color: @color_onRecord_back;
+                    &[cSelection] > .categoryLabel { font-weight: 700 !important; }
+
+                    &:not([cFiltered]) {
+                      &[cSelection]       { cursor: pointer; }
+                      &[cSelection="and"] > .categoryLabel > .theLabel{ color: @color_query_and; }
+                      &[cSelection="or" ] > .categoryLabel > .theLabel{ color: @color_query_or;  }
+                      &[cSelection="not"] > .categoryLabel > .theLabel{ color: @color_query_not; text-decoration: line-through; }
+                      &[cSelection="onRecord"] > .categoryLabel > { background-color: @color_onRecord_back; }
                     }
                   } // .catGlyph
                 } // .aggrGroup
 
-                &:hover {
-                  > .summaryControls > .catSortButton{ opacity: 1; }
-                }
+                &:hover > .summaryControls > .catSortButton{ opacity: 1; }
 
                 .catMap_SVG{
                   position: relative;
@@ -3154,26 +3135,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[isMultiValued=false]{
-          &[filtered_or="0"][filtered_and="0"]{
-            > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection="selected"] {
-              &[selected="0"] .notButton{ display: inline; opacity: 1; }
-            }
+          &[filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical {
+            > .aggrGroup > .catGlyph:not([cFiltered]):hover .notButton{ display: inline; opacity: 1; }
           }
-          &[filtered_or="0"]{
-            > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selection="selected"] {
-              &[selected="-1"] { cursor: pointer; }
-            }
+          &[filtered_or="0"] > .wrapper > .summaryCategorical {
+            > .aggrGroup > .catGlyph[cFiltered="NOT"][selection="selected"] { cursor: pointer; }
           }
         }
         &:not([filtered_or="0"]){
-          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"]:hover .orButton{ display: inline; opacity: 1; }
+          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered]):hover .orButton{ display: inline; opacity: 1; }
         }
         &:not([filtered_and="0"]){
-          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[selected="0"]:hover .orButton{ display: inline; opacity: 1; }
+          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered]):hover .orButton{ display: inline; opacity: 1; }
         }
         &[isMultiValued=true]{
-          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph{
-            &[selected="0"][selection="selected"] .notButton{ display: inline; opacity: 1 }
+          > .wrapper > .summaryCategorical {
+            > .aggrGroup > .catGlyph:not([cFiltered]):hover .notButton{ display: inline; opacity: 1 }
           }
           &:hover .setMatrixButton{ display: inline-block !important; }
         }
@@ -3417,13 +3394,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         color: orangered;
         fill: orangered;
       }
-      .kshfSummary:not([isMultiValued="true"]):hover {
-        .aggrGlyph:not([selection="selected"]) > .measureLabel{ 
+/*      .kshfSummary:not([isMultiValued="true"]):hover {
+        .aggrGlyph:not([cSelection]) > .measureLabel{ 
           // set the color to original color, map uses black, other summaries use color_item_count
           color: @color_item_count;
           fill: black;
         }
-      }
+      }*/
       .timeSVG > [class^="measure_Highlight_"]{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
       &:not([relativeMode]) .mapGlyph > .aggr.preview{
