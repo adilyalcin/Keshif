@@ -1,14 +1,130 @@
+/*********************************
+
+keshif library
+
+Copyright (c) 2014-2016, University of Maryland
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the University of Maryland nor the names of its contributors
+  may not be used to endorse or promote products derived from this software
+  without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL MICHAEL BOSTOCK BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+************************************ */
+.overlay_answer {
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  pointer-events: none;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+.overlay_answer > .overlay_answer_background {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  opacity: 0;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition: opacity 0.5s;
+  -o-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
 .overlay_answer .highlightBox {
   position: absolute;
   border: solid 2px green;
   box-shadow: 0px 0px 5px green;
   cursor: pointer;
 }
-.overlay_answer[attention=true] .highlightBox {
+.overlay_answer .domTreeBox {
+  position: absolute;
+  border: solid 2px green;
+  border-radius: 3px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.overlay_answer .domTreeBox > .domName {
+  position: absolute;
+  left: -2px;
+  background-color: white;
+  border: solid 2px green;
+  height: 20px;
+  top: -21px;
+  font-size: 0.9em;
+  font-weight: 300;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 0px 3px;
+  box-shadow: 0px 0px 6px gray;
+  white-space: nowrap;
+}
+.overlay_answer .domTreeBox > .domName[primary] {
+  background-color: #efeadf;
+  font-weight: 500;
+}
+.overlay_answer .domTreeBox[locked] {
+  border-color: #cc2525;
+  box-shadow: inset 0px 0px 5px #cc2525;
+}
+.overlay_answer .domTreeBox[locked] > .domName {
+  border: solid 2px #cc2525;
+}
+lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes attention{ 0%, 100%{ -webkit-transform: scale(1); } 50%{ -webkit-transform: scale(1.07); }}
+@-moz-keyframes attention{ 0%, 100%{ -moz-transform: scale(1); } 50%{ -moz-transform: scale(1.07); }}
+@-o-keyframes attention{ 0%, 100%{ -o-transform: scale(1); } 50%{ -o-transform: scale(1.07); }}
+@keyframes attention{ 0%, 100%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); } 50%{-webkit-transform: scale(1.07);-moz-transform: scale(1.07);-ms-transform: scale(1.07);transform: scale(1.07); };
+}
+lesshat-selector {
+  -lh-property: 0; } 
+@-webkit-keyframes attention2{ 0%, 100%{ -webkit-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -webkit-transform: scale(1.07); background-color: rgba(30,250,30,0.3); }}
+@-moz-keyframes attention2{ 0%, 100%{ -moz-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -moz-transform: scale(1.07); background-color: rgba(30,250,30,0.3); }}
+@-o-keyframes attention2{ 0%, 100%{ -o-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -o-transform: scale(1.07); background-color: rgba(30,250,30,0.3); }}
+@keyframes attention2{ 0%, 100%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); background-color: rgba(1,1,1,0); } 50%{-webkit-transform: scale(1.07);-moz-transform: scale(1.07);-ms-transform: scale(1.07);transform: scale(1.07); background-color: rgba(30,250,30,0.3); };
+}
+.panel_overlay[attention=true] .highlightBox {
   -webkit-animation: attention2 0.3s 2 ease-in-out;
   -moz-animation: attention2 0.3s 2 ease-in-out;
   -o-animation: attention2 0.3s 2 ease-in-out;
   animation: attention2 0.3s 2 ease-in-out;
+}
+.panel_overlay[attention=true] .overlay_help {
+  -webkit-animation: attention 0.3s 2 ease-in-out;
+  -moz-animation: attention 0.3s 2 ease-in-out;
+  -o-animation: attention 0.3s 2 ease-in-out;
+  animation: attention 0.3s 2 ease-in-out;
+  box-shadow: 0px 0px 20px #992900, 0px 0px 10px #ff4500;
 }
 .tipsy.tipsy-helpin > .tipsy-arrow {
   border-color: white;
@@ -33,15 +149,20 @@
   -o-transform: scale(1, -1) rotate(90deg);
   transform: scale(1, -1) rotate(90deg);
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help {
-  width: 600px;
+.kshf[drag_cursor="grabbing"] .helpin_Header {
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+}
+.kshf .panel_overlay > .overlay_help {
+  width: 540px;
   position: absolute;
   top: 20px;
   bottom: inherit;
   -lh-property: 0;
-right:-webkit-calc(50% - 310px);
-right:-moz-calc(50% - 310px);
-right:calc(50% - 310px);
+left:-webkit-calc(50% - 310px);
+left:-moz-calc(50% - 310px);
+left:calc(50% - 310px);
 ;
   border-radius: 10px;
   font-family: Roboto, sans-serif;
@@ -52,28 +173,199 @@ right:calc(50% - 310px);
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-transition: all 500ms ease-in-out;
-  -moz-transition: all 500ms ease-in-out;
-  -o-transition: all 500ms ease-in-out;
-  transition: all 500ms ease-in-out;
+  -webkit-transition: opacity 500ms linear, -webkit-box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out;
+  -moz-transition: opacity 500ms linear, -moz-box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out;
+  -o-transition: opacity 500ms linear, box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out;
+  transition: opacity 500ms linear, box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock {
+.kshf .panel_overlay > .overlay_help > .PointNClick_Info {
   display: none;
+  font-size: 0.8em;
+  font-weight: 300;
+  padding: 5px 0px 3px 10px;
+  text-align: center;
+  cursor: default;
+  background-color: #efeadf;
+}
+.kshf .panel_overlay > .overlay_help .DescriptionToUnFreeze {
+  display: none;
+  cursor: pointer;
+}
+.kshf .panel_overlay > .overlay_help .DescriptionToUnFreeze:hover {
+  color: #cb5454;
+}
+.kshf .panel_overlay > .overlay_help[lockedPointNLearn] .DescriptionToUnFreeze {
+  display: block;
+}
+.kshf .panel_overlay > .overlay_help[lockedPointNLearn] .DescriptionToFreeze {
+  display: none;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header {
+  width: 100%;
+  background-color: #DDD9D0;
+  box-shadow: 0px 0px 5px #403b31;
+  z-index: 3;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+  -webkit-transition: background-color 400ms;
+  -moz-transition: background-color 400ms;
+  -o-transition: background-color 400ms;
+  transition: background-color 400ms;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header > .BackButton {
+  display: none;
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  cursor: pointer;
+  color: white;
+  text-shadow: 0px 0px 2px black;
+  font-size: 1.3em;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header > .BackButton:hover {
+  color: #cb5454;
+  text-shadow: none;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header > span[class^="helpInMode_"] {
+  display: inline-block;
+  position: relative;
+  padding: 1px 3px;
+  margin: 3px 0px 3px 5px;
+  background-color: white;
+  font-size: 0.8em;
+  font-weight: 300;
+  border-radius: 7px;
+  border: solid 1px gray;
+  cursor: pointer;
+  z-index: 100;
+  color: gray;
+  -webkit-transition: color 200ms;
+  -moz-transition: color 200ms;
+  -o-transition: color 200ms;
+  transition: color 200ms;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header > span[class^="helpInMode_"]:hover {
+  border-color: #cb5454;
+  color: #cb5454 !important;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header > span[class^="helpInMode_"][active] {
+  border-color: #5a2f1f;
+  box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;
+  color: #5a2f1f;
+  font-weight: 500;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header:hover {
+  background-color: #c8c1b2;
+}
+.kshf .panel_overlay > .overlay_help > .helpin_Header:hover > span[class^="helpInMode_"] {
+  color: black;
+}
+.kshf .panel_overlay > .overlay_help > .GuidedTour {
+  display: none;
+  background-color: #efeadf;
+  position: relative;
+}
+.kshf .panel_overlay > .overlay_help > .GuidedTour > .GuidedTourHead {
+  padding-top: 7px;
+  padding-bottom: 3px;
+  display: block;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: gray;
+  font-size: 0.9em;
+}
+.kshf .panel_overlay > .overlay_help > .GuidedTour > .TourStep {
+  position: absolute;
+  font-size: 0.8em;
+  font-weight: 300;
+  margin: 5px;
+  display: inline-block;
+  cursor: pointer;
+  border: solid 1px gray;
+  padding: 1px 5px;
+  border-radius: 6px;
+}
+.kshf .panel_overlay > .overlay_help > .GuidedTour > .TourStep:hover {
+  color: #cb5454;
+}
+.kshf .panel_overlay > .overlay_help > .GuidedTour > .NextStep {
+  right: 0px;
+  background-color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+.kshf .panel_overlay > .overlay_help > .GuidedTour > .PreviousStep {
+  left: 0px;
+}
+.kshf .panel_overlay > .overlay_help .QuestionTypes {
+  border-width: 1px 0px 1px 0px;
+  border-style: solid;
+  border-color: gray;
+  margin-bottom: 3px;
+  background-color: #F6F6F6;
+  width: 100%;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.kshf .panel_overlay > .overlay_help .QuestionTypes > .TypeLabel {
+  display: block;
+  margin: 4px;
+  font-size: 0.9em;
+  color: #cb5454;
+  text-align: center;
+  border-bottom: solid 1px;
+  letter-spacing: 2px;
+}
+.kshf .panel_overlay > .overlay_help .QuestionTypes > .TypeGroup {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  white-space: nowrap;
+  height: 36px;
+  text-align: left;
+  font-size: 0.9em;
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+.kshf .panel_overlay > .overlay_help .QuestionTypes.ActionTypes > .TypeLabel:before {
+  content: "Actions";
+}
+.kshf .panel_overlay > .overlay_help .QuestionTypes.TopicTypes > .TypeLabel:before {
+  content: "Components";
+}
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock {
   cursor: default;
   position: relative;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoHeader {
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoHeader {
   font-weight: 400;
   border-bottom: solid 1px lightgray;
   font-size: 1.1em;
   margin-bottom: 3px;
   position: relative;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoShowHide {
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoShowHide {
   font-weight: 300;
   font-size: 0.9em;
   cursor: pointer;
@@ -81,310 +373,19 @@ right:calc(50% - 310px);
   right: 10px;
   top: 1px;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoShowHide:before {
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoShowHide:before {
   content: "(Hide)";
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock > .TopicInfoShowHide:hover {
-  color: orangered;
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoShowHide:hover {
+  color: #cb5454;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoBlockContent {
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoBlockContent {
   display: none;
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoShowHide:before {
+.kshf .panel_overlay > .overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoShowHide:before {
   content: "(Show)";
 }
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock {
-  font-weight: 300;
-  font-size: 0.8em;
-  margin: 5px 0px;
-  padding: 0px 10px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock > .SimilarTopicsContent {
-  font-weight: 300;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicItem {
-  margin: 5px;
-  text-align: left;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicItemText {
-  cursor: pointer;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicItemText:hover {
-  color: orangered;
-  text-decoration: underline;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect {
-  cursor: pointer;
-  margin-left: 5px;
-  display: inline-block;
-  text-decoration: underline;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:hover {
-  color: orangered;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:before {
-  content: "(";
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:after {
-  content: ")";
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock {
-  display: none;
-  font-weight: 300;
-  font-size: 0.8em;
-  margin: 5px 0px;
-  padding: 0px 10px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent {
-  text-align: left;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem {
-  margin: 5px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .RelevantIcon {
-  margin-right: 4px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic {
-  margin: 0px 5px;
-  color: black;
-  cursor: pointer;
-  text-decoration: underline;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:before {
-  content: "( ";
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:after {
-  content: " )";
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] {
-  color: black;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] > .fa:before {
-  color: green;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=false] {
-  color: red;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-times-circle {
-  color: red;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-check-circle {
-  color: green;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicMoreInfo {
-  display: none;
-  font-weight: 300;
-  font-size: 0.8em;
-  margin: 5px 0px;
-  padding: 0px 10px;
-  cursor: default;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .TopicMoreInfo > .TopicMoreInfoHeader {
-  font-weight: 500;
-  border-bottom: solid 1px lightgray;
-  font-size: 1.1em;
-  margin-bottom: 3px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .answer_box {
-  display: none;
-  position: absolute;
-  top: 3px;
-  font-weight: 300;
-  border: solid 1px gray;
-  border-radius: 10px;
-  font-size: 0.9em;
-  cursor: pointer;
-  padding: 0px 3px;
-  background-color: white;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .answer_box.answer_ok {
-  right: 3px;
-  background-color: #918D85;
-  color: white;
-  font-weight: 400;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .answer_box.answer_ok:hover {
-  background-color: orangered;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .answer_box.answer_back {
-  left: 3px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .answer_box.answer_back:hover {
-  color: orangered;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .SearchBlock {
-  position: relative;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  overflow: hidden;
-  background-color: #efeadf;
-  -webkit-transition: all 500ms linear;
-  -moz-transition: all 500ms linear;
-  -o-transition: all 500ms linear;
-  transition: all 500ms linear;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions {
-  overflow-y: auto;
-  overflow-x: hidden;
-  border-color: gray;
-  border-style: solid;
-  border-width: 1px 0px 1px 0px;
-  box-shadow: 0px 0px 2px gray;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock {
-  margin: 3px 4px;
-  padding: 4px;
-  border: solid 1px lightgray;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  display: block;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock:hover {
-  background-color: #efeadf;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .notInContext {
-  display: none;
-  position: absolute;
-  top: 1px;
-  left: 1px;
-  width: 20px;
-  text-align: center;
-  color: gray;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionText {
-  padding: 0px 40px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionText > .fa-question-circle {
-  color: gray;
-  margin: 0px 3px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionIcons {
-  position: absolute;
-  right: 2px;
-  top: 4px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock > .QuestionIcons .icon {
-  font-size: 0.8em;
-  font-weight: 300;
-  margin-top: 4px;
-  color: gray;
-  width: 16px;
-  text-align: center;
-  vertical-align: top;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .Questions > .QuestionBlock[outOfContext] > .notInContext {
-  display: block;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .MoreDocumentation {
-  font-weight: 300;
-  font-size: 0.7em;
-  padding: 3px;
-  cursor: default;
-  background-color: #efeadf;
-  overflow: hidden;
-  -webkit-transition: all 500ms linear;
-  -moz-transition: all 500ms linear;
-  -o-transition: all 500ms linear;
-  transition: all 500ms linear;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help > .MoreDocumentation > .MoreInfoLink {
-  color: black;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] {
-  height: initial;
-  width: 370px;
-  -lh-property: 0;
-right:-webkit-calc(50% - 170px);
-right:-moz-calc(50% - 170px);
-right:calc(50% - 170px);
-;
-  top: 100px;
-  box-shadow: 0px 0px 20px black;
-  margin: initial;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true][attention=true] {
-  -webkit-animation: attention 0.3s 2 ease-in-out;
-  -moz-animation: attention 0.3s 2 ease-in-out;
-  -o-animation: attention 0.3s 2 ease-in-out;
-  animation: attention 0.3s 2 ease-in-out;
-  box-shadow: 0px 0px 20px #992900, 0px 0px 10px #ff4500;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock > .QuestionTypes {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock > .hideNonRelevant {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock > .TextSearchBlock {
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-  cursor: grab;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .SearchBlock .SearchTextBox {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .answer_box {
-  display: block;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .MoreDocumentation {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .TopicMoreInfo {
-  display: block;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .TopicRelWhenBlock {
-  display: block;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .overlay_Close {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions {
-  -webkit-box-flex: initial;
-  -moz-box-flex: initial;
-  -webkit-flex: initial;
-  -ms-flex: initial;
-  flex: initial;
-  overflow: hidden;
-  padding: 10px 0px;
-  background-color: #f9f6f1;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true] {
-  display: block !important;
-  font-weight: 500;
-  font-size: 1.1em;
-  border-width: 0px;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true]:hover {
-  background-color: inherit;
-  cursor: default;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true] > .QuestionIcons {
-  display: none;
-}
-.kshf .panel.panel_overlay > .overlay_content.overlay_help[question=true] > .Questions > .QuestionBlock[selected=true] > .notInContext {
-  display: none;
-}
-.QuestionTypes {
-  border-width: 1px 0px 1px 0px;
-  border-style: solid;
-  border-color: gray;
-  margin-bottom: 3px;
-  padding: 0px 0px 0px 4px;
-  background-color: #F6F6F6;
-  height: 40px;
+.kshf .panel_overlay > .overlay_help > .heyooo {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -398,64 +399,537 @@ right:calc(50% - 170px);
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.QuestionTypes > .TypeLabel {
-  width: 75px;
+.kshf .panel_overlay > .overlay_help > .heyooo .browseTopicBlock {
+  display: none;
+  width: 160px;
+  min-height: 300px;
+  border-right: solid 1px gray;
+  box-shadow: 0px 0px 2px gray;
+  cursor: default;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock {
+  font-weight: 300;
+  font-size: 0.8em;
+  margin: 5px 0px;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock > .SimilarTopicsContent {
+  font-weight: 300;
+  padding: 0px 10px;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicItem {
+  margin: 5px;
+  text-align: left;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicItemText {
+  cursor: pointer;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicItemText:hover {
   color: #cb5454;
-  height: 1em;
+  text-decoration: underline;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect {
+  cursor: pointer;
+  margin-left: 5px;
+  display: inline-block;
+  text-decoration: underline;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:hover {
+  color: #cb5454;
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:before {
+  content: "(";
+}
+.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:after {
+  content: ")";
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock {
+  display: none;
+  font-weight: 300;
+  font-size: 0.8em;
+  margin: 5px 0px;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent {
+  text-align: left;
+  padding: 0px 10px;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem {
+  margin: 5px;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .RelevantIcon {
+  margin-right: 4px;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic {
+  margin: 0px 5px;
+  color: black;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:before {
+  content: "( ";
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:after {
+  content: " )";
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] {
+  color: black;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] > .fa:before {
+  color: green;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=false] {
+  color: red;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-times-circle {
+  color: red;
+}
+.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-check-circle {
+  color: green;
+}
+.kshf .panel_overlay > .overlay_help > .TopicMoreInfo {
+  font-weight: 300;
+  font-size: 0.8em;
+  cursor: default;
+}
+.kshf .panel_overlay > .overlay_help > .TopicMoreInfo > .TopicMoreInfoHeader {
+  font-weight: 500;
+  border-bottom: solid 1px lightgray;
+  font-size: 1.1em;
+  margin-bottom: 3px;
+}
+.kshf .panel_overlay > .overlay_help > .answer_box {
+  position: absolute;
+  top: 30px;
+  font-weight: 300;
+  border: solid 1px gray;
+  border-radius: 10px;
+  font-size: 0.9em;
+  cursor: pointer;
+  padding: 0px 3px;
+  background-color: white;
+  z-index: 100;
+}
+.kshf .panel_overlay > .overlay_help > .answer_box.answer_ok {
+  right: 3px;
+  background-color: #918D85;
+  color: white;
+  font-weight: 400;
+}
+.kshf .panel_overlay > .overlay_help > .answer_box.answer_ok:hover {
+  background-color: #cb5454;
+}
+.kshf .panel_overlay > .overlay_help > .answer_box.answer_back {
+  left: 3px;
+}
+.kshf .panel_overlay > .overlay_help > .answer_box.answer_back:hover {
+  color: #cb5454;
+}
+.kshf .panel_overlay > .overlay_help .SearchBlock {
+  position: relative;
+  overflow: hidden;
+  background-color: #efeadf;
+  -webkit-transition: background-color 200ms linear;
+  -moz-transition: background-color 200ms linear;
+  -o-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
-  text-align: right;
 }
-.QuestionTypes > .TypeLabel:after {
-  content: ": ";
-}
-.QuestionTypes > .TypeGroup {
-  overflow-x: scroll;
-  overflow-y: hidden;
-  white-space: nowrap;
-  height: 36px;
-  text-align: left;
-  font-size: 0.8em;
+.kshf .panel_overlay > .overlay_help .TopicsList {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-color: gray;
+  border-style: solid;
+  border-width: 0px 0px 1px 0px;
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
 }
-.QuestionTypes.ActionTypes > .TypeLabel:before {
-  content: "Actions";
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock {
+  margin: 7px 4px;
+  padding: 4px;
+  border: solid 1px lightgray;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  display: block;
+  text-align: left;
 }
-.QuestionTypes.TopicTypes > .TypeLabel:before {
-  content: "Keywords";
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock:hover {
+  background-color: #efeadf;
+}
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .notInContext {
+  display: none;
+  position: absolute;
+  top: 4px;
+  left: 1px;
+  width: 20px;
+  text-align: center;
+  color: gray;
+}
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicText {
+  padding: 0px 35px 0px 16px;
+}
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicText > .fa-question-circle {
+  color: gray;
+  margin: 0px 3px;
+}
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicIcons {
+  position: absolute;
+  right: 2px;
+  top: 4px;
+}
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicIcons .icon {
+  font-size: 0.8em;
+  font-weight: 300;
+  margin-top: 4px;
+  color: gray;
+  width: 13px;
+  text-align: center;
+  vertical-align: top;
+}
+.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock[outOfContext] > .notInContext {
+  display: block;
+}
+.kshf .panel_overlay > .overlay_help > .RelatedTopics {
+  display: none;
+  font-weight: 300;
+  text-align: center;
+  cursor: default;
+  font-size: 0.9em;
+  box-shadow: 0px 0px 3px #54524e;
+  background-color: #d6d2cc;
+  padding: 2px 0px 0px 0px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative;
+}
+.kshf .panel_overlay > .overlay_help > .RelatedTopics:after {
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  display: block;
+  position: absolute;
+  right: 3px;
+  top: 4px;
+  content: "\f103";
+  font-size: 0.9em;
+}
+.kshf .panel_overlay > .overlay_help > .RelatedTopics:hover {
+  background-color: #bfb9b0;
+}
+.kshf .panel_overlay > .overlay_help > .RelatedTopics:hover:after {
+  color: orangered;
+  content: "\f102";
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing {
+  display: none;
+  cursor: default;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Header {
+  padding: 7px 5px;
+  border-bottom: solid 1px gray;
+  font-size: 1.1em;
+  font-weight: 400;
+  background-color: #9a968c;
+  color: white;
+  text-shadow: 0px 0px 4px black;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content {
+  padding: 10px 5px;
+  background-color: #f5f4f2;
+  padding: 7px 10px;
+  box-shadow: 0px 2px 2px gray;
+  font-weight: 300;
+  font-size: 0.9em;
+  text-align: left;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip {
+  text-align: center;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip:not(:first-child):before {
+  display: block;
+  content: "OR";
+  color: #BF360C;
+  font-family: monospace;
+  font-weight: 600;
+  padding: 0px 4px 2px;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip > .subAnswer:not(:first-child):before {
+  display: inline-block;
+  content: "then";
+  color: #BF360C;
+  font-family: monospace;
+  font-weight: 600;
+  padding: 0px 4px;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > p {
+  margin: 0 0 0.7em 0;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content .breadCrumb {
+  font-size: 0.9em;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content_More {
+  margin: 5px 0px 5px 0px;
+  padding: 4px 10px;
+  font-size: 0.8em;
+  font-weight: 300;
+  border-bottom: solid 1px gray;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content_More > p {
+  margin: 0 0 0.7em 0;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing .bolderInfo {
+  font-weight: bolder;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0px 4px;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-total {
+  color: black;
+  background-color: #dee2e6;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-filtered {
+  color: white;
+  background-color: #94a4af;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-highlighted {
+  color: white;
+  background-color: #ff6a33;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-compare_A {
+  color: white;
+  background-color: #2f4f4f;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-compare_B {
+  color: white;
+  background-color: #ff126a;
+}
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-compare_C {
+  color: black;
+  background-color: #fffedc;
+}
+.kshf .panel_overlay > .overlay_help > .overlay_Close {
+  z-index: 1000;
+}
+.kshf .panel_overlay > .overlay_help > .MoreDocumentation {
+  font-weight: 300;
+  font-size: 0.7em;
+  padding: 3px;
+  cursor: default;
+  background-color: #efeadf;
+  box-shadow: inset 0px 0px 2px gray;
+  overflow: hidden;
+  color: #7b7b7b;
+  -webkit-flex-shrink: 0;
+  flex-shrink: 0;
+}
+.kshf .panel_overlay > .overlay_help > .MoreDocumentation:hover {
+  color: black;
+}
+.kshf .panel_overlay > .overlay_help > .MoreDocumentation > .MoreDocumentationLink {
+  color: black;
+}
+.kshf .panel_overlay > .overlay_help[hideRelatedTopics] > .RelatedTopics:after {
+  content: "\f102";
+}
+.kshf .panel_overlay > .overlay_help[hideRelatedTopics] > .RelatedTopics:hover:after {
+  content: "\f103";
+}
+.kshf .panel_overlay > .overlay_help[hideRelatedTopics] .TopicsList {
+  display: none;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_answer {
+  pointer-events: all;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_answer > .overlay_answer_background {
+  opacity: 0.2;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help {
+  width: 370px;
+  top: 60px;
+  -lh-property: 0;
+left:-webkit-calc(50% - 185px);
+left:-moz-calc(50% - 185px);
+left:calc(50% - 185px);
+;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .PointNClick_Info {
+  display: block;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .SelectedThing {
+  display: block;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .FilterBlock {
+  display: none;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .RelatedTopics {
+  display: block;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicsList {
+  max-height: 110px;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock {
+  margin: 3px;
+  padding: 2px;
+  font-size: 0.8em;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock > .TopicIcons {
+  display: none !important;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TextSearchBlock {
+  display: none;
+}
+.kshf .panel_overlay[show="help-pointnlearn"] .SelectedThing_Content_More {
+  display: none !important;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_answer > .overlay_answer_background {
+  opacity: 0.2;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help {
+  width: 370px;
+  top: 60px;
+  -lh-property: 0;
+left:-webkit-calc(50% - 185px);
+left:-moz-calc(50% - 185px);
+left:calc(50% - 185px);
+;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .GuidedTour {
+  display: block;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .SelectedThing {
+  display: block;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .SelectedThing > .SelectedThing_Header > .fa-hand-pointer-o {
+  display: none;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .RelatedTopics {
+  display: block;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help .TopicsList {
+  max-height: 110px;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help .TopicBlock {
+  margin: 3px;
+  padding: 2px;
+  font-size: 0.8em;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help .TopicBlock > .TopicIcons {
+  display: none !important;
+}
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help .TextSearchBlock {
+  display: none;
+}
+.kshf .panel_overlay[show="help-guidedtour"] .SelectedThing_Content_More {
+  display: none !important;
+}
+.kshf .panel_overlay[show="help-browse"] .heyooo > .browseTopicBlock {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -moz-box-orient: vertical;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.kshf .panel_overlay[show="help-browse"] .TopicBlock {
+  font-size: 0.9em;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_answer {
+  pointer-events: all;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_answer > .overlay_answer_background {
+  opacity: 0.2;
+}
+.kshf .panel_overlay[show="answer"] .BackButton {
+  display: block !important;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help {
+  width: 370px;
+  -lh-property: 0;
+left:-webkit-calc(50% - 170px);
+left:-moz-calc(50% - 170px);
+left:calc(50% - 170px);
+;
+  top: 100px;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help .HowDoI:after {
+  content: " ... ";
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help > .TopicRelWhenBlock {
+  display: block;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help > .overlay_Close::before {
+  content: "\f058";
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help > .SelectedThing {
+  display: block;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help > .RelatedTopics {
+  display: block;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help .TopicsList {
+  max-height: 250px;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help .TopicBlock {
+  margin: 3px;
+  font-size: 0.8em;
+}
+.kshf .panel_overlay[show="answer"] > .overlay_help .TopicBlock > .TopicIcons {
+  display: none !important;
 }
 .QuestionTypeSelect {
-  display: inline-block;
+  display: block;
   border-radius: 5px;
   border: solid 1px #BCBCBC;
-  margin: 1px 2px;
+  margin: 0px 1px 4px 2px;
   padding: 1px 3px;
+  height: 21px;
   cursor: pointer;
   background-color: white;
   font-weight: 300;
+  position: relative;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
 .QuestionTypeSelect:hover {
-  color: orangered;
+  color: #cb5454;
 }
 .QuestionTypeSelect[selected=true] {
-  color: orangered;
+  color: #cb5454;
   font-weight: 500;
   border-color: red;
 }
+.QuestionTypeSelect[hasIcon] > .label {
+  max-width: calc(100% - 25px);
+}
+.QuestionTypeSelect > .label {
+  max-width: calc(100% - 10px);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+}
 .QuestionTypeSelect > .topicInfoMark {
+  position: absolute;
+  top: 2px;
+  right: 1px;
   color: gray;
-  margin: 0px 2px;
 }
 .QuestionTypeSelect > .topicInfoMark:hover {
-  color: orangered;
+  color: #cb5454;
 }
 .QuestionTypeSelect > .num {
   margin-left: 2px;
@@ -476,17 +950,19 @@ right:calc(50% - 170px);
   font-weight: 600;
   padding-bottom: 3px;
   font-family: sans-serif;
-  font-size: 1.2em;
+  cursor: default;
 }
 .TextSearchBlock > .fa-search {
   color: gray;
   font-size: 0.8em;
 }
 .TextSearchBlock > .SearchTextBox {
+  display: inline-block;
   width: 80px;
   border-width: 0px 0px 1px 0px;
   border-style: solid;
   border-color: #cb5454;
+  text-align: center;
   margin: 1px 1px 0px 1px;
   font-family: Roboto;
   font-size: 1em;
@@ -517,38 +993,6 @@ right:calc(50% - 170px);
 .textSearch_highlight {
   background-color: yellow;
 }
-.hideNonRelevant {
-  position: absolute;
-  left: 3px;
-  top: 4px;
-  font-size: 0.8em;
-  font-weight: 300;
-  border: solid 1px gray;
-  border-radius: 20px;
-  padding: 0px 3px;
-  /* margin: 0px 3px; */
-  margin: 0px 3px;
-  cursor: pointer;
-  background-color: white;
-}
-.hideNonRelevant > .fa {
-  margin: 0px 2px;
-}
-.hideNonRelevant:hover {
-  color: orangered;
-}
-.hideNonRelevant[hide="true"]:after {
-  content: "Relevant";
-}
-.hideNonRelevant[hide="true"] > .fa:before {
-  content: "\f205";
-}
-.hideNonRelevant[hide="false"]:after {
-  content: "Other";
-}
-.hideNonRelevant[hide="false"] > .fa:before {
-  content: "\f204";
-}
 .closePanel {
   position: absolute;
   right: 3px;
@@ -560,19 +1004,25 @@ right:calc(50% - 170px);
   color: gray;
 }
 .closePanel:hover {
-  color: orangered;
+  color: #cb5454;
 }
-lesshat-selector {
-  -lh-property: 0; } 
-@-webkit-keyframes attention{ 0%{ -webkit-transform: scale(1); } 50%{ -webkit-transform: scale(1.07); } 100%{ -webkit-transform: scale(1); }}
-@-moz-keyframes attention{ 0%{ -moz-transform: scale(1); } 50%{ -moz-transform: scale(1.07); } 100%{ -moz-transform: scale(1); }}
-@-o-keyframes attention{ 0%{ -o-transform: scale(1); } 50%{ -o-transform: scale(1.07); } 100%{ -o-transform: scale(1); }}
-@keyframes attention{ 0%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); } 50%{-webkit-transform: scale(1.07);-moz-transform: scale(1.07);-ms-transform: scale(1.07);transform: scale(1.07); } 100%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); };
+.helpin-breadcrumb {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  color: white !important;
+  padding: 2px;
+  font-size: 0.7em;
+  vertical-align: top;
+  text-align: center;
+  text-shadow: none;
 }
-lesshat-selector {
-  -lh-property: 0; } 
-@-webkit-keyframes attention2{ 0%{ -webkit-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -webkit-transform: scale(1.07); background-color: rgba(30,250,30,0.3); } 100%{ -webkit-transform: scale(1); background-color: rgba(1,1,1,0); }}
-@-moz-keyframes attention2{ 0%{ -moz-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -moz-transform: scale(1.07); background-color: rgba(30,250,30,0.3); } 100%{ -moz-transform: scale(1); background-color: rgba(1,1,1,0); }}
-@-o-keyframes attention2{ 0%{ -o-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -o-transform: scale(1.07); background-color: rgba(30,250,30,0.3); } 100%{ -o-transform: scale(1); background-color: rgba(1,1,1,0); }}
-@keyframes attention2{ 0%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); background-color: rgba(1,1,1,0); } 50%{-webkit-transform: scale(1.07);-moz-transform: scale(1.07);-ms-transform: scale(1.07);transform: scale(1.07); background-color: rgba(30,250,30,0.3); } 100%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); background-color: rgba(1,1,1,0); };
+.helpin-breadcrumb.fa-mouse-pointer {
+  background-color: #ff4500;
+}
+.helpin-breadcrumb.fa-filter {
+  background-color: #788d9b;
+}
+.helpin-breadcrumb.fa-lock {
+  background-color: #2f4f4f;
 }

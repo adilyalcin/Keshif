@@ -1,23 +1,130 @@
+/*********************************
+
+keshif library
+
+Copyright (c) 2014-2016, University of Maryland
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the University of Maryland nor the names of its contributors
+  may not be used to endorse or promote products derived from this software
+  without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL MICHAEL BOSTOCK BE LIABLE FOR ANY DIRECT,
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+************************************ */
+
 @import "../../lesshat";
 
+
+@color_bars: #B1BDC5; 
+@color_distr_total: #DEE2E6;
+@color_preview: lighten(orangered, 10%);
+@color_Compare_A: darkslategray;
+@color_Compare_B: #ff126a;
+@color_Compare_C: #FFFEDC;
+@color_axis_line: rgb(182, 179, 179);
+@color_item_count: #969DA3;;
+@color_filter_clear: #788D9B;
+@color_preview_clear: orangered;
+@color_onRecord_back: #EFEADF;
+@color_hoverAction: #cb5454;
+
 .overlay_answer{
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  pointer-events: none;
+  .transition(opacity 0.5s);
+  > .overlay_answer_background{
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    opacity: 0;
+    .transition(opacity 0.5s);
+  }
+
   .highlightBox{
     position: absolute;
     border: solid 2px green;
     box-shadow: 0px 0px 5px green;
     cursor: pointer;
   }
-  &[attention=true]{
-    .highlightBox{
-      .animation(attention2 0.3s 2 ease-in-out);
+  .domTreeBox{
+    position: absolute;
+    border: solid 2px green;
+    border-radius: 3px;
+    cursor: pointer;
+    .user-select(none);
+    > .domName{
+      position: absolute;
+      left: -2px;
+      background-color: white;
+      border: solid 2px green;
+      height: 20px;
+      top: -21px;
+      font-size: 0.9em;
+      font-weight: 300;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      padding: 0px 3px;
+      box-shadow: 0px 0px 6px gray;
+      white-space: nowrap;
+      &[primary]{
+        background-color: #efeadf;
+        font-weight: 500;
+      }
+    }
+    &[locked]{
+      border-color: #cc2525;
+      box-shadow: inset 0px 0px 5px #cc2525;
+      > .domName{
+        border: solid 2px #cc2525;
+      }
     }
   }
 }
 
-.tipsy.tipsy-helpin {
-  > .tipsy-arrow{
-    border-color: white;
+.keyframes(~'attention, 0%, 100%{ transform: scale(1); } 50%{ transform: scale(1.07); }');
+.keyframes(~'attention2, 0%, 100%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); }');
+
+.panel_overlay[attention=true] {
+  .highlightBox{ 
+    .animation(attention2 0.3s 2 ease-in-out);
   }
+  .overlay_help{
+    .animation(attention 0.3s 2 ease-in-out);
+    box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
+  }
+}
+
+
+.tipsy.tipsy-helpin {
+  > .tipsy-arrow{ border-color: white; }
   > .tipsy-inner{
     padding: 6px;
     border: solid 2px white;
@@ -31,25 +138,174 @@
   }
 }
 
+// Custom fa flip style for categorical summary
+.fa-histogram-flip{ .transform(~'scale(1, -1) rotate(90deg)'); }
 
-.fa-histogram-flip{
-  .transform(~'scale(1, -1) rotate(90deg)');
+.kshf[drag_cursor="grabbing"] .helpin_Header{
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
 }
 
-.kshf .panel.panel_overlay > .overlay_content.overlay_help{
-  width: 600px;
+.kshf .panel_overlay > .overlay_help{
+  width: 540px;
   position: absolute;
   top: 20px;
   bottom: inherit;
-  .calc(right, ~"50% - 310px");
+  .calc(left, ~"50% - 310px");
   border-radius: 10px;
   font-family: Roboto, sans-serif;
   .flex-direction(column);
-  .transition(all 500ms ease-in-out);
+  .transition(opacity 500ms linear, box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out );
   .user-select(none);
 
-  > .TopicInfoBlock{
+  > .PointNClick_Info{ 
     display: none;
+    font-size: 0.8em;
+    font-weight: 300;
+    padding: 5px 0px 3px 10px;
+    text-align: center;
+    cursor: default;
+    background-color: #efeadf;
+  }
+  .DescriptionToUnFreeze{ 
+    display: none;
+    cursor: pointer;
+    &:hover{ color: @color_hoverAction; }
+  }
+  &[lockedPointNLearn] {
+    .DescriptionToUnFreeze{ display: block; }
+    .DescriptionToFreeze  { display: none; }
+  }
+
+  > .helpin_Header{
+    width: 100%;
+    background-color: #DDD9D0;
+    box-shadow: 0px 0px 5px #403b31;
+    z-index: 3;
+
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
+
+    .transition(background-color 400ms);
+
+    > .BackButton{
+      display: none;
+      position: absolute;
+      top: 2px;
+      left: 4px;
+      cursor: pointer;
+      color: white;
+      text-shadow: 0px 0px 2px black;
+      font-size: 1.3em;
+      &:hover { 
+        color: @color_hoverAction;
+        text-shadow: none;
+      }
+    }
+
+    > span[class^="helpInMode_"]{
+      display: inline-block;
+      position: relative;
+      border: solid 1px gray;
+      padding: 1px 3px;
+      margin: 3px 0px 3px 5px;
+      background-color: white;
+      font-size: 0.8em;
+      font-weight: 300;
+      border-radius: 7px;
+      border: solid 1px gray;
+      cursor: pointer;
+      z-index: 100;
+      color: gray;
+      .transition(color 200ms);
+      &:hover{ 
+        border-color: @color_hoverAction;
+        color: @color_hoverAction !important;
+      }
+      &[active]{
+        border-color: #5a2f1f;
+        box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;;
+        color: #5a2f1f;
+        font-weight: 500;
+      }
+    }
+    &:hover {
+      background-color: darken(#DDD9D0, 10%);
+      > span[class^="helpInMode_"]{ color: black; }
+    }
+  }
+
+  > .GuidedTour{
+    display: none;
+    background-color: #efeadf;
+    position: relative;
+    > .GuidedTourHead{
+      padding-top: 7px;
+      padding-bottom: 3px;
+      display: block;
+      font-weight: 500;
+      letter-spacing: 2px;
+      color: gray;
+      font-size: 0.9em;
+    }
+    > .TourStep{
+      position: absolute;
+      font-size: 0.8em;
+      font-weight: 300;
+      margin: 5px;
+      display: inline-block;
+      cursor: pointer;
+      border: solid 1px gray;
+      padding: 1px 5px;
+      border-radius: 6px;
+      &:hover{ color: @color_hoverAction; }
+    }
+    > .NextStep{
+      right: 0px;
+      background-color: rgba(255,255,255,0.6);
+      font-weight: 500;
+    }
+    > .PreviousStep{
+      left: 0px;
+    }
+  }
+
+  .QuestionTypes{
+    border-width: 1px 0px 1px 0px;
+    border-style: solid;
+    border-color: gray;
+    margin-bottom: 3px;
+    background-color: #F6F6F6;
+    width: 100%;
+    .flex(1);
+    .display(flex);
+    .flex-direction(column);
+    > .TypeLabel{
+      display: block;
+      margin: 4px;
+      font-size: 0.9em;
+      color: #cb5454;
+      text-align: center;
+      border-bottom: solid 1px;
+      letter-spacing: 2px;
+    }
+    > .TypeGroup{
+      overflow-x: hidden;
+      overflow-y: scroll;
+      white-space: nowrap;
+      height: 36px;
+      text-align: left;
+      font-size: 0.9em;
+      .flex(1);
+    }
+    &.ActionTypes > .TypeLabel:before{ content: "Actions"  }
+    &.TopicTypes  > .TypeLabel:before{ content: "Components" }
+  }
+
+
+  > .TopicInfoBlock{
     cursor: default;
     position: relative;
     > .TopicInfoHeader{
@@ -67,7 +323,7 @@
       right: 10px;
       top: 1px;
       &:before{ content: "(Hide)"; }
-      &:hover{ color: orangered; }
+      &:hover{ color: @color_hoverAction; }
     }
     &[showBlockContent=false]{
       > .TopicInfoBlockContent{ display: none; }
@@ -75,13 +331,27 @@
     }
   }
 
+  >.heyooo{
+    .display(flex);
+    .flex-direction(row);
+    .browseTopicBlock{
+      display: none;
+      width: 160px;
+      min-height: 300px;
+      border-right: solid 1px gray;
+      box-shadow: 0px 0px 2px gray;
+      cursor: default;
+    }
+  }
+
+
   > .SimilarTopicsBlock{
     font-weight: 300;
     font-size: 0.8em;
     margin: 5px 0px;
-    padding: 0px 10px;
     > .SimilarTopicsContent{
       font-weight: 300;
+      padding: 0px 10px;
     }
     .SimilarTopicItem{
       margin: 5px;
@@ -90,7 +360,7 @@
     .SimilarTopicItemText{
       cursor: pointer;  
       &:hover{ 
-        color: orangered;
+        color: @color_hoverAction;
         text-decoration: underline;
       }
     }
@@ -99,7 +369,7 @@
       margin-left: 5px;
       display: inline-block;
       text-decoration: underline;
-      &:hover{ color: orangered; }
+      &:hover{ color: @color_hoverAction; }
       &:before{ content: "("; }
       &:after { content: ")"; }
     }
@@ -110,9 +380,9 @@
     font-weight: 300;
     font-size: 0.8em;
     margin: 5px 0px;
-    padding: 0px 10px;
     > .ContextContent{
       text-align: left;
+      padding: 0px 10px;
       > .ContextItem{
         margin: 5px;
         > .RelevantIcon{
@@ -141,11 +411,8 @@
   }
 
   > .TopicMoreInfo{
-    display: none;
     font-weight: 300;
     font-size: 0.8em;
-    margin: 5px 0px;
-    padding: 0px 10px;
     cursor: default;
     > .TopicMoreInfoHeader{
       font-weight: 500;
@@ -153,13 +420,11 @@
       font-size: 1.1em;
       margin-bottom: 3px;
     }
-    > .TopicMoreInfoContent{ }
   }
 
   > .answer_box{
-    display: none;
     position: absolute;
-    top: 3px;
+    top: 30px;
     font-weight: 300;
     border: solid 1px gray;
     border-radius: 10px;
@@ -167,66 +432,64 @@
     cursor: pointer;
     padding: 0px 3px;
     background-color: white;
+    z-index: 100;
     &.answer_ok{ 
       right: 3px;
       background-color: #918D85;
       color: white;
       font-weight: 400;
-      &:hover{ background-color: orangered; }
+      &:hover{ background-color: @color_hoverAction; }
     }
     &.answer_back{ 
       left: 3px;
-      &:hover{ color: orangered; }
+      &:hover{ color: @color_hoverAction; }
     }
     
   }
-  > .SearchBlock{
+  .SearchBlock{
     position: relative;
-    //background-color: #EEEEEE;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
     overflow: hidden;
     background-color: #efeadf;
-    .transition(all 500ms linear);
+    .transition(background-color 200ms linear);
     .flex-shrink(0);
   }
 
-  > .Questions{
+  .TopicsList{
     overflow-y: auto;
     overflow-x: hidden;
 
     border-color: gray;
     border-style: solid;
-    border-width: 1px 0px 1px 0px;
-    box-shadow: 0px 0px 2px gray;
+    border-width: 0px 0px 1px 0px;
 
     .flex(1);
-    > .QuestionBlock{
-      margin: 3px 4px;
+    > .TopicBlock{
+      margin: 7px 4px;
       padding: 4px;
       border: solid 1px lightgray;
       border-radius: 6px;
       cursor: pointer;
       position: relative;
       display: block;
+      text-align: left;
       &:hover{ background-color: #efeadf; }
       > .notInContext{
         display: none;
         position: absolute;
-        top: 1px;
+        top: 4px;
         left: 1px;
         width: 20px;
         text-align: center;
         color: gray;
       }
-      > .QuestionText{
-        padding: 0px 40px;
+      > .TopicText{
+        padding: 0px 35px 0px 16px;
         > .fa-question-circle{ 
           color: gray;
           margin: 0px 3px;
         }
       }
-      > .QuestionIcons{
+      > .TopicIcons{
         position: absolute;
         right: 2px;
         top: 4px;
@@ -235,134 +498,267 @@
           font-weight: 300;
           margin-top: 4px;
           color: gray;
-          width: 16px;
+          width: 13px;
           text-align: center;
           vertical-align: top;
         }
       }
-      &[outOfContext] {
-        > .notInContext{ display: block; }
+      &[outOfContext] > .notInContext{ display: block; }
+    }
+  }
+
+  > .RelatedTopics{ 
+    display: none;
+    font-weight: 300;
+    text-align: center;
+    cursor: default;
+    font-size: 0.9em;
+    box-shadow: 0px 0px 3px #54524e;
+    background-color: #d6d2cc;
+    padding: 2px 0px 0px 0px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    position: relative;
+    &:after{ 
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      display: block;
+      position: absolute;
+      right: 3px;
+      top: 4px;
+      content: "\f103"; // plus-square-o
+      font-size: 0.9em;
+    }
+    &:hover{
+      background-color: darken(#d6d2cc, 10%);
+      &:after{
+        color: orangered;
+        content: "\f102"; // minus-square-o
       }
     }
   }
-  // See Keshif wiki & API...
-  > .MoreDocumentation{
+
+  > .SelectedThing{
+    display: none;
+    cursor: default;
+    > .SelectedThing_Header{
+      padding: 7px 5px;
+      border-bottom: solid 1px gray;
+      font-size: 1.1em;
+      font-weight: 400;
+      background-color: #9a968c;
+      color: white;
+      text-shadow: 0px 0px 4px black;
+    }
+    > .SelectedThing_Content{
+      padding: 10px 5px;
+      background-color: #f5f4f2; //#efeadf;
+      padding: 7px 10px;
+      box-shadow: 0px 2px 2px gray;
+      font-weight: 300;
+      font-size: 0.9em;
+      text-align: left;
+      > .answerTooltip{
+        text-align: center;
+        &:not(:first-child):before{
+          display: block;
+          content: "OR";
+          color: #BF360C;
+          font-family: monospace;
+          font-weight: 600;
+          padding: 0px 4px 2px;
+        }
+        > .subAnswer{
+         &:not(:first-child):before{
+           display: inline-block;
+           content: "then";
+           color: #BF360C;
+           font-family: monospace;
+           font-weight: 600;
+           padding: 0px 4px;
+         } 
+        }
+      }
+      > p{
+        margin: 0 0 0.7em 0;
+      }
+      .breadCrumb{ font-size: 0.9em; }
+    }
+    > .SelectedThing_Content_More{
+      margin: 5px 0px 5px 0px;
+      padding: 4px 10px;
+      font-size: 0.8em;
+      font-weight: 300;
+      border-bottom: solid 1px gray;
+      > p{
+        margin: 0 0 0.7em 0;
+      }
+    }
+    .bolderInfo{
+      font-weight: bolder;
+    }
+  }
+
+  .colorCoding{
+    display: inline-block;
+//    width: 1em;
+//    height: 1em;
+    vertical-align: top;
+    padding: 0px 4px;
+    &.colorCoding-total      { color: black; background-color: @color_distr_total; }
+    &.colorCoding-filtered   { color: white; background-color: darken(@color_bars, 10%); }
+    &.colorCoding-highlighted{ color: white; background-color: @color_preview; }
+    &.colorCoding-compare_A  { color: white; background-color: @color_Compare_A; }
+    &.colorCoding-compare_B  { color: white; background-color: @color_Compare_B; }
+    &.colorCoding-compare_C  { color: black; background-color: @color_Compare_C; }
+  }
+
+  > .overlay_Close{ z-index: 1000; }
+
+  > .MoreDocumentation{ // See Keshif wiki & API...
     font-weight: 300;
     font-size: 0.7em;
     padding: 3px;
     cursor: default;
     background-color: #efeadf;
+    box-shadow: inset 0px 0px 2px gray;
     overflow: hidden;
-    .transition(all 500ms linear);
+    color: #7b7b7b;
     .flex-shrink(0);
-    > .MoreInfoLink{ color: black; }
+    &:hover{ color: black; }
+    > .MoreDocumentationLink{ color: black; }
   }
 
-  &[question=true]{
-    height: initial;
+  &[hideRelatedTopics]{
+    > .RelatedTopics:after{ content: "\f102" };
+    > .RelatedTopics:hover:after{ content: "\f103" };
+    .TopicsList{ display: none; }
+  }
+}
+
+.kshf .panel_overlay[show="help-pointnlearn"] {
+  > .overlay_answer{
+    pointer-events: all;
+    > .overlay_answer_background{ opacity: 0.2; }
+  }
+  > .overlay_help{
     width: 370px;
-    .calc(right,~'50% - 170px');
-    top: 100px;
-    box-shadow: 0px 0px 20px black;
-    margin: initial;
-    &[attention=true]{
-      .animation(attention 0.3s 2 ease-in-out);
-      box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
+    top: 60px;
+    .calc(left, ~'50% - 185px');
+    > .PointNClick_Info{ display: block; }
+    //> .helpin_Header{ text-align: left; }
+    > .SelectedThing{ display: block; }
+    > .FilterBlock{ display: none; }
+    > .RelatedTopics{ display: block; }
+    .TopicsList{ max-height: 110px; }
+    .TopicBlock{ 
+      margin: 3px;
+      padding: 2px;
+      font-size: 0.8em;
+      > .TopicIcons{ display: none !important; }
     }
+    .TextSearchBlock{ display: none; }
+  }
+  .SelectedThing_Content_More{ display: none !important; }
+}
 
-    > .SearchBlock{ 
-      //.flex(0);
-      //display: none;
-      > .QuestionTypes{ display: none; }
-      > .hideNonRelevant{ display: none; }
-      > .TextSearchBlock{
-        cursor: -moz-grab;
-        cursor: -webkit-grab;
-        cursor: grab;
-      }
-      .SearchTextBox{ display: none; }
-    }
-    > .answer_box{
+.kshf .panel_overlay[show="help-guidedtour"] {
+  > .overlay_answer{
+    > .overlay_answer_background{ opacity: 0.2; }
+  }
+  > .overlay_help{
+    width: 370px;
+    top: 60px;
+    .calc(left, ~'50% - 185px');
+    > .GuidedTour{ display: block; }
+    //> .helpin_Header{ text-align: left; }
+    > .SelectedThing{ 
       display: block;
+      > .SelectedThing_Header > .fa-hand-pointer-o{ display: none; }
     }
-    // See Keshif wiki & API...
-    > .MoreDocumentation{ display: none; }
-    > .TopicMoreInfo{ display: block; }
+    > .RelatedTopics{ display: block; }
+    .TopicsList{ max-height: 110px; }
+    .TopicBlock{ 
+      margin: 3px;
+      padding: 2px;
+      font-size: 0.8em;
+      > .TopicIcons{ display: none !important; }
+    }
+    .TextSearchBlock{ display: none; }
+  }
+  .SelectedThing_Content_More{ display: none !important; }
+}
+
+.kshf .panel_overlay[show="help-browse"]{
+  .heyooo > .browseTopicBlock{
+    .display(flex);
+    .flex-direction(column);
+  }
+  .TopicBlock{ font-size: 0.9em; }
+}
+
+.kshf .panel_overlay[show="answer"] {
+  > .overlay_answer{
+    pointer-events: all;
+    > .overlay_answer_background{ opacity: 0.2; }
+  }
+  .BackButton{ display: block !important; }
+  > .overlay_help{
+    width: 370px;
+    .calc(left, ~'50% - 170px');
+    top: 100px;
+
+    .HowDoI:after{ content: " ... "; }
+
     > .TopicRelWhenBlock{ display: block; }
-    > .overlay_Close{ display: none; }
-    > .Questions{
-      .flex(initial);
-      overflow: hidden;
-      padding: 10px 0px;
-      background-color: #f9f6f1;
-      > .QuestionBlock{
-        display: none;
-        &[selected=true]{
-          display: block !important;
-          font-weight: 500;
-          font-size: 1.1em;
-          border-width: 0px;
-          &:hover{ background-color: inherit; cursor: default; }
-          > .QuestionIcons{ display: none; }
-          > .notInContext{ display: none; }
-        }
-      }
+    > .overlay_Close::before{ content: "\f058"; } // checkbox
+    > .SelectedThing{  display: block; }
+    > .RelatedTopics{ display: block; }
+    .TopicsList{ max-height: 250px; }
+    .TopicBlock{
+      margin: 3px;
+      font-size: 0.8em;
+      > .TopicIcons{ display: none !important; }
     }
   }
 }
-.QuestionTypes{
-  border-width: 1px 0px 1px 0px;
-  border-style: solid;
-  border-color: gray;
-  margin-bottom: 3px;
-  padding: 0px 0px 0px 4px;
-  background-color: #F6F6F6;
-  height: 40px;
-  .display(flex);
-  .flex-direction(row);
-  > .TypeLabel{
-    width: 75px;
-    color: #cb5454;
-    height: 1em;
-    .flex-shrink(0);
-    text-align: right;
-    &:after{ content: ": "; }
-    //&:before{ text-decoration: underline; }
-  }
-  > .TypeGroup{
-    overflow-x: scroll;
-    overflow-y: hidden;
-    white-space: nowrap;
-    height: 36px;
-    text-align: left;
-    font-size: 0.8em;
-    .flex(1);
-  }
-  &.ActionTypes > .TypeLabel:before{ content: "Actions" }
-  &.TopicTypes > .TypeLabel:before{ content: "Keywords" }
-}
+
 .QuestionTypeSelect{
-  display: inline-block;
+  display: block;
   border-radius: 5px;
   border: solid 1px #BCBCBC;
-  margin: 1px 2px;
+  margin: 0px 1px 4px 2px;
   padding: 1px 3px;
+  height: 21px;
   cursor: pointer;
   background-color: white;
   font-weight: 300;
+  position: relative;
   .user-select(none);
-  &:hover{
-    color: orangered;
-  }
+  &:hover{ color: @color_hoverAction; }
   &[selected=true]{
-    color: orangered;
+    color: @color_hoverAction;
     font-weight: 500;
     border-color: red;
   }
+  &[hasIcon]{
+    > .label{ max-width: calc(~'100% - 25px'); }
+  }
+  > .label{
+    max-width: calc(~'100% - 10px');
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: inline-block;
+  }
   > .topicInfoMark{
+    position: absolute;
+    top: 2px;
+    right: 1px;
     color: gray;
-    margin: 0px 2px;
-    &:hover{ color: orangered; }
+    &:hover{ color: @color_hoverAction; }
   }
   > .num {
     margin-left: 2px;
@@ -380,16 +776,19 @@
   font-weight: 600;
   padding-bottom: 3px;
   font-family: sans-serif;
-  font-size: 1.2em;
+  cursor: default;
+
   > .fa-search{
     color: gray;
     font-size: 0.8em;
   }
   > .SearchTextBox{
+    display: inline-block;
     width: 80px;
     border-width: 0px 0px 1px 0px;
     border-style: solid;
     border-color: #cb5454;
+    text-align: center;
     margin: 1px 1px 0px 1px;
     font-family: Roboto;
     font-size: 1em;
@@ -417,36 +816,9 @@
       color: #F3CDCD;
     }
   }
-
 }
 .textSearch_highlight{
   background-color: yellow;
-}
-.hideNonRelevant{
-  position: absolute;
-  left: 3px;
-  top: 4px;
-  font-size: 0.8em;
-  font-weight: 300;
-  border: solid 1px gray;
-  border-radius: 20px;
-  padding: 0px 3px;
-  /* margin: 0px 3px; */
-  margin: 0px 3px;
-  cursor: pointer;
-  background-color: white;
-  > .fa{ margin: 0px 2px; }
-  &:hover{ color: orangered; }
-  &[hide="true"]  { 
-    &:after{ content: "Relevant"; }
-    //> .fa:before{ content: "\f070"; }
-    > .fa:before{ content: "\f205"; }
-  }
-  &[hide="false"] {
-    &:after{ content: "Other"; }
-    //> .fa:before{ content: "\f06e"; }
-    > .fa:before{ content: "\f204"; }
-  }
 }
 
 .closePanel{
@@ -458,10 +830,21 @@
   width: 20px;
   text-align: right;
   color: gray;
-  &:hover{ color: orangered;}
+  &:hover{ color: @color_hoverAction;}
 }
 
-.keyframes(~'attention, 0%{ transform: scale(1); } 50%{ transform: scale(1.07); } 100%{ transform: scale(1); }');
-.keyframes(~'attention2, 0%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); } 100%{ transform: scale(1); background-color: rgba(1,1,1,0); }');
-
+.helpin-breadcrumb{
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  color: white !important;
+  padding: 2px;
+  font-size: 0.7em;
+  vertical-align: top;
+  text-align: center;
+  text-shadow: none;
+  &.fa-mouse-pointer{ background-color: @color_preview_clear; }
+  &.fa-filter{        background-color: @color_filter_clear; }
+  &.fa-lock{          background-color: @color_Compare_A; }
+}
 
