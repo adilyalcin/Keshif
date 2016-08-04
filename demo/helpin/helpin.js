@@ -34,116 +34,116 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var _contextFeatures = {
   True: {
-    name: "Always true",
+    descr: "Always true",
     v: function(){ return true; },
     weight: 0
   },
   SummaryInBrowser: {
-    name: "Browser includes at least one summary.",
+    descr: "Browser includes at least one summary.",
     v: { summaries: function(summary){ return summary.inBrowser(); } },
     weight: 10,
     fixBy: 34, // Add summary into browser
   },
   CollapsedSummary: {
-    name: "Summary is collapsable.",
+    descr: "Summary is collapsable.",
     v: { summaries: function(summary){ return summary.collapsed; } },
     weight: 35,
     fixBy: 29, // collapse summary
   },
   OpenSummary: {
-    name: "Summary is open.",
+    descr: "Summary is open.",
     v: { summaries: function(summary){ return !summary.collapsed; } },
     weight: 33,
     fixBy: 28, // Open summary
   },
   CategoricalSummary: {
-    name: "Summary is categorical.",
+    descr: "Summary is categorical.",
     v: { summaries: function(summary){ return summary.type==="categorical"; } },
     weight: 20
   },
   IntervalSummary: {
-    name: "Summary is interval (numeric or time).",
+    descr: "Summary is interval (numeric or time).",
     v: { summaries: function(summary){ return summary.type==="interval"; } },
     weight: 25
   },
   NumberSummary: {
-    name: "Summary is numeric.",
+    descr: "Summary is numeric.",
     v: { summaries: function(summary){ return summary.type==="interval" && summary.scaleType!=="time"; } },
     weight: 30
   },
   PositiveNumberSummary: {
-    name: "Numeric summary has only positive values (minimum>0).",
+    descr: "Numeric summary has only positive values (minimum>0).",
     v: { summaries: function(summary){ 
       return summary.type==="interval" && summary.scaleType!=="time" && summary.intervalRange.org.min>0;
     } },
     weight: 30
   },
   TimeSummary: {
-    name: "The summary shows time.",
+    descr: "The summary shows time.",
     v: { summaries: function(summary){ return summary.type==="interval" && summary.scaleType==="time"; } },
     weight: 33
   },
   CategoricalMapSummary: {
-    name: "Summary includes map regions per category.",
+    descr: "Summary includes map regions per category.",
     v: { summaries: function(summary){ return summary.catMap; } },
     weight: 40
   },
   CategoricalMapVieweight: {
-    name: "Summary is viewed as a categorical map.",
+    descr: "Summary is viewed as a categorical map.",
     v: { summaries: function(summary){ return summary.viewAs==='map'; } },
     weight: 45
   },
   MultiValuedSummary: {
-    name: "Categorical summary includes multiple values per record.",
+    descr: "Categorical summary includes multiple values per record.",
     v: { summaries: function(summary){ return summary.isMultiValued; } },
     weight: 40
   },
   FilteredSummary: {
-    name: "Summary is filtered.",
-    fixBy: 1, // Filter-select to focus
+    descr: "Summary is filtered.",
     v: { summaries: function(summary){ return summary.isFiltered(); } },
-    weight: 50
+    weight: 50,
+    fixBy: 1, // Filter-select to focus
   },
   CategoricalSummaryWithTextSearch: {
-    name: "Summary includes more than 20 categories.",
+    descr: "Summary includes more than 20 categories.",
     v: { summaries: function(summary){ return summary.showTextSearch; } },
     weight: 30
   },
   SummaryWithMissingValues: {
-    name: "Summary has at least one invalid/missing record value.",
+    descr: "Summary has at least one invalid/missing record value.",
     v: { summaries: function(summary){ return summary.missingValueAggr.records.length>0; } },
     weight: 47
   },
   ExpandableSummary: {
-    name: "Summary includes more categories than currently visible.",
+    descr: "Summary includes more categories than currently visible.",
     v: { summaries: function(summary){ return !summary.areAllCatsInDisplay(); } },
     weight: 20
   },
   SortableSummary: {
-    name: "Summary has more than 20 categories.",
+    descr: "Summary has more than 20 categories.",
     v: { summaries: function(summary){ return summary.configRowCount>0 && !summary.catSortBy_Active.no_resort; } },
     weight: 22
   },
   SummaryWithDescription: {
-    name: "Summary has a description.",
+    descr: "Summary has a description.",
     v: { summaries: function(summary){ return summary.description !== undefined; } },
     weight: 4
   },
   SummaryOpenConfig: {
-    name: "Summary configuration is open.",
+    descr: "Summary configuration is open.",
     v: { summaries: function(summary){ return summary.DOM.root.attr("showConfig")==="true"; } },
     weight: 50,
     fixBy: 31 // show summary
   },
 
   NotAverageMeasure: {
-    name: "Measure function is not average.",
+    descr: "Measure function is not average.",
     v: function(){ return this.browser.measureFunc!=="Avg"; },
     weight: 10,
     fixBy: 12, // change aggregate measure function
   },
   ActiveCompareSelection: {
-    name: "There is an active compared <i class='fa fa-lock'></i> selection.",
+    descr: "There is an active compared <i class='fa fa-lock'></i> selection.",
     v: function(){
       if(this.browser.selectedAggr.Compare_A) return true;
       if(this.browser.selectedAggr.Compare_B) return true;
@@ -155,33 +155,33 @@ var _contextFeatures = {
   },
 
   RecordDisplay: {
-    name: "Browser includes record panel.",
+    descr: "Browser includes record panel.",
     v: function(){ return this.recordDisplay.recordViewSummary !== null; },
     weight: 30,
     fixBy: 51, // Add record panel
   },
   RecordTextSearch: {
-    name: "There needs to be an active record text search summary.",
+    descr: "There needs to be an active record text search summary.",
     v: function(){ return this.recordDisplay.textSearchSummary !== null; },
     weight: 35
   },
   RecordsWithDetailToggle: {
-    name: "Record panel has detail toggle enabled.",
+    descr: "Record panel has detail toggle enabled.",
     v: function(){ return this.recordDisplay.detailsToggle !== "off"; },
     weight: 25
   },
   RecordDisplayAsMap: {
-    name: "Records need to have a geographical region.",
+    descr: "Records need to have a geographical region.",
     v: function(){ return this.recordDisplay.config.geo; },
     weight: 55
   },
   RecordDisplayAsNetwork: {
-    name: "Records need to have a linking attribute.",
+    descr: "Records need to have a linking attribute.",
     v: function(){ return this.recordDisplay.config.linkBy.length>0; },
     weight: 55
   },
   RecordDisplayAsList: {
-    name: "Record panel shows records as a list.",
+    descr: "Record panel shows records as a list.",
     v: function(){
       var x = this.recordDisplay.displayType;
       return x==='list' || x==="grid";
@@ -190,19 +190,19 @@ var _contextFeatures = {
   },
 
   AnyFiltered: {
-    name: "Data needs to be filtered.",
+    descr: "Data needs to be filtered.",
     v: function(){ return this.browser.isFiltered(); },
     weight: 40
   },
 
   AuthoringMode: {
-    name: "Authoring mode is enabled.",
+    descr: "Authoring mode is enabled.",
     v: function(){ return this.browser.authoringMode; },
     weight: 10,
     fixBy: 32, // Enable authoring
   },
   LoggedIn : {
-    name: "You need to be logged in.",
+    descr: "You need to be logged in.",
     v: function(){ return kshf.gistLogin; },
     weight: 44,
     fixBy: 48, // login...
@@ -265,7 +265,8 @@ var _topics = {
     topics: "Aggregate",
     context: "SummaryInBrowser",
     similarTopics: [1,2,4],
-    note: "Use filtering sparingly when you want to zoom into the data from multiple summaries."
+    note: "Tip: Use filtering sparingly when you want to zoom into data from multiple summaries.",
+    // TODO
   },
   2: {
     q: "<i class='helpin-breadcrumb fa fa-lock'></i> Lock-select to compare record groups",
@@ -273,8 +274,8 @@ var _topics = {
     topics: "Aggregate",
     context: "SummaryInBrowser",
     similarTopics: [1,3],
-    note: "<i class='fa fa-keyboard-o'></i> Shift+click also locks the selection.</i>"
-    // Alternative: Shift-click
+    note: "<i class='fa fa-keyboard-o'></i> Shift+click on an aggregate also locks the selection.</i>",
+    // TODO
     // Show how it affects other parts of the screen
     // By moving the mouse, you can compare distribution of locked and highlighted selections
     //  Help them read the relation
@@ -304,12 +305,14 @@ var _topics = {
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary"],
     note: "And-selection is possible <i>only if</i> records have multiple categorical values.",
     similarTopics: [1]
+    // TODO
   },
   5: {
     q: "Select Map Regions",
     actions: "Explore+Select+Select",
     topics: "Map",
     context: ["SummaryInBrowser", "CategoricalSummary", "CategoricalMapSummary"],
+    // TODO
   },
   6: {
     q: "Adjust filtered range selection",
@@ -407,22 +410,22 @@ var _topics = {
   12: {
     q: "Measure aggregates by <b style='display:inline-block'>Count - Sum (Total) - Average</b> function",
     actions: "Explore",
-    topics: "Measurement",
+    topics: "Measurement+Measurement Function",
     context: ["SummaryInBrowser", "NumberSummary"],
     similarTopics: [11, 13],
     tAnswer: {
       sequence: [
       {
-        class: "recordInfo", 
+        class: "measureFuncSelect", 
         cElement: "browser",
-        text: "Click here",
-        pos: "n"
+        text: "Click <i class='fa fa-cubes'></i>",
+        pos: "nw"
       }
       ,
       {
         matches: ".measureFunctionType", 
         cElement: "browser",
-        text: "Choose among the options",
+        text: "Choose among the functions",
         pos: "w"
       }
       ]
@@ -431,7 +434,7 @@ var _topics = {
   },
   13: {
     q: function(){ 
-      return "Visually scale measurements as <b>"+(this.browser.ratioModeActive?"absolute":"part-of-whole")+"</b>";
+      return "Visually scale measurements as <b>"+(this.browser.ratioModeActive?"absolute":"part-of-active")+"</b>";
     },
     actions: "Explore+View",
     topics: "Measurement",
@@ -531,7 +534,7 @@ var _topics = {
     context: ["SummaryInBrowser", "OpenSummary", "CategoricalSummary", "FilteredSummary"],
     similarTopics: [17,19],
     tAnswer: {
-      matches: '.catGlyph:not([selected="0"])',
+      matches: '.catGlyph[cfiltered]',
       cElement: "summaries",
       text: "Click on filtered category", 
       pos: "n"
@@ -964,44 +967,79 @@ var _topics = {
       text: "Click <i class='fa fa-question-circle'></i>",
       pos: "ne"
     }
+  },
+  55: {
+    q: "View fullscren",
+    actions: "View",
+    topics: "Browser",
+    context: [],
+    tAnswer: {
+      class: "viewFullscreen",
+      cElement: "browser",
+      text: "Click <i class='fa fa-arrows-alt'></i>",
+      pos: "ne"
+    }
   }
+
+  // Other tasks
+  // Change category sorting orde
 };
 
-var DOMtoName = [
-  { matches: '.kshfSummary', 
-    component: "Summary", },
-  { matches: '.kshfSummary[summary_type="interval"]', 
-    info: function(DOM){
-      var summary = DOM.__data__;
-      var _min = summary.printWithUnitName(summary.intervalRange.org.min);
-      var _max = summary.printWithUnitName(summary.intervalRange.org.max);
-      var _scale = (summary.scaleType==='log') ? (
-        "<p>The range groups for this summary are created on a <span class='bolderInfo'>log-scale</span> "+
-        "to reveal distribution of potentially skewed data.</p>") : "";
-      return ""+
-        "<p>This summarizes the <span class='bolderInfo'>"+summary.summaryName+"</span> of "+summary.browser.recordName+".</p>"+
-        "<p>The values range between "+
-        "<span class='bolderInfo'>"+_min+"</span> to "+
-        "<span class='bolderInfo'>"+_max+"</span>.</p>"+
-        _scale;
-    }
-    }, // TODO: Differentiate number/time 
-  { matches: '.kshfSummary[summary_type="interval"][viewtype="bar"]', 
-    component: "Number Summary", },
-  { matches: '.kshfSummary[summary_type="interval"][viewtype="line"]', 
-    component: "Time Summary", },
-  { matches: '.kshfSummary[summary_type="categorical"]', 
-    component: "Categorical Summary",
+var intervalSummaryInfoFunc = function(DOM){
+  var summary = DOM.__data__;
+  var _min = summary.printWithUnitName(summary.intervalRange.org.min);
+  var _max = summary.printWithUnitName(summary.intervalRange.org.max);
+  var _scale = (summary.scaleType==='log') ? (
+    "<p>The range groups for this summary are created on a <span class='bolderInfo'>log-scale</span> "+
+    "to reveal distribution of potentially skewed data.</p>") : "";
+  return ""+
+    "<p>This summarizes the <span class='bolderInfo'>"+summary.summaryName+"</span> of "+summary.browser.recordName+".</p>"+
+    "<p>The values range between "+
+    "<span class='bolderInfo'>"+_min+"</span> to "+
+    "<span class='bolderInfo'>"+_max+"</span>.</p>"+
+    _scale;
+};
+
+var printBreadcrumb = function(sType, summary, aggr){
+  return "<span class='breadCrumb crumbMode_"+sType+"' ready='true'>"+
+    "<span class='breadCrumbIcon fa'></span>"+
+    "<span class='crumbText'>"+
+      "<span class='bolderInfo'>"+summary.summaryName+"</span>: "+
+      summary.printAggrSelection(aggr)+"</span></span>";
+}
+
+var ComponentList = {
+  "Summary" : { 
+    matches: '.kshfSummary'
+  },
+  "Number Summary" : {
+    matches: '.kshfSummary[summary_type="interval"][viewtype="bar"][collapsed="false"]', 
+    info: intervalSummaryInfoFunc,
+    pos: "s"
+  },
+  "Time Summary" : {
+    matches: '.kshfSummary[summary_type="interval"][viewtype="line"][collapsed="false"]', 
+    info: intervalSummaryInfoFunc,
+    pos: "s"
+  },
+  "Categorical Summary": {
+    matches: '.kshfSummary[summary_type="categorical"][collapsed="false"]', 
     info: function(DOM){
       var summary = DOM.__data__;
       return ""+
         "<p>This summarizes the <span class='bolderInfo'>"+summary.summaryName+"</span> of "+summary.browser.recordName+".</p>"+
         "<p>It includes <span class='bolderInfo'>"+summary._cats.length+"</span> categories.</p>";
     },
-    },
-
-  { matches: '.kshfRecord', 
-    component: "Record",
+    pos: "s"
+  },
+  "Set Summary": {
+    matches: '.kshfSummary.setPairSummary', 
+    info: function(DOM){
+      return "Shows intersections and stuff."
+    }    
+  },
+  "Record": {
+    matches: '.kshfRecord', 
     info: function(DOM){ 
       var r = DOM.__data__;
       var summary = this.browser.recordDisplay.sortingOpt_Active;
@@ -1014,26 +1052,23 @@ var DOMtoName = [
       var encoding = "";
       if(r.selectCompared_str){
         encoding = "<p>";
-        encoding+= "The background color shows it is in ";
+        encoding+= "The background color shows this record appears in selection ";
         r.selectCompared_str.replace(" ","").split('').forEach(function(_char){
           var comparedAggr = this.browser.selectedAggr["Compare_"+_char];
           var comparedSummary = comparedAggr.summary;
-          encoding += "<span class='breadCrumb crumbMode_Compare_"+_char+"' ready='true'>"+
-            "<span class='breadCrumbIcon fa'></span>"+
-            "<span class='crumbText'>"+
-              "<span class='bolderInfo'>"+comparedSummary.summaryName+"</span>: "+
-              comparedSummary.printAggrSelection(comparedAggr)+"</span></span>";
+          encoding += printBreadcrumb("Compare_"+_char,comparedSummary,comparedAggr);
         });
         encoding +="<p>";
       }
       return intro+ranking+encoding;
-    },
-    },
-  { matches: '.summaryName_text', 
-    component: "Summary Name",
-    },
-  { matches: '.percentileGroup', 
-    component: "Percentile Chart",
+    }
+  },
+  "Summary Name": { 
+    matches: '.summaryName_text'
+  },
+  "Percentile Chart": {
+    matches: '.percentileGroup', 
+    pos: "s",
     info: function(DOM){
       var summary = DOM.__data__;
       return ""+
@@ -1042,100 +1077,183 @@ var DOMtoName = [
         "Smaller ranges, towards the middle, have darker color.<br>"+
         "The median (%50) is also shown as <b>|</b>.</p>"
     },
-    },
-  { matches: ".summaryConfig_Percentile", component: "Percentile Chart" },
-  { matches: ".summaryConfig_ScaleType", component: "Range Scale Type" },
-  { matches: '.aggrGlyph',
-    component: "Aggregate"
-    },
-  { matches: '.catGlyph', 
-    component: "Category",
+  },
+  "Percentile Chart": {
+    matches: ".summaryConfig_Percentile",
     info: function(DOM){
-      var aggr = DOM.__data__;
-      var summary = aggr.summary;
-      var aggrLabel = summary.catLabel_Func.call(aggr.data);
-      // TODO: Show if it is filtered or compared
-      // If browser is filtered, say it is unde filtered setting.
-      var str="<p>There are <span class='bolderInfo'>"+aggr._measure.Active+"</span> "+ this.browser.recordName+" in "+
-        "<span class='bolderInfo'>"+aggrLabel+"</span> category";
-      if(browser.isFiltered()){
-        str+=", among the active (filtered) data.</p>";
-        str+="<p>This category includes <span class='bolderInfo'>"+aggr._measure.Total+"</span> "+this.browser.recordName+" in total";
-      }
-      var _measure;
-      switch(this.browser.measureFunc){
-        case 'Count': _measure = "Count"; break;
-        case 'Sum':   _measure = "Sum"; break;
-        case 'Avg':   _measure = "Average"; break;
-      }
-
-      var encoding = "<p>Measurements are visualized using bar length <i class='fa fa-long-arrow-right'></i>.<br>";
-      encoding += "<span class='fa fa-long-arrow-right colorCoding colorCoding-filtered'></span> "+_measure+" of active (filtered) records.<br>";
-      encoding += "<span class='fa fa-long-arrow-right colorCoding colorCoding-highlighted'></span> "+_measure+" of highlighted <i class='fa fa-mouse-pointer'></i> records.<br>";
-
-      if(this.browser.isFiltered()){
-        encoding+="<span class='fa fa-long-arrow-right colorCoding colorCoding-total'></span> "+_measure+" of all records.<br>";
-      }
-      if(this.browser.selectedAggr.Compare_A){
-        encoding+="<span class='fa fa-long-arrow-right colorCoding colorCoding-compare_A'></span> "+_measure+" of locked <i class='fa fa-lock'></i> records.<br>";
-      }
-      if(this.browser.selectedAggr.Compare_B){
-        encoding+="<span class='fa fa-long-arrow-right colorCoding colorCoding-compare_B'></span> "+_measure+" of locked <i class='fa fa-lock'></i> records.<br>";
-      }
-      if(this.browser.selectedAggr.Compare_C){
-        encoding+="<span class='fa fa-long-arrow-right colorCoding colorCoding-compare_C'></span> "+_measure+" of locked <i class='fa fa-lock'></i> records.<br>";
-      }
-      encoding+="</p>";
-
-      return str+=".</p>"+encoding;
-    },
-    },
-  { matches: '.rangeGlyph', 
-    component: "Range",
-    info: function(DOM){
-      var aggr = DOM.__data__;
-      var summary = aggr.summary;
-      var _min = summary.printWithUnitName(aggr.minV);
-      var _max = summary.printWithUnitName(aggr.maxV);
-
-      var _measure;
-      switch(this.browser.measureFunc){
-        case 'Count': _measure = "Count"; break;
-        case 'Sum':   _measure = "Sum"; break;
-        case 'Avg':   _measure = "Average"; break;
-      }
-
-      var encoding = "<p>Measurements are visualized using bar height <i class='fa fa-long-arrow-up'></i>.<br>";
-      encoding += "<span class='fa fa-long-arrow-up colorCoding colorCoding-filtered'></span> "+_measure+" of active (filtered) records.<br>";
-      encoding += "<span class='fa fa-long-arrow-up colorCoding colorCoding-highlighted'></span> "+_measure+" of highlighted <i class='fa fa-mouse-pointer'></i> records.<br>";
-
-      if(this.browser.isFiltered()){
-        encoding+="<span class='fa fa-long-arrow-up colorCoding colorCoding-total'></span> "+_measure+" of all records.<br>";
-      }
-      if(this.browser.selectedAggr.Compare_A){
-        encoding+="<span class='fa fa-long-arrow-up colorCoding colorCoding-compare_A'></span> "+_measure+" of locked <i class='fa fa-lock'></i> records.<br>";
-      }
-      if(this.browser.selectedAggr.Compare_B){
-        encoding+="<span class='fa fa-long-arrow-up colorCoding colorCoding-compare_B'></span> "+_measure+" of locked <i class='fa fa-lock'></i> records.<br>";
-      }
-      if(this.browser.selectedAggr.Compare_C){
-        encoding+="<span class='fa fa-long-arrow-up colorCoding colorCoding-compare_C'></span> "+_measure+" of locked <i class='fa fa-lock'></i> records.<br>";
-      }
-      encoding+="</p>";
-
-      return ""+
-        "<p>There are "+
-          "<span class='bolderInfo'>"+aggr._measure.Active+"</span> "+ this.browser.recordName+" between "+
-          "<span class='bolderInfo'>"+_min+"</span> to "+
-          "<span class='bolderInfo'>"+_max+"</span> "+
-          "<span class='bolderInfo'>"+aggr.summary.summaryName+"</span>.</p>"+
-          encoding;
+      return "TODO: Describe percentile chart";
     }
+  },
+  "Range Scale Type": {
+    matches: ".summaryConfig_ScaleType"
+  },
+  "Aggregate": {
+    matches: '.kshfSummary[collapsed="false"] .aggrGlyph'
+  },
+  "Category": { 
+    matches: '.kshfSummary[collapsed="false"] .catGlyph', 
+    pos:"se",
+    info: function(DOM){
+      var aggr = DOM.__data__;
+      var summary = aggr.summary;
+
+      var recordName = this.browser.recordName;
+      var aggrLabel = "<span class='bolderInfo'>"+summary.catLabel_Func.call(aggr.data)+"</span>";
+      var globalActive = browser.allRecordsAggr._measure.Active;
+
+      var _measure;
+      switch(this.browser.measureFunc){
+        case 'Count': _measure = ""; break;
+        default: _measure = this.browser.getMeasureFuncTypeText();
+      }
+      _measure = _measure.replace(" of ","").replace(" of","");
+
+      var str='';
+
+      var _temp = this.browser.percentModeActive;
+
+      if(this.browser.ratioModeActive && this.browser.percentModeActive){
+        this.browser.percentModeActive = false;
+      }
+
+      var measureLabel = "<span class='bolderInfo'>"+this.browser.getMeasureLabel(aggr,summary)+"</span>";
+      if(this.browser.percentModeActive){
+        // Percent labels
+        str+="<p>"+measureLabel+"</span> of "+_measure;
+        if(_measure!=="") str+=" in ";
+        if(this.browser.isFiltered()) str+=globalActive+" filtered ";
+        str+=recordName+" are in "+aggrLabel+" "+summary.summaryName+".</p>";
+      } else {
+        // Absolute labels
+        str+="<p>There are "+measureLabel+" "+_measure;
+        if(_measure!=="") str+=" in ";
+        str+=" "+aggrLabel+" "+summary.summaryName+" "+recordName;
+        if(this.browser.isFiltered()) str+=", among the "+globalActive+" filtered";
+        str+=".</p>";
+      }
+
+      this.browser.percentModeActive = _temp;
+
+      var encoding = "<p><i class='fa fa-long-arrow-right colorCoding'></i> "+
+        "Bar length shows the ";
+      if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
+      encoding += "<span class='bolderInfo'>"+(_measure===""?"Count":_measure)+"</span> of "+recordName;
+      if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
+      encoding += " in "+ aggrLabel+" "+summary.summaryName+".";
+      encoding +="</p>";
+
+      if(_measure!=="") _measure =" "+_measure;
+
+      function addEncoding(sType,sWord){
+        this.browser.measureLabelType = sType;
+        encoding+="<div class='encodingInfo'><span class='fa fa-long-arrow-right colorCoding colorCoding-"+sType+"'></span> "
+          +" "+sWord+recordName+" ("+this.browser.getMeasureLabel(aggr,summary)+_measure+")</div>";
+      };
+      if(!this.browser.ratioModeActive){
+        // Total and filtered only apply when part-of mode is not active.
+        addEncoding.call(this,"Active",""+(this.browser.isFiltered()?"Filtered ":"All "));
+        if(this.browser.isFiltered()){
+          addEncoding.call(this,"Total","All ");
+        }
+      }
+      addEncoding.call(this,"Highlight","Highlighted <i class='fa fa-mouse-pointer'></i> ");
+      if(this.browser.selectedAggr.Compare_A){
+        var comparedAggr = this.browser.selectedAggr["Compare_A"];
+        var comparedSummary = comparedAggr.summary;
+        addEncoding.call(this, "Compare_A", printBreadcrumb("Compare_A",comparedSummary,comparedAggr));
+      }
+      if(this.browser.selectedAggr.Compare_B){
+        var comparedAggr = this.browser.selectedAggr["Compare_B"];
+        var comparedSummary = comparedAggr.summary;
+        addEncoding.call(this, "Compare_B", printBreadcrumb("Compare_B",comparedSummary,comparedAggr));
+      }
+      if(this.browser.selectedAggr.Compare_C){
+        var comparedAggr = this.browser.selectedAggr["Compare_C"];
+        var comparedSummary = comparedAggr.summary;
+        addEncoding.call(this, "Compare_C", printBreadcrumb("Compare_C",comparedSummary,comparedAggr));
+      }
+      encoding+="</p>";
+
+      this.browser.measureLabelType = null;
+
+      return str+encoding;
     },
-  { matches: ".quantile.q_pos.q_50", component: "Median" },
-  { matches: ".recordTextSearch", component: "Record Text Search" },
-  { matches: '.measurePercentControl', 
-    component: "Measure Label Mode",
+  },
+  "Range": { 
+    matches: '.kshfSummary[collapsed="false"] .rangeGlyph', 
+    pos: "e",
+    info: function(DOM){
+      var aggr = DOM.__data__;
+      var summary = aggr.summary;
+      
+      var recordName = this.browser.recordName;
+      var aggrLabel = "<span class='bolderInfo'>"+summary.printAggrSelection(aggr)+"</span>";
+      var globalActive = this.browser.allRecordsAggr.measure('Active').toLocaleString();
+
+      var _measure;
+      switch(this.browser.measureFunc){
+        case 'Count': _measure = "Count of"; break;
+        default: _measure = this.browser.getMeasureFuncTypeText();
+      }
+      _measure = _measure.replace(" of ","").replace(" of","");
+
+      var str='';
+
+      var measureLabel = "<span class='bolderInfo'>"+this.browser.getMeasureLabel(aggr,summary)+"</span>";
+
+      if(this.browser.percentModeActive){
+        // Percent labels
+        str+="<p>"+measureLabel+"</span> of "+_measure;
+        if(_measure!=="") str+=" in ";
+        if(this.browser.isFiltered()) str+=globalActive+" filtered ";
+        str+=recordName+" are in "+aggrLabel+" "+summary.summaryName+".</p>";
+      } else {
+        // Absolute labels
+        str+="<p>There are "+measureLabel+" "+_measure;
+        if(_measure!=="") str+=" in ";
+        str+=" "+aggrLabel+" "+summary.summaryName+" "+recordName;
+        if(this.browser.isFiltered()) str+=", among the "+globalActive+" filtered";
+        str+=".</p>";
+      }
+
+      if(_measure!=="") _measure =" "+_measure;
+
+      var encoding = "<i class='fa fa-long-arrow-up colorCoding'></i> "+
+        "<span class='bolderInfo'>Bar length visualizes each measurement</span>.<br>";
+      function addEncoding(sType,sWord){
+        this.browser.measureLabelType = sType;
+        encoding+="<span class='fa fa-long-arrow-up colorCoding colorCoding-"+sType+"'></span> "
+          +" "+sWord+" "+recordName+" ("+this.browser.getMeasureLabel(aggr,summary)+" "+_measure+")<br>";
+      };
+      addEncoding.call(this,"Active",""+(this.browser.isFiltered()?"Filtered":"All"));
+      if(this.browser.isFiltered()){
+        addEncoding.call(this,"Total","All");
+      }
+      addEncoding.call(this,"Highlight","Highlighted <i class='fa fa-mouse-pointer'></i>");
+      if(this.browser.selectedAggr.Compare_A){
+        addEncoding.call(this, "Compare_A", "Locked <i class='fa fa-lock'></i>");
+      }
+      if(this.browser.selectedAggr.Compare_B){
+        addEncoding.call(this, "Compare_B", "Locked <i class='fa fa-lock'></i>");
+      }
+      if(this.browser.selectedAggr.Compare_C){
+        addEncoding.call(this, "Compare_C", "Locked <i class='fa fa-lock'></i>");
+      }
+      encoding+="</p>";
+
+      this.browser.measureLabelType = null;
+
+      return str+encoding;
+    }
+  },
+  "Median": { 
+    matches: ".quantile.q_pos.q_50"
+  },
+  "Record Text Search": { 
+    matches: ".recordTextSearch"
+  },
+  "Measure Label Mode": { 
+    matches: '.measurePercentControl', 
     info: function(DOM){
       var _p = "percent (%) of the filtered records";
       var _a = "absolute (#) value"
@@ -1160,14 +1278,14 @@ var DOMtoName = [
         "<p>All summaries share the same measure label mode.</p>"+
         "";
     }},
-  { matches: '.missingValueAggr', 
-    component: "Missing records",
+  "Missing records": { 
+    matches: '.missingValueAggr', 
     info: function(DOM){
       return "<i class='fa fa-ban'></i> shows the records with missing values in the summary."
     }
-    },
-  { matches: '.showHelpIn',
-    component: "Help Button",
+  },
+  "Help Button": { 
+    matches: '.showHelpIn',
     info: function(DOM){
       return "<p>Click <i class='fa fa-question-circle'></i> to get help for exploring data with Keshif.</p>"+
         "<p>"+
@@ -1175,9 +1293,19 @@ var DOMtoName = [
           "<span class='bolderInfo'>Browse Topics</span> lets you see and filter all help topics.<br>"+
           "<span class='bolderInfo'>Guided Tour</span> presents help information step-by-step.<br>"+
         "</p>"
-    }},
-  { matches: ".recordInfo",
-    component: "Global measurement &amp; Measure function",
+    }
+  },
+  "Global Measurement": { 
+    matches: ".recordInfo",
+    pos: "nw",
+    info: function(DOM){
+      // TODO: respond to filtering and measure function modes
+      return "<p>This shows the number of records in the dataset.</p>";
+    }
+  },
+  "Measurement Function": { 
+    matches: ".measureFuncSelect",
+    pos: "nw",
     info: function(DOM){
       var alternative = "";
       switch(this.browser.measureFunc){
@@ -1187,23 +1315,24 @@ var DOMtoName = [
       }
       // TODO: respons to filtering state
       return ""+
-        "<p>This shows the number of records in the dataset.</p>"+
         "<p>The <span class='bolderInfo'>measure function</span> is set by clicking here."+
         "Other options are "+alternative+".</p>"+
-        "<p>All summaries share the same measure function.</p>"+
+        "<p>All summaries share the same measure function. "+
+          "All measurements and visualizations show the same metric of record aggregates.</p>"+
         "";
-    } },
-  { matches: '.totalGlyph',
-    component: "Global Summary",
+    }
+  },
+  "Global Summary": { 
+    matches: '.totalGlyph',
     info: function(){
       return "<p>The bars in this section visualize the measurements for the complete datasets along "+
         "<i class='fa fa-long-arrow-right'></i>.</p>";
     }
-    },
-  { matches: '.scaleModeControl', 
-    component: "Visual Scale Mode",
+  },
+  "Visual Scale Mode": { 
+    matches: '.scaleModeControl', 
     info: function(DOM){ 
-      var _p = "part-of filtered records";
+      var _p = "part-of-active records";
       var _a = "absolute"
       var mode       = this.browser.percentModeActive?_p:_a;
       var mode_other = this.browser.percentModeActive?_a:_p;
@@ -1214,19 +1343,21 @@ var DOMtoName = [
         "<p>All summaries share the same visual scale mode.</p>"+
         "";
         ; 
-    }},
-  { matches: '.recordDisplay', 
-    component: "Record Panel",
+    }
+  },
+  "Record Panel": { 
+    matches: '.recordDisplay', 
+    pos: "sw",
     info: function(DOM){ 
       var summary = this.browser.recordDisplay.sortingOpt_Active;
       return ""+
         "<p>This panel displays each record individually.</p>"+
         "<p>Records are currently sorted by <span class='bolderInfo'>"+summary.summaryName+"</span>.</p>"+
         "<p>You can sort record by any number or time summary.</p>"; 
-    }},
-  // { matches: '.panel',  component: "Summary Panel" }, // Adds too big of a highlighted area. Messes up with some text.
-  { matches: '.breadcrumbs', 
-    component: "Breadcrumbs",
+    }
+  },
+  "Breadcrumbs":{ 
+    matches: '.breadcrumbs', 
     info: function(DOM){ 
       var totalSel = this.browser.DOM.breadcrumbs.selectAll(".breadCrumb")[0].length;
       var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter")[0].length;
@@ -1234,20 +1365,20 @@ var DOMtoName = [
       if(filterSel===0) filterSel = "none";
       if(compareSel===0) compareSel = "none";
       return ""+
-      "<p>This section shows the active selections. </p>"+
+      "<p>This section shows the active selections. Selection type is coded by color and icons. </p>"+
       "<p>"+
-        "<i class='helpin-breadcrumb fa fa-filter'></i> = Filtered selection "+
+        "<i class='helpin-breadcrumb fa fa-filter'></i> = Filtered "+
           "<span style='font-weight:100')>(currently "+filterSel+")</span><br>"+
-        "<i class='helpin-breadcrumb fa fa-mouse-pointer'></i> = Highlighted selection "+
+        "<i class='helpin-breadcrumb fa fa-mouse-pointer'></i> = Highlighted "+
           "<span style='font-weight:100')>(currently none)</span><br>"+
-        "<i class='helpin-breadcrumb fa fa-lock'></i> = Compared selection "+
+        "<i class='helpin-breadcrumb fa fa-lock'></i> = Compared "+
           "<span style='font-weight:100')>(currently "+compareSel+")</span><br>"+
       "</p>"
       ; 
     },
-    },
-  { matches: '.breadcrumbs > .breadCrumb',
-    component: "Breadcrumb",
+  },
+  "Breadcrumb": {
+    matches: '.breadcrumbs > .breadCrumb',
     info: function(DOM){ 
       var x;
       switch(DOM.classList[1]){
@@ -1257,50 +1388,81 @@ var DOMtoName = [
         case "crumbMode_Filter":    x="<i class='fa fa-filter'></i> filter";  break;
         default: x = "<i class='fa fa-mouse-pointer'></i> highlight"; break;
       };
-      return "<p>Breadcrumbs show an active selection state.</p>"+
-        "<p>This breadcrumb shows a "+x+" selection.</p>";
+      return "<p>This breadcrumb shows an active "+x+" selection.</p>";
     } 
-    },
+  },
   //{ matches: '.buttonSummaryCollapse', component: "Summary" },
-  { matches: '.useForRecordDisplay', 
-    component: "Sort Records By..." },
-  { matches: '.summaryDescription', 
-    component: "Summary Description" },
-  { matches: '.authorButton',
-    component: 'Authoring Mode' },
-  { matches: '.filterClearAll',
-    component: "Clear filtering" },
-  { matches: '.unitName', 
-    component: "Unit Name" },
-  { matches: '.recordSortButton', 
-    component: "Reverse sort records" },
-  { matches: '.controlLine > .rangeHandle',
-    component: "Filter range limit" },
-  { matches: '.listSortOptionSelect', 
-    component: "Sort records by..." },
-  { matches: '.datasource', 
-    component: "Data Source" },
-  { matches: '.recordToggleDetail', 
-    component: "Record Details" },
-  { matches: '.measureLabel',  
-    component: "Measurement Label" },
-  { matches: '.measure_Total', 
-    component: "Total Measure" },
-  { matches: '.measure_Active', 
-    component: "Active Measure" },
-  { matches: '.measure_Highlight', 
-    component: "Highlighted Measure" },
-  { matches: '[class^="measure_Compare_"]', 
-    component: "Compared Measure" },
-  { matches: '.lockButton', 
-    component: "Lock Button" },
-  { matches: '.breadcrumbs > [class*="crumbMode_Compare_"]',
-    component: "Compare Selection" },
-  { matches: '.breadcrumbs > .crumbMode_Filter',
-    component: "Filter Selection" },
-  { matches: '.saveSelection',
-    component: "Save Filter Selection" },
-];
+  "Sort Records By...": { 
+    matches: '.useForRecordDisplay' 
+  },
+  "Summary Description": { 
+    matches: '.summaryDescription' 
+  },
+  "Authoring Mode": { 
+    matches: '.authorButton' 
+  },
+  "Clear Filtering": { 
+    matches: '.filterClearAll' 
+  },
+  "Unit Name": { 
+    matches: '.unitName' 
+  },
+  "Reverse Record Sorting": { 
+    matches: '.recordSortButton' 
+  },
+  "Filter range limit": { 
+    matches: '.controlLine > .rangeHandle' 
+  },
+  "Record Sorting":{ 
+    matches: '.listSortOptionSelect'
+  },
+  "Data Source": { 
+    matches: '.datasource'
+  },
+  "Record Details": { 
+    matches: '.recordToggleDetail'
+  },
+  "Measurement Label": { 
+    matches: '.measureLabel'
+  },
+  "Total Measure": { 
+    matches: '.measure_Total'
+  },
+  "Active Measure": { 
+    matches: '.measure_Active'
+  },
+  "Highlighted Measure": { 
+    matches: '.measure_Highlight'
+  },
+  "Compared Measure": { 
+    matches: '[class^="measure_Compare_"]'
+  },
+  "Lock Button": { 
+    matches: '.lockButton'
+  },
+  "Compare Selection": { 
+    matches: '.breadcrumbs > [class*="crumbMode_Compare_"]'
+  },
+  "Filter Selection": { 
+    matches: '.breadcrumbs > .crumbMode_Filter'
+  },
+  "Save Filter Selection": { 
+    matches: '.saveSelection'
+  },
+  "Fullscreen Button": { 
+    matches: '.viewFullscreen',
+  },
+  "Clear-Filter Button": {
+    matches: '.clearFilterButton'
+  }
+
+    // { matches: '.panel',  component: "Summary Panel" }, // Adds too big of a highlighted area. Messes up with some text.
+
+/*  { matches: '.panel',
+    component: "Panel" },
+  { matces: '.panel_Wrapper',
+    component: "Data Browser"}*/
+};
 
 var Helpin = function(browser){
   var me = this;
@@ -1552,8 +1714,9 @@ Helpin.prototype = {
     var me=this;
 
     this.showPanel();
+    this.removeTooltips();
 
-    if(this.selectedQuestion) this.closeQuestion();
+    if(this.selectedQuestion) this.closeTopic();
 
     this.closePointNLearn();
 
@@ -1590,7 +1753,7 @@ Helpin.prototype = {
     var me=this;
 
     if(this.DOM.SearchBlock) {
-      if(this.selectedQuestion) this.closeQuestion();
+      if(this.selectedQuestion) this.closeTopic();
       this.showPointNLearn();
       return;
     }
@@ -1611,6 +1774,7 @@ Helpin.prototype = {
       .on("click",function(){
         if(me.lockedBox) {
           me.lockedBox.removeAttribute("locked");
+          me.lockedBox.tipsy.jq_tip.attr("locked",null);
           me.lockedBox = false;
         }
         me.DOM.root.attr("hideRelatedTopics",true).attr("lockedPointNLearn",null);
@@ -1698,7 +1862,7 @@ Helpin.prototype = {
       .html("<i class='fa fa-hand-pointer-o'></i> Point & Learn")
       .on("click",function(){ me.showPointNLearn(); });
     this.DOM.helpin_Header.append("span").attr("class","helpInMode_BrowseTopics")
-      .html("<i class='fa fa-search'></i> Browse Topics")
+      .html("<i class='fa fa-book'></i> Browse Topics")
       .on("click",function(){ me.showBrowseTopics(); });
     this.DOM.helpin_Header.append("span").attr("class","helpInMode_GuidedTour")
       .html("<i class='fa fa-location-arrow'></i> Guided Tour")
@@ -1723,17 +1887,15 @@ Helpin.prototype = {
       .on("click",function(){
         if(me.GuidedTourStep===0) return;
         --me.GuidedTourStep;
-        me.pointedTourCheck();
-        me.learnAboutPointed(me.GuidedTourDOMs[me.GuidedTourStep], false);
+        me.showTourStep();
       });
 
     this.DOM.GuidedTour.append("span").attr("class","TourStep NextStep")
       .html("Next <i class='fa fa-arrow-circle-right'></i>")
       .on("click",function(){
-        if(me.GuidedTourStep===me.GuidedTourDOMs.length-1) return;
+        if(me.GuidedTourStep===me.GuidedTourSeq.length-1) return;
         ++me.GuidedTourStep;
-        me.pointedTourCheck();
-        me.learnAboutPointed(me.GuidedTourDOMs[me.GuidedTourStep], false);
+        me.showTourStep();
       });
 
     this.DOM.GuidedTour.append("span").attr("class","GuidedTourHead")
@@ -1845,22 +2007,22 @@ Helpin.prototype = {
     if(this.selectedQuestion===q) {
       return;
     } else if(this.selectedQuestion){
-      this.closeQuestion();
+      this.closeTopic();
     }
 
     this.answerSequencePos = 0;
 
     this.closePointNLearn();
 
-    this.DOM.helpin_Header.selectAll('span[class^="helpInMode_"]').attr("active",null);
-
     this.selectedQuestion = q;
     this.evaluateContext(q);
 
-    this.browser.panel_overlay.attr("show","answer");
+    this.browser.panel_overlay.attr("topicAnswer","true");
+
+    this.DOM.overlay_answer.style("display","block");
     this.DOM.root.style({left: null, right: null, top: null, bottom: null});
 
-    this.DOM.overlay_answer.selectAll(".answerBox").remove();
+    this.DOM.overlay_answer.selectAll(".stencilBox").remove();
 
     // Show topic note
     this.DOM.SelectedThing_Content_More.html(q.note);
@@ -1873,11 +2035,11 @@ Helpin.prototype = {
     q.context = q.context.sort(function(a,b){ return b.isRelevant - a.isRelevant; });
     // 2) Show
     this.DOM.ContextContent.selectAll(".ContextItem").data([]).exit().remove();
-    var X = this.DOM.ContextContent.selectAll(".ContextItem").data(q.context, function(c){ return c.topicContext.name; })
+    var X = this.DOM.ContextContent.selectAll(".ContextItem").data(q.context, function(c){ return c.topicContext.descr; })
       .enter().append("div").attr("class","ContextItem")
       .attr("isRelevant", function(c){ return c.isRelevant; });
     X.append("i").attr("class",function(c){ return "RelevantIcon fa fa-"+(c.isRelevant?"check-circle":"times-circle"); });
-    X.append("span").html(function(c){ return c.topicContext.name });
+    X.append("span").html(function(c){ return c.topicContext.descr });
     X.filter(function(c){ return !c.isRelevant && c.topicContext.fixBy; })
       .append("span").attr("class","MakeRelevantTopic").text("How?")
         .on("click", function(c){ me.selectTopic(_topics[c.topicContext.fixBy]); });
@@ -1903,22 +2065,22 @@ Helpin.prototype = {
       if(answer.sequence){
         answer.sequence.forEach(function(a){
           var x=a.text;
-          if(typeof x=== "function") x = x.call(me);
+          if(typeof x=== "function") x = x.call(this);
           t+="<span class='subAnswer'>"+x+"</span> ";
         });
       } else {
         t = answer.text;
-        if(typeof t=== "function") t = t.call(me);
+        if(typeof t=== "function") t = t.call(this);
       }
       t = t.replace(/\<br\>/gi,' ');
-      me.DOM.SelectedThing_Content.append("div").attr("class","answerTooltip").html(t);
-    });
+      this.DOM.SelectedThing_Content.append("div").attr("class","answerTooltip").html(t);
+    },this);
 
     if(q.isRelevant){
       this.context.HighlightedDOM = [];
       this.context.HighlightedDOM_All = []; // can be multiple calls...
       if(q.activate || q.tAnswer.length>0) {
-        setTimeout(function(){
+        //setTimeout(function(){
           q.tAnswer.forEach(function(answer){
             if(answer.sequence){
               me.context_highlight(answer.sequence[me.answerSequencePos]); // first step
@@ -1930,7 +2092,7 @@ Helpin.prototype = {
           if(q.activate) q.activate.call(me,q);
 
           me.createStencils();
-        }, 500);
+        //}, 500);
       }
     }
   },
@@ -1940,10 +2102,10 @@ Helpin.prototype = {
     var total_width  = parseInt(this.browser.DOM.root.style("width"));
     var total_height = parseInt(this.browser.DOM.root.style("height"));
     var dPath = "M 0 0 h "+total_width+" v "+total_height+" h -"+total_width+" Z ";
-    this.DOM.overlay_answer.selectAll(".highlightBox").each(function(d,i){
+    this.DOM.overlay_answer.selectAll(".stencilBox").each(function(d,i){
       dPath += "M "+this.left+" "+this.top+" h "+this.width+" v "+this.height+" h -"+this.width+" Z ";
     });
-    this.DOM.overlay_answer_background.style("-webkit-mask-image",
+    this.browser.DOM.kshfBackground.style("-webkit-mask-image",
       "url(\"data:image/svg+xml;utf8,"+
       "<svg xmlns='http://www.w3.org/2000/svg' width='"+total_width+"' height='"+total_height+"'>"+
         "<path d='"+dPath+"' fill-rule='evenodd' fill='black' />"+
@@ -1993,7 +2155,7 @@ Helpin.prototype = {
 
     var X = this.DOM.overlay_answer.selectAll(".highlightBox_nomatch")
       .data(this.context.HighlightedDOM, function(d,i){ return i; })
-      .enter().append("div").attr("class","highlightBox answerBox")
+      .enter().append("div").attr("class","stencilBox")
       .each(function(d){ 
         this.bounds = d.getBoundingClientRect();
         this.left  = this.bounds.left-bounds_browser.left-3;
@@ -2053,32 +2215,38 @@ Helpin.prototype = {
 
     document.onkeyup=null; // remove keyup handler
 
-    this.closeQuestion();
+    this.removeTooltips();
+    this.closeTopic();
     this.browser.panel_overlay.attr("show","none");
     this.DOM.overlay_answer.on("mousemove.helpin",null).on("click.helpin",null);
-    this.DOM.overlay_answer.selectAll(".answerBox").remove();
+    this.DOM.overlay_answer.selectAll(".stencilBox").remove();
+    this.browser.DOM.kshfBackground.style("-webkit-mask-image",null);
   },
   /** -- */
   removeTooltips: function(){
     this.browser.DOM.root.selectAll(".tipsy").remove();
     kshf.activeTipsy = null;
-    this.DOM.overlay_answer.selectAll(".answerBox").remove();
-    if(this.context.HighlightedDOM_All.length>0){
-      this.context.HighlightedDOM_All.forEach(function(DOM){ DOM.removeAttribute("helpin"); })
-    }
-    if(this.selectedQuestion.deactivate) {
-      this.selectedQuestion.deactivate.call(this, this.selectedQuestion);
-    }
     this.tooltips.forEach(function(t){ t.hide(); });
   },
   /** -- */
-  closeQuestion: function(){
+  closeTopic: function(){
     if(this.selectedQuestion===null) return;
-    this.DOM.overlay_answer_background.style("-webkit-mask-image",null);
+
+    this.browser.panel_overlay.attr("topicAnswer",null);
+    this.browser.DOM.kshfBackground.style("-webkit-mask-image",null);
 
     this.DOM.SelectedThing_Content.selectAll("div").data([]).exit().remove();
 
-    if(this.selectedQuestion.isRelevant) this.removeTooltips();
+    if(this.selectedQuestion.isRelevant) {
+      this.removeTooltips();
+      this.DOM.overlay_answer.selectAll(".stencilBox").remove();
+      if(this.context.HighlightedDOM_All.length>0){
+        this.context.HighlightedDOM_All.forEach(function(DOM){ DOM.removeAttribute("helpin"); })
+      }
+      if(this.selectedQuestion.deactivate) {
+        this.selectedQuestion.deactivate.call(this, this.selectedQuestion);
+      }
+    }
 
     this.selectedQuestion = null;
   },
@@ -2195,14 +2363,11 @@ Helpin.prototype = {
     return pointedDOMTree;
   },
   /** -- */
-  pointedTourCheck: function(){
-    this.DOM.root.select(".TourStep.PreviousStep")
-      .style("display", (this.GuidedTourStep===0)?"none":null);
-  },
-  /** -- */
   learnAboutPointed: function(pointedDOM, traverse){
     var me=this;
     if(traverse===undefined) traverse = true;
+
+    if(this.selectedQuestion) this.closeTopic();
 
     this.DOM.TopicBlock.style("display","none");
 
@@ -2235,18 +2400,24 @@ Helpin.prototype = {
     // Filter out DOM elements that do not match any component.
 
     pointedDOMTree = pointedDOMTree.filter(function(dom, i){
-      return DOMtoName.some(function(x){ return dom.matches(x.matches); });
+      for(var component in ComponentList){
+        if(dom.matches(ComponentList[component].matches)) return true;
+      }
+      return false;
     });
 
     pointedDOMTree = pointedDOMTree.slice(0,2);
 
     // process each matching components to detect related topics and print title / description.
     pointedDOMTree.forEach(function(dom, i){
-      DOMtoName.forEach(function(x){
-        if(!dom.matches(x.matches)) return;
-        dom.__temp__ = x.component;
+      for(var componentName in ComponentList){
+        var x = ComponentList[componentName];
+        if(!dom.matches(x.matches)) continue;
+        dom.__temp__ = componentName;
+        dom.tooltipPos = "n";
+        if(x.pos) dom.tooltipPos = x.pos;
 
-        var keyword = me.keywordsIndexed[x.component];
+        var keyword = me.keywordsIndexed[componentName];
         if(keyword){
           keyword.questions.forEach(function(topic){
             if(dom.__data__ instanceof kshf.Summary_Base){
@@ -2259,18 +2430,18 @@ Helpin.prototype = {
         }
 
         // Print title and description
-        if(x.component && !titlePrinted){
-          me.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> "+x.component+"</div>");
+        if(componentName && !titlePrinted){
+          me.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> "+componentName+"</div>");
         }
         if(x.info && !infoPrinted) {
-          if(x.component){
-            me.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> "+x.component+"</div>");
+          if(componentName){
+            me.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> "+componentName+"</div>");
             titlePrinted = true;
           }
           me.DOM.SelectedThing_Content.html(x.info.call(me, dom));
           infoPrinted = true;
         }
-      });
+      };
     });
 
     this.sortTopicsByRelevance();
@@ -2284,24 +2455,59 @@ Helpin.prototype = {
     pointedDOMTree.reverse();
     var bounds_browser = this.browser.DOM.root[0][0].getBoundingClientRect();
 
-    this.DOM.overlay_answer.selectAll(".answerBox").remove();
-    var X = this.DOM.overlay_answer.selectAll(".domTreeBox")
-      .data(pointedDOMTree, function(d,i){ return i; })
-      .enter().append("div").attr("class","domTreeBox answerBox")
-        .each(function(d){ 
-          this.bounds = d.getBoundingClientRect();
-          this.left   = this.bounds.left-bounds_browser.left-2;
-          this.width  = this.bounds.width+4;
-          this.top    = this.bounds.top-bounds_browser.top-2;
-          this.height = this.bounds.height+4;
-        })
-        .style("left",  function(){ return this.left  +"px"; })
-        .style("width", function(){ return this.width +"px"; })
-        .style("top",   function(){ return this.top   +"px"; })
-        .style("height",function(){ return this.height+"px"; });
-    X.append("div").attr("class","domName")
+    var X = this.DOM.overlay_answer.selectAll(".stencilBox")
+      .data(pointedDOMTree, function(d,i){ return i; });
+
+    X.enter().append("div").attr("class","stencilBox");
+
+    X.exit().each(function(){
+      this.tipsy.hide();
+      // TODO: remove from tooltips
+    }).remove();
+
+    X.each(function(d){ 
+      this.bounds = d.getBoundingClientRect();
+      this.left   = this.bounds.left-bounds_browser.left-2;
+      this.width  = this.bounds.width+4;
+      this.top    = this.bounds.top-bounds_browser.top-2;
+      this.height = this.bounds.height+4;
+    })
+    .style("left",  function(){ return this.left  +"px"; })
+    .style("width", function(){ return this.width +"px"; })
+    .style("top",   function(){ return this.top   +"px"; })
+    .style("height",function(){ return this.height+"px"; })
+    .each(function(d,i){ 
+      // TODO: Pick up based on screen location (avoid edges) or other relevant metrics.
+      var tipsyClass = "tipsy-helpin";
+      if(i===pointedDOMTree.length-1) tipsyClass+=" tipsy-primary";
+      if(this.tipsy===undefined){
+        this.tipsy = new Tipsy(this, { gravity: d.tooltipPos, title: d.__temp__, className: tipsyClass}); 
+        this.tipsy.pointedDOM = d;
+        me.tooltips.push(this.tipsy);
+        kshf.activeTipsy = null;
+        this.tipsy.show();
+      } else {
+        //recycle existing tipsy
+        if(this.tipsy.pointedDOM !== d){
+          this.tipsy.options.title = d.__temp__;
+          this.tipsy.options.className = tipsyClass;
+          this.tipsy.options.gravity = d.tooltipPos;
+          this.tipsy.jq_element = this;
+          this.tipsy.pointedDOM = d;
+          kshf.activeTipsy = null;
+          this.tipsy.show();
+        } else {
+          this.tipsy.jq_tip.classed("tipsy-primary", (i===pointedDOMTree.length-1) ? "true" : null);
+        }
+      }
+
+      this.tipsy.jq_tip.attr("locked",null);
+      this.removeAttribute("locked");
+    });
+
+/*    X.append("div").attr("class","domName")
       .attr("primary", function(d,i){ return (i===pointedDOMTree.length-1)?"true":null; })
-      .html(function(d){ return d.__temp__; });
+      .html(function(d){ return d.__temp__; });*/
 
     if(pointedDOMTree.length>0){
       // CREATE WINDOW / STENCIL ON THE SEMI-TRANSPARENT OVERLAY
@@ -2311,13 +2517,17 @@ Helpin.prototype = {
       X.filter(function(d,i){ return i===0;}).each(function(d,i){
         dPath += "M "+this.left+" "+this.top+" h "+this.width+" v "+this.height+" h -"+this.width+" Z ";
       });
-      this.DOM.overlay_answer_background.style("-webkit-mask-image",
+      this.browser.DOM.kshfBackground.style("-webkit-mask-image",
         "url(\"data:image/svg+xml;utf8,"+
         "<svg xmlns='http://www.w3.org/2000/svg' width='"+total_width+"' height='"+total_height+"'>"+
           "<path d='"+dPath+"' fill-rule='evenodd' fill='black' />"+
         "</svg>\")"
         );
     }
+
+    // NOTE: Only the highest-level DOM (*should* be largest) is applied for stencil
+    // If you include smaller ones, it actuallty removes the stencil because of the fill rule
+    //this.createStencils();
 
     setTimeout(function(){ me.repositionHelpMenu(); }, 1000);    
   },
@@ -2327,7 +2537,7 @@ Helpin.prototype = {
     this.showPanel();
 
     if(this.browser.panel_overlay.attr("show")==="help-pointnlearn") return;
-    if(this.selectedQuestion) this.closeQuestion();
+    if(this.selectedQuestion) this.closeTopic();
 
     this.browser.panel_overlay.attr("show","help-pointnlearn");
 
@@ -2344,13 +2554,15 @@ Helpin.prototype = {
       .on("click.helpin",function(){
         if(me.lockedBox){
           me.lockedBox.removeAttribute("locked");
+          me.lockedBox.tipsy.jq_tip.attr("locked",null);
           me.DOM.root.attr("hideRelatedTopics",true).attr("lockedPointNLearn",null);
           me.lockedBox = false;
         } else {
-          d3.event.target.setAttribute("locked",true);
+          me.lockedBox = d3.event.target;
+          me.lockedBox.setAttribute("locked",true);
+          me.lockedBox.tipsy.jq_tip.attr("locked",true);
           me.DOM.root.attr("hideRelatedTopics",null).attr("lockedPointNLearn",true);
           me.checkBoxBoundaries();
-          me.lockedBox = d3.event.target;
         }
         d3.event.stopPropagation();
         d3.event.preventDefault();
@@ -2362,19 +2574,75 @@ Helpin.prototype = {
 
         this.style.pointerEvents = "none";
         this.parentNode.style.pointerEvents = "none";
+        me.browser.DOM.kshfBackground[0][0].style.pointerEvents = "none";
 
         me.learnAboutPointed(document.elementFromPoint(d3.event.clientX, d3.event.clientY));
 
         // unroll pointer-event pass style - end of mousemove event
         this.style.pointerEvents = null;
         this.parentNode.style.pointerEvents = null;
+        me.browser.DOM.kshfBackground[0][0].style.pointerEvents = null;
       });
   },
   /** -- */
   closePointNLearn: function(){
+    this.removeTooltips();
     this.DOM.overlay_answer.on("mousemove.helpin",null).on("mousemove.click",null);
-    this.DOM.overlay_answer.selectAll(".answerBox").remove();
-    this.DOM.overlay_answer_background.style("-webkit-mask-image",null);
+    this.DOM.overlay_answer.selectAll(".stencilBox").remove();
+    this.browser.DOM.kshfBackground.style("-webkit-mask-image",null);
+  },
+  /** -- */
+  prepareGuidedTourSeq: function(){
+    this.GuidedTourSeq = [];
+
+    // if a guide is topic, do not need to define context, topic defines its own context
+
+    var guides = [
+      {
+        component: "Record",
+        // TODO: first record "visible"
+      },{
+        component: "Categorical Summary",
+      },{
+        component: "Category",
+      },{
+        component: "Time Summary",
+      },{
+        component: "Number Summary",
+      },{
+        component: "Range",
+      },{
+        // TODO: Selections... - highlight, compare, filter, 
+        component: "Global Measurement"
+      },{
+        component: "Measurement Function"
+      },{
+        component: "Breadcrumbs"
+      },{
+        topic: 13 // visual scale mode
+      },{
+        topic: 11 // measure label control
+      },{
+        topic: 23 // change record sorting
+      },{
+        component: "Help Button"
+      }
+    ];
+
+    this.GuidedTourSeq = [];
+    guides.forEach(function(g){
+      if(g.component){
+        var x = ComponentList[g.component];
+        var m = this.browser.DOM.root.select(x.matches);
+        if(m[0].length>0){
+          this.GuidedTourSeq.push({dom: m[0][0]});
+        }
+      } else if(g.topic){
+        var _t = _topics[g.topic];
+        // evaluate on context
+        if(_t.isRelevant) this.GuidedTourSeq.push({topic: _t});
+      }
+    },this);
   },
   /** -- */
   showGuidedTour: function(){
@@ -2382,7 +2650,7 @@ Helpin.prototype = {
 
     this.showPanel();
 
-    if(this.selectedQuestion) this.closeQuestion();
+    if(this.selectedQuestion) this.closeTopic();
 
     this.browser.panel_overlay.attr("show","help-guidedtour");
 
@@ -2393,28 +2661,20 @@ Helpin.prototype = {
     this.DOM.root.attr("hideRelatedTopics",true);
     this.DOM.TopicBlock.style("display","none");
 
-    this.GuidedTourDOMs = [];
+    this.prepareGuidedTourSeq();
 
-    this.GuidedTourDOMs.push(this.browser.records[3].DOM.record); // individual record
-    this.GuidedTourDOMs.push(this.browser.summaries[0].DOM.root[0][0]); // categorical summary
-    this.GuidedTourDOMs.push(this.browser.summaries[0]._cats[0].DOM.aggrGlyph); // category
+    this.showTourStep();
+  },
+  /** -- */
+  showTourStep: function(){
+    this.DOM.root.select(".TourStep.PreviousStep").style("display", (this.GuidedTourStep===0)?"none":null);
 
-    // TODO: Selections... - highlight, compare, filter, 
-    
-    this.GuidedTourDOMs.push(this.browser.DOM.recordInfo[0][0]); // global summary
-    this.GuidedTourDOMs.push(this.browser.DOM.breadcrumbs[0][0]); // breadcrumb
-    
-    this.GuidedTourDOMs.push(this.browser.summaries[0].DOM.scaleModeControl[0][0]); // scale mode control
-    this.GuidedTourDOMs.push(this.browser.summaries[0].DOM.measurePercentControl[0][0]); // measure label control
-    
-    this.GuidedTourDOMs.push(this.browser.recordDisplay.DOM.listSortOptionSelect[0][0]); // change record sorting dropbox
-
-    // TODO: minimize/maximize summary
-
-    this.GuidedTourDOMs.push(this.browser.DOM.showHelpIn[0][0]); // get help
-    
-    this.pointedTourCheck();
-    this.learnAboutPointed(this.GuidedTourDOMs[this.GuidedTourStep], false);
+    var stepInfo = this.GuidedTourSeq[this.GuidedTourStep];
+    if(stepInfo.dom){
+      this.learnAboutPointed(stepInfo.dom, false);
+    } else if(stepInfo.topic){
+      this.selectTopic(stepInfo.topic);
+    }
   },
   /** -- */
   repositionHelpMenu: function(){
@@ -2442,11 +2702,18 @@ Helpin.prototype = {
     var bestIntSize = browserHeight*browserWidth;
 
     var boxes = [];
-    this.DOM.overlay_answer.selectAll(".answerBox").each(function(){
+    // add stencil boxes to avoid
+    this.DOM.overlay_answer.selectAll(".stencilBox").each(function(){
       boxes.push({left: this.left, top: this.top, right: this.left+this.width, bottom: this.top+this.height});
     });
+    // add tooltip boxes to avoid
     browser.DOM.root.selectAll(".tipsy").each(function(){
-
+      var bounds = this.getBoundingClientRect();
+      var left   = bounds.left-bounds_browser.left-2;
+      var width  = bounds.width+4;
+      var top    = bounds.top-bounds_browser.top-2;
+      var height = bounds.height+4;
+      boxes.push({left: left, top: top, right: left+width, bottom: top+height});
     });
 
     [ // Current position
@@ -2506,6 +2773,4 @@ Helpin.prototype = {
     this.DOM.root[0][0].style.top  = Math.min(maxTop, Math.max(0, initTop))+"px";
   }
 };
-
-
 

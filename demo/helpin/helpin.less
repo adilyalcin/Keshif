@@ -39,7 +39,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_distr_total: #DEE2E6;
 @color_preview: lighten(orangered, 10%);
 @color_Compare_A: darkslategray;
-@color_Compare_B: #ff126a;
+@color_Compare_B: #39ef4f;
 @color_Compare_C: #FFFEDC;
 @color_axis_line: rgb(182, 179, 179);
 @color_item_count: #969DA3;;
@@ -57,54 +57,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   top: 0px;
   pointer-events: none;
   .transition(opacity 0.5s);
-  > .overlay_answer_background{
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    opacity: 0;
-    .transition(opacity 0.5s);
-  }
 
-  .highlightBox{
-    position: absolute;
-    border: solid 2px green;
-    box-shadow: 0px 0px 5px green;
-    cursor: pointer;
-  }
-  .domTreeBox{
+  .stencilBox{
     position: absolute;
     border: solid 2px green;
     border-radius: 3px;
-    cursor: pointer;
+    box-shadow: 0px 0px 5px green;
     .user-select(none);
-    > .domName{
-      position: absolute;
-      left: -2px;
-      background-color: white;
-      border: solid 2px green;
-      height: 20px;
-      top: -21px;
-      font-size: 0.9em;
-      font-weight: 300;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
-      padding: 0px 3px;
-      box-shadow: 0px 0px 6px gray;
-      white-space: nowrap;
-      &[primary]{
-        background-color: #efeadf;
-        font-weight: 500;
-      }
-    }
     &[locked]{
       border-color: #cc2525;
-      box-shadow: inset 0px 0px 5px #cc2525;
-      > .domName{
-        border: solid 2px #cc2525;
-      }
+      box-shadow: 0px 0px 5px #cc2525;
     }
   }
 }
@@ -127,7 +89,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   > .tipsy-arrow{ border-color: white; }
   > .tipsy-inner{
     padding: 6px;
-    border: solid 2px white;
     border-radius: 6px;
     color: black;
     background-color: white;
@@ -135,6 +96,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-size: 1.35em;
     font-weight: 300;
     > .fa{ font-size: 1.3em; }
+  }
+  &.tipsy-primary{
+    //> .tipsy-arrow{ border-color: green; }
+    > .tipsy-inner{
+      //border: solid 1px green;
+      //box-shadow: 0px 0px 10px green;
+      font-weight: 600;
+      //padding: 5px;
+    }
+  }
+  &[locked]{
+    > .tipsy-arrow{ border-color: #cc2525; }
+    > .tipsy-inner{
+      border: solid 1px #cc2525;
+      box-shadow: 0px 0px 10px #cc2525;
+      padding: 5px;
+    }
   }
 }
 
@@ -253,7 +231,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     > .TourStep{
       position: absolute;
       font-size: 0.8em;
-      font-weight: 300;
       margin: 5px;
       display: inline-block;
       cursor: pointer;
@@ -269,6 +246,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     > .PreviousStep{
       left: 0px;
+      font-weight: 100;
     }
   }
 
@@ -564,8 +542,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         text-align: center;
         &:not(:first-child):before{
           display: block;
-          content: "OR";
+          content: "-OR-";
           color: #BF360C;
+          font-size: 1.3em;
           font-family: monospace;
           font-weight: 600;
           padding: 0px 4px 2px;
@@ -607,12 +586,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //    height: 1em;
     vertical-align: top;
     padding: 0px 4px;
-    &.colorCoding-total      { color: black; background-color: @color_distr_total; }
-    &.colorCoding-filtered   { color: white; background-color: darken(@color_bars, 10%); }
-    &.colorCoding-highlighted{ color: white; background-color: @color_preview; }
-    &.colorCoding-compare_A  { color: white; background-color: @color_Compare_A; }
-    &.colorCoding-compare_B  { color: white; background-color: @color_Compare_B; }
-    &.colorCoding-compare_C  { color: black; background-color: @color_Compare_C; }
+    &.colorCoding-Total     { color: black; background-color: @color_distr_total; }
+    &.colorCoding-Active    { color: white; background-color: darken(@color_bars, 10%); }
+    &.colorCoding-Highlight { color: white; background-color: @color_preview; }
+    &.colorCoding-Compare_A { color: white; background-color: @color_Compare_A; }
+    &.colorCoding-Compare_B { color: white; background-color: @color_Compare_B; }
+    &.colorCoding-Compare_C { color: black; background-color: @color_Compare_C; }
   }
 
   > .overlay_Close{ z-index: 1000; }
@@ -641,7 +620,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_overlay[show="help-pointnlearn"] {
   > .overlay_answer{
     pointer-events: all;
-    > .overlay_answer_background{ opacity: 0.2; }
+    //> .overlay_answer_background{ opacity: 0.2; }
   }
   > .overlay_help{
     width: 370px;
@@ -658,6 +637,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       padding: 2px;
       font-size: 0.8em;
       > .TopicIcons{ display: none !important; }
+      > .TopicText{ padding-right: 5px;}
     }
     .TextSearchBlock{ display: none; }
   }
@@ -666,7 +646,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .kshf .panel_overlay[show="help-guidedtour"] {
   > .overlay_answer{
-    > .overlay_answer_background{ opacity: 0.2; }
+    //> .overlay_answer_background{ opacity: 0.2; }
   }
   > .overlay_help{
     width: 370px;
@@ -699,23 +679,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   .TopicBlock{ font-size: 0.9em; }
 }
 
-.kshf .panel_overlay[show="answer"] {
+.kshf .panel_overlay[topicAnswer] {
   > .overlay_answer{
     pointer-events: all;
-    > .overlay_answer_background{ opacity: 0.2; }
+    //> .overlay_answer_background{ opacity: 0.2; }
   }
-  .BackButton{ display: block !important; }
+  .stencilBox{
+    cursor: pointer;
+  }
+  // .BackButton{ display: block !important; }
   > .overlay_help{
     width: 370px;
     .calc(left, ~'50% - 170px');
     top: 100px;
-
-    .HowDoI:after{ content: " ... "; }
-
     > .TopicRelWhenBlock{ display: block; }
-    > .overlay_Close::before{ content: "\f058"; } // checkbox
     > .SelectedThing{  display: block; }
     > .RelatedTopics{ display: block; }
+    .browseTopicBlock{ display: none !important; }
+//    > .overlay_Close::before{ content: "\f058"; } // checkbox
     .TopicsList{ max-height: 250px; }
     .TopicBlock{
       margin: 3px;
@@ -831,6 +812,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: right;
   color: gray;
   &:hover{ color: @color_hoverAction;}
+}
+
+.encodingInfo {
+  padding-bottom: 1px;
+  .breadCrumb{
+    vertical-align: bottom;
+    position: relative;
+    top: -2px;
+  }
 }
 
 .helpin-breadcrumb{

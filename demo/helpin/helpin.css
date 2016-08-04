@@ -44,60 +44,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
-.overlay_answer > .overlay_answer_background {
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  opacity: 0;
-  -webkit-transition: opacity 0.5s;
-  -moz-transition: opacity 0.5s;
-  -o-transition: opacity 0.5s;
-  transition: opacity 0.5s;
-}
-.overlay_answer .highlightBox {
-  position: absolute;
-  border: solid 2px green;
-  box-shadow: 0px 0px 5px green;
-  cursor: pointer;
-}
-.overlay_answer .domTreeBox {
+.overlay_answer .stencilBox {
   position: absolute;
   border: solid 2px green;
   border-radius: 3px;
-  cursor: pointer;
+  box-shadow: 0px 0px 5px green;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
 }
-.overlay_answer .domTreeBox > .domName {
-  position: absolute;
-  left: -2px;
-  background-color: white;
-  border: solid 2px green;
-  height: 20px;
-  top: -21px;
-  font-size: 0.9em;
-  font-weight: 300;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  padding: 0px 3px;
-  box-shadow: 0px 0px 6px gray;
-  white-space: nowrap;
-}
-.overlay_answer .domTreeBox > .domName[primary] {
-  background-color: #efeadf;
-  font-weight: 500;
-}
-.overlay_answer .domTreeBox[locked] {
+.overlay_answer .stencilBox[locked] {
   border-color: #cc2525;
-  box-shadow: inset 0px 0px 5px #cc2525;
-}
-.overlay_answer .domTreeBox[locked] > .domName {
-  border: solid 2px #cc2525;
+  box-shadow: 0px 0px 5px #cc2525;
 }
 lesshat-selector {
   -lh-property: 0; } 
@@ -131,7 +90,6 @@ lesshat-selector {
 }
 .tipsy.tipsy-helpin > .tipsy-inner {
   padding: 6px;
-  border: solid 2px white;
   border-radius: 6px;
   color: black;
   background-color: white;
@@ -141,6 +99,17 @@ lesshat-selector {
 }
 .tipsy.tipsy-helpin > .tipsy-inner > .fa {
   font-size: 1.3em;
+}
+.tipsy.tipsy-helpin.tipsy-primary > .tipsy-inner {
+  font-weight: 600;
+}
+.tipsy.tipsy-helpin[locked] > .tipsy-arrow {
+  border-color: #cc2525;
+}
+.tipsy.tipsy-helpin[locked] > .tipsy-inner {
+  border: solid 1px #cc2525;
+  box-shadow: 0px 0px 10px #cc2525;
+  padding: 5px;
 }
 .fa-histogram-flip {
   -webkit-transform: scale(1, -1) rotate(90deg);
@@ -282,7 +251,6 @@ left:calc(50% - 310px);
 .kshf .panel_overlay > .overlay_help > .GuidedTour > .TourStep {
   position: absolute;
   font-size: 0.8em;
-  font-weight: 300;
   margin: 5px;
   display: inline-block;
   cursor: pointer;
@@ -300,6 +268,7 @@ left:calc(50% - 310px);
 }
 .kshf .panel_overlay > .overlay_help > .GuidedTour > .PreviousStep {
   left: 0px;
+  font-weight: 100;
 }
 .kshf .panel_overlay > .overlay_help .QuestionTypes {
   border-width: 1px 0px 1px 0px;
@@ -651,8 +620,9 @@ left:calc(50% - 310px);
 }
 .kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip:not(:first-child):before {
   display: block;
-  content: "OR";
+  content: "-OR-";
   color: #BF360C;
+  font-size: 1.3em;
   font-family: monospace;
   font-weight: 600;
   padding: 0px 4px 2px;
@@ -689,27 +659,27 @@ left:calc(50% - 310px);
   vertical-align: top;
   padding: 0px 4px;
 }
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-total {
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Total {
   color: black;
   background-color: #dee2e6;
 }
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-filtered {
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Active {
   color: white;
   background-color: #94a4af;
 }
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-highlighted {
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Highlight {
   color: white;
   background-color: #ff6a33;
 }
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-compare_A {
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Compare_A {
   color: white;
   background-color: #2f4f4f;
 }
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-compare_B {
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Compare_B {
   color: white;
-  background-color: #ff126a;
+  background-color: #39ef4f;
 }
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-compare_C {
+.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Compare_C {
   color: black;
   background-color: #fffedc;
 }
@@ -746,9 +716,6 @@ left:calc(50% - 310px);
 .kshf .panel_overlay[show="help-pointnlearn"] > .overlay_answer {
   pointer-events: all;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_answer > .overlay_answer_background {
-  opacity: 0.2;
-}
 .kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help {
   width: 370px;
   top: 60px;
@@ -781,14 +748,14 @@ left:calc(50% - 185px);
 .kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock > .TopicIcons {
   display: none !important;
 }
+.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock > .TopicText {
+  padding-right: 5px;
+}
 .kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TextSearchBlock {
   display: none;
 }
 .kshf .panel_overlay[show="help-pointnlearn"] .SelectedThing_Content_More {
   display: none !important;
-}
-.kshf .panel_overlay[show="help-guidedtour"] > .overlay_answer > .overlay_answer_background {
-  opacity: 0.2;
 }
 .kshf .panel_overlay[show="help-guidedtour"] > .overlay_help {
   width: 370px;
@@ -845,16 +812,13 @@ left:calc(50% - 185px);
 .kshf .panel_overlay[show="help-browse"] .TopicBlock {
   font-size: 0.9em;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_answer {
+.kshf .panel_overlay[topicAnswer] > .overlay_answer {
   pointer-events: all;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_answer > .overlay_answer_background {
-  opacity: 0.2;
+.kshf .panel_overlay[topicAnswer] .stencilBox {
+  cursor: pointer;
 }
-.kshf .panel_overlay[show="answer"] .BackButton {
-  display: block !important;
-}
-.kshf .panel_overlay[show="answer"] > .overlay_help {
+.kshf .panel_overlay[topicAnswer] > .overlay_help {
   width: 370px;
   -lh-property: 0;
 left:-webkit-calc(50% - 170px);
@@ -863,29 +827,26 @@ left:calc(50% - 170px);
 ;
   top: 100px;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_help .HowDoI:after {
-  content: " ... ";
-}
-.kshf .panel_overlay[show="answer"] > .overlay_help > .TopicRelWhenBlock {
+.kshf .panel_overlay[topicAnswer] > .overlay_help > .TopicRelWhenBlock {
   display: block;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_help > .overlay_Close::before {
-  content: "\f058";
-}
-.kshf .panel_overlay[show="answer"] > .overlay_help > .SelectedThing {
+.kshf .panel_overlay[topicAnswer] > .overlay_help > .SelectedThing {
   display: block;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_help > .RelatedTopics {
+.kshf .panel_overlay[topicAnswer] > .overlay_help > .RelatedTopics {
   display: block;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_help .TopicsList {
+.kshf .panel_overlay[topicAnswer] > .overlay_help .browseTopicBlock {
+  display: none !important;
+}
+.kshf .panel_overlay[topicAnswer] > .overlay_help .TopicsList {
   max-height: 250px;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_help .TopicBlock {
+.kshf .panel_overlay[topicAnswer] > .overlay_help .TopicBlock {
   margin: 3px;
   font-size: 0.8em;
 }
-.kshf .panel_overlay[show="answer"] > .overlay_help .TopicBlock > .TopicIcons {
+.kshf .panel_overlay[topicAnswer] > .overlay_help .TopicBlock > .TopicIcons {
   display: none !important;
 }
 .QuestionTypeSelect {
@@ -1005,6 +966,14 @@ left:calc(50% - 170px);
 }
 .closePanel:hover {
   color: #cb5454;
+}
+.encodingInfo {
+  padding-bottom: 1px;
+}
+.encodingInfo .breadCrumb {
+  vertical-align: bottom;
+  position: relative;
+  top: -2px;
 }
 .helpin-breadcrumb {
   display: inline-block;
