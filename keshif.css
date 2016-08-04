@@ -948,11 +948,193 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .recordInfo > .recordName {
   pointer-events: none;
 }
-.kshf .recordInfo[changeMeasureBox] {
+.kshf .filterClearAll {
+  display: none;
+  position: relative;
+  top: 2px;
+  height: 1em;
+  cursor: pointer;
+  color: white;
+  font-weight: 300;
+  border: 1px #685b2b solid;
+  background-color: #685b2b;
+  white-space: nowrap;
+  -webkit-transition: background-color 100ms linear, opacity 300ms linear;
+  -moz-transition: background-color 100ms linear, opacity 300ms linear;
+  -o-transition: background-color 100ms linear, opacity 300ms linear;
+  transition: background-color 100ms linear, opacity 300ms linear;
+}
+.kshf .filterClearAll .title {
+  padding: 0px 2px;
+  font-size: 0.7em;
+  font-weight: 300;
+  vertical-align: top;
+}
+.kshf .filterClearAll:hover {
+  text-decoration: underline;
+}
+.kshf .filterClearAll[active=true] {
+  display: inline-block;
+}
+.kshf .measureSelectBox {
+  display: none;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  margin-top: 22px;
+  z-index: 2000;
+  background-color: white;
+  font-size: 0.9em;
+  font-weight: 400;
+  border-radius: 4px;
+  border: solid 1px gray;
+  color: black;
+  box-shadow: 2px 2px 8px gray;
+}
+.kshf .measureSelectBox > .measureSelectBox_Close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: gray;
+}
+.kshf .measureSelectBox > .measureSelectBox_Close:hover {
+  color: orangered;
+}
+.kshf .measureSelectBox > .measureSelectBox_Header {
+  font-weight: 700;
+  padding: 3px;
+  background-color: #DDD9D0;
+  border-radius: 4px 4px 0px 0px;
+  border-bottom: solid 1px gray;
+  white-space: nowrap;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.kshf .measureSelectBox > .measureSelectBox_Content {
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  padding: 4px 10px;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+}
+.kshf .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  vertical-align: top;
+  text-align: right;
+}
+.kshf .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType {
+  display: block;
+  margin-bottom: 2px;
+  cursor: pointer;
+  color: gray;
+}
+.kshf .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType:hover {
+  color: orangered;
+}
+.kshf .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_Summaries {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: block;
+  padding: 0.5em 5px 0px 5px;
+  margin: 1em 0px 0px 5px;
+  text-align: center;
+  border-top: dotted 1px lightgray;
+}
+.kshf .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_RecordName {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  display: block;
+  vertical-align: top;
+  cursor: default;
+  font-weight: 600;
+  padding-left: 4px;
+}
+.kshf .measureSelectBox > .measureOptionGroup {
+  margin: 1px 6px;
+  white-space: nowrap;
+  cursor: pointer;
+  border-bottom: solid 1px #CBC5B9;
+}
+.kshf .measureSelectBox > .measureOptionGroup > .measureOption {
+  display: inline-block;
+  vertical-align: top;
+}
+.kshf .measureSelectBox > .measureOptionGroup > .measureOption:hover {
+  color: orangered;
+}
+.kshf .measureSelectBox > .measureOptionGroup > .measureType_Box {
+  display: inline-block;
+  border-left: solid 1px gray;
+  margin-left: 2px;
+}
+.kshf .measureSelectBox > .measureOptionGroup > .measureType_Box > .measureType {
+  cursor: pointer;
+  display: block;
+  margin-left: 2px;
+}
+.kshf .measureSelectBox > .measureOptionGroup > .measureType_Box > .measureType:hover {
+  color: orangered;
+}
+.kshf .breadcrumbs {
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  padding: 1px 2px 4px 4px;
+  font-size: 0.8em;
+  vertical-align: top;
+}
+.kshf .breadcrumbs > .saveSelection {
+  display: none;
+  cursor: pointer;
+  color: gray;
+  height: 1em;
+  font-size: 1.1em;
+  margin: 3px 0px;
+  vertical-align: top;
+}
+.kshf .breadcrumbs > .saveSelection:hover {
+  color: orangered;
+}
+.kshf .breadcrumbs > .saveSelection[active=true] {
+  display: inline-block;
+}
+.kshf .breadcrumbs > .breadCrumb {
   cursor: pointer;
 }
-.kshf .recordInfo[changeMeasureBox]:hover {
-  color: orangered;
+.kshf .breadcrumbs > .breadCrumb:hover {
+  background-color: #ffffff;
+}
+.kshf .breadcrumbs > .breadCrumb:hover > .crumbText {
+  text-decoration: line-through;
+}
+.kshf .breadcrumbs > .breadCrumb:hover > .breadCrumbIcon::before {
+  content: "\f00d";
 }
 .kshf .panel_Basic {
   display: -webkit-box;
@@ -979,194 +1161,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .measureSelectBox_Wrapper[showMeasureBox="true"] > .measureSelectBox {
   display: block;
 }
-.kshf .panel_Basic .measureSelectBox {
-  display: none;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  margin-top: 22px;
-  z-index: 2000;
-  background-color: white;
-  font-size: 0.9em;
-  font-weight: 400;
-  border-radius: 4px;
-  border: solid 1px gray;
-  color: black;
-  box-shadow: 2px 2px 8px gray;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Close {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  cursor: pointer;
-  font-size: 1.2em;
-  color: gray;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Close:hover {
-  color: orangered;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Header {
-  font-weight: 700;
-  padding: 3px;
-  background-color: #DDD9D0;
-  border-radius: 4px 4px 0px 0px;
-  border-bottom: solid 1px gray;
-  white-space: nowrap;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-  cursor: grab;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content {
-  display: block;
-  position: relative;
-  white-space: nowrap;
-  padding: 4px 10px;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: horizontal;
-  -moz-box-orient: horizontal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  vertical-align: top;
-  text-align: right;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType {
-  display: block;
-  margin-bottom: 2px;
-  cursor: pointer;
-  color: gray;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType:hover {
-  color: orangered;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_Summaries {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: block;
-  padding: 0.5em 5px 0px 5px;
-  margin: 1em 0px 0px 5px;
-  text-align: center;
-  border-top: dotted 1px lightgray;
-}
-.kshf .panel_Basic .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_RecordName {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  display: block;
-  vertical-align: top;
-  cursor: default;
-  font-weight: 600;
-  padding-left: 4px;
-}
-.kshf .panel_Basic .measureSelectBox > .measureOptionGroup {
-  margin: 1px 6px;
-  white-space: nowrap;
-  cursor: pointer;
-  border-bottom: solid 1px #CBC5B9;
-}
-.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureOption {
-  display: inline-block;
-  vertical-align: top;
-}
-.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureOption:hover {
-  color: orangered;
-}
-.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureType_Box {
-  display: inline-block;
-  border-left: solid 1px gray;
-  margin-left: 2px;
-}
-.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureType_Box > .measureType {
-  cursor: pointer;
-  display: block;
-  margin-left: 2px;
-}
-.kshf .panel_Basic .measureSelectBox > .measureOptionGroup > .measureType_Box > .measureType:hover {
-  color: orangered;
-}
-.kshf .panel_Basic > .breadcrumbs {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  padding: 1px 2px 4px 4px;
-  font-size: 0.8em;
-  vertical-align: top;
-}
-.kshf .panel_Basic > .breadcrumbs > .saveSelection {
-  display: none;
-  cursor: pointer;
-  color: gray;
-  height: 1em;
-  font-size: 1.1em;
-  margin: 3px 0px;
-  vertical-align: top;
-}
-.kshf .panel_Basic > .breadcrumbs > .saveSelection:hover {
-  color: orangered;
-}
-.kshf .panel_Basic > .breadcrumbs > .saveSelection[active=true] {
-  display: inline-block;
-}
-.kshf .panel_Basic > .breadcrumbs > .breadCrumb {
-  cursor: pointer;
-}
-.kshf .panel_Basic > .breadcrumbs > .breadCrumb:hover {
-  background-color: #ffffff;
-}
-.kshf .panel_Basic > .breadcrumbs > .breadCrumb:hover > .crumbText {
-  text-decoration: line-through;
-}
-.kshf .panel_Basic > .breadcrumbs > .breadCrumb:hover > .breadCrumbIcon::before {
-  content: "\f00d";
-}
-.kshf .panel_Basic > .filterClearAll {
-  display: none;
-  position: relative;
-  top: 2px;
-  height: 1em;
-  cursor: pointer;
-  color: white;
-  font-weight: 300;
-  border: 1px #685b2b solid;
-  background-color: #685b2b;
-  white-space: nowrap;
-  -webkit-transition: background-color 100ms linear, opacity 300ms linear;
-  -moz-transition: background-color 100ms linear, opacity 300ms linear;
-  -o-transition: background-color 100ms linear, opacity 300ms linear;
-  transition: background-color 100ms linear, opacity 300ms linear;
-}
-.kshf .panel_Basic > .filterClearAll .title {
-  padding: 0px 2px;
-  font-size: 0.7em;
-  font-weight: 300;
-  vertical-align: top;
-}
-.kshf .panel_Basic > .filterClearAll:hover {
-  text-decoration: underline;
-}
-.kshf .panel_Basic > .filterClearAll[active=true] {
-  display: inline-block;
-}
 .kshf .panel_Basic > .rightBoxes {
   font-size: 1.0em;
   color: #635d46;
@@ -1190,8 +1184,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .panel_Basic > .rightBoxes > .authorButton:hover {
-  animation: fa-spin 2s infinite linear;
   -webkit-animation: fa-spin 2s infinite linear;
+  -moz-animation: fa-spin 2s infinite linear;
+  -o-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
 }
 .kshf .panel_Basic > .rightBoxes > .datasource {
   display: none;
@@ -1213,6 +1209,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px gray;
 }
 .kshf .panel_Basic:hover .saveSelection {
+  color: black;
+}
+.kshf .panel_Basic:hover .measureFuncSelect {
   color: black;
 }
 .kshf .panels_Above {
@@ -1404,10 +1403,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #2f4f4f;
 }
 .kshf .breadCrumb[class*='crumbMode_Compare_B'] {
-  border: solid 1px #ff126a;
+  border: solid 1px #39ef4f;
 }
 .kshf .breadCrumb[class*='crumbMode_Compare_B'] > .breadCrumbIcon {
-  background-color: #ff126a;
+  background-color: #39ef4f;
 }
 .kshf .breadCrumb[class*='crumbMode_Compare_C'] {
   border: solid 1px #fff810;
@@ -2033,7 +2032,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
 }
 .kshf .panel_overlay[show="infobox"] > .kshfBackground {
-  opacity: 0.7;
+  opacity: 0.3;
   pointer-events: all;
 }
 .kshf .panel_overlay[show="source"] > .overlay_source {
@@ -2043,43 +2042,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0.7;
   pointer-events: all;
 }
-.kshf .panel_overlay[show="help-browse"] > .kshfBackground {
+.kshf .panel_overlay[show^="help"] > .kshfBackground {
   opacity: 0.3;
   pointer-events: all;
 }
-.kshf .panel_overlay[show="help-browse"] > .overlay_help {
+.kshf .panel_overlay[show^="help"] > .overlay_help {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-}
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-.kshf .panel_overlay[show="answer"] > .overlay_help {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-}
-.kshf .panel_overlay[show="answer"] > .overlay_answer {
-  display: block;
 }
 .kshf .panel_overlay[show="recordDetails"] > .kshfBackground {
-  opacity: 0.4;
+  opacity: 0.3;
   pointer-events: all;
 }
 .kshf .panel_overlay[show="recordDetails"] > .overlay_recordDetails {
@@ -2117,6 +2092,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .summaryCategorical .scrollToTop {
   right: 1px;
 }
+.kshf .measureFuncSelect {
+  display: none;
+  margin: 4px 1px 0px 3px;
+  font-size: 0.8em;
+  height: 1em;
+  color: gray;
+  cursor: pointer;
+  -webkit-transition: color 200ms;
+  -moz-transition: color 200ms;
+  -o-transition: color 200ms;
+  transition: color 200ms;
+}
+.kshf .measureFuncSelect:hover {
+  color: #cb5454 !important;
+}
+.kshf .measureFuncSelect[changeMeasureBox] {
+  display: inline-block;
+}
 .kshf .clearFilterButton {
   display: inline-block;
   opacity: 0;
@@ -2128,7 +2121,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   line-height: 14px;
   position: relative;
   vertical-align: top;
-  font-size: 0.8em;
   font-weight: 700;
   font-size: 11px;
   text-align: center;
@@ -2258,7 +2250,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: 0px 0px 2px #9b9b9b;
   background-color: #ebebeb;
 }
-.kshf .headerGroup .summaryName {
+.kshf .headerGroup > .summaryName {
   display: block;
   font-weight: 700;
   cursor: default;
@@ -2268,11 +2260,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
   margin: 0 auto;
   height: 20px;
-  /*white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;*/
 }
-.kshf .headerGroup .summaryName > .summaryName_text {
+.kshf .headerGroup > .summaryName > .summaryName_text {
   display: inline-block;
   max-width: calc(100% - 60px);
   white-space: nowrap;
@@ -2282,24 +2271,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 0px 3px;
   cursor: default;
 }
-.kshf .headerGroup .summaryName > .summaryName_text:focus {
+.kshf .headerGroup > .summaryName > .summaryName_text:focus {
   background-color: white;
   box-shadow: 0 0 3px #2CABCF;
   outline: 0 none;
   padding-left: 3px;
   padding-right: 3px;
-}
-.kshf .headerGroup .save_filter_as_set {
-  display: none;
-  position: absolute;
-  cursor: pointer;
-  margin-left: 4px;
-  margin-top: 1px;
-  width: 15px;
-  color: gray;
-}
-.kshf .headerGroup .save_filter_as_set:hover {
-  color: black;
 }
 .kshf .headerGroup > .summaryIcons {
   top: 3px;
@@ -2409,16 +2386,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .lockButton {
   position: absolute;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
   opacity: 0;
   pointer-events: none;
   cursor: pointer;
   color: gray;
   font-size: 0.8em;
   z-index: 21;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
 }
 .kshf .lockButton:after {
   content: "\f13e";
@@ -2481,7 +2458,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: #2f4f4f;
 }
 .kshf .aggrGlyph > span[class^="measure_Compare_B"] {
-  background-color: #ff126a;
+  background-color: #39ef4f;
 }
 .kshf .aggrGlyph > span[class^="measure_Compare_C"] {
   background-color: #fffedc;
@@ -2578,7 +2555,7 @@ top:calc(50% - 5px);
   stroke: #2f4f4f;
 }
 .kshf .aggrGlyph.setPairGlyph > .measure_Compare_B {
-  stroke: #ff126a;
+  stroke: #39ef4f;
 }
 .kshf .aggrGlyph.setPairGlyph > .measure_Compare_C {
   stroke: #fffedc;
@@ -2826,15 +2803,15 @@ top:calc(50% - 5px);
   background-image: linear-gradient(to right, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
 }
 .kshf div.kshfRecord[rec_compared^="B"] {
-  background-color: #ffabca;
-  border: solid 1px #de0052 !important;
+  background-color: #c7facd;
+  border: solid 1px #12e32c !important;
 }
 .kshf div.kshfRecord[rec_compared^="B"][selection="highlighted"] {
-  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmFiY2EiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjZmZhYmNhIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
-  background-image: -webkit-linear-gradient(left, #ffabca 0%, #ffabca 20%, #ffece5 80%, #ffece5 100%);
-  background-image: -moz-linear-gradient(left, #ffabca 0%, #ffabca 20%, #ffece5 80%, #ffece5 100%);
-  background-image: -o-linear-gradient(left, #ffabca 0%, #ffabca 20%, #ffece5 80%, #ffece5 100%);
-  background-image: linear-gradient(to right, #ffabca 0%, #ffabca 20%, #ffece5 80%, #ffece5 100%);
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNjN2ZhY2QiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjYzdmYWNkIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
+  background-image: -webkit-linear-gradient(left, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -moz-linear-gradient(left, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
+  background-image: -o-linear-gradient(left, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
+  background-image: linear-gradient(to right, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
 }
 .kshf div.kshfRecord[rec_compared^="C"] {
   background-color: #fffda9;
@@ -2914,7 +2891,7 @@ top:calc(50% - 5px);
   background-color: #2f4f4f;
 }
 .kshf .summaryConfig .configOption > .bl_Compare_B {
-  background-color: #ff126a;
+  background-color: #39ef4f;
 }
 .kshf .summaryConfig .configOption > .bl_Compare_C {
   background-color: #fff810;
@@ -3084,16 +3061,16 @@ top:calc(50% - 5px);
   background-color: #aecfcf;
 }
 .kshf .percentileChart_Compare_B > .quantile.q_40_60 {
-  background-color: #de0052;
+  background-color: #12e32c;
 }
 .kshf .percentileChart_Compare_B > .quantile.q_30_70 {
-  background-color: #ff0864;
+  background-color: #30ee47;
 }
 .kshf .percentileChart_Compare_B > .quantile.q_20_80 {
-  background-color: #ff4f90;
+  background-color: #72f481;
 }
 .kshf .percentileChart_Compare_B > .quantile.q_10_90 {
-  background-color: #ff92ba;
+  background-color: #aff9b8;
 }
 .kshf .percentileChart_Compare_C > .quantile.q_40_60 {
   background-color: #908b00;
@@ -3134,7 +3111,7 @@ top:calc(50% - 5px);
   border: solid 1px #cdbd9b;
   border-radius: 4px;
   padding: 0px;
-  background-color: #efeadf;
+  background-color: #efeadf !important;
 }
 .kshf .measureAxis_2 {
   display: none;
@@ -3431,6 +3408,9 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[cSelection] > .categoryLabel {
   font-weight: 700 !important;
 }
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[cSelection="onRecord"] > .categoryLabel {
+  background-color: #efeadf !important;
+}
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection] {
   cursor: pointer;
 }
@@ -3443,9 +3423,6 @@ top:calc(50% - 8px);
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection="not"] > .categoryLabel > .theLabel {
   color: #808080;
   text-decoration: line-through;
-}
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection="onRecord"] > .categoryLabel {
-  background-color: #efeadf;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical:hover > .summaryControls > .catSortButton {
   opacity: 1;
@@ -3505,7 +3482,7 @@ top:calc(50% - 8px);
   stroke: #2f4f4f;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Line_B {
-  stroke: #ff126a;
+  stroke: #39ef4f;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Line_C {
   stroke: #fffedc;
@@ -3531,7 +3508,7 @@ top:calc(50% - 8px);
   stroke: #2f4f4f;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Area_B {
-  stroke: #ff126a;
+  stroke: #39ef4f;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Compare_Area_C {
   stroke: #fffedc;
@@ -3883,7 +3860,7 @@ height:calc(100% - 10px);
 .kshf .kshfSummary[collapsed=true] .summaryConfigControl {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .headerGroup .summaryName {
+.kshf .kshfSummary[collapsed=true] > .headerGroup > .summaryName {
   cursor: pointer;
 }
 .kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .summaryControls {
@@ -4199,7 +4176,7 @@ height:calc(100% - 10px);
   color: #2f4f4f !important;
 }
 .kshf[measureLabelType="Compare_B"] .aggrGlyph > .measureLabel {
-  color: #de0052 !important;
+  color: #12e32c !important;
 }
 .kshf[measureLabelType="Compare_C"] .aggrGlyph > .measureLabel {
   color: #fffda9 !important;
@@ -4364,8 +4341,8 @@ height:calc(100% - 10px);
   box-shadow: 0px 0px 20px #2f4f4f;
 }
 .kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_B {
-  border-color: #ff126a;
-  box-shadow: 0px 0px 20px #ff126a;
+  border-color: #39ef4f;
+  box-shadow: 0px 0px 20px #39ef4f;
 }
 .kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_C {
   border-color: #fffedc;
@@ -4546,7 +4523,7 @@ height:calc(100% - 10px);
   stroke: #2f4f4f;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord[rec_compared^="B"] {
-  stroke: #ff126a;
+  stroke: #39ef4f;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord[rec_compared^="C"] {
   stroke: #fffedc;
@@ -4624,7 +4601,7 @@ height:calc(100% - 10px);
   stroke: #2f4f4f;
 }
 .kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[rec_compared^="B"] > circle {
-  stroke: #ff126a;
+  stroke: #39ef4f;
 }
 .kshf .recordDisplay[displayType="nodelink"] g.kshfRecord[rec_compared^="C"] > circle {
   stroke: #fffedc;
@@ -5320,7 +5297,7 @@ height:calc(100% - 10px);
   fill: #1c2f2f;
 }
 .kshf #kshfLineChartTip_Compare_B {
-  fill: #de0052;
+  fill: #12e32c;
 }
 .kshf #kshfLineChartTip_Compare_C {
   fill: #fff810;

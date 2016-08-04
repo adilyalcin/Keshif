@@ -95,6 +95,7 @@ var kshf = {
       Percentiles: "Percentiles",
       LockToCompare: "Lock selection",
       Unlock: "Unlock",
+      ChangeMeasureFunc: "Change measure function",
       Search: "Search",
       CreatingBrowser: "Creating Keshif Browser",
       Rows: "Rows",
@@ -390,7 +391,7 @@ var kshf = {
     if(this.githubToken===undefined) return;
     d3.xhr('https://api.github.com/user')
       .header("Authorization","token "+kshf.githubToken)
-      .get(function(error, data){ kshf.gistLogin = JSON.parse(data.response.login); });
+      .get(function(error, data){ kshf.gistLogin = JSON.parse(data.response).login; });
   },
 
   kshfLogo: '<svg class="kshfLogo" viewBox="0 0 200 200">'+
@@ -3329,7 +3330,8 @@ kshf.Browser.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
-      this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header").text("Choose measure")
+      this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header")
+        .text("Choose measure function")
         .on("mousedown", function (d, i) {
           me.DOM.root.attr("pointerEvents",false);
 
@@ -3401,7 +3403,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     refreshMeasureSelectAction: function(){
-      this.DOM.recordInfo.attr('changeMeasureBox', (this.getMeasurableSummaries().length!==0)? 'true' : null);
+      this.DOM.measureFuncSelect.attr('changeMeasureBox', (this.getMeasurableSummaries().length!==0)? 'true' : null);
     },
     /** -- */
     insertDOM_PanelBasic: function(){
@@ -3411,18 +3413,16 @@ kshf.Browser.prototype = {
 
       this.DOM.measureSelectBox_Wrapper = this.DOM.panel_Basic.append("span").attr("class","measureSelectBox_Wrapper")
         .attr("showMeasureBox",false);
-      
-      this.DOM.recordInfo = this.DOM.panel_Basic.append("span")
-        .attr("class","recordInfo")
-        .attr("edittitle",false)
-        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "Change measure" }); })
+
+      this.DOM.measureFuncSelect = this.DOM.panel_Basic.append("span")
+        .attr("class","measureFuncSelect fa fa-cubes")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'nw', title: kshf.lang.cur.ChangeMeasureFunc }); })
         .on("mouseenter",function(){
           if(me.authoringMode || me.getMeasurableSummaries().length===0) return;
           this.tipsy.show(); 
         })
         .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",function(){
-          if(me.authoringMode || me.getMeasurableSummaries().length===0) return;
           this.tipsy.hide();
           if(me.DOM.measureSelectBox) {
             me.closeMeasureSelectBox();
@@ -3431,6 +3431,10 @@ kshf.Browser.prototype = {
           me.insertDOM_measureSelect();
           me.DOM.measureSelectBox_Wrapper.attr("showMeasureBox",true);
         });
+      
+      this.DOM.recordInfo = this.DOM.panel_Basic.append("span")
+        .attr("class","recordInfo")
+        .attr("edittitle",false);
 
       this.DOM.activeRecordMeasure = this.DOM.recordInfo.append("span").attr("class","activeRecordMeasure");
 
@@ -3669,7 +3673,7 @@ kshf.Browser.prototype = {
         });
 
       // Fullscreen
-      rightBoxes.append("span").attr("class","fa fa-arrows-alt fullscreen")
+      this.DOM.viewFullscreen = rightBoxes.append("span").attr("class","fa fa-arrows-alt viewFullscreen")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.ShowFullscreen }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
@@ -3740,8 +3744,12 @@ kshf.Browser.prototype = {
         this.DOM.kshfBackground = this.panel_overlay.append("div").attr("class","kshfBackground")
           .on("click",function(){
             var activePanel = this.parentNode.getAttribute("show");
-            if(activePanel==="recordDetails" || activePanel==="infobox" || activePanel==="help-browse")
+            if(activePanel==="recordDetails" || activePanel==="infobox" || activePanel==="help-browse"){
               me.panel_overlay.attr("show","none");
+            } else {
+              me.panel_overlay.attr("attention",true);
+              setTimeout(function(){ me.panel_overlay.attr("attention",null); }, 1200);
+            }
           });
 
         // LOADING BOX
@@ -11658,6 +11666,10 @@ var Summary_Clique_functions = {
         this.style.strokeDashoffset = halfCircle+"px";
       });
     }
+  },
+  /** -- */
+  isFiltered: function(){
+    return this.setListSummary.isFiltered();
   },
   /** -- */
   updateAfterFilter: function () {
