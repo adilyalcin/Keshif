@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DC Summer Events 2016</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    itemName: "Listings",
+    source: {
+      gdocId: "1r38zEXSGoE3kmqO_s9xzOqXFugvV2zzOzijt9mbNLQo",
+      tables: "Events"
+    },
+    summaries: [
+      { name: "Type", catSplit: ";" },
+      { name: "Topic", catSplit: ";" },
+      { name : "Time Features", collapsed: true, panel: 'right',
+        value: function(){
+          var r=[];
+          if(this["All Day"]) r.push("All Day");
+          return r;
+        } },
+      { name : "Agency", panel: 'right', collapsed: true },
+      { name : "Cost", panel: 'right' },
+      { name : "Audience",
+        value: function(){
+          var r=[];
+          if(this['Females Only'])
+            r.push('Females Only');
+          if(this['Males Only'])
+            r.push('Males Only');
+          if(this['Parents Only'])
+            r.push('Parents Only');
+          if(this['Foster Youth Only'])
+            r.push('Foster Youth Only');
+          if(this['Court Invited Youth Only'])
+            r.push('Court Invited Youth Only');
+          if(this['LGBTQ'])
+            r.push('LGBTQ');
+          if(this['All Ages'])
+            r.push('All Ages');
+          if(this['All Audience'])
+            r.push('All Audience');
+          if(this['Children'])
+            r.push('Children');
+          if(this['Children & Youth'])
+            r.push('Children & Youth');
+          if(this['Educators'])
+            r.push('Educators');
+          if(this['Families'])
+            r.push('Families');
+          if(this['Infants/Toddler'])
+            r.push('Infants/Toddler');
+          if(this['Professionals'])
+            r.push('Professionals');
+          if(this['Parents'])
+            r.push('Parents');
+          if(this['Returning Citizens'])
+            r.push('Returning Citizens');
+          if(this['Seniors'])
+            r.push('Seniors');
+          if(this['Students'])
+            r.push('Students');
+          if(this['Teens'])
+            r.push('Teens');
+          if(this['Visitors'])
+            r.push('Visitors');
+          if(this['Young Adults'])
+            r.push('Young Adults');
+          if(this['Open to the Public'])
+            r.push('Open to the Public');
+          if(this['Outreach'])
+            r.push('Outreach');
+          if(this['Maximize Reach'])
+            r.push('Maximize Reach');
+          return r;
+        }
+        },
+      { name: "Sports",
+        value: function(){
+          var r=[];
+          if(this["Athletic"])
+            r.push("Athletic");
+          if(this['Recreation/Fitness'])
+            r.push('Recreation/Fitness');
+          if(this["Marathon/Run/Walk"])
+            r.push("Marathon/Run/Walk");
+          if(this['Health & Wellness'])
+            r.push('Health & Wellness');
+          if(this['Summer Camp'])
+            r.push('Summer Camp');
+          return r;
+        }
+        },
+      { name: "Entertainment",
+        value: function(){
+          var r=[];
+          if(this["Block Party"])
+            r.push("Block Party");
+          if(this["Festival/Fair"])
+            r.push("Festival/Fair");
+          if(this['Movie Night'])
+            r.push('Movie Night');
+          if(this['Performance/Screening'])
+            r.push('Performance/Screening');
+          if(this['Arts & Culture'])
+            r.push('Arts & Culture');
+          if(this['Food/Meals'])
+            r.push('Food/Meals');
+          if(this['History & Tourism'])
+            r.push('History & Tourism');
+          return r;
+        } },
+      { name: "Education",
+        value: function(){
+          var r=[];
+          if(this['Training Class'])
+            r.push('Training Class');
+          if(this['Entrepreneurship'])
+            r.push('Entrepreneurship');
+          if(this['Job/Training'])
+            r.push('Job/Training');
+          if(this['Jobs/Employment'])
+            r.push('Jobs/Employment');
+          if(this['Education'])
+            r.push('Education');
+          if(this["Conference"])
+            r.push("Conference");
+          return r;
+        } },
+      { name: "Start Date", panel: "middle"},
+      { name: "EXPECTED_NUMBER_OF_ATTENDEES", panel: "right"},
+      { name: "Ward", panel: "right"},
+      { name: "PSA", panel: "right", collapsed: true},
+/*
+      if(this['Volunteer Opportunity'])
+        r.push('Volunteer Opportunity');
+      if(this['Ciltren & Youth'])
+        r.push('Ciltren & Youth');
+      if(this['Safety'])
+        r.push('Safety');*/
+    ],
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 160,
+    middlePanelLabelWidth: 160,
+    recordDisplay: {
+      sortBy: "Start Date",
+      sortColWidth: 70,
+      textSearch: "Name",
+      recordView: function(){
+        return "<a href='"+this.Webpage+"' target='_blank'>"+this.Name+"</a>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+#demo_Browser {
+}
+.kshfRecord{ width: 130px; }
+.content{ padding: 3px; }
+.thumbImg{
+  max-height: 81px;
+  border-radius: 10px;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">DC Summer Events 2016</div>
+      <div id="demo_Browser"></div>
+<!--
+      <div id="demo_Infobox">
+        Data compiled by <a href='https://twitter.com/pgilks' target='blank'>@pgilks</a>, and visualized 
+          <a href='http://paintbynumbersblog.blogspot.co.uk/2013/05/the-hopometer-visualising-beer-strength.html'>here</a>.
+        Also visualized at <a href='http://vizable.tableau.com/blog#which-beer-to-drink-on-stpatricksday-32' target='_blank'>Vizable</a>.
+        </div> -->
+      </div> 
+  </body>
+</html>
