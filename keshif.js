@@ -3437,8 +3437,7 @@ kshf.Browser.prototype = {
         .attr("edittitle",false);
 
       this.DOM.activeRecordMeasure = this.DOM.recordInfo.append("span").attr("class","activeRecordMeasure");
-
-      this.DOM.measureFuncType = this.DOM.recordInfo.append("span").attr("class","measureFuncType");
+      this.DOM.measureFuncType     = this.DOM.recordInfo.append("span").attr("class","measureFuncType");
 
       this.DOM.recordName = this.DOM.recordInfo.append("span").attr("class","recordName editableText")
         .each(function(){
@@ -3746,9 +3745,6 @@ kshf.Browser.prototype = {
             var activePanel = this.parentNode.getAttribute("show");
             if(activePanel==="recordDetails" || activePanel==="infobox" || activePanel==="help-browse"){
               me.panel_overlay.attr("show","none");
-            } else {
-              me.panel_overlay.attr("attention",true);
-              setTimeout(function(){ me.panel_overlay.attr("attention",null); }, 1200);
             }
           });
 
@@ -3782,8 +3778,6 @@ kshf.Browser.prototype = {
 
         // HELP
         this.panel_overlay.append("span").attr("class","overlay_content overlay_help");
-        // ANSWER
-        this.panel_overlay.append("span").attr("class","overlay_answer");
     },
     /** -- */
     showCredits: function(){
@@ -4904,13 +4898,15 @@ kshf.Browser.prototype = {
       setTimeout( function(){ me.updateLayout_Height(); }, 1000); // update layout after 1.75 seconds
     },
     /** -- */
-    refresh_ActiveRecordCount: function(){
-      if(this.allRecordsAggr.recCnt.Active===0){
-        this.DOM.activeRecordMeasure.html("No"); return;
-      }
+    getGlobalActiveMeasure: function(){
+      if(this.allRecordsAggr.recCnt.Active===0) return "No";
       var numStr = this.allRecordsAggr.measure('Active').toLocaleString();
-      if(this.measureSummary) numStr = this.measureSummary.printWithUnitName(numStr);
-      this.DOM.activeRecordMeasure.html(numStr);
+      if(this.measureSummary) return this.measureSummary.printWithUnitName(numStr);
+      return numStr;
+    },
+    /** -- */
+    refresh_ActiveRecordCount: function(){
+      this.DOM.activeRecordMeasure.html(this.getGlobalActiveMeasure());
     },
     /** -- */
     update_Records_Wanted_Count: function(){
@@ -6860,6 +6856,11 @@ var Summary_Categorical_functions = {
     this.refreshViz_EmptyRecords();
   },
 
+  /** -- */
+  printAggrSelection: function(aggr){
+    return this.catLabel_Func.call(aggr.data);
+  },
+
   // Modified internal dataMap function - Skip rows with 0 active item count
   setMinAggrValue: function(v){
     this.minAggrValue = Math.max(1,v);
@@ -8485,7 +8486,6 @@ var Summary_Interval_functions = {
 
       // only used if type is numeric (not timestamp)
       this.quantile_val = {};
-      this.quantile_pos = {};
 
       this.timeAxis_XFunc = function(aggr){ 
         //return me.valueScale(aggr.minV) + me.getWidth_Bin()/2;
@@ -9286,15 +9286,16 @@ var Summary_Interval_functions = {
       this.DOM.percentileGroup = this.DOM.summaryInterval.append("div").attr("class","percentileGroup");
       this.DOM.percentileGroup.append("span").attr("class","percentileTitle").html(kshf.lang.cur.Percentiles);
 
-      this.DOM.quantile = {};
-
       function addPercentileDOM(distr){
         var parent = me.DOM.percentileGroup.append("div").attr("class","percentileChart_"+distr);
 
-        [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
-          this.DOM.quantile[distr+qb[0]+"_"+qb[1]] = parent.append("span")
-            .attr("class","quantile q_range q_"+qb[0]+"_"+qb[1]+" aggrGlyph")
-            .each(function(){
+        parent.selectAll(".aggrGlyph").data([ 
+          [10,20,1],[20,30,2],[30,40,3],[40,50,4],[50,60,4],[60,70,3],[70,80,2],[80,90,1] 
+        ]).enter()
+          .append("span")
+            .attr("class",function(qb){ return "quantile aggrGlyph q_range qG"+qb[2]; })
+            .each(function(qb){
+              this.__data__.summary = me;
               this.tipsy = new Tipsy(this, {
                 gravity: 's',
                 title: function(){
@@ -9305,7 +9306,7 @@ var Summary_Interval_functions = {
                 }
               })
             })
-            .on("mouseover",function(){ 
+            .on("mouseover",function(qb){ 
               this.tipsy.show();
               var records = [];
               me.filteredRecords.forEach(function(record){ 
@@ -9323,7 +9324,7 @@ var Summary_Interval_functions = {
               this.tipsy.hide();
               me.browser.clearSelect_Highlight();
             })
-            .on("click", function(){
+            .on("click", function(qb){
               if(d3.event.shiftKey){
                 me.browser.flexAggr_Compare_A.minV = me.quantile_val[distr+qb[0]];
                 me.browser.flexAggr_Compare_A.maxV = me.quantile_val[distr+qb[1]];
@@ -9336,21 +9337,18 @@ var Summary_Interval_functions = {
               };
               me.summaryFilter.filteredBin = undefined;
               me.summaryFilter.addFilter();
-            })
-            ;
-        },this);
+            });
 
-        [10,20,30,40,50,60,70,80,90].forEach(function(q){
-          this.DOM.quantile[distr+q] = parent.append("span")
-            .attr("class","quantile q_pos q_"+q)
-            .each(function(){
+        parent.selectAll(".q_pos").data([10,20,30,40,50,60,70,80,90]).enter()
+          .append("span")
+            .attr("class",function(q){ return "quantile q_pos q_"+q; })
+            .each(function(q){
               this.tipsy = new Tipsy(this, {
                 gravity: 's', title: function(){ return "<u>Median:</u><br> "+ me.quantile_val[distr+q]; }
               });
             })
             .on("mouseover",function(){ this.tipsy.show(); })
             .on("mouseout" ,function(){ this.tipsy.hide(); });
-        },this);
       };
 
       addPercentileDOM.call(this, "Active");
@@ -10741,24 +10739,20 @@ var Summary_Interval_functions = {
       this.filteredRecords.forEach(collectFunc);
 
       [10,20,30,40,50,60,70,80,90].forEach(function(q){
-        var x =d3.quantile(values,q/100);
-        this.quantile_val[distr+q] = x;
-        this.quantile_pos[distr+q] = this.valueScale(x);
+        this.quantile_val[distr+q] = d3.quantile(values,q/100);
       },this);
 
-      this.DOM.percentileGroup.select(".percentileChart_"+distr)
-        .style("opacity",1)
-        .style("margin-left", (this.stepTicks) ? ((this.aggrWidth/2)+"px") : null);
+      var percentileChart = this.DOM.percentileGroup.select(".percentileChart_"+distr);
 
-      [10,20,30,40,50,60,70,80,90].forEach(function(q){
-        kshf.Util.setTransform(this.DOM.quantile[distr+q][0][0],"translateX("+this.quantile_pos[distr+q]+"px)");
-      },this);
-
-      [[10,90],[20,80],[30,70],[40,60]].forEach(function(qb){
-        kshf.Util.setTransform(this.DOM.quantile[distr+qb[0]+"_"+qb[1]][0][0],
-          "translateX("+(this.quantile_pos[distr+qb[0]])+"px) "+
-          "scaleX("+(this.quantile_pos[distr+qb[1]]-this.quantile_pos[distr+qb[0]])+") ");
-      },this);
+      percentileChart.style({opacity: 1, "margin-left": (this.stepTicks ? ((this.aggrWidth/2)+"px") : null) });
+      percentileChart.selectAll(".q_pos")
+        .each(function(q){ kshf.Util.setTransform(this,"translateX("+me.valueScale(me.quantile_val[distr+q])+"px)"); });
+      percentileChart.selectAll(".quantile.aggrGlyph")
+        .each(function(qb){
+          var pos_1 = me.valueScale(me.quantile_val[distr+qb[0]]);
+          var pos_2 = me.valueScale(me.quantile_val[distr+qb[1]]);
+          kshf.Util.setTransform(this,"translateX("+pos_1+"px) scaleX("+(pos_2-pos_1)+") ");
+        });
     },
 };
 for(var index in Summary_Interval_functions){

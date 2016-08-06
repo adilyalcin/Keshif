@@ -2361,17 +2361,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .transition(opacity 500ms linear);
       > .quantile {
         box-sizing: content-box;
-        display: inline-block;
-        position: absolute;
         height: 100%;
         left: 0px;
         width: 1px;
         top: -1px;
         margin: 1px 0px;
-        .transition(transform 700ms ease-in-out);
         .transform-origin(0% 0%);
         cursor: pointer;
         &.q_pos{
+          position: absolute;
           margin-left: -0.5px;
           pointer-events: none;
           background-color: rgba(0,0,0,0.4);
@@ -2388,6 +2386,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border-width: 1px 0px 1px 0px;
             border-color: orangered; // darken(@color_bars, 20%);
             top: -2px;
+            .transition(all 700ms ease-in-out);
             // make the size 1px larger on top and bottom, display the border.
             //height: calc(~"100% + 2px");
           }
@@ -2396,23 +2395,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .percentileChart_Active{ 
       opacity: 1;
-      > .quantile{
-        &.q_40_60 { background-color: darken(@color_bars, 10%); }
-        &.q_30_70 { background-color: lighten(@color_bars, 0%); }
-        &.q_20_80 { background-color: lighten(@color_bars, 7%); }
-        &.q_10_90 { background-color: lighten(@color_bars, 15%); }
-      }
+      > .qG4 { background-color: darken(@color_bars, 15%); }
+      > .qG3 { background-color: darken(@color_bars, 3%);  }
+      > .qG2 { background-color: lighten(@color_bars, 5%);  }
+      > .qG1 { background-color: lighten(@color_bars, 15%); }
     }
     .percentileChart_Highlight{ 
       border-top: solid 1px lightgray;
       background-color: white;
       pointer-events: none;
-      > .quantile{
-        &.q_40_60 { background-color: lighten(@color_preview, 0%); }
-        &.q_30_70 { background-color: lighten(@color_preview, 10%); }
-        &.q_20_80 { background-color: lighten(@color_preview, 20%); }
-        &.q_10_90 { background-color: lighten(@color_preview, 30%); }
-      }
+      > .qG4 { background-color: lighten(@color_preview, 0%);  }
+      > .qG3 { background-color: lighten(@color_preview, 10%); }
+      > .qG2 { background-color: lighten(@color_preview, 20%); }
+      > .qG1 { background-color: lighten(@color_preview, 30%); }
     }
     *[class^="percentileChart_Compare"]{ 
       display: none;
@@ -2420,23 +2415,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       background-color: white;
       border-top: solid 1px #EEEEEE;
     }
-    .percentileChart_Compare_A > .quantile{
-      &.q_40_60 { background-color: lighten(@color_Compare_A, 20%); }
-      &.q_30_70 { background-color: lighten(@color_Compare_A, 30%); }
-      &.q_20_80 { background-color: lighten(@color_Compare_A, 40%); }
-      &.q_10_90 { background-color: lighten(@color_Compare_A, 50%); }
+    .percentileChart_Compare_A {
+      > .qG4 { background-color: lighten(@color_Compare_A, 20%); }
+      > .qG3 { background-color: lighten(@color_Compare_A, 30%); }
+      > .qG2 { background-color: lighten(@color_Compare_A, 40%); }
+      > .qG1 { background-color: lighten(@color_Compare_A, 50%); }
     }
-    .percentileChart_Compare_B > .quantile{
-      &.q_40_60 { background-color: darken(@color_Compare_B, 10%); }
-      &.q_30_70 { background-color: darken(@color_Compare_B, 2%); }
-      &.q_20_80 { background-color: lighten(@color_Compare_B, 12%); }
-      &.q_10_90 { background-color: lighten(@color_Compare_B, 25%); }
+    .percentileChart_Compare_B {
+      > .qG4 { background-color: darken(@color_Compare_B, 10%); }
+      > .qG3 { background-color: darken(@color_Compare_B, 2%); }
+      > .qG2 { background-color: lighten(@color_Compare_B, 12%); }
+      > .qG1 { background-color: lighten(@color_Compare_B, 25%); }
     }
-    .percentileChart_Compare_C > .quantile{
-      &.q_40_60 { background-color: darken(@color_Compare_C, 65%); }
-      &.q_30_70 { background-color: darken(@color_Compare_C, 57%); }
-      &.q_20_80 { background-color: darken(@color_Compare_C, 50%); }
-      &.q_10_90 { background-color: darken(@color_Compare_C, 40%); }
+    .percentileChart_Compare_C {
+      > .qG4 { background-color: darken(@color_Compare_C, 65%); }
+      > .qG3 { background-color: darken(@color_Compare_C, 57%); }
+      > .qG2 { background-color: darken(@color_Compare_C, 50%); }
+      > .qG1 { background-color: darken(@color_Compare_C, 40%); }
     }
 
     // PERCENTILE CHART STYLES - END

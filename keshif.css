@@ -2975,17 +2975,11 @@ top:calc(50% - 5px);
 }
 .kshf *[class^="percentileChart"] > .quantile {
   box-sizing: content-box;
-  display: inline-block;
-  position: absolute;
   height: 100%;
   left: 0px;
   width: 1px;
   top: -1px;
   margin: 1px 0px;
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
@@ -2994,6 +2988,7 @@ top:calc(50% - 5px);
   cursor: pointer;
 }
 .kshf *[class^="percentileChart"] > .quantile.q_pos {
+  position: absolute;
   margin-left: -0.5px;
   pointer-events: none;
   background-color: rgba(0, 0, 0, 0.4);
@@ -3009,20 +3004,24 @@ top:calc(50% - 5px);
   border-width: 1px 0px 1px 0px;
   border-color: orangered;
   top: -2px;
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
 }
 .kshf .percentileChart_Active {
   opacity: 1;
 }
-.kshf .percentileChart_Active > .quantile.q_40_60 {
-  background-color: #94a4af;
+.kshf .percentileChart_Active > .qG4 {
+  background-color: #8598a4;
 }
-.kshf .percentileChart_Active > .quantile.q_30_70 {
-  background-color: #b1bdc5;
+.kshf .percentileChart_Active > .qG3 {
+  background-color: #a8b6be;
 }
-.kshf .percentileChart_Active > .quantile.q_20_80 {
-  background-color: #c5ced4;
+.kshf .percentileChart_Active > .qG2 {
+  background-color: #c0c9d0;
 }
-.kshf .percentileChart_Active > .quantile.q_10_90 {
+.kshf .percentileChart_Active > .qG1 {
   background-color: #dde2e6;
 }
 .kshf .percentileChart_Highlight {
@@ -3030,16 +3029,16 @@ top:calc(50% - 5px);
   background-color: white;
   pointer-events: none;
 }
-.kshf .percentileChart_Highlight > .quantile.q_40_60 {
+.kshf .percentileChart_Highlight > .qG4 {
   background-color: #ff6a33;
 }
-.kshf .percentileChart_Highlight > .quantile.q_30_70 {
+.kshf .percentileChart_Highlight > .qG3 {
   background-color: #ff8f66;
 }
-.kshf .percentileChart_Highlight > .quantile.q_20_80 {
+.kshf .percentileChart_Highlight > .qG2 {
   background-color: #ffb599;
 }
-.kshf .percentileChart_Highlight > .quantile.q_10_90 {
+.kshf .percentileChart_Highlight > .qG1 {
   background-color: #ffdacc;
 }
 .kshf *[class^="percentileChart_Compare"] {
@@ -3048,40 +3047,40 @@ top:calc(50% - 5px);
   background-color: white;
   border-top: solid 1px #EEEEEE;
 }
-.kshf .percentileChart_Compare_A > .quantile.q_40_60 {
+.kshf .percentileChart_Compare_A > .qG4 {
   background-color: #558f8f;
 }
-.kshf .percentileChart_Compare_A > .quantile.q_30_70 {
+.kshf .percentileChart_Compare_A > .qG3 {
   background-color: #6ea9a9;
 }
-.kshf .percentileChart_Compare_A > .quantile.q_20_80 {
+.kshf .percentileChart_Compare_A > .qG2 {
   background-color: #8ebcbc;
 }
-.kshf .percentileChart_Compare_A > .quantile.q_10_90 {
+.kshf .percentileChart_Compare_A > .qG1 {
   background-color: #aecfcf;
 }
-.kshf .percentileChart_Compare_B > .quantile.q_40_60 {
+.kshf .percentileChart_Compare_B > .qG4 {
   background-color: #12e32c;
 }
-.kshf .percentileChart_Compare_B > .quantile.q_30_70 {
+.kshf .percentileChart_Compare_B > .qG3 {
   background-color: #30ee47;
 }
-.kshf .percentileChart_Compare_B > .quantile.q_20_80 {
+.kshf .percentileChart_Compare_B > .qG2 {
   background-color: #72f481;
 }
-.kshf .percentileChart_Compare_B > .quantile.q_10_90 {
+.kshf .percentileChart_Compare_B > .qG1 {
   background-color: #aff9b8;
 }
-.kshf .percentileChart_Compare_C > .quantile.q_40_60 {
+.kshf .percentileChart_Compare_C > .qG4 {
   background-color: #908b00;
 }
-.kshf .percentileChart_Compare_C > .quantile.q_30_70 {
+.kshf .percentileChart_Compare_C > .qG3 {
   background-color: #b8b300;
 }
-.kshf .percentileChart_Compare_C > .quantile.q_20_80 {
+.kshf .percentileChart_Compare_C > .qG2 {
   background-color: #dcd600;
 }
-.kshf .percentileChart_Compare_C > .quantile.q_10_90 {
+.kshf .percentileChart_Compare_C > .qG1 {
   background-color: #fff810;
 }
 .kshf .missingValueAggr {
