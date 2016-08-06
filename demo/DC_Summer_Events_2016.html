@@ -25,12 +25,12 @@ google.setOnLoadCallback(function(){
     summaries: [
       { name: "Type", catSplit: ";" },
       { name: "Topic", catSplit: ";" },
-      { name : "Time Features", collapsed: true, panel: 'right',
+/*      { name : "Time Features", collapsed: true, panel: 'right',
         value: function(){
           var r=[];
           if(this["All Day"]) r.push("All Day");
           return r;
-        } },
+        } },*/
       { name : "Agency", panel: 'right', collapsed: true },
       { name : "Cost", panel: 'right' },
       { name : "Audience",
@@ -87,7 +87,7 @@ google.setOnLoadCallback(function(){
           return r;
         }
         },
-      { name: "Sports",
+      { name: "Sports", collapsed: true,
         value: function(){
           var r=[];
           if(this["Athletic"])
@@ -103,7 +103,7 @@ google.setOnLoadCallback(function(){
           return r;
         }
         },
-      { name: "Entertainment",
+      { name: "Entertainment", collapsed: true,
         value: function(){
           var r=[];
           if(this["Block Party"])
@@ -122,7 +122,7 @@ google.setOnLoadCallback(function(){
             r.push('History & Tourism');
           return r;
         } },
-      { name: "Education",
+      { name: "Education", collapsed: true,
         value: function(){
           var r=[];
           if(this['Training Class'])
@@ -140,9 +140,14 @@ google.setOnLoadCallback(function(){
           return r;
         } },
       { name: "Start Date", panel: "middle"},
-      { name: "EXPECTED_NUMBER_OF_ATTENDEES", panel: "right"},
+      { name: "Expected Attendee Count", value: "EXPECTED_NUMBER_OF_ATTENDEES", panel: "right"},
       { name: "Ward", panel: "right"},
       { name: "PSA", panel: "right", collapsed: true},
+      { name: "Day of Week", panel: "right",
+        value: function(){ if(this["Start Date"]) return this["Start Date"].getDay(); },
+        catSortBy: "id", catLabel: _demo.DayOfWeek
+      }
+      
 /*
       if(this['Volunteer Opportunity'])
         r.push('Volunteer Opportunity');
