@@ -31,6 +31,82 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
+.overlay_help_control {
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  background-color: #efeadf;
+  padding: 2px;
+  z-index: 100;
+  border-radius: 6px;
+  cursor: default;
+  box-shadow: 0px 0px 5px black;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.overlay_help_control > .GetHelpHeader {
+  display: block;
+  font-size: 0.9em;
+  letter-spacing: 1px;
+  font-weight: 500;
+  color: #444;
+}
+.overlay_help_control > .overlay_Close {
+  position: absolute;
+  top: -20px;
+  right: 36px;
+  font-size: 1.1em;
+  background-color: #eae4da;
+  padding: 2px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  color: gray;
+  cursor: pointer;
+}
+.overlay_help_control > .overlay_Close:hover {
+  color: #cb5454;
+}
+.overlay_help_control > [class^="helpInMode_"] {
+  display: block;
+  position: relative;
+  width: 120px;
+  padding: 1px 3px;
+  margin-top: 2px;
+  background-color: white;
+  font-size: 0.8em;
+  font-weight: 300;
+  border-radius: 7px;
+  border: solid 1px gray;
+  cursor: pointer;
+  z-index: 100;
+  color: gray;
+  text-decoration: none;
+  -webkit-transition: color 200ms;
+  -moz-transition: color 200ms;
+  -o-transition: color 200ms;
+  transition: color 200ms;
+}
+.overlay_help_control > [class^="helpInMode_"]:hover {
+  text-decoration: underline;
+  border-color: #cb5454;
+  color: #cb5454 !important;
+}
+.overlay_help_control > [class^="helpInMode_"][active] {
+  border-color: #5a2f1f;
+  box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;
+  color: #5a2f1f;
+  font-weight: 700;
+}
+.overlay_help_control > [class^="helpInMode_"].helpInMode_Wiki {
+  font-size: 0.6em;
+  letter-spacing: 2px;
+}
+.overlay_help_control:hover > span[class^="helpInMode_"] {
+  color: black;
+}
 .overlay_answer {
   width: 100%;
   height: 100%;
@@ -58,33 +134,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border-color: #cc2525;
   box-shadow: 0px 0px 5px #cc2525;
 }
-lesshat-selector {
-  -lh-property: 0; } 
-@-webkit-keyframes attention{ 0%, 100%{ -webkit-transform: scale(1); } 50%{ -webkit-transform: scale(1.07); }}
-@-moz-keyframes attention{ 0%, 100%{ -moz-transform: scale(1); } 50%{ -moz-transform: scale(1.07); }}
-@-o-keyframes attention{ 0%, 100%{ -o-transform: scale(1); } 50%{ -o-transform: scale(1.07); }}
-@keyframes attention{ 0%, 100%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); } 50%{-webkit-transform: scale(1.07);-moz-transform: scale(1.07);-ms-transform: scale(1.07);transform: scale(1.07); };
-}
-lesshat-selector {
-  -lh-property: 0; } 
-@-webkit-keyframes attention2{ 0%, 100%{ -webkit-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -webkit-transform: scale(1.07); background-color: rgba(30,250,30,0.3); }}
-@-moz-keyframes attention2{ 0%, 100%{ -moz-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -moz-transform: scale(1.07); background-color: rgba(30,250,30,0.3); }}
-@-o-keyframes attention2{ 0%, 100%{ -o-transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ -o-transform: scale(1.07); background-color: rgba(30,250,30,0.3); }}
-@keyframes attention2{ 0%, 100%{-webkit-transform: scale(1);-moz-transform: scale(1);-ms-transform: scale(1);transform: scale(1); background-color: rgba(1,1,1,0); } 50%{-webkit-transform: scale(1.07);-moz-transform: scale(1.07);-ms-transform: scale(1.07);transform: scale(1.07); background-color: rgba(30,250,30,0.3); };
-}
-.panel_overlay[attention=true] .highlightBox {
-  -webkit-animation: attention2 0.3s 2 ease-in-out;
-  -moz-animation: attention2 0.3s 2 ease-in-out;
-  -o-animation: attention2 0.3s 2 ease-in-out;
-  animation: attention2 0.3s 2 ease-in-out;
-}
-.panel_overlay[attention=true] .overlay_help {
-  -webkit-animation: attention 0.3s 2 ease-in-out;
-  -moz-animation: attention 0.3s 2 ease-in-out;
-  -o-animation: attention 0.3s 2 ease-in-out;
-  animation: attention 0.3s 2 ease-in-out;
-  box-shadow: 0px 0px 20px #992900, 0px 0px 10px #ff4500;
-}
+/*.keyframes(~'attention, 0%, 100%{ transform: scale(1); } 50%{ transform: scale(1.07); }');
+.keyframes(~'attention2, 0%, 100%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); }');
+
+.panel_overlay[attention=true] {
+  .highlightBox{ 
+    .animation(attention2 0.3s 2 ease-in-out);
+  }
+  .overlay_help{
+    .animation(attention 0.3s 2 ease-in-out);
+    box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
+  }
+}*/
 .tipsy.tipsy-helpin > .tipsy-arrow {
   border-color: white;
 }
@@ -118,10 +179,19 @@ lesshat-selector {
   -o-transform: scale(1, -1) rotate(90deg);
   transform: scale(1, -1) rotate(90deg);
 }
-.kshf[drag_cursor="grabbing"] .helpin_Header {
+.kshf[drag_cursor="grabbing"] .SelectedThing_Header {
   cursor: -moz-grabbing !important;
   cursor: -webkit-grabbing !important;
   cursor: grabbing !important;
+}
+.kshf .panel_overlay[lockedPointNLearn] .DescriptionToUnFreeze {
+  display: block !important;
+}
+.kshf .panel_overlay[lockedPointNLearn] .DescriptionToFreeze {
+  display: none;
+}
+.kshf .panel_overlay[show^="help"] > .overlay_help_control {
+  display: block;
 }
 .kshf .panel_overlay > .overlay_help {
   width: 540px;
@@ -167,20 +237,11 @@ left:calc(50% - 310px);
 .kshf .panel_overlay > .overlay_help .DescriptionToUnFreeze:hover {
   color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help[lockedPointNLearn] .DescriptionToUnFreeze {
-  display: block;
-}
-.kshf .panel_overlay > .overlay_help[lockedPointNLearn] .DescriptionToFreeze {
-  display: none;
-}
 .kshf .panel_overlay > .overlay_help > .helpin_Header {
   width: 100%;
-  background-color: #DDD9D0;
-  box-shadow: 0px 0px 5px #403b31;
+  background-color: #9a968c;
+  min-height: 10px;
   z-index: 3;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-  cursor: grab;
   -webkit-transition: background-color 400ms;
   -moz-transition: background-color 400ms;
   -o-transition: background-color 400ms;
@@ -200,44 +261,11 @@ left:calc(50% - 310px);
   color: #cb5454;
   text-shadow: none;
 }
-.kshf .panel_overlay > .overlay_help > .helpin_Header > span[class^="helpInMode_"] {
-  display: inline-block;
-  position: relative;
-  padding: 1px 3px;
-  margin: 3px 0px 3px 5px;
-  background-color: white;
-  font-size: 0.8em;
-  font-weight: 300;
-  border-radius: 7px;
-  border: solid 1px gray;
-  cursor: pointer;
-  z-index: 100;
-  color: gray;
-  -webkit-transition: color 200ms;
-  -moz-transition: color 200ms;
-  -o-transition: color 200ms;
-  transition: color 200ms;
-}
-.kshf .panel_overlay > .overlay_help > .helpin_Header > span[class^="helpInMode_"]:hover {
-  border-color: #cb5454;
-  color: #cb5454 !important;
-}
-.kshf .panel_overlay > .overlay_help > .helpin_Header > span[class^="helpInMode_"][active] {
-  border-color: #5a2f1f;
-  box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;
-  color: #5a2f1f;
-  font-weight: 500;
-}
-.kshf .panel_overlay > .overlay_help > .helpin_Header:hover {
-  background-color: #c8c1b2;
-}
-.kshf .panel_overlay > .overlay_help > .helpin_Header:hover > span[class^="helpInMode_"] {
-  color: black;
-}
 .kshf .panel_overlay > .overlay_help > .GuidedTour {
   display: none;
   background-color: #efeadf;
   position: relative;
+  min-height: 30px;
 }
 .kshf .panel_overlay > .overlay_help > .GuidedTour > .GuidedTourHead {
   padding-top: 7px;
@@ -575,7 +603,6 @@ left:calc(50% - 310px);
   position: relative;
 }
 .kshf .panel_overlay > .overlay_help > .RelatedTopics:after {
-  font: normal normal normal 14px/1 FontAwesome;
   font-size: inherit;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
@@ -583,15 +610,15 @@ left:calc(50% - 310px);
   position: absolute;
   right: 3px;
   top: 4px;
-  content: "\f103";
+  content: "hide";
   font-size: 0.9em;
+  letter-spacing: initial;
 }
 .kshf .panel_overlay > .overlay_help > .RelatedTopics:hover {
-  background-color: #bfb9b0;
+  background-color: #cbc6be;
 }
 .kshf .panel_overlay > .overlay_help > .RelatedTopics:hover:after {
   color: orangered;
-  content: "\f102";
 }
 .kshf .panel_overlay > .overlay_help > .SelectedThing {
   display: none;
@@ -605,6 +632,16 @@ left:calc(50% - 310px);
   background-color: #9a968c;
   color: white;
   text-shadow: 0px 0px 4px black;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+  -webkit-transition: background-color 200ms linear;
+  -moz-transition: background-color 200ms linear;
+  -o-transition: background-color 200ms linear;
+  transition: background-color 200ms linear;
+}
+.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Header:hover {
+  background-color: #66635a;
 }
 .kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content {
   padding: 10px 5px;
@@ -686,37 +723,22 @@ left:calc(50% - 310px);
 .kshf .panel_overlay > .overlay_help > .overlay_Close {
   z-index: 1000;
 }
-.kshf .panel_overlay > .overlay_help > .MoreDocumentation {
-  font-weight: 300;
-  font-size: 0.7em;
-  padding: 3px;
-  cursor: default;
-  background-color: #efeadf;
-  box-shadow: inset 0px 0px 2px gray;
-  overflow: hidden;
-  color: #7b7b7b;
-  -webkit-flex-shrink: 0;
-  flex-shrink: 0;
-}
-.kshf .panel_overlay > .overlay_help > .MoreDocumentation:hover {
-  color: black;
-}
-.kshf .panel_overlay > .overlay_help > .MoreDocumentation > .MoreDocumentationLink {
-  color: black;
-}
 .kshf .panel_overlay > .overlay_help[hideRelatedTopics] > .RelatedTopics:after {
-  content: "\f102";
-}
-.kshf .panel_overlay > .overlay_help[hideRelatedTopics] > .RelatedTopics:hover:after {
-  content: "\f103";
+  content: "show";
 }
 .kshf .panel_overlay > .overlay_help[hideRelatedTopics] .TopicsList {
   display: none;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_answer {
+.kshf .panel_overlay[show="helppointnlearn"] {
+  cursor: pointer;
+}
+.kshf .panel_overlay[show="helppointnlearn"][lockedPointNLearn] {
+  cursor: default;
+}
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_answer {
   pointer-events: all;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help {
   width: 370px;
   top: 60px;
   -lh-property: 0;
@@ -725,36 +747,36 @@ left:-moz-calc(50% - 185px);
 left:calc(50% - 185px);
 ;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .PointNClick_Info {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .PointNClick_Info {
   display: block;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .SelectedThing {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .SelectedThing {
   display: block;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .FilterBlock {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .FilterBlock {
   display: none;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help > .RelatedTopics {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .RelatedTopics {
   display: block;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicsList {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help .TopicsList {
   max-height: 110px;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help .TopicBlock {
   margin: 3px;
   padding: 2px;
   font-size: 0.8em;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock > .TopicIcons {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help .TopicBlock > .TopicIcons {
   display: none !important;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TopicBlock > .TopicText {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help .TopicBlock > .TopicText {
   padding-right: 5px;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] > .overlay_help .TextSearchBlock {
+.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help .TextSearchBlock {
   display: none;
 }
-.kshf .panel_overlay[show="help-pointnlearn"] .SelectedThing_Content_More {
+.kshf .panel_overlay[show="helppointnlearn"] .SelectedThing_Content_More {
   display: none !important;
 }
 .kshf .panel_overlay[show="help-guidedtour"] > .overlay_help {
@@ -919,7 +941,7 @@ left:calc(50% - 170px);
 }
 .TextSearchBlock > .SearchTextBox {
   display: inline-block;
-  width: 80px;
+  width: 120px;
   border-width: 0px 0px 1px 0px;
   border-style: solid;
   border-color: #cb5454;

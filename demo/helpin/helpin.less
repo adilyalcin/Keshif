@@ -48,6 +48,82 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_onRecord_back: #EFEADF;
 @color_hoverAction: #cb5454;
 
+.overlay_help_control{
+  display: none;
+  position: absolute;
+  top: 20px;
+  right: 0px;
+  background-color: #efeadf;
+  padding: 2px;
+  z-index: 100;
+  border-radius: 6px;
+  cursor: default;
+  box-shadow: 0px 0px 5px black;
+  .user-select(none);
+
+  > .GetHelpHeader{
+    display: block;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+    font-weight: 500;
+    color: #444;
+  }
+
+  > .overlay_Close{
+    position: absolute;
+    top: -20px;
+    right: 36px;
+    font-size: 1.1em;
+    background-color: #eae4da;
+    padding: 2px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    color: gray;
+    cursor: pointer;
+    &:hover{ color: @color_hoverAction; }
+  }
+
+
+  > [class^="helpInMode_"]{
+    display: block;
+    position: relative;
+    border: solid 1px gray;
+    width: 120px;
+    padding: 1px 3px;
+    margin-top: 2px;
+    background-color: white;
+    font-size: 0.8em;
+    font-weight: 300;
+    border-radius: 7px;
+    border: solid 1px gray;
+    cursor: pointer;
+    z-index: 100;
+    color: gray;
+    text-decoration: none;
+    .transition(color 200ms);
+    &:hover{ 
+      text-decoration: underline;
+      border-color: @color_hoverAction;
+      color: @color_hoverAction !important;
+    }
+    &[active]{
+      border-color: #5a2f1f;
+      box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;;
+      color: #5a2f1f;
+      font-weight: 700;
+    }
+    &.helpInMode_Wiki{
+      font-size: 0.6em;
+      letter-spacing: 2px;
+    }
+  }
+
+  &:hover{
+    > span[class^="helpInMode_"]{ color: black; }
+  }
+
+}
+
 .overlay_answer{
   width: 100%;
   height: 100%;
@@ -71,7 +147,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
 }
 
-.keyframes(~'attention, 0%, 100%{ transform: scale(1); } 50%{ transform: scale(1.07); }');
+/*.keyframes(~'attention, 0%, 100%{ transform: scale(1); } 50%{ transform: scale(1.07); }');
 .keyframes(~'attention2, 0%, 100%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); }');
 
 .panel_overlay[attention=true] {
@@ -82,7 +158,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .animation(attention 0.3s 2 ease-in-out);
     box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
   }
-}
+}*/
 
 
 .tipsy.tipsy-helpin {
@@ -119,10 +195,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Custom fa flip style for categorical summary
 .fa-histogram-flip{ .transform(~'scale(1, -1) rotate(90deg)'); }
 
-.kshf[drag_cursor="grabbing"] .helpin_Header{
+.kshf[drag_cursor="grabbing"] .SelectedThing_Header{
   cursor: -moz-grabbing !important;
   cursor: -webkit-grabbing !important;
   cursor: grabbing !important;
+}
+
+.kshf {
+  .panel_overlay{
+    &[lockedPointNLearn] {
+      .DescriptionToUnFreeze{ display: block !important; }
+      .DescriptionToFreeze  { display: none; }
+    }
+    &[show^="help"]{
+      > .overlay_help_control{ display: block; }
+    }
+  }
 }
 
 .kshf .panel_overlay > .overlay_help{
@@ -136,6 +224,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   .flex-direction(column);
   .transition(opacity 500ms linear, box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out );
   .user-select(none);
+
 
   > .PointNClick_Info{ 
     display: none;
@@ -151,20 +240,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: pointer;
     &:hover{ color: @color_hoverAction; }
   }
-  &[lockedPointNLearn] {
-    .DescriptionToUnFreeze{ display: block; }
-    .DescriptionToFreeze  { display: none; }
-  }
 
   > .helpin_Header{
     width: 100%;
-    background-color: #DDD9D0;
-    box-shadow: 0px 0px 5px #403b31;
+    background-color: #9a968c;
+    min-height: 10px;
+    //box-shadow: 0px 0px 5px #403b31;
     z-index: 3;
-
-    cursor: -moz-grab;
-    cursor: -webkit-grab;
-    cursor: grab;
 
     .transition(background-color 400ms);
 
@@ -183,42 +265,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    > span[class^="helpInMode_"]{
-      display: inline-block;
-      position: relative;
-      border: solid 1px gray;
-      padding: 1px 3px;
-      margin: 3px 0px 3px 5px;
-      background-color: white;
-      font-size: 0.8em;
-      font-weight: 300;
-      border-radius: 7px;
-      border: solid 1px gray;
-      cursor: pointer;
-      z-index: 100;
-      color: gray;
-      .transition(color 200ms);
-      &:hover{ 
-        border-color: @color_hoverAction;
-        color: @color_hoverAction !important;
-      }
-      &[active]{
-        border-color: #5a2f1f;
-        box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;;
-        color: #5a2f1f;
-        font-weight: 500;
-      }
-    }
-    &:hover {
-      background-color: darken(#DDD9D0, 10%);
-      > span[class^="helpInMode_"]{ color: black; }
-    }
   }
 
   > .GuidedTour{
     display: none;
     background-color: #efeadf;
     position: relative;
+    min-height: 30px;
     > .GuidedTourHead{
       padding-top: 7px;
       padding-bottom: 3px;
@@ -498,7 +551,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: pointer;
     position: relative;
     &:after{ 
-      font: normal normal normal 14px/1 FontAwesome;
       font-size: inherit;
       text-rendering: auto;
       -webkit-font-smoothing: antialiased;
@@ -506,15 +558,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: absolute;
       right: 3px;
       top: 4px;
-      content: "\f103"; // plus-square-o
+      content: "hide";
       font-size: 0.9em;
+      letter-spacing: initial;
     }
     &:hover{
-      background-color: darken(#d6d2cc, 10%);
-      &:after{
-        color: orangered;
-        content: "\f102"; // minus-square-o
-      }
+      background-color: darken(#d6d2cc, 5%);
+      &:after{ color: orangered; }
     }
   }
 
@@ -529,6 +579,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       background-color: #9a968c;
       color: white;
       text-shadow: 0px 0px 4px black;
+
+      cursor: -moz-grab;
+      cursor: -webkit-grab;
+      cursor: grab;
+      .transition(background-color 200ms linear);
+      &:hover { background-color: darken(#9a968c, 20%); }
     }
     > .SelectedThing_Content{
       padding: 10px 5px;
@@ -596,38 +652,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   > .overlay_Close{ z-index: 1000; }
 
-  > .MoreDocumentation{ // See Keshif wiki & API...
-    font-weight: 300;
-    font-size: 0.7em;
-    padding: 3px;
-    cursor: default;
-    background-color: #efeadf;
-    box-shadow: inset 0px 0px 2px gray;
-    overflow: hidden;
-    color: #7b7b7b;
-    .flex-shrink(0);
-    &:hover{ color: black; }
-    > .MoreDocumentationLink{ color: black; }
-  }
-
   &[hideRelatedTopics]{
-    > .RelatedTopics:after{ content: "\f102" };
-    > .RelatedTopics:hover:after{ content: "\f103" };
+    > .RelatedTopics:after{ content: "show" };
     .TopicsList{ display: none; }
   }
 }
 
-.kshf .panel_overlay[show="help-pointnlearn"] {
-  > .overlay_answer{
-    pointer-events: all;
-    //> .overlay_answer_background{ opacity: 0.2; }
-  }
+.kshf .panel_overlay[show="helppointnlearn"] {
+  cursor: pointer;
+  &[lockedPointNLearn] { cursor: default; }
+
+  > .overlay_answer{ pointer-events: all; }
   > .overlay_help{
     width: 370px;
     top: 60px;
     .calc(left, ~'50% - 185px');
     > .PointNClick_Info{ display: block; }
-    //> .helpin_Header{ text-align: left; }
     > .SelectedThing{ display: block; }
     > .FilterBlock{ display: none; }
     > .RelatedTopics{ display: block; }
@@ -645,15 +685,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .panel_overlay[show="help-guidedtour"] {
-  > .overlay_answer{
-    //> .overlay_answer_background{ opacity: 0.2; }
-  }
   > .overlay_help{
     width: 370px;
     top: 60px;
     .calc(left, ~'50% - 185px');
     > .GuidedTour{ display: block; }
-    //> .helpin_Header{ text-align: left; }
     > .SelectedThing{ 
       display: block;
       > .SelectedThing_Header > .fa-hand-pointer-o{ display: none; }
@@ -682,7 +718,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_overlay[topicAnswer] {
   > .overlay_answer{
     pointer-events: all;
-    //> .overlay_answer_background{ opacity: 0.2; }
   }
   .stencilBox{
     cursor: pointer;
@@ -696,7 +731,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     > .SelectedThing{  display: block; }
     > .RelatedTopics{ display: block; }
     .browseTopicBlock{ display: none !important; }
-//    > .overlay_Close::before{ content: "\f058"; } // checkbox
     .TopicsList{ max-height: 250px; }
     .TopicBlock{
       margin: 3px;
@@ -765,7 +799,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
   > .SearchTextBox{
     display: inline-block;
-    width: 80px;
+    width: 120px;
     border-width: 0px 0px 1px 0px;
     border-style: solid;
     border-color: #cb5454;
