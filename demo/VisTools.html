@@ -279,7 +279,7 @@ $(document).ready( function(){
         { name: "Highlights", value:"★", catSortBy: function(){ return 2-this.id.length; } },
         { name: "Authors"},
         { name: "Publisher", collapsed: true},
-        { name: "Year" },
+        { name: "Year", timeFormat: "%Y" },
       ],
       recordDisplay: {
         sortBy: { 
@@ -340,7 +340,7 @@ $(document).ready( function(){
     .on("mouseenter",function(){ this.tipsy.show(); })
     .on("mouseleave",function(){ this.tipsy.hide(); })
 
-    if(location.search==="?Show=Books"){
+    if(location.search==="?Show=Books" || location.search==="?Books"){
       showBrowser("books");
     }
 });
