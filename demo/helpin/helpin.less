@@ -48,160 +48,50 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_onRecord_back: #EFEADF;
 @color_hoverAction: #cb5454;
 
-.overlay_help_control{
-  display: none;
-  position: absolute;
-  top: 20px;
-  right: 0px;
-  background-color: #efeadf;
-  padding: 2px;
-  z-index: 100;
-  border-radius: 6px;
-  cursor: default;
-  box-shadow: 0px 0px 5px black;
-  .user-select(none);
 
-  > .GetHelpHeader{
-    display: block;
-    font-size: 0.9em;
-    letter-spacing: 1px;
-    font-weight: 500;
-    color: #444;
-  }
-
-  > .overlay_Close{
-    position: absolute;
-    top: -20px;
-    right: 36px;
-    font-size: 1.1em;
-    background-color: #eae4da;
-    padding: 2px;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    color: gray;
-    cursor: pointer;
-    &:hover{ color: @color_hoverAction; }
-  }
-
-
-  > [class^="helpInMode_"]{
-    display: block;
-    position: relative;
-    border: solid 1px gray;
-    width: 120px;
-    padding: 1px 3px;
-    margin-top: 2px;
-    background-color: white;
-    font-size: 0.8em;
-    font-weight: 300;
-    border-radius: 7px;
-    border: solid 1px gray;
-    cursor: pointer;
-    z-index: 100;
-    color: gray;
-    text-decoration: none;
-    .transition(color 200ms);
-    &:hover{ 
-      text-decoration: underline;
-      border-color: @color_hoverAction;
-      color: @color_hoverAction !important;
-    }
-    &[active]{
-      border-color: #5a2f1f;
-      box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;;
-      color: #5a2f1f;
-      font-weight: 700;
-    }
-    &.helpInMode_Wiki{
-      font-size: 0.6em;
-      letter-spacing: 2px;
-    }
-  }
-
-  &:hover{
-    > span[class^="helpInMode_"]{ color: black; }
-  }
-
-}
-
-.overlay_answer{
-  width: 100%;
-  height: 100%;
-  z-index: -2;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  pointer-events: none;
-  .transition(opacity 0.5s);
-
-  .stencilBox{
-    position: absolute;
-    border: solid 2px green;
-    border-radius: 3px;
-    box-shadow: 0px 0px 5px green;
-    .user-select(none);
-    &[locked]{
-      border-color: #cc2525;
-      box-shadow: 0px 0px 5px #cc2525;
-    }
-  }
-}
-
-/*.keyframes(~'attention, 0%, 100%{ transform: scale(1); } 50%{ transform: scale(1.07); }');
-.keyframes(~'attention2, 0%, 100%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); }');
-
-.panel_overlay[attention=true] {
-  .highlightBox{ 
-    .animation(attention2 0.3s 2 ease-in-out);
-  }
-  .overlay_help{
-    .animation(attention 0.3s 2 ease-in-out);
-    box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
-  }
-}*/
-
-
-.tipsy.tipsy-helpin {
-  > .tipsy-arrow{ border-color: white; }
-  > .tipsy-inner{
-    padding: 6px;
-    border-radius: 6px;
-    color: black;
-    background-color: white;
-    box-shadow: 0px 0px 10px black;
-    font-size: 1.35em;
-    font-weight: 300;
-    > .fa{ font-size: 1.3em; }
-  }
-  &.tipsy-primary{
-    //> .tipsy-arrow{ border-color: green; }
-    > .tipsy-inner{
-      //border: solid 1px green;
-      //box-shadow: 0px 0px 10px green;
-      font-weight: 600;
-      //padding: 5px;
-    }
-  }
-  &[locked]{
-    > .tipsy-arrow{ border-color: #cc2525; }
-    > .tipsy-inner{
-      border: solid 1px #cc2525;
-      box-shadow: 0px 0px 10px #cc2525;
-      padding: 5px;
-    }
-  }
-}
-
-// Custom fa flip style for categorical summary
-.fa-histogram-flip{ .transform(~'scale(1, -1) rotate(90deg)'); }
-
-.kshf[drag_cursor="grabbing"] .SelectedThing_Header{
-  cursor: -moz-grabbing !important;
-  cursor: -webkit-grabbing !important;
-  cursor: grabbing !important;
-}
 
 .kshf {
+  .bolder{ font-weight: bolder; }
+
+  .helpin-breadcrumb{
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    color: white !important;
+    padding: 2px;
+    font-size: 0.7em;
+    vertical-align: top;
+    text-align: center;
+    text-shadow: none;
+    &.fa-mouse-pointer{ background-color: @color_preview_clear; }
+    &.fa-filter{        background-color: @color_filter_clear; }
+    &.fa-lock{          background-color: @color_Compare_A; }
+  }
+
+  // Custom fa flip style for categorical summary
+  .fa-histogram-flip{ .transform(~'scale(1, -1) rotate(90deg)'); }
+
+  &[drag_cursor="grabbing"] .SelectedThing_Header{
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
+  }
+
+  *[class^="colorCoding"]{
+    display: inline-block;
+    vertical-align: top;
+    padding: 2px 2px;
+  }
+  .colorCoding_Total     { color: black; background-color: @color_distr_total; }
+  .colorCoding_Active    { color: white; background-color: darken(@color_bars, 10%); }
+  .colorCoding_Highlight { color: white; background-color: @color_preview; }
+  .colorCoding_Compare_A { color: white; background-color: @color_Compare_A; }
+  .colorCoding_Compare_B { color: white; background-color: @color_Compare_B; }
+  .colorCoding_Compare_C { color: black; background-color: @color_Compare_C;
+    border: solid 1px black;
+    padding: 1px 1px;
+  }
+
   .panel_overlay{
     &[lockedPointNLearn] {
       .DescriptionToUnFreeze{ display: block !important; }
@@ -211,9 +101,144 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       > .overlay_help_control{ display: block; }
     }
   }
+
+  .overlay_help_control{
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 0px;
+    background-color: #efeadf;
+    padding: 2px;
+    z-index: 100;
+    border-radius: 6px;
+    cursor: default;
+    box-shadow: 0px 0px 5px black;
+    .user-select(none);
+
+    > .GetHelpHeader{
+      display: block;
+      font-size: 0.9em;
+      letter-spacing: 1px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    > .overlay_Close{
+      position: absolute;
+      top: -20px;
+      right: 36px;
+      font-size: 1.1em;
+      background-color: #eae4da;
+      padding: 2px;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      color: gray;
+      cursor: pointer;
+      &:hover{ color: @color_hoverAction; }
+    }
+
+
+    > [class^="helpInMode_"]{
+      display: block;
+      position: relative;
+      border: solid 1px gray;
+      text-align: left;
+      width: 110px;
+      padding: 1px 6px;
+      margin-top: 2px;
+      background-color: white;
+      font-size: 0.8em;
+      font-weight: 300;
+      border-radius: 7px;
+      border: solid 1px gray;
+      cursor: pointer;
+      z-index: 100;
+      color: gray;
+      text-decoration: none;
+      .transition(color 200ms);
+      > .fa{
+        width: 13px;
+        text-align: center;
+      }
+      &:hover{ 
+        text-decoration: underline;
+        border-color: @color_hoverAction;
+        color: @color_hoverAction !important;
+      }
+      &[active]{
+        border-color: #5a2f1f;
+        box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;;
+        color: #5a2f1f;
+        font-weight: 700;
+      }
+      &.helpInMode_Wiki{
+        font-size: 0.6em;
+        letter-spacing: 2px;
+      }
+    }
+
+    &:hover > span[class^="helpInMode_"]{ color: black; }
+  }
+
+  .overlay_answer{
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    pointer-events: none;
+    .transition(opacity 0.5s);
+
+    .stencilBox{
+      position: absolute;
+      border: solid 2px green;
+      border-radius: 3px;
+      box-shadow: 0px 0px 5px green;
+      .user-select(none);
+      &[locked]{
+        border-color: #cc2525;
+        box-shadow: 0px 0px 5px #cc2525;
+      }
+    }
+  }
+
+  .tipsy.tipsy-helpin {
+    > .tipsy-arrow{ border-color: white; }
+    > .tipsy-inner{
+      padding: 6px;
+      border-radius: 6px;
+      color: black;
+      background-color: white;
+      box-shadow: 0px 0px 10px black;
+      font-size: 1.35em;
+      font-weight: 300;
+      > .fa{ font-size: 1.3em; }
+    }
+    &.tipsy-primary{
+      > .tipsy-inner{ font-weight: 600; }
+    }
+    &.tipsy-primary2{
+      > .tipsy-inner{ 
+        font-weight: 600; 
+        border: solid 1px orangered;
+        color: darken(orangered, 10%);
+      }
+    }
+    &[locked]{
+      > .tipsy-arrow{ border-color: #cc2525; }
+      > .tipsy-inner{
+        border: solid 1px #cc2525;
+        box-shadow: 0px 0px 10px #cc2525;
+        padding: 5px;
+      }
+    }
+  }
+
 }
 
-.kshf .panel_overlay > .overlay_help{
+
+.kshf .overlay_help{
   width: 540px;
   position: absolute;
   top: 20px;
@@ -221,10 +246,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   .calc(left, ~"50% - 310px");
   border-radius: 10px;
   font-family: Roboto, sans-serif;
+  cursor: default;
+
   .flex-direction(column);
   .transition(opacity 500ms linear, box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out );
   .user-select(none);
-
 
   > .PointNClick_Info{ 
     display: none;
@@ -274,7 +300,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     min-height: 30px;
     > .GuidedTourHead{
       padding-top: 7px;
-      padding-bottom: 3px;
+      padding-bottom: 10px;
       display: block;
       font-weight: 500;
       letter-spacing: 2px;
@@ -285,6 +311,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: absolute;
       font-size: 0.8em;
       margin: 5px;
+      top: 0px;
       display: inline-block;
       cursor: pointer;
       border: solid 1px gray;
@@ -301,13 +328,34 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       left: 0px;
       font-weight: 100;
     }
+    > .GuidedTourProgressBar{
+      position: absolute;
+      bottom: 0px;
+      height: 3px;
+      left: 0px;
+      color: red;
+      background-color: #9a968c;
+      .transition(width 500ms ease-in-out);
+      &:after{
+        content: "";
+        display: block;
+        position: absolute;
+        right: -4px;
+        height: 8px;
+        width: 8px;
+        top: -2px;
+        border-radius: 10px;
+        background-color: #6f6e6d;
+        border-radius: 10px;
+      }
+    }
   }
 
   .QuestionTypes{
-    border-width: 1px 0px 1px 0px;
+    border-width: 1px 0px 0px 0px;
+    padding-bottom: 2px;
     border-style: solid;
     border-color: gray;
-    margin-bottom: 3px;
     background-color: #F6F6F6;
     width: 100%;
     .flex(1);
@@ -315,12 +363,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .flex-direction(column);
     > .TypeLabel{
       display: block;
-      margin: 4px;
+      margin: 10px 0px 0px;
+      padding-bottom: 4px;
       font-size: 0.9em;
       color: #cb5454;
       text-align: center;
       border-bottom: solid 1px;
       letter-spacing: 2px;
+      font-weight: 700;
+      font-variant: small-caps;
     }
     > .TypeGroup{
       overflow-x: hidden;
@@ -367,7 +418,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .flex-direction(row);
     .browseTopicBlock{
       display: none;
-      width: 160px;
+      width: 170px;
       min-height: 300px;
       border-right: solid 1px gray;
       box-shadow: 0px 0px 2px gray;
@@ -495,7 +546,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .flex(1);
     > .TopicBlock{
-      margin: 7px 4px;
+      margin: 10px 4px;
       padding: 4px;
       border: solid 1px lightgray;
       border-radius: 6px;
@@ -507,14 +558,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       > .notInContext{
         display: none;
         position: absolute;
-        top: 4px;
+        top: 1px;
         left: 1px;
-        width: 20px;
         text-align: center;
+        font-size: 0.8em;
         color: gray;
       }
       > .TopicText{
-        padding: 0px 35px 0px 16px;
+        padding: 0px 10px;
         > .fa-question-circle{ 
           color: gray;
           margin: 0px 3px;
@@ -524,6 +575,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         right: 2px;
         top: 4px;
+        display: none; // TODO: This was too much information, hard to read?
         .icon{ 
           font-size: 0.8em;
           font-weight: 300;
@@ -556,9 +608,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       -webkit-font-smoothing: antialiased;
       display: block;
       position: absolute;
-      right: 3px;
-      top: 4px;
-      content: "hide";
+      right: 10px;
+      top: 2px;
+      content: "(hide)";
       font-size: 0.9em;
       letter-spacing: initial;
     }
@@ -568,92 +620,87 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
   }
 
-  > .SelectedThing{
-    display: none;
-    cursor: default;
-    > .SelectedThing_Header{
-      padding: 7px 5px;
-      border-bottom: solid 1px gray;
-      font-size: 1.1em;
-      font-weight: 400;
-      background-color: #9a968c;
-      color: white;
-      text-shadow: 0px 0px 4px black;
+  > .SelectedThing_Header{
+    padding: 7px 5px;
+    border-bottom: solid 1px gray;
+    font-size: 1.1em;
+    font-weight: 400;
+    background-color: #9a968c;
+    color: white;
+    text-shadow: 0px 0px 4px black;
 
-      cursor: -moz-grab;
-      cursor: -webkit-grab;
-      cursor: grab;
-      .transition(background-color 200ms linear);
-      &:hover { background-color: darken(#9a968c, 20%); }
-    }
-    > .SelectedThing_Content{
-      padding: 10px 5px;
-      background-color: #f5f4f2; //#efeadf;
-      padding: 7px 10px;
-      box-shadow: 0px 2px 2px gray;
-      font-weight: 300;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
+    .transition(all 200ms linear);
+    &:after{
+      display: inline-block;
+      font: normal normal normal 14px/1 FontAwesome;
+      font-size: inherit;
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+      content: "\f047";
+      position: absolute;
+      right: 2px;
+      top: 4px;
       font-size: 0.9em;
-      text-align: left;
-      > .answerTooltip{
-        text-align: center;
-        &:not(:first-child):before{
-          display: block;
-          content: "-OR-";
-          color: #BF360C;
-          font-size: 1.3em;
-          font-family: monospace;
-          font-weight: 600;
-          padding: 0px 4px 2px;
-        }
-        > .subAnswer{
-         &:not(:first-child):before{
-           display: inline-block;
-           content: "then";
-           color: #BF360C;
-           font-family: monospace;
-           font-weight: 600;
-           padding: 0px 4px;
-         } 
-        }
-      }
-      > p{
-        margin: 0 0 0.7em 0;
-      }
-      .breadCrumb{ font-size: 0.9em; }
+      color: lighten(#9a968c, 15%);
+      text-shadow: initial;
+      //.transition(all 200ms linear);
     }
-    > .SelectedThing_Content_More{
-      margin: 5px 0px 5px 0px;
-      padding: 4px 10px;
-      font-size: 0.8em;
-      font-weight: 300;
-      border-bottom: solid 1px gray;
-      > p{
-        margin: 0 0 0.7em 0;
-      }
-    }
-    .bolderInfo{
-      font-weight: bolder;
+    &:hover { 
+      background-color: darken(#9a968c, 20%);
+      &:after{ color: white; }
     }
   }
-
-  .colorCoding{
-    display: inline-block;
-//    width: 1em;
-//    height: 1em;
-    vertical-align: top;
-    padding: 0px 4px;
-    &.colorCoding-Total     { color: black; background-color: @color_distr_total; }
-    &.colorCoding-Active    { color: white; background-color: darken(@color_bars, 10%); }
-    &.colorCoding-Highlight { color: white; background-color: @color_preview; }
-    &.colorCoding-Compare_A { color: white; background-color: @color_Compare_A; }
-    &.colorCoding-Compare_B { color: white; background-color: @color_Compare_B; }
-    &.colorCoding-Compare_C { color: black; background-color: @color_Compare_C; }
+  > .SelectedThing_Content{
+    padding: 10px 5px;
+    background-color: #f5f4f2; //#efeadf;
+    padding: 7px 10px;
+    box-shadow: 0px 2px 2px gray;
+    font-weight: 300;
+    font-size: 0.9em;
+    text-align: left;
+    > .answerTooltip{
+      text-align: center;
+      &:not(:first-child):before{
+        display: block;
+        content: "-OR-";
+        color: #BF360C;
+        font-size: 1.3em;
+        font-family: monospace;
+        font-weight: 600;
+        padding: 0px 4px 2px;
+      }
+      > .subAnswer{
+       &:not(:first-child):before{
+         display: inline-block;
+         content: "then";
+         color: #BF360C;
+         font-family: monospace;
+         font-weight: 600;
+         padding: 0px 4px;
+       } 
+      }
+    }
+    > p{
+      margin: 0 0 0.7em 0;
+    }
+    .breadCrumb{ font-size: 0.9em; }
+  }
+  > .SelectedThing_Content_More{
+    margin: 5px 0px 5px 0px;
+    padding: 4px 10px;
+    font-size: 0.8em;
+    font-weight: 300;
+    border-bottom: solid 1px gray;
+    > p{ margin: 0 0 0.7em 0; }
   }
 
   > .overlay_Close{ z-index: 1000; }
 
   &[hideRelatedTopics]{
-    > .RelatedTopics:after{ content: "show" };
+    > .RelatedTopics:after{ content: "(show)" };
     .TopicsList{ display: none; }
   }
 }
@@ -668,7 +715,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     top: 60px;
     .calc(left, ~'50% - 185px');
     > .PointNClick_Info{ display: block; }
-    > .SelectedThing{ display: block; }
     > .FilterBlock{ display: none; }
     > .RelatedTopics{ display: block; }
     .TopicsList{ max-height: 110px; }
@@ -681,7 +727,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .TextSearchBlock{ display: none; }
   }
-  .SelectedThing_Content_More{ display: none !important; }
 }
 
 .kshf .panel_overlay[show="help-guidedtour"] {
@@ -690,10 +735,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     top: 60px;
     .calc(left, ~'50% - 185px');
     > .GuidedTour{ display: block; }
-    > .SelectedThing{ 
-      display: block;
-      > .SelectedThing_Header > .fa-hand-pointer-o{ display: none; }
-    }
+    .SelectedThing_Header > .fa-hand-pointer-o{ display: none; }
     > .RelatedTopics{ display: block; }
     .TopicsList{ max-height: 110px; }
     .TopicBlock{ 
@@ -704,10 +746,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .TextSearchBlock{ display: none; }
   }
-  .SelectedThing_Content_More{ display: none !important; }
 }
 
 .kshf .panel_overlay[show="help-browse"]{
+  &:not([topicAnswer]) [class^="SelectedThing"]{ display: none !important; }
   .heyooo > .browseTopicBlock{
     .display(flex);
     .flex-direction(column);
@@ -716,19 +758,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .panel_overlay[topicAnswer] {
-  > .overlay_answer{
-    pointer-events: all;
-  }
-  .stencilBox{
-    cursor: pointer;
-  }
+  > .overlay_answer{ pointer-events: all; }
+  .stencilBox{ cursor: pointer; }
   // .BackButton{ display: block !important; }
   > .overlay_help{
     width: 370px;
     .calc(left, ~'50% - 170px');
     top: 100px;
     > .TopicRelWhenBlock{ display: block; }
-    > .SelectedThing{  display: block; }
     > .RelatedTopics{ display: block; }
     .browseTopicBlock{ display: none !important; }
     .TopicsList{ max-height: 250px; }
@@ -744,7 +781,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   border-radius: 5px;
   border: solid 1px #BCBCBC;
-  margin: 0px 1px 4px 2px;
+  margin: 6px 1px;
   padding: 1px 3px;
   height: 21px;
   cursor: pointer;
@@ -773,6 +810,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     top: 2px;
     right: 1px;
     color: gray;
+    display: none; // TODO: This was too much informtion, hard to read??
     &:hover{ color: @color_hoverAction; }
   }
   > .num {
@@ -857,18 +895,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
 }
 
-.helpin-breadcrumb{
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  color: white !important;
-  padding: 2px;
-  font-size: 0.7em;
-  vertical-align: top;
-  text-align: center;
-  text-shadow: none;
-  &.fa-mouse-pointer{ background-color: @color_preview_clear; }
-  &.fa-filter{        background-color: @color_filter_clear; }
-  &.fa-lock{          background-color: @color_Compare_A; }
-}
 

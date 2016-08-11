@@ -31,7 +31,82 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
-.overlay_help_control {
+.kshf .bolder {
+  font-weight: bolder;
+}
+.kshf .helpin-breadcrumb {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  color: white !important;
+  padding: 2px;
+  font-size: 0.7em;
+  vertical-align: top;
+  text-align: center;
+  text-shadow: none;
+}
+.kshf .helpin-breadcrumb.fa-mouse-pointer {
+  background-color: #ff4500;
+}
+.kshf .helpin-breadcrumb.fa-filter {
+  background-color: #788d9b;
+}
+.kshf .helpin-breadcrumb.fa-lock {
+  background-color: #2f4f4f;
+}
+.kshf .fa-histogram-flip {
+  -webkit-transform: scale(1, -1) rotate(90deg);
+  -moz-transform: scale(1, -1) rotate(90deg);
+  -ms-transform: scale(1, -1) rotate(90deg);
+  -o-transform: scale(1, -1) rotate(90deg);
+  transform: scale(1, -1) rotate(90deg);
+}
+.kshf[drag_cursor="grabbing"] .SelectedThing_Header {
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+}
+.kshf *[class^="colorCoding"] {
+  display: inline-block;
+  vertical-align: top;
+  padding: 2px 2px;
+}
+.kshf .colorCoding_Total {
+  color: black;
+  background-color: #dee2e6;
+}
+.kshf .colorCoding_Active {
+  color: white;
+  background-color: #94a4af;
+}
+.kshf .colorCoding_Highlight {
+  color: white;
+  background-color: #ff6a33;
+}
+.kshf .colorCoding_Compare_A {
+  color: white;
+  background-color: #2f4f4f;
+}
+.kshf .colorCoding_Compare_B {
+  color: white;
+  background-color: #39ef4f;
+}
+.kshf .colorCoding_Compare_C {
+  color: black;
+  background-color: #fffedc;
+  border: solid 1px black;
+  padding: 1px 1px;
+}
+.kshf .panel_overlay[lockedPointNLearn] .DescriptionToUnFreeze {
+  display: block !important;
+}
+.kshf .panel_overlay[lockedPointNLearn] .DescriptionToFreeze {
+  display: none;
+}
+.kshf .panel_overlay[show^="help"] > .overlay_help_control {
+  display: block;
+}
+.kshf .overlay_help_control {
   display: none;
   position: absolute;
   top: 20px;
@@ -47,14 +122,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
-.overlay_help_control > .GetHelpHeader {
+.kshf .overlay_help_control > .GetHelpHeader {
   display: block;
   font-size: 0.9em;
   letter-spacing: 1px;
   font-weight: 500;
   color: #444;
 }
-.overlay_help_control > .overlay_Close {
+.kshf .overlay_help_control > .overlay_Close {
   position: absolute;
   top: -20px;
   right: 36px;
@@ -66,14 +141,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: gray;
   cursor: pointer;
 }
-.overlay_help_control > .overlay_Close:hover {
+.kshf .overlay_help_control > .overlay_Close:hover {
   color: #cb5454;
 }
-.overlay_help_control > [class^="helpInMode_"] {
+.kshf .overlay_help_control > [class^="helpInMode_"] {
   display: block;
   position: relative;
-  width: 120px;
-  padding: 1px 3px;
+  text-align: left;
+  width: 110px;
+  padding: 1px 6px;
   margin-top: 2px;
   background-color: white;
   font-size: 0.8em;
@@ -89,25 +165,29 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: color 200ms;
   transition: color 200ms;
 }
-.overlay_help_control > [class^="helpInMode_"]:hover {
+.kshf .overlay_help_control > [class^="helpInMode_"] > .fa {
+  width: 13px;
+  text-align: center;
+}
+.kshf .overlay_help_control > [class^="helpInMode_"]:hover {
   text-decoration: underline;
   border-color: #cb5454;
   color: #cb5454 !important;
 }
-.overlay_help_control > [class^="helpInMode_"][active] {
+.kshf .overlay_help_control > [class^="helpInMode_"][active] {
   border-color: #5a2f1f;
   box-shadow: 0px 0px 3px #9a968c, 0px 0px 1px #9a968c;
   color: #5a2f1f;
   font-weight: 700;
 }
-.overlay_help_control > [class^="helpInMode_"].helpInMode_Wiki {
+.kshf .overlay_help_control > [class^="helpInMode_"].helpInMode_Wiki {
   font-size: 0.6em;
   letter-spacing: 2px;
 }
-.overlay_help_control:hover > span[class^="helpInMode_"] {
+.kshf .overlay_help_control:hover > span[class^="helpInMode_"] {
   color: black;
 }
-.overlay_answer {
+.kshf .overlay_answer {
   width: 100%;
   height: 100%;
   z-index: -2;
@@ -120,7 +200,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: opacity 0.5s;
   transition: opacity 0.5s;
 }
-.overlay_answer .stencilBox {
+.kshf .overlay_answer .stencilBox {
   position: absolute;
   border: solid 2px green;
   border-radius: 3px;
@@ -130,26 +210,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-user-select: none;
   user-select: none;
 }
-.overlay_answer .stencilBox[locked] {
+.kshf .overlay_answer .stencilBox[locked] {
   border-color: #cc2525;
   box-shadow: 0px 0px 5px #cc2525;
 }
-/*.keyframes(~'attention, 0%, 100%{ transform: scale(1); } 50%{ transform: scale(1.07); }');
-.keyframes(~'attention2, 0%, 100%{ transform: scale(1); background-color: rgba(1,1,1,0); } 50%{ transform: scale(1.07); background-color: rgba(30,250,30,0.3); }');
-
-.panel_overlay[attention=true] {
-  .highlightBox{ 
-    .animation(attention2 0.3s 2 ease-in-out);
-  }
-  .overlay_help{
-    .animation(attention 0.3s 2 ease-in-out);
-    box-shadow: 0px 0px 20px darken(orangered, 20%), 0px 0px 10px orangered;
-  }
-}*/
-.tipsy.tipsy-helpin > .tipsy-arrow {
+.kshf .tipsy.tipsy-helpin > .tipsy-arrow {
   border-color: white;
 }
-.tipsy.tipsy-helpin > .tipsy-inner {
+.kshf .tipsy.tipsy-helpin > .tipsy-inner {
   padding: 6px;
   border-radius: 6px;
   color: black;
@@ -158,42 +226,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 1.35em;
   font-weight: 300;
 }
-.tipsy.tipsy-helpin > .tipsy-inner > .fa {
+.kshf .tipsy.tipsy-helpin > .tipsy-inner > .fa {
   font-size: 1.3em;
 }
-.tipsy.tipsy-helpin.tipsy-primary > .tipsy-inner {
+.kshf .tipsy.tipsy-helpin.tipsy-primary > .tipsy-inner {
   font-weight: 600;
 }
-.tipsy.tipsy-helpin[locked] > .tipsy-arrow {
+.kshf .tipsy.tipsy-helpin.tipsy-primary2 > .tipsy-inner {
+  font-weight: 600;
+  border: solid 1px orangered;
+  color: #cc3700;
+}
+.kshf .tipsy.tipsy-helpin[locked] > .tipsy-arrow {
   border-color: #cc2525;
 }
-.tipsy.tipsy-helpin[locked] > .tipsy-inner {
+.kshf .tipsy.tipsy-helpin[locked] > .tipsy-inner {
   border: solid 1px #cc2525;
   box-shadow: 0px 0px 10px #cc2525;
   padding: 5px;
 }
-.fa-histogram-flip {
-  -webkit-transform: scale(1, -1) rotate(90deg);
-  -moz-transform: scale(1, -1) rotate(90deg);
-  -ms-transform: scale(1, -1) rotate(90deg);
-  -o-transform: scale(1, -1) rotate(90deg);
-  transform: scale(1, -1) rotate(90deg);
-}
-.kshf[drag_cursor="grabbing"] .SelectedThing_Header {
-  cursor: -moz-grabbing !important;
-  cursor: -webkit-grabbing !important;
-  cursor: grabbing !important;
-}
-.kshf .panel_overlay[lockedPointNLearn] .DescriptionToUnFreeze {
-  display: block !important;
-}
-.kshf .panel_overlay[lockedPointNLearn] .DescriptionToFreeze {
-  display: none;
-}
-.kshf .panel_overlay[show^="help"] > .overlay_help_control {
-  display: block;
-}
-.kshf .panel_overlay > .overlay_help {
+.kshf .overlay_help {
   width: 540px;
   position: absolute;
   top: 20px;
@@ -205,6 +257,7 @@ left:calc(50% - 310px);
 ;
   border-radius: 10px;
   font-family: Roboto, sans-serif;
+  cursor: default;
   -webkit-box-direction: normal;
   -moz-box-direction: normal;
   -webkit-box-orient: vertical;
@@ -221,7 +274,7 @@ left:calc(50% - 310px);
   -ms-user-select: none;
   user-select: none;
 }
-.kshf .panel_overlay > .overlay_help > .PointNClick_Info {
+.kshf .overlay_help > .PointNClick_Info {
   display: none;
   font-size: 0.8em;
   font-weight: 300;
@@ -230,14 +283,14 @@ left:calc(50% - 310px);
   cursor: default;
   background-color: #efeadf;
 }
-.kshf .panel_overlay > .overlay_help .DescriptionToUnFreeze {
+.kshf .overlay_help .DescriptionToUnFreeze {
   display: none;
   cursor: pointer;
 }
-.kshf .panel_overlay > .overlay_help .DescriptionToUnFreeze:hover {
+.kshf .overlay_help .DescriptionToUnFreeze:hover {
   color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help > .helpin_Header {
+.kshf .overlay_help > .helpin_Header {
   width: 100%;
   background-color: #9a968c;
   min-height: 10px;
@@ -247,7 +300,7 @@ left:calc(50% - 310px);
   -o-transition: background-color 400ms;
   transition: background-color 400ms;
 }
-.kshf .panel_overlay > .overlay_help > .helpin_Header > .BackButton {
+.kshf .overlay_help > .helpin_Header > .BackButton {
   display: none;
   position: absolute;
   top: 2px;
@@ -257,52 +310,76 @@ left:calc(50% - 310px);
   text-shadow: 0px 0px 2px black;
   font-size: 1.3em;
 }
-.kshf .panel_overlay > .overlay_help > .helpin_Header > .BackButton:hover {
+.kshf .overlay_help > .helpin_Header > .BackButton:hover {
   color: #cb5454;
   text-shadow: none;
 }
-.kshf .panel_overlay > .overlay_help > .GuidedTour {
+.kshf .overlay_help > .GuidedTour {
   display: none;
   background-color: #efeadf;
   position: relative;
   min-height: 30px;
 }
-.kshf .panel_overlay > .overlay_help > .GuidedTour > .GuidedTourHead {
+.kshf .overlay_help > .GuidedTour > .GuidedTourHead {
   padding-top: 7px;
-  padding-bottom: 3px;
+  padding-bottom: 10px;
   display: block;
   font-weight: 500;
   letter-spacing: 2px;
   color: gray;
   font-size: 0.9em;
 }
-.kshf .panel_overlay > .overlay_help > .GuidedTour > .TourStep {
+.kshf .overlay_help > .GuidedTour > .TourStep {
   position: absolute;
   font-size: 0.8em;
   margin: 5px;
+  top: 0px;
   display: inline-block;
   cursor: pointer;
   border: solid 1px gray;
   padding: 1px 5px;
   border-radius: 6px;
 }
-.kshf .panel_overlay > .overlay_help > .GuidedTour > .TourStep:hover {
+.kshf .overlay_help > .GuidedTour > .TourStep:hover {
   color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help > .GuidedTour > .NextStep {
+.kshf .overlay_help > .GuidedTour > .NextStep {
   right: 0px;
   background-color: rgba(255, 255, 255, 0.6);
   font-weight: 500;
 }
-.kshf .panel_overlay > .overlay_help > .GuidedTour > .PreviousStep {
+.kshf .overlay_help > .GuidedTour > .PreviousStep {
   left: 0px;
   font-weight: 100;
 }
-.kshf .panel_overlay > .overlay_help .QuestionTypes {
-  border-width: 1px 0px 1px 0px;
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar {
+  position: absolute;
+  bottom: 0px;
+  height: 3px;
+  left: 0px;
+  color: red;
+  background-color: #9a968c;
+  -webkit-transition: width 500ms ease-in-out;
+  -moz-transition: width 500ms ease-in-out;
+  -o-transition: width 500ms ease-in-out;
+  transition: width 500ms ease-in-out;
+}
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar:after {
+  content: "";
+  display: block;
+  position: absolute;
+  right: -4px;
+  height: 8px;
+  width: 8px;
+  top: -2px;
+  background-color: #6f6e6d;
+  border-radius: 10px;
+}
+.kshf .overlay_help .QuestionTypes {
+  border-width: 1px 0px 0px 0px;
+  padding-bottom: 2px;
   border-style: solid;
   border-color: gray;
-  margin-bottom: 3px;
   background-color: #F6F6F6;
   width: 100%;
   -webkit-box-flex: 1;
@@ -323,16 +400,19 @@ left:calc(50% - 310px);
   -ms-flex-direction: column;
   flex-direction: column;
 }
-.kshf .panel_overlay > .overlay_help .QuestionTypes > .TypeLabel {
+.kshf .overlay_help .QuestionTypes > .TypeLabel {
   display: block;
-  margin: 4px;
+  margin: 10px 0px 0px;
+  padding-bottom: 4px;
   font-size: 0.9em;
   color: #cb5454;
   text-align: center;
   border-bottom: solid 1px;
   letter-spacing: 2px;
+  font-weight: 700;
+  font-variant: small-caps;
 }
-.kshf .panel_overlay > .overlay_help .QuestionTypes > .TypeGroup {
+.kshf .overlay_help .QuestionTypes > .TypeGroup {
   overflow-x: hidden;
   overflow-y: scroll;
   white-space: nowrap;
@@ -345,24 +425,24 @@ left:calc(50% - 310px);
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .panel_overlay > .overlay_help .QuestionTypes.ActionTypes > .TypeLabel:before {
+.kshf .overlay_help .QuestionTypes.ActionTypes > .TypeLabel:before {
   content: "Actions";
 }
-.kshf .panel_overlay > .overlay_help .QuestionTypes.TopicTypes > .TypeLabel:before {
+.kshf .overlay_help .QuestionTypes.TopicTypes > .TypeLabel:before {
   content: "Components";
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock {
+.kshf .overlay_help > .TopicInfoBlock {
   cursor: default;
   position: relative;
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoHeader {
+.kshf .overlay_help > .TopicInfoBlock > .TopicInfoHeader {
   font-weight: 400;
   border-bottom: solid 1px lightgray;
   font-size: 1.1em;
   margin-bottom: 3px;
   position: relative;
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoShowHide {
+.kshf .overlay_help > .TopicInfoBlock > .TopicInfoShowHide {
   font-weight: 300;
   font-size: 0.9em;
   cursor: pointer;
@@ -370,19 +450,19 @@ left:calc(50% - 310px);
   right: 10px;
   top: 1px;
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoShowHide:before {
+.kshf .overlay_help > .TopicInfoBlock > .TopicInfoShowHide:before {
   content: "(Hide)";
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock > .TopicInfoShowHide:hover {
+.kshf .overlay_help > .TopicInfoBlock > .TopicInfoShowHide:hover {
   color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoBlockContent {
+.kshf .overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoBlockContent {
   display: none;
 }
-.kshf .panel_overlay > .overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoShowHide:before {
+.kshf .overlay_help > .TopicInfoBlock[showBlockContent=false] > .TopicInfoShowHide:before {
   content: "(Show)";
 }
-.kshf .panel_overlay > .overlay_help > .heyooo {
+.kshf .overlay_help > .heyooo {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -396,104 +476,104 @@ left:calc(50% - 310px);
   -ms-flex-direction: row;
   flex-direction: row;
 }
-.kshf .panel_overlay > .overlay_help > .heyooo .browseTopicBlock {
+.kshf .overlay_help > .heyooo .browseTopicBlock {
   display: none;
-  width: 160px;
+  width: 170px;
   min-height: 300px;
   border-right: solid 1px gray;
   box-shadow: 0px 0px 2px gray;
   cursor: default;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock {
+.kshf .overlay_help > .SimilarTopicsBlock {
   font-weight: 300;
   font-size: 0.8em;
   margin: 5px 0px;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock > .SimilarTopicsContent {
+.kshf .overlay_help > .SimilarTopicsBlock > .SimilarTopicsContent {
   font-weight: 300;
   padding: 0px 10px;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicItem {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicItem {
   margin: 5px;
   text-align: left;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicItemText {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicItemText {
   cursor: pointer;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicItemText:hover {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicItemText:hover {
   color: #cb5454;
   text-decoration: underline;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect {
   cursor: pointer;
   margin-left: 5px;
   display: inline-block;
   text-decoration: underline;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:hover {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:hover {
   color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:before {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:before {
   content: "(";
 }
-.kshf .panel_overlay > .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:after {
+.kshf .overlay_help > .SimilarTopicsBlock .SimilarTopicSelect:after {
   content: ")";
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock {
+.kshf .overlay_help > .TopicRelWhenBlock {
   display: none;
   font-weight: 300;
   font-size: 0.8em;
   margin: 5px 0px;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent {
   text-align: left;
   padding: 0px 10px;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem {
   margin: 5px;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .RelevantIcon {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .RelevantIcon {
   margin-right: 4px;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic {
   margin: 0px 5px;
   color: black;
   cursor: pointer;
   text-decoration: underline;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:before {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:before {
   content: "( ";
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:after {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .MakeRelevantTopic:after {
   content: " )";
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] {
   color: black;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] > .fa:before {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=true] > .fa:before {
   color: green;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=false] {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem[isRelevant=false] {
   color: red;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-times-circle {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-times-circle {
   color: red;
 }
-.kshf .panel_overlay > .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-check-circle {
+.kshf .overlay_help > .TopicRelWhenBlock > .ContextContent > .ContextItem > .fa-check-circle {
   color: green;
 }
-.kshf .panel_overlay > .overlay_help > .TopicMoreInfo {
+.kshf .overlay_help > .TopicMoreInfo {
   font-weight: 300;
   font-size: 0.8em;
   cursor: default;
 }
-.kshf .panel_overlay > .overlay_help > .TopicMoreInfo > .TopicMoreInfoHeader {
+.kshf .overlay_help > .TopicMoreInfo > .TopicMoreInfoHeader {
   font-weight: 500;
   border-bottom: solid 1px lightgray;
   font-size: 1.1em;
   margin-bottom: 3px;
 }
-.kshf .panel_overlay > .overlay_help > .answer_box {
+.kshf .overlay_help > .answer_box {
   position: absolute;
   top: 30px;
   font-weight: 300;
@@ -505,22 +585,22 @@ left:calc(50% - 310px);
   background-color: white;
   z-index: 100;
 }
-.kshf .panel_overlay > .overlay_help > .answer_box.answer_ok {
+.kshf .overlay_help > .answer_box.answer_ok {
   right: 3px;
   background-color: #918D85;
   color: white;
   font-weight: 400;
 }
-.kshf .panel_overlay > .overlay_help > .answer_box.answer_ok:hover {
+.kshf .overlay_help > .answer_box.answer_ok:hover {
   background-color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help > .answer_box.answer_back {
+.kshf .overlay_help > .answer_box.answer_back {
   left: 3px;
 }
-.kshf .panel_overlay > .overlay_help > .answer_box.answer_back:hover {
+.kshf .overlay_help > .answer_box.answer_back:hover {
   color: #cb5454;
 }
-.kshf .panel_overlay > .overlay_help .SearchBlock {
+.kshf .overlay_help .SearchBlock {
   position: relative;
   overflow: hidden;
   background-color: #efeadf;
@@ -531,7 +611,7 @@ left:calc(50% - 310px);
   -webkit-flex-shrink: 0;
   flex-shrink: 0;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList {
+.kshf .overlay_help .TopicsList {
   overflow-y: auto;
   overflow-x: hidden;
   border-color: gray;
@@ -543,8 +623,8 @@ left:calc(50% - 310px);
   -ms-flex: 1;
   flex: 1;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock {
-  margin: 7px 4px;
+.kshf .overlay_help .TopicsList > .TopicBlock {
+  margin: 10px 4px;
   padding: 4px;
   border: solid 1px lightgray;
   border-radius: 6px;
@@ -553,31 +633,32 @@ left:calc(50% - 310px);
   display: block;
   text-align: left;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock:hover {
+.kshf .overlay_help .TopicsList > .TopicBlock:hover {
   background-color: #efeadf;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .notInContext {
+.kshf .overlay_help .TopicsList > .TopicBlock > .notInContext {
   display: none;
   position: absolute;
-  top: 4px;
+  top: 1px;
   left: 1px;
-  width: 20px;
   text-align: center;
+  font-size: 0.8em;
   color: gray;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicText {
-  padding: 0px 35px 0px 16px;
+.kshf .overlay_help .TopicsList > .TopicBlock > .TopicText {
+  padding: 0px 10px;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicText > .fa-question-circle {
+.kshf .overlay_help .TopicsList > .TopicBlock > .TopicText > .fa-question-circle {
   color: gray;
   margin: 0px 3px;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicIcons {
+.kshf .overlay_help .TopicsList > .TopicBlock > .TopicIcons {
   position: absolute;
   right: 2px;
   top: 4px;
+  display: none;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock > .TopicIcons .icon {
+.kshf .overlay_help .TopicsList > .TopicBlock > .TopicIcons .icon {
   font-size: 0.8em;
   font-weight: 300;
   margin-top: 4px;
@@ -586,10 +667,10 @@ left:calc(50% - 310px);
   text-align: center;
   vertical-align: top;
 }
-.kshf .panel_overlay > .overlay_help .TopicsList > .TopicBlock[outOfContext] > .notInContext {
+.kshf .overlay_help .TopicsList > .TopicBlock[outOfContext] > .notInContext {
   display: block;
 }
-.kshf .panel_overlay > .overlay_help > .RelatedTopics {
+.kshf .overlay_help > .RelatedTopics {
   display: none;
   font-weight: 300;
   text-align: center;
@@ -602,29 +683,25 @@ left:calc(50% - 310px);
   cursor: pointer;
   position: relative;
 }
-.kshf .panel_overlay > .overlay_help > .RelatedTopics:after {
+.kshf .overlay_help > .RelatedTopics:after {
   font-size: inherit;
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   display: block;
   position: absolute;
-  right: 3px;
-  top: 4px;
-  content: "hide";
+  right: 10px;
+  top: 2px;
+  content: "(hide)";
   font-size: 0.9em;
   letter-spacing: initial;
 }
-.kshf .panel_overlay > .overlay_help > .RelatedTopics:hover {
+.kshf .overlay_help > .RelatedTopics:hover {
   background-color: #cbc6be;
 }
-.kshf .panel_overlay > .overlay_help > .RelatedTopics:hover:after {
+.kshf .overlay_help > .RelatedTopics:hover:after {
   color: orangered;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing {
-  display: none;
-  cursor: default;
-}
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Header {
+.kshf .overlay_help > .SelectedThing_Header {
   padding: 7px 5px;
   border-bottom: solid 1px gray;
   font-size: 1.1em;
@@ -635,15 +712,32 @@ left:calc(50% - 310px);
   cursor: -moz-grab;
   cursor: -webkit-grab;
   cursor: grab;
-  -webkit-transition: background-color 200ms linear;
-  -moz-transition: background-color 200ms linear;
-  -o-transition: background-color 200ms linear;
-  transition: background-color 200ms linear;
+  -webkit-transition: all 200ms linear;
+  -moz-transition: all 200ms linear;
+  -o-transition: all 200ms linear;
+  transition: all 200ms linear;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Header:hover {
+.kshf .overlay_help > .SelectedThing_Header:after {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  content: "\f047";
+  position: absolute;
+  right: 2px;
+  top: 4px;
+  font-size: 0.9em;
+  color: #bebbb5;
+  text-shadow: initial;
+}
+.kshf .overlay_help > .SelectedThing_Header:hover {
   background-color: #66635a;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content {
+.kshf .overlay_help > .SelectedThing_Header:hover:after {
+  color: white;
+}
+.kshf .overlay_help > .SelectedThing_Content {
   padding: 10px 5px;
   background-color: #f5f4f2;
   padding: 7px 10px;
@@ -652,10 +746,10 @@ left:calc(50% - 310px);
   font-size: 0.9em;
   text-align: left;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip {
+.kshf .overlay_help > .SelectedThing_Content > .answerTooltip {
   text-align: center;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip:not(:first-child):before {
+.kshf .overlay_help > .SelectedThing_Content > .answerTooltip:not(:first-child):before {
   display: block;
   content: "-OR-";
   color: #BF360C;
@@ -664,7 +758,7 @@ left:calc(50% - 310px);
   font-weight: 600;
   padding: 0px 4px 2px;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > .answerTooltip > .subAnswer:not(:first-child):before {
+.kshf .overlay_help > .SelectedThing_Content > .answerTooltip > .subAnswer:not(:first-child):before {
   display: inline-block;
   content: "then";
   color: #BF360C;
@@ -672,61 +766,29 @@ left:calc(50% - 310px);
   font-weight: 600;
   padding: 0px 4px;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content > p {
+.kshf .overlay_help > .SelectedThing_Content > p {
   margin: 0 0 0.7em 0;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content .breadCrumb {
+.kshf .overlay_help > .SelectedThing_Content .breadCrumb {
   font-size: 0.9em;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content_More {
+.kshf .overlay_help > .SelectedThing_Content_More {
   margin: 5px 0px 5px 0px;
   padding: 4px 10px;
   font-size: 0.8em;
   font-weight: 300;
   border-bottom: solid 1px gray;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing > .SelectedThing_Content_More > p {
+.kshf .overlay_help > .SelectedThing_Content_More > p {
   margin: 0 0 0.7em 0;
 }
-.kshf .panel_overlay > .overlay_help > .SelectedThing .bolderInfo {
-  font-weight: bolder;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding {
-  display: inline-block;
-  vertical-align: top;
-  padding: 0px 4px;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Total {
-  color: black;
-  background-color: #dee2e6;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Active {
-  color: white;
-  background-color: #94a4af;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Highlight {
-  color: white;
-  background-color: #ff6a33;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Compare_A {
-  color: white;
-  background-color: #2f4f4f;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Compare_B {
-  color: white;
-  background-color: #39ef4f;
-}
-.kshf .panel_overlay > .overlay_help .colorCoding.colorCoding-Compare_C {
-  color: black;
-  background-color: #fffedc;
-}
-.kshf .panel_overlay > .overlay_help > .overlay_Close {
+.kshf .overlay_help > .overlay_Close {
   z-index: 1000;
 }
-.kshf .panel_overlay > .overlay_help[hideRelatedTopics] > .RelatedTopics:after {
-  content: "show";
+.kshf .overlay_help[hideRelatedTopics] > .RelatedTopics:after {
+  content: "(show)";
 }
-.kshf .panel_overlay > .overlay_help[hideRelatedTopics] .TopicsList {
+.kshf .overlay_help[hideRelatedTopics] .TopicsList {
   display: none;
 }
 .kshf .panel_overlay[show="helppointnlearn"] {
@@ -748,9 +810,6 @@ left:calc(50% - 185px);
 ;
 }
 .kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .PointNClick_Info {
-  display: block;
-}
-.kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .SelectedThing {
   display: block;
 }
 .kshf .panel_overlay[show="helppointnlearn"] > .overlay_help > .FilterBlock {
@@ -776,9 +835,6 @@ left:calc(50% - 185px);
 .kshf .panel_overlay[show="helppointnlearn"] > .overlay_help .TextSearchBlock {
   display: none;
 }
-.kshf .panel_overlay[show="helppointnlearn"] .SelectedThing_Content_More {
-  display: none !important;
-}
 .kshf .panel_overlay[show="help-guidedtour"] > .overlay_help {
   width: 370px;
   top: 60px;
@@ -791,10 +847,7 @@ left:calc(50% - 185px);
 .kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .GuidedTour {
   display: block;
 }
-.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .SelectedThing {
-  display: block;
-}
-.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .SelectedThing > .SelectedThing_Header > .fa-hand-pointer-o {
+.kshf .panel_overlay[show="help-guidedtour"] > .overlay_help .SelectedThing_Header > .fa-hand-pointer-o {
   display: none;
 }
 .kshf .panel_overlay[show="help-guidedtour"] > .overlay_help > .RelatedTopics {
@@ -814,7 +867,7 @@ left:calc(50% - 185px);
 .kshf .panel_overlay[show="help-guidedtour"] > .overlay_help .TextSearchBlock {
   display: none;
 }
-.kshf .panel_overlay[show="help-guidedtour"] .SelectedThing_Content_More {
+.kshf .panel_overlay[show="help-browse"]:not([topicAnswer]) [class^="SelectedThing"] {
   display: none !important;
 }
 .kshf .panel_overlay[show="help-browse"] .heyooo > .browseTopicBlock {
@@ -852,9 +905,6 @@ left:calc(50% - 170px);
 .kshf .panel_overlay[topicAnswer] > .overlay_help > .TopicRelWhenBlock {
   display: block;
 }
-.kshf .panel_overlay[topicAnswer] > .overlay_help > .SelectedThing {
-  display: block;
-}
 .kshf .panel_overlay[topicAnswer] > .overlay_help > .RelatedTopics {
   display: block;
 }
@@ -875,7 +925,7 @@ left:calc(50% - 170px);
   display: block;
   border-radius: 5px;
   border: solid 1px #BCBCBC;
-  margin: 0px 1px 4px 2px;
+  margin: 6px 1px;
   padding: 1px 3px;
   height: 21px;
   cursor: pointer;
@@ -910,6 +960,7 @@ left:calc(50% - 170px);
   top: 2px;
   right: 1px;
   color: gray;
+  display: none;
 }
 .QuestionTypeSelect > .topicInfoMark:hover {
   color: #cb5454;
@@ -996,24 +1047,4 @@ left:calc(50% - 170px);
   vertical-align: bottom;
   position: relative;
   top: -2px;
-}
-.helpin-breadcrumb {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  color: white !important;
-  padding: 2px;
-  font-size: 0.7em;
-  vertical-align: top;
-  text-align: center;
-  text-shadow: none;
-}
-.helpin-breadcrumb.fa-mouse-pointer {
-  background-color: #ff4500;
-}
-.helpin-breadcrumb.fa-filter {
-  background-color: #788d9b;
-}
-.helpin-breadcrumb.fa-lock {
-  background-color: #2f4f4f;
 }
