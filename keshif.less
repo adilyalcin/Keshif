@@ -127,7 +127,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           pointer-events: all;
         }
         .aggrGlyph { 
-          > .categoryLabel{ pointer-events: all; }
+          > .catLabelGroup{ pointer-events: all; }
           > .measureLabel{ pointer-events: all; }
           > [class^="measure_"]{ pointer-events: all; }
         }
@@ -373,20 +373,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     // Used only in breadcrumbs
-    .AndOrNot{
-      color: white;
+    [class^="AndOrNot"]{
       display: inline-block;
+      pointer-events: none;
+
+      color: white;
       font-weight: 300;
+      padding: 0px 2px;
+      opacity: 0.7;
       font-size: 0.8em;
       vertical-align: top;
-      border-radius: 3px;
-      padding: 0px 2px 0px 2px;
-      margin-top: 1px;
-      opacity: 0.7;
-      &.AndOrNot_And{ background-color: @color_query_and; }
-      &.AndOrNot_Or{  background-color: @color_query_or;  }
-      &.AndOrNot_Not{ background-color: @color_query_not; }
+      border-radius: 4px;
+      margin: 1px;
+      &:hover { opacity: 1 }
+      .transition(opacity 100ms linear);
     }
+    .AndOrNot_And{ background-color: @color_query_and; }
+    .AndOrNot_Or { background-color: @color_query_or;  }
+    .AndOrNot_Not{ background-color: @color_query_not; }
 
     > .panel_Wrapper{
       .transition(margin-left 700ms ease-in-out);
@@ -428,14 +432,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           position: absolute;
           left: 5px;
           cursor: pointer;
-          &:hover{ color:orangered; }
+          &:hover{ color: @color_hoverAction; }
         }
         > .hidePanel{
           color: gray;
           position: absolute;
           left: 3px;
           cursor: pointer;
-          &:hover{ color:orangered; }
+          &:hover{ color: @color_hoverAction; }
         }
       }
 
@@ -456,7 +460,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 20px;
           display: inline-block;
           cursor: pointer;
-          &:hover{ color: orangered; }
+          &:hover{ color: @color_hoverAction; }
         }
 
         > .attribTextSearch{
@@ -777,7 +781,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         cursor: pointer;
         font-size: 1.2em;
         color: gray;
-        &:hover{ color: orangered; }
+        &:hover{ color: @color_hoverAction; }
       }
       > .measureSelectBox_Header{
         font-weight: 700;
@@ -806,7 +810,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             margin-bottom: 2px;
             cursor: pointer;
             color: gray;
-            &:hover{ color: orangered; }
+            &:hover{ color: @color_hoverAction; }
           }
         }
         > .measureSelectBox_Content_Summaries{
@@ -827,35 +831,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           padding-left: 4px;
         }
       }
-
-      > .measureOptionGroup{
-        margin: 1px 6px;
-        white-space: nowrap;
-        cursor: pointer;
-        border-bottom: solid 1px #CBC5B9;
-        > .measureOption{
-          display: inline-block;
-          vertical-align: top;
-          &:hover{ 
-            color: orangered;
-            //background-color: #E1DDD3;
-          }
-        }
-        > .measureType_Box{
-          display: inline-block;
-          border-left: solid 1px gray;
-          margin-left: 2px;
-          > .measureType{
-            cursor: pointer;
-            display: block;
-            margin-left: 2px;
-            &:hover{ 
-              color: orangered;
-              //background-color: #E1DDD3;
-            }
-          }
-        }
-      }
     }
 
     .breadcrumbs{
@@ -871,7 +846,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         font-size: 1.1em;
         margin: 3px 0px;
         vertical-align: top;
-        &:hover{ color: orangered; }
+        &[active=true]:hover{ color: @color_hoverAction; }
         &[active=true]{ display: inline-block; }
       }
       > .breadCrumb{
@@ -912,6 +887,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &:hover{ color: @color_hoverAction; }
         }
         > .showHelpIn{ .animation(helpInFlip 3s infinite ease-in-out); }
+        > .notifyButton{ 
+          display: none;
+          .animation(notifAlert 2s infinite ease-in-out); 
+        }
         > .authorButton{
           display: inline-block;
           &:hover{ .animation(fa-spin 2s infinite linear) }
@@ -1044,7 +1023,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-left: 16px;
         margin-right: 1px;
         > .crumbHeader{
-          font-weight: 700;
+          font-weight: 500;
           &:after{ content: ': '; }
         }
         > .crumbDetails{
@@ -1650,10 +1629,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // panel_overlay
 
     .hasLabelWidth{ text-align: right; }
-    .catBlock[cFiltered] {
-      .categoryLabel{ .background-image(~"linear-gradient(left, rgba(220,220,220,0) 0%, rgba(220,220,220,1) 20px)"); }
-      .item_count_wrapper{ .background-image(~"linear-gradient(left, rgba(220,220,220,1) 0%, rgba(220,220,220,0) 100%)"); }
-    }
 
     .summaryCategorical{
       .scrollToTop{ right: 1px; }
@@ -1951,7 +1926,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[class^="measure_Compare_C"]{ background-color: @color_Compare_C; }
       }
 
-      &.totalGlyph{ // Breadcrumb
+      &.totalGlyph{ // Top panel
         position: absolute;
         height: 7px;
         bottom: 0px;
@@ -1978,8 +1953,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           margin-bottom: 4px;
         }
         //> [class^="measure_Active"]{ pointer-events: none; }
-        > [class^="measure_Compare"]{ height: 1px; }
-        > [class^="measure_Highlight"]{ height: 1px; }
+        > [class^="measure_Compare"]{ 
+          height: 1px;
+          margin: 0px;
+        }
+        > [class^="measure_Highlight"]{ 
+          height: 1px;
+          margin: 0px;
+        }
         > .lockButton{
           display: block;
           .calc(top, ~"50% - 5px");
@@ -2010,11 +1991,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .setPairBackground{
           opacity: 0;
           fill: @color_setPair_background;
-          .transition(~'opacity 500ms linear');
+          .transition(opacity 500ms linear);
         }
         > [class^="measure_"]{
           cursor: pointer;
-          .transition(~'all 500ms linear');
+          .transition(none);
         }
         > .measure_Active { fill: @color_bars; }
         > .measure_Highlight{ fill: @color_preview; }
@@ -2219,6 +2200,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding: 0px;
         background-color: @color_onRecord_back !important;
         border: solid 1px darken(@color_onRecord_back,40%) !important;
+        border-radius: 6px;
       }
       &[selection="highlighted"]{ 
         padding: 0px;
@@ -2286,7 +2268,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-left: -1px;
         font-size: 0.8em;
         top: -1px;
-        &:hover{ color: orangered; }
+        &:hover{ color: @color_hoverAction; }
         &[active=true]{ background-color: white; pointer-events: none; font-weight: 500; }
         &:first-child{ border-radius: 5px 0px 0px 5px; }
         &:last-child{ border-radius: 0px 5px 5px 0px; }
@@ -2383,7 +2365,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &.q_range{
           &:hover{
             border-style: solid;
-            border-width: 1px 0px 1px 0px;
+            border-width: 2px 0px 2px 0px;
             border-color: orangered; // darken(@color_bars, 20%);
             top: -2px;
             .transition(all 700ms ease-in-out);
@@ -2535,7 +2517,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       margin: 0px;
                       vertical-align: middle;
 //                            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10px' height='15px'><polyline points='0,2 10,2, 5,11'/></svg>") no-repeat top right;
-                      &:hover{ color: orangered; }
+                      &:hover{ color: @color_hoverAction; }
                     }
                   }
                 } // summaryControls
@@ -2582,6 +2564,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   display: block;
                   z-index: 5;
                   .transition(~'height 700ms ease-in-out');
+                  .user-select(none);
 
                   > .chartBackground{
                     width: 1px;
@@ -2600,13 +2583,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     white-space: nowrap;
                     width: 100%;
                     pointer-events: none;
-                    > .categoryLabel{
+                    > .catLabelGroup{
                       position: absolute;
                       display: inline-block;
                       vertical-align: top;
                       line-height: 16px;
                       left: 0px;
                       padding-right: 2px;
+                      //padding: 1px 2px 1px 1px;
                       z-index: 21;
 
                       font-size: 0.8em;
@@ -2624,43 +2608,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         white-space: nowrap;
                         cursor: pointer;
                         vertical-align: top;
-                        //float: left;
                         z-index: 100;
                         pointer-events: all;
-                        > .filterButton{
-                          display: none;
-                          pointer-events: all;
-                          margin-right: 1px;
-                          margin-left: 2px;
-                          border-radius: 4px;
-                          vertical-align: top;
-                          position: relative;
-                          top: 1px;
-                          padding: 1px 3px 1px 3px;;
-                          line-height: 13px;
-                          color: white;
-                          font-weight: 300;
-                          font-size: 0.7em;
-                          opacity: 0;
-                          .transition(opacity 500ms linear);
-                        }
-                        > .orButton {
-                          background-color: lighten(@color_query_or, 10%);
-                          &:hover { background-color: @color_query_or; }
-                        }
-                        > .notButton {
-                          background-color: rgb(166, 166, 166);
-                          &:hover { background-color: gray; }
-                        }
+                      }
+                      > .catLabel{ pointer-events: none; }
+                      [class^="AndOrNot"]{
+                        display: none;
+                        pointer-events: all;
+                        line-height: 13px;
                       }
                     }
                     > .measureLabel{
                       position: absolute;
                       display: inline-block;
-                      height: 16px;
+                      height: 100%;
+                      top: 0px;
                       padding-right: 1px;
-                      .calc(top, ~"50% - 8px");
-                      vertical-align: top;
                       text-align: right;
                       line-height: 18px;
                       z-index: 100;
@@ -2671,56 +2634,57 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     &[activeItems='0'] .measureLabel{ visibility: hidden; }
 
                     &[compare="true"] {
-                      > .categoryLabel > .theLabel{ font-weight: 700; }
+                      > .catLabelGroup > .catLabel{ font-weight: 700; }
                     }
 
                     &[cFiltered] {
                       cursor: pointer;
-                      > .categoryLabel > .theLabel{ font-weight: 700; }
+                      > .catLabelGroup > .catLabel{ font-weight: 700; }
                     }
                     // AND
                     &[cFiltered="AND"]{
-                      > .categoryLabel {
+                      > .catLabelGroup {
                         background-color: #DEE2E5;
-                        > .theLabel{ color: @color_query_and; }
+                        > .catLabel{ color: @color_query_and; }
                       }
+                      .measureLabel{ .background-image(linear-gradient(left, #DEE2E5 0%, rgba(255,255,255,0) 60%)); }
                     }
                     // OR
                     &[cFiltered="OR"]{
-                      > .categoryLabel {
+                      > .catLabelGroup {
                         background-color: #D8ECEE;
-                        > .theLabel{ color: @color_query_or; }
+                        > .catLabel{ color: @color_query_or; }
                       }
-                      &[showOR=true]{
-                        > .categoryLabel > .filterButtons > .orButton { display: inline; opacity: 1; }
-                      }
+                      .AndOrNot_Or { display: inline;}
+                      .measureLabel{ .background-image(linear-gradient(left, #D8ECEE 0%, rgba(255,255,255,0) 60%)); }
                     }
                     // NOT
                     &[cFiltered="NOT"]{
-                      > .categoryLabel {
+                      > .catLabelGroup {
                         background-color: #E5E5E5;
-                        > .theLabel{ 
+                        > .catLabel{ 
                           color: @color_query_not;
                           text-decoration: line-through;
                         }
                       }
-                      > .categoryLabel > .filterButtons > .notButton{
-                        display: inline;
-                        opacity: 1;
-                        background-color: @color_query_not;
-                      }
+                      .AndOrNot_Not{ display: inline; }
+                      .measureLabel{ .background-image(linear-gradient(left, #E5E5E5 0%, rgba(255,255,255,0) 60%)); }
                     }
 
-                    &[cSelection] > .categoryLabel { font-weight: 700 !important; }
-                    &[cSelection="onRecord"] > .categoryLabel { 
+                    &[cSelection] > .catLabelGroup { font-weight: 700 !important; }
+                    &[cSelection="onRecord"] > .catLabelGroup { 
                       background-color: @color_onRecord_back !important; 
+                      border: solid 1px darken(@color_onRecord_back,20%);
+                      border-radius: 6px;
+                      top: -1px;
+                      padding-right: 1px;
                     }
 
                     &:not([cFiltered]) {
-                      &[cSelection]       { cursor: pointer; }
-                      &[cSelection="and"] > .categoryLabel > .theLabel{ color: @color_query_and; }
-                      &[cSelection="or" ] > .categoryLabel > .theLabel{ color: @color_query_or;  }
-                      &[cSelection="not"] > .categoryLabel > .theLabel{ color: @color_query_not; text-decoration: line-through; }
+                      &[cSelection]    { cursor: pointer; }
+                      &[cSelection="and"] > .catLabelGroup > .catLabel{ color: @color_query_and; }
+                      &[cSelection="or" ] > .catLabelGroup > .catLabel{ color: @color_query_or;  }
+                      &[cSelection="not"] > .catLabelGroup > .catLabel{ color: @color_query_not; text-decoration: line-through; }
                     }
                   } // .catGlyph
                 } // .aggrGroup
@@ -3109,23 +3073,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[isMultiValued=false]{
-          &[filtered_or="0"][filtered_and="0"] > .wrapper > .summaryCategorical {
-            > .aggrGroup > .catGlyph:not([cFiltered]):hover .notButton{ display: inline; opacity: 1; }
-          }
-          &[filtered_or="0"] > .wrapper > .summaryCategorical {
-            > .aggrGroup > .catGlyph[cFiltered="NOT"][selection="selected"] { cursor: pointer; }
-          }
+          &[filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Not{ display: inline !important; }
+          &[filtered_or="0"] .catGlyph[cFiltered="NOT"][selection="selected"] { cursor: pointer; }
         }
-        &:not([filtered_or="0"]){
-          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered]):hover .orButton{ display: inline; opacity: 1; }
-        }
-        &:not([filtered_and="0"]){
-          > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered]):hover .orButton{ display: inline; opacity: 1; }
-        }
+        &:not([filtered_or="0"])  .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
+        &:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
         &[isMultiValued=true]{
-          > .wrapper > .summaryCategorical {
-            > .aggrGroup > .catGlyph:not([cFiltered]):hover .notButton{ display: inline; opacity: 1 }
-          }
+          .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Not{ display: inline; }
           &:hover .setMatrixButton{ display: inline-block !important; }
         }
 
@@ -4075,7 +4029,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .buttonRecordViewRemove{
           display: none;
           cursor: pointer;
-          &:hover{ color: orangered; }
+          &:hover{ color: @color_hoverAction; }
           &[helpin]{ display: inline-block; }
         }
         > .scrollToTop{ padding-top: 2px; }
@@ -4252,7 +4206,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .unitName{
       margin-left: 1px;
       margin-right: 1px;
-      color: lightgray;
     }
     .mapItemName{
       display: block;
@@ -4284,5 +4237,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .keyframes(~'mapPreviewAnimation, 0% { opacity: 0; } 90%, 100% { opacity: 1; }');
 
 .keyframes(~'helpInFlip, 0%, 60%, 90%{ transform: scale(1); } 80%{ transform: scale(-1, 1); }');
+
+.keyframes(~'notifAlert, 0%, 60%, 90%, 100% { color: #635d46; transform: scale(0.8); } 80%{ color: orangered; transform: scale(1); }');
 //.keyframes(~'helpInFlip, 0%, 60%, 90% { color: #635d46; } 80%{ color: orangered; }');
 

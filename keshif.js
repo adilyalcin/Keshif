@@ -95,7 +95,7 @@ var kshf = {
       Percentiles: "Percentiles",
       LockToCompare: "Lock selection",
       Unlock: "Unlock",
-      ChangeMeasureFunc: "Change measure function",
+      ChangeMeasureFunc: "Change measure-metric",
       Search: "Search",
       CreatingBrowser: "Creating Keshif Browser",
       Rows: "Rows",
@@ -2935,8 +2935,8 @@ kshf.Panel.prototype = {
   updateWidth_MeasureLabel: function(){
     var maxTotalCount = d3.max(this.summaries, function(summary){
       if(summary.type!=="categorical") return 0; // only align categorical summaries
-      if(summary.getMaxAggr_Total===undefined) return 0;
-      return summary.getMaxAggr_Total();
+      if(summary.getMaxAggr===undefined) return 0;
+      return summary.getMaxAggr('Total');
     });
 
     if(maxTotalCount===0){
@@ -3331,7 +3331,7 @@ kshf.Browser.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header")
-        .text("Choose measure function")
+        .text("Choose measure-metric")
         .on("mousedown", function (d, i) {
           me.DOM.root.attr("pointerEvents",false);
 
@@ -3368,20 +3368,19 @@ kshf.Browser.prototype = {
         .on("click",function(d){
           if(d.v==="Count"){
             me.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled","true");
-            me.setMeasureFunction(); // no summary, will revert to count
+            me.setMeasureMetric(); // no summary, will revert to count
             return;
           }
           this.setAttribute("selected","");
           me.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",null);
-          me.setMeasureFunction( me.DOM.sdsso23oadsa[0][0].selectedOptions[0].__data__ , d.v);
+          me.setMeasureMetric(d.v, me.DOM.sdsso23oadsa[0][0].selectedOptions[0].__data__);
         });
 
       this.DOM.sdsso23oadsa = m.append("div").attr("class","measureSelectBox_Content_Summaries")
         .append("select").attr("class","sdsso23oadsa")
         .attr("disabled",this.measureFunc==="Count"?"true":null)
         .on("change",function(){
-          var s = this.selectedOptions[0].__data__;
-          me.setMeasureFunction(s,me.measureFunc);
+          me.setMeasureMetric(me.measureFunc, this.selectedOptions[0].__data__);
         });
 
       this.DOM.sdsso23oadsa
@@ -3662,6 +3661,14 @@ kshf.Browser.prototype = {
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.OpenDataSource }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); });
+      // Notification
+      this.DOM.notifyButton = rightBoxes.append("span").attr("class","notifyButton fa fa-bell")
+        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "See Tip" }); })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide();
+          if(typeof helpin !== 'undefined') helpin.showNotification();
+        });
       // Help
       this.DOM.showHelpIn = rightBoxes.append("span").attr("class","showHelpIn fa fa-question-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: kshf.lang.cur.Help }); })
@@ -3811,6 +3818,7 @@ kshf.Browser.prototype = {
           creditString += "</div>";
       creditString += " <span style='font-size: 0.7em'> 3rd party libraries:";
       creditString += " <a style='color:black;' href='http://d3js.org/' target='_blank'>D3</a>, ";
+      creditString += " <a style='color:black;' href='http://leafletjs.com/' target='_blank'>Leaflet</a>, ";
 //      creditString += " <a style='color:black;' href='http://jquery.com' target='_blank'>JQuery</a>, ";
 //      creditString += " <a style='color:black;' href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a></span>";
       creditString += "</div>";
@@ -4659,8 +4667,15 @@ kshf.Browser.prototype = {
 
         this.recordDisplay = new kshf.RecordDisplay(this,this.options.recordDisplay||{});
 
-        if(this.options.measure){
-          this.setMeasureFunction(this.summaries_by_name[this.options.measure],"Sum");
+        if(this.options.measure) this.options.metric = this.options.measure;
+
+        if(this.options.metric){
+          var metric = this.options.metric;
+          if(typeof metric === 'string'){
+            this.setMeasureMetric("Sum", this.summaries_by_name[metric]);
+          } else {
+            this.setMeasureMetric(metric.type, this.summaries_by_name[metric.summary]);
+          }
         }
 
         this.DOM.recordName.html(this.recordName);
@@ -4719,6 +4734,11 @@ kshf.Browser.prototype = {
 
         if(this.onReady) this.onReady();
 
+        if(typeof helpin !== 'undefined') {
+          this.DOM.showHelpIn[0][0].tipsy.show();
+          setTimeout(function(){ me.DOM.showHelpIn[0][0].tipsy.hide(); }, 5000);
+        }
+
         this.finalized = true;
 
         setTimeout(function(){ 
@@ -4764,8 +4784,8 @@ kshf.Browser.prototype = {
         var b_cat = b instanceof kshf.Summary_Categorical;
         if(a_cat && !b_cat) return -1;
         if(!a_cat && b_cat) return 1;
-        if(a_cat && b_cat && a._cats && b._cats){ 
-          return a._cats.length - b._cats.length;
+        if(a_cat && b_cat && a._aggrs && b._aggrs){ 
+          return a._aggrs.length - b._aggrs.length;
         }
         return a.summaryName.localeCompare(b.summaryName, { sensitivity: 'base' });
       });
@@ -4777,7 +4797,7 @@ kshf.Browser.prototype = {
     autoCreateBrowser: function(){
       this.summaries.forEach(function(summary,i){
         if(summary.uniqueCategories()) return;
-        if(summary.type==="categorical" && summary._cats.length>1000) return;
+        if(summary.type==="categorical" && summary._aggrs.length>1000) return;
         if(summary.panel) return;
         this.autoAddSummary(summary);
         this.updateLayout_Height();
@@ -4822,7 +4842,7 @@ kshf.Browser.prototype = {
       });
 
       var aggr = new kshf.Aggregate();
-      var catId = summary._cats.length;
+      var catId = summary._aggrs.length;
       aggr.init({ id: catId, name: longName},"id");
       aggr.summary = summary;
       this.allAggregates.push(aggr);
@@ -4856,9 +4876,9 @@ kshf.Browser.prototype = {
       }
 
       summary.catTable_id[aggr.id()] = aggr;
-      summary._cats.push(aggr);
+      summary._aggrs.push(aggr);
 
-      if(summary._cats.length===1){
+      if(summary._aggrs.length===1){
         summary.init_DOM_Cat();
       }
 
@@ -5093,8 +5113,8 @@ kshf.Browser.prototype = {
       return this.measureSummary ? 
         (((this.measureFunc==="Sum")?"Total ":"Average ")+this.measureSummary.summaryName+" of ") : "";
     },
-    /** funType: "Sum" or "Avg" */
-    setMeasureFunction: function(summary, funcType){
+    /** metricType: "Sum" or "Avg" */
+    setMeasureMetric: function(metricType, summary){
       if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
         // Clearing measure summary (defaulting to count)
         if(this.measureSummary===undefined) return; // No update
@@ -5102,9 +5122,9 @@ kshf.Browser.prototype = {
         this.records.forEach(function(record){ record.measure_Self = 1; });
         this.measureFunc = "Count";
       } else {
-        if(this.measureSummary===summary && this.measureFunc===funcType) return; // No update
+        if(this.measureSummary===summary && this.measureFunc===metricType) return; // No update
         this.measureSummary = summary;
-        this.measureFunc = funcType;
+        this.measureFunc = metricType;
         summary.initializeAggregates();
         this.records.forEach(function(record){ record.measure_Self = summary.getRecordValue(record); });
       }
@@ -5327,6 +5347,9 @@ kshf.Browser.prototype = {
         //if(!aggr.isVisible) return "";
         if(this.measureLabelType){
           _val = aggr.measure(this.measureLabelType);
+          if(this.preview_not){
+            _val = aggr.measure('Total')-_val;
+          }
         } else {
           if(summary && summary === this.highlightSelectedSummary && !summary.isMultiValued){
             _val = aggr.measure('Active');
@@ -5533,6 +5556,40 @@ kshf.Summary_Base.prototype = {
     var str=this.summaryFunc.toString();
     // replace the beginning, and the end
     return str.replace(/function\s*\(\w*\)\s*{\s*/,"").replace(/}$/,"");
+  },
+  /** returns the maximum active aggregate value per row in chart data */
+  getMaxAggr: function(sType){
+    if(this._aggrs===undefined || this.isEmpty()) return 0;
+    return d3.max(this._aggrs, function(aggr){ return aggr.measure(sType); }) || 1;
+  },
+  /** returns the maximum active aggregate value per row in chart data */
+  getMinAggr: function(sType){
+    if(this._aggrs===undefined || this.isEmpty()) return 0;
+    return d3.min(this._aggrs, function(aggr){ return aggr.measure(sType); });
+  },
+  /** -- */
+  getMaxAggr_All: function(){
+    var maxMeasureValue = this.getMaxAggr('Active');
+    if(this.browser.measureFunc==="Avg"){
+      // consider all selections
+      ["Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(sType){
+        if(!this.browser.vizActive[sType]) return;
+        maxMeasureValue = Math.max(maxMeasureValue, this.getMaxAggr(sType));
+      },this);
+    }
+    return maxMeasureValue;
+  },
+  /** -- */
+  getMinAggr_All: function(){
+    var minMeasureValue = this.getMinAggr('Active');
+    if(this.browser.measureFunc==="Avg"){
+      // consider all selections
+      ["Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(sType){
+        if(!this.browser.vizActive[sType]) return;
+        minMeasureValue = Math.min(minMeasureValue, this.getMinAggr(sType));
+      },this);
+    }
+    return minMeasureValue;
   },
   /** -- */
   addToPanel: function(panel, index){
@@ -6077,7 +6134,7 @@ kshf.Summary_Base.prototype = {
       .each(function(){
         this.tipsy = new Tipsy(this, {
           gravity: pos1, title: function(){
-            return "<span class='fa fa-eye'></span> "+kshf.lang.cur[(me.browser.percentModeActive?'Absolute':'Percent')];
+            return "Label as "+kshf.lang.cur[(me.browser.percentModeActive?'Absolute':'Percent')];
           },
         })
       })
@@ -6322,14 +6379,14 @@ var Summary_Categorical_functions = {
     nuggetChart.selectAll(".nuggetBar").data([]).exit().remove();
 
     var totalWidth= 25;
-    var maxAggregate_Total = this.getMaxAggr_Total();
-    nuggetChart.selectAll(".nuggetBar").data(this._cats).enter()
+    var maxAggregate_Total = this.getMaxAggr('Total');
+    nuggetChart.selectAll(".nuggetBar").data(this._aggrs).enter()
       .append("span").attr("class","nuggetBar")
         .style("width",function(cat){ return totalWidth*(cat.records.length/maxAggregate_Total)+"px"; });
 
     this.DOM.nugget.select(".nuggetInfo").html(
       "<span class='fa fa-tag"+(this.isMultiValued?"s":"")+"'></span><br>"+
-      this._cats.length+"<br>rows<br>");
+      this._aggrs.length+"<br>rows<br>");
   },
 
   /***********************************
@@ -6342,7 +6399,7 @@ var Summary_Categorical_functions = {
     }
     if(this.isEmpty()) return this.getHeight_Header();
     // minimum 2 categories
-    return this.getHeight_WithoutCats() + this._cats.length*this.heightCat;
+    return this.getHeight_WithoutCats() + this._aggrs.length*this.heightCat;
   },
   /** -- */
   getHeight_RangeMin: function(){
@@ -6358,7 +6415,7 @@ var Summary_Categorical_functions = {
   },
   /** -- */
   getHeight_Bottom: function(){
-    if(!this.areAllCatsInDisplay() || !this.panel.hideBarAxis || this._cats.length>4) return 18;
+    if(!this.areAllCatsInDisplay() || !this.panel.hideBarAxis || this._aggrs.length>4) return 18;
     return 0;
   },
   /** -- */
@@ -6391,28 +6448,18 @@ var Summary_Categorical_functions = {
   },
   /** -- */
   isEmpty: function(){
-    if(this._cats && this._cats.length===0) return true;
+    if(this._aggrs && this._aggrs.length===0) return true;
     return this.summaryFunc===undefined;
   },
   /** -- */
   uniqueCategories: function(){
-    if(this._cats===undefined) return true;
-    if(this._cats.length===0) return true;
-    return 1 === d3.max(this._cats, function(aggr){ return aggr.records.length; });
+    if(this._aggrs===undefined) return true;
+    if(this._aggrs.length===0) return true;
+    return 1 === d3.max(this._aggrs, function(aggr){ return aggr.records.length; });
   },
   /** -- */
   scrollBarShown: function(){
-    return this.categoriesHeight<this._cats.length*this.heightCat;
-  },
-  /** returns the maximum active aggregate value per row in chart data */
-  getMaxAggr_Active: function(){
-    return d3.max(this._cats, function(aggr){ return aggr.measure('Active'); });
-  },
-  /** returns the maximum total aggregate value stored per row in chart data */
-  getMaxAggr_Total: function(){
-    if(this._cats===undefined) return 0;
-    if(this.isEmpty()) return 0;
-    return d3.max(this._cats, function(aggr){ return aggr.measure('Total'); });
+    return this.categoriesHeight<this._aggrs.length*this.heightCat;
   },
 
   /***********************************
@@ -6456,7 +6503,7 @@ var Summary_Categorical_functions = {
     } else {
       opt.name = opt.name || "# of Active";
     }
-    if(opt.no_resort===undefined) opt.no_resort = (this._cats.length<=4);
+    if(opt.no_resort===undefined) opt.no_resort = (this._aggrs.length<=4);
     return opt;
   },
   /** -- */
@@ -6510,7 +6557,7 @@ var Summary_Categorical_functions = {
 
     // idCompareFunc can be based on integer or string comparison
     var idCompareFunc = function(a,b){return b.id()-a.id();};
-    if(typeof(this._cats[0].id())==="string")
+    if(typeof(this._aggrs[0].id())==="string")
         idCompareFunc = function(a,b){return b.id().localeCompare(a.id());};
 
     var theSortFunc;
@@ -6519,7 +6566,7 @@ var Summary_Categorical_functions = {
     if(sortV && typeof sortV==="function"){
       // valueCompareFunc can be based on integer or string comparison
       var valueCompareFunc = function(a,b){return a-b;};
-      if(typeof(sortV.call(this._cats[0].data, this._cats[0]))==="string")
+      if(typeof(sortV.call(this._aggrs[0].data, this._aggrs[0]))==="string")
         valueCompareFunc = function(a,b){return a.localeCompare(b);};
 
       // Of the given function takes 2 parameters, assume it defines a nice sorting order.
@@ -6547,10 +6594,10 @@ var Summary_Categorical_functions = {
         return x;
       };
     }
-    this._cats.sort(theSortFunc);
+    this._aggrs.sort(theSortFunc);
 
     var lastRank = 0;
-    this._cats.forEach(function(cat,i){
+    this._aggrs.forEach(function(cat,i){
       cat.orderIndex_old = cat.orderIndex;
       if(cat.measure('Active')!==0 || cat.isVisible) cat.orderIndex = lastRank++;
     });
@@ -6579,8 +6626,8 @@ var Summary_Categorical_functions = {
       return;
     }
     var me=this;
-    if(this.DOM.theLabel)
-      this.DOM.theLabel.html(function(cat){ return me.catLabel_Func.call(cat.data); });
+    if(this.DOM.catLabel)
+      this.DOM.catLabel.html(function(cat){ return me.catLabel_Func.call(cat.data); });
   },
   /** -- */
   setCatTooltip: function( catTooltip ){
@@ -6626,7 +6673,7 @@ var Summary_Categorical_functions = {
     if(this.aggr_initialized){
       // Remove existing aggregations
       var aggrs=this.browser.allAggregates;
-      this._cats.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
+      this._aggrs.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
       if(this.DOM.aggrGroup)
         this.DOM.aggrGroup.selectAll(".aggrGlyph").data([]).exit().remove();
 
@@ -6790,7 +6837,7 @@ var Summary_Categorical_functions = {
     }
 
     this.catTable_id = aggrTable_id;
-    this._cats = aggrTable;
+    this._aggrs = aggrTable;
 
     var maxDegree = 0;
     var hasString = false;
@@ -6834,7 +6881,7 @@ var Summary_Categorical_functions = {
           aggr.summary = this;
           aggr.init({id:v},'id');
           aggrTable_id[v] = aggr;
-          this._cats.push(aggr);
+          this._aggrs.push(aggr);
           this.browser.allAggregates.push(aggr);
         }
         record._valueCache[this.summaryID].push(v);
@@ -6844,7 +6891,7 @@ var Summary_Categorical_functions = {
     }, this);
 
     if(mmmm && hasString){
-      this._cats.forEach(function(aggr){ aggr.data.id = ""+aggr.data.id; });
+      this._aggrs.forEach(function(aggr){ aggr.data.id = ""+aggr.data.id; });
     }
 
     this.isMultiValued = maxDegree>1;
@@ -6864,16 +6911,16 @@ var Summary_Categorical_functions = {
   // Modified internal dataMap function - Skip rows with 0 active item count
   setMinAggrValue: function(v){
     this.minAggrValue = Math.max(1,v);
-    this._cats = this._cats.filter(function(cat){ return cat.records.length>=this.minAggrValue; },this);
+    this._aggrs = this._aggrs.filter(function(cat){ return cat.records.length>=this.minAggrValue; },this);
     this.updateCats();
   },
   /** -- */
   updateCats: function(){
     // Few categories. Disable resorting after filtering
-    if(this._cats.length<=4) {
+    if(this._aggrs.length<=4) {
       this.catSortBy.forEach(function(sortOpt){ sortOpt.no_resort=true; });
     }
-    this.showTextSearch = this._cats.length>=20;
+    this.showTextSearch = this._aggrs.length>=20;
     this.updateCatCount_Active();
   },
   /** -- */
@@ -6881,7 +6928,7 @@ var Summary_Categorical_functions = {
     this.catCount_Visible = 0;
     this.catCount_NowVisible = 0;
     this.catCount_NowInvisible = 0;
-    this._cats.forEach(function(cat){
+    this._aggrs.forEach(function(cat){
       v = this.isCatActive(cat);
       cat.isActiveBefore = cat.isActive;
       cat.isActive = v;
@@ -7118,7 +7165,7 @@ var Summary_Categorical_functions = {
                 me.DOM.catTextSearchControl.attr("showClear",true);
                 var labelFunc = me.catLabel_Func;
                 var tooltipFunc = me.catTooltip;
-                me._cats.forEach(function(_category){
+                me._aggrs.forEach(function(_category){
                   var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
                   var f = query.every(function(query_str){
                       if(catLabel.indexOf(query_str)!==-1){ return true; }
@@ -7162,14 +7209,10 @@ var Summary_Categorical_functions = {
           .attr("filtered_not",this.summaryFilter.selected_NOT.length)
           .attr("filtered_total",this.summaryFilter.selectedCount_Total());
       }
-      var showOR = (this.summaryFilter.selected_OR.length+this.summaryFilter.selected_AND.length)>1;
-      this.summaryFilter.selected_OR.forEach(function(category){
-        category.DOM.aggrGlyph.setAttribute("showOR",showOR);
-      },this);
     },
     /** -- */
     unselectAllCategories: function(){
-      this._cats.forEach(function(aggr){
+      this._aggrs.forEach(function(aggr){
         if(aggr.f_selected() && aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.removeAttribute("cSelection");
         aggr.set_NONE();
       });
@@ -7186,19 +7229,16 @@ var Summary_Categorical_functions = {
     /** -- */
     updateChartScale_Measure: function(){
       if(!this.aggr_initialized || this.isEmpty()) return; // nothing to do
-      var maxMeasureValue = this.getMaxAggr_Active();
-      if(this.browser.measureFunc==="Avg"){
-        ["Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(distr){
-          if(!this.browser.vizActive[distr]) return;
-          maxMeasureValue = Math.max(maxMeasureValue, d3.max(this._cats, function(aggr){return aggr.measure(distr);} ) );
-        },this);
+      var maxMeasureValue = this.getMaxAggr_All();
+      var minMeasureValue = 0;
+      if(this.browser.measureFunc!=="Count" && this.browser.measureSummary.intervalRange.org.min<0){
+        minMeasureValue = this.getMinAggr_All();
       }
-
       this.chartScale_Measure
+        .domain([minMeasureValue, maxMeasureValue])
         .rangeRound([0, this.getWidth_CatChart()])
         .nice(this.chartAxis_Measure_TickSkip())
-        .domain([ 0,(maxMeasureValue===0)?1:maxMeasureValue ]);
-
+        ;
       this.refreshViz_All();
     },
     /** -- */
@@ -7230,6 +7270,25 @@ var Summary_Categorical_functions = {
       }
     },
     /** -- */
+    refreshHeight_Category_do: function(){
+      this.DOM.aggrGlyphs.style("height",this.heightCat+"px")
+      this.DOM.aggrGlyphs.selectAll(".catLabelGroup").style("padding-top",(this.heightCat/2-8)+"px");
+      this.DOM.aggrGlyphs.selectAll(".measureLabel").style("padding-top",(this.heightCat/2-7)+"px");
+      var fontSize = null;
+      if(this.heightCat<15) fontSize = (this.heightCat-2)+"px";
+      if(this.heightCat>25) fontSize = "15px";
+      if(this.heightCat>30) fontSize = "17px";
+      if(this.heightCat>35) fontSize = "19px";
+      this.DOM.catLabel.style("font-size",fontSize);
+
+      this.DOM.chartBackground.style("height",this.getHeight_VisibleAttrib()+"px");
+
+      if(this.DOM.summaryConfig_CatHeight){
+        this.DOM.summaryConfig_CatHeight.selectAll(".configOption").attr("active",false);
+        this.DOM.summaryConfig_CatHeight.selectAll(".pos_"+this.heightCat).attr("active",true);
+      }
+    },
+    /** -- */
     refreshHeight_Category: function(){
       var me=this;
       this.heightRow_category_dirty = false;
@@ -7237,18 +7296,11 @@ var Summary_Categorical_functions = {
 
       this.browser.updateLayout();
 
-      this.DOM.aggrGlyphs
-        .each(function(aggr){
-          kshf.Util.setTransform(this, "translate("+aggr.posX+"px,"+(me.heightCat*aggr.orderIndex)+"px)");
-        })
-        .style("height",this.heightCat+"px");
+      this.DOM.aggrGlyphs.each(function(aggr){
+        kshf.Util.setTransform(this, "translate("+aggr.posX+"px,"+(me.heightCat*aggr.orderIndex)+"px)");
+      });
 
-      this.DOM.aggrGlyphs.selectAll(".categoryLabel").style("padding-top",(this.heightCat/2-8)+"px");
-
-      this.DOM.chartBackground.style("height",this.getHeight_VisibleAttrib()+"px");
-
-      this.DOM.summaryConfig_CatHeight.selectAll(".configOption").attr("active",false);
-      this.DOM.summaryConfig_CatHeight.selectAll(".pos_"+this.heightCat).attr("active",true);
+      this.refreshHeight_Category_do();
 
       if(this.onCatHeight) this.onCatHeight(this);
 
@@ -7303,8 +7355,12 @@ var Summary_Categorical_functions = {
       } else {
         var me = this;
         var width_Text = this.getWidth_TotalText();
+
+        var zeroPos = this.chartScale_Measure(0);
         this.DOM.measure_Total.each(function(_cat){
-          kshf.Util.setTransform(this, "translateX("+width_Text+"px) scaleX("+me.chartScale_Measure(_cat.measure('Total'))+")");
+          kshf.Util.setTransform(this, 
+            "translateX("+(width_Text+zeroPos)+"px) "+
+            "scaleX("+(me.chartScale_Measure(_cat.measure('Total'))-zeroPos)+")");
         });
         this.DOM.measureTotalTip
           .each(function(_cat){
@@ -7329,12 +7385,12 @@ var Summary_Categorical_functions = {
     /** -- */
     refreshMapColorScaleBounds: function(boundMin, boundMax){
       if(boundMin===undefined && boundMax===undefined){
-        var maxAggr_Active = this.getMaxAggr_Active();
+        var maxAggr_Active = this.getMaxAggr('Active');
         if(this.browser.ratioModeActive || this.browser.percentModeActive){
           boundMin = 0;
           boundMax = 100*maxAggr_Active/this.browser.allRecordsAggr.measure('Active');
         } else {
-          boundMin = d3.min(this._cats, function(_cat){ return _cat.measure('Active'); }), 
+          boundMin = d3.min(this._aggrs, function(_cat){ return _cat.measure('Active'); }), 
           boundMax = maxAggr_Active;
         }
       }
@@ -7384,11 +7440,19 @@ var Summary_Categorical_functions = {
       var maxWidth = this.chartScale_Measure.range()[1];
       var width_Text = this.getWidth_TotalText();
 
+      this.DOM.aggrGlyphs
+        .attr("NoActiveRecords",function(aggr){ 
+          return (aggr._measure.Active===0) ? "true" : null
+        })
+
+      var zeroPos = this.chartScale_Measure(0);
+
       this.DOM.measure_Active.each(function(_cat){
-        kshf.Util.setTransform(this,"translateX("+width_Text+"px) scaleX("+(ratioMode?
+        var scaleX = (ratioMode?
           ((_cat.measure_Active===0)?0:maxWidth):
-          me.chartScale_Measure(_cat.measure('Active'))
-        )+")");
+          me.chartScale_Measure(_cat.measure('Active'))) ;
+        scaleX-=zeroPos;
+        kshf.Util.setTransform(this,"translateX("+(width_Text+zeroPos)+"px) scaleX("+scaleX+")");
       });
       this.DOM.lockButton
         .style("left",function(_cat){
@@ -7437,15 +7501,15 @@ var Summary_Categorical_functions = {
         }
         if(!isThisIt || this.isMultiValued) {
           var boundMin = ratioMode ? 
-            d3.min(this._cats, function(aggr){ 
+            d3.min(this._aggrs, function(aggr){ 
               if(aggr.recCnt.Active===0 || aggr.recCnt.Highlight===0) return null;
               return 100*aggr.ratioHighlightToActive(); }) :
-            1; //d3.min(this._cats, function(_cat){ return _cat.measure.Active; }), 
+            1; //d3.min(this._aggrs, function(_cat){ return _cat.measure.Active; }), 
           var boundMax = ratioMode ? 
-            d3.max(this._cats, function(_cat){ 
+            d3.max(this._aggrs, function(_cat){ 
               return (_cat._measure.Active===0) ? null : 100*_cat.ratioHighlightToActive();
             }) : 
-            d3.max(this._cats, function(_cat){ return _cat.measure('Highlight'); });
+            d3.max(this._aggrs, function(_cat){ return _cat.measure('Highlight'); });
 
           this.refreshMapColorScaleBounds(boundMin, boundMax);
         }
@@ -7472,27 +7536,42 @@ var Summary_Categorical_functions = {
         var totalC = this.browser.getActiveCompareSelCount();
         if(this.browser.measureFunc==="Avg") totalC++;
         var barHeight = (this.heightCat-8)/(totalC+1);
+
+        var zeroPos = this.chartScale_Measure(0);
+
         this.DOM.measure_Highlight.each(function(aggr){
           var p = aggr.measure('Highlight');
           if(me.browser.preview_not) p = aggr._measure.Active - aggr._measure.Highlight;
+          var scaleX = (ratioMode ? ((p/aggr._measure.Active)*maxWidth ) : me.chartScale_Measure(p));
           kshf.Util.setTransform(this,
-            "translateX("+width_Text+"px) "+
-            "scale("+(ratioMode ? ((p/aggr._measure.Active)*maxWidth ) : me.chartScale_Measure(p))+","+barHeight+")");
+            "translateX("+(width_Text+zeroPos)+"px) translateY(4px)"+
+            "scale("+(scaleX-zeroPos)+","+barHeight+")");
         });
       }
     },
+    /** To initialize the positions of the compare blocks properly */
+    refreshViz_Compare_Force: function(){
+      this.refreshViz_Compare("A", 2, 2);
+      this.refreshViz_Compare("B", 2, 3);
+      this.refreshViz_Compare("C", 2, 4);
+    },
     /** -- */
     refreshViz_Compare: function(cT, curGroup, totalGroups){
-      if(this.isEmpty() || this.collapsed || !this.inBrowser()) return;
+      if(this.isEmpty() || this.collapsed || !this.inBrowser() || this.viewType=='map') return;
       var me=this, ratioMode=this.browser.ratioModeActive, maxWidth = this.chartScale_Measure.range()[1];
       var width_Text = this.getWidth_TotalText();
-      var _translateX = "translateX("+width_Text+"px) ";
+
+      var zeroPos = this.chartScale_Measure(0);
+
+      var _translateX = "translateX("+(width_Text+zeroPos)+"px) ";
       var barHeight = (this.heightCat-8)/totalGroups;
-      var _translateY = "translateY("+(barHeight*(curGroup+1))+"px)";
+      var _translateY = "translateY("+(barHeight*(curGroup+1)+4)+"px)"; // 4pixel is the b=top gap
       var compId = "Compare_"+cT;
+
       this.DOM["measure_Compare_"+cT].each(function(aggr){
         var sx = (me.browser.vizActive[compId])?
           ( ratioMode ? (aggr.ratioCompareToActive(cT)*maxWidth) : me.chartScale_Measure(aggr.measure(compId)) ) : 0;
+        sx -= zeroPos;
         kshf.Util.setTransform(this,_translateX+_translateY+"scale("+sx+","+barHeight+")");
       });
     },
@@ -7516,7 +7595,7 @@ var Summary_Categorical_functions = {
       if(this.browser.ratioModeActive) {
         setCustomAxis( 100 );
       } else if(this.browser.percentModeActive) {
-        setCustomAxis( Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active')) );
+        setCustomAxis( Math.round(100*me.getMaxAggr('Active')/me.browser.allRecordsAggr.measure('Active')) );
       }
 
       // GET TICK VALUES ***********************************************************
@@ -7590,7 +7669,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshScrollDisplayMore: function(bottomItem){
-      if(this._cats.length<=4) {
+      if(this._aggrs.length<=4) {
         this.DOM.scroll_display_more.style("display","none");
         return;
       }
@@ -7812,7 +7891,7 @@ var Summary_Categorical_functions = {
       }
     },
     /** -- */
-    onCatEnter: function(aggr){
+    onAggrHighlight: function(aggr){
       if(!this.isCatSelectable(aggr)) return;
 
       if(aggr.DOM.matrixRow) aggr.DOM.matrixRow.setAttribute("selection","selected");
@@ -7839,7 +7918,7 @@ var Summary_Categorical_functions = {
       }
     },
     /** -- */
-    onCatLeave: function(ctgry){
+    onAggrLeave: function(ctgry){
       ctgry.unselectAggregate();
       if(!this.isCatSelectable(ctgry)) return;
       this.browser.clearSelect_Highlight();
@@ -7871,6 +7950,7 @@ var Summary_Categorical_functions = {
       ctgry.DOM.aggrGlyph.setAttribute("cSelection","not");
       this.browser.preview_not = true;
       this.browser.setSelect_Highlight(ctgry);
+      this.browser.refreshMeasureLabels("Highlight"); 
       d3.event.stopPropagation();
     },
     /** -- */
@@ -7889,14 +7969,13 @@ var Summary_Categorical_functions = {
       d3.event.stopPropagation();
       d3.event.preventDefault();
     },
-
     /** - */
     insertCategories: function(){
       var me = this;
       if(typeof this.DOM.aggrGroup === "undefined") return;
 
       var aggrGlyphSelection = this.DOM.aggrGroup.selectAll(".aggrGlyph")
-        .data(this._cats, function(aggr){ return aggr.id(); });
+        .data(this._aggrs, function(aggr){ return aggr.id(); });
 
       var DOM_cats_new = aggrGlyphSelection.enter()
         .append(this.viewType=='list' ? 'span' : 'g')
@@ -7920,15 +7999,17 @@ var Summary_Categorical_functions = {
           .style("height",this.heightCat+"px")
           .each(function(_cat){ kshf.Util.setTransform(this,"translateY(0px)"); })
           .on("mouseenter",function(_cat){
+            this.setAttribute("mouseOver",true);
             if(me.browser.mouseSpeed<0.2) { 
-              me.onCatEnter(_cat);
+              me.onAggrHighlight(_cat);
             } else {
-              this.highlightTimeout = window.setTimeout( function(){ me.onCatEnter(_cat) }, me.browser.mouseSpeed*500);
+              this.highlightTimeout = window.setTimeout( function(){ me.onAggrHighlight(_cat) }, me.browser.mouseSpeed*500);
             }
           })
           .on("mouseleave",function(_cat){ 
+            this.removeAttribute("mouseOver");
             if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
-            me.onCatLeave(_cat);
+            me.onAggrLeave(_cat);
           })
           .on("click", function(aggr){ me.onCatClick(aggr); });
 
@@ -7948,22 +8029,22 @@ var Summary_Categorical_functions = {
             d3.event.stopPropagation();
           });
 
-        var domAttrLabel = DOM_cats_new.append("span").attr("class", "categoryLabel hasLabelWidth")
+        var domAttrLabel = DOM_cats_new.append("span").attr("class", "catLabelGroup hasLabelWidth")
           .style("padding-top",(this.heightCat/2-8)+"px");
 
         var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
-        filterButtons.append("span").attr("class","filterButton notButton")
+        filterButtons.append("span").attr("class","AndOrNot_Not")
           .text(kshf.lang.cur.Not)
           .on("mouseover", function(_cat){ me.onCatEnter_NOT(_cat); })
           .on("mouseout",  function(_cat){ me.onCatLeave_NOT(_cat); })
           .on("click",     function(_cat){ me.onCatClick_NOT(_cat); });
-        filterButtons.append("span").attr("class","filterButton orButton")
+        filterButtons.append("span").attr("class","AndOrNot_Or")
           .text(kshf.lang.cur.Or)
           .on("mouseover",function(_cat){ me.onCatEnter_OR(_cat); })
           .on("mouseout", function(_cat){ me.onCatLeave_OR(_cat); })
           .on("click",    function(_cat){ me.onCatClick_OR(_cat); });
 
-        domAttrLabel.append("span").attr("class","theLabel").html(function(aggr){ return me.catLabel_Func.call(aggr.data); });
+        domAttrLabel.append("span").attr("class","catLabel").html(function(aggr){ return me.catLabel_Func.call(aggr.data); });
         DOM_cats_new.append("span").attr("class","measureLabel");
 
         ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
@@ -7994,21 +8075,25 @@ var Summary_Categorical_functions = {
               this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
             }
             if(me.browser.mouseSpeed<0.2) { 
-              me.onCatEnter(_cat);
+              me.onAggrHighlight(_cat);
             } else {
-              this.highlightTimeout = window.setTimeout( function(){ me.onCatEnter(_cat) }, me.browser.mouseSpeed*500);
+              this.highlightTimeout = window.setTimeout( function(){ me.onAggrHighlight(_cat) }, me.browser.mouseSpeed*500);
             }
           })
           .on("mouseleave",function(_cat){ 
             if(this.tipsy) this.tipsy.hide();
             if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
-            me.onCatLeave(_cat);
+            me.onAggrLeave(_cat);
           });
 
         DOM_cats_new.append("path").attr("class","measure_Active").on("click", function(aggr){ me.onCatClick(aggr); });
         DOM_cats_new.append("text").attr("class","measureLabel"); // label on top of (after) all the rest
       }
       this.refreshDOMcats();
+
+      if(this.viewType==='list'){
+        this.refreshViz_Compare_Force();
+      }
     },
     /** -- */
     refreshDOMcats: function(){
@@ -8021,18 +8106,20 @@ var Summary_Categorical_functions = {
       },this);
 
       if(this.viewType==='list'){
-        this.DOM.theLabel   = this.DOM.aggrGlyphs.selectAll(".theLabel");
+        this.DOM.catLabel   = this.DOM.aggrGlyphs.selectAll(".catLabel");
         this.DOM.lockButton = this.DOM.aggrGlyphs.selectAll(".lockButton");
+
+        this.refreshHeight_Category_do();
       }
     },
     /** -- */
     updateCatIsVisible: function(){
       if(this.viewType==='map'){
-        this._cats.forEach(function(_cat){ 
+        this._aggrs.forEach(function(_cat){ 
           _cat.isVisible = true;
         });
       } else if(this.viewType==='list'){
-        this._cats.forEach(function(_cat){
+        this._aggrs.forEach(function(_cat){
           _cat.isVisibleBefore = _cat.isVisible;
           if(!_cat.isActive){
             _cat.isVisible = false;
@@ -8057,8 +8144,8 @@ var Summary_Categorical_functions = {
     /** -- */
     updateCatSorting: function(sortDelay,force,noAnim){
       if(this.viewType==='map') return;
-      if(this._cats===undefined) return;
-      if(this._cats.length===0) return;
+      if(this._aggrs===undefined) return;
+      if(this._aggrs.length===0) return;
       if(this.uniqueCategories() && this.panel===undefined) return; // Nothing to sort...
       if(this.catSortBy_Active.no_resort===true && force!==true) return;
 
@@ -8159,7 +8246,7 @@ var Summary_Categorical_functions = {
     chartAxis_Measure_TickSkip: function(){
       var width = this.chartScale_Measure.range()[1];
       var ticksSkip = width/25;
-      if(this.getMaxAggr_Active()>100000){
+      if(this.getMaxAggr('Active')>100000){
         ticksSkip = width/30;
       }
       if(this.browser.ratioModeActive){
@@ -8198,7 +8285,7 @@ var Summary_Categorical_functions = {
       // Insert the bounds for each record path into the bs
       var bs = [];
       var me = this;
-      this._cats.forEach(function(_cat){
+      this._aggrs.forEach(function(_cat){
         if(!_cat.isActive) return;
         var feature = me.catMap.call(_cat.data,_cat);
         if(typeof feature === 'undefined') return;
@@ -8461,7 +8548,7 @@ var Summary_Interval_functions = {
 
       this.highlightRangeLimits_Active = false;
 
-      this.histBins = [];
+      this._aggrs = [];
       this.intervalTicks = [];
       this.intervalRange = {
         getActiveMax: function(){ 
@@ -8562,14 +8649,6 @@ var Summary_Interval_functions = {
     /** -- */
     isFiltered_max: function(){
       return this.summaryFilter.active.max<this.intervalRange.getTotalMax();
-    },
-    /** -- */
-    getMaxAggr_Total: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.measure('Total'); });
-    },
-    /** -- */
-    getMaxAggr_Active: function(){
-      return d3.max(this.histBins,function(aggr){ return aggr.measure('Active'); });
     },
     /** -- */
     isTimeStamp: function(){
@@ -8908,7 +8987,7 @@ var Summary_Interval_functions = {
         return;
       }
 
-      var maxAggregate_Total = this.getMaxAggr_Total();
+      var maxAggregate_Total = this.getMaxAggr('Total');
 
       if(this.intervalRange.org.min===this.intervalRange.org.max){
         this.DOM.nugget.select(".nuggetInfo").html("only<br>"+this.intervalRange.org.min);
@@ -8917,7 +8996,7 @@ var Summary_Interval_functions = {
       }
 
       var totalHeight = 17;
-      nuggetChart.selectAll(".nuggetBar").data(this.histBins).enter()
+      nuggetChart.selectAll(".nuggetBar").data(this._aggrs).enter()
         .append("span").attr("class","nuggetBar")
         .style("height",function(aggr){
           return totalHeight*(aggr.records.length/maxAggregate_Total)+"px";
@@ -9300,7 +9379,7 @@ var Summary_Interval_functions = {
                 gravity: 's',
                 title: function(){
                   return "<span style='font-weight:300; "+
-                      "text-decoration: underline'><b>"+qb[0]+"</b>% - <b>"+qb[1]+"</b>% Percentile:<br></span>"+
+                      "text-decoration: underline'><b>"+qb[0]+"</b>% - <b>"+qb[1]+"</b>% Percentile<br></span>"+
                     "<span style='font-weight:500'>"+me.intervalTickPrint(me.quantile_val[distr+qb[0]])+"</span> - "+
                     "<span style='font-weight:500'>"+me.intervalTickPrint(me.quantile_val[distr+qb[1]])+"</span>";
                 }
@@ -9646,13 +9725,13 @@ var Summary_Interval_functions = {
         this.intervalTicks = ticks;
 
         // Remove existing aggregates from browser
-        if(this.histBins){
+        if(this._aggrs){
           var aggrs=this.browser.allAggregates;
-          this.histBins.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
+          this._aggrs.forEach(function(aggr){ aggrs.splice(aggrs.indexOf(aggr),1); },this);
         }
 
-        this.histBins = [];
-        // Create histBins as kshf.Aggregate
+        this._aggrs = [];
+        // Create _aggrs as kshf.Aggregate
         this.intervalTicks.forEach(function(tick,i){
           var d = new kshf.Aggregate();
           d.summary = this;
@@ -9660,11 +9739,11 @@ var Summary_Interval_functions = {
           d.minV = tick;
           d.maxV = this.intervalTicks[i+1];
           d.summary = this;
-          this.histBins.push(d);
+          this._aggrs.push(d);
           me.browser.allAggregates.push(d);
         }, this);
           
-        this.histBins.pop(); // remove last bin
+        this._aggrs.pop(); // remove last bin
 
         // distribute records across bins
         this.filteredRecords.forEach(function(record){
@@ -9679,7 +9758,7 @@ var Summary_Interval_functions = {
             }
             return false; // stop iteration
           });
-          var bin = this.histBins[ Math.min(binI, this.histBins.length-1) ];
+          var bin = this._aggrs[ Math.min(binI, this._aggrs.length-1) ];
 
           // If the record already had a bin for this summary, remove that bin
           var existingBinIndex = null;
@@ -9739,33 +9818,33 @@ var Summary_Interval_functions = {
         this.DOM.timeSVG.selectAll('[class^="measure_"]').remove();
 
         this.DOM.measure_Total_Area = this.DOM.timeSVG
-          .append("path").attr("class","measure_Total_Area").datum(this.histBins);
+          .append("path").attr("class","measure_Total_Area").datum(this._aggrs);
         this.DOM.measure_Active_Area = this.DOM.timeSVG
-          .append("path").attr("class","measure_Active_Area").datum(this.histBins);
+          .append("path").attr("class","measure_Active_Area").datum(this._aggrs);
         this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll(".measure_Active_Line")
-          .data(this.histBins, function(d,i){ return i; })
+          .data(this._aggrs, function(d,i){ return i; })
           .enter().append("line").attr("class","measure_Active_Line").attr("marker-end","url(#kshfLineChartTip_Active)");
 
         this.DOM.measure_Highlight_Area = this.DOM.timeSVG
-          .append("path").attr("class","measure_Highlight_Area").datum(this.histBins);
+          .append("path").attr("class","measure_Highlight_Area").datum(this._aggrs);
         this.DOM.measure_Highlight_Line = this.DOM.timeSVG.selectAll(".measure_Highlight_Line")
-          .data(this.histBins, function(d,i){ return i; })
+          .data(this._aggrs, function(d,i){ return i; })
           .enter().append("line").attr("class","measure_Highlight_Line").attr("marker-end","url(#kshfLineChartTip_Highlight)");
 
         this.DOM.measure_Compare_Area_A = this.DOM.timeSVG
-          .append("path").attr("class","measure_Compare_Area_A measure_Compare_A").datum(this.histBins);
+          .append("path").attr("class","measure_Compare_Area_A measure_Compare_A").datum(this._aggrs);
         this.DOM.measure_Compare_Line_A = this.DOM.timeSVG.selectAll(".measure_Compare_Line_A")
-          .data(this.histBins, function(d,i){ return i; })
+          .data(this._aggrs, function(d,i){ return i; })
           .enter().append("line").attr("class","measure_Compare_Line_A measure_Compare_A").attr("marker-end","url(#kshfLineChartTip_Compare_A)");
         this.DOM.measure_Compare_Area_B = this.DOM.timeSVG
-          .append("path").attr("class","measure_Compare_Area_B measure_Compare_B").datum(this.histBins);
+          .append("path").attr("class","measure_Compare_Area_B measure_Compare_B").datum(this._aggrs);
         this.DOM.measure_Compare_Line_B = this.DOM.timeSVG.selectAll(".measure_Compare_Line_B")
-          .data(this.histBins, function(d,i){ return i; })
+          .data(this._aggrs, function(d,i){ return i; })
           .enter().append("line").attr("class","measure_Compare_Line_B measure_Compare_B").attr("marker-end","url(#kshfLineChartTip_Compare_B)");
         this.DOM.measure_Compare_Area_C = this.DOM.timeSVG
-          .append("path").attr("class","measure_Compare_Area_C measure_Compare_C").datum(this.histBins);
+          .append("path").attr("class","measure_Compare_Area_C measure_Compare_C").datum(this._aggrs);
         this.DOM.measure_Compare_Line_C = this.DOM.timeSVG.selectAll(".measure_Compare_Line_C")
-          .data(this.histBins, function(d,i){ return i; })
+          .data(this._aggrs, function(d,i){ return i; })
           .enter().append("line").attr("class","measure_Compare_Line_C measure_Compare_C").attr("marker-end","url(#kshfLineChartTip_Compare_C)");
       }
 
@@ -9814,7 +9893,7 @@ var Summary_Interval_functions = {
         .append("span").attr("class","text")
         .each(function(d){
           this.bin = null;
-          me.histBins.every(function(bin){
+          me._aggrs.every(function(bin){
             if(bin.minV===d.v) {
               this.bin = bin;
               return false;
@@ -9823,12 +9902,11 @@ var Summary_Interval_functions = {
           },this);
         })
         .on("mouseover",function(d){
-          if(this.bin) me.onBinMouseOver(this.bin);
+          if(this.bin) me.onAggrHighlight(this.bin);
         })
         .on("mouseleave",function(d){
           if(this.bin===null) return;
-          this.bin.unselectAggregate();
-          me.browser.clearSelect_Highlight();
+          me.onAggrLeave(this.bin);
         })
         .on("click",function(d){
           if(this.bin) me.onAggrClick(this.bin);
@@ -9844,7 +9922,7 @@ var Summary_Interval_functions = {
       });
     },
     /** -- */
-    onBinMouseOver: function(aggr){
+    onAggrHighlight: function(aggr){
       aggr.DOM.aggrGlyph.setAttribute("showlock",true);
       aggr.DOM.aggrGlyph.setAttribute("selection","selected");
       if(!this.browser.ratioModeActive){
@@ -9853,6 +9931,11 @@ var Summary_Interval_functions = {
           .style("opacity",1);
       }
       this.browser.setSelect_Highlight(aggr);
+    },
+    /** -- */
+    onAggrLeave: function(aggr){
+      aggr.unselectAggregate();
+      this.browser.clearSelect_Highlight();
     },
     /** -- */
     onAggrClick: function(aggr){
@@ -9883,7 +9966,7 @@ var Summary_Interval_functions = {
       // just remove all aggrGlyphs that existed before.
       this.DOM.histogram_bins.selectAll(".aggrGlyph").data([]).exit().remove();
 
-      var activeBins = this.DOM.histogram_bins.selectAll(".aggrGlyph").data(this.histBins, function(d,i){return i;});
+      var activeBins = this.DOM.histogram_bins.selectAll(".aggrGlyph").data(this._aggrs, function(d,i){return i;});
 
       var newBins=activeBins.enter().append("span").attr("class","aggrGlyph rangeGlyph")
         .each(function(aggr){
@@ -9894,19 +9977,18 @@ var Summary_Interval_functions = {
           if(me.highlightRangeLimits_Active) return;
           // mouse is moving slow, just do it.
           if(me.browser.mouseSpeed<0.2) {
-            me.onBinMouseOver(aggr);
+            me.onAggrHighlight(aggr);
             return;
           }
           // mouse is moving fast, should wait a while...
           this.highlightTimeout = window.setTimeout(
-            function(){ me.onBinMouseOver(aggr) }, 
+            function(){ me.onAggrHighlight(aggr) }, 
             me.browser.mouseSpeed*300);
         })
         .on("mouseleave",function(aggr){
           if(me.highlightRangeLimits_Active) return;
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
-          aggr.unselectAggregate();
-          me.browser.clearSelect_Highlight();
+          me.onAggrLeave(aggr);
         })
         .on("click",function(aggr){ me.onAggrClick(aggr); });
 
@@ -10208,9 +10290,16 @@ var Summary_Interval_functions = {
     },
     /** -- */
     updateBarScale2Active: function(){
+      var maxMeasureValue = this.getMaxAggr_All();
+      var minMeasureValue = 0;
+      if(this.browser.measureFunc!=="Count" && this.browser.measureSummary.intervalRange.org.min<0){
+        minMeasureValue = this.getMinAggr_All();
+      }
+      this.getMinAggr_All();
       this.chartScale_Measure
-        .domain([0, this.getMaxAggr_Active() || 1])
-        .range ([0, this.height_hist]);
+        .domain([minMeasureValue, maxMeasureValue])
+        .range ([0, this.height_hist])
+        ;
     },
     /** -- */
     refreshBins_Translate: function(){
@@ -10237,10 +10326,11 @@ var Summary_Interval_functions = {
       var me=this;
       var width=this.getWidth_Bin();
 
+      var zeroPos = this.chartScale_Measure(0);
       var heightTotal = function(aggr){
-        if(aggr._measure.Total===0) return 0;
-        if(me.browser.ratioModeActive) return me.height_hist;
-        return me.chartScale_Measure(aggr.measure('Total'));
+        if(aggr._measure.Total===0) return -zeroPos;
+        if(me.browser.ratioModeActive) return me.height_hist-zeroPos;
+        return me.chartScale_Measure(aggr.measure('Total'))-zeroPos;
       };
 
       if(this.scaleType==='time'){
@@ -10249,14 +10339,14 @@ var Summary_Interval_functions = {
           .attr("d", 
             d3.svg.area().interpolate("cardinal")
               .x(this.timeAxis_XFunc)
-              .y0(me.height_hist)
+              .y0(me.height_hist-zeroPos)
               .y1(function(aggr){ 
-                return (aggr._measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr));
+                return ((aggr._measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr)))-zeroPos;
               }));
           ;
       } else {
         this.DOM.measure_Total.each(function(aggr){
-          kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+heightTotal(aggr)+")");
+          kshf.Util.setTransform(this, "translateY("+(me.height_hist-zeroPos)+"px) scale("+width+","+heightTotal(aggr)+")");
         });
         if(!this.browser.ratioModeActive){
           this.DOM.measureTotalTip
@@ -10273,16 +10363,20 @@ var Summary_Interval_functions = {
       var me=this;
       var width = this.getWidth_Bin();
 
+      var zeroPos = this.chartScale_Measure(0);
       var heightActive = function(aggr){
-        if(aggr._measure.Active===0) return 0;
-        if(me.browser.ratioModeActive) return me.height_hist;
-        return me.chartScale_Measure(aggr.measure('Active'));
+        if(aggr._measure.Active===0) return -zeroPos;
+        if(me.browser.ratioModeActive) return me.height_hist-zeroPos;
+        return me.chartScale_Measure(aggr.measure('Active'))-zeroPos;
       };
 
       // Position the lock button
       this.DOM.lockButton
         .each(function(aggr){
-          kshf.Util.setTransform(this,"translateY("+(me.height_hist-heightActive(aggr)-10)+"px)");
+          var x = heightActive(aggr);
+          var translateY = me.height_hist-x-10;
+          if(x>0) translateY-=zeroPos; else translateY=zeroPos-8;
+          kshf.Util.setTransform(this,"translateY("+translateY+"px)");
         })
         .attr("inside",function(aggr){
           if(me.browser.ratioModeActive) return "";
@@ -10292,30 +10386,31 @@ var Summary_Interval_functions = {
       // Time (line chart) update
       if(this.scaleType==='time'){
         var durationTime = this.browser.noAnim ? 0 : 700;
+        var yFunc = function(aggr){
+          return ((aggr._measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1))-zeroPos;
+        };
         this.DOM.measure_Active_Area
           .transition().duration(durationTime)
           .attr("d", 
             d3.svg.area().interpolate("cardinal")
               .x (this.timeAxis_XFunc)
-              .y0(me.height_hist+2)
-              .y1(function(aggr){
-                  return (aggr._measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1);
-              })
+              .y0(me.height_hist+2-zeroPos)
+              .y1(yFunc)
             );
 
         this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc)
-          .attr("y1",function(aggr){ return me.height_hist+3; })
-          .attr("y2",function(aggr){
-            return (aggr._measure.Active===0) ? (me.height_hist+3) : (me.height_hist - heightActive(aggr)+1);
-          });
+          .attr("y1",me.height_hist+3-zeroPos)
+          .attr("y2",yFunc);
       }
 
       if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
         // No partial rendering
         this.DOM.measure_Active.each(function(aggr){
-          kshf.Util.setTransform(this, "translateY("+me.height_hist+"px) scale("+width+","+heightActive(aggr)+")");
+          kshf.Util.setTransform(this, 
+            "translateY("+(me.height_hist-zeroPos)+"px) "+
+            "scale("+width+","+(heightActive(aggr))+")");
         });
       } else {
         // Partial rendering
@@ -10364,31 +10459,38 @@ var Summary_Interval_functions = {
           this.DOM.percentileGroup.select(".compared_percentileChart").style("display","none");
         }
       }
+
+      var zeroPos = this.chartScale_Measure(0);
       var heightCompare = function(aggr){
-        if(aggr._measure[compId]===0) return 0;
-        return ratioModeActive ? aggr.ratioCompareToActive(cT)*me.height_hist : me.chartScale_Measure(aggr.measure(compId));
+        if(aggr._measure[compId]===0) return -zeroPos;
+        return ratioModeActive 
+          ? aggr.ratioCompareToActive(cT)*me.height_hist - zeroPos 
+          : me.chartScale_Measure(aggr.measure(compId)) - zeroPos;
       };
 
       // Time (line chart) update
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr._measure[compId]===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr));
+          return ((aggr._measure[compId]===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr)))-zeroPos;
         };
 
         var dTime = 200;
         this.DOM["measure_Compare_Area_"+cT]
           .transition().duration(dTime)
-          .attr("d", d3.svg.area().interpolate("cardinal").x(this.timeAxis_XFunc).y(yFunc));
+          .attr("d", d3.svg.area().interpolate("cardinal")
+            .x(this.timeAxis_XFunc)
+            //.y(me.height_hist+2-zeroPos)
+            .y(yFunc));
 
         this.DOM["measure_Compare_Line_"+cT].transition().duration(dTime)
-          .attr("y1",me.height_hist+3 )
+          .attr("y1",me.height_hist+3-zeroPos )
           .attr("y2",yFunc)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc);
         return;
       }
 
-      var _translateY = "translateY("+me.height_hist+"px) ";
+      var _translateY = "translateY("+(me.height_hist-zeroPos)+"px) ";
       var _translateX = "translateX("+((curGroup+1)*binWidth)+"px) ";
 
       if(!this.isFiltered() || this.scaleType==='time' || this.stepTicks){
@@ -10451,20 +10553,21 @@ var Summary_Interval_functions = {
         .style("opacity",(this.highlightRangeLimits_Active&&this.browser.vizActive.Highlight)?1:0)
         .style("left", function(d){ return me.valueScale(me.browser.flexAggr_Highlight[(d===0)?'minV':'maxV'])+"px"; });
 
+      var zeroPos = this.chartScale_Measure(0);
       var getAggrHeight_Preview = function(aggr){
         var p=aggr.measure('Highlight');
         if(me.browser.preview_not) p = aggr.measure('Active')-p;
         if(me.browser.ratioModeActive){
-          if(aggr._measure.Active===0) return 0;
-          return (p / aggr.measure('Active'))*me.height_hist;
+          if(aggr._measure.Active===0) return -zeroPos;
+          return (p / aggr.measure('Active'))*me.height_hist - zeroPos;
         } else {
-          return me.chartScale_Measure(p);
+          return me.chartScale_Measure(p) - zeroPos;
         }
       };
 
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return (aggr._measure.Highlight===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr));
+          return ((aggr._measure.Highlight===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr)))-zeroPos;
         };
         var dTime=200;
         this.DOM.measure_Highlight_Area
@@ -10472,22 +10575,22 @@ var Summary_Interval_functions = {
           .attr("d", 
             d3.svg.area().interpolate("cardinal")
               .x(this.timeAxis_XFunc)
-              .y0(me.height_hist+2)
+              .y0(me.height_hist+2 - zeroPos)
               .y1(yFunc));
         this.DOM.measure_Highlight_Line.transition().duration(dTime)
-          .attr("y1",me.height_hist+3)
+          .attr("y1",me.height_hist+3 - zeroPos)
           .attr("y2",yFunc)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc);
       } else {
         if(!this.browser.vizActive.Highlight){
           var xx = (width / (totalC+1));
-          var transform = "translateY("+this.height_hist+"px) scale("+xx+",0)";
+          var transform = "translateY("+(this.height_hist-zeroPos)+"px) scale("+xx+",0)";
           this.DOM.measure_Highlight.each(function(){ kshf.Util.setTransform(this,transform); });
           return;
         }
 
-        var _translateY = "translateY("+me.height_hist+"px) ";
+        var _translateY = "translateY("+(me.height_hist - zeroPos)+"px) ";
 
         var range_min = this.valueScale.domain()[0];
         var range_max = this.valueScale.domain()[1];
@@ -10542,7 +10645,7 @@ var Summary_Interval_functions = {
 
       if(this.browser.ratioModeActive || this.browser.percentModeActive) {
         maxValue = (this.browser.ratioModeActive) ? 100
-          : Math.round(100*me.getMaxAggr_Active()/me.browser.allRecordsAggr.measure('Active'));
+          : Math.round(100*me.getMaxAggr('Active')/me.browser.allRecordsAggr.measure('Active'));
         axis_Scale = d3.scale.linear()
           .rangeRound([0, this.height_hist])
           .domain([0,maxValue])
@@ -10551,7 +10654,7 @@ var Summary_Interval_functions = {
 
       // GET TICK VALUES ***********************************************************
       tickValues = axis_Scale.ticks(chartAxis_Measure_TickSkip);
-      if(this.browser.measureFunc==="Count" || true){ 
+      if(axis_Scale.domain()[0]>=0){ 
         // remove 0-tick // TODO: The minimum value can be below zero, and you may wish to label 0-line
         tickValues = tickValues.filter(function(d){ return d!==0; });
       }
@@ -10657,7 +10760,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     setHeight: function(targetHeight){
-      if(this.histBins===undefined) return;
+      if(this._aggrs===undefined) return;
       var c = targetHeight - this.getHeight_Header() - this.getHeight_Extra();
       if(this.height_hist===c) return;
       this.height_hist = c;
@@ -10816,7 +10919,7 @@ var Summary_Clique_functions = {
 
     this._setPairs = [];
     this._setPairs_ID = {};
-    this._sets = this.setListSummary._cats; // sorted already
+    this._sets = this.setListSummary._aggrs; // sorted already
     this._sets.forEach(function(set){ set.setPairs = []; });
 
     this.createSetPairs();
@@ -10922,7 +11025,7 @@ var Summary_Clique_functions = {
           me.gridPan_x = Math.min(0,gridPan_x_init+difX+difY);
           me.checkPan();
 
-          var maxHeight = me.setListSummary.heightCat*me.setListSummary._cats.length - h;
+          var maxHeight = me.setListSummary.heightCat*me.setListSummary._aggrs.length - h;
 
           var t = initT-difY;
               t = Math.min(maxHeight,Math.max(0,t));
@@ -11034,7 +11137,10 @@ var Summary_Clique_functions = {
 
     this.DOM.strengthControl = this.DOM.summaryControls.append("span").attr("class","strengthControl")
       .each(function(d,i){
-        this.tipsy = new Tipsy(this, { gravity: "n", title: "Color <i class='fa fa-circle'></i> by pair-wise strength" });
+        this.tipsy = new Tipsy(this, { 
+          gravity: "n", 
+          title: "Color <i class='fa fa-circle'></i> by pair-wise strength"
+        });
       })
       .on("mouseover",function(){ if(this.dragging!==true) this.tipsy.show(); })
       .on("mouseout" ,function(){ this.tipsy.hide(); })
@@ -11045,8 +11151,8 @@ var Summary_Clique_functions = {
     this.DOM.strengthControl.append("span").attr("class","strengthText").text("Strength");
     this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Strong");
 
-    this.DOM.scaleLegend_SVG = this.DOM.summaryControls.append("svg").attr("xmlns","http://www.w3.org/2000/svg")
-      .attr("class","sizeLegend");
+    this.DOM.scaleLegend_SVG = this.DOM.summaryControls
+      .append("svg").attr({class: "sizeLegend", xmlns:"http://www.w3.org/2000/svg",})
 
     this.DOM.legendHeader = this.DOM.scaleLegend_SVG.append("text").attr("class","legendHeader").text("#");
     this.DOM.legend_Group = this.DOM.scaleLegend_SVG.append("g");
@@ -11056,11 +11162,11 @@ var Summary_Clique_functions = {
     var me=this;
 
     var newRows = this.DOM.setMatrixSVG.select("g.rows").selectAll("g.row")
-      .data(this._sets, function(d,i){ return d.id(); })
+      .data(this._sets, function(_set){ return _set.id(); })
     .enter().append("g").attr("class","row")
-      .each(function(d){ d.DOM.matrixRow = this; })
-      .on("mouseenter",function(d){ me.setListSummary.onCatEnter(d); })
-      .on("mouseleave",function(d){ me.setListSummary.onCatLeave(d); });
+      .each(function(_set){ _set.DOM.matrixRow = this; })
+      .on("mouseenter",function(_set){ me.setListSummary.onAggrHighlight(_set); })
+      .on("mouseleave",function(_set){ me.setListSummary.onAggrLeave(_set); });
 
     // tmp is used to parse html text. TODO: delete the temporary DOM
     var tmp = document.createElement("div");
@@ -11093,6 +11199,7 @@ var Summary_Clique_functions = {
     aggr.set_1.DOM.aggrGlyph.setAttribute("cSelection","and");
     aggr.set_2.DOM.aggrGlyph.setAttribute("cSelection","and");
     this.browser.setSelect_Highlight(aggr);
+    this.browser.refreshMeasureLabels("Highlight");
   },
   /** -- */
   onSetPairLeave: function(aggr){
@@ -11101,6 +11208,7 @@ var Summary_Clique_functions = {
     aggr.set_1.DOM.aggrGlyph.removeAttribute("cSelection");
     aggr.set_2.DOM.aggrGlyph.removeAttribute("cSelection");
     this.browser.clearSelect_Highlight();
+    this.browser.refreshMeasureLabels("Active");
   },
   /** -- */
   insertSetPairs: function(){
@@ -11132,7 +11240,7 @@ var Summary_Clique_functions = {
     newCliques.append("rect").attr("class","setPairBackground").attr("rx",3).attr("ry",3);
     newCliques.append("circle").attr("class","measure_Active").attr("cx",0).attr("cy",0).attr("r",0);
     newCliques.append("path").attr("class","measure_Highlight").each(function(aggr){ 
-      aggr.currentPreviewAngle=-Math.PI/2; });
+      aggr.currentPreviewAngle = -Math.PI/2; });
     newCliques.append("path").attr("class","measure_Compare_A");
     newCliques.append("path").attr("class","measure_Compare_B");
     newCliques.append("path").attr("class","measure_Compare_C");
@@ -11178,7 +11286,7 @@ var Summary_Clique_functions = {
     // Edges are set-pairs with at least one element inside (based on the filtering state)
     var edges = this._setPairs.filter(function(setPair){ return setPair._measure.Active>0; });
     // Nodes are the set-categories
-    var nodes = this.setListSummary._cats;
+    var nodes = this.setListSummary._aggrs;
 
     // Initialize per-node (per-set) data structures
 
@@ -11585,11 +11693,11 @@ var Summary_Clique_functions = {
     this.DOM.measure_Highlight
       .transition().duration(500).attrTween("d",function(aggr) {
         var angleInterp = d3.interpolate(aggr.currentPreviewAngle, me.getAngleToActive_rad(aggr,"Highlight"));
-        var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(aggr);
+        var sizeRatio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(aggr);
         return function(t) {
-          var newAngle=angleInterp(t);
+          var newAngle = angleInterp(t);
           aggr.currentPreviewAngle = newAngle;
-          return me.getPiePath(newAngle,(aggr.subset!=='' && me.browser.ratioModeActive)?2:0,ratio);
+          return me.getPiePath(newAngle,(aggr.subset!=='' && me.browser.ratioModeActive)?2:0, sizeRatio);
         };
       });
   },
@@ -11600,11 +11708,11 @@ var Summary_Clique_functions = {
     if(this.browser.ratioModeActive){
       strokeWidth = Math.ceil(this.getRowHeight()/18);
     }
-    this.DOM["measure_Compare_"+cT].attr("d",function(setPair){
-      var ratio=(me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(setPair);
-      this.style.display = setPair.measure("Compare_"+cT)===0 ? "none" : "block";
+    this.DOM["measure_Compare_"+cT].attr("d",function(aggr){
+      var sizeRatio = (me.browser.ratioModeActive)?1:me.getCliqueSizeRatio(aggr);
+      this.style.display = aggr.measure("Compare_"+cT)===0 ? "none" : "block";
       this.style.strokeWidth = strokeWidth;
-      return me.getPiePath( me.getAngleToActive_rad(setPair,"Compare_"+cT), curGroup*strokeWidth, ratio );
+      return me.getPiePath( me.getAngleToActive_rad(aggr,"Compare_"+cT), curGroup*strokeWidth, sizeRatio);
     });
   },
   /** Does not work with Avg pair */
