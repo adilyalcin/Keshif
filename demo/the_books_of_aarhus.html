@@ -27,7 +27,7 @@ $(document).ready( function() {
       fileType: 'csv',
       tables: "20150202_inventoryLargeCompress_loan"
     },
-    measure: "count",
+    metric: "count",
     summaries: [
       { name: "Location", value: "location" },
       { name: "Day of Week", value: "weekday", catSortBy: function(){ return 1*this.id.substr(0,1);} },

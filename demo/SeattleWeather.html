@@ -4,6 +4,7 @@
     <title>Seattle Weather Example</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -23,21 +24,24 @@ document.addEventListener("DOMContentLoaded", function(){
     rightPanelLabelWidth: 200,
     recordName: "Daily Observations",
     source: {
-      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
-      fileType: 'csv',
-      tables: "seattle-weather"
+      gdocId: '1b4xz1oPuZUVHG7p9J05Ycm-cQjm7vHL56rv6800uZCA',
+      tables: 'Seattle Weather'
+//      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+//      fileType: 'csv',
+//      tables: "seattle-weather"
     },
+    metric: { type: "Avg", summary: "Temperature (Min)" },
     summaries: [
-      { name: "weather", value: "weather" },
-      { name: "Temperature (Min)", value: "temp_min", panel: "middle", unitName: "°C" },
-      { name: "Temperature (Max)", value: "temp_max", panel: "middle", unitName: "°C" },
-      { name: "Wind Speed", value: "wind", panel: "right" },
-      { name: "Precipitation", value: "precipitation", panel: "right", unitName: "″" },
-      { name: "date", panel:"bottom", timeFormat: "%m/%d/%y" },
+      { name: "Weather" },
+      { name: "Temperature (Min)", panel: "middle", unitName: "°C" },
+      { name: "Temperature (Max)", panel: "middle", unitName: "°C" },
+      { name: "Wind Speed", panel: "right" },
+      { name: "Precipitation", panel: "right", unitName: "″" },
+      { name: "Date", panel:"bottom",  },
       { name: "Month", catSortBy: "id", catLabel: _demo.Month,
-        value: function(d){ return d._valueCache[8].getUTCMonth(); } },
+        value: function(){ return this.Date.getUTCMonth(); } },
       { name: "Day of Week", catSortBy: "id", catLabel: _demo.DayOfWeek, collapsed: true,
-        value: function(d){ return d._valueCache[8].getDay(); } },
+        value: function(){ return this.Date.getDay(); } },
     ]
   });
 });
