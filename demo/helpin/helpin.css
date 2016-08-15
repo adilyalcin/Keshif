@@ -245,6 +245,88 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   box-shadow: 0px 0px 10px #cc2525;
   padding: 5px;
 }
+.kshf .BrowseOptions {
+  padding: 3px 6px;
+  border-top: solid 1px #cb5454;
+  background-color: #f6f6f6;
+}
+.kshf .BrowseOptions > .checkBoxArea {
+  font-weight: 300;
+  font-size: 0.8em;
+  text-align: left;
+  padding: 3px 0px;
+  /* Base for label styling */
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] {
+  position: absolute;
+  left: -9999px;
+  /* checked mark aspect changes */
+  /* accessibility */
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] + label {
+  position: relative;
+  padding-left: 1.5em;
+  cursor: pointer;
+  /* checkbox aspect */
+  /* checked mark aspect */
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] + label:hover {
+  color: #cb5454;
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] + label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0px;
+  width: 1em;
+  height: 1em;
+  border: 1px solid #aaa;
+  background: #f8f8f8;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] + label:after {
+  content: '✔';
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  font-size: 1em;
+  line-height: 0.8;
+  color: #cb5454;
+  -webkit-transition: all 200ms;
+  -moz-transition: all 200ms;
+  -o-transition: all 200ms;
+  transition: all 200ms;
+  pointer-events: none;
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:not(:checked) + label:after {
+  opacity: 0;
+  transform: scale(0);
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:checked + label:after {
+  opacity: 1;
+  transform: scale(1);
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:focus + label:before {
+  border: solid 1px #cb5454;
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:disabled + label {
+  color: #aaa;
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:disabled + label:before {
+  box-shadow: none;
+  border-color: #bbb;
+  background-color: #ddd;
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:disabled:checked + label:after {
+  color: #999;
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] + label .ShowHide:before {
+  content: "Hide";
+}
+.kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:checked + label .ShowHide:before {
+  content: "Show";
+}
 .kshf .overlay_help {
   width: 540px;
   position: absolute;
@@ -624,7 +706,7 @@ left:calc(50% - 310px);
   flex: 1;
 }
 .kshf .overlay_help .TopicsList > .TopicBlock {
-  margin: 10px 4px;
+  margin: 13px 4px;
   padding: 4px;
   border: solid 1px lightgray;
   border-radius: 6px;
@@ -925,7 +1007,7 @@ left:calc(50% - 170px);
   display: block;
   border-radius: 5px;
   border: solid 1px #BCBCBC;
-  margin: 6px 1px;
+  margin: 9px 1px;
   padding: 1px 3px;
   height: 21px;
   cursor: pointer;
@@ -1047,4 +1129,7 @@ left:calc(50% - 170px);
   vertical-align: bottom;
   position: relative;
   top: -2px;
+}
+.encodingInfo:hover {
+  background-color: #e2e2e2;
 }

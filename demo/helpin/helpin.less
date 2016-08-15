@@ -235,6 +235,90 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
   }
 
+
+  .BrowseOptions{
+    padding: 3px 6px;
+    border-top: solid 1px #cb5454;
+    background-color: #f6f6f6;
+    > .checkBoxArea{
+      font-weight: 300;
+      font-size: 0.8em;
+      text-align: left;
+      padding: 3px 0px;
+
+      // Modified from https://codepen.io/CreativeJuiz/pen/BiHzp
+      /* Base for label styling */
+      > [type="checkbox"] {
+        position: absolute;
+        left: -9999px;
+        + label{
+          position: relative;
+          padding-left: 1.5em;
+          cursor: pointer;
+          &:hover{
+            color: @color_hoverAction;
+          }
+          /* checkbox aspect */
+          &:before {
+            content: '';
+            position: absolute;
+            left:0; top: 0px;
+            width: 1em; height: 1em;
+            border: 1px solid #aaa;
+            background: #f8f8f8;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,.3)
+          }
+          /* checked mark aspect */
+          &:after {
+            content: '✔';
+            position: absolute;
+            top: 3px; left: 2px;
+            font-size: 1em;
+            line-height: 0.8;
+            color: @color_hoverAction;
+            .transition(all 200ms);
+            pointer-events: none;
+          }
+        }
+        /* checked mark aspect changes */
+        &:not(:checked) + label:after {
+          opacity: 0;
+          transform: scale(0);
+        }
+        &:checked + label:after {
+          opacity: 1;
+          transform: scale(1);
+        }
+        /* accessibility */
+        &:focus + label:before{
+          border: solid 1px @color_hoverAction;
+        }
+        &:disabled{
+          + label { 
+            color: #aaa;
+            &:before {
+              box-shadow: none;
+              border-color: #bbb;
+              background-color: #ddd;
+            }
+          }
+          &:checked + label:after { color: #999; }
+        }
+
+        + label{
+          .ShowHide:before{
+            content: "Hide";
+          }
+        }
+        &:checked + label{
+          .ShowHide:before{
+            content: "Show";
+          }
+        }
+      }
+    }
+  }
 }
 
 
@@ -366,7 +450,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       margin: 10px 0px 0px;
       padding-bottom: 4px;
       font-size: 0.9em;
-      color: #cb5454;
+      color: @color_hoverAction;
       text-align: center;
       border-bottom: solid 1px;
       letter-spacing: 2px;
@@ -546,7 +630,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .flex(1);
     > .TopicBlock{
-      margin: 10px 4px;
+      margin: 13px 4px;
       padding: 4px;
       border: solid 1px lightgray;
       border-radius: 6px;
@@ -781,7 +865,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   border-radius: 5px;
   border: solid 1px #BCBCBC;
-  margin: 6px 1px;
+  margin: 9px 1px;
   padding: 1px 3px;
   height: 21px;
   cursor: pointer;
@@ -840,17 +924,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     width: 120px;
     border-width: 0px 0px 1px 0px;
     border-style: solid;
-    border-color: #cb5454;
+    border-color: @color_hoverAction;
     text-align: center;
     margin: 1px 1px 0px 1px;
     font-family: Roboto;
     font-size: 1em;
     font-style: italic;
     padding: 0px;
-    color: #cb5454;
+    color: @color_hoverAction;
     background-color: #efeadf;
     &:focus{
-      outline-color: #cb5454;
+      outline-color: @color_hoverAction;
       outline-width: 0px;
       margin: 0px;
       border-width: 1px;
@@ -892,6 +976,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     vertical-align: bottom;
     position: relative;
     top: -2px;
+  }
+  &:hover{
+    background-color: #e2e2e2;
   }
 }
 
