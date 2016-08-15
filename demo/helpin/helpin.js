@@ -2374,14 +2374,22 @@ Helpin.prototype = {
     var x;
 
     x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea");
-    x.append("input").attr("type","checkbox").attr("id","checkboxRelevant");
+    this.DOM.checkboxRelevant = x.append("input").attr("type","checkbox").attr("id","checkboxRelevant")
+      .on("change",function(){ me.filterTopics(); });
     x = x.append("label").attr("for","checkboxRelevant")
     x.append("span").attr("class","ShowHide");
     x.append("span").html(" non-relevant");
 
     x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea");
-    x.append("input").attr("type","checkbox").attr("id","checkboxPrioritize");
+    this.DOM.checkboxPrioritize =x.append("input").attr("type","checkbox").attr("id","checkboxPrioritize");
     x.append("label").attr("for","checkboxPrioritize").html("Prioritize unused");    
+  },
+  /** -- */
+  filterRelevantOnly: function(){
+    return !this.DOM.checkboxRelevant[0][0].checked;
+  },
+  rankByUnusued: function(){
+    return this.DOM.checkboxPrioritize[0][0].checked;
   },
   /** -- */
   swapselectKeyword: function(keyword){
@@ -2723,6 +2731,9 @@ Helpin.prototype = {
       // Filter on text search
       if(topic.displayed && this.qFilters.textSearch!==""){
         topic.displayed = this.getTopicText(topic).toLowerCase().indexOf(this.qFilters.textSearch)!==-1;
+      }
+      if(this.filterRelevantOnly() && !topic.isRelevant){
+        topic.displayed = false;
       }
       // Done
       topic.DOM.style("display", topic.displayed ? null : "none");
