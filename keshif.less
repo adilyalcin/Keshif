@@ -3073,13 +3073,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[isMultiValued=false]{
-          &[filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Not{ display: inline !important; }
+          &[filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not{ display: inline !important; }
           &[filtered_or="0"] .catGlyph[cFiltered="NOT"][selection="selected"] { cursor: pointer; }
         }
         &:not([filtered_or="0"])  .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
         &:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
         &[isMultiValued=true]{
-          .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Not{ display: inline; }
+          .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not{ display: inline !important; }
           &:hover .setMatrixButton{ display: inline-block !important; }
         }
 

@@ -7236,7 +7236,7 @@ var Summary_Categorical_functions = {
       }
       this.chartScale_Measure
         .domain([minMeasureValue, maxMeasureValue])
-        .rangeRound([0, this.getWidth_CatChart()])
+        .range([0, this.getWidth_CatChart()])
         .nice(this.chartAxis_Measure_TickSkip())
         ;
       this.refreshViz_All();
@@ -7986,8 +7986,15 @@ var Summary_Categorical_functions = {
         .on("mousemove", function(){
           this._mousemove = true;
           if(this.tipsy){
-            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+            var left = (d3.event.pageX-this.tipsy.tipWidth-10);
+            var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
+
+            var browserPos = kshf.browser.DOM.root[0][0].getBoundingClientRect();
+            left = left - browserPos.left;
+            top = top - browserPos.top;
+
+            this.tipsy.jq_tip[0][0].style.left = left+"px";
+            this.tipsy.jq_tip[0][0].style.top = top+"px";
           }
         })
         .attr("title",me.catTooltip?function(_cat){ return me.catTooltip.call(_cat.data); }:null);
@@ -8033,16 +8040,16 @@ var Summary_Categorical_functions = {
           .style("padding-top",(this.heightCat/2-8)+"px");
 
         var filterButtons = domAttrLabel.append("span").attr("class", "filterButtons");
-        filterButtons.append("span").attr("class","AndOrNot_Not")
-          .text(kshf.lang.cur.Not)
-          .on("mouseover", function(_cat){ me.onCatEnter_NOT(_cat); })
-          .on("mouseout",  function(_cat){ me.onCatLeave_NOT(_cat); })
-          .on("click",     function(_cat){ me.onCatClick_NOT(_cat); });
         filterButtons.append("span").attr("class","AndOrNot_Or")
           .text(kshf.lang.cur.Or)
           .on("mouseover",function(_cat){ me.onCatEnter_OR(_cat); })
           .on("mouseout", function(_cat){ me.onCatLeave_OR(_cat); })
           .on("click",    function(_cat){ me.onCatClick_OR(_cat); });
+        filterButtons.append("span").attr("class","AndOrNot_Not")
+          .text(kshf.lang.cur.Not)
+          .on("mouseover", function(_cat){ me.onCatEnter_NOT(_cat); })
+          .on("mouseout",  function(_cat){ me.onCatLeave_NOT(_cat); })
+          .on("click",     function(_cat){ me.onCatClick_NOT(_cat); });
 
         domAttrLabel.append("span").attr("class","catLabel").html(function(aggr){ return me.catLabel_Func.call(aggr.data); });
         DOM_cats_new.append("span").attr("class","measureLabel");
@@ -8071,8 +8078,15 @@ var Summary_Categorical_functions = {
           .on("mouseenter",function(_cat){
             if(this.tipsy) {
               this.tipsy.show();
-              this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-              this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+              var left = (d3.event.pageX-this.tipsy.tipWidth-10);
+              var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
+
+              var browserPos = kshf.browser.DOM.root[0][0].getBoundingClientRect();
+              left = left - browserPos.left;
+              top = top - browserPos.top;
+
+              this.tipsy.jq_tip[0][0].style.left = left+"px";
+              this.tipsy.jq_tip[0][0].style.top = top+"px";
             }
             if(me.browser.mouseSpeed<0.2) { 
               me.onAggrHighlight(_cat);

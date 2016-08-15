@@ -3868,7 +3868,7 @@ height:calc(100% - 10px);
 .kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: block;
 }
-.kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Not {
+.kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
   display: inline !important;
 }
 .kshf .kshfSummary[isMultiValued=false][filtered_or="0"] .catGlyph[cFiltered="NOT"][selection="selected"] {
@@ -3880,8 +3880,8 @@ height:calc(100% - 10px);
 .kshf .kshfSummary:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or {
   display: inline !important;
 }
-.kshf .kshfSummary[isMultiValued=true] .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Not {
-  display: inline;
+.kshf .kshfSummary[isMultiValued=true] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
+  display: inline !important;
 }
 .kshf .kshfSummary[isMultiValued=true]:hover .setMatrixButton {
   display: inline-block !important;
