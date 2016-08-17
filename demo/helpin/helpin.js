@@ -32,7 +32,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ************************************ */
 
-
 var measureLabelModeInfo = function(){
   var _p = "percent (%) of the active records";
   var _a = "absolute (#) value"
@@ -85,7 +84,7 @@ var measureMetricInfo = function(){
   return ""+
     "<p>The current measure-metric is <span class='bolder'>"+pof+" of "+this.browser.recordName+"</span>.</p>"+
     "<p>Other options are "+alternative+", such as "+this.browser.getMeasurableSummaries()[0].summaryName+".</p>"+
-    "<p>All summaries (aggregates and charts) show the same metric.</p>"+
+    "<p>All summaries (charts) show the same metric.</p>"+
     "";
 }
 
@@ -642,9 +641,10 @@ var _material = {
       info: function(DOM){
         return "<p>Click <i class='fa fa-question-circle'></i> to get help for exploring data with Keshif.</p>"+
           "<p>"+
-            "<span class='bolder'>Point &amp; Learn</span> informs about the region you point.<br>"+
-            "<span class='bolder'>Browse Topics</span> lets you see and filter all help topics.<br>"+
-            "<span class='bolder'>Guided Tour</span> presents help information step-by-step.<br>"+
+            "<i class='fa fa-hand-pointer-o'></i> <span class='bolder'>Point &amp; Learn</span> informs about the region you point.<br>"+
+            "<i class='fa fa-book'></i> <span class='bolder'>Topic Listing</span> lets you see and filter all help topics.<br>"+
+            "<i class='fa fa-location-arrow'></i> <span class='bolder'>Guided Tour</span> presents help information step-by-step.<br>"+
+            "<i class='fa fa-bell'></i> <span class='bolder'>Notifications</span> suggests help based on your actions.<br>"+
           "</p>"
       }
     },
@@ -830,26 +830,26 @@ var _material = {
     { topic:     'T_ExploreMissingVal' },
     { component: 'Help Button' },
   ],
+
 _topics: {
   T_SelectHighlight: {
     q: function(){
-      return "<i class='helpin-breadcrumb fa fa-mouse-pointer'></i> Highlight-select to preview "+ 
-        this.browser.recordName+"";
+      return "<i class='helpin-breadcrumb fa fa-mouse-pointer'></i> Highlight-select to preview "+this.browser.recordName+"";
     },
     actions: "Explore+Select",
     topics: "Aggregate",
     context: ["SummaryInBrowser", "OpenSummary"],
     note: function(){
       return ""+
-      "<p>One record aggregate is highlight-selected as an example.</p>"+
+      "<p>You can highligh record aggregates as categories, number/time ranges, or invalid values. "+
+        "One aggregate is highlight-selected as an example. </p>"+
+      "<p>"+printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate)
+        +"breadcrumb on the top section shows the highlight-selection.</p>"+
       "<p>All <span class='bolder'>"+this.browser.allRecordsAggr._measure.Highlight+"</span> "
         +" records in this highlight-selection are shown in <span style='color: orangered; font-weight: 500;'>orange</span>.</p>"+
       "<p>You can observe distribution of highlighted records in all other summaries, as well as individual records.</p>"+
-      "<p>"+printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate)
-        +" breadcrumb describes the highlight-selection.</p>"+
-      "<p>You can highligh records in categories, number/time ranges, or invalid values. "+
-        "Move the mouse to change the selection.</p>";
-      },
+      "";
+    },
     similarTopics: ['T_SelectFilter','T_SelectCompare'],
     tAnswer: "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
     activate: function(){
@@ -915,8 +915,7 @@ _topics: {
   },
   T_SelectFilter: {
     q: function(){
-      return "<i class='helpin-breadcrumb fa fa-filter'></i> Filter-select to focus on selected "
-        +this.browser.recordName;
+      return "<i class='helpin-breadcrumb fa fa-filter'></i> Filter-select to focus on selected "+this.browser.recordName;
     },
     actions: "Explore+Filter+Select",
     topics: "Aggregate",
@@ -927,7 +926,7 @@ _topics: {
     tAnswer: {
       sequence: [
         "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
-        "Click on the highlighted aggregate"
+        "Click on the (highlighted) aggregate"
       ]
     },
     activate: function(){
@@ -967,7 +966,7 @@ _topics: {
         "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
         "<span class='colorCoding_Compare_B fa fa-lock'></span> "+
         "<span class='colorCoding_Compare_C fa fa-lock'></span><br>"+
-      "Each locked selection is assigned a different color.</p>"+
+      "Each locked selection has a different color.</p>"+
       "<p>Changing <i class='fa fa-filter'></i> filtering will clear <i class='fa fa-lock'></i> locked selections.</p>",
     tAnswer: {
       sequence: [
@@ -1070,17 +1069,15 @@ _topics: {
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", 
       "CategoricalMultiValSummary", "FilteredSummary"],
     note: "<p>And-selection is possible <i>only if</i> records have multiple categorical values.</p>"+
-      "<p>Only categories which have some records are clickable, to prevent zero-results.</p>",
+      "<p>Only categories which have some records can be clicked to avoid zero-results.</p>",
     similarTopics: ['T_SelectFilter','T_RemoveCatFilter'],
     tAnswer: {
       matches: '.catGlyph:not([NoActiveRecords])',
       cElement: "summaries",
       text: "Click on a non-empty category",
       pos: "n",
-      filter: function(d,i){
-        if(this.context.HighlightedDOM.length>0){
-          this.context.HighlightedDOM = [this.context.HighlightedDOM[0]];
-        }
+      filter: function(){
+        this.context.HighlightedDOM = this.context.HighlightedDOM.slice(0,1);
       }
     }
   },
@@ -1094,12 +1091,11 @@ _topics: {
     tAnswer: {
       matches: '.catGlyph:not([cfiltered])',
       cElement: "summaries",
-      text: "Mouse-over on a category<br>&amp; click <span class='AndOrNot_Or'>Or</span>",
+      text: "Mouse-over a category<br>and click <span class='AndOrNot_Or'>Or</span>",
       pos: "n",
-      filter: function(d,i){
-        if(this.context.HighlightedDOM.length>0){
-          this.context.HighlightedDOM = [this.context.HighlightedDOM[0]];
-        }
+      filter: function(){
+        // take only one
+        this.context.HighlightedDOM = this.context.HighlightedDOM.slice(0,1);
       },
       activate: function(){ this.context.HighlightedDOM[0].setAttribute("mouseOver",true); },
       deactivate: function(){ this.context.HighlightedDOM[0].removeAttribute("mouseOver"); },
@@ -1353,8 +1349,7 @@ _topics: {
         cElement: "summaries",
         text: "Click <i class='fa fa-filter'></i>", 
         pos: "e"
-      },
-      {
+      }, {
         matches: '[class*="crumbMode_Filter"]',
         cElement: "browser",
         text: "Click <i class='fa fa-filter'></i> breadcrumb",
@@ -1427,16 +1422,17 @@ _topics: {
       "Active sorting summary always shows <i class='fa fa-sort'></i> for quick overview.",
     similarTopics: ['T_RecSortRev'],
     tAnswer: [
-      {
+      { 
         class: "listSortOptionSelect",
         cElement: "recordDisplay", 
         text: "Click the dropdown to see sorting options<br> and select one.",
-        pos: "n" },
-      {
+        pos: "n"
+      }, {
         class: "useForRecordDisplay",
         cElement: "summaries",
         text: "Click <i class='fa fa-sort'></i>", 
-        pos: "ne" }
+        pos: "ne"
+      }
     ]
     // TODO: Sorting is actually color in maps or networks...
   },
@@ -1498,7 +1494,7 @@ _topics: {
     context: ["SummaryInBrowser","CollapsedSummary"],
     similarTopics: ['T_CollapseSummary', 'T_MaxSummary', 'T_AddSummary'],
     tAnswer: {
-      class: "buttonSummaryCollapse",
+      class: "buttonSummaryOpen",
       cElement: "summaries",
       text: "Click <i class='fa fa-expand'></i>", 
       pos: "nw"
@@ -1548,7 +1544,6 @@ _topics: {
     }
   },
 
-  // AUTHORING MODE
   T_EnableAuth: {
     q: "Enable authoring / Show available attributes",
     actions: "Configure",
@@ -1626,7 +1621,7 @@ _topics: {
     actions: "Change",
     topics: "Summary",
     context: ["AuthoringMode", "SummaryInBrowser"],
-    // TODO: Can rename it by clicking on the avalibale attribute list too.
+    // TODO: Can rename it by clicking on the available attribute list too.
     tAnswer: {
       class: "summaryName_text",
       cElement: "summaries", 
@@ -1663,11 +1658,24 @@ _topics: {
     context: ["SummaryInBrowser","ActiveCompareSelection"],
     note: "The aggregate measure-label (text) color reflects the selection it displays.",
     // TODO: Show a tooltip for the color? how... activate?
-    tAnswer: {
-      matches: '[class*="crumbMode_Compare_"]',
-      cElement: "browser",
-      text:  "Mouse-over <i class='fa fa-lock'></i> breadcrumb",
-      pos: "n"
+    tAnswer: [
+      {
+        matches: '[class*="crumbMode_Compare_"]',
+        cElement: "browser",
+        text:  "Mouse-over <i class='fa fa-lock'></i> breadcrumb",
+        pos: "n"
+      },
+      {
+        class: 'measureLabel',
+        cElement: "summaries",
+        text: ""
+      }
+    ],
+    activate: function(){
+      this.browser.refreshMeasureLabels("Compare_A");
+    },
+    deactivate: function(){
+      this.browser.refreshMeasureLabels();
     }
   },
   T_RemRecPanel: {
@@ -1821,13 +1829,9 @@ _topics: {
     q: "Import Dataset",
     actions: "Import"
   },*/
-
-  // Other tasks
-  // Change category sorting orde
 },
   _icons: {
     explore: 'compass',
-    //filter: 'filter helpin-breadcrumb',
     compare: 'exchange',
     missing_values: 'ban',
     search: 'search',
@@ -1876,6 +1880,16 @@ var Helpin = function(browser){
     overlay_control : browser.panel_overlay.append("span").attr("class","overlay_help_control"),
   };
 
+  // Tracking actions in the main app
+  this.actionHistory = [];
+  browser.DOM.root.on("click.helpin",function(){
+    // skip clicks on the help or other overlay panels
+    var DOM = d3.event.target;
+    if(DOM.matches(".panel_overlay *")) return;
+    if(DOM.matches(".showHelpIn")) return; // skip click on help button
+    me.actionHistory = [DOM].concat(me.actionHistory.slice(0,19));
+  });
+
   this.topicsList = [];
 
   this.actionsList = [];
@@ -1896,7 +1910,7 @@ var Helpin = function(browser){
   this.selectedTopic = null;
   this.GuidedTourStep = 0;
 
-  var me=this;
+  // Sample notify action - 3 second delay
   setTimeout(function(){
     me.notifyAction = {topic: _material._topics['T_ChangeMetric']};
     me.browser.DOM.notifyButton.style("display","inline-block");
@@ -1908,16 +1922,12 @@ Helpin.prototype = {
   evaluateContext: function(topic, in_summary){
     // Initialize context elements
     // Need to do it for every topic, since these arrays can be filtered in evaluation process.
-    this.context.summaries     = this.browser.summaries;
+    this.context.summaries     = (in_summary) ? [in_summary] : this.browser.summaries;
     this.context.browser       = this.browser;
     this.context.recordDisplay = this.browser.recordDisplay;
 
-    // Checking across a single summary
-    if(in_summary) this.context.summaries = [in_summary];
-
-    topic.relevanceWeight = 0;
-    if(topic.weight) topic.relevanceWeight = topic.weight;
     topic.isRelevant = true;
+    topic.relevanceWeight = topic.weight ? topic.weight : 0;
     
     topic.context.forEach(function(c){
       var isRelevant = false;
@@ -1948,7 +1958,29 @@ Helpin.prototype = {
       topic.isRelevant = topic.isRelevant && isRelevant;
     },this);
 
-    return topic.isRelevant;
+    // rank by user actions
+    if(this.rankByUnusued() || this.rankByMostRecent()){
+      var isUsed = false;
+      topic.tAnswer.forEach(function(answer){
+        if(isUsed) return;
+        var selector = answer.matches;
+        if(selector===undefined) return;
+        this.actionHistory.forEach(function(DOM,i){
+          if(isUsed) return;
+          if(DOM.matches(".kshf "+selector)) isUsed = i+1;
+        },this);
+      },this);
+
+      if(isUsed){
+        if(this.rankByUnusued()){
+          // penalty for most recently used items
+          topic.relevanceWeight -= (21-isUsed)*200;
+        } else if(this.rankByMostRecent()){
+          // bonus for most recently used items
+          topic.relevanceWeight += (21-isUsed)*200;
+        }
+      }
+    }
   },
   /** -- */
   context_highlight: function(answer){
@@ -1987,8 +2019,7 @@ Helpin.prototype = {
       extractHighlightedDOMs.call(this, this.context[context_group]);
     }
 
-    if(answer.filter) answer.filter.call(this);
-
+    if(answer.filter)   answer.filter.call(this);
     if(answer.activate) answer.activate.call(this);
 
     // inject CSS style and track all the highlighted DOM's
@@ -2002,8 +2033,7 @@ Helpin.prototype = {
   },
   /** -- */
   getTopicText: function(topic){ 
-    var str = "<span style='display: inline-block; font-weight: 200; font-size: 0.9em; '> ("+
-      Math.round(topic.relevanceWeight)+") <span>";
+    var str = "<span class='topicWeight'> ("+Math.round(topic.relevanceWeight)+") </span>";
     if(typeof topic.q === "string")   return topic.q + str;
     if(typeof topic.q === "function") return topic.q.call(this,topic) + str;
   },
@@ -2067,6 +2097,9 @@ Helpin.prototype = {
         } else {
           addByDOMSelector.call(this,answer);
         }
+        if(answer.class && answer.matches===undefined){
+          answer.matches = "."+answer.class;
+        }
       },this);
 
       if(q.similarTopics===undefined) q.similarTopics = [];
@@ -2121,11 +2154,6 @@ Helpin.prototype = {
     this.DOM.TopicsList[0][0].scrollTop = 0;
 
     // Clear all filtering. :: TODO: Check / incomplete
-    
-    // Show only relevant by default
-    //this.DOM.hideNonRelevant.attr("hide",true);
-    //this.qFilters.relevant = true;
-
     while(true){
       if(this.qFilters.topics.length===0) break;
       this.unselectKeyword(this.qFilters.topics[0]);
@@ -2133,9 +2161,6 @@ Helpin.prototype = {
     this.DOM.SearchTextBox[0][0].focus();
 
     this.filterTopics();
-
-    // Need to eval topic text again bc it might be context-dependant
-    this.DOM.TopicText.html(function(topic){ return me.getTopicText(topic); } );
   },
   /** -- */
   initDOM: function(){
@@ -2205,23 +2230,19 @@ Helpin.prototype = {
           me.DOM.root.attr("hideRelatedTopics",true);
         }
       });
-    this.DOM.RelatedTopics.append("div").attr("class","TopicInfoShowHide")
-      .on("click",function(){
-        // TODO Show/hide related topics...
-      });
+    this.DOM.RelatedTopics.append("div").attr("class","TopicInfoShowHide");
+
     this.DOM.heyooo = this.DOM.root.append("div").attr("class","heyooo");
 
     this.DOM.browseTopicBlock = this.DOM.heyooo.append("div").attr("class","browseTopicBlock");
     this.DOM.SearchBlock = this.DOM.browseTopicBlock.append("div").attr("class","SearchBlock");
+
     this.initDOM_TextSearch();
     this.initDOM_FilterTypes();
-
-    this.initDOM_Questions();
-
+    this.initDOM_TopicList();
     this.initDOM_PointNClickInfo();
 
-
-    this.showPointNLearn();
+    this.showPointNLearn(); // default mode on initialization
   },
   /** -- */
   initDOM_PointNClickInfo: function(){
@@ -2254,7 +2275,7 @@ Helpin.prototype = {
     this.DOM.overlay_control.append("span").attr("class","GetHelpHeader").text("Get Help");
 
     this.DOM.overlay_control.append("span").attr("class","helpInMode_PointNLearn")
-      .html("<i class='fa fa-hand-pointer-o'></i> Point & Learn")
+      .html("<i class='fa fa-hand-pointer-o'></i> Point &amp; Learn")
       .on("click",function(){ me.showPointNLearn(); });
     this.DOM.overlay_control.append("span").attr("class","helpInMode_BrowseTopics")
       .html("<i class='fa fa-book'></i> Topic Listing")
@@ -2262,14 +2283,13 @@ Helpin.prototype = {
     this.DOM.overlay_control.append("span").attr("class","helpInMode_GuidedTour")
       .html("<i class='fa fa-location-arrow'></i> Guided Tour")
       .on("click",function(){ me.showGuidedTour(); });
-    this.DOM.overlay_control.append("a").attr("class","helpInMode_Video")
+    
+    this.DOM.overlay_control.append("a").attr("class","helpInMode_Video").attr("target","_blank")
       .html("<i class='fa fa-youtube-play'></i> Video Tutorial")
-      .attr("href","https://www.youtube.com/watch?v=3Hmvms-1grU")
-      .attr("target","_blank");
-    this.DOM.overlay_control.append("a").attr("class","helpInMode_Wiki")
+      .attr("href","http://www.youtube.com/watch?v=3Hmvms-1grU");
+    this.DOM.overlay_control.append("a").attr("class","helpInMode_Wiki").attr("target","_blank")
       .html("<i class='fa fa-code'></i> API &amp; More")
-      .attr("href","http://www.github.com/adilyalcin/Keshif/wiki")
-      .attr("target","_blank");
+      .attr("href","http://www.github.com/adilyalcin/Keshif/wiki");
   },
   /** -- */
   initDOM_GuidedTour: function(){
@@ -2280,15 +2300,16 @@ Helpin.prototype = {
       .html("<i class='fa fa-location-arrow'></i> Guided Tour");
 
     this.DOM.GuidedTour.append("span").attr("class","TourStep PreviousStep")
-      .html("<i class='fa fa-arrow-left' style:'font-size: 0.8em;'></i> Previous")
+      .html("<i class='fa fa-arrow-left' style='color: gray;'></i> Previous")
       .on("click",function(){ me.showTourStep_Prev(); });
-
     this.DOM.GuidedTour.append("span").attr("class","TourStep NextStep")
       .html("Next <i class='fa fa-arrow-circle-right'></i>")
       .on("click",function(){ me.showTourStep_Next(); });
 
-    this.DOM.GuidedTourProgressBar = this.DOM.GuidedTour.append("span").attr("class","GuidedTourProgressBar");
+    this.DOM.GuidedTourProgressBar = this.DOM.GuidedTour.append("div").attr("class","GuidedTourProgressBar");
 
+    this.DOM.GuidedTourCurrentStep = this.DOM.GuidedTourProgressBar.append("span")
+      .attr("class","GuidedTourStep GuidedTourCurrentStep");
   },
   /** -- */
   initDOM_TextSearch: function(){
@@ -2311,6 +2332,7 @@ Helpin.prototype = {
         me.filterTopics();
       });
   },
+  /** -- */
   initDOM_FilterTypes: function(){
     var me=this;
 
@@ -2373,16 +2395,42 @@ Helpin.prototype = {
 
     var x;
 
-    x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea");
+    x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 's', title: "Topics that do not<br> match current settings." }); })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); });;
     this.DOM.checkboxRelevant = x.append("input").attr("type","checkbox").attr("id","checkboxRelevant")
+      .attr("checked",true)
       .on("change",function(){ me.filterTopics(); });
     x = x.append("label").attr("for","checkboxRelevant")
     x.append("span").attr("class","ShowHide");
-    x.append("span").html(" non-relevant");
+    x.append("span").html(" non-relevant topics");
 
-    x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea");
-    this.DOM.checkboxPrioritize =x.append("input").attr("type","checkbox").attr("id","checkboxPrioritize");
+    x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 's', title: "Prioritize features that<br> you haven't used yet." }); })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); });;
+    this.DOM.checkboxPrioritize =x.append("input").attr("type","checkbox").attr("id","checkboxPrioritize")
+      .on("change",function(){
+        if(me.DOM.checkboxPrioritize[0][0].checked){
+          me.DOM.checkboxPrioritizeRecent[0][0].checked = false;
+        } 
+        me.filterTopics();
+      });
     x.append("label").attr("for","checkboxPrioritize").html("Prioritize unused");    
+
+    x = this.DOM.BrowseOptions.append("div").attr("class","checkBoxArea")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 's', title: "Prioritize features that<br> you have recently used." }); })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); });;
+    this.DOM.checkboxPrioritizeRecent =x.append("input").attr("type","checkbox").attr("id","checkboxPrioritizeRecent")
+      .on("change",function(){ 
+        if(me.DOM.checkboxPrioritizeRecent[0][0].checked){
+          me.DOM.checkboxPrioritize[0][0].checked = false;
+        } 
+        me.filterTopics();
+      });
+    x.append("label").attr("for","checkboxPrioritizeRecent").html("Prioritize recently used");    
   },
   /** -- */
   filterRelevantOnly: function(){
@@ -2390,6 +2438,9 @@ Helpin.prototype = {
   },
   rankByUnusued: function(){
     return this.DOM.checkboxPrioritize[0][0].checked;
+  },
+  rankByMostRecent: function(){
+    return this.DOM.checkboxPrioritizeRecent[0][0].checked;
   },
   /** -- */
   swapselectKeyword: function(keyword){
@@ -2437,11 +2488,10 @@ Helpin.prototype = {
 
     this.DOM.SelectedThing_Header.html(this.getTopicText(q));
 
-    // SHOW RELEVANT WHEN...
-
-    // 1) Sort 
+    // Context sort
     q.context = q.context.sort(function(a,b){ return b.isRelevant - a.isRelevant; });
-    // 2) Show
+
+    // Context show
     this.DOM.ContextContent.selectAll(".ContextItem").data([]).exit().remove();
     var X = this.DOM.ContextContent.selectAll(".ContextItem").data(q.context, function(c){ return c.topicContext.descr; })
       .enter().append("div").attr("class","ContextItem")
@@ -2454,17 +2504,8 @@ Helpin.prototype = {
 
     this.DOM.TopicRelWhenBlock.attr("showBlockContent",!q.isRelevant);
 
-    me.DOM.TopicBlock.style("display","none");
+    this.DOM.TopicBlock.style("display","none");
     q.similarTopics.forEach(function(c){ _material._topics[c].DOM.style("display","block"); });
-
-/*
-    this.DOM.SimilarTopicsContent.selectAll(".SimilarTopicItem").data([]).exit().remove();
-    X = this.DOM.SimilarTopicsContent.selectAll(".SimilarTopicItem").data(q.similarTopics, function(c){ return c; })
-      .enter().append("div").attr("class","SimilarTopicItem");
-    X.append("span").attr("class","SimilarTopicItemText")
-      .html(function(c){ return me.getTopicText(_material._topics[c]); })
-      .on("click", function(c){ me.selectTopic(_material._topics[c]); });
-      */
 
     // put the answer in the help box (not on the element)
     me.DOM.SelectedThing_Content.html("");
@@ -2521,14 +2562,15 @@ Helpin.prototype = {
       if(this.skipStencil) return;
       dPath += "M "+this.left+" "+this.top+" h "+this.width+" v "+this.height+" h -"+this.width+" Z ";
     });
-    var maskImage = "url(\"data:image/svg+xml;utf8,"+
+    this.browser.DOM.kshfBackground.style("-webkit-mask-image", 
+      "url(\"data:image/svg+xml;utf8,"+
       "<svg xmlns='http://www.w3.org/2000/svg' width='"+total_width+"' height='"+total_height+"'>"+
-        "<path d='"+dPath+"' fill-rule='evenodd' fill='black' /></svg>\")";
-    this.browser.DOM.kshfBackground.style("-webkit-mask-image", maskImage);
-      // TODO: Check SVG validity. Firefox doesn't suport mask-image yet (it's slow as hell anyway.)
+        "<path d='"+dPath+"' fill-rule='evenodd' fill='black' /></svg>\")");
+    // TODO: Check SVG validity. Firefox doesn't suport mask-image yet (it's slow as hell anyway.)
   },
+
   /** -- */
-  initDOM_Questions: function(){
+  initDOM_TopicList: function(){
     var me=this;
 
     this.DOM.TopicsList = this.DOM.heyooo.append("div").attr("class","TopicsList");
@@ -2549,8 +2591,7 @@ Helpin.prototype = {
       .on("mouseenter",function(){ this.tipsy.show(); })
       .on("mouseleave",function(){ this.tipsy.hide(); });
 
-    this.DOM.TopicText = this.DOM.TopicBlock.append("div").attr("class","TopicText")
-      .html(function(topic){ return me.getTopicText(topic); } );
+    this.DOM.TopicText = this.DOM.TopicBlock.append("div").attr("class","TopicText");
   },
   /** -- */
   fHighlightBox: function(text,pos, className){
@@ -2615,6 +2656,7 @@ Helpin.prototype = {
     });
     */
   },
+  /** -- */
   showPanel: function(){
     var me=this;
     document.onkeyup=function(e) {
@@ -2681,7 +2723,7 @@ Helpin.prototype = {
       if(b.isRelevant && !a.isRelevant) return 1;
       var x = b.relevanceWeight - a.relevanceWeight; 
       if(x) return x;
-      return b.id - a.id; // same weight, make sure sort is stable
+      return b.id.localeCompare(a.id); // same weight, make sure sort is stable
     });
     // reorder topics list dom
     this.DOM.TopicBlock.data(this.topicsList, function(d){ return d.id; }).order();
@@ -2698,6 +2740,8 @@ Helpin.prototype = {
 
     // evaluate context
     this.topicsList.forEach(function(topic){ this.evaluateContext(topic); },this);
+
+    this.DOM.TopicText.html(function(topic){ return me.getTopicText(topic); } );
 
     this.sortTopicsByRelevance();
     this.refreshTopicsOutOfContext();
@@ -3049,6 +3093,7 @@ Helpin.prototype = {
         }
       } else if(g.topic!==undefined){
         var _t = _material._topics[g.topic];
+        this.evaluateContext(_t);
         // evaluate on context
         if(_t.isRelevant) {
           this.GuidedTourSeq.push({topic: _t});
@@ -3075,6 +3120,17 @@ Helpin.prototype = {
 
     this.prepareGuidedTourSeq();
 
+    this.DOM.GuidedTourProgressBar.selectAll(".GuidedTourOneStep")
+      .data(new Array(this.GuidedTourSeq.length))
+      .enter()
+        .append("span").attr("class","GuidedTourStep GuidedTourOneStep")
+        .style("width",function(d,i){ return i*(100/(me.GuidedTourSeq.length-1))+"%"; })
+        .on("click",function(d,i){
+          me.GuidedTourStep = i;
+          me.showTourStep();
+          return;
+        })
+
     this.showTourStep();
   },
   /** -- */
@@ -3098,7 +3154,7 @@ Helpin.prototype = {
     this.showResponse(this.GuidedTourSeq[this.GuidedTourStep]);
 
     this.DOM.root.select(".TourStep.PreviousStep").style("display", (this.GuidedTourStep===0)?"none":null);
-    this.DOM.GuidedTourProgressBar.style("width",(this.GuidedTourStep/(this.GuidedTourSeq.length-1))*100+"%");
+    this.DOM.GuidedTourCurrentStep.style("width",(this.GuidedTourStep/(this.GuidedTourSeq.length-1))*100+"%");
   },
   /** -- */
   showTourStep_Prev: function(){
@@ -3207,10 +3263,6 @@ Helpin.prototype = {
     // use the best position
     this.DOM.root[0][0].style.left = Math.min(maxLeft, Math.max(0, initLeft))+"px";
     this.DOM.root[0][0].style.top  = Math.min(maxTop, Math.max(0, initTop))+"px";
-  },
-  /** --- */
-  adssada: function(){
-    this.showNotification();
   },
   /** -- */
   showNotification: function(){

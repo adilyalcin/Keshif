@@ -97,6 +97,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   border: solid 1px black;
   padding: 1px 1px;
 }
+.kshf .topicWeight {
+  display: inline-block;
+  display: none;
+  font-weight: 200;
+  font-size: 0.9em;
+}
 .kshf .panel_overlay[lockedPointNLearn] .DescriptionToUnFreeze {
   display: block !important;
 }
@@ -322,7 +328,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #999;
 }
 .kshf .BrowseOptions > .checkBoxArea > [type="checkbox"] + label .ShowHide:before {
-  content: "Hide";
+  content: "Show";
 }
 .kshf .BrowseOptions > .checkBoxArea > [type="checkbox"]:checked + label .ShowHide:before {
   content: "Show";
@@ -435,18 +441,26 @@ left:calc(50% - 310px);
   font-weight: 100;
 }
 .kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background-color: lightgray;
+}
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar > .GuidedTourStep {
   position: absolute;
   bottom: 0px;
-  height: 3px;
   left: 0px;
   color: red;
-  background-color: #9a968c;
   -webkit-transition: width 500ms ease-in-out;
   -moz-transition: width 500ms ease-in-out;
   -o-transition: width 500ms ease-in-out;
   transition: width 500ms ease-in-out;
 }
-.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar:after {
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar > .GuidedTourCurrentStep {
+  height: 3px;
+  background-color: #6f6e6d;
+}
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar > .GuidedTourCurrentStep:after {
   content: "";
   display: block;
   position: absolute;
@@ -455,6 +469,20 @@ left:calc(50% - 310px);
   width: 8px;
   top: -2px;
   background-color: #6f6e6d;
+  border-radius: 10px;
+  z-index: 100;
+}
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar > .GuidedTourOneStep:after {
+  content: "";
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  right: -4px;
+  height: 6px;
+  width: 6px;
+  top: -5px;
+  background-color: white;
+  border: solid 1px gray;
   border-radius: 10px;
 }
 .kshf .overlay_help .QuestionTypes {
@@ -1025,7 +1053,7 @@ left:calc(50% - 170px);
 .QuestionTypeSelect[selected=true] {
   color: #cb5454;
   font-weight: 500;
-  border-color: red;
+  border-color: #cb5454;
 }
 .QuestionTypeSelect[hasIcon] > .label {
   max-width: calc(100% - 25px);

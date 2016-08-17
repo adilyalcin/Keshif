@@ -92,6 +92,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     padding: 1px 1px;
   }
 
+  .topicWeight{
+    display: inline-block;
+    display: none; // clear this to show the weights
+    font-weight: 200;
+    font-size: 0.9em
+  }
+
+
   .panel_overlay{
     &[lockedPointNLearn] {
       .DescriptionToUnFreeze{ display: block !important; }
@@ -178,6 +186,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     &:hover > span[class^="helpInMode_"]{ color: black; }
+
   }
 
   .overlay_answer{
@@ -308,7 +317,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         + label{
           .ShowHide:before{
-            content: "Hide";
+            content: "Show";
           }
         }
         &:checked + label{
@@ -413,23 +422,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       font-weight: 100;
     }
     > .GuidedTourProgressBar{
-      position: absolute;
-      bottom: 0px;
-      height: 3px;
-      left: 0px;
-      color: red;
-      background-color: #9a968c;
-      .transition(width 500ms ease-in-out);
-      &:after{
+      position: relative;
+      width: 100%;
+      height: 2px;
+      background-color: lightgray;
+      > .GuidedTourStep{
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        color: red;
+        .transition(width 500ms ease-in-out);
+      }
+      > .GuidedTourCurrentStep{
+        height: 3px;
+        background-color: #6f6e6d;
+        &:after{
+          content: "";
+          display: block;
+          position: absolute;
+          right: -4px;
+          height: 8px;
+          width: 8px;
+          top: -2px;
+          border-radius: 10px;
+          background-color: #6f6e6d;
+          border-radius: 10px;
+          z-index: 100;
+        }
+      }
+      > .GuidedTourOneStep:after{
         content: "";
+        cursor: pointer;
         display: block;
         position: absolute;
         right: -4px;
-        height: 8px;
-        width: 8px;
-        top: -2px;
-        border-radius: 10px;
-        background-color: #6f6e6d;
+        height: 6px;
+        width: 6px;
+        top: -5px;
+        background-color: white;
+        border: solid 1px gray;
         border-radius: 10px;
       }
     }
@@ -877,7 +908,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   &[selected=true]{
     color: @color_hoverAction;
     font-weight: 500;
-    border-color: red;
+    border-color: @color_hoverAction;
   }
   &[hasIcon]{
     > .label{ max-width: calc(~'100% - 25px'); }
