@@ -2350,8 +2350,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .header_display_control > .fa[helpin] {
   opacity: 1;
 }
-.kshf .headerGroup > .header_display_control > .buttonSummaryCollapse::before {
-  content: "\f066";
+.kshf .headerGroup > .header_display_control > .buttonSummaryCollapse {
+  display: inline-block;
+}
+.kshf .headerGroup > .header_display_control > .buttonSummaryOpen {
+  display: none;
 }
 .kshf .headerGroup > .header_display_control > .buttonSummaryRemove {
   display: none;
@@ -3825,11 +3828,11 @@ height:calc(100% - 10px);
   height: 6px;
   top: -9px;
 }
-.kshf .kshfSummary[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse {
-  opacity: 1;
+.kshf .kshfSummary[collapsed=true] .buttonSummaryCollapse {
+  display: none !important;
 }
-.kshf .kshfSummary[collapsed=true] .headerGroup > .header_display_control > .fa.buttonSummaryCollapse::before {
-  content: "\f065" !important;
+.kshf .kshfSummary[collapsed=true] .buttonSummaryOpen {
+  display: inline-block !important;
 }
 .kshf .kshfSummary[collapsed=true] .summaryConfigControl {
   display: none;

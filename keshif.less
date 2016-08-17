@@ -1865,7 +1865,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &:hover{ color: @color_hoverAction; }
           &[helpin]{ opacity: 1; }
         }
-        > .buttonSummaryCollapse::before{ content: "\f066"; }
+        > .buttonSummaryCollapse{ display: inline-block; }
+        > .buttonSummaryOpen{ display: none; }
         > .buttonSummaryRemove{ display: none; }
         > .buttonSummaryExpand{ display: none; }
       }
@@ -3042,12 +3043,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         } //
 
         &[collapsed=true]{
-          .headerGroup {
-            > .header_display_control > .fa.buttonSummaryCollapse{
-              opacity: 1;
-              &::before{ content: "\f065" !important; }
-            }
-          }
+          .buttonSummaryCollapse{ display: none !important; }
+          .buttonSummaryOpen{ display: inline-block !important; }
           .summaryConfigControl{ display: none; }
           > .headerGroup > .summaryName{ cursor: pointer; }
           > .wrapper .summaryCategorical{

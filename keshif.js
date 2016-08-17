@@ -5945,12 +5945,12 @@ kshf.Summary_Base.prototype = {
     var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
 
     this.DOM.buttonSummaryCollapse = header_display_control.append("span")
-      .attr("class","buttonSummaryCollapse fa fa-collapse")
+      .attr("class","buttonSummaryCollapse fa fa-compress")
       .each(function(){
         this.tipsy = new Tipsy(this, {
           gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
-          title: function(){ return me.collapsed?kshf.lang.cur.OpenSummary:kshf.lang.cur.MinimizeSummary; }
-        })
+          title: kshf.lang.cur.MinimizeSummary
+        });
       })
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
@@ -5958,7 +5958,25 @@ kshf.Summary_Base.prototype = {
         if(me instanceof kshf.Summary_Set){
           me.setListSummary.setShowSetMatrix(false);
         } else {
-          me.setCollapsedAndLayout(!me.collapsed);
+          me.setCollapsedAndLayout(true);
+        }
+      });
+
+    this.DOM.buttonSummaryOpen = header_display_control.append("span")
+      .attr("class","buttonSummaryOpen fa fa-expand")
+      .each(function(){
+        this.tipsy = new Tipsy(this, {
+          gravity: function(){ return me.panelOrder!==0?'sw':'nw'; },
+          title: kshf.lang.cur.OpenSummary
+        });
+      })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
+        if(me instanceof kshf.Summary_Set){
+          //me.setListSummary.setShowSetMatrix(false);
+        } else {
+          me.setCollapsedAndLayout(false);
         }
       });
 
