@@ -484,7 +484,8 @@ document.addEventListener('DOMContentLoaded',function(){/*fun code to run*/
       
       var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
       keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).style({width: "30px", height: "30px", float: "left"});
-      keshif_logo.append("span").attr("class","keshif_logo_content").html("<strong>Keshif</strong></br>Data Made Explorable");
+      keshif_logo.append("span").attr("class","keshif_logo_content")
+        .html("<div class='subTitle'>Keshif</div><div class='subContent'>Data Made Explorable</div>");
 
       demoHeader.append("div").attr("class","addthis_sharing_toolbox");
 
