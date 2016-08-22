@@ -456,17 +456,17 @@ var _material = {
       matches: '.kshfSummary'
     },
     "Number Summary" : {
-      matches: '.kshfSummary[summary_type="interval"][viewtype="bar"][collapsed="false"]', 
+      matches: '.kshfSummary[summary_type="interval"][viewtype="bar"]:not([collapsed])', 
       info: intervalSummaryInfoFunc,
       pos: "s"
     },
     "Time Summary" : {
-      matches: '.kshfSummary[summary_type="interval"][viewtype="line"][collapsed="false"]', 
+      matches: '.kshfSummary[summary_type="interval"][viewtype="line"]:not([collapsed])', 
       info: intervalSummaryInfoFunc,
       pos: "s"
     },
     "Categorical Summary": {
-      matches: '.kshfSummary[summary_type="categorical"][collapsed="false"]', 
+      matches: '.kshfSummary[summary_type="categorical"]:not([collapsed])', 
       info: function(DOM){
         var summary = DOM.__data__;
         var recordName = this.browser.recordName;
@@ -553,17 +553,17 @@ var _material = {
       matches: ".summaryConfig_ScaleType"
     },
     "Aggregate": {
-      matches: '.kshfSummary[collapsed="false"] .aggrGlyph'
+      matches: '.kshfSummary:not([collapsed]) .aggrGlyph'
     },
     "Category": { 
-      matches: '.kshfSummary[collapsed="false"] .catGlyph', 
+      matches: '.kshfSummary:not([collapsed]) .catGlyph', 
       pos:"se",
       info: function(DOM){
         return aggrDescription.call(this,DOM.__data__, "fa-long-arrow-right");
       },
     },
     "Bin": { 
-      matches: '.kshfSummary[collapsed="false"] .rangeGlyph', 
+      matches: '.kshfSummary:not([collapsed]) .rangeGlyph', 
       pos: "e",
       info: function(DOM){
         return aggrDescription.call(this,DOM.__data__, "fa-long-arrow-up");
@@ -583,7 +583,7 @@ var _material = {
       },
     },
     "Percentile Range": { 
-      matches: '.kshfSummary[collapsed="false"] .aggrGlyph.quantile', 
+      matches: '.kshfSummary:not([collapsed]) .aggrGlyph.quantile', 
       pos: "e",
       info: function(DOM){
         var recordName = this.browser.recordName;
@@ -1932,6 +1932,31 @@ var Helpin = function(browser){
   },3000);
 
   this.initData();
+
+  var x = null;
+  var y = null;
+
+  document.addEventListener('mousemove', function(e) { x = e.pageX; y = e.pageY; });
+
+  document.onkeydown=function(e) {
+    switch(event.keyCode){
+      case 27: me.closePanel(); break; // escape
+      case 37: if(me.browser.panel_overlay.attr("show")==="help-guidedtour") me.showTourStep_Prev(); break; // left
+      case 39: if(me.browser.panel_overlay.attr("show")==="help-guidedtour") me.showTourStep_Next(); break; // right
+      case 72: //h
+        me.showPointNLearn();
+        d3.event = {clientX: x, clientY: y };
+        me.dynamicPointed();
+        me.freezePointed(me.theStencil);
+        break;
+      case 84: //t
+        me.showBrowseTopics();
+        break;
+      case 71: //g
+        me.showGuidedTour();
+        break;
+    }
+  }
 };
 
 Helpin.prototype = {
@@ -2147,6 +2172,7 @@ Helpin.prototype = {
   showBrowseTopics: function(){
     var me=this;
 
+    this.initDOM();
     this.showPanel();
     this.removeTooltips();
 
@@ -2179,11 +2205,7 @@ Helpin.prototype = {
   initDOM: function(){
     var me=this;
 
-    if(this.DOM.SearchBlock) {
-      if(this.selectedTopic) this.closeTopic();
-      this.showPointNLearn();
-      return;
-    }
+    if(this.DOM.SelectedThing_Header) return;
 
     this.initDOM_ControlPanel();
 
@@ -2275,15 +2297,7 @@ Helpin.prototype = {
       .html("<i class='fa fa-bullseye'></i> <b>Click to freeze selection</b>");
     X.append("div").attr("class","DescriptionToUnFreeze")
       .html("<i class='fa fa-bullseye'></i> <b>Click to un-freeze selection</b>")
-      .on("click",function(){
-        if(me.lockedBox) {
-          me.lockedBox.removeAttribute("locked");
-          me.lockedBox.tipsy.jq_tip.attr("locked",null);
-          me.lockedBox = false;
-        }
-        me.DOM.root.attr("hideRelatedTopics",true);
-        me.browser.panel_overlay.attr("lockedPointNLearn",null);
-      });
+      .on("click",function(){ me.unfreezePointed(); });
   },
   /** -- */
   initDOM_ControlPanel: function(){
@@ -2686,24 +2700,10 @@ Helpin.prototype = {
   },
   /** -- */
   showPanel: function(){
-    var me=this;
-    document.onkeyup=function(e) {
-      switch(event.keyCode){
-        case 27: me.closePanel(); break; // escape
-        case 37: if(me.browser.panel_overlay.attr("show")==="help-guidedtour") me.showTourStep_Prev(); break; // left
-        case 39: if(me.browser.panel_overlay.attr("show")==="help-guidedtour") me.showTourStep_Next(); break; // right
-      }
-      if(event.keyCode===27){
-        // escape key
-        me.closePanel();
-      }
-    }
   },
   /** -- */
   closePanel: function(){
     var me = this;
-
-    document.onkeyup=null; // remove keyup handler
 
     this.removeTooltips();
     this.closeTopic();
@@ -3006,6 +3006,7 @@ Helpin.prototype = {
     .style("height",function(){ return this.height+"px"; })
     .each(function(d,i){
       this.skipStencil = (i!==0);
+      if(i===pointedDOMTree.length-1) me.theStencil = this;
       // TODO: Pick up based on screen location (avoid edges) or other relevant metrics.
       var tipsyClass = "tipsy-helpin";
       if(i===pointedDOMTree.length-1) tipsyClass+=" tipsy-primary";
@@ -3054,6 +3055,7 @@ Helpin.prototype = {
   /** -- */
   showPointNLearn: function(){
     var me=this;
+    this.initDOM();
     this.showPanel();
 
     if(this.selectedTopic) this.closeTopic();
@@ -3077,28 +3079,10 @@ Helpin.prototype = {
     this.DOM.overlay_answer
       .on("click.helpin",function(){
         if(me.lockedBox){
-          me.lockedBox.removeAttribute("locked");
-          if(me.lockedBox.tipsy) me.lockedBox.tipsy.jq_tip.attr("locked",null);
-          me.DOM.root.attr("hideRelatedTopics",true);
-          me.browser.panel_overlay.attr("lockedPointNLearn",null);
-
-          var component = _material._components[me.lockedBox.__data__.__temp__];
-          if(component.onUnlock) {
-            component.onUnlock.call(me,me.lockedBox.__data__);
-            me.createStencils();
-          }
-          me.lockedBox = false;
-
+          me.unfreezePointed();
           me.dynamicPointed();
         } else {
-          me.lockedBox = d3.event.target;
-          me.lockedBox.setAttribute("locked",true);
-          if(me.lockedBox.tipsy) me.lockedBox.tipsy.jq_tip.attr("locked",true);
-          me.DOM.root.attr("hideRelatedTopics",null)
-          me.browser.panel_overlay.attr("lockedPointNLearn",true);
-
-          if(me.theComponent.onLock) me.theComponent.onLock.call(me,me.lockedBox.__data__);
-          me.checkBoxBoundaries();
+          me.freezePointed(d3.event.target);
         }
         d3.event.stopPropagation();
         d3.event.preventDefault();
@@ -3109,6 +3093,31 @@ Helpin.prototype = {
         d3.event.preventDefault();
         me.dynamicPointed();
       });
+  },
+  /** -- */
+  freezePointed: function(target){
+    this.lockedBox = target;
+    this.lockedBox.setAttribute("locked",true);
+    if(this.lockedBox.tipsy) this.lockedBox.tipsy.jq_tip.attr("locked",true);
+    this.DOM.root.attr("hideRelatedTopics",null)
+    this.browser.panel_overlay.attr("lockedPointNLearn",true);
+
+    if(this.theComponent.onLock) this.theComponent.onLock.call(this,this.lockedBox.__data__);
+    this.checkBoxBoundaries();
+  },
+  /** -- */
+  unfreezePointed: function(){
+    this.lockedBox.removeAttribute("locked");
+    if(this.lockedBox.tipsy) this.lockedBox.tipsy.jq_tip.attr("locked",null);
+    this.DOM.root.attr("hideRelatedTopics",true);
+    this.browser.panel_overlay.attr("lockedPointNLearn",null);
+
+    var component = _material._components[this.lockedBox.__data__.__temp__];
+    if(component.onUnlock) {
+      component.onUnlock.call(this,this.lockedBox.__data__);
+      this.createStencils();
+    }
+    this.lockedBox = false;
   },
   /** -- */
   closePointNLearn: function(){
@@ -3145,6 +3154,7 @@ Helpin.prototype = {
   showGuidedTour: function(){
     var me=this;
 
+    this.initDOM();
     this.showPanel();
 
     if(this.selectedTopic) this.closeTopic();
@@ -3310,7 +3320,7 @@ Helpin.prototype = {
     // apply
     this.showResponse(this.notifyAction);
     this.clearNotification();
-  }
+  },
   /** -- */
   clearNotification: function(){
     this.browser.DOM.notifyButton.style("display","none");

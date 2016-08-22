@@ -3685,7 +3685,7 @@ kshf.Browser.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide();
           if(me.helpin) 
-            me.helpin.initDOM();
+            me.helpin.showPointNLearn();
           else
             alert("We are working on offering you the best help soon.");
         });
