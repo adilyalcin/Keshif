@@ -190,7 +190,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode] .configUser {
   display: inline-block;
 }
-.kshf[authoringMode] .kshfSummary[collapsed=false][viewType='list']:hover .chartCatLabelResize {
+.kshf[authoringMode] .kshfSummary[viewType='list']:not([collapsed]):hover .chartCatLabelResize {
   display: block !important;
 }
 .kshf[authoringMode] .recordName {
@@ -350,7 +350,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: -ms-flexbox;
   display: flex;
 }
-.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .kshfSummary[collapsed=false] {
+.kshf[showDropZone=true]:not([dropattrtype~="unique"]) .kshfSummary:not([collapsed]) {
   -webkit-flex-grow: 3;
   flex-grow: 3;
   -webkit-box-flex: 3;
@@ -3828,34 +3828,34 @@ height:calc(100% - 10px);
   height: 6px;
   top: -9px;
 }
-.kshf .kshfSummary[collapsed=true] .buttonSummaryCollapse {
+.kshf .kshfSummary[collapsed] .buttonSummaryCollapse {
   display: none !important;
 }
-.kshf .kshfSummary[collapsed=true] .buttonSummaryOpen {
+.kshf .kshfSummary[collapsed] .buttonSummaryOpen {
   display: inline-block !important;
 }
-.kshf .kshfSummary[collapsed=true] .summaryConfigControl {
+.kshf .kshfSummary[collapsed] .summaryConfigControl {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .headerGroup > .summaryName {
+.kshf .kshfSummary[collapsed] > .headerGroup > .summaryName {
   cursor: pointer;
 }
-.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .summaryControls {
+.kshf .kshfSummary[collapsed] > .wrapper .summaryCategorical > .summaryControls {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .scrollToTop {
+.kshf .kshfSummary[collapsed] > .wrapper .summaryCategorical > .scrollToTop {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .aggrGroup {
+.kshf .kshfSummary[collapsed] > .wrapper .summaryCategorical > .aggrGroup {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .wrapper .summaryCategorical > .belowCatChart {
+.kshf .kshfSummary[collapsed] > .wrapper .summaryCategorical > .belowCatChart {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .wrapper .summaryInterval > .histogram {
+.kshf .kshfSummary[collapsed] > .wrapper .summaryInterval > .histogram {
   display: none;
 }
-.kshf .kshfSummary[collapsed=true] > .wrapper .summaryInterval > .intervalSlider {
+.kshf .kshfSummary[collapsed] > .wrapper .summaryInterval > .intervalSlider {
   display: none;
 }
 .kshf .kshfSummary[filtered=true] > .headerGroup .clearFilterButton {
@@ -3871,10 +3871,10 @@ height:calc(100% - 10px);
 .kshf .kshfSummary[filtered=true]:hover > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: block;
 }
-.kshf .kshfSummary[isMultiValued=false][filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
+.kshf .kshfSummary:not([isMultiValued])[filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
   display: inline !important;
 }
-.kshf .kshfSummary[isMultiValued=false][filtered_or="0"] .catGlyph[cFiltered="NOT"][selection="selected"] {
+.kshf .kshfSummary:not([isMultiValued])[filtered_or="0"] .catGlyph[cFiltered="NOT"][selection="selected"] {
   cursor: pointer;
 }
 .kshf .kshfSummary:not([filtered_or="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or {
@@ -3883,10 +3883,10 @@ height:calc(100% - 10px);
 .kshf .kshfSummary:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or {
   display: inline !important;
 }
-.kshf .kshfSummary[isMultiValued=true] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
+.kshf .kshfSummary[isMultiValued] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
   display: inline !important;
 }
-.kshf .kshfSummary[isMultiValued=true]:hover .setMatrixButton {
+.kshf .kshfSummary[isMultiValued]:hover .setMatrixButton {
   display: inline-block !important;
 }
 .kshf .kshfSummary:hover > .headerGroup {
@@ -3898,7 +3898,7 @@ height:calc(100% - 10px);
 .kshf .kshfSummary:hover .missingValueAggr {
   color: #808080;
 }
-.kshf .kshfSummary[hasMap="true"][collapsed="false"] .summaryViewAs {
+.kshf .kshfSummary[hasMap="true"]:not([collapsed]) .summaryViewAs {
   display: inline-block;
 }
 .kshf .kshfSummary[usedForSorting="true"] .headerGroup > .summaryIcons > .useForRecordDisplay {
@@ -3944,23 +3944,23 @@ height:calc(100% - 10px);
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf .kshfSummary[collapsed=false][viewType='bar']:hover .summaryConfigControl {
+.kshf .kshfSummary:not([collapsed])[viewType='bar']:hover .summaryConfigControl {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf .kshfSummary[collapsed=false][summary_type='categorical'][viewType='list']:hover .summaryConfigControl {
+.kshf .kshfSummary:not([collapsed])[summary_type='categorical'][viewType='list']:hover .summaryConfigControl {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf .kshfSummary[collapsed=false] > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand {
+.kshf .kshfSummary:not([collapsed]) > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand {
   display: inline-block !important;
 }
-.kshf .kshfSummary[showConfig=true] .summaryConfig {
+.kshf .kshfSummary[showConfig] .summaryConfig {
   top: 22px;
   opacity: 1;
   pointer-events: all;
 }
-.kshf .kshfSummary[showConfig=true] .summaryConfigControl {
+.kshf .kshfSummary[showConfig] .summaryConfigControl {
   opacity: 1 !important;
   pointer-events: all !important;
   color: black !important;
@@ -4154,15 +4154,6 @@ height:calc(100% - 10px);
 .kshf[measureLabelType="Compare_C"] .aggrGlyph > .measureLabel {
   color: #fffda9 !important;
   text-shadow: 0px 0px 1px black, 0px 0px 1px black;
-}
-.kshf[selectHighlight] {
-  /*      .kshfSummary:not([isMultiValued="true"]):hover {
-        .aggrGlyph:not([cSelection]) > .measureLabel{ 
-          // set the color to original color, map uses black, other summaries use color_item_count
-          color: @color_item_count;
-          fill: black;
-        }
-      }*/
 }
 .kshf[selectHighlight] .percentileChart_Highlight {
   display: block !important;

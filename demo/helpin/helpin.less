@@ -686,6 +686,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           margin: 0px 3px;
         }
       }
+      > .recentlyUsedIcon{
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+        color: black;
+        display: none;
+        font-size: 0.9em;
+      }
       > .TopicIcons{
         position: absolute;
         right: 2px;
@@ -736,7 +744,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
 
   > .SelectedThing_Header{
-    padding: 7px 5px;
+    padding: 7px 25px;
     border-bottom: solid 1px gray;
     font-size: 1.1em;
     font-weight: 400;
@@ -757,15 +765,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       content: "\f047";
       position: absolute;
       right: 2px;
-      top: 4px;
+      top: 8px;
       font-size: 0.9em;
       color: lighten(#9a968c, 15%);
       text-shadow: initial;
-      //.transition(all 200ms linear);
+    }
+    .backButton{
+      display: none;
+      position: absolute;
+      left: 4px;
+      top: 8px;
+      font-size: 0.9em;
+      color: lighten(#9a968c, 15%);
+      text-shadow: initial;
+      cursor: pointer;
+      &:hover{ color: @color_hoverAction !important; }
     }
     &:hover { 
       background-color: darken(#9a968c, 20%);
       &:after{ color: white; }
+      .backButton{ color: white; }
     }
   }
   > .SelectedThing_Content{
@@ -789,7 +808,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       > .subAnswer{
        &:not(:first-child):before{
-         display: inline-block;
+         display: block;
          content: "then";
          color: #BF360C;
          font-family: monospace;
@@ -873,6 +892,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .kshf .panel_overlay[topicAnswer] {
+  
+  &:not([show="help-guidedtour"]) .SelectedThing_Header > .backButton{ display: block; }
+
   > .overlay_answer{ pointer-events: all; }
   .stencilBox{ cursor: pointer; }
   // .BackButton{ display: block !important; }

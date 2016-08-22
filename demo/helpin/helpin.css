@@ -762,6 +762,14 @@ left:calc(50% - 310px);
   color: gray;
   margin: 0px 3px;
 }
+.kshf .overlay_help .TopicsList > .TopicBlock > .recentlyUsedIcon {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  color: black;
+  display: none;
+  font-size: 0.9em;
+}
 .kshf .overlay_help .TopicsList > .TopicBlock > .TopicIcons {
   position: absolute;
   right: 2px;
@@ -812,7 +820,7 @@ left:calc(50% - 310px);
   color: orangered;
 }
 .kshf .overlay_help > .SelectedThing_Header {
-  padding: 7px 5px;
+  padding: 7px 25px;
   border-bottom: solid 1px gray;
   font-size: 1.1em;
   font-weight: 400;
@@ -836,15 +844,31 @@ left:calc(50% - 310px);
   content: "\f047";
   position: absolute;
   right: 2px;
-  top: 4px;
+  top: 8px;
   font-size: 0.9em;
   color: #bebbb5;
   text-shadow: initial;
+}
+.kshf .overlay_help > .SelectedThing_Header .backButton {
+  display: none;
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  font-size: 0.9em;
+  color: #bebbb5;
+  text-shadow: initial;
+  cursor: pointer;
+}
+.kshf .overlay_help > .SelectedThing_Header .backButton:hover {
+  color: #cb5454 !important;
 }
 .kshf .overlay_help > .SelectedThing_Header:hover {
   background-color: #66635a;
 }
 .kshf .overlay_help > .SelectedThing_Header:hover:after {
+  color: white;
+}
+.kshf .overlay_help > .SelectedThing_Header:hover .backButton {
   color: white;
 }
 .kshf .overlay_help > .SelectedThing_Content {
@@ -869,7 +893,7 @@ left:calc(50% - 310px);
   padding: 0px 4px 2px;
 }
 .kshf .overlay_help > .SelectedThing_Content > .answerTooltip > .subAnswer:not(:first-child):before {
-  display: inline-block;
+  display: block;
   content: "then";
   color: #BF360C;
   font-family: monospace;
@@ -996,6 +1020,9 @@ left:calc(50% - 185px);
 }
 .kshf .panel_overlay[show="help-browse"] .TopicBlock {
   font-size: 0.9em;
+}
+.kshf .panel_overlay[topicAnswer]:not([show="help-guidedtour"]) .SelectedThing_Header > .backButton {
+  display: block;
 }
 .kshf .panel_overlay[topicAnswer] > .overlay_answer {
   pointer-events: all;

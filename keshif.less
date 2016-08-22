@@ -171,7 +171,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: inline-block;
       }
       .kshfSummary{
-        &[collapsed=false][viewType='list']:hover {
+        &[viewType='list']:not([collapsed]):hover {
           .chartCatLabelResize{ display: block !important; }
         }
       }
@@ -298,7 +298,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[showDropZone=true]{
       &:not([dropattrtype~="unique"]){
-        .kshfSummary[collapsed=false]{
+        .kshfSummary:not([collapsed]){
           .flex-grow(3);
           .flex(3);
           overflow: hidden;
@@ -3042,7 +3042,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             } // summaryInterval
         } //
 
-        &[collapsed=true]{
+        &[collapsed]{
           .buttonSummaryCollapse{ display: none !important; }
           .buttonSummaryOpen{ display: inline-block !important; }
           .summaryConfigControl{ display: none; }
@@ -3069,13 +3069,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .zoomControl{ display: block; }
           }
         }
-        &[isMultiValued=false]{
+        &:not([isMultiValued]){
           &[filtered_or="0"][filtered_and="0"] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not{ display: inline !important; }
           &[filtered_or="0"] .catGlyph[cFiltered="NOT"][selection="selected"] { cursor: pointer; }
         }
         &:not([filtered_or="0"])  .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
         &:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
-        &[isMultiValued=true]{
+        &[isMultiValued]{
           .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not{ display: inline !important; }
           &:hover .setMatrixButton{ display: inline-block !important; }
         }
@@ -3094,7 +3094,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .missingValueAggr{ color: gray }
       }
 
-      &[hasMap="true"][collapsed="false"]{
+      &[hasMap="true"]:not([collapsed]){
         .summaryViewAs{
           display: inline-block;
         }
@@ -3133,7 +3133,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:hover .useForRecordDisplay{ opacity: 1 !important; pointer-events: all !important; }
       }
 
-      &[collapsed=false]{
+      &:not([collapsed]){
         &[viewType='bar']:hover {
           .summaryConfigControl{ opacity: 1 !important; pointer-events: all !important; }
         }
@@ -3142,7 +3142,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .headerGroup[allCatsInDisplay="false"] .buttonSummaryExpand { display: inline-block !important; }
       }
-      &[showConfig=true]{
+      &[showConfig]{
         .summaryConfig{
           top: 22px;
           opacity: 1;
@@ -3319,19 +3319,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         color: orangered;
         fill: orangered;
       }
-/*      .kshfSummary:not([isMultiValued="true"]):hover {
-        .aggrGlyph:not([cSelection]) > .measureLabel{ 
-          // set the color to original color, map uses black, other summaries use color_item_count
-          color: @color_item_count;
-          fill: black;
-        }
-      }*/
       .timeSVG > [class^="measure_Highlight_"]{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
-      &:not([relativeMode]) .mapGlyph > .aggr.preview{
-        opacity: 1;
-//        .animation(mapPreviewAnimation 800ms infinite ease-in-out);
-      }
+      &:not([relativeMode]) .mapGlyph > .aggr.preview{ opacity: 1; }
       .mapGlyph > .aggr.preview{ opacity: 1; }
     }
 

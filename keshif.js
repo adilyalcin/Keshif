@@ -3663,11 +3663,20 @@ kshf.Browser.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); });
       // Notification
       this.DOM.notifyButton = rightBoxes.append("span").attr("class","notifyButton fa fa-bell")
-        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'n', title: "See Tip" }); })
+        .each(function(){ 
+          this.tipsy = new Tipsy(this, { gravity: 'n', 
+            title: "See Tip<br><div style='font-size: 0.9em; padding-top: 6px;'>Shift+Click to dismiss</div>"
+        }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide();
-          if(typeof helpin !== 'undefined') helpin.showNotification();
+          if(me.helpin) {
+            if(d3.event.shiftKey){
+              me.helpin.clearNotification();
+            } else {
+              me.helpin.showNotification();
+            }
+          }
         });
       // Help
       this.DOM.showHelpIn = rightBoxes.append("span").attr("class","showHelpIn fa fa-question-circle")
@@ -3675,7 +3684,10 @@ kshf.Browser.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide();
-          if(typeof helpin !== 'undefined') helpin.initDOM(); else alert("We are working on offering you the best help soon.");
+          if(me.helpin) 
+            me.helpin.initDOM();
+          else
+            alert("We are working on offering you the best help soon.");
         });
 
       // Fullscreen
@@ -4497,7 +4509,7 @@ kshf.Browser.prototype = {
         var me=this;
 
         if(typeof Helpin !== 'undefined'){
-          helpin = new Helpin(this);
+          this.helpin = new Helpin(this);
         }
 
         if(this.onLoad) this.onLoad.call(this);
@@ -4734,7 +4746,7 @@ kshf.Browser.prototype = {
 
         if(this.onReady) this.onReady();
 
-        if(typeof helpin !== 'undefined') {
+        if(this.helpin) {
           this.DOM.showHelpIn[0][0].tipsy.show();
           setTimeout(function(){ me.DOM.showHelpIn[0][0].tipsy.hide(); }, 5000);
         }
@@ -5060,6 +5072,10 @@ kshf.Browser.prototype = {
       this.refreshTotalViz();
 
       this["crumb_"+compId].showCrumb(selAggregate.summary);
+
+      if(this.helpin){
+        this.helpin.topicHistory.push(_material._topics.T_SelectCompare);
+      }
 
       return cT;
     },
@@ -5887,9 +5903,6 @@ kshf.Summary_Base.prototype = {
     this.DOM.root
       .attr("class","kshfSummary")
       .attr("summary_id",this.summaryID) // can be used to customize a specific summary using CSS
-      .attr("collapsed",this.collapsed)
-      .attr("filtered",false)
-      .attr("showConfig",false)
       .each(function(){ this.__data__ = me; });
   },
   /** -- */
@@ -6073,17 +6086,17 @@ kshf.Summary_Base.prototype = {
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",      function(){ this.tipsy.hide();
-        var open = me.DOM.root.attr("showConfig")==="false";
+        var open = me.DOM.root.attr("showConfig")===null;
         if(open){
           if(me.browser.summaryWithOpenConfig){
             // Close the open summary
-            me.browser.summaryWithOpenConfig.DOM.root.attr("showConfig",false);
+            me.browser.summaryWithOpenConfig.DOM.root.attr("showConfig",null);
           }
           me.browser.summaryWithOpenConfig = me;
         } else {
           me.browser.summaryWithOpenConfig = undefined;
         }
-        me.DOM.root.attr("showConfig",open);
+        me.DOM.root.attr("showConfig",open?true:null);
       });
 
     this.DOM.setMatrixButton = this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
@@ -6194,8 +6207,8 @@ kshf.Summary_Base.prototype = {
     this.collapsed = v;
     if(this.DOM.root){
       this.DOM.root
-        .attr("collapsed",this.collapsed)
-        .attr("showConfig",false);
+        .attr("collapsed",this.collapsed?true:null)
+        .attr("showConfig",null);
       if(!this.collapsed) {
         this.refreshViz_All();
         this.refreshMeasureLabel();
@@ -6977,11 +6990,11 @@ var Summary_Categorical_functions = {
       filtered_or: 0,
       filtered_and: 0,
       filtered_not: 0,
-      filtered_total: 0,
-      isMultiValued: this.isMultiValued,
+      isMultiValued: this.isMultiValued?true:null,
       summary_type: 'categorical',
       hasMap: this.catMap!==undefined,
-      viewType: this.viewType });
+      viewType: this.viewType
+    });
 
     this.insertHeader();
 
@@ -7220,12 +7233,12 @@ var Summary_Categorical_functions = {
     /** -- */
     _update_Selected: function(){
       if(this.DOM.root) {
-        this.DOM.root
-          .attr("filtered",this.isFiltered())
-          .attr("filtered_or",this.summaryFilter.selected_OR.length)
-          .attr("filtered_and",this.summaryFilter.selected_AND.length)
-          .attr("filtered_not",this.summaryFilter.selected_NOT.length)
-          .attr("filtered_total",this.summaryFilter.selectedCount_Total());
+        this.DOM.root.attr({
+          "filtered":     this.isFiltered()?"true":null,
+          "filtered_or":  this.summaryFilter.selected_OR .length,
+          "filtered_and": this.summaryFilter.selected_AND.length,
+          "filtered_not": this.summaryFilter.selected_NOT.length,
+        })
       }
     },
     /** -- */
@@ -7960,6 +7973,11 @@ var Summary_Categorical_functions = {
     /** -- */
     onCatClick_OR: function(ctgry){
       this.filterCategory(ctgry,"OR");
+
+      if(this.browser.helpin){
+        this.browser.helpin.topicHistory.push(_material._topics.T_FilterOr);
+      }
+
       d3.event.stopPropagation();
       d3.event.preventDefault();
     },
@@ -7984,6 +8002,11 @@ var Summary_Categorical_functions = {
       this.browser.preview_not = true;
       this.filterCategory(ctgry,"NOT");
       setTimeout(function(){ me.browser.preview_not = false; }, 1000);
+
+      if(this.browser.helpin){
+        this.browser.helpin.topicHistory.push(_material._topics.T_FilterNot);
+      }
+
       d3.event.stopPropagation();
       d3.event.preventDefault();
     },
@@ -8896,13 +8919,13 @@ var Summary_Interval_functions = {
           if(this.filteredBin){
             this.filteredBin = undefined;
           }
-          me.DOM.root.attr("filtered",false);
+          me.DOM.root.attr("filtered",null);
           if(me.zoomed){
             me.setZoomed(false);
           }
           me.resetFilterRangeToTotal();
           me.refreshIntervalSlider();
-          if(me.DOM.missingValueAggr) me.DOM.missingValueAggr.attr("filtered",null);
+          if(me.DOM.missingValueAggr) me.DOM.missingValueAggr.attr("filtered",false);
         },
         onFilter: function(){
           me.DOM.root.attr("filtered",true);
@@ -10959,7 +10982,6 @@ var Summary_Clique_functions = {
     // Inserts the DOM root under the setListSummary so that the matrix view is attached...
     this.DOM.root = this.setListSummary.DOM.root.insert("div",":first-child")
       .attr("class","kshfSummary setPairSummary")
-      .attr("filtered",false)
       .attr("popupSide",this.popupSide);
 
     // Use keshif's standard header

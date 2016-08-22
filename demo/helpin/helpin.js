@@ -47,7 +47,7 @@ var measureLabelModeInfo = function(){
       "<span class='bolder'>"+Math.round(100*_active/_total)+"%"+"</span>"+
         " of the <span class='bolder'>"+_total+"</span> "+_filtered+this.browser.recordName+".</p>"+
     "<p>All summaries share the same measure-label mode.</p>"+
-    "<p>Percent values cannot be shown when average metric is active.</p>"+
+    "<p>Percent values cannot be shown when average metric is used.</p>"+
     "";
 }
 
@@ -59,7 +59,8 @@ var visualScaleModeInfo = function(){
   return ""+
     "<p>Measurements are visually scaled as <span class='bolder'>"+mode+"</span> value. "+
     "The alternative is <span class='bolder'>"+mode_other+"</span>.<p>"+
-    "<p>Part-of scale reveals distribution information on highlight and compare selections.</p>"+
+    "<p>Part-of scale reveals distribution information on "+
+      "<span class='bolder'>highlight</span> and <span class='bolder'>lock</span> selections.</p>"+
     "<p>All summaries share the same visual scale mode.</p>"+
     "";
     ; 
@@ -384,7 +385,7 @@ var _material = {
       fixBy: 'T_ChangeMetric', // change aggregate measure-metric
     },
     ActiveCompareSelection: {
-      descr: "There is an active compared <i class='fa fa-lock'></i> selection.",
+      descr: "There is an active <i class='fa fa-lock'></i> lock-selection.",
       v: function(){
         if(this.browser.selectedAggr.Compare_A) return true;
         if(this.browser.selectedAggr.Compare_B) return true;
@@ -787,7 +788,7 @@ var _material = {
     "Lock Button": { 
       matches: '.lockButton'
     },
-    "Compare Selection": { 
+    "Lock-Selection": {
       matches: '.breadcrumbs > [class*="crumbMode_Compare_"]'
     },
     "Filter Selection": { 
@@ -921,8 +922,10 @@ _topics: {
     topics: "Aggregate",
     context: "SummaryInBrowser",
     similarTopics: ['T_SelectHighlight','T_SelectCompare','T_FilterAnd'],
-    note: "<p>Tip: Use filtering sparingly when you want to <span class='bolder'>zoom</span>"+
-      " into data from multiple summaries. Filtering across different summaries are merged with AND.</p>",
+    note: function(){
+      return "<p>Use filtering sparingly to explore"+this.browser.recordName+" using multiple summaries.</p>"+
+      "<p>Filtering on multiple summaries is merged with  <span class='AndOrNot_And'>And</span>.</p>"
+    },
     tAnswer: {
       sequence: [
         "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
@@ -961,17 +964,18 @@ _topics: {
     context: "SummaryInBrowser",
     similarTopics: ['T_SelectFilter','T_UnlockSelection'],
     note: 
-      "<p>By moving the mouse, you can compare locked and highlighted selections.</p>"+
-      "<p>At most 3 active locked selections are possible: "+
+      "<p>By moving the mouse, you can compare <br>"+
+        "<span class='bolder'>locked</span> and <span class='bolder'>highlighted</span> selections.</p>"+
+      "<p>At most <span class='bolder'>3</span> locked selections are possible: "+
         "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
         "<span class='colorCoding_Compare_B fa fa-lock'></span> "+
         "<span class='colorCoding_Compare_C fa fa-lock'></span><br>"+
       "Each locked selection has a different color.</p>"+
-      "<p>Changing <i class='fa fa-filter'></i> filtering will clear <i class='fa fa-lock'></i> locked selections.</p>",
+      "<p>Changing filtering will clear locked selections.</p>",
     tAnswer: {
       sequence: [
         "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
-        "<i class='fa fa-lock'></i> Click the lock icon <br> Or<br> Shift+Click on the aggregate"
+        "<i class='fa fa-lock'></i> Click the lock icon <br> Or<br> Shift+Click"
       ]
     },
     activate: function(){
@@ -1063,7 +1067,7 @@ _topics: {
     ]
   },
   T_FilterAnd: {
-    q: "Filter multiple categories using <span class='AndOrNot_And'>And</span> selection",
+    q: "Filter categories in a summary using <span class='AndOrNot_And'>And</span>",
     actions: "Explore+Filter+Select",
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", 
@@ -1072,7 +1076,7 @@ _topics: {
       "<p>Only categories which have some records can be clicked to avoid zero-results.</p>",
     similarTopics: ['T_SelectFilter','T_RemoveCatFilter'],
     tAnswer: {
-      matches: '.catGlyph:not([NoActiveRecords])',
+      matches: '.kshfSummary[isMultiValued="true"][filtered] .catGlyph:not([NoActiveRecords])',
       cElement: "summaries",
       text: "Click on a non-empty category",
       pos: "n",
@@ -1082,7 +1086,7 @@ _topics: {
     }
   },
   T_FilterOr: {
-    q: "Filter multiple categories using <span class='AndOrNot_Or'>Or</span> selection",
+    q: "Filter categories in a summary using <span class='AndOrNot_Or'>Or</span>",
     actions: "Explore+Filter+Select",
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", "FilteredSummary"],
@@ -1102,7 +1106,7 @@ _topics: {
     }
   },
   T_FilterNot: {
-    q: "Filter multiple categories using <span class='AndOrNot_Not'>Not</span> selection",
+    q: "Filter-out a category with <span class='AndOrNot_Not'>Not</span>",
     actions: "Explore+Filter+Select",
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary"],
@@ -1240,7 +1244,7 @@ _topics: {
     }
   },
   T_ChangeMetric: {
-    q: "Measure aggregates by <b style='display:inline-block'>Count, Sum (Total), or Average</b> metric",
+    q: "Measure by <b>Count</b>, <b>Sum</b>, or <b>Average</b> metric",
     actions: "Explore",
     topics: "Measurement+Measure-Metric",
     context: ["SummaryInBrowser", "NumberSummary"],
@@ -1275,7 +1279,7 @@ _topics: {
     tAnswer: {
       class: "scaleModeControl",
       cElement: "summaries",
-      text: "Click axis of<br>measurement values",
+      text: "Click axis of<br> measurement",
       pos: "e"
     },
     activate: function(){
@@ -1337,7 +1341,7 @@ _topics: {
       pos: "n"
     }
   },
-  T_RemFilterSummary: {
+  T_RemSummaryFilter: {
     q: "Remove filtering on a summary",
     actions: "Explore+Add/Remove+Filter",
     topics: "Summary+Filter Selection",
@@ -1362,7 +1366,7 @@ _topics: {
     actions: "Explore+Add/Remove+Filter",
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "OpenSummary", "CategoricalSummary", "FilteredSummary"],
-    similarTopics: ['T_RemFilterSummary','T_ClearFilters'],
+    similarTopics: ['T_RemSummaryFilter','T_ClearFilters'],
     tAnswer: {
       matches: '.catGlyph[cfiltered]',
       cElement: "summaries",
@@ -1375,7 +1379,7 @@ _topics: {
     actions: "Explore+Filter",
     topics: "Filter Selection",
     context: "AnyFiltered",
-    similarTopics: ['T_RemFilterSummary','T_RemoveCatFilter'],
+    similarTopics: ['T_RemSummaryFilter','T_RemoveCatFilter'],
     tAnswer: {
       class: "filterClearAll",
       cElement: "browser", 
@@ -1882,12 +1886,23 @@ var Helpin = function(browser){
 
   // Tracking actions in the main app
   this.actionHistory = [];
+  this.topicHistory = [];
   browser.DOM.root.on("click.helpin",function(){
     // skip clicks on the help or other overlay panels
     var DOM = d3.event.target;
     if(DOM.matches(".panel_overlay *")) return;
     if(DOM.matches(".showHelpIn")) return; // skip click on help button
     me.actionHistory = [DOM].concat(me.actionHistory.slice(0,19));
+    // add to topicHistory
+    me.topicsList.forEach(function(topic){
+      topic.tAnswer.forEach(function(answer){
+        var selector = answer.matches;
+        if(selector===undefined) return;
+        if(DOM.matches(".kshf "+selector)){
+          me.topicHistory = [topic].concat(me.topicHistory.slice(0,19));
+        }
+      },this);
+    })
   });
 
   this.topicsList = [];
@@ -1915,6 +1930,8 @@ var Helpin = function(browser){
     me.notifyAction = {topic: _material._topics['T_ChangeMetric']};
     me.browser.DOM.notifyButton.style("display","inline-block");
   },3000);
+
+  this.initData();
 };
 
 Helpin.prototype = {
@@ -1958,27 +1975,23 @@ Helpin.prototype = {
       topic.isRelevant = topic.isRelevant && isRelevant;
     },this);
 
-    // rank by user actions
-    if(this.rankByUnusued() || this.rankByMostRecent()){
-      var isUsed = false;
-      topic.tAnswer.forEach(function(answer){
-        if(isUsed) return;
-        var selector = answer.matches;
-        if(selector===undefined) return;
-        this.actionHistory.forEach(function(DOM,i){
-          if(isUsed) return;
-          if(DOM.matches(".kshf "+selector)) isUsed = i+1;
-        },this);
-      },this);
+    topic.usedPos = -1;
+    this.topicHistory.some(function(histTopic,i){ 
+      if(histTopic===topic){
+        topic.usedPos = i;
+        return true;
+      }
+      return false;
+    });
 
-      if(isUsed){
-        if(this.rankByUnusued()){
-          // penalty for most recently used items
-          topic.relevanceWeight -= (21-isUsed)*200;
-        } else if(this.rankByMostRecent()){
-          // bonus for most recently used items
-          topic.relevanceWeight += (21-isUsed)*200;
-        }
+    // rank by user actions
+    if(topic.usedPos!==-1 && (this.rankByUnusued() || this.rankByMostRecent())){
+      if(this.rankByUnusued()){
+        // penalty for most recently used items
+        topic.relevanceWeight -= (21-topic.usedPos)*200;
+      } else if(this.rankByMostRecent()){
+        // bonus for most recently used items
+        topic.relevanceWeight += (21-topic.usedPos)*200;
       }
     }
   },
@@ -2172,8 +2185,6 @@ Helpin.prototype = {
       return;
     }
 
-    this.initData();
-
     this.initDOM_ControlPanel();
 
     this.DOM.SelectedThing_Header  = this.DOM.root.append("div").attr("class","SelectedThing_Header")
@@ -2204,6 +2215,18 @@ Helpin.prototype = {
           me.DOM.root.style("box-shadow",null);
           me.browser.DOM.root.attr("drag_cursor",null).on("mousemove", null).on("mouseup", null);
         });
+      });
+    this.DOM.SelectedThing_Header.append("span").attr("class","hContent");
+    this.DOM.SelectedThing_Header.append("span").attr("class","backButton fa fa-arrow-left")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: "Go back" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",function(){
+        this.tipsy.hide();
+        switch(me.browser.panel_overlay.attr("show")){
+          case 'helppointnlearn': me.showPointNLearn(); break;
+          case 'help-browse':     me.showBrowseTopics(); break;
+        }
       });
 
     this.initDOM_GuidedTour();
@@ -2486,7 +2509,7 @@ Helpin.prototype = {
 
     this.DOM.overlay_answer.selectAll(".stencilBox").remove();
 
-    this.DOM.SelectedThing_Header.html(this.getTopicText(q));
+    this.DOM.SelectedThing_Header.select(".hContent").html(this.getTopicText(q));
 
     // Context sort
     q.context = q.context.sort(function(a,b){ return b.isRelevant - a.isRelevant; });
@@ -2522,7 +2545,7 @@ Helpin.prototype = {
         if(typeof t=== "function") t = t.call(this);
       }
       t = t.replace(/\<br\>/gi,' ');
-      this.DOM.SelectedThing_Content.append("div").attr("class","answerTooltip").html(t);
+      if(t.length>0) this.DOM.SelectedThing_Content.append("div").attr("class","answerTooltip").html(t);
     },this);
 
     if(q.isRelevant){
@@ -2579,6 +2602,11 @@ Helpin.prototype = {
         .append("div").attr("class","TopicBlock")
         .each(function(topic){ topic.DOM = d3.select(this); })
         .on("click", function(topic){ me.selectTopic(topic); });
+
+    this.DOM.TopicBlock.append("span").attr("class","recentlyUsedIcon fa fa-history")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Recently used" }); })
+      .on("mouseenter",function(){ this.tipsy.show(); })
+      .on("mouseleave",function(){ this.tipsy.hide(); });
 
     this.DOM.TopicBlock.append("div").attr("class","TopicIcons")
       .selectAll(".icon").data(function(d){ return d.actions.concat(d.topics); })
@@ -2743,6 +2771,16 @@ Helpin.prototype = {
 
     this.DOM.TopicText.html(function(topic){ return me.getTopicText(topic); } );
 
+    this.DOM.TopicBlock.selectAll(".recentlyUsedIcon")
+      .style("display",function(topic){ 
+        return topic.usedPos===-1?"none":"block";
+      })
+      .style("opacity",function(topic){
+        var l=me.topicHistory.length*1.0;
+        return 0.2 + 0.8*(l-topic.usedPos)*(1/l);
+      })
+      ;
+
     this.sortTopicsByRelevance();
     this.refreshTopicsOutOfContext();
     
@@ -2881,7 +2919,8 @@ Helpin.prototype = {
     pointedDOMTree = pointedDOMTree.slice(0,2);
 
     if(pointedDOMTree.length===0){
-      this.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> Point to your area of interest</div>");
+      this.DOM.SelectedThing_Header.select(".hContent")
+        .html("<i class='fa fa-hand-pointer-o'></i> Point to your area of interest</div>");
       this.DOM.SelectedThing_Content.html("No component matches the pointed area");
       return;
     }
@@ -2913,13 +2952,15 @@ Helpin.prototype = {
 
         // Print title and description
         if(componentName && !titlePrinted){
-          this.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> "+componentName+"</div>");
+          this.DOM.SelectedThing_Header
+            .select(".hContent").html("<i class='fa fa-hand-pointer-o'></i> "+componentName+"</div>");
           this.theComponent = x;
           this.theComponent_DOM = dom;
         }
         if(x.info && !infoPrinted) {
           if(componentName){
-            this.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> "+componentName+"</div>");
+            this.DOM.SelectedThing_Header
+              .select(".hContent").html("<i class='fa fa-hand-pointer-o'></i> "+componentName+"</div>");
             titlePrinted = true;
           }
           this.DOM.SelectedThing_Content.html(x.info.call(this, dom));
@@ -3015,8 +3056,6 @@ Helpin.prototype = {
     var me=this;
     this.showPanel();
 
-    if(this.browser.panel_overlay.attr("show")==="helppointnlearn") return;
-
     if(this.selectedTopic) this.closeTopic();
 
     this.browser.panel_overlay.attr("show","helppointnlearn").attr("lockedPointNLearn",null);
@@ -3031,7 +3070,8 @@ Helpin.prototype = {
 
     this.lockedBox = false;
 
-    this.DOM.SelectedThing_Header.html("<i class='fa fa-hand-pointer-o'></i> Point to your area of interest</div>");
+    this.DOM.SelectedThing_Header
+      .select(".hContent").html("<i class='fa fa-hand-pointer-o'></i> Point to your area of interest</div>");
     this.DOM.SelectedThing_Content.html("");
 
     this.DOM.overlay_answer
@@ -3269,7 +3309,10 @@ Helpin.prototype = {
     this.initDOM();
     // apply
     this.showResponse(this.notifyAction);
-    // close the notification (or reduce the number - show next?)
+    this.clearNotification();
+  }
+  /** -- */
+  clearNotification: function(){
     this.browser.DOM.notifyButton.style("display","none");
   }
 };
