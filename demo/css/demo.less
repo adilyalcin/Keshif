@@ -71,18 +71,16 @@ html, body {
   .at-share-btn{
     margin-left: 3px;
   }
-  .keshif_logo{
-    top: 3px;
-    left: 3px;
-    background-color: #EEEEEE;
-    border: solid 1px rgba(0,0,0,0);
-  }
   &:hover{
     .keshif_logo{
       width: 200px;
-      &:hover{
-        //box-shadow: 0px 0px 2px orangered;
-        border-color: orangered;
+      &:hover{ border-color: orangered; }
+      > .keshif_logo_content {
+        > .subContent{ opacity: 1;}
+        > .subTitle{
+          top: 0px;
+          .transform(initial);
+        }
       }
     }
     .at-share-btn{ 
@@ -95,16 +93,18 @@ html, body {
 }
 
 .keshif_logo{
-  position: absolute;
   display: block;
-  top: 5px;
-  left: 5px;
-  width: 30px;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 105px;
   height: 30px;
   font-size: 12px;
+  background-color: #EEEEEE;
+  border: solid 1px rgba(0,0,0,0);
   overflow: hidden;
   cursor: auto;
-  .transition(~'width 500ms ease-in-out, background-color 500ms ease-in-out');
+  .transition(width 500ms ease-in-out, background-color 500ms ease-in-out);
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
@@ -123,6 +123,18 @@ html, body {
     letter-spacing: .12em;
     color: #727365;
     vertical-align: center;
+    > .subTitle{
+      position: relative;
+      font-weight: 700;
+      display: inline-block;
+      .transform(scale(1.4) translateY(3px));
+      .transform-origin(left top);
+      .transition(all 500ms);
+    }
+    > .subContent{ 
+      opacity: 0;
+      .transition(all 500ms);
+    }
   }
 }
 
