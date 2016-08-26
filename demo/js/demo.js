@@ -439,7 +439,10 @@ kshf.Countries = {
   loadGeo: function(browser){
     browser.asyncDataWaitedCnt++;
     // Load world country geometries
-    d3.xhr('data/world-countries.json')
+    // add ./demo directory if needed
+    var x = document.location.pathname.split("/")
+    var pre = x[x.length-2]==="gist"?"../demo/":"";
+    d3.xhr(pre+'data/world-countries.json')
       .get(function(error, data){
         var topojsonData = JSON.parse(data.response);
         topojson.feature(topojsonData, topojsonData.objects.countries)

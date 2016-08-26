@@ -80,7 +80,7 @@ var kshf = {
     en: {
       ModifyBrowser: "Modify browser",
       OpenDataSource: "Open data source",
-      ShowInfoCredits: "Show info &amp; credits",
+      ShowInfoCredits: "Powered by Keshif<br>Show info",
       ShowFullscreen: "Fullscreen",
       RemoveFilter: "Remove filter",
       RemoveAllFilters: "Remove all filters",
@@ -1214,8 +1214,12 @@ kshf.RecordDisplay.prototype = {
     initRecordGeoFeat: function(){
       var _geo_ = this.config.geo;
       if(typeof _geo_ === "string"){
-        var x=_geo_;
-        _geo_ = function(){ return this[x]; }
+        if(_geo_.substr(0,8)==="function"){
+          eval("\"use strict\"; _geo_ = "+_geo_);
+        } else {
+          var x=_geo_;
+          _geo_ = function(){ return this[x]; }
+        }
       }
       // Compute _geoBound_ of each record
       this.browser.records.forEach(function(record){
@@ -4260,6 +4264,10 @@ kshf.Browser.prototype = {
       // Compability with older versions.. Used to specify "sheets" instead of "tables"
       if(this.source.sheets){
         this.source.tables = this.source.sheets;
+      }
+
+      if(typeof this.source.callback === "string"){
+        eval("\"use strict\"; this.source.callback = "+this.source.callback);
       }
 
       if(this.source.tables){
@@ -7479,9 +7487,8 @@ var Summary_Categorical_functions = {
       var zeroPos = this.chartScale_Measure(0);
 
       this.DOM.measure_Active.each(function(_cat){
-        var scaleX = (ratioMode?
-          ((_cat.measure_Active===0)?0:maxWidth):
-          me.chartScale_Measure(_cat.measure('Active'))) ;
+        var scaleX = (ratioMode ? maxWidth: me.chartScale_Measure(_cat.measure('Active'))) ;
+        if(_cat.recCnt.Active===0) scaleX = 0;
         scaleX-=zeroPos;
         kshf.Util.setTransform(this,"translateX("+(width_Text+zeroPos)+"px) scaleX("+scaleX+")");
       });
