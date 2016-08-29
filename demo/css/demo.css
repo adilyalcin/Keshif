@@ -71,21 +71,24 @@ body {
   margin-left: 3px;
 }
 .demoHeader:hover .keshif_logo {
-  width: 200px;
+  width: 180px;
 }
 .demoHeader:hover .keshif_logo:hover {
   border-color: orangered;
+}
+.demoHeader:hover .keshif_logo > .keshif_logo_content > .subContent_2 {
+  opacity: 0;
 }
 .demoHeader:hover .keshif_logo > .keshif_logo_content > .subContent {
   opacity: 1;
 }
 .demoHeader:hover .keshif_logo > .keshif_logo_content > .subTitle {
   top: 0px;
-  -webkit-transform: initial;
-  -moz-transform: initial;
-  -ms-transform: initial;
-  -o-transform: initial;
-  transform: initial;
+  -webkit-transform: scale(1.2);
+  -moz-transform: scale(1.2);
+  -ms-transform: scale(1.2);
+  -o-transform: scale(1.2);
+  transform: scale(1.2);
 }
 .demoHeader:hover .at-share-btn {
   box-shadow: 0px 0px 1px white;
@@ -98,7 +101,7 @@ body {
   position: absolute;
   top: 3px;
   left: 3px;
-  width: 105px;
+  width: 110px;
   height: 30px;
   font-size: 12px;
   background-color: #EEEEEE;
@@ -133,11 +136,12 @@ body {
   position: relative;
   font-weight: 700;
   display: inline-block;
-  -webkit-transform: scale(1.4) translateY(3px);
-  -moz-transform: scale(1.4) translateY(3px);
-  -ms-transform: scale(1.4) translateY(3px);
-  -o-transform: scale(1.4) translateY(3px);
-  transform: scale(1.4) translateY(3px);
+  font-size: 1.1em;
+  -webkit-transform: scale(1.4) translateY(7px);
+  -moz-transform: scale(1.4) translateY(7px);
+  -ms-transform: scale(1.4) translateY(7px);
+  -o-transform: scale(1.4) translateY(7px);
+  transform: scale(1.4) translateY(7px);
   -webkit-transform-origin: left top;
   -moz-transform-origin: left top;
   -ms-transform-origin: left top;
@@ -148,8 +152,24 @@ body {
   -o-transition: all 500ms;
   transition: all 500ms;
 }
+.keshif_logo > .keshif_logo_content > .subContent_2 {
+  opacity: 1;
+  position: absolute;
+  left: 30px;
+  width: 200px;
+  letter-spacing: 0px;
+  font-size: 0.8em;
+  -webkit-transition: all 500ms;
+  -moz-transition: all 500ms;
+  -o-transition: all 500ms;
+  transition: all 500ms;
+}
 .keshif_logo > .keshif_logo_content > .subContent {
   opacity: 0;
+  letter-spacing: 0.1em;
+  font-size: 0.9em;
+  position: relative;
+  top: 1px;
   -webkit-transition: all 500ms;
   -moz-transition: all 500ms;
   -o-transition: all 500ms;
