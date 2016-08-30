@@ -962,30 +962,39 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .filterClearAll {
   display: none;
   position: relative;
-  top: 2px;
-  height: 1em;
-  cursor: pointer;
-  color: white;
-  font-weight: 300;
+  padding: 0px 2px;
+  height: 14px;
   border: 1px #685b2b solid;
   background-color: #685b2b;
+  font-size: 0.7em;
+  font-weight: 300;
   white-space: nowrap;
+  vertical-align: top;
+  cursor: pointer;
+  color: white;
   -webkit-transition: background-color 100ms linear, opacity 300ms linear;
   -moz-transition: background-color 100ms linear, opacity 300ms linear;
   -o-transition: background-color 100ms linear, opacity 300ms linear;
   transition: background-color 100ms linear, opacity 300ms linear;
-}
-.kshf .filterClearAll .title {
-  padding: 0px 2px;
-  font-size: 0.7em;
-  font-weight: 300;
-  vertical-align: top;
 }
 .kshf .filterClearAll:hover {
   text-decoration: underline;
 }
 .kshf .filterClearAll[active=true] {
   display: inline-block;
+}
+.kshf .filterClearAll:before {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  content: "\f0b0";
+  vertical-align: top;
+}
+.kshf .filterClearAll:after {
+  content: "Show all";
 }
 .kshf .measureSelectBox {
   display: none;
@@ -1148,6 +1157,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel_Basic > .measureSelectBox_Wrapper[showMeasureBox="true"] > .measureSelectBox {
   display: block;
+}
+.kshf .panel_Basic > .filterClearAll {
+  top: 3px;
 }
 .kshf .panel_Basic > .rightBoxes {
   font-size: 1.0em;

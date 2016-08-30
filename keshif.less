@@ -742,23 +742,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .filterClearAll{
       display: none;
       position: relative;
-      top: 2px;
-      height: 1em;
-      cursor: pointer;
-      color: white;
-      font-weight: 300;
+      padding: 0px 2px;
+      height: 14px;
       border: 1px #685b2b solid;
       background-color: #685b2b;
+      font-size: 0.7em;
+      font-weight: 300;
       white-space: nowrap;
+      vertical-align: top;
+      cursor: pointer;
+      color: white;
       .transition(background-color 100ms linear, opacity 300ms linear);
-      .title{
-        padding: 0px 2px;
-        font-size: 0.7em;
-        font-weight: 300;
-        vertical-align: top;
-      }
       &:hover{ text-decoration: underline; }
       &[active=true]{ display: inline-block; }
+      &:before{
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: "\f0b0"; // fa-filter
+        vertical-align: top;
+      }
+      &:after{
+        content: "Show all";
+      }
     }
 
     .measureSelectBox{
@@ -880,6 +889,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[showMeasureBox="true"] > .measureSelectBox{ display: block; }
       }
       
+      > .filterClearAll{ top: 3px; }
+
       > .rightBoxes{
         font-size: 1.0em;
         color: #635d46;
