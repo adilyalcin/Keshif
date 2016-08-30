@@ -49,7 +49,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_hoverAction: #cb5454;
 
 
-
 .kshf {
   .bolder{ font-weight: bolder; }
 
@@ -92,6 +91,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     padding: 1px 1px;
   }
 
+  .colorText_Compare_A { color: @color_Compare_A; }
+  .colorText_Compare_B { color: @color_Compare_B; }
+  .colorText_Compare_C { color: @color_Compare_C; }
+
   .topicWeight{
     display: inline-block;
     display: none; // clear this to show the weights
@@ -114,7 +117,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display: none;
     position: absolute;
     top: 20px;
-    right: 0px;
+    right: 20px;
+    width: 75px;
     background-color: #efeadf;
     padding: 2px;
     z-index: 100;
@@ -122,6 +126,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     cursor: default;
     box-shadow: 0px 0px 5px black;
     .user-select(none);
+    .transition(all 200ms);
 
     > .GetHelpHeader{
       display: block;
@@ -134,19 +139,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     > .overlay_Close{
       position: absolute;
       top: -20px;
-      right: 36px;
+      right: 16px;
       font-size: 1.1em;
       background-color: #eae4da;
       padding: 2px;
       border-top-left-radius: 20px;
       border-top-right-radius: 20px;
-      color: gray;
+      color: @color_hoverAction;
       cursor: pointer;
-      &:hover{ color: @color_hoverAction; }
+      .transition(all 200ms);
+    }
+    > .helpInModes{
+      max-height: 0px;
+      overflow: hidden;
+      .transition(max-height 500ms ease-in-out);
     }
 
-
-    > [class^="helpInMode_"]{
+    [class^="helpInMode_"]{
       display: block;
       position: relative;
       border: solid 1px gray;
@@ -169,7 +178,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         text-align: center;
       }
       &:hover{ 
-        text-decoration: underline;
         border-color: @color_hoverAction;
         color: @color_hoverAction !important;
       }
@@ -185,8 +193,57 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    &:hover > span[class^="helpInMode_"]{ color: black; }
+    &[expanded] {
+      right: 0px;
+      width: 115px;
 
+      [class^="helpInMode_"]{ color: black; }
+      > .helpInModes{ max-height: 124px; }
+      > .overlay_Close{ right: 36px; }
+    }
+  }
+
+  .animateState{
+    text-align: right;
+    position: absolute;
+    top: 5px;
+    right: 0px;
+    > .animationProgress{
+      display: inline-block;
+      margin-right: 4px;
+      width: 60px;
+      height: 1em;
+      border: solid 1px lightgray;
+      position: relative;
+      vertical-align: bottom;
+      background-color: white;
+      > .animationProgressIn{
+        display: block;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        height: 100%;
+        width: 1px;
+        background-color: lightgray;
+        .transform-origin(0% 0%);
+        .transform(scaleX(58));
+        &[play]{
+          .animation(progressAction 2s 1 linear);
+        }
+      }
+    }
+    
+    > .animationReplay{
+      cursor: pointer;
+      cursor: pointer;
+      position: absolute;
+      top: 2px;
+      right: 7px;
+      font-size: 0.9em;
+      font-weight: 300;
+      text-shadow: 0px 0px 4px white;
+      &:hover{ color: @color_hoverAction};
+    }
   }
 
   .overlay_answer{
@@ -209,6 +266,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-color: #cc2525;
         box-shadow: 0px 0px 5px #cc2525;
       }
+      > .pointerAction{
+        z-index: 99999;
+        position: absolute;
+        overflow: visible;
+        width: 50px;
+        color: #cd3c06;
+        text-shadow: 0px 0px 4px white;
+        transform: scale(0);
+        .animation(pointerAction 1.5s 1 cubic-bezier(0.14, 0.99, 0.85, 1.79)); 
+      }
     }
   }
 
@@ -230,8 +297,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &.tipsy-primary2{
       > .tipsy-inner{ 
         font-weight: 600; 
-        border: solid 1px orangered;
-        color: darken(orangered, 10%);
+        border: solid 1px @color_hoverAction;
+        color: @color_hoverAction;
       }
     }
     &[locked]{
@@ -241,6 +308,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         box-shadow: 0px 0px 10px #cc2525;
         padding: 5px;
       }
+    }
+    .breadCrumb{
+      font-size: 0.9em;
+      vertical-align: bottom;
     }
   }
 
@@ -328,6 +399,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
   }
+
+  .topicLink{
+    cursor: pointer;
+    &:hover{ 
+      text-decoration: underline;
+      color: orangered;
+    }
+    &:after{
+      content: "*"; // "⚬";
+      position: relative;
+      font-size: 0.6em;
+      top: -6px;
+      //width: 8px;
+      display: inline-block;
+    }
+    &.weakTopicLink{
+      color: gray;
+      font-weight: 200;
+      font-size: 0.9em;
+      &:after{ display: none; }
+    }
+  }
+
+  .encodingInfo {
+    padding-bottom: 1px;
+    .breadCrumb{
+      vertical-align: bottom;
+      position: relative;
+      top: -2px;
+    }
+    > [class^="colorCoding"]{ height: 0.9em; width: 1em; }
+    &:hover{ background-color: white; box-shadow: 0px 0px 4px white; }
+  }
+
 }
 
 
@@ -344,6 +449,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   .flex-direction(column);
   .transition(opacity 500ms linear, box-shadow 200ms ease-in-out, width 600ms ease-in-out, left 600ms ease-in-out, right 600ms ease-in-out, top 600ms ease-in-out, height 600ms ease-in-out );
   .user-select(none);
+
+  &[exp="basis"]{
+    .BrowseOptions{ display: none; }
+  }
 
   > .PointNClick_Info{ 
     display: none;
@@ -426,6 +535,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       width: 100%;
       height: 2px;
       background-color: lightgray;
+      z-index: 10;
       > .GuidedTourStep{
         position: absolute;
         bottom: 0px;
@@ -509,7 +619,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       font-weight: 400;
       border-bottom: solid 1px lightgray;
       font-size: 1.1em;
-      margin-bottom: 3px;
+      margin: 3px 0px;
       position: relative;
     }
     > .TopicInfoShowHide{
@@ -518,7 +628,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       cursor: pointer;
       position: absolute;
       right: 10px;
-      top: 1px;
+      top: 3px;
       &:before{ content: "(Hide)"; }
       &:hover{ color: @color_hoverAction; }
     }
@@ -576,7 +686,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display: none;
     font-weight: 300;
     font-size: 0.8em;
-    margin: 5px 0px;
+    margin: 0px;
     > .ContextContent{
       text-align: left;
       padding: 0px 10px;
@@ -587,11 +697,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .MakeRelevantTopic{
           margin: 0px 5px;
-          color: black;
+          font-size: 0.9em;
+          color: gray;
           cursor: pointer;
           text-decoration: underline;
-          &:before{ content: "( "; }
-          &:after { content: " )"; }
+          &:hover{ color: @color_hoverAction; }
+          //&:before{ content: "( "; }
+          //&:after { content: " )"; }
         }
         &[isRelevant=true]{
           color: black;
@@ -788,7 +900,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
   }
   > .SelectedThing_Content{
-    padding: 10px 5px;
+    position: relative;
     background-color: #f5f4f2; //#efeadf;
     padding: 7px 10px;
     box-shadow: 0px 2px 2px gray;
@@ -820,7 +932,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     > p{
       margin: 0 0 0.7em 0;
     }
-    .breadCrumb{ font-size: 0.9em; }
+    .breadCrumb{ 
+      font-size: 0.8em;
+      vertical-align: bottom;
+    }
   }
   > .SelectedThing_Content_More{
     margin: 5px 0px 5px 0px;
@@ -829,6 +944,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-weight: 300;
     border-bottom: solid 1px gray;
     > p{ margin: 0 0 0.7em 0; }
+    .breadCrumb{ 
+      font-size: 0.8em;
+      vertical-align: bottom;
+    }
   }
 
   > .overlay_Close{ z-index: 1000; }
@@ -839,80 +958,94 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
 }
 
-.kshf .panel_overlay[show="helppointnlearn"] {
-  cursor: pointer;
-  &[lockedPointNLearn] { cursor: default; }
+.kshf .panel_overlay{
+  &[show="help-pointnlearn"] {
+    cursor: help; // pointer
+    &[lockedPointNLearn] { cursor: default; }
 
-  > .overlay_answer{ pointer-events: all; }
-  > .overlay_help{
-    width: 370px;
-    top: 60px;
-    .calc(left, ~'50% - 185px');
-    > .PointNClick_Info{ display: block; }
-    > .FilterBlock{ display: none; }
-    > .RelatedTopics{ display: block; }
-    .TopicsList{ max-height: 110px; }
-    .TopicBlock{ 
-      margin: 3px;
-      padding: 2px;
-      font-size: 0.8em;
-      > .TopicIcons{ display: none !important; }
-      > .TopicText{ padding-right: 5px;}
-    }
-    .TextSearchBlock{ display: none; }
-  }
-}
-
-.kshf .panel_overlay[show="help-guidedtour"] {
-  > .overlay_help{
-    width: 370px;
-    top: 60px;
-    .calc(left, ~'50% - 185px');
-    > .GuidedTour{ display: block; }
-    .SelectedThing_Header > .fa-hand-pointer-o{ display: none; }
-    > .RelatedTopics{ display: block; }
-    .TopicsList{ max-height: 110px; }
-    .TopicBlock{ 
-      margin: 3px;
-      padding: 2px;
-      font-size: 0.8em;
-      > .TopicIcons{ display: none !important; }
-    }
-    .TextSearchBlock{ display: none; }
-  }
-}
-
-.kshf .panel_overlay[show="help-browse"]{
-  &:not([topicAnswer]) [class^="SelectedThing"]{ display: none !important; }
-  .heyooo > .browseTopicBlock{
-    .display(flex);
-    .flex-direction(column);
-  }
-  .TopicBlock{ font-size: 0.9em; }
-}
-
-.kshf .panel_overlay[topicAnswer] {
-  
-  &:not([show="help-guidedtour"]) .SelectedThing_Header > .backButton{ display: block; }
-
-  > .overlay_answer{ pointer-events: all; }
-  .stencilBox{ cursor: pointer; }
-  // .BackButton{ display: block !important; }
-  > .overlay_help{
-    width: 370px;
-    .calc(left, ~'50% - 170px');
-    top: 100px;
-    > .TopicRelWhenBlock{ display: block; }
-    > .RelatedTopics{ display: block; }
-    .browseTopicBlock{ display: none !important; }
-    .TopicsList{ max-height: 250px; }
-    .TopicBlock{
-      margin: 3px;
-      font-size: 0.8em;
-      > .TopicIcons{ display: none !important; }
+    > .overlay_answer{ pointer-events: all; }
+    > .overlay_help{
+      width: 370px;
+      top: 60px;
+      .calc(left, ~'50% - 185px');
+      > .PointNClick_Info{ display: block; }
+      > .FilterBlock{ display: none; }
+      > .RelatedTopics{ display: block; }
+      .TopicsList{ max-height: 90px; }
+      .TopicBlock{ 
+        margin: 3px;
+        padding: 2px;
+        font-size: 0.8em;
+        > .TopicIcons{ display: none !important; }
+        > .TopicText{ padding-right: 5px;}
+      }
+      .TextSearchBlock{ display: none; }
     }
   }
+  &[show="help-guidedtour"] {
+    > .overlay_help{
+      width: 370px;
+      top: 60px;
+      .calc(left, ~'50% - 185px');
+      > .GuidedTour{ display: block; }
+      .SelectedThing_Header > .fa-hand-pointer-o{ display: none; }
+      > .RelatedTopics{ display: block; }
+      .TopicsList{ max-height: 90px; }
+      .TopicBlock{ 
+        margin: 3px;
+        padding: 2px;
+        font-size: 0.8em;
+        > .TopicIcons{ display: none !important; }
+      }
+      .TextSearchBlock{ display: none; }
+    }
+  }
+  &[show="help-overview"]{
+    > .overlay_help{
+      width: 400px;
+    }
+    .SelectedThing_Content_More{ display: none}
+  }
+  &[show="help-overlayonly"]{
+    > .overlay_help{ display: none }
+  }
+  &[show="help-topiclisting"]{
+    &:not([topicAnswer]) {
+      [class^="SelectedThing"]{ display: none !important; }
+      > .overlay_help{
+        height: 90%;
+        > .heyooo{ height: 100%; }
+      }
+    }
+    .heyooo > .browseTopicBlock{
+      .display(flex);
+      .flex-direction(column);
+    }
+    .TopicBlock{ font-size: 0.9em; }
+  }
+  &[topicAnswer] {
+    
+    &:not([show="help-guidedtour"]) .SelectedThing_Header > .backButton{ display: block; }
+
+    > .overlay_answer{ pointer-events: all; }
+    .stencilBox{ cursor: pointer; }
+    > .overlay_help{
+      width: 370px;
+      .calc(left, ~'50% - 170px');
+      top: 100px;
+      > .TopicRelWhenBlock{ display: block; }
+      > .RelatedTopics{ display: block; }
+      .browseTopicBlock{ display: none !important; }
+      .TopicsList{ max-height: 250px; }
+      .TopicBlock{
+        margin: 3px;
+        font-size: 0.8em;
+        > .TopicIcons{ display: none !important; }
+      }
+    }
+  }
 }
+
 
 .QuestionTypeSelect{
   display: block;
@@ -934,6 +1067,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   }
   &[hasIcon]{
     > .label{ max-width: calc(~'100% - 25px'); }
+  }
+  &[noTopics]{
+    pointer-events: none;
+    color: gray;
   }
   > .label{
     max-width: calc(~'100% - 10px');
@@ -1023,16 +1160,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   &:hover{ color: @color_hoverAction;}
 }
 
-.encodingInfo {
-  padding-bottom: 1px;
-  .breadCrumb{
-    vertical-align: bottom;
-    position: relative;
-    top: -2px;
-  }
-  &:hover{
-    background-color: #e2e2e2;
-  }
-}
+.keyframes(~'pointerAction, 0% { transform: scale(0); } 100%{ transform: scale(3); }');
 
+.keyframes(~'progressAction, 0% { transform: scaleX(1); } 100%{ transform: scaleX(58); }');
 
