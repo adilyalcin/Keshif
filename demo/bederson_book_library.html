@@ -135,8 +135,9 @@ $(document).ready( function(){
       { name: "Reviewed", description: "Mouse-over the book image to see my review",
         value: function(){ return (this.Review!=="")?"Yes":"No"; } },
       { name: "# of Pages", value: "NumPages", collapsed: true },
-      { name: "Year Read", value: "ReadYear", panel: "middle", collapsed: true },
-      { name: "Year Publication", value: "PubYear", panel: "middle", description: "(Excl. Books Pre-1990)" }
+      { name: "Year Read", value: "ReadYear", panel: "middle", collapsed: true, timeFormat: "%Y" },
+      { name: "Year Publication", value: "PubYear", panel: "middle", 
+        description: "(Excl. Books Pre-1990)", timeFormat: "%Y" }
     ],
     recordDisplay: {
       sortBy: "Year Read",
