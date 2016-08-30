@@ -95,7 +95,7 @@ var kshf = {
       Percentiles: "Percentiles",
       LockToCompare: "Lock selection",
       Unlock: "Unlock",
-      ChangeMeasureFunc: "Change measure-metric",
+      ChangeMeasureFunc: "Change metric",
       Search: "Search",
       CreatingBrowser: "Creating Keshif Browser",
       Rows: "Rows",
@@ -1730,6 +1730,79 @@ kshf.RecordDisplay.prototype = {
         .on("mouseup"   ,function(){ me.setTextSearchSummary(me.movedSummary); });
       x.append("div").attr("class","dropZone_textSearch_text").text("Text search");
 
+      var processKeyEvent = function(dom){
+        me.textFilter.filterStr = dom.value.toLowerCase();
+
+        // convert string to query pieces
+        me.textFilter.filterQuery = [];
+        if(me.textFilter.filterStr!=="") {
+          // split the input by " character
+          me.textFilter.filterStr.split('"').forEach(function(block,i){
+            if(i%2===0) {
+              block.split(/\s+/).forEach(function(q){ me.textFilter.filterQuery.push(q)});
+            } else {
+              me.textFilter.filterQuery.push(block);
+            }
+          });
+          // Remove the empty strings
+          me.textFilter.filterQuery = me.textFilter.filterQuery.filter(function(v){ return v!==""});
+        }
+        
+        // Enter pressed
+        if (event.keyCode == '13'){
+          dom.tipsy.hide();
+          if(d3.event.shiftKey) {
+            // Compare
+            if(me.textFilter.filterStr!=="") {
+              me.browser.setSelect_Compare();
+            } else {
+              me.textFilter.clearFilter();
+            }
+          } else {
+            // Filter
+            if(me.textFilter.filterStr!=="") {
+              me.textFilter.addFilter();
+            } else {
+              me.textFilter.clearFilter();
+            }
+          }
+          return;
+        }
+
+        if(dom.timer) clearTimeout(dom.timer);
+        dom.timer = setTimeout( function(){
+          if(me.textFilter.filterQuery.length==0){
+            dom.tipsy.hide();
+            me.browser.clearSelect_Highlight();
+            return;
+          }
+          dom.tipsy.show();
+          // Highlight selection
+          var summaryFunc = me.textSearchSummary.summaryFunc;
+          var records = [];
+          me.browser.records.forEach(function(record){
+            var f;
+            if(me.textFilter.multiMode==='or') 
+              f = ! me.textFilter.filterQuery.every(function(v_i){
+                var v = summaryFunc.call(record.data,record);
+                if(v===null || v===undefined) return true;
+                return (""+v).toLowerCase().indexOf(v_i)===-1;
+              });
+            if(me.textFilter.multiMode==='and')
+              f = me.textFilter.filterQuery.every(function(v_i){
+                var v = summaryFunc.call(record.data,record);
+                return (""+v).toLowerCase().indexOf(v_i)!==-1;
+              });
+            if(f) records.push(record);
+          });
+          me.browser.clearSelect_Highlight();
+          me.browser.flexAggr_Highlight.records = records;
+          me.browser.flexAggr_Highlight.summary = me.recordViewSummary;
+          me.browser.setSelect_Highlight();
+          dom.timer = null;
+        }, 200);
+      };
+
       this.DOM.recordTextSearch.append("i").attr("class","fa fa-search searchIcon");
       this.DOM.recordTextSearch.append("input").attr("type","text").attr("class","mainTextSearch_input")
         .each(function(){ 
@@ -1740,78 +1813,11 @@ kshf.RecordDisplay.prototype = {
         .on("blur",function(){
           this.tipsy.hide();
         })
+        .on("keydown",function() { d3.event.stopPropagation(); })
+        .on("keypress",function(){ d3.event.stopPropagation(); })
         .on("keyup",function(){
-          var x = this;
-          me.textFilter.filterStr = x.value.toLowerCase();
-
-          // convert string to query pieces
-          me.textFilter.filterQuery = [];
-          if(me.textFilter.filterStr!=="") {
-            // split the input by " character
-            me.textFilter.filterStr.split('"').forEach(function(block,i){
-              if(i%2===0) {
-                block.split(/\s+/).forEach(function(q){ me.textFilter.filterQuery.push(q)});
-              } else {
-                me.textFilter.filterQuery.push(block);
-              }
-            });
-            // Remove the empty strings
-            me.textFilter.filterQuery = me.textFilter.filterQuery.filter(function(v){ return v!==""});
-          }
-          
-          // Enter pressed
-          if (event.keyCode == '13'){
-            this.tipsy.hide();
-            if(d3.event.shiftKey) {
-              // Compare
-              if(me.textFilter.filterStr!=="") {
-                me.browser.setSelect_Compare();
-              } else {
-                me.textFilter.clearFilter();
-              }
-            } else {
-              // Filter
-              if(me.textFilter.filterStr!=="") {
-                me.textFilter.addFilter();
-              } else {
-                me.textFilter.clearFilter();
-              }
-            }
-            return;
-          }
-
-          if(this.timer) clearTimeout(this.timer);
-          this.timer = setTimeout( function(){
-            if(me.textFilter.filterQuery.length==0){
-              x.tipsy.hide();
-              me.browser.clearSelect_Highlight();
-              return;
-            }
-            x.tipsy.show();
-            // Highlight selection
-            var summaryFunc = me.textSearchSummary.summaryFunc;
-            var records = [];
-            me.browser.records.forEach(function(record){
-              var f;
-              if(me.textFilter.multiMode==='or') 
-                f = ! me.textFilter.filterQuery.every(function(v_i){
-                  var v = summaryFunc.call(record.data,record);
-                  if(v===null || v===undefined) return true;
-                  return (""+v).toLowerCase().indexOf(v_i)===-1;
-                });
-              if(me.textFilter.multiMode==='and')
-                f = me.textFilter.filterQuery.every(function(v_i){
-                  var v = summaryFunc.call(record.data,record);
-                  return (""+v).toLowerCase().indexOf(v_i)!==-1;
-                });
-              if(f) records.push(record);
-            });
-            me.browser.clearSelect_Highlight();
-            me.browser.flexAggr_Highlight.records = records;
-            me.browser.flexAggr_Highlight.summary = me.recordViewSummary;
-            me.browser.setSelect_Highlight();
-            x.timer = null;
-          }, 200);
+          processKeyEvent(this);
+          d3.event.stopPropagation();
         });
       this.DOM.recordTextSearch.append("span").attr("class","fa fa-times-circle clearSearchText")
         .attr("mode","and")
@@ -3335,7 +3341,7 @@ kshf.Browser.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.closeMeasureSelectBox(); });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Header")
-        .text("Choose measure-metric")
+        .text(kshf.lang.cur.ChangeMeasureFunc)
         .on("mousedown", function (d, i) {
           me.DOM.root.attr("pointerEvents",false);
 
@@ -3363,8 +3369,8 @@ kshf.Browser.prototype = {
       var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
       m.append("span").attr("class","measureSelectBox_Content_FuncType")
         .selectAll(".measureFunctionType").data([
-          {v:"Count", l:"Count (#)"},
-          {v:"Sum", l:"Sum (Total)"},
+          {v:"Count", l:"Count"},
+          {v:"Sum", l:"Sum"},
           {v:"Avg", l:"Average"},
         ]).enter()
         .append("div").attr("class", function(d){ return "measureFunctionType measureFunction_"+d.v})
@@ -3468,12 +3474,15 @@ kshf.Browser.prototype = {
           this.setAttribute("contenteditable", false);
           me.recordName = this.textContent;
         })
+        .on("keyup"   ,function(){ d3.event.stopPropagation(); })
+        .on("keypress",function(){ d3.event.stopPropagation(); })
         .on("keydown",function(){
           if(event.keyCode===13){ // ENTER
             this.parentNode.setAttribute("edittitle",false);
             this.setAttribute("contenteditable", false);
             me.recordName = this.textContent;
           }
+          d3.event.stopPropagation();
         })
         .on("click",function(){
           this.tipsy.hide();
@@ -3688,10 +3697,17 @@ kshf.Browser.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide();
-          if(me.helpin) 
-            me.helpin.showPointNLearn();
-          else
+          if(me.helpin){
+            if(exp_basis){
+              me.helpin.showTopicListing();
+            } else if(exp_helpin){
+              me.helpin.showOverlayOnly();
+            } else {
+              me.helpin.showPointNLearn();
+            }
+          }else{
             alert("We are working on offering you the best help soon.");
+          }
         });
 
       // Fullscreen
@@ -3753,8 +3769,6 @@ kshf.Browser.prototype = {
         .on("mouseenter",function(){ this.tipsy.show(); })
         .on("mouseleave",function(){ this.tipsy.hide(); })
         .on("click",     function(){ this.tipsy.hide(); me.clearFilters_All(); });
-      this.DOM.filterClearAll.append("span").attr("class","title").html(
-        "<i class='fa fa-filter' style='vertical-align: top'></i> "+kshf.lang.cur.ShowAll);
     },
     /* -- */
     insertDOM_Infobox: function(){
@@ -3790,7 +3804,7 @@ kshf.Browser.prototype = {
 
         this.insertSourceBox();
 
-        // ITEM DETAILS 
+        // RECORD DETAILS 
         this.DOM.overlay_recordDetails = this.panel_overlay.append("span").attr("class","overlay_content overlay_recordDetails");
         this.DOM.overlay_recordDetails.append("div").attr("class","overlay_Close fa fa-times-circle")
           .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: kshf.lang.cur.Close }); })
@@ -3904,7 +3918,10 @@ kshf.Browser.prototype = {
           .attr("type","text")
           .attr("class","gdocLink")
           .attr("placeholder",'https://docs.google.com/spreadsheets/d/**************')
+          .on("keydown",function(){ d3.event.stopPropagation(); })
+          .on("keypress",function(){ d3.event.stopPropagation(); })
           .on("keyup",function(){
+            d3.event.stopPropagation();
             gdocLink_ready.style("opacity",this.value===""?"0":"1");
             var input = this.value;
             if(source_type==="GoogleSheet"){
@@ -4036,6 +4053,8 @@ kshf.Browser.prototype = {
                 .on("mouseleave",function(){ this.tipsy.hide(); });
 
         this.DOM.tableName = x.append("input").attr("type","text").attr("class","tableName")
+          .on("keydown",function(){ d3.event.stopPropagation(); })
+          .on("keypress",function(){ d3.event.stopPropagation(); })
           .on("keyup",function(){
             sourceSheet = this.value;
             actionButton.attr("disabled",!readyToLoad());
@@ -5782,14 +5801,16 @@ kshf.Summary_Base.prototype = {
         d3.event.preventDefault();
         d3.event.stopPropagation();
       })
+      .on("keyup"   ,function(){ d3.event.stopPropagation(); })
+      .on("keypress",function(){ d3.event.stopPropagation(); })
       .on("keydown",function(){
         if(d3.event.keyCode===13){ // ENTER
           this.parentNode.setAttribute("edittitle",false);
           this.setAttribute("contenteditable",false);
           me.browser.changeSummaryName(me.summaryName,this.textContent);
           d3.event.preventDefault();
-          d3.event.stopPropagation();
         }
+        d3.event.stopPropagation();
       });
 
     this.DOM.nugget.append("div").attr("class","fa fa-code editCodeButton")
@@ -9026,9 +9047,9 @@ var Summary_Interval_functions = {
       if(minIsLarger && maxIsSmaller){
         return "<b>"+this.printWithUnitName(minValue)+"</b> to <b>"+this.printWithUnitName(printMax)+"</b>";
       } else if(minIsLarger){
-        return "<b>at least "+this.printWithUnitName(minValue)+"</b>";
+        return "<b>min. "+this.printWithUnitName(minValue)+"</b>";
       } else {
-        return "<b>at most "+this.printWithUnitName(printMax)+"</b>";
+        return "<b>max. "+this.printWithUnitName(printMax)+"</b>";
       }
     },
     /** -- */
