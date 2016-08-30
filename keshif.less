@@ -36,7 +36,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 @layout_animation: ~'transform 700ms ease-in-out, background-color 250ms ease-in-out';
 @bar_animation: ~'transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear';
-@reorder_animation: ~'all 500ms ease-in-out';
+@layout_transition: height 700ms ease-in-out;
 
 @color_bars: #B1BDC5; //#B0BFCA; //#98ABB9; //#8699A8;
 @color_distr_total: #DEE2E6;
@@ -108,8 +108,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .transition(@layout_animation);
         .tick{ .transition(transform 500ms ease-out); }
       }
-      .wrapper{ .transition(height 700ms ease-in-out); }
-      .panels_Above{ .transition(height 700ms ease-in-out); }
+      .wrapper{ .transition(@layout_transition); }
+      .panels_Above{ .transition(@layout_transition); }
       .controlLine {
         > .base{ .transition(@bar_animation); }
         > .rangeHandle{ .transition(@bar_animation); }
@@ -207,6 +207,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[measurefunc="Count"]{
       .measureFunction_Count{ color: black !important; font-weight: 600; }
+      .measureSelectBox_Content_Summaries{ display: none !important; }
     }
     &[measurefunc="Avg"]{
       .measurePercentControl{ 
@@ -765,6 +766,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: absolute;
       left: 0px;
       top: 0px;
+      min-width: 190px;
       margin-top: 22px;
       z-index: 2000;
       background-color: white;
@@ -805,6 +807,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .flex(1);
           vertical-align: top;
           text-align: right;
+          padding-right: 3px;
+          border-right: dashed 1px gray;
           > .measureFunctionType{
             display: block;
             margin-bottom: 2px;
@@ -2458,7 +2462,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .wrapper{
             position: relative;
             overflow: hidden;
-            .transition(height 700ms ease-in-out);
+            .transition(@layout_transition);
             // so that absolute positioned elements will not overflow
 
             &[showMeasureAxis_2] .measureAxis_2 { display: block; }
@@ -2564,7 +2568,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   overflow-x: hidden;
                   display: block;
                   z-index: 5;
-                  .transition(~'height 700ms ease-in-out');
+                  .transition(@layout_transition);
                   .user-select(none);
 
                   > .chartBackground{
@@ -2726,7 +2730,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     pointer-events: all;
 //                    overflow-x: hidden;
 //                    overflow-y: visible;
-                    .transition(~'height 700ms ease-in-out');
+                    .transition(@layout_transition);
                     > .timeSVG{
                       .transition(~'opacity 500ms linear');
                       //overflow: visible;
@@ -3229,7 +3233,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           > .line{
             width: 0px;
             border-left: dotted 1px @color_axis_line;
-            .transition(~'top 700ms ease-in-out, height 700ms ease-in-out');
+            .transition(top 700ms ease-in-out, @layout_transition);
           }
         }
       }
@@ -3381,7 +3385,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       .recordDisplayWrapper{
-        // TODO?
+        .transition(@layout_transition);
       }
       .recordMap_Base{
         height: 100%;
@@ -3460,7 +3464,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
           background-color: white;
           // height is set dynamically by JavaScript
-          .transition(~'height 700ms ease-in-out');
+          .transition(@layout_transition);
 
           > .dragWidthHandle{
             z-index: 200;
@@ -3749,8 +3753,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         cursor: pointer;
         &:hover{ color: orangered; }
       }
-      > .animationControl{
-      }
     }
 
     .recordNodeLink_SVG{
@@ -3768,8 +3770,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .user-select(none);
       &[noanim="false"]{
         .rows > .row {
-          .transition(@reorder_animation);
-          > .line{ .transition(~'all 200ms ease-in-out'); }
+          .transition(all 500ms ease-in-out);
+          > .line{ .transition(all 200ms ease-in-out); }
         }
       }
       > .summaryControls {

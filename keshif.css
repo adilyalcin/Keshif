@@ -234,6 +234,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: black !important;
   font-weight: 600;
 }
+.kshf[measurefunc="Count"] .measureSelectBox_Content_Summaries {
+  display: none !important;
+}
 .kshf[measurefunc="Avg"] .measurePercentControl {
   pointer-events: none !important;
 }
@@ -989,6 +992,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   left: 0px;
   top: 0px;
+  min-width: 190px;
   margin-top: 22px;
   z-index: 2000;
   background-color: white;
@@ -1047,6 +1051,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
   vertical-align: top;
   text-align: right;
+  padding-right: 3px;
+  border-right: dashed 1px gray;
 }
 .kshf .measureSelectBox > .measureSelectBox_Content > .measureSelectBox_Content_FuncType > .measureFunctionType {
   display: block;
@@ -4255,6 +4261,12 @@ height:calc(100% - 10px);
 }
 .kshf .recordDisplay > .dropZone_recordView[readyToDrop=true] {
   background-color: #ffbca3;
+}
+.kshf .recordDisplay .recordDisplayWrapper {
+  -webkit-transition: height 700ms ease-in-out;
+  -moz-transition: height 700ms ease-in-out;
+  -o-transition: height 700ms ease-in-out;
+  transition: height 700ms ease-in-out;
 }
 .kshf .recordDisplay .recordMap_Base {
   height: 100%;
