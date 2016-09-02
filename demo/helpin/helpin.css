@@ -54,6 +54,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .helpin-breadcrumb.fa-lock {
   background-color: #2f4f4f;
 }
+.kshf .topicMedia {
+  display: block;
+  margin: 0 auto;
+  max-width: 95%;
+  box-shadow: 0px 0px 5px gray;
+  margin-bottom: 12px;
+}
 .kshf .fa-histogram-flip {
   -webkit-transform: scale(1, -1) rotate(90deg);
   -moz-transform: scale(1, -1) rotate(90deg);
@@ -473,6 +480,48 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   background-color: white;
   box-shadow: 0px 0px 4px white;
 }
+.kshf[exp="basis"] .BrowseOptions {
+  display: none;
+}
+.kshf[exp="basis"] .ContextItem > .RelevantIcon {
+  display: none;
+}
+.kshf[exp="basis"] .MakeRelevantTopic {
+  display: none;
+}
+.kshf[exp="basis"] .animateState {
+  display: none !important;
+}
+.kshf[exp="basis"] .ContextItem {
+  color: black !important;
+}
+.kshf[exp="train"] .TopicInfoBlock {
+  display: none;
+}
+.kshf[exp="train"] .RelatedTopics {
+  display: none !important;
+}
+.kshf[exp="train"] .topicLink {
+  pointer-events: none !important;
+}
+.kshf[exp="train"] .topicLink:after {
+  display: none;
+}
+.kshf[exp] .rightBoxes .authorButton {
+  display: none !important;
+}
+.kshf[exp] .rightBoxes .datasource {
+  display: none !important;
+}
+.kshf[exp] .rightBoxes .notifyButton {
+  display: none !important;
+}
+.kshf[exp] .rightBoxes .viewFullscreen {
+  display: none !important;
+}
+.kshf[exp] .rightBoxes .logoHost {
+  display: none !important;
+}
 .kshf .overlay_help {
   width: 540px;
   position: absolute;
@@ -501,9 +550,6 @@ left:calc(50% - 310px);
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-.kshf .overlay_help[exp="basis"] .BrowseOptions {
-  display: none;
 }
 .kshf .overlay_help > .PointNClick_Info {
   display: none;
@@ -615,6 +661,10 @@ left:calc(50% - 310px);
   background-color: #6f6e6d;
   border-radius: 10px;
   z-index: 100;
+}
+.kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar > .GuidedTourOneStep:hover:after {
+  border-color: #cb5454;
+  background-color: #cb5454;
 }
 .kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar > .GuidedTourOneStep:after {
   content: "";

@@ -34,12 +34,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 var exp_basis = false;
 var exp_helpin = false;
+var exp_train = false;
 
 if(location.search==="?exp=basis"){
   exp_basis = true;
 }
 if(location.search==="?exp=helpin"){
   exp_helpin = true;
+}
+if(location.search==="?exp=train"){
+  exp_train = true;
 }
 
 var measureLabelModeInfo = function(){
@@ -78,9 +82,10 @@ var visualScaleModeInfo = function(){
 };
 
 var percentileInfo = "<p>Each block shows a percentile range, such as 20%-30%. "+
-  "Smaller ranges appear towards the middle and have darker color. "+
-  "The median (%50) is shown as ❙.</p>"+
-  "<p>Point to a percentile block for more information.</p>"+
+  "The median (%50) is shown using <b>|</b>.<br>"+
+  "The percentile ranges towards the median are darker. "+
+  "</p>"+
+//  "<p>Point to a percentile block for more information.</p>"+
   "<p>This chart is not affected by "+
     "<span class='topicLink' topicName='T_ChangeMetric'>metric</span>, "+
     "<span class='topicLink' topicName='T_ChangeMeasureLabel'>measure-label mode</span>, and "+
@@ -165,9 +170,6 @@ var intervalSummaryInfoFunc = function(DOM){
   var recordName = summary.browser.recordName;
   var _min = summary.printWithUnitName(summary.intervalRange.org.min);
   var _max = summary.printWithUnitName(summary.intervalRange.org.max);
-  var _scale = (summary.scaleType==='log') ? (
-    "<p>The range groups for this summary are created on a <span class='bolder'>log-scale</span> "+
-    "to reveal distribution of potentially skewed data.</p>") : "";
 
   var str="";
   str+="<p>This summarizes the <span class='bolder'>"+summaryName+"</span> of "+recordName+".</p>";
@@ -180,14 +182,24 @@ var intervalSummaryInfoFunc = function(DOM){
   }
   _measure = _measure.replace(" of ","").replace(" of","");
 
-  var encoding = "<p><i class='fa fa-bar-chart'></i> "+
-    "The chart shows the distribution of ";
+  var encoding = "<p>";
+  encoding += "<i class='fa fa-"+(summary.scaleType==='time'?'line':'bar')+"-chart'></i> ";
+  encoding += "The chart shows the distribution of ";
   if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
   encoding += "<span class='bolder'>"+(_measure===""?"Count":_measure)+"</span> of "+recordName;
   if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
   encoding += " per each range.</p>";
 
-  return str+encoding+_scale;
+  return str+encoding+
+    ( summary.scaleType==='log' ? (
+      "<p>The range groups for this summary are created on a <span class='bolder'>log-scale</span> "+
+      "to reveal distribution of potentially skewed data.</p>") : "")+
+    ( summary.percentileChartVisible ? (
+      "<p>The horizontal chart below shows the percentile distributions of the data.</p>"
+      ) : "")+
+    ""
+      
+    ;
 };
 
 var printBreadcrumb = function(sType, summary, aggr){
@@ -196,6 +208,13 @@ var printBreadcrumb = function(sType, summary, aggr){
     "<span class='crumbText'>"+
       "<span class='bolder'>"+summary.summaryName+"</span>: "+
       summary.printAggrSelection(aggr)+"</span></span>";
+};
+
+var printBreadcrumb_Dummy = function(sType, _name, _value){
+  return "<span class='breadCrumb crumbMode_"+sType+"' ready='true'>"+
+    "<span class='breadCrumbIcon fa'></span>"+
+    "<span class='crumbText'>"+
+      "<span class='bolder'>"+_name+"</span>: "+_value+"</span></span>";
 };
 
 var aggrDescription = function(aggr, encodingIcon){
@@ -572,14 +591,14 @@ var _material = {
       matches: '.kshfSummary:not([collapsed]) .catGlyph', 
       pos:"se",
       info: function(DOM){
-        return aggrDescription.call(this,DOM.__data__, "fa-long-arrow-right");
+        return aggrDescription.call(this,DOM.__data__, "fa-arrows-h");
       },
     },
     "Range": { 
       matches: '.kshfSummary:not([collapsed]) .rangeGlyph', 
       pos: "e",
       info: function(DOM){
-        return aggrDescription.call(this,DOM.__data__, "fa-long-arrow-up");
+        return aggrDescription.call(this,DOM.__data__, "fa-arrows-v");
       }
     },
     "Percentile Chart": {
@@ -668,9 +687,15 @@ var _material = {
       info: function(DOM){
         var measureLabel = "<span class='bolder'>"+this.browser.getGlobalActiveMeasure()+"</span>";
         var measureFunc  = this.browser.getMeasureFuncTypeText().replace(" of ","");
+
+        var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter")[0].length;
+        if(filterSel===0) filterSel = "none";
+
         var str = '';
         str+="<p>This section shows the global measurement.<p>"
-          +"<p>It reflects the <span class='topicLink' topicName='T_ChangeMetric'>selected metric</span> and filters.</p>";
+          +"<p>It reflects the <span class='topicLink' topicName='T_ChangeMetric'>selected metric</span> "+
+            "<span style='color:gray'>("+this.browser.measureFunc+")</span> and "+
+            "filters <span style='color:gray'>(currently "+filterSel+")</span>.</p>";
         if(measureFunc===''){
           str += "There are "+"<span class='bolder'>"+measureLabel+"</span> "+measureFunc;
           str +=" "+this.browser.recordName+" in the";
@@ -857,13 +882,21 @@ _topics: {
     actions: "Explore+Select",
     topics: "Aggregate",
     context: ["SummaryInBrowser", "OpenSummary"],
+    media: "T_SelectHighlight.gif",
     note: function(){
-      var str = "<p>You can highlight "+this.browser.recordName+" aggregates as categories, number/time ranges, or invalid values.</p>";
+      var str="";
+      str += "<p>You can highlight "+this.browser.recordName+" in categories, number/time ranges, or invalid values.</p>";
       
       if(!exp_basis) str+="<p>As an example, one aggregate is highlighted.</p>";
+
+      var breadcrumb;
+      if(exp_basis){
+        breadcrumb = printBreadcrumb_Dummy("Highlight","Summary Name","Value");
+      } else {
+        breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
+      }
       
-      str+="<p>"+printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate)
-        +"on the top section shows the highlight-selection.</p>"+
+      str+="<p>"+breadcrumb+"on the top section shows the highlight-selection.</p>"+
       "<p>Highlighted "+this.browser.recordName+" are shown in "+
         "<span style='color: orangered; font-weight: 500;'>orange</span> across all summaries.</p>"+
       "<p>You can observe distribution of highlighted records in all other summaries, as well as individually.</p>"+
@@ -943,13 +976,22 @@ _topics: {
     topics: "Aggregate",
     context: "SummaryInBrowser",
     similarTopics: ['T_SelectHighlight','T_SelectCompare','T_FilterAnd'],
+    media: "T_SelectFilter.gif",
     note: function(){
-      var str = "<p>You can filter "+this.browser.recordName+" aggregates as categories, number/time ranges, or invalid values.</p>";
+      var str = "";
+
+      str += "<p>You can filter "+this.browser.recordName+" in categories, number/time ranges, or invalid values.</p>";
 
       if(!exp_basis) str += "<p>As an example, one aggregate is filtered.</p>";
       
-      str += "<p>"+printBreadcrumb("Filter",this.context.highlightedSummary, this.context.highlightedAggregate)
-        +"on the top section shows the filter-selection.</p>"+ 
+      var breadcrumb;
+      if(exp_basis){
+        breadcrumb = printBreadcrumb_Dummy("Highlight","Summary Name","Value");
+      } else {
+        breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
+      }
+      
+      str += "<p>"+breadcrumb+"on the top section shows the filter-selection.</p>"+ 
         "<p>Filtered "+this.browser.recordName+" are removed from the data browser.</p>"+
         //"<p>Use filtering to explore "+this.browser.recordName+" using multiple summaries.</p>"+
         "<p>Filtering on multiple summaries is merged with  <span class='AndOrNot_And'>And</span>.</p>"+
@@ -969,7 +1011,7 @@ _topics: {
       
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) Mouse-over an aggregate","n","tipsy-primary2");
     },
     animate: {
       0.5: function(){
@@ -978,19 +1020,17 @@ _topics: {
         this.context.highlightedSummary.onAggrHighlight(this.context.highlightedAggregate);
       },
       // Show the action ****************************************************************
-      2: function(){
+      2.5: function(){
         this.context.HighlightedDOM[0].stencilBox.append("div")
           .attr("class","pointerAction").append("span").attr("class","fa fa-bullseye");
-        this.fHighlightBox("Click on the highlighted aggregate","s","tipsy-primary2",true);
-        this.context.highlightedSummary.onAggrLeave(this.context.highlightedAggregate);
-      },
-      // Activate Filter Action *********************************************************
-      3.5: function(){
+        this.fHighlightBox("2) Click on the highlighted aggregate","s","tipsy-primary2",true);
+//        this.context.highlightedSummary.onAggrLeave(this.context.highlightedAggregate);
         this.context.highlightedAggregate.DOM.aggrGlyph.dispatchEvent(new MouseEvent('click', {
           'view': window,
           'bubbles': true,
           'cancelable': true
         }));
+
       },
       // Show breadcrumb ****************************************************************
       5: function(){
@@ -1020,7 +1060,7 @@ _topics: {
           this.context.HighlightedDOM.push(record.DOM.record);
           return true;
         },this);
-        this.fHighlightBox("All visible records satisfy the filtering selection.","n");
+        this.fHighlightBox("All remaining records satisfy the filtering selection.","n");
       }
     },
     deactivate: function(){
@@ -1036,13 +1076,22 @@ _topics: {
     topics: "Aggregate",
     context: "SummaryInBrowser",
     similarTopics: ['T_SelectFilter','T_UnlockSelection'],
+    media: "T_SelectCompare.gif",
     note: function(){
-      var str = "<p>You can lock "+this.browser.recordName+" aggregates as categories, number/time ranges, or invalid values.</p>";
+      var str = "";
+
+      str += "<p>You can lock "+this.browser.recordName+" in categories, number/time ranges, or invalid values.</p>";
       
       if(!exp_basis) str+="<p>As an example, one aggregate is locked.</p>";
       
-      str+="<p>"+printBreadcrumb("Compare_A",this.context.highlightedSummary, this.context.highlightedAggregate)
-        +"on the top section shows the lock-selection.</p>"+
+      var breadcrumb;
+      if(exp_basis){
+        breadcrumb = printBreadcrumb_Dummy("Highlight","Summary Name","Value");
+      } else {
+        breadcrumb = printBreadcrumb("Highlight", this.context.highlightedSummary, this.context.highlightedAggregate);
+      }
+      
+      str+="<p>"+breadcrumb+"on the top section shows the lock-selection.</p>"+
       "<p>Locked "+this.browser.recordName+" are shown across all summaries.</p>"+
       "<p>At most <span class='bolder'>3</span> color-coded lock-selections are possible: "+
         "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
@@ -1057,7 +1106,7 @@ _topics: {
     tAnswer: {
       sequence: [
         "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
-        "<i class='fa fa-lock'></i> Click the lock icon <br> Or<br> Shift+Click aggregate"
+        "<i class='fa fa-lock'></i> Click the lock icon <br> Or<br> Shift+Click the aggregate"
       ]
     },
     activate: function(){
@@ -1067,7 +1116,7 @@ _topics: {
 
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) Mouse-over an aggregate","n","tipsy-primary2");
     },
     animate: {
       0.5: function(){
@@ -1075,10 +1124,10 @@ _topics: {
           .attr("class","pointerAction").append("span").attr("class","fa fa-mouse-pointer").style("font-size","0.7em");
         this.context.highlightedSummary.onAggrHighlight(this.context.highlightedAggregate);
       },
-      2: function(){
+      2.5: function(){
         this.context.HighlightedDOM = [
           d3.select(this.context.highlightedAggregate.DOM.aggrGlyph).select(".lockButton")[0][0]];
-        this.fHighlightBox("Click the lock icon <br>Or Shift+Click aggregate","s","tipsy-primary2",true);
+        this.fHighlightBox("2) Click the lock icon <br>Or Shift+Click the aggregate","s","tipsy-primary2",true);
 
         this.context.HighlightedDOM[0].stencilBox.append("div")
           .attr("class","pointerAction").append("span").attr("class","fa fa-bullseye").style("font-size","0.7em");
@@ -1087,12 +1136,12 @@ _topics: {
         this.context.highlightedSummary.onAggrLeave(this.context.highlightedAggregate);
       },
       // Show breadcrumb ****************************************************************
-      4: function(){
+      4.5: function(){
         this.context.HighlightedDOM = [ this.browser['crumb_Compare_'+this.context.fakeCompare].DOM[0][0] ];
         this.fHighlightBox("This breadcrumb shows the lock-selection.","n");
       },
       // Show the other (explain) aggregate *********************************************
-      5.5: function(){
+      6: function(){
         var cT = this.context.fakeCompare;
         var _aggr = pickExplainAggr.call(this.browser,'Compare_'+cT);
         this.context.HighlightedDOM = [_aggr.DOM.aggrGlyph];
@@ -1108,7 +1157,7 @@ _topics: {
           ,"n");
       },
       // 
-      7: function(){
+      7.5: function(){
         var cT = this.context.fakeCompare;
         this.context.HighlightedDOM = [];
         var minY = this.browser.recordDisplay.DOM.recordGroup[0][0].scrollTop;
@@ -1126,7 +1175,7 @@ _topics: {
           this.browser.recordName+" <br> change their background color.","n");
       },
       //
-      8: function(){
+      9: function(){
         // pick a new aggregate
         var _aggr = pickSelectedAggr.call(this.browser);
         this.context.tempAggr = _aggr;
@@ -1150,8 +1199,9 @@ _topics: {
     actions: "Explore+Select",
     topics: "Aggregate+Compared Measure+Compare Selection",
     context: ["SummaryInBrowser", "ActiveCompareSelection"],
-    note: "Changing filtering also removes all lock-selections.",
     similarTopics: ['T_SelectCompare'],
+    media: "T_UnlockSelection.gif",
+    note: "Changing filtering also removes all lock-selections.",
     tAnswer: [
       { matches: '[class*="crumbMode_Compare_"]',
         cElement: "browser",
@@ -1169,13 +1219,15 @@ _topics: {
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", 
       "CategoricalMultiValSummary", "FilteredSummary"],
-    note: "<p>And-selection is possible <i>only if</i> records have multiple categorical values.</p>"+
-      "<p>Only categories which have some records can be clicked to avoid zero-results.</p>",
+    media: "T_FilterAnd.gif",
+    note: ""+
+      "<p>And-selection is possible <i>only if</i> records have multiple categorical values.</p>"+
+      "<p>Only categories which have some active records can be clicked.</p>",
     similarTopics: ['T_SelectFilter','T_RemoveCatFilter'],
     tAnswer: {
       matches: '.kshfSummary[isMultiValued="true"][filtered] .catGlyph:not([NoActiveRecords])',
       cElement: "summaries",
-      text: "Click on a non-empty category",
+      text: "Click on a category",
       pos: "n",
       filter: function(){
         this.context.HighlightedDOM = this.context.HighlightedDOM.slice(0,1);
@@ -1187,7 +1239,8 @@ _topics: {
     actions: "Explore+Filter+Select",
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", "FilteredSummary"],
-    note: "<p>Or-selection is possible if at least onecategory has been filtered.</p>",
+    media: "T_FilterOr.gif",
+    note: "<p>Or-selection is possible if at least one category has been filtered.</p>",
     similarTopics: ['T_SelectFilter','T_RemoveCatFilter'],
     tAnswer: {
       matches: '.catGlyph:not([cfiltered])',
@@ -1208,6 +1261,7 @@ _topics: {
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary"],
     similarTopics: ['T_SelectFilter','T_RemoveCatFilter'],
+    media: "T_FilterNot.gif",
     tAnswer: {
       sequence: [
         "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
@@ -1254,6 +1308,7 @@ _topics: {
     topics: "Time Summary+Number Summary",
     context: ["SummaryInBrowser", "IntervalSummary", "FilteredSummary"],
     similarTopics: ['T_ZoomInOutRange'],
+    media: "T_AdjustFilterRange.gif",
     tAnswer: [
       { matches: ".controlLine > .base.active", 
         cElement: "summaries", 
@@ -1263,7 +1318,7 @@ _topics: {
         cElement: "summaries", 
         text: "Click & drag the end-points<br> to adjust the limits",
         pos: "s" }
-    ]
+    ],
   },
   T_SaveFiltering: {
     q: function(){
@@ -1272,6 +1327,7 @@ _topics: {
     actions: "Explore+Save+Filter",
     topics: "Filter Selection",
     context: ["SummaryInBrowser", "FilteredSummary"],
+    media: "T_SaveFiltering.png",
     note: "<p>Saved selections will be added to Saved Selections summary as new category.</p>"+
       "<p>Save the filtering to revisit the same selections later, and to create richer selection queries, such as "+
         "to define multiple ranges on numeric intervals, or to mix differen summaries with OR selection in between.</p>",
@@ -1286,8 +1342,9 @@ _topics: {
     actions: "Explore+Select",
     text: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "CategoricalSummaryWithTextSearch"],
-    note: "The categories that match will be used to filter records.",
     similarTopics: ['T_RecordTextSearch'],
+    media: "T_CategoryTextSearch.gif",
+    note: "The categories that match will be used to filter records.",
     tAnswer: {
       class: "catTextSearch",
       cElement: "summaries",
@@ -1299,15 +1356,16 @@ _topics: {
     actions: "Explore+Select",
     topics: "Record Panel+Record Text Search+Record",
     context: ["RecordDisplay", "RecordTextSearch"],
-    note: "If you type multiple words, you can specify if <b>all</b> or <b>some</b> words need to match a record.",
     similarTopics: ['T_CategoryTextSearch'],
+    media: "T_RecordTextSearch.gif",
+    note: "If you type multiple words, you can specify if <b>all</b> or <b>some</b> words need to match a record.",
     tAnswer: {
       class: "recordTextSearch",
       cElement: "recordDisplay",
       text: "<b>Type your record text search aboove record display.</b><br><br>"+
         "Matching records will be highlighted as you type.<br><br>"+
-        "<b>Enter</b> to filter records.<br>"+
-        "<b>Shift+Enter</b> to lock records for comparison.", 
+        "<b>Enter</b> to filter.<br>"+
+        "<b>Shift+Enter</b> to compare.", 
       pos: "n"
     }
   },
@@ -1316,6 +1374,7 @@ _topics: {
     actions: "Explore+Select",
     topics: "Aggregate",
     context: ["SummaryInBrowser", "OpenSummary", "SummaryWithMissingValues"],
+    media: "T_ExploreMissingVal.gif",
     note: "<i class='fa fa-ban'></i> appears only when some records have missing/invalid values in related summary.<br>"+
       "Darker icon color means more records with missing/invalid values.",
     tAnswer: {
@@ -1335,8 +1394,9 @@ _topics: {
     actions: "Explore+View",
     topics: "Measurement+Measure-Label",
     context: ["SummaryInBrowser", "NotAverageMeasure", "OpenSummary"],
-    note: measureLabelModeInfo,
     similarTopics: ['T_ChangeMetric', 'T_ChangeVisualScale'],
+    media: "T_ChangeMeasureLabel.gif",
+    note: measureLabelModeInfo,
     tAnswer: {
       class: "measurePercentControl",
       cElement: "summaries",
@@ -1365,6 +1425,7 @@ _topics: {
     topics: "Measurement+Metric",
     context: ["SummaryInBrowser", "NumberSummary"],
     similarTopics: ['T_ChangeMeasureLabel', 'T_ChangeVisualScale'],
+    media: "T_ChangeMetric.gif",
     note: measureMetricInfo,
     tAnswer: {
       sequence: [
@@ -1390,8 +1451,9 @@ _topics: {
     actions: "Explore+View",
     topics: "Measurement+Visual Scale Mode",
     context: ["SummaryInBrowser","OpenSummary"],
-    note: visualScaleModeInfo,
     similarTopics: ['T_ChangeMeasureLabel', 'T_ChangeMetric'],
+    media: "T_ChangeVisualScale.gif",
+    note: visualScaleModeInfo,
     tAnswer: {
       class: "scaleModeControl",
       cElement: "summaries",
@@ -1440,11 +1502,12 @@ _topics: {
       pos: "e"
     }
   },
-  T_RetrieveRecordDetails: {
+  T_GetRecordDetails: {
     q: "View record details",
     actions: "Explore+View+Select",
     topics: "Record",
     context: ["RecordDisplay", "RecordsWithDetailToggle"],
+    media: "T_GetRecordDetails.gif",
     note: "Record details (all attributes) are shown in a popup panel.",
     tAnswer: {
       class: "recordToggleDetail",
@@ -1485,6 +1548,7 @@ _topics: {
     topics: "Summary+Filter Selection",
     context: ["SummaryInBrowser", "FilteredSummary"],
     similarTopics: ['T_RemoveCatFilter','T_ClearFilters'],
+    media: [ "T_RemSummaryFilter.gif", "T_RemSummaryFilter_2.gif"],
     tAnswer: [
       {
         class: "clearFilterButton",
@@ -1505,6 +1569,7 @@ _topics: {
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "OpenSummary", "CategoricalSummary", "FilteredSummary"],
     similarTopics: ['T_RemSummaryFilter','T_ClearFilters'],
+    media: "T_RemoveCatFilter.gif",
     tAnswer: {
       matches: '.catGlyph[cfiltered]',
       cElement: "summaries",
@@ -1530,8 +1595,9 @@ _topics: {
     actions: "Explore+Sort",
     topics: "Record Panel",
     context: ["RecordDisplay", "RecordDisplayAsList"],
-    note: "<i class='fa fa-sort-amount-desc'></i> appears when you mouse-over the record panel.",
     similarTopics: ['T_CatSortRev', 'T_RecSortChange'],
+    media: "T_RecSortRev",
+    note: "<i class='fa fa-sort-amount-desc'></i> appears when you mouse-over the record panel.",
     tAnswer: {
       class: "recordSortButton", 
       cElement: "recordDisplay", 
@@ -1544,9 +1610,9 @@ _topics: {
     actions: "Explore+Sort",
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "OpenSummary", "CategoricalSummary", "SortableSummary"],
-    note: "<i class='fa fa-sort-amount-desc'></i> appears when you mouse-over the summary"+
-      " and if categories can be sorted in reverse.",
     similarTopics: ['T_RecSortRev'],
+    media: "T_CatSortRev",
+    note: "<i class='fa fa-sort-amount-desc'></i> appears when you mouse-over the summary, if categories can be sorted in reverse.",
     tAnswer: {
       class: "catSortButton",
       cElement: "summaries", 
@@ -1560,6 +1626,7 @@ _topics: {
     topics: "Record Panel",
     // TODO: More than one sorting option available.
     context: ["RecordDisplay", "RecordDisplayAsList", "SummaryInBrowser", "IntervalSummary"], 
+    media: "T_RecSortChange.gif",
     note: "Records can be sorted using number or time summaries.<br><br>"+
       "<i class='fa fa-sort'></i> appears when you mouse-over the summary.<br> "+
       "Active sorting summary always shows <i class='fa fa-sort'></i> for quick overview.",
@@ -1584,6 +1651,7 @@ _topics: {
     actions: "Navigate",
     topics: "Time Summary+Number Summary",
     context: ["SummaryInBrowser", "OpenSummary", "IntervalSummary", "FilteredSummary"],
+    media: "T_ZoomInOutRange.gif",
     note: "<i class='fa fa-search-plus'></i> / <i class='fa fa-search-minus'></i> appears when you mouse-over an open summary.",
       // TODO: You cannot zoom beyond maximum resolution of time data.
       // TODO: You cannot zoom beyond step-scale.
@@ -1593,7 +1661,7 @@ _topics: {
       cElement: "summaries",
       text: "Click<br><i class='fa fa-search-plus'></i> / <i class='fa fa-search-minus'></i>", 
       pos: "sw"
-    }
+    },
   },
   T_SetMatrix: {
     q: "Explore pairwise relations / Show pair matrix",
@@ -1613,6 +1681,7 @@ _topics: {
     actions: "Explore+Show/Hide+Configure",
     topics: "Number Summary+Percentile Chart",
     context: ["SummaryInBrowser","OpenSummary","IntervalSummary","NumberSummary","SummaryOpenConfig"],
+    media: "T_Percentiles.gif",
 //    note: percentileInfo, // This info doesn't make much sense when the percentile chart is not visible.
     tAnswer: {
 /*      sequence: [
@@ -1635,6 +1704,7 @@ _topics: {
     actions: "Layout",
     topics: "Summary",
     context: ["SummaryInBrowser","CollapsedSummary"],
+    media: "T_OpenSummary.png",
     similarTopics: ['T_CollapseSummary', 'T_MaxSummary', 'T_AddSummary'],
     tAnswer: {
       class: "buttonSummaryOpen",
@@ -1648,6 +1718,7 @@ _topics: {
     actions: "Layout",
     topics: "Summary",
     context: ["SummaryInBrowser","OpenSummary"],
+    media: "T_CollapseSummary.png",
     note: "<i class='fa fa-compress'></i> appears when you mouse-over an open summary.",
     similarTopics: ['T_OpenSummary', 'T_MaxSummary', 'T_RemSummary'],
     tAnswer: {
@@ -1662,6 +1733,7 @@ _topics: {
     actions: "Layout",
     topics: "Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", "ExpandableSummary"],
+    media: "T_MaxSummary.png",
     note: "<i class='fa fa-arrows-alt'></i> appears when you mouse-over a summary that can be maximized.",
     similarTopics: ['T_OpenSummary', 'T_CollapseSummary'],
     tAnswer: {
@@ -1676,8 +1748,9 @@ _topics: {
     actions: "Show/Hide",
     topics: "Summary",
     context: ["SummaryInBrowser","OpenSummary"],
-    note: "Configuration options depend on the summary type.<br><br>"+
-      "<i class='fa fa-gear'></i> appears when you mouse-over the summary.",
+    media: "T_ConfigSummary.gif",
+    note: "<p><i class='fa fa-gear'></i> appears when you mouse-over the summary.</p>"+
+      "<p>Configuration options depend on the summary type.</p>",
     similarTopics: ['T_EnableAuth'],
     tAnswer: {
       class: "summaryConfigControl", 
@@ -1777,6 +1850,7 @@ _topics: {
     actions: "Change",
     topics: "Number Summary+Bin Scale Type",
     context: ["SummaryInBrowser","IntervalSummary","NumberSummary","PositiveNumberSummary","SummaryOpenConfig"],
+    media: "T_BinScale.gif",
     note: "Log-scale can be used in summaries with <i>only</i> positive values.",
     // TODO: There are a few other constraints: Not-step scale.. (depends on filtering state too)
     tAnswer: {
@@ -1799,6 +1873,7 @@ _topics: {
     actions: "Compare+View",
     topics: "Aggregate+Measurement+Compare Selection+Compared Measure",
     context: ["SummaryInBrowser","ActiveCompareSelection"],
+    media: "T_LabelLockedSel.gif",
     note: "The label color reflects the selection it displays.",
     // TODO: Show a tooltip for the color? how... activate?
     tAnswer: [
@@ -1839,10 +1914,11 @@ _topics: {
     actions: "View",
     topics: "Summary",
     context: ["SummaryInBrowser","SummaryWithDescription"],
+    media: "T_SumDescr.png",
     tAnswer: {
       class: "summaryDescription", 
       cElement: "summaries", 
-      text: "Mouse-over <i class='fa fa-info-circle'></i>", 
+      text: "Mouse-over <i class='fa fa-info'></i>", 
       pos: "ne"
     }
   },
@@ -2013,7 +2089,7 @@ _topics: {
   }
 };
 
-if(exp_basis || exp_helpin){
+if(exp_basis || exp_helpin || exp_train){
   delete _material._topics.T_CatViewAs;
   delete _material._topics.T_ViewRecRank;
   delete _material._topics.T_EnableAuth;
@@ -2023,6 +2099,8 @@ if(exp_basis || exp_helpin){
   delete _material._topics.T_UnitName;
   delete _material._topics.T_RenameSummary;
   delete _material._topics.T_RemRecPanel;
+  delete _material._topics.T_SetMatrix;
+  delete _material._topics.T_Fullscreen;
 }
 
 var Helpin = function(browser){
@@ -2035,8 +2113,9 @@ var Helpin = function(browser){
     overlay_control : browser.panel_overlay.append("span").attr("class","overlay_help_control"),
   };
 
-  if(exp_basis) this.DOM.root.attr("exp","basis");
-  if(exp_helpin) this.DOM.root.attr("exp","helpin");
+  if(exp_basis)  this.browser.DOM.root.attr("exp","basis");
+  if(exp_helpin) this.browser.DOM.root.attr("exp","helpin");
+  if(exp_train)  this.browser.DOM.root.attr("exp","train");
 
   // Tracking actions in the main app
   this.actionHistory = [];
@@ -2082,7 +2161,7 @@ var Helpin = function(browser){
   this.GuidedTourStep = 0;
 
   // Sample notify action - 3 second delay
-  if(!exp_helpin && !exp_basis){
+  if(!exp_helpin && !exp_basis && !exp_train){
     setTimeout(function(){
       me.notifyAction = {topic: _material._topics['T_ChangeMetric']};
       me.browser.DOM.notifyButton.style("display","inline-block");
@@ -2935,10 +3014,20 @@ Helpin.prototype = {
     this.showIntegratedAnswer(q);
 
     // Show topic note
-    if(q.note){
-      this.DOM.SelectedThing_Content_More.html(
-        ((typeof q.note)==="function")?q.note.call(this):q.note
-      ).style("display","block");
+    if(q.note || q.media){
+      var n = "";
+      if(q.media){
+        if(!Array.isArray(q.media)) q.media = [q.media];
+        if(exp_basis || !q.isRelevant){
+          q.media.forEach(function(mm){
+            n += "<img class='topicMedia' src='./helpin/media/"+mm+"'>";
+          });
+        }
+      }
+      if(q.note){
+        n += ((typeof q.note)==="function")?q.note.call(this):q.note;
+      }
+      this.DOM.SelectedThing_Content_More.html(n).style("display","block");
     } else {
       this.DOM.SelectedThing_Content_More.html("").style("display","none");
     }
@@ -3268,7 +3357,7 @@ Helpin.prototype = {
 
     this.DOM.TopicBlock.style("display","none");
 
-    this.DOM.SelectedThing_Content_More.style("display","none");
+    this.DOM.SelectedThing_Content_More.html("").style("display","none");
 
     // EXTRACT POINTED FULL DOM TREE
     var pointedDOMTree = traverse ? this.getKshfDOMTree(pointedDOM) : [pointedDOM];
@@ -3575,11 +3664,14 @@ Helpin.prototype = {
       .enter()
         .append("span").attr("class","GuidedTourStep GuidedTourOneStep")
         .style("width",function(d,i){ return i*(100/(me.GuidedTourSeq.length-1))+"%"; })
+//        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Go back" }); })
+//        .on("mouseenter", function(){ this.tipsy.show(); })
+//        .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",function(d,i){
           me.GuidedTourStep = i;
           me.showTourStep();
           return;
-        })
+        });
 
     this.showTourStep();
   },
