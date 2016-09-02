@@ -78,7 +78,7 @@ var browser_configs = {
           }},
         { name: "Rating", value: "AvgRating", panel: 'left' },
         { name: "Watched", value: "Watches", panel: 'left', intervalScale: 'log' },
-        { name: "Release Year", panel: 'bottom', 
+        { name: "Release Year", panel: 'bottom', timeFormat: "%Y",
           value: function(){ return this.ReleaseDate; } }
       ],
       recordDisplay: {

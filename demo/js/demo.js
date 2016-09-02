@@ -474,59 +474,60 @@ function printPeopleIcons(){
   return str;
 };
 
-document.addEventListener('DOMContentLoaded',function(){/*fun code to run*/
+document.addEventListener('DOMContentLoaded',function(){
+  
   window.onresize = function(){ kshf.handleResize(); };
-    if(document.location.hostname!=="localhost"){
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-54042831-2', 'auto');
-      ga('send', 'pageview');
-    }
+  if(document.location.hostname!=="localhost"){
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-54042831-2', 'auto');
+    ga('send', 'pageview');
+  }
 
-    if(socialShare===true){
-      var demoHeader = d3.select("body").append("div").attr("class","demoHeader");
-      
-      var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
-      keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).style({width: "30px", height: "30px", float: "left"});
-      keshif_logo.append("span").attr("class","keshif_logo_content")
-        .html(
-          "<div class='subContent_2'>Created with</div>"+
-          "<div class='subTitle'>Keshif</div>"+
-          "<div class='subContent'>Data Made Explorable</div>");
+  if(socialShare===true){
+    var demoHeader = d3.select("body").append("div").attr("class","demoHeader");
+    
+    var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
+    keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).style({width: "30px", height: "30px", float: "left"});
+    keshif_logo.append("span").attr("class","keshif_logo_content")
+      .html(
+        "<div class='subContent_2'>Created with</div>"+
+        "<div class='subTitle'>Keshif</div>"+
+        "<div class='subContent'>Data Made Explorable</div>");
 
-      demoHeader.append("div").attr("class","addthis_sharing_toolbox");
+    demoHeader.append("div").attr("class","addthis_sharing_toolbox");
 
-      var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
-      var pageName = window.location.pathname.split("/");
-      pageName = pageName[pageName.length-1];
-      if(pageName.indexOf("html")===-1) pageName+=".html";
+    var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
+    var pageName = window.location.pathname.split("/");
+    pageName = pageName[pageName.length-1];
+    if(pageName.indexOf("html")===-1) pageName+=".html";
 
-      var openSource = demoHeader.append("div").attr("class","openSource");
-      openSource.append("iframe")
-        .attr("src","http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small")
-        .attr("frameborder",0)
-        .attr("scrolling",0)
-        .attr("width","52px")
-        .attr("height","20px")
-        .style("position","relative")
-        .style("top","3px");
-      openSource.append("a").attr("class","openSourceLabel")
-        .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code")
-          .append("span").attr("class","fa fa-code");
+    var openSource = demoHeader.append("div").attr("class","openSource");
+    openSource.append("iframe")
+      .attr("src","http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small")
+      .attr("frameborder",0)
+      .attr("scrolling",0)
+      .attr("width","52px")
+      .attr("height","20px")
+      .style("position","relative")
+      .style("top","3px");
+    openSource.append("a").attr("class","openSourceLabel")
+      .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code")
+        .append("span").attr("class","fa fa-code");
 
-      d3.select("body").append("script").attr("type","text/javascript").attr("async","async")
-        .attr("src","//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e");
+    d3.select("body").append("script").attr("type","text/javascript").attr("async","async")
+      .attr("src","//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e");
 
-      WebFontConfig = {
-        google: { families: [ 'Montserrat:400,500,300,100,700:latin', ] }
-      };
-      var wf = document.createElement('script');
-      wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-      wf.type = 'text/javascript';
-      wf.async = 'true';
-      var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(wf, s);
-    }
+    WebFontConfig = {
+      google: { families: [ 'Montserrat:400,500,300,100,700:latin', ] }
+    };
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  }
 
   // Add favicon to all demos
   d3.select("head").append("link").attr("rel","icon").attr("type","image/png")
