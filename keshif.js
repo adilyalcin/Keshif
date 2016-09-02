@@ -5130,6 +5130,9 @@ kshf.Browser.prototype = {
         me.crumb_Highlight.removeCrumb();
         this.highlightCrumbTimeout_Hide = undefined;
       },now?0:1000);
+
+      this.refreshMeasureLabels("Active");
+
     },
     /** -- */
     setSelect_Highlight: function(selAggregate){
@@ -5150,6 +5153,7 @@ kshf.Browser.prototype = {
       this.highlightCrumbTimeout_Hide = undefined;
 
       this.crumb_Highlight.showCrumb(selAggregate.summary);
+      this.refreshMeasureLabels("Highlight");
     },
     /** -- */
     getMeasureFuncTypeText: function(){
@@ -7503,7 +7507,7 @@ var Summary_Categorical_functions = {
       this.DOM.aggrGlyphs
         .attr("NoActiveRecords",function(aggr){ 
           return (aggr._measure.Active===0) ? "true" : null
-        })
+        });
 
       var zeroPos = this.chartScale_Measure(0);
 
@@ -7973,7 +7977,6 @@ var Summary_Categorical_functions = {
           }
           this.DOM.highlightedMeasureValue.style("opacity",1);
         }
-        this.browser.refreshMeasureLabels("Highlight"); 
       }
     },
     /** -- */
@@ -7981,7 +7984,6 @@ var Summary_Categorical_functions = {
       ctgry.unselectAggregate();
       if(!this.isCatSelectable(ctgry)) return;
       this.browser.clearSelect_Highlight();
-      this.browser.refreshMeasureLabels("Active"); 
       if(this.viewType==='map') this.DOM.highlightedMeasureValue.style("opacity",0);
     },
     /** -- */
@@ -7989,7 +7991,6 @@ var Summary_Categorical_functions = {
       this.browser.clearSelect_Highlight();
       ctgry.DOM.aggrGlyph.setAttribute("cSelection","or");
       if(this.summaryFilter.selected_OR.length>0){
-        this.browser.clearSelect_Highlight();
         if(this.viewType==='map') this.DOM.highlightedMeasureValue.style("opacity",0);
       }
       d3.event.stopPropagation();
@@ -8093,7 +8094,12 @@ var Summary_Categorical_functions = {
           .on("mouseenter",function(aggr){ 
             this.tipsy = new Tipsy(this, {
               gravity: me.panel.name==='right'?'se':'w',
-              title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compare_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
+              title: function(){ 
+                var isLocked = me.browser.selectedAggr["Compare_A"]===aggr ||
+                      me.browser.selectedAggr["Compare_B"]!==aggr ||
+                      me.browser.selectedAggr["Compare_C"]!==aggr
+                return kshf.lang.cur[ !isLocked ? 'LockToCompare' : 'Unlock']; 
+              }
             });
             this.tipsy.show(); 
           })
@@ -9373,7 +9379,14 @@ var Summary_Interval_functions = {
       v = v.toLocaleString();
       if(this.unitName){
         var s = noDiv ? this.unitName : ("<span class='unitName'>"+this.unitName+"</span>");
-        return (this.unitName==='$' || this.unitName==='€') ? (s+v) : (v+s); // currency comes before
+        if(this.unitName==='$' || this.unitName==='€'){
+          s = s+v;
+          // replace abbrevation G with B
+          s = s.replace("G","B");
+        } else {
+          s = v+s;
+        }
+        return s;
       }
       return v;
     },
@@ -10057,6 +10070,7 @@ var Summary_Interval_functions = {
           aggr.DOM.aggrGlyph = this;
         })
         .on("mouseenter",function(aggr){
+          if(aggr.recCnt.Active===0) return;
           if(me.highlightRangeLimits_Active) return;
           // mouse is moving slow, just do it.
           if(me.browser.mouseSpeed<0.2) {
@@ -10069,6 +10083,7 @@ var Summary_Interval_functions = {
             me.browser.mouseSpeed*300);
         })
         .on("mouseleave",function(aggr){
+          if(aggr.recCnt.Active===0) return;
           if(me.highlightRangeLimits_Active) return;
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
           me.onAggrLeave(aggr);
@@ -10078,8 +10093,12 @@ var Summary_Interval_functions = {
       ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
         var X = newBins.append("span").attr("class","measure_"+m);
         if(m!=="Total" && m!=="Active" && m!=="Highlight"){
-          X.on("mouseenter" ,function(){ me.browser.refreshMeasureLabels(this.classList[0].substr(8)); });
-          X.on("mouseleave", function(){ me.browser.refreshMeasureLabels("Active"); });
+          X.on("mouseenter" ,function(){
+            me.browser.refreshMeasureLabels(this.classList[0].substr(8));
+          });
+          X.on("mouseleave", function(){ 
+            me.browser.refreshMeasureLabels("Active");
+          });
         }
       });
 
@@ -10088,7 +10107,12 @@ var Summary_Interval_functions = {
         .each(function(aggr){
           this.tipsy = new Tipsy(this, {
             gravity: 's',
-            title: function(){ return kshf.lang.cur[ me.browser.selectedAggr["Compare_A"]!==aggr ? 'LockToCompare' : 'Unlock']; }
+            title: function(){
+              var isLocked = me.browser.selectedAggr["Compare_A"]===aggr ||
+                    me.browser.selectedAggr["Compare_B"]!==aggr ||
+                    me.browser.selectedAggr["Compare_C"]!==aggr
+              return kshf.lang.cur[ !isLocked ? 'LockToCompare' : 'Unlock'];
+            }
           });
         })
         .on("click",function(aggr){
@@ -10452,6 +10476,11 @@ var Summary_Interval_functions = {
         if(me.browser.ratioModeActive) return me.height_hist-zeroPos;
         return me.chartScale_Measure(aggr.measure('Active'))-zeroPos;
       };
+
+      this.DOM.aggrGlyphs
+        .attr("NoActiveRecords",function(aggr){ 
+          return (aggr._measure.Active===0) ? "true" : null
+        });
 
       // Position the lock button
       this.DOM.lockButton

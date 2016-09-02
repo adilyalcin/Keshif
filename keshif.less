@@ -129,12 +129,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .aggrGlyph { 
           > .catLabelGroup{ pointer-events: all; }
           > .measureLabel{ pointer-events: all; }
-          > [class^="measure_"]{ pointer-events: all; }
+          &:not([NoActiveRecords]) > [class^="measure_"]{ pointer-events: all; }
         }
       }
       .aggrGlyph{
-        &.rangeGlyph{
-          > span[class^="measure_Active"]{ pointer-events: all; }
+        &.rangeGlyph:not([NoActiveRecords]){
+          > [class^="measure_Active"]{ pointer-events: all; }
           > .measureLabel{ pointer-events: all; }
         }
       }

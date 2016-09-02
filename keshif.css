@@ -148,13 +148,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph > .measureLabel {
   pointer-events: all;
 }
-.kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph > [class^="measure_"] {
+.kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph:not([NoActiveRecords]) > [class^="measure_"] {
   pointer-events: all;
 }
-.kshf[pointerEvents="true"] .aggrGlyph.rangeGlyph > span[class^="measure_Active"] {
+.kshf[pointerEvents="true"] .aggrGlyph.rangeGlyph:not([NoActiveRecords]) > [class^="measure_Active"] {
   pointer-events: all;
 }
-.kshf[pointerEvents="true"] .aggrGlyph.rangeGlyph > .measureLabel {
+.kshf[pointerEvents="true"] .aggrGlyph.rangeGlyph:not([NoActiveRecords]) > .measureLabel {
   pointer-events: all;
 }
 .kshf[pointerEvents="false"] {
