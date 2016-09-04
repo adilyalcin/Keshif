@@ -975,7 +975,7 @@ _topics: {
       
       var breadcrumb;
       if(exp_basis){
-        breadcrumb = printBreadcrumb_Dummy("Highlight","Summary Name","Value");
+        breadcrumb = printBreadcrumb_Dummy("Filter","Summary Name","Value");
       } else {
         breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
       }
@@ -1070,27 +1070,30 @@ _topics: {
     note: function(){
       var str = "";
 
-      str += "<p>You can lock "+this.browser.recordName+" in categories or number/time ranges.</p>";
+      str += "<p>You can lock "+this.browser.recordName+" in categories or number/time ranges. "+
+        "At most <span class='bolder'>3</span> color-coded lock-selections are possible ("+
+        "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
+        "<span class='colorCoding_Compare_B fa fa-lock'></span> "+
+        "<span class='colorCoding_Compare_C fa fa-lock'></span>)."+
+        "</p>";
       
       if(!exp_basis) str+="<p>As an example, one aggregate is locked. ";
       
       var breadcrumb;
       if(exp_basis){
-        breadcrumb = printBreadcrumb_Dummy("Highlight","Summary Name","Value");
+        breadcrumb = printBreadcrumb_Dummy("Compare_A","Summary Name","Value");
       } else {
         breadcrumb = printBreadcrumb("Highlight", this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
       str += ""+breadcrumb+"on the top section shows the lock-selection.</p>"+
 
-      "<p>Locked "+this.browser.recordName+" are shown across all summaries.</p>"+
-      "<p>At most <span class='bolder'>3</span> color-coded lock-selections are possible: "+
-        "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
-        "<span class='colorCoding_Compare_B fa fa-lock'></span> "+
-        "<span class='colorCoding_Compare_C fa fa-lock'></span></p>"+
+      "<p>Locked "+this.browser.recordName+" are shown across all summaries. "+
+        "You can quickly compare "+this.browser.recordName+" in "+
+        "<span class='bolder'>locked</span> and <span class='bolder'>highlighted</span> selections"+
+        " by moving the mouse.</p>"+
+      "<p></p>"+
       "<p>Changing filtering will clear locked selections.</p>"+
-      "<p>You can quickly compare "+this.browser.recordName+" in <br>"+
-        "<span class='bolder'>locked</span> and <span class='bolder'>highlighted</span> selections by moving the mouse.</p>"+
       "";
       return str;
     },
@@ -2338,7 +2341,7 @@ Helpin.prototype = {
     this.timeouts = [];
   },
   /** -- */
-  getTopicText: function(topic){ 
+  getTopicTitle: function(topic){ 
     var str = "<span class='topicWeight'> ("+Math.round(topic.relevanceWeight)+") </span>";
     if(typeof topic.q === "string")   return topic.q + str;
     if(typeof topic.q === "function") return topic.q.call(this,topic) + str;
@@ -2649,11 +2652,7 @@ Helpin.prototype = {
       });
     this.DOM.SelectedThing_Header.append("span").attr("class","hContent");
     this.DOM.SelectedThing_Header.append("span").attr("class","backButton fa fa-arrow-left")
-      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: "Go back" }); })
-      .on("mouseenter", function(){ this.tipsy.show(); })
-      .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",function(){
-        this.tipsy.hide();
         switch(me.browser.panel_overlay.attr("show")){
           case 'help-pointnlearn':  me.showPointNLearn(); break;
           case 'help-topiclisting': me.showTopicListing(); break;
@@ -2789,9 +2788,9 @@ Helpin.prototype = {
         if(me.qFilters.textSearch!==""){
           var pattern = new RegExp("("+me.qFilters.textSearch+")",'gi');
           var replaceWith = "<span class='textSearch_highlight'>$1</span>";
-          me.DOM.TopicText.html(function(topic){ return me.getTopicText(topic).replace(pattern,replaceWith); });
+          me.DOM.TopicText.html(function(topic){ return me.getTopicTitle(topic).replace(pattern,replaceWith); });
         } else {
-          me.DOM.TopicText.html(function(topic){ return me.getTopicText(topic); });
+          me.DOM.TopicText.html(function(topic){ return me.getTopicTitle(topic); });
         }
         me.filterTopics();
         d3.event.stopPropagation();
@@ -2957,7 +2956,7 @@ Helpin.prototype = {
 
     this.removeStencilBoxes();
 
-    this.DOM.SelectedThing_Header.select(".hContent").html(this.getTopicText(q));
+    this.DOM.SelectedThing_Header.select(".hContent").html(this.getTopicTitle(q));
 
     // Context sort
     q.context = q.context.sort(function(a,b){ return b.isRelevant - a.isRelevant; });
@@ -3238,8 +3237,8 @@ Helpin.prototype = {
     if(exp_basis){
       var me=this;
       this.topicsList = this.topicsList.sort(function(a,b){ 
-        var _a = me.getTopicText(a);
-        var _b = me.getTopicText(b);
+        var _a = me.getTopicTitle(a);
+        var _b = me.getTopicTitle(b);
         return _a.localeCompare(_b);
       });
     } else {
@@ -3266,7 +3265,7 @@ Helpin.prototype = {
     // evaluate context
     this.topicsList.forEach(function(topic){ this.evaluateContext(topic); },this);
     // refresh topic text
-    this.DOM.TopicText.html(function(topic){ return me.getTopicText(topic); } );
+    this.DOM.TopicText.html(function(topic){ return me.getTopicTitle(topic); } );
     // refresh recently used icon
     this.DOM.TopicBlock.selectAll(".recentlyUsedIcon")
       .style("display",function(topic){ 
@@ -3301,7 +3300,7 @@ Helpin.prototype = {
       }
       // Filter on text search
       if(topic.displayed && this.qFilters.textSearch!==""){
-        topic.displayed = this.getTopicText(topic).toLowerCase().indexOf(this.qFilters.textSearch)!==-1;
+        topic.displayed = this.getTopicTitle(topic).toLowerCase().indexOf(this.qFilters.textSearch)!==-1;
       }
       if(this.filterRelevantOnly() && !topic.isRelevant){
         topic.displayed = false;
@@ -3456,7 +3455,7 @@ Helpin.prototype = {
       };
     },this);
 
-    this.DOM.TopicText.html(function(topic){ return me.getTopicText(topic); } );
+    this.DOM.TopicText.html(function(topic){ return me.getTopicTitle(topic); } );
 
 
     this.sortTopicsByRelevance();
