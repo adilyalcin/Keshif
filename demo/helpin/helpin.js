@@ -46,6 +46,14 @@ if(location.search==="?exp=train"){
   exp_train = true;
 }
 
+var getMetricText = function(){
+  switch(this.measureFunc){
+    case 'Count': return "Number of " + this.recordName;
+    case 'Sum'  : return "Total " + this.measureSummary.summaryName + " of " + this.recordName;
+    case 'Avg'  : return "Average " + this.measureSummary.summaryName + " of " + this.recordName;
+  }
+}
+
 var measureLabelModeInfo = function(){
   var _p = "percent (%) of the active records";
   var _a = "absolute (#) value"
@@ -55,26 +63,26 @@ var measureLabelModeInfo = function(){
   var _active = Math.round(_total*0.35); // fixed percentage. A good mid-range. Works just fine.
   var _filtered = this.browser.isFiltered()?" currently filtered ":"";
   return ""+
-    "<p>Measurements are currently labeled as <span class='bolder'>"+mode+"</span>.</p>"+
-    "<p>The alternative is labeling as <span class='bolder'>"+mode_other+"</span>.<p>"+
+    "<p>Measurements are currently labeled as <span class='bolder'>"+mode+"</span>. "+
+      "The alternative is labeling as <span class='bolder'>"+mode_other+"</span>.<p>"+
     "<p>Example: <span class='bolder'>"+_active+"</span> "+this.browser.recordName+" can be labeled as "+
       "<span class='bolder'>"+Math.round(100*_active/_total)+"%"+"</span>"+
         " of the <span class='bolder'>"+_total+"</span> "+_filtered+this.browser.recordName+".</p>"+
     "<p>All summaries have the same measure-label mode.</p>"+
     "<p>Percent values cannot be shown with "+
-      "<span class='bolder topicLink' topicName='T_ChangeMetric'>Average metric</span>.</p>"+
+      "<span class='topicLink' topicName='T_ChangeMetric'>Average metric</span>.</p>"+
     "";
 };
 
 var visualScaleModeInfo = function(){ 
-  var _p = "part-of (%) active records";
+  var _p = "part-of (%) active";
   var _a = "absolute"
   var mode       = this.browser.percentModeActive?_p:_a;
   var mode_other = this.browser.percentModeActive?_a:_p;
   return ""+
     "<p>Measurements are visually scaled as <span class='bolder'>"+mode+"</span> value. "+
     "The alternative is <span class='bolder'>"+mode_other+"</span>.<p>"+
-    "<p>Part-of scale reveals distribution information on "+
+    "<p>Part-of scale reveals trends on "+
       "<span class='bolder topicLink' topicName='T_SelectHighlight'>highlight</span> and "+
       "<span class='bolder topicLink' topicName='T_SelectCompare'>lock</span> selections.</p>"+
     "<p>All summaries have the same visual scale mode.</p>"+
@@ -89,25 +97,20 @@ var percentileInfo = "<p>Each block shows a percentile range, such as 20%-30%. "
   "<p>This chart is not affected by "+
     "<span class='topicLink' topicName='T_ChangeMetric'>metric</span>, "+
     "<span class='topicLink' topicName='T_ChangeMeasureLabel'>measure-label mode</span>, and "+
-    "<span class='topicLink' topicName='T_ChangeVisualScale'>visual scale mode</span>.</p>";
+    "<span class='topicLink' topicName='T_ChangeVisualScale'>visual scale mode</span> settings.</p>";
 
 var measureMetricInfo = function(){
   var alternative = "";
   switch(this.browser.measureFunc){
-    case 'Count': alternative = "<span class='bolder'>Sum</span> or "+
-      "<span class='bolder'>Average</span>"+" of a numeric attribute"; break;
-    case 'Sum':   alternative = "<span class='bolder'>Count</span> of records, or "+
-      "<span class='bolder'>Average</span> of a numeric attribute"; break;
-    case 'Avg':   alternative = "<span class='bolder'>Count</span> of records, or "+
-    "<span class='bolder'>Sum</span> of a numeric attribute"; break;
+    case 'Count': alternative = "Sum or Average of a numeric attribute"; break;
+    case 'Sum':   alternative = "Number of "+this.browser.recordName+", or Average of a numeric attribute"; break;
+    case 'Avg':   alternative = "Number of "+this.browser.recordName+", or Sum of a numeric attribute"; break;
   }
-  var pof = this.browser.getMeasureFuncTypeText();
-  if(pof==="") pof = "Count";
   // TODO: respons to filtering state
   return ""+
-    "<p>The aggregation values and visualizations are computed using the selected metric, which is currently <span class='bolder'>"+pof+" of "+this.browser.recordName+"</span>.</p>"+
-    "<p>Other options are "+alternative+", such as "+
-      "<span class='bolder'>"+this.browser.getMeasurableSummaries()[0].summaryName+"</span>.</p>"+
+    "<p>The aggregation values and visualizations are computed using the selected metric,"+
+      " which is currently <span class='bolder'>"+getMetricText.call(this.browser)+"</span>.</p>"+
+    "<p>Other options are "+alternative+", such as "+this.browser.getMeasurableSummaries()[0].summaryName+".</p>"+
     "<p>All summaries and charts show the same metric.</p>"+
     "";
 };
@@ -118,6 +121,7 @@ var pickSelectedAggr = function(){
   var curMax = this.records;
   var hAggr;
   this.allAggregates.some(function(aggr){
+    if((typeof aggr.isVisible)!=="undefined" && !aggr.isVisible ) return false;
     if(aggr.DOM.aggrGlyph===undefined) return false;
     if(aggr.compared) return false; // lock-compare selection
     if(aggr.summary && aggr.summary.collapsed) return false;
@@ -172,34 +176,25 @@ var intervalSummaryInfoFunc = function(DOM){
   var _max = summary.printWithUnitName(summary.intervalRange.org.max);
 
   var str="";
-  str+="<p>This summarizes the <span class='bolder'>"+summaryName+"</span> of "+recordName+".</p>";
+  str+="<p>This summarizes the "+summaryName+" of "+recordName+".</p>";
   //str+="<p>The "+summaryName+" ranges from <span class='bolder'>"+_min+"</span> to <span class='bolder'>"+_max+"</span>.</p>";
-
-  var _measure;
-  switch(this.browser.measureFunc){
-    case 'Count': _measure = ""; break;
-    default: _measure = this.browser.getMeasureFuncTypeText();
-  }
-  _measure = _measure.replace(" of ","").replace(" of","");
 
   var encoding = "<p>";
   encoding += "<i class='fa fa-"+(summary.scaleType==='time'?'line':'bar')+"-chart'></i> ";
-  encoding += "The chart shows the distribution of ";
+  encoding += "The histogram chart shows ";
   if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
-  encoding += "<span class='bolder'>"+(_measure===""?"Count":_measure)+"</span> of "+recordName;
+  encoding += getMetricText.call(this.browser);
   if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
-  encoding += " per each range.</p>";
+  encoding += " per each "+summary.summaryName+" range.</p>";
 
   return str+encoding+
     ( summary.scaleType==='log' ? (
       "<p>The range groups for this summary are created on a <span class='bolder'>log-scale</span> "+
       "to reveal distribution of potentially skewed data.</p>") : "")+
     ( summary.percentileChartVisible ? (
-      "<p>The horizontal chart below shows the percentile distributions of the data.</p>"
+      "<p>The horizontal chart below shows the percentile-based distribution of "+summaryName+" of "+recordName+".</p>"
       ) : "")+
-    ""
-      
-    ;
+    "";
 };
 
 var printBreadcrumb = function(sType, summary, aggr){
@@ -221,15 +216,10 @@ var aggrDescription = function(aggr, encodingIcon){
   var summary = aggr.summary;
 
   var recordName = this.browser.recordName;
-  var aggrLabel = "<span class='bolder'>"+summary.printAggrSelection(aggr)+"</span>";
+  var aggrLabel = summary.printAggrSelection(aggr);
   var globalActive = browser.allRecordsAggr._measure.Active;
 
-  var _measure;
-  switch(this.browser.measureFunc){
-    case 'Count': _measure = ""; break;
-    default: _measure = this.browser.getMeasureFuncTypeText();
-  }
-  _measure = _measure.replace(" of ","").replace(" of","");
+  var _metric = getMetricText.call(this.browser);
 
   var str='';
 
@@ -239,40 +229,44 @@ var aggrDescription = function(aggr, encodingIcon){
     this.browser.percentModeActive = false;
   }
 
-  var measureLabel = "<span class='bolder'>"+this.browser.getMeasureLabel(aggr,summary)+"</span>";
+  var measureLabel = this.browser.getMeasureLabel(aggr,summary);
+
+  str += "<p>";
   if(this.browser.percentModeActive){
     // Percent labels
-    str+="<p>"+measureLabel+"</span> of "+_measure;
-    if(_measure!=="") str+=" in ";
-    if(this.browser.isFiltered()) str+=globalActive+" filtered ";
-    str+=recordName+" are in "+aggrLabel+" "+summary.summaryName+".</p>";
+    str += measureLabel + " of " + _metric + " in ";
+    if(this.browser.isFiltered()) str += globalActive + " filtered ";
+    str += recordName + " are in " + aggrLabel + " " + summary.summaryName;
   } else {
     // Absolute labels
-    str+="<p>There are "+measureLabel+" "+_measure;
-    if(_measure!=="") str+=" in ";
-    str+=recordName+" with ";
-    str+=" "+aggrLabel+" "+summary.summaryName;
-    if(this.browser.isFiltered()) str+=", among the "+globalActive+" filtered";
-    str+=".</p>";
-  }
+    str += "There are "+measureLabel+" "+_metric + " in ";
+    str += " " + aggrLabel + " " + summary.summaryName;
+    if(this.browser.isFiltered()) str += ", among the " + globalActive + " filtered";
+  };
+  str += ".</p>";
 
   this.browser.percentModeActive = _temp;
 
-  var encoding = "<p><i class='colorCoding fa "+encodingIcon+"'></i> "+
-    "Block "+(encodingIcon==="fa-long-arrow-right"?"width":"height")+" shows the ";
+  var encoding = "<p>"+
+    "<i class='colorCoding fa "+encodingIcon+"'></i> "+
+    "Block "+(encodingIcon==="fa-arrows-h"?"width":"height")+" shows the ";
   if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
-  encoding += "<span class='bolder'>"+(_measure===""?"Count":_measure)+"</span> of "+recordName;
+  encoding += _metric;
   if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
   encoding += " with "+ aggrLabel+" "+summary.summaryName+".";
   encoding += "</p>";
 
-  _measure = _measure.trim();
-  if(_measure!=="") _measure = " "+_measure;
+  var simpleMeasure = "";
+  switch(this.measureFunc){
+    case 'Sum'  : simpleMeasure =  "Total " + this.measureSummary.summaryName; break;
+    case 'Avg'  : simpleMeasure =  "Average " + this.measureSummary.summaryName; break;
+  }
 
   function addEncoding(sType,sWord){
     this.browser.measureLabelType = sType;
+    var measureLabel = this.browser.getMeasureLabel(aggr,summary);
     encoding+="<div class='encodingInfo'><span class='colorCoding_"+sType+"'></span> "
-      +" "+sWord+recordName+" : "+this.browser.getMeasureLabel(aggr,summary)+_measure+"</div>";
+      +" "+sWord+recordName+" : <span class='bolder'>"+measureLabel+"</span> "+simpleMeasure+"</div>";
   };
 
   encoding += "<p>Measurements are color coded by selection type.</p>";
@@ -287,12 +281,15 @@ var aggrDescription = function(aggr, encodingIcon){
     if(this.browser.selectedAggr[sType]){
       var _aggr = this.browser.selectedAggr[sType];
       addEncoding.call(this, sType, printBreadcrumb(sType,_aggr.summary,_aggr));
-    }
+    } else {
+      var m = (sType==="Highlight") ? "Highlighted" : "Compared";
+      encoding+="<div class='encodingInfo'><span class='colorCoding_"+sType+"'></span> "+m+" "+recordName+" : - </div>";
+      }
   },this);
 
   this.browser.measureLabelType = null;
 
-  return str+encoding;
+  return str + encoding;
 };
 
 var _material = {
@@ -498,37 +495,25 @@ var _material = {
     "Categorical Summary": {
       matches: '.kshfSummary[summary_type="categorical"]:not([collapsed])', 
       info: function(DOM){
-        var summary = DOM.__data__;
+        var summary    = DOM.__data__;
         var recordName = this.browser.recordName;
-
-        var _measure;
-        switch(this.browser.measureFunc){
-          case 'Count': _measure = ""; break;
-          default: _measure = this.browser.getMeasureFuncTypeText();
-        }
-        _measure = _measure.replace(" of ","").replace(" of","");
-
-        var encoding = "<p><i class='fa fa-bar-chart fa-histogram-flip'></i> "+
-          "The chart shows the distribution of ";
-        if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
-        encoding += "<span class='bolder'>"+(_measure===""?"Count":_measure)+"</span> of "+recordName;
-        if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
-        encoding += " per each "+(summary.isMultiValued?"of the":"")+" "+
-          "<span class='bolder'>"+summary.summaryName+"</span>.</p>";
-
-        var str="";
-        str += "<p>This summarizes the <span class='bolder'>"+summary.summaryName+"</span> of "+
-          summary.browser.recordName+".</p>";
-        str += "<p>It includes <span class='bolder'>"+summary._aggrs.length+"</span> categories.</p>";
-
-        return str+encoding;
+        return ""+
+          "<p>This summarizes the "+summary.summaryName+" of "+recordName+".</p>"+
+          "<p>It includes <span class='bolder'>"+summary._aggrs.length+"</span> categories.</p>"+
+          "<p>"+
+            "<i class='fa fa-bar-chart fa-histogram-flip'></i> "+
+            "This chart shows "+
+            (this.browser.ratioModeActive ? "selected percentage of " : "" )+
+            getMetricText.call(this.browser)+" "+
+            (this.browser.ratioModeActive ? ("among all "+recordName) : "" )+
+            " for each " + (summary.isMultiValued?"of the":"") + " " + summary.summaryName + ".</p>";
       },
       pos: "s"
     },
     "Set Summary": {
       matches: '.kshfSummary.setPairSummary', 
       info: function(DOM){
-        return "Shows intersections and stuff."
+        return "This charts shows the intersections across all categories."
       }    
     },
     "Record": {
@@ -563,7 +548,8 @@ var _material = {
         // categories
         this.context.HighlightedDOM = this.browser.DOM.root
           .selectAll('[cSelection="onRecord"] > .catLabelGroup, .recordValueText-v')[0];
-        this.fHighlightBox("All values of<br> the selected record<br> are highlighted<br> on mouse-over","s");
+        this.fHighlightBox("All values of<br> the selected record<br> are highlighted<br> on mouse-over",
+            "s","",false,"deEmph");
 
         this.createStencils();
       },
@@ -609,8 +595,7 @@ var _material = {
         var summaryName = "<span class='bolder'>"+summary.summaryName+"</span>";
         var recordName = this.browser.recordName;
         return ""+
-          "<p>This chart shows the distribution of "+
-            summaryName+" of "+recordName+" using percentiles.</p>"+
+          "<p>This chart shows the percentile distribution of "+summaryName+" of "+recordName+".</p>"+
           percentileInfo;
       },
     },
@@ -637,7 +622,7 @@ var _material = {
 
         var str = '';
         str+="<p>Among "+this.browser.allRecordsAggr._measure.Active+" ";
-        str+=this.browser.isFiltered()?"filtered ":"all ";
+        str+=this.browser.isFiltered()?"<i>filtered</i> ":"";
         var sType = DOM.parentNode.className.substr(16); // "Active", "Highlight", "Compare_A", etc...
         if(sType==="Compare_A" || sType==="Compare_B" || sType==="Compare_C"){
           var comparedAggr = this.browser.selectedAggr[sType];
@@ -648,7 +633,7 @@ var _material = {
 
         str+="<p><span class='bolder'>"+perct_num[0]+"%</span> have "+summaryName+" < " + minV+" , and <br>";
         str+="<span class='bolder'>"+perct_num[1]+"%</span> have "+summaryName+" < " + maxV+".</p>";
-        str+="<p>This range aggregates the <span class='bolder'>10%</span> ("+numRecords+") "+recordName+" in between.</p>";
+        str+="<p>This range groups the <span class='bolder'>10%</span> ("+numRecords+") "+recordName+" in between.</p>";
         return str;
       }
     },
@@ -686,27 +671,29 @@ var _material = {
       pos: "nw",
       info: function(DOM){
         var measureLabel = "<span class='bolder'>"+this.browser.getGlobalActiveMeasure()+"</span>";
-        var measureFunc  = this.browser.getMeasureFuncTypeText().replace(" of ","");
+        var _metric = getMetricText.call(this.browser);
 
         var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter")[0].length;
         if(filterSel===0) filterSel = "none";
 
         var str = '';
-        str+="<p>This section shows the global measurement.<p>"
-          +"<p>It reflects the <span class='topicLink' topicName='T_ChangeMetric'>selected metric</span> "+
-            "<span style='color:gray'>("+this.browser.measureFunc+")</span> and "+
+
+        str+="<p>This section shows the global measurement.</p>";
+        str+="<p>It reflects the <span class='topicLink' topicName='T_ChangeMetric'>selected metric</span> "+
+            "<span style='color:gray'>("+_metric+")</span> and "+
             "filters <span style='color:gray'>(currently "+filterSel+")</span>.</p>";
-        if(measureFunc===''){
-          str += "There are "+"<span class='bolder'>"+measureLabel+"</span> "+measureFunc;
-          str +=" "+this.browser.recordName+" in the";
-          if(this.browser.isFiltered()) str += " <i>filtered</i> ";
-          str += " dataset.";
-          return str;
+
+        str += "<p>";
+        if(this.browser.measureFunc==='Count'){
+          str += "There are " + measureLabel + " " + this.browser.recordName;
+        } else {
+          str += this.browser.recordName+" have " + measureLabel + " ";
+          if(this.browser.measureFunc==="Sum") str += "Total"; else str += "Average";
+          str += " "+ this.browser.measureSummary.summaryName + " ";
         }
-        str += this.browser.recordName+" have ";
-        str += measureLabel+" "+"<span class='bolder'>"+measureFunc+"</span> in the";
-        if(this.browser.isFiltered()) str += " <i>filtered</i> ";
-        str += " "+this.browser.recordName+".";
+        str += " in the " + (this.browser.isFiltered()?"<i>filtered</i>":"")+ " dataset.";
+        str += "</p>";
+
         return str;
       }
     },
@@ -715,7 +702,7 @@ var _material = {
       pos: "nw",
       info: function(){
         return measureMetricInfo()+
-          "<p>The <span class='bolder'>metric</span> is set by clicking on <i class='fa fa-cubes'></i>.<p>";
+          "<p>The metric is set by clicking on <i class='fa fa-cubes'></i>.<p>";
       },
     },
     "Global Summary": { 
@@ -766,13 +753,13 @@ var _material = {
       info: function(DOM){ 
         var x;
         switch(DOM.classList[1]){
-          case "crumbMode_Compare_A": x="<i class='fa fa-lock'></i> compare"; break;
-          case "crumbMode_Compare_B": x="<i class='fa fa-lock'></i> compare"; break;
-          case "crumbMode_Compare_C": x="<i class='fa fa-lock'></i> compare"; break;
-          case "crumbMode_Filter":    x="<i class='fa fa-filter'></i> filter";  break;
-          default: x = "<i class='fa fa-mouse-pointer'></i> highlight"; break;
+          case "crumbMode_Compare_A": x="<i class='fa fa-lock'></i> lock-"; break;
+          case "crumbMode_Compare_B": x="<i class='fa fa-lock'></i> lock-"; break;
+          case "crumbMode_Compare_C": x="<i class='fa fa-lock'></i> lock-"; break;
+          case "crumbMode_Filter":    x="<i class='fa fa-filter'></i> filter-";  break;
+          default: x = "<i class='fa fa-mouse-pointer'></i> highlight-"; break;
         };
-        return "<p>This breadcrumb shows an active "+x+" selection.</p>";
+        return "<p>This breadcrumb shows an active "+x+"selection.</p>";
       }
     },
     //{ matches: '.buttonSummaryCollapse', component: "Summary" },
@@ -882,10 +869,11 @@ _topics: {
     actions: "Explore+Select",
     topics: "Aggregate",
     context: ["SummaryInBrowser", "OpenSummary"],
+    weight: 3,
     media: "T_SelectHighlight.gif",
     note: function(){
       var str="";
-      str += "<p>You can highlight "+this.browser.recordName+" in categories, number/time ranges, or invalid values.</p>";
+      str += "<p>You can highlight "+this.browser.recordName+" in categories or number/time ranges.</p>";
       
       if(!exp_basis) str+="<p>As an example, one aggregate is highlighted.</p>";
 
@@ -896,10 +884,10 @@ _topics: {
         breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
-      str+="<p>"+breadcrumb+"on the top section shows the highlight-selection.</p>"+
-      "<p>Highlighted "+this.browser.recordName+" are shown in "+
+      str+="<p>"+breadcrumb+"on the top section shows the highlight-selection. "+
+      "Highlighted "+this.browser.recordName+" are shown in "+
         "<span style='color: orangered; font-weight: 500;'>orange</span> across all summaries.</p>"+
-      "<p>You can observe distribution of highlighted records in all other summaries, as well as individually.</p>"+
+      "<p>You can observe highlighted records in groups in other summaries, as well as individually.</p>"+
       "";
       return str;
     },
@@ -974,13 +962,14 @@ _topics: {
     },
     actions: "Explore+Filter+Select",
     topics: "Aggregate",
-    context: "SummaryInBrowser",
+    context: ["SummaryInBrowser", "OpenSummary"],
+    weight: 4,
     similarTopics: ['T_SelectHighlight','T_SelectCompare','T_FilterAnd'],
     media: "T_SelectFilter.gif",
     note: function(){
       var str = "";
 
-      str += "<p>You can filter "+this.browser.recordName+" in categories, number/time ranges, or invalid values.</p>";
+      str += "<p>You can filter "+this.browser.recordName+" in categories or number/time ranges.</p>";
 
       if(!exp_basis) str += "<p>As an example, one aggregate is filtered.</p>";
       
@@ -1074,15 +1063,16 @@ _topics: {
     },
     actions: "Explore+Compare+Select",
     topics: "Aggregate",
-    context: "SummaryInBrowser",
+    context: ["SummaryInBrowser", "OpenSummary"],
+    weight: 5,
     similarTopics: ['T_SelectFilter','T_UnlockSelection'],
     media: "T_SelectCompare.gif",
     note: function(){
       var str = "";
 
-      str += "<p>You can lock "+this.browser.recordName+" in categories, number/time ranges, or invalid values.</p>";
+      str += "<p>You can lock "+this.browser.recordName+" in categories or number/time ranges.</p>";
       
-      if(!exp_basis) str+="<p>As an example, one aggregate is locked.</p>";
+      if(!exp_basis) str+="<p>As an example, one aggregate is locked. ";
       
       var breadcrumb;
       if(exp_basis){
@@ -1091,7 +1081,8 @@ _topics: {
         breadcrumb = printBreadcrumb("Highlight", this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
-      str+="<p>"+breadcrumb+"on the top section shows the lock-selection.</p>"+
+      str += ""+breadcrumb+"on the top section shows the lock-selection.</p>"+
+
       "<p>Locked "+this.browser.recordName+" are shown across all summaries.</p>"+
       "<p>At most <span class='bolder'>3</span> color-coded lock-selections are possible: "+
         "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
@@ -1275,7 +1266,7 @@ _topics: {
       
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) <i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate","n","tipsy-primary2");
       
       this.context.HighlightedDOM[0].setAttribute("mouseOver",true);
     },
@@ -1290,7 +1281,7 @@ _topics: {
       2.5: function(){
         this.context.HighlightedDOM = [
           d3.select(this.context.highlightedAggregate.DOM.aggrGlyph).select(".AndOrNot_Not")[0][0]];
-        this.fHighlightBox("Click on <span class='AndOrNot_Not'>Not</span>","s","tipsy-primary2");
+        this.fHighlightBox("2) Click on <span class='AndOrNot_Not'>Not</span>","s","tipsy-primary2",true);
       },
       3.5: function(){
         this.context.highlightedSummary.onCatEnter_NOT(this.context.highlightedAggregate);
@@ -1362,7 +1353,7 @@ _topics: {
     tAnswer: {
       class: "recordTextSearch",
       cElement: "recordDisplay",
-      text: "<b>Type your record text search aboove record display.</b><br><br>"+
+      text: "<b>Type your record text search in record display.</b><br><br>"+
         "Matching records will be highlighted as you type.<br><br>"+
         "<b>Enter</b> to filter.<br>"+
         "<b>Shift+Enter</b> to compare.", 
@@ -1420,7 +1411,7 @@ _topics: {
     }
   },
   T_ChangeMetric: {
-    q: "Measure by <b>Count</b>, <b>Sum</b>, or <b>Average</b> metric",
+    q: "Measure by <b>Number</b>, <b>Sum</b>, or <b>Average</b> metric",
     actions: "Explore",
     topics: "Measurement+Metric",
     context: ["SummaryInBrowser", "NumberSummary"],
@@ -1438,7 +1429,7 @@ _topics: {
       {
         matches: ".measureFunctionType", 
         cElement: "browser",
-        text: "Choose a metrics:<br> Count, Sum, Average",
+        text: "Choose a metric:<br> Number, Sum, or Average",
         pos: "w"
       }
       ]
@@ -1627,15 +1618,15 @@ _topics: {
     // TODO: More than one sorting option available.
     context: ["RecordDisplay", "RecordDisplayAsList", "SummaryInBrowser", "IntervalSummary"], 
     media: "T_RecSortChange.gif",
-    note: "Records can be sorted using number or time summaries.<br><br>"+
+    note: "Records can be sorted using number or time attributes.<br><br>"+
       "<i class='fa fa-sort'></i> appears when you mouse-over the summary.<br> "+
-      "Active sorting summary always shows <i class='fa fa-sort'></i> for quick overview.",
+      "Active sorting summary always shows <i class='fa fa-sort'></i>.",
     similarTopics: ['T_RecSortRev'],
     tAnswer: [
       { 
         class: "listSortOptionSelect",
         cElement: "recordDisplay", 
-        text: "Click the dropdown to see sorting options<br> and select one.",
+        text: "Click the dropdown to see options<br> and select one",
         pos: "n"
       }, {
         class: "useForRecordDisplay",
@@ -1684,19 +1675,19 @@ _topics: {
     media: "T_Percentiles.gif",
 //    note: percentileInfo, // This info doesn't make much sense when the percentile chart is not visible.
     tAnswer: {
-/*      sequence: [
+      sequence: [
         {
           class: "summaryConfigControl",
           cElement: "summaries",
           text: "Click <i class='fa fa-gear'></i>", 
           pos: "ne"
-        },{ */
+        },{ 
           matches: "[showConfig=\"true\"] .summaryConfig_Percentile",
           cElement: "summaries",
           text: "Select show / hide percentiles<br> in summary configuration", 
           pos: "ne"
-/*        }
-      ]*/
+        }
+      ]
     },
   },
   T_OpenSummary: {
@@ -1849,23 +1840,23 @@ _topics: {
     q: "Change histogram binning scale (<b>log</b> / <b>linear</b>)",
     actions: "Change",
     topics: "Number Summary+Bin Scale Type",
-    context: ["SummaryInBrowser","IntervalSummary","NumberSummary","PositiveNumberSummary","SummaryOpenConfig"],
+    context: ["SummaryInBrowser","IntervalSummary","NumberSummary","PositiveNumberSummary"],
     media: "T_BinScale.gif",
     note: "Log-scale can be used in summaries with <i>only</i> positive values.",
     // TODO: There are a few other constraints: Not-step scale.. (depends on filtering state too)
     tAnswer: {
-/*      sequence :[
+      sequence :[
         { class: "summaryConfigControl", 
           cElement: "summaries", 
           text: "Click <i class='fa fa-gear'></i>", 
           pos: "ne"
-        },{*/
+        },{
           matches: "[showConfig=\"true\"] .summaryConfig_ScaleType",
           cElement: "summaries",
-          text: "Select <span class='bolder'>linear / log scale</span> in summary configuration", 
+          text: "Select <span class='bolder'>linear / log scale</span>", 
           pos: "ne"
-/*        }
-      ]*/
+        }
+      ]
     },
   },
   T_LabelLockedSel: {
@@ -1882,15 +1873,17 @@ _topics: {
         cElement: "browser",
         text:  "Mouse-over <i class='fa fa-lock'></i> breadcrumb",
         pos: "n"
-      },
-      {
-        class: 'measureLabel',
-        cElement: "summaries",
-        text: ""
       }
     ],
     activate: function(){
+      // TODO: may be Compare_B or Compare_C . Choose the appropriate one.
       this.browser.refreshMeasureLabels("Compare_A");
+    },
+    animate: {
+      0.5: function(){
+        this.context.HighlightedDOM[0].stencilBox.append("div")
+          .attr("class","pointerAction").append("span").attr("class","fa fa-mouse-pointer").style("font-size","0.7em");
+      }
     },
     deactivate: function(){
       this.browser.refreshMeasureLabels();
@@ -2489,37 +2482,52 @@ Helpin.prototype = {
 
     content += "<p><span class='bolder'>"+this.browser.records.length+" "+recordName+"</span> "+
       "are summarized with their <span class='bolder'>"+numSum+"</span>"+
-      " attributes (such as "+sampleNames+") in this browser.</p>";
+      " attributes (such as "+sampleNames+").</p>";
 
     if(this.browser.isFiltered()){
-      var globalActive = browser.allRecordsAggr.recCnt.Active;
+      var globalActive = this.browser.allRecordsAggr.recCnt.Active;
+      var globalActiveMeasure = this.browser.allRecordsAggr._measure.Active;
       var filterStr = "";
       this.browser.filters.forEach(function(filter){
         if(!filter.isFiltered) return false;
         filterStr+=filter.filterCrumb.DOM[0][0].outerHTML;
       });
-      content +="<p><span class='bolder'>"+globalActive+" "+recordName+"</span> remain "+
-        "after filtering on "+filterStr+".</p>";
+
+      var off='';
+      switch(this.browser.measureFunc){
+        case 'Count': off = globalActive+" "+recordName; break;
+        case 'Sum': off = globalActiveMeasure+" Total " + this.browser.measureSummary.summaryName + 
+          " of " + globalActive + " " + recordName; break;
+        case 'Avg': off = globalActiveMeasure+" Average " + this.browser.measureSummary.summaryName + 
+          " of " + globalActive + " " + recordName; break;
+      }
+
+      content += "<p><span class='bolder'>" + off + "</span> remain after filtering on " + filterStr + ".</p>";
     }
 
     // highlight selection
 
     // metric
     // visual scale mode
-    var _measure;
-    switch(this.browser.measureFunc){
-      case 'Count': _measure = ""; break;
-      default: _measure = this.browser.getMeasureFuncTypeText();
-    }
-    _measure = _measure.replace(" of ","").replace(" of","");
+    var _metric = getMetricText.call(this.browser);
 
-    var encoding = "<p>The charts shows the distribution of ";
+    var encoding = "<p>The charts show the ";
     if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
-    encoding += "<span class='bolder'>"+(_measure===""?"Count":_measure)+" of "+recordName+"</span>";
+    encoding += _metric;
     if(this.browser.ratioModeActive) 
       encoding+= " among <span class='bolder'>"+(this.browser.isFiltered()?"filtered":"all")+" "+recordName+"</span>";
-    encoding += " per each aggregate (category/range). ";
+    encoding += " per each category/range. ";
+    
     content += encoding;
+    if(this.browser.isFiltered()){
+      content+="<br><span class='encodingInfo'><span class='colorCoding_Active'></span></span> shows "+
+        "the active (filtered) selection. "+
+          "<span class='topicLink weakTopicLink' topicName='T_ClearFilters'>(Clear)</span>";
+    }
+    if(this.browser.highlightSelectedSummary){
+      content+="<br><span class='encodingInfo'><span class='colorCoding_Highlight'></span></span> shows "+
+        this.browser.crumb_Highlight.DOM[0][0].outerHTML+"highlight-selection. ";
+    }
     if(this.browser.selectedAggr.Compare_A){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_A'></span></span> shows "+
         this.browser.crumb_Compare_A.DOM[0][0].outerHTML+"lock-selection. "+
@@ -2540,12 +2548,11 @@ Helpin.prototype = {
     // ****************** SUMMARY OF MODES *********************
     content += "<p>";
 
-    if(_measure==='') _measure = "Count";
     var _p = "percent (%) of the active records";
     var _a = "absolute (#) value"
     var mode       = this.browser.percentModeActive?_p:_a;
 
-    content += "Metric is <span class='bolder'>"+_measure+"</span>. "+
+    content += "Metric is <span class='bolder'>"+_metric+"</span>. "+
       "<span class='topicLink weakTopicLink' topicName='T_ChangeMetric'>(Change)</span><br>";
     content += "Visual scale mode is <span class='bolder'>"
       +(this.browser.ratioModeActive?"part-of-active":"absolute")+"</span>. "+
@@ -3114,7 +3121,7 @@ Helpin.prototype = {
     this.DOM.TopicText = this.DOM.TopicBlock.append("div").attr("class","TopicText");
   },
   /** -- */
-  fHighlightBox: function(text,pos,className,skipStencil){
+  fHighlightBox: function(text,pos,className,skipStencil, moreClass){
     var me=this;
     var bounds_browser = this.browser.DOM.root[0][0].getBoundingClientRect();
 
@@ -3122,11 +3129,12 @@ Helpin.prototype = {
 
     if(pos===undefined) pos = "w";
     if(typeof text === "function") text = text.call(this.context);
+    if(moreClass===undefined) moreClass = "";
 
     this.DOM.overlay_answer.selectAll(".stencilBox_nomatch")
       .data(this.context.HighlightedDOM,function(d,i){ return d,i; })
       .enter()
-      .append("div").attr("class","stencilBox")
+      .append("div").attr("class","stencilBox "+moreClass)
       .each(function(d){
         if(skipStencil) this.skipStencil = true;
         d.stencilBox = d3.select(this);
@@ -3197,6 +3205,7 @@ Helpin.prototype = {
     this.browser.DOM.root.selectAll(".tipsy").remove();
     kshf.activeTipsy = null;
     this.tooltips.forEach(function(t){ t.hide(); });
+    this.tooltips = [];
   },
   /** -- */
   closeTopic: function(){

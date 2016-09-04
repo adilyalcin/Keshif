@@ -58,8 +58,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   margin: 0 auto;
   max-width: 95%;
-  box-shadow: 0px 0px 5px gray;
   margin-bottom: 12px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px gray;
 }
 .kshf .fa-histogram-flip {
   -webkit-transform: scale(1, -1) rotate(90deg);
@@ -300,9 +301,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .overlay_answer .stencilBox {
   position: absolute;
-  border: solid 2px green;
+  border: solid 1px green;
   border-radius: 3px;
-  box-shadow: 0px 0px 5px green;
+  box-shadow: 0px 0px 5px rgba(0, 128, 0, 0.78);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -311,6 +312,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .overlay_answer .stencilBox[locked] {
   border-color: #cc2525;
   box-shadow: 0px 0px 5px #cc2525;
+}
+.kshf .overlay_answer .stencilBox.deEmph {
+  border-color: #e2e2d9;
+  box-shadow: 0px 0px 5px white;
 }
 .kshf .overlay_answer .stencilBox > .pointerAction {
   z-index: 99999;
@@ -1105,6 +1110,7 @@ left:calc(50% - 310px);
   font-size: 0.8em;
   font-weight: 300;
   border-bottom: solid 1px gray;
+  text-align: left;
 }
 .kshf .overlay_help > .SelectedThing_Content_More > p {
   margin: 0 0 0.7em 0;

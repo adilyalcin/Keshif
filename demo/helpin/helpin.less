@@ -71,8 +71,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     display: block;
     margin: 0 auto;
     max-width: 95%;
-    box-shadow: 0px 0px 5px gray;
     margin-bottom: 12px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px gray;
   }
 
   // Custom fa flip style for categorical summary
@@ -266,13 +267,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .stencilBox{
       position: absolute;
-      border: solid 2px green;
+      border: solid 1px green;
       border-radius: 3px;
-      box-shadow: 0px 0px 5px green;
+      box-shadow: 0px 0px 5px rgba(0, 128, 0, 0.78);
       .user-select(none);
       &[locked]{
         border-color: #cc2525;
         box-shadow: 0px 0px 5px #cc2525;
+      }
+      &.deEmph{
+        border-color: #e2e2d9;
+        box-shadow: 0px 0px 5px white;
       }
       > .pointerAction{
         z-index: 99999;
@@ -977,6 +982,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-size: 0.8em;
     font-weight: 300;
     border-bottom: solid 1px gray;
+    text-align: left;
     > p{ margin: 0 0 0.7em 0; }
     .breadCrumb{ 
       font-size: 0.8em;
