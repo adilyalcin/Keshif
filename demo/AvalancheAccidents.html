@@ -48,8 +48,11 @@ google.setOnLoadCallback(function(){
     recordDisplay: {
       sortBy: [ 'Killed', 'Date' ],
       sortColWidth: 65,
-      textSearch: "PLACE",
-      recordView: "PLACE",
+      recordView: function(){
+        return this.PLACE + " <i class='fa fa-map-marker' style='color: lightgray;'></i>"+
+          (this["Travel Mode"]?
+            (" - <span style='font-weight: 100;'>"+this["Travel Mode"]+"</span>"): "");
+      }
     }
   });
 });
