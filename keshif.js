@@ -3677,10 +3677,15 @@ kshf.Browser.prototype = {
       // Notification
       this.DOM.notifyButton = rightBoxes.append("span").attr("class","notifyButton fa fa-bell")
         .each(function(){ 
-          this.tipsy = new Tipsy(this, { gravity: 'n', 
-            title: "See Tip<br><div style='font-size: 0.9em; padding-top: 6px;'>Shift+Click to dismiss</div>"
-        }); })
-        .on("mouseenter", function(){ this.tipsy.show(); })
+          this.tipsy = new Tipsy(this, { gravity: 'n', title: ""}); 
+        })
+        .on("mouseenter", function(){ 
+          this.tipsy.options.title = ""+
+            "<u>See Tip</u><br>"+
+            me.helpin.getTopicTitle(me.helpin.notifyAction.topic)+"<br>"+
+            "<div style='font-size: 0.9em; padding-top: 6px;'>Shift+Click to dismiss</div>";
+          this.tipsy.show();
+        })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide();
           if(me.helpin) {

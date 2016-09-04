@@ -905,6 +905,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .notifyButton{ 
           display: none;
           .animation(notifAlert 2s infinite ease-in-out); 
+          &:hover{
+            color: orangered;
+            .animation(none);
+          }
         }
         > .authorButton{
           display: inline-block;

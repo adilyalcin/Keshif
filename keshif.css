@@ -1187,6 +1187,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-animation: notifAlert 2s infinite ease-in-out;
   animation: notifAlert 2s infinite ease-in-out;
 }
+.kshf .panel_Basic > .rightBoxes > .notifyButton:hover {
+  color: orangered;
+  -webkit-animation: none;
+  -moz-animation: none;
+  -o-animation: none;
+  animation: none;
+}
 .kshf .panel_Basic > .rightBoxes > .authorButton {
   display: inline-block;
 }
