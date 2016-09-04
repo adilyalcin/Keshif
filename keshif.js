@@ -2591,9 +2591,9 @@ kshf.RecordDisplay.prototype = {
         });
       } else {
         this.DOM.kshfRecords.each(function(record){
-          var isVisible = (record.recordRank>=0) && (record.recordRank<me.maxVisibleItems);
-          if(isVisible) visibleItemCount++;
-          this.style.display = isVisible?null:'none';
+          var recordIsVisible = (record.recordRank>=0) && (record.recordRank<me.maxVisibleItems);
+          if(recordIsVisible) visibleItemCount++;
+          this.style.display = recordIsVisible?null:'none';
         });
 
         this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
@@ -3369,7 +3369,7 @@ kshf.Browser.prototype = {
       var m = this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Content");
       m.append("span").attr("class","measureSelectBox_Content_FuncType")
         .selectAll(".measureFunctionType").data([
-          {v:"Count", l:"Count"},
+          {v:"Count", l:"Number"},
           {v:"Sum", l:"Sum"},
           {v:"Avg", l:"Average"},
         ]).enter()
@@ -5157,8 +5157,11 @@ kshf.Browser.prototype = {
     },
     /** -- */
     getMeasureFuncTypeText: function(){
-      return this.measureSummary ? 
-        (((this.measureFunc==="Sum")?"Total ":"Average ")+this.measureSummary.summaryName+" of ") : "";
+      switch(this.measureFunc){
+        case 'Count': return "";
+        case 'Sum'  : return "Total "  +this.measureSummary.summaryName+" of ";
+        case 'Avg'  : return "Average "+this.measureSummary.summaryName+" of ";
+      }
     },
     /** metricType: "Sum" or "Avg" */
     setMeasureMetric: function(metricType, summary){
@@ -8204,17 +8207,17 @@ var Summary_Categorical_functions = {
     /** -- */
     updateCatIsVisible: function(){
       if(this.viewType==='map'){
-        this._aggrs.forEach(function(_cat){ 
-          _cat.isVisible = true;
-        });
+        this._aggrs.forEach(function(_cat){ _cat.isVisible = true; });
       } else if(this.viewType==='list'){
+        var maxVisible = Math.ceil((this.scrollTop_cache+this.categoriesHeight)/this.heightCat);
+
         this._aggrs.forEach(function(_cat){
           _cat.isVisibleBefore = _cat.isVisible;
           if(!_cat.isActive){
             _cat.isVisible = false;
           } else if(_cat.orderIndex<this.firstCatIndexInView) {
             _cat.isVisible = false;
-          } else if(_cat.orderIndex>this.firstCatIndexInView+this.catCount_InDisplay) {
+          } else if(_cat.orderIndex>=maxVisible) {
             _cat.isVisible = false;
           } else {
             _cat.isVisible = true;
