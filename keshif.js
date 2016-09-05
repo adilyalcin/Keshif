@@ -580,8 +580,8 @@ kshf.Record.prototype = {
     if(this.DOM.record) this.DOM.record.setAttribute("selection","onRecord");
     // summaries that this item appears in
     this._aggrCache.forEach(function(aggr){
-      if(aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.setAttribute("cSelection","onRecord");
-      if(aggr.DOM.matrixRow) aggr.DOM.matrixRow.setAttribute("cSelection","onRecord");
+      if(aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.setAttribute("catselect","onRecord");
+      if(aggr.DOM.matrixRow) aggr.DOM.matrixRow.setAttribute("catselect","onRecord");
       if(aggr.summary && aggr.summary.setRecordValue) aggr.summary.setRecordValue(this);
     },this);
   },
@@ -750,8 +750,7 @@ kshf.Aggregate.prototype = {
   /** -- */
   unselectAggregate: function(){
     if(this.DOM.aggrGlyph) {
-      this.DOM.aggrGlyph.removeAttribute("cSelection");
-      this.DOM.aggrGlyph.removeAttribute("showlock");
+      d3.select(this.DOM.aggrGlyph).attr("catselect",null).classed("showlock",false);
     }
     if(this.DOM.matrixRow) {
       this.DOM.matrixRow.removeAttribute("selection");
@@ -760,12 +759,13 @@ kshf.Aggregate.prototype = {
 
   /** -- */
   selectCompare: function(cT){
-    if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.setAttribute("compare","true");
+    d3.select(this.DOM.aggrGlyph).classed("locked",true);
     this.compared = cT;
     this.records.forEach(function(record){ record.setCompared(cT); });
   },
   /** -- */
   clearCompare: function(cT){
+    d3.select(this.DOM.aggrGlyph).classed("locked",false);
     if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.removeAttribute("compare");
     this.compared = false;
     this.records.forEach(function(record){ record.unsetCompared(cT); });
@@ -1268,9 +1268,6 @@ kshf.RecordDisplay.prototype = {
           zoomInit = this.getZoom();
           me.DOM.recordMap_SVG.style("opacity",0.3);
           me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display","none");
-        })
-        .on("move",function(){
-          // console.log("MapZoom: "+me.leafletRecordMap.getZoom());
         })
         .on("moveend",function(){
           me.browser.DOM.root.attr("pointerEvents",true);
@@ -7285,7 +7282,7 @@ var Summary_Categorical_functions = {
     /** -- */
     unselectAllCategories: function(){
       this._aggrs.forEach(function(aggr){
-        if(aggr.f_selected() && aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.removeAttribute("cSelection");
+        if(aggr.f_selected() && aggr.DOM.aggrGlyph) aggr.DOM.aggrGlyph.removeAttribute("catselect");
         aggr.set_NONE();
       });
       this.summaryFilter.selected_All_clear();
@@ -7967,7 +7964,7 @@ var Summary_Categorical_functions = {
 
       if(aggr.DOM.matrixRow) aggr.DOM.matrixRow.setAttribute("selection","selected");
 
-      aggr.DOM.aggrGlyph.setAttribute("cSelection","and");
+      aggr.DOM.aggrGlyph.setAttribute("catselect","and");
 
       // Comes after setting select type of the category - visual feedback on selection...
       if(!this.isMultiValued && this.summaryFilter.selected_AND.length!==0) return;
@@ -7975,7 +7972,7 @@ var Summary_Categorical_functions = {
       // Show the highlight (preview)
       if(aggr.is_NOT()) return;
       if(this.isMultiValued || this.summaryFilter.selected_AND.length===0){
-        aggr.DOM.aggrGlyph.setAttribute("showlock",true);
+        d3.select(aggr.DOM.aggrGlyph).classed("showlock",true);
         this.browser.setSelect_Highlight(aggr);
         if(!this.browser.ratioModeActive) {
           if(this.viewType==='map'){
@@ -7997,7 +7994,7 @@ var Summary_Categorical_functions = {
     /** -- */
     onCatEnter_OR: function(ctgry){
       this.browser.clearSelect_Highlight();
-      ctgry.DOM.aggrGlyph.setAttribute("cSelection","or");
+      ctgry.DOM.aggrGlyph.setAttribute("catselect","or");
       if(this.summaryFilter.selected_OR.length>0){
         if(this.viewType==='map') this.DOM.highlightedMeasureValue.style("opacity",0);
       }
@@ -8005,7 +8002,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     onCatLeave_OR: function(ctgry){
-      ctgry.DOM.aggrGlyph.setAttribute("cSelection","and");
+      ctgry.DOM.aggrGlyph.setAttribute("catselect","and");
     },
     /** -- */
     onCatClick_OR: function(ctgry){
@@ -8020,7 +8017,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     onCatEnter_NOT: function(ctgry){
-      ctgry.DOM.aggrGlyph.setAttribute("cSelection","not");
+      ctgry.DOM.aggrGlyph.setAttribute("catselect","not");
       this.browser.preview_not = true;
       this.browser.setSelect_Highlight(ctgry);
       this.browser.refreshMeasureLabels("Highlight"); 
@@ -8028,7 +8025,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     onCatLeave_NOT: function(ctgry){
-      ctgry.DOM.aggrGlyph.setAttribute("cSelection","and");
+      ctgry.DOM.aggrGlyph.setAttribute("catselect","and");
       this.browser.preview_not = false;
       this.browser.setSelect_Highlight(ctgry);
       if(this.viewType==='map') this.DOM.highlightedMeasureValue.style("opacity",0);
@@ -8058,11 +8055,7 @@ var Summary_Categorical_functions = {
       var DOM_cats_new = aggrGlyphSelection.enter()
         .append(this.viewType=='list' ? 'span' : 'g')
         .attr("class","aggrGlyph "+(this.viewType=='list'?'cat':'map')+"Glyph")
-        .on("mousedown", function(){
-          this._mousemove = false;
-        })
         .on("mousemove", function(){
-          this._mousemove = true;
           if(this.tipsy){
             var left = (d3.event.pageX-this.tipsy.tipWidth-10);
             var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
@@ -8148,6 +8141,7 @@ var Summary_Categorical_functions = {
         DOM_cats_new.append("span").attr("class", "total_tip");
 
       } else {
+        // map-view
         DOM_cats_new
           .each(function(_cat){
             this.tipsy = new Tipsy(this, {
@@ -8455,14 +8449,12 @@ var Summary_Categorical_functions = {
           me.map_projectCategories()
         })
         .on("movestart",function(){
+          me.browser.DOM.root.attr("pointerEvents",false);
           zoomInit = this.getZoom();
           me.DOM.catMap_SVG.style("opacity",0.3);
         })
-        .on("move",function(){
-          // console.log("MapZoom: "+me.leafletAttrMap.getZoom());
-          // me.map_projectCategories()
-        })
         .on("moveend",function(){
+          me.browser.DOM.root.attr("pointerEvents",true);
           me.DOM.catMap_SVG.style("opacity",null);
           if(zoomInit !== this.getZoom()) me.map_projectCategories();
         })
@@ -9993,9 +9985,9 @@ var Summary_Interval_functions = {
 
       var X = ddd.enter().append("span").attr("class","valueTick");
       X.append("span").attr("class","line")
-      X.filter(function(d){ return d.major; }).append("span").attr("class","text");
+      X.append("span").attr("class","text");
 
-      ddd.style("opacity",1).classed("major",function(d){ return d.major?null:true; });
+      ddd.style("opacity",1).classed("major",function(d){ return d.major?true:false; });
       this.DOM.valueTickGroup.selectAll(".valueTick > .text")
         .each(function(d){
           this.bin = null;
@@ -10030,7 +10022,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     onAggrHighlight: function(aggr){
-      aggr.DOM.aggrGlyph.setAttribute("showlock",true);
+      d3.select(aggr.DOM.aggrGlyph).classed("showlock",true);
       aggr.DOM.aggrGlyph.setAttribute("selection","selected");
       if(!this.browser.ratioModeActive){
         this.DOM.highlightedMeasureValue
@@ -11318,8 +11310,8 @@ var Summary_Clique_functions = {
   onSetPairEnter: function(aggr){
     aggr.set_1.DOM.matrixRow.setAttribute("selection","selected");
     aggr.set_2.DOM.matrixRow.setAttribute("selection","selected");
-    aggr.set_1.DOM.aggrGlyph.setAttribute("cSelection","and");
-    aggr.set_2.DOM.aggrGlyph.setAttribute("cSelection","and");
+    aggr.set_1.DOM.aggrGlyph.setAttribute("catselect","and");
+    aggr.set_2.DOM.aggrGlyph.setAttribute("catselect","and");
     this.browser.setSelect_Highlight(aggr);
     this.browser.refreshMeasureLabels("Highlight");
   },
@@ -11327,8 +11319,8 @@ var Summary_Clique_functions = {
   onSetPairLeave: function(aggr){
     aggr.set_1.DOM.matrixRow.removeAttribute("selection");
     aggr.set_2.DOM.matrixRow.removeAttribute("selection");
-    aggr.set_1.DOM.aggrGlyph.removeAttribute("cSelection");
-    aggr.set_2.DOM.aggrGlyph.removeAttribute("cSelection");
+    aggr.set_1.DOM.aggrGlyph.removeAttribute("catselect");
+    aggr.set_2.DOM.aggrGlyph.removeAttribute("catselect");
     this.browser.clearSelect_Highlight();
     this.browser.refreshMeasureLabels("Active");
   },

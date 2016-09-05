@@ -2078,11 +2078,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         color: @color_item_count;
         font-size: 0.7em;
       }
-      &[showlock="true"] .lockButton{
+      &.showlock > .lockButton{
         pointer-events: all !important;
         opacity: 1;
       }
-      &[compare="true"] .lockButton{
+      &.locked > .lockButton{
         pointer-events: all !important;
         opacity: 1;
         &:not([inside]){ color: @color_Compare_A; }
@@ -2091,19 +2091,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       &.mapGlyph{
-        > .measure_Active{
+        > path.measure_Active{
           opacity: 0.8;
           stroke-width: 1px;
-          .transition(~'opacity 500ms linear');
+          .transition(opacity 500ms linear);
         };
-        > .aggr{
-          //stroke: rgba(255, 255, 255, 0.5);
-          &.preview{
-            .transition(~'opacity 500ms ease-in-out');
-            stroke-width: 1px;
-            opacity: 0;
-          }
-        }
         >.measureLabel{
           color: black;
           fill: black;
@@ -2119,19 +2111,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           stroke-linejoin: miter;
           pointer-events: none;
         }
-        &[cSelection]:not([cSelection="onRecord"]) {
-          > .measure_Active{
+        &[catselect="and"] {
+          > path.measure_Active{
             cursor: pointer;
             stroke-width: 2px;
             stroke: orangered;
             fill: lighten(orangered, 30%);
             //.transition(~'fill 200ms ease-in-out');
           }
-          > .aggr.preview{ display: none; }
         }
-        &[cSelection="onRecord"] {
-          > .measure_Active{
-            .transition(~'fill 200ms ease-in-out');
+        &[catselect="onRecord"] {
+          > path.measure_Active{
+            .transition(fill 200ms ease-in-out);
             stroke: darken(@color_onRecord_back, 80%);
             stroke-width: 2px;
             fill: darken(@color_onRecord_back, 40%);
@@ -2375,7 +2366,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           margin-left: -0.5px;
           pointer-events: none;
           background-color: rgba(0,0,0,0.4);
-          .transition(~'all 700ms ease-in-out');
+          .transition(all 700ms ease-in-out);
           &.q_50 {
             width: 2px;
             margin-left: -1px;
@@ -2459,7 +2450,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         padding: 0px;
         background-color: lightgray;
       }
-      &[cSelection="onRecord"]{ 
+      &[catselect="onRecord"]{ 
         color: black !important;
         border: solid 1px darken(@color_onRecord_back,20%);
         border-radius: 4px;
@@ -2654,9 +2645,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                     &[activeItems='0'] .measureLabel{ visibility: hidden; }
 
-                    &[compare="true"] {
-                      > .catLabelGroup > .catLabel{ font-weight: 700; }
-                    }
+                    &.locked > .catLabelGroup > .catLabel{ font-weight: 700; }
 
                     &[cFiltered] {
                       cursor: pointer;
@@ -2692,8 +2681,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       .measureLabel{ .background-image(linear-gradient(left, #E5E5E5 0%, rgba(255,255,255,0) 60%)); }
                     }
 
-                    &[cSelection] > .catLabelGroup { font-weight: 700 !important; }
-                    &[cSelection="onRecord"] > .catLabelGroup { 
+                    &[catselect] > .catLabelGroup { font-weight: 700 !important; }
+                    &[catselect="onRecord"] > .catLabelGroup { 
                       background-color: @color_onRecord_back !important; 
                       border: solid 1px darken(@color_onRecord_back,20%);
                       border-radius: 6px;
@@ -2702,10 +2691,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     }
 
                     &:not([cFiltered]) {
-                      &[cSelection]    { cursor: pointer; }
-                      &[cSelection="and"] > .catLabelGroup > .catLabel{ color: @color_query_and; }
-                      &[cSelection="or" ] > .catLabelGroup > .catLabel{ color: @color_query_or;  }
-                      &[cSelection="not"] > .catLabelGroup > .catLabel{ color: @color_query_not; text-decoration: line-through; }
+                      &[catselect]    { cursor: pointer; }
+                      &[catselect="and"] > .catLabelGroup > .catLabel{ color: @color_query_and; }
+                      &[catselect="or" ] > .catLabelGroup > .catLabel{ color: @color_query_or;  }
+                      &[catselect="not"] > .catLabelGroup > .catLabel{ color: @color_query_not; text-decoration: line-through; }
                     }
                   } // .catGlyph
                 } // .aggrGroup
@@ -3050,10 +3039,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           display: block;
                           pointer-events: none;
                         }
-                        &.minor > .line { 
-                          border-color: darken(#D4D4D4, 10%); // color of the horizontal line
-                          height: 6px;
-                          top: -9px;
+                        &:not(.major) {
+                          > .line { 
+                            border-color: darken(#D4D4D4, 10%); // color of the horizontal line
+                            height: 6px;
+                            top: -9px;
+                          }
+                          > .text{ display: none; }
                         }
                       }
                     } // valueTickGroup
@@ -3115,9 +3107,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       &[hasMap="true"]:not([collapsed]){
-        .summaryViewAs{
-          display: inline-block;
-        }
+        .summaryViewAs{ display: inline-block; }
       }
       &[usedForSorting="true"]{
         .headerGroup > .summaryIcons > .useForRecordDisplay{
@@ -3341,8 +3331,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       .timeSVG > [class^="measure_Highlight_"]{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
-      &:not([relativeMode]) .mapGlyph > .aggr.preview{ opacity: 1; }
-      .mapGlyph > .aggr.preview{ opacity: 1; }
     }
 
     .selectVertLine {

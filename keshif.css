@@ -2627,38 +2627,30 @@ top:calc(50% - 5px);
   color: #969da3;
   font-size: 0.7em;
 }
-.kshf .aggrGlyph[showlock="true"] .lockButton {
+.kshf .aggrGlyph.showlock > .lockButton {
   pointer-events: all !important;
   opacity: 1;
 }
-.kshf .aggrGlyph[compare="true"] .lockButton {
+.kshf .aggrGlyph.locked > .lockButton {
   pointer-events: all !important;
   opacity: 1;
 }
-.kshf .aggrGlyph[compare="true"] .lockButton:not([inside]) {
+.kshf .aggrGlyph.locked > .lockButton:not([inside]) {
   color: #2f4f4f;
 }
-.kshf .aggrGlyph[compare="true"] .lockButton:after {
+.kshf .aggrGlyph.locked > .lockButton:after {
   content: "\f023";
 }
-.kshf .aggrGlyph[compare="true"] .lockButton:hover:after {
+.kshf .aggrGlyph.locked > .lockButton:hover:after {
   content: "\f13e";
 }
-.kshf .aggrGlyph.mapGlyph > .measure_Active {
+.kshf .aggrGlyph.mapGlyph > path.measure_Active {
   opacity: 0.8;
   stroke-width: 1px;
   -webkit-transition: opacity 500ms linear;
   -moz-transition: opacity 500ms linear;
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
-}
-.kshf .aggrGlyph.mapGlyph > .aggr.preview {
-  -webkit-transition: opacity 500ms ease-in-out;
-  -moz-transition: opacity 500ms ease-in-out;
-  -o-transition: opacity 500ms ease-in-out;
-  transition: opacity 500ms ease-in-out;
-  stroke-width: 1px;
-  opacity: 0;
 }
 .kshf .aggrGlyph.mapGlyph > .measureLabel {
   color: black;
@@ -2675,16 +2667,13 @@ top:calc(50% - 5px);
   stroke-linejoin: miter;
   pointer-events: none;
 }
-.kshf .aggrGlyph.mapGlyph[cSelection]:not([cSelection="onRecord"]) > .measure_Active {
+.kshf .aggrGlyph.mapGlyph[catselect="and"] > path.measure_Active {
   cursor: pointer;
   stroke-width: 2px;
   stroke: orangered;
   fill: #ffb599;
 }
-.kshf .aggrGlyph.mapGlyph[cSelection]:not([cSelection="onRecord"]) > .aggr.preview {
-  display: none;
-}
-.kshf .aggrGlyph.mapGlyph[cSelection="onRecord"] > .measure_Active {
+.kshf .aggrGlyph.mapGlyph[catselect="onRecord"] > path.measure_Active {
   -webkit-transition: fill 200ms ease-in-out;
   -moz-transition: fill 200ms ease-in-out;
   -o-transition: fill 200ms ease-in-out;
@@ -3115,7 +3104,7 @@ top:calc(50% - 5px);
   padding: 0px;
   background-color: lightgray;
 }
-.kshf .missingValueAggr[cSelection="onRecord"] {
+.kshf .missingValueAggr[catselect="onRecord"] {
   color: black !important;
   border: solid 1px #cdbd9b;
   border-radius: 4px;
@@ -3352,7 +3341,7 @@ top:calc(50% - 5px);
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[activeItems='0'] .measureLabel {
   visibility: hidden;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[compare="true"] > .catLabelGroup > .catLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph.locked > .catLabelGroup > .catLabel {
   font-weight: 700;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[cFiltered] {
@@ -3407,26 +3396,26 @@ top:calc(50% - 5px);
   background-image: -o-linear-gradient(left, #e5e5e5 0%, rgba(255, 255, 255, 0) 60%);
   background-image: linear-gradient(to right, #e5e5e5 0%, rgba(255, 255, 255, 0) 60%);
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[cSelection] > .catLabelGroup {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[catselect] > .catLabelGroup {
   font-weight: 700 !important;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[cSelection="onRecord"] > .catLabelGroup {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[catselect="onRecord"] > .catLabelGroup {
   background-color: #efeadf !important;
   border: solid 1px #cdbd9b;
   border-radius: 6px;
   top: -1px;
   padding-right: 1px;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection] {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[catselect] {
   cursor: pointer;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection="and"] > .catLabelGroup > .catLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[catselect="and"] > .catLabelGroup > .catLabel {
   color: #1d4870;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection="or"] > .catLabelGroup > .catLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[catselect="or"] > .catLabelGroup > .catLabel {
   color: #1c737a;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[cSelection="not"] > .catLabelGroup > .catLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph:not([cFiltered])[catselect="not"] > .catLabelGroup > .catLabel {
   color: #808080;
   text-decoration: line-through;
 }
@@ -3857,10 +3846,13 @@ height:calc(100% - 10px);
   display: block;
   pointer-events: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick.minor > .line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick:not(.major) > .line {
   border-color: #bbbbbb;
   height: 6px;
   top: -9px;
+}
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick:not(.major) > .text {
+  display: none;
 }
 .kshf .kshfSummary[collapsed] .buttonSummaryCollapse {
   display: none !important;
@@ -4201,12 +4193,6 @@ height:calc(100% - 10px);
 }
 .kshf[selectHighlight] .previewLine {
   opacity: 1 !important;
-}
-.kshf[selectHighlight]:not([relativeMode]) .mapGlyph > .aggr.preview {
-  opacity: 1;
-}
-.kshf[selectHighlight] .mapGlyph > .aggr.preview {
-  opacity: 1;
 }
 .kshf .selectVertLine {
   display: inline-block;
