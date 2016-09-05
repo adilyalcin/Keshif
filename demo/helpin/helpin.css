@@ -185,8 +185,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: block;
   position: relative;
   text-align: left;
-  width: 110px;
-  padding: 1px 6px;
+  width: 115px;
+  padding: 1px 2px 1px 5px;
   margin-top: 2px;
   background-color: white;
   font-size: 0.8em;
@@ -220,17 +220,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.6em;
   letter-spacing: 2px;
 }
-.kshf .overlay_help_control[expanded] {
-  right: 0px;
-  width: 115px;
+.kshf .overlay_help_control .helpInMode_Notification:not(.enabled) {
+  color: gray !important;
 }
-.kshf .overlay_help_control[expanded] [class^="helpInMode_"] {
+.kshf .overlay_help_control .helpInMode_Notification:not(.enabled) > .fa-toggle-on:before {
+  content: "\f204";
+}
+.kshf .overlay_help_control.expanded {
+  right: 0px;
+  width: 120px;
+}
+.kshf .overlay_help_control.expanded [class^="helpInMode_"] {
   color: black;
 }
-.kshf .overlay_help_control[expanded] > .helpInModes {
-  max-height: 124px;
+.kshf .overlay_help_control.expanded > .helpInModes {
+  max-height: 150px;
 }
-.kshf .overlay_help_control[expanded] > .overlay_Close {
+.kshf .overlay_help_control.expanded > .overlay_Close {
   right: 36px;
 }
 .kshf .animateState {
@@ -449,17 +455,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .topicLink {
   cursor: pointer;
+  text-decoration: underline;
+  /*
+    &:after{
+      content: "*"; // "⚬";
+      position: relative;
+      font-size: 0.6em;
+      top: -6px;
+      //width: 8px;
+      display: inline-block;
+    }*/
 }
 .kshf .topicLink:hover {
-  text-decoration: underline;
   color: orangered;
-}
-.kshf .topicLink:after {
-  content: "*";
-  position: relative;
-  font-size: 0.6em;
-  top: -6px;
-  display: inline-block;
 }
 .kshf .topicLink.weakTopicLink {
   color: gray;
@@ -511,6 +519,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[exp="train"] .topicLink:after {
   display: none;
+}
+.kshf[exp="train"] .showHelpIn {
+  display: none;
+}
+.kshf[exp="train"] .overlay_help_control {
+  display: none !important;
 }
 .kshf[exp] .rightBoxes .authorButton {
   display: none !important;

@@ -48,9 +48,9 @@ if(location.search==="?exp=train"){
 
 var getMetricText = function(){
   switch(this.measureFunc){
-    case 'Count': return "Number of " + this.recordName;
-    case 'Sum'  : return "Total " + this.measureSummary.summaryName + " of " + this.recordName;
-    case 'Avg'  : return "Average " + this.measureSummary.summaryName + " of " + this.recordName;
+    case 'Count': return "number of " + this.recordName;
+    case 'Sum'  : return "total " + this.measureSummary.summaryName + " of " + this.recordName;
+    case 'Avg'  : return "average " + this.measureSummary.summaryName + " of " + this.recordName;
   }
 }
 
@@ -65,12 +65,16 @@ var measureLabelModeInfo = function(){
   return ""+
     "<p>Measurements are currently labeled as <span class='bolder'>"+mode+"</span>. "+
       "The alternative is labeling as <span class='bolder'>"+mode_other+"</span>.<p>"+
-    "<p>Example: <span class='bolder'>"+_active+"</span> "+this.browser.recordName+" can be labeled as "+
-      "<span class='bolder'>"+Math.round(100*_active/_total)+"%"+"</span>"+
+    
+    "<p><u>Example:</u> Absolute: <span class='bolder'>"+_active+"</span> "+this.browser.recordName+" "+
+      "Percent: <span class='bolder'>"+Math.round(100*_active/_total)+"%"+"</span>"+
         " of the <span class='bolder'>"+_total+"</span> "+_filtered+this.browser.recordName+".</p>"+
-    "<p>All summaries have the same measure-label mode.</p>"+
+
+    "<p>All summaries have the same measurement-label mode.</p>"+
+    
     "<p>Percent values cannot be shown with "+
       "<span class='topicLink' topicName='T_ChangeMetric'>Average metric</span>.</p>"+
+
     "";
 };
 
@@ -96,7 +100,7 @@ var percentileInfo = "<p>Each block shows a percentile range, such as 20%-30%. "
 //  "<p>Point to a percentile block for more information.</p>"+
   "<p>This chart is not affected by "+
     "<span class='topicLink' topicName='T_ChangeMetric'>metric</span>, "+
-    "<span class='topicLink' topicName='T_ChangeMeasureLabel'>measure-label mode</span>, and "+
+    "<span class='topicLink' topicName='T_ChangeMeasureLabel'>measurement-label mode</span>, and "+
     "<span class='topicLink' topicName='T_ChangeVisualScale'>visual scale mode</span> settings.</p>";
 
 var measureMetricInfo = function(){
@@ -109,7 +113,7 @@ var measureMetricInfo = function(){
   // TODO: respons to filtering state
   return ""+
     "<p>The aggregation values and visualizations are computed using the selected metric,"+
-      " which is currently <span class='bolder'>"+getMetricText.call(this.browser)+"</span>.</p>"+
+      " which is currently the <span class='bolder'>"+getMetricText.call(this.browser)+"</span>.</p>"+
     "<p>Other options are "+alternative+", such as "+this.browser.getMeasurableSummaries()[0].summaryName+".</p>"+
     "<p>All summaries and charts show the same metric.</p>"+
     "";
@@ -185,7 +189,7 @@ var intervalSummaryInfoFunc = function(DOM){
   if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
   encoding += getMetricText.call(this.browser);
   if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
-  encoding += " per each "+summary.summaryName+" range.</p>";
+  encoding += " per "+summary.summaryName+" range.</p>";
 
   return str+encoding+
     ( summary.scaleType==='log' ? (
@@ -217,7 +221,7 @@ var aggrDescription = function(aggr, encodingIcon){
 
   var recordName = this.browser.recordName;
   var aggrLabel = summary.printAggrSelection(aggr);
-  var globalActive = browser.allRecordsAggr._measure.Active;
+  var globalActive = browser.allRecordsAggr._measure.Active.toLocaleString();
 
   var _metric = getMetricText.call(this.browser);
 
@@ -411,7 +415,7 @@ var _material = {
       fixBy: 'T_ChangeMetric', // change metric
     },
     ActiveCompareSelection: {
-      descr: "There is an active <i class='fa fa-lock'></i> lock-selection.",
+      descr: "There is an active <i class='fa fa-lock'></i> locked-selection.",
       v: function(){
         if(this.browser.selectedAggr.Compare_A) return true;
         if(this.browser.selectedAggr.Compare_B) return true;
@@ -538,7 +542,7 @@ var _material = {
           encoding +="<p>";
         }
         return intro+ranking+encoding+
-          "<p>When you mouse-over one of the "+this.browser.recordName+", its values are highlighted.</p>"
+          "<p>When you mouse over one of the "+this.browser.recordName+", its values are highlighted.</p>"
           "";
       },
       onLock: function(DOM){
@@ -548,7 +552,7 @@ var _material = {
         // categories
         this.context.HighlightedDOM = this.browser.DOM.root
           .selectAll('[cSelection="onRecord"] > .catLabelGroup, .recordValueText-v')[0];
-        this.fHighlightBox("All values of<br> the selected record<br> are highlighted<br> on mouse-over",
+        this.fHighlightBox("All values of<br> the selected record<br> are highlighted<br> on mouse over",
             "s","",false,"deEmph");
 
         this.createStencils();
@@ -679,9 +683,6 @@ var _material = {
         var str = '';
 
         str+="<p>This section shows the global measurement.</p>";
-        str+="<p>It reflects the <span class='topicLink' topicName='T_ChangeMetric'>selected metric</span> "+
-            "<span style='color:gray'>("+_metric+")</span> and "+
-            "filters <span style='color:gray'>(currently "+filterSel+")</span>.</p>";
 
         str += "<p>";
         if(this.browser.measureFunc==='Count'){
@@ -693,6 +694,10 @@ var _material = {
         }
         str += " in the " + (this.browser.isFiltered()?"<i>filtered</i>":"")+ " dataset.";
         str += "</p>";
+
+        str+="<p>It reflects the <span class='topicLink' topicName='T_ChangeMetric'>selected metric</span> "+
+            "<span style='color:gray'>("+_metric+")</span> and "+
+            "filters <span style='color:gray'>(currently "+filterSel+")</span>.</p>";
 
         return str;
       }
@@ -753,11 +758,11 @@ var _material = {
       info: function(DOM){ 
         var x;
         switch(DOM.classList[1]){
-          case "crumbMode_Compare_A": x="<i class='fa fa-lock'></i> lock-"; break;
-          case "crumbMode_Compare_B": x="<i class='fa fa-lock'></i> lock-"; break;
-          case "crumbMode_Compare_C": x="<i class='fa fa-lock'></i> lock-"; break;
-          case "crumbMode_Filter":    x="<i class='fa fa-filter'></i> filter-";  break;
-          default: x = "<i class='fa fa-mouse-pointer'></i> highlight-"; break;
+          case "crumbMode_Compare_A": x="<i class='fa fa-lock'></i> locked-"; break;
+          case "crumbMode_Compare_B": x="<i class='fa fa-lock'></i> locked-"; break;
+          case "crumbMode_Compare_C": x="<i class='fa fa-lock'></i> locked-"; break;
+          case "crumbMode_Filter":    x="<i class='fa fa-filter'></i> filtered-";  break;
+          default: x = "<i class='fa fa-mouse-pointer'></i> highlighted-"; break;
         };
         return "<p>This breadcrumb shows an active "+x+"selection.</p>";
       }
@@ -864,7 +869,7 @@ var _material = {
 _topics: {
   T_SelectHighlight: {
     q: function(){
-      return "Highlight-select <i class='fa fa-mouse-pointer'></i> to preview "+this.browser.recordName+"";
+      return "Highlight-select to preview "+this.browser.recordName+"";
     },
     actions: "Explore+Select",
     topics: "Aggregate",
@@ -873,9 +878,9 @@ _topics: {
     media: "T_SelectHighlight.gif",
     note: function(){
       var str="";
-      str += "<p>You can highlight "+this.browser.recordName+" in categories or number/time ranges.</p>";
-      
-      if(!exp_basis) str+="<p>As an example, one aggregate is highlighted.</p>";
+      str += "<p>You can highlight "+this.browser.recordName+" in categories or number/time ranges. ";
+      if(!exp_basis) str+="As an example, one aggregate is highlighted.";
+      str += "</p>"
 
       var breadcrumb;
       if(exp_basis){
@@ -884,7 +889,7 @@ _topics: {
         breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
-      str+="<p>"+breadcrumb+"on the top section shows the highlight-selection. "+
+      str+="<p>"+breadcrumb+"on the top section shows the highlighted-selection. "+
       "Highlighted "+this.browser.recordName+" are shown in "+
         "<span style='color: orangered; font-weight: 500;'>orange</span> across all summaries.</p>"+
       "<p>You can observe highlighted records in groups in other summaries, as well as individually.</p>"+
@@ -892,7 +897,7 @@ _topics: {
       return str;
     },
     similarTopics: ['T_SelectFilter','T_SelectCompare'],
-    tAnswer: "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
+    tAnswer: "<i class='fa fa-mouse-pointer'></i> Mouse over an aggregate",
     activate: function(){
       var hAggr = pickSelectedAggr.call(this.browser);
       this.context.highlightedAggregate = hAggr;
@@ -900,7 +905,7 @@ _topics: {
       
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("Mouse over an aggregate","n","tipsy-primary2");
     },
     animate: {
       // Highlight aggregate ************************************************************
@@ -913,7 +918,7 @@ _topics: {
       // Show breadcrumb *****************************************************************
       3: function(){
         this.context.HighlightedDOM = [ this.browser.crumb_Highlight.DOM[0][0] ];
-        this.fHighlightBox("This breadcrumb shows the highlight-selection.","n");
+        this.fHighlightBox("This breadcrumb shows the highlighted-selection.","n","",false,"deEmph");
       },
       // Show the other (explain) aggregate *********************************************
       4.5: function(){
@@ -928,7 +933,7 @@ _topics: {
             "<span class='bolder'>"+_aggr._measure.Highlight+"</span> "+
               printBreadcrumb("Highlight", this.context.highlightedSummary, this.context.highlightedAggregate)+
               this.browser.recordName+".</div>"
-          ,"n");
+          ,"n","",false,"deEmph");
       },
       // Show highlighted records *******************************************************
       6: function(){
@@ -946,7 +951,7 @@ _topics: {
         this.fHighlightBox(
           "Highlighted "+
           printBreadcrumb("Highlight", this.context.highlightedSummary, this.context.highlightedAggregate) +
-          this.browser.recordName+" <br> change their background color.","n");
+          this.browser.recordName+" <br> change their background color.","n","",false,"deEmph");
       }
     },
     deactivate: function(){
@@ -957,7 +962,7 @@ _topics: {
   },
   T_SelectFilter: {
     q: function(){
-      return "Filter-select <i class='fa fa-filter'></i> to focus on selected "+
+      return "Filter-select to focus on selected "+
         this.browser.recordName;
     },
     actions: "Explore+Filter+Select",
@@ -980,7 +985,7 @@ _topics: {
         breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
-      str += "<p>"+breadcrumb+"on the top section shows the filter-selection.</p>"+ 
+      str += "<p>"+breadcrumb+"on the top section shows the filtered-selection.</p>"+ 
         "<p>Filtered "+this.browser.recordName+" are removed from the data browser.</p>"+
         //"<p>Use filtering to explore "+this.browser.recordName+" using multiple summaries.</p>"+
         "<p>Filtering on multiple summaries is merged with  <span class='AndOrNot_And'>And</span>.</p>"+
@@ -989,7 +994,7 @@ _topics: {
     },
     tAnswer: {
       sequence: [
-        "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
+        "<i class='fa fa-mouse-pointer'></i> Mouse over an aggregate",
         "<i class='fa fa-bullseye'></i> Click on the highlighted aggregate"
       ]
     },
@@ -1000,7 +1005,7 @@ _topics: {
       
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("1) Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) Mouse over an aggregate","n","tipsy-primary2");
     },
     animate: {
       0.5: function(){
@@ -1019,12 +1024,11 @@ _topics: {
           'bubbles': true,
           'cancelable': true
         }));
-
       },
       // Show breadcrumb ****************************************************************
       5: function(){
         this.context.HighlightedDOM = [ this.context.highlightedSummary.summaryFilter.filterCrumb.DOM[0][0] ];
-        this.fHighlightBox("This breadcrumb shows the filter-selection.","n");
+        this.fHighlightBox("This breadcrumb shows the filtered-selection.","n","",false,"deEmph");
       },
       // Show the other (explain) aggregate **************************************
       6.5: function(){
@@ -1035,7 +1039,7 @@ _topics: {
           "Remaining "+this.browser.recordName+" are shown<br> across all summaries.<br>"+
           "<div style='margin-top: 6px'>For example, "+_aggr.summary.printAggrSelection(_aggr)+ " has <br>"+
           "<span class='bolder'>"+_aggr._measure.Active+"</span> remaining "+this.browser.recordName+".</div>"
-          ,"n");
+          ,"n","",false,"deEmph");
       },
       7.5: function(){
         this.context.HighlightedDOM = [];
@@ -1049,7 +1053,7 @@ _topics: {
           this.context.HighlightedDOM.push(record.DOM.record);
           return true;
         },this);
-        this.fHighlightBox("All remaining records satisfy the filtering selection.","n");
+        this.fHighlightBox("All remaining records satisfy the filtering selection.","n","",false,"deEmph");
       }
     },
     deactivate: function(){
@@ -1059,7 +1063,7 @@ _topics: {
   },
   T_SelectCompare: {
     q: function(){
-      return "Lock-select <i class='fa fa-lock'></i> to compare groups of "+this.browser.recordName; 
+      return "Lock-select to compare groups of "+this.browser.recordName; 
     },
     actions: "Explore+Compare+Select",
     topics: "Aggregate",
@@ -1071,7 +1075,7 @@ _topics: {
       var str = "";
 
       str += "<p>You can lock "+this.browser.recordName+" in categories or number/time ranges. "+
-        "At most <span class='bolder'>3</span> color-coded lock-selections are possible ("+
+        "At most <span class='bolder'>3</span> color-coded locked-selections are possible ("+
         "<span class='colorCoding_Compare_A fa fa-lock'></span> "+
         "<span class='colorCoding_Compare_B fa fa-lock'></span> "+
         "<span class='colorCoding_Compare_C fa fa-lock'></span>)."+
@@ -1086,21 +1090,22 @@ _topics: {
         breadcrumb = printBreadcrumb("Highlight", this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
-      str += ""+breadcrumb+"on the top section shows the lock-selection.</p>"+
+      str += ""+breadcrumb+"on the top section shows the locked-selection.</p>"+
 
       "<p>Locked "+this.browser.recordName+" are shown across all summaries. "+
         "You can quickly compare "+this.browser.recordName+" in "+
         "<span class='bolder'>locked</span> and <span class='bolder'>highlighted</span> selections"+
         " by moving the mouse.</p>"+
-      "<p></p>"+
+
       "<p>Changing filtering will clear locked selections.</p>"+
+      
       "";
       return str;
     },
     tAnswer: {
       sequence: [
-        "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
-        "<i class='fa fa-lock'></i> Click the lock icon <br> Or<br> Shift+Click the aggregate"
+        "Mouse over an aggregate",
+        " Click the lock (<i class='fa fa-lock'></i>) icon <br> Or<br> Shift+Click the aggregate"
       ]
     },
     activate: function(){
@@ -1110,7 +1115,7 @@ _topics: {
 
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("1) Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) Mouse over an aggregate","n","tipsy-primary2");
     },
     animate: {
       0.5: function(){
@@ -1132,7 +1137,7 @@ _topics: {
       // Show breadcrumb ****************************************************************
       4.5: function(){
         this.context.HighlightedDOM = [ this.browser['crumb_Compare_'+this.context.fakeCompare].DOM[0][0] ];
-        this.fHighlightBox("This breadcrumb shows the lock-selection.","n");
+        this.fHighlightBox("This breadcrumb shows the locked-selection.","n","",false,"deEmph");
       },
       // Show the other (explain) aggregate *********************************************
       6: function(){
@@ -1148,7 +1153,7 @@ _topics: {
           "<span class='bolder'>"+_aggr._measure['Compare_'+cT]+"</span> "+
             printBreadcrumb("Compare_"+cT, this.context.highlightedSummary, this.context.highlightedAggregate) +
             this.browser.recordName+"."
-          ,"n");
+          ,"n","",false,"deEmph");
       },
       // 
       7.5: function(){
@@ -1166,7 +1171,7 @@ _topics: {
         },this);
         this.fHighlightBox("Locked "+
           printBreadcrumb("Compare_"+cT, this.context.highlightedSummary, this.context.highlightedAggregate) +
-          this.browser.recordName+" <br> change their background color.","n");
+          this.browser.recordName+" <br> change their background color.","n","",false,"deEmph");
       },
       //
       9: function(){
@@ -1176,7 +1181,8 @@ _topics: {
         _aggr.summary.onAggrHighlight(_aggr);
 
         this.context.HighlightedDOM = [ _aggr.DOM.aggrGlyph ];
-        this.fHighlightBox("Select other aggregates<br> to compare with locked "+this.browser.recordName,"n");
+        this.fHighlightBox("Select other aggregates<br> to compare with locked "+this.browser.recordName,
+          "n","",false,"deEmph");
       },
     },
     deactivate: function(){
@@ -1189,13 +1195,13 @@ _topics: {
     },
   },
   T_UnlockSelection: {
-    q: "Unlock a lock-selection <i class='fa fa-lock'></i>",
+    q: "Unlock a locked-selection <i class='fa fa-lock'></i>",
     actions: "Explore+Select",
     topics: "Aggregate+Compared Measure+Compare Selection",
     context: ["SummaryInBrowser", "ActiveCompareSelection"],
     similarTopics: ['T_SelectCompare'],
     media: "T_UnlockSelection.gif",
-    note: "Changing filtering also removes all lock-selections.",
+    note: "Changing filtering also removes all locked-selections.",
     tAnswer: [
       { matches: '[class*="crumbMode_Compare_"]',
         cElement: "browser",
@@ -1234,13 +1240,17 @@ _topics: {
     topics: "Categorical Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", "FilteredSummary"],
     media: "T_FilterOr.gif",
-    note: "<p>Or-selection is possible if at least one category has been filtered.</p>",
+    note: function(){
+      return "<p>You can filter "+this.browser.recordName+" based on multiple alternative categories.</p> "+
+        "<p>After a category is filtered, mouse over a second category and click <span class='AndOrNot_Or'>Or</span>.";
+    },
     similarTopics: ['T_SelectFilter','T_RemoveCatFilter'],
     tAnswer: {
       matches: '.catGlyph:not([cfiltered])',
       cElement: "summaries",
-      text: "Mouse-over a category<br>and click <span class='AndOrNot_Or'>Or</span>",
+      text: "Mouse over a category<br>and click <span class='AndOrNot_Or'>Or</span>",
       pos: "n",
+
       filter: function(){
         // take only one
         this.context.HighlightedDOM = this.context.HighlightedDOM.slice(0,1);
@@ -1258,7 +1268,7 @@ _topics: {
     media: "T_FilterNot.gif",
     tAnswer: {
       sequence: [
-        "<i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate",
+        "Mouse over an aggregate",
         "Click on <span class='AndOrNot_Not'>Not</span>"
       ]
     },
@@ -1269,7 +1279,7 @@ _topics: {
       
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("1) <i class='fa fa-mouse-pointer'></i> Mouse-over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) Mouse over an aggregate","n","tipsy-primary2");
       
       this.context.HighlightedDOM[0].setAttribute("mouseOver",true);
     },
@@ -1356,10 +1366,12 @@ _topics: {
     tAnswer: {
       class: "recordTextSearch",
       cElement: "recordDisplay",
-      text: "<b>Type your record text search in record display.</b><br><br>"+
-        "Matching records will be highlighted as you type.<br><br>"+
-        "<b>Enter</b> to filter.<br>"+
-        "<b>Shift+Enter</b> to compare.", 
+      text: function(){
+        return "<b>Type your text search above "+this.browser.recordName+".</b><br><br>"+
+          "Matching records will be highlighted as you type.<br><br>"+
+          "<b>Enter</b> to filter.<br>"+
+          "<b>Shift+Enter</b> to compare.";
+      },
       pos: "n"
     }
   },
@@ -1369,21 +1381,22 @@ _topics: {
     topics: "Aggregate",
     context: ["SummaryInBrowser", "OpenSummary", "SummaryWithMissingValues"],
     media: "T_ExploreMissingVal.gif",
-    note: "<i class='fa fa-ban'></i> appears only when some records have missing/invalid values in related summary.<br>"+
-      "Darker icon color means more records with missing/invalid values.",
+    note: "<p><i class='fa fa-ban'></i> icon appears on summary left-bottom corner"+
+      " only when some records have missing/invalid values in related summary.</p>"+
+      "<p>Darker icon color means more records with missing/invalid values.</p>",
     tAnswer: {
       class: "missingValueAggr",
       cElement: "summaries",
-      text: "Use <i class='fa fa-ban'></i><br>"+
-        "<i class='fa fa-mouse-pointer'></i> <b>Mouse-over</b> to highlight<br>"+
-        "<i class='fa fa-filter'></i> <b>Click</b> to filter<br>"+
-        "<i class='fa fa-lock'></i> <b>Shift+click</b> to compare"
+      text: "Use <i class='fa fa-ban'></i> icon . <br>"+
+        "<b>Mouse over</b> to highlight<br>"+
+        "<b>Click</b> to filter<br>"+
+        "<b>Shift+click</b> to compare"
     }
   },
   T_ChangeMeasureLabel: {
     q: function(){
       var text = this.browser.percentModeActive?"absolute (#)":"percent (%)";
-      return "View measure-labels as <b>"+text+"</b> values";
+      return "View measurement-labels as <b>"+text+"</b> values";
     },
     actions: "Explore+View",
     topics: "Measurement+Measure-Label",
@@ -1502,7 +1515,7 @@ _topics: {
     topics: "Record",
     context: ["RecordDisplay", "RecordsWithDetailToggle"],
     media: "T_GetRecordDetails.gif",
-    note: "Record details (all attributes) are shown in a popup panel.",
+    note: "The details of the associated record are shown in a popup panel.",
     tAnswer: {
       class: "recordToggleDetail",
       cElement: "recordDisplay",
@@ -1591,7 +1604,7 @@ _topics: {
     context: ["RecordDisplay", "RecordDisplayAsList"],
     similarTopics: ['T_CatSortRev', 'T_RecSortChange'],
     media: "T_RecSortRev",
-    note: "<i class='fa fa-sort-amount-desc'></i> appears when you mouse-over the record panel.",
+    note: "<i class='fa fa-sort-amount-desc'></i> appears when you move the mouse over the record panel.",
     tAnswer: {
       class: "recordSortButton", 
       cElement: "recordDisplay", 
@@ -1606,7 +1619,7 @@ _topics: {
     context: ["SummaryInBrowser", "OpenSummary", "CategoricalSummary", "SortableSummary"],
     similarTopics: ['T_RecSortRev'],
     media: "T_CatSortRev",
-    note: "<i class='fa fa-sort-amount-desc'></i> appears when you mouse-over the summary, if categories can be sorted in reverse.",
+    note: "<i class='fa fa-sort-amount-desc'></i> appears when you move the mouse over the summary, if categories can be sorted in reverse.",
     tAnswer: {
       class: "catSortButton",
       cElement: "summaries", 
@@ -1621,9 +1634,12 @@ _topics: {
     // TODO: More than one sorting option available.
     context: ["RecordDisplay", "RecordDisplayAsList", "SummaryInBrowser", "IntervalSummary"], 
     media: "T_RecSortChange.gif",
-    note: "Records can be sorted using number or time attributes.<br><br>"+
-      "<i class='fa fa-sort'></i> appears when you mouse-over the summary.<br> "+
-      "Active sorting summary always shows <i class='fa fa-sort'></i>.",
+    note: function(){
+      return "<p>Records can be sorted using a number/time attribute.</p>"+
+        "<p><i class='fa fa-sort'></i> appears when you move the mouse over a number/time summary.</p>"+
+        "<p><i class='fa fa-sort'></i> is always visible for the active sorting summary (currently "+
+            this.browser.recordDisplay.sortingOpt_Active.summaryName+").</p>";
+    },
     similarTopics: ['T_RecSortRev'],
     tAnswer: [
       { 
@@ -1646,7 +1662,8 @@ _topics: {
     topics: "Time Summary+Number Summary",
     context: ["SummaryInBrowser", "OpenSummary", "IntervalSummary", "FilteredSummary"],
     media: "T_ZoomInOutRange.gif",
-    note: "<i class='fa fa-search-plus'></i> / <i class='fa fa-search-minus'></i> appears when you mouse-over an open summary.",
+    note: "<i class='fa fa-search-plus'></i> / <i class='fa fa-search-minus'></i> "+
+      "appears when you move the mouse over an open filtered summary.",
       // TODO: You cannot zoom beyond maximum resolution of time data.
       // TODO: You cannot zoom beyond step-scale.
     similarTopics: ['T_AdjustFilterRange'],
@@ -1713,7 +1730,7 @@ _topics: {
     topics: "Summary",
     context: ["SummaryInBrowser","OpenSummary"],
     media: "T_CollapseSummary.png",
-    note: "<i class='fa fa-compress'></i> appears when you mouse-over an open summary.",
+    note: "<i class='fa fa-compress'></i> appears when you move the mouse over an open summary.",
     similarTopics: ['T_OpenSummary', 'T_MaxSummary', 'T_RemSummary'],
     tAnswer: {
       class: "buttonSummaryCollapse", 
@@ -1728,7 +1745,7 @@ _topics: {
     topics: "Summary",
     context: ["SummaryInBrowser", "CategoricalSummary", "OpenSummary", "ExpandableSummary"],
     media: "T_MaxSummary.png",
-    note: "<i class='fa fa-arrows-alt'></i> appears when you mouse-over a summary that can be maximized.",
+    note: "<i class='fa fa-arrows-alt'></i> appears when you move the mouse over a summary that can be maximized.",
     similarTopics: ['T_OpenSummary', 'T_CollapseSummary'],
     tAnswer: {
       class: "buttonSummaryExpand",
@@ -1743,7 +1760,7 @@ _topics: {
     topics: "Summary",
     context: ["SummaryInBrowser","OpenSummary"],
     media: "T_ConfigSummary.gif",
-    note: "<p><i class='fa fa-gear'></i> appears when you mouse-over the summary.</p>"+
+    note: "<p><i class='fa fa-gear'></i> appears when you move the mouse over the summary.</p>"+
       "<p>Configuration options depend on the summary type.</p>",
     similarTopics: ['T_EnableAuth'],
     tAnswer: {
@@ -1772,7 +1789,7 @@ _topics: {
     actions: "Layout+Add/Remove",
     topics: "Summary+Browser",
     context: ["AuthoringMode", "SummaryInBrowser"],
-    note: "<i class='fa fa-times'></i> appears when you mouse-over a summary.",
+    note: "<i class='fa fa-times'></i> appears when you move the mouse over a summary.",
     similarTopics: ['T_AddSummary'],
     tAnswer: {
       class: "buttonSummaryRemove", 
@@ -1863,7 +1880,7 @@ _topics: {
     },
   },
   T_LabelLockedSel: {
-    q: "View measure-labels of a locked <i class='fa fa-lock'></i> selection",
+    q: "View measurement-labels of a locked <i class='fa fa-lock'></i> selection",
     actions: "Compare+View",
     topics: "Aggregate+Measurement+Compare Selection+Compared Measure",
     context: ["SummaryInBrowser","ActiveCompareSelection"],
@@ -1874,7 +1891,7 @@ _topics: {
       {
         matches: '[class*="crumbMode_Compare_"]',
         cElement: "browser",
-        text:  "Mouse-over <i class='fa fa-lock'></i> breadcrumb",
+        text:  "Mouse over <i class='fa fa-lock'></i> breadcrumb",
         pos: "n"
       }
     ],
@@ -1914,7 +1931,7 @@ _topics: {
     tAnswer: {
       class: "summaryDescription", 
       cElement: "summaries", 
-      text: "Mouse-over <i class='fa fa-info'></i>", 
+      text: "Mouse over <i class='fa fa-info'></i>", 
       pos: "ne"
     }
   },
@@ -2156,6 +2173,8 @@ var Helpin = function(browser){
   this.selectedTopic = null;
   this.GuidedTourStep = 0;
 
+  this.enabledNotif = true;
+
   // Sample notify action - 3 second delay
   if(!exp_helpin && !exp_basis && !exp_train){
     setTimeout(function(){
@@ -2171,6 +2190,7 @@ var Helpin = function(browser){
 
   document.addEventListener('mousemove', function(e) { x = e.pageX; y = e.pageY; });
 
+  this.helpOnKey = false;
   document.onkeydown=function(e) {
     switch(event.keyCode){
       case 27: // escape 
@@ -2184,21 +2204,29 @@ var Helpin = function(browser){
         break;
       case 72: //h-H
       case 80: //p-P
+        me.helpOnKey = true;
         me.showPointNLearn();
         d3.event = {clientX: x, clientY: y };
         me.dynamicPointed();
         me.freezePointed(me.theStencil);
+        me.helpOnKey = false;
         break;
       case 84: //t-T
+        me.helpOnKey = true;
         me.showTopicListing();
         event.stopPropagation();
         event.preventDefault();
+        me.helpOnKey = false;
         break;
       case 71: //g-G
+        me.helpOnKey = true;
         me.showGuidedTour();
+        me.helpOnKey = false;
         break;
       case 79: //o-O
+        me.helpOnKey = true;
         me.showOverview();
+        me.helpOnKey = false;
         break;
     }
   }
@@ -2452,7 +2480,7 @@ Helpin.prototype = {
     var me=this;
 
     this.initDOM();
-    this.showPanel();
+    this.showHelpPanel();
     this.removeTooltips();
 
     this.closeTopic();
@@ -2478,18 +2506,19 @@ Helpin.prototype = {
     this.browser.summaries.forEach(function(summary,i){ 
       if(summary.inBrowser()) {
         numSum++;
-        if(i===0) sampleNames+=summary.summaryName+" ";
-        if(i===1) sampleNames+=" or "+summary.summaryName;
+        if(i===0) sampleNames+="<i>"+summary.summaryName+"</i> ";
+        if(i===1) sampleNames+=" or <i>"+summary.summaryName+"</i>";
       }
     });
 
-    content += "<p><span class='bolder'>"+this.browser.records.length+" "+recordName+"</span> "+
+    content += "<p>"+
+      "<span class='bolder'>"+this.browser.records.length.toLocaleString()+" "+recordName+"</span> "+
       "are summarized with their <span class='bolder'>"+numSum+"</span>"+
       " attributes (such as "+sampleNames+").</p>";
 
     if(this.browser.isFiltered()){
       var globalActive = this.browser.allRecordsAggr.recCnt.Active;
-      var globalActiveMeasure = this.browser.allRecordsAggr._measure.Active;
+      var globalActiveMeasure = this.browser.allRecordsAggr._measure.Active.toLocaleString();
       var filterStr = "";
       this.browser.filters.forEach(function(filter){
         if(!filter.isFiltered) return false;
@@ -2498,7 +2527,7 @@ Helpin.prototype = {
 
       var off='';
       switch(this.browser.measureFunc){
-        case 'Count': off = globalActive+" "+recordName; break;
+        case 'Count': off = globalActive.toLocaleString()+" "+recordName; break;
         case 'Sum': off = globalActiveMeasure+" Total " + this.browser.measureSummary.summaryName + 
           " of " + globalActive + " " + recordName; break;
         case 'Avg': off = globalActiveMeasure+" Average " + this.browser.measureSummary.summaryName + 
@@ -2514,12 +2543,10 @@ Helpin.prototype = {
     // visual scale mode
     var _metric = getMetricText.call(this.browser);
 
-    var encoding = "<p>The charts show the ";
-    if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
-    encoding += _metric;
+    var encoding = "<p>The charts show the <span class='bolder'>" + _metric+"</span> ";
     if(this.browser.ratioModeActive) 
-      encoding+= " among <span class='bolder'>"+(this.browser.isFiltered()?"filtered":"all")+" "+recordName+"</span>";
-    encoding += " per each category/range. ";
+      encoding+= "among "+(this.browser.isFiltered()?"filtered":"all")+" "+recordName+" ";
+    encoding += "per category/range (for the current selection). ";
     
     content += encoding;
     if(this.browser.isFiltered()){
@@ -2529,21 +2556,21 @@ Helpin.prototype = {
     }
     if(this.browser.highlightSelectedSummary){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Highlight'></span></span> shows "+
-        this.browser.crumb_Highlight.DOM[0][0].outerHTML+"highlight-selection. ";
+        this.browser.crumb_Highlight.DOM[0][0].outerHTML+"highlighted-selection. ";
     }
     if(this.browser.selectedAggr.Compare_A){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_A'></span></span> shows "+
-        this.browser.crumb_Compare_A.DOM[0][0].outerHTML+"lock-selection. "+
+        "a locked-selection "+this.browser.crumb_Compare_A.DOM[0][0].outerHTML+". "+
           "<span class='topicLink weakTopicLink' topicName='T_UnlockSelection'>(Unlock)</span>";
     }
     if(this.browser.selectedAggr.Compare_B){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_B'></span></span> shows "+
-        this.browser.crumb_Compare_B.DOM[0][0].outerHTML+"lock-selection. "+
+        "a locked-selection "+this.browser.crumb_Compare_B.DOM[0][0].outerHTML+". "+
           "<span class='topicLink weakTopicLink' topicName='T_UnlockSelection'>(Unlock)</span>";
     }
     if(this.browser.selectedAggr.Compare_C){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_C'></span></span> shows "+
-        this.browser.crumb_Compare_C.DOM[0][0].outerHTML+"lock-selection. "+
+        "a locked-selection "+this.browser.crumb_Compare_C.DOM[0][0].outerHTML+". "+
           "<span class='topicLink weakTopicLink' topicName='T_UnlockSelection'>(Unlock)</span>";
     }
     content+="<p>";
@@ -2551,16 +2578,13 @@ Helpin.prototype = {
     // ****************** SUMMARY OF MODES *********************
     content += "<p>";
 
-    var _p = "percent (%) of the active records";
-    var _a = "absolute (#) value"
-    var mode       = this.browser.percentModeActive?_p:_a;
-
-    content += "Metric is <span class='bolder'>"+_metric+"</span>. "+
+    content += "The metric is <span class='bolder'>" + _metric + "</span>. "+
       "<span class='topicLink weakTopicLink' topicName='T_ChangeMetric'>(Change)</span><br>";
-    content += "Visual scale mode is <span class='bolder'>"
-      +(this.browser.ratioModeActive?"part-of-active":"absolute")+"</span>. "+
+    content += "The visual scale mode is <span class='bolder'>"
+      +(this.browser.ratioModeActive ? "part-of-active" : "absolute") + "</span>. "+
       "<span class='topicLink weakTopicLink' topicName='T_ChangeVisualScale'>(Change)</span><br>";
-    content += "Measurement labels show <span class='bolder'>"+mode+"</span>. "+
+    content += "The measurement-labels show <span class='bolder'>"+
+      (this.browser.percentModeActive ? "percent (%) of records" : "absolute (#) value") + "</span>. " +
       "<span class='topicLink weakTopicLink' topicName='T_ChangeMeasureLabel'>(Change)</span><br>";
 
     content += "</p>";
@@ -2586,7 +2610,7 @@ Helpin.prototype = {
     var me=this;
 
     this.initDOM();
-    this.showPanel();
+    this.showHelpPanel();
     this.removeTooltips();
 
     this.closeTopic();
@@ -2713,10 +2737,10 @@ Helpin.prototype = {
     var me=this;
 
     this.DOM.overlay_control
-      .on("mouseenter",function(){ this.setAttribute("expanded",true); })
+      .on("mouseenter",function(){ d3.select(this).classed("expanded",true); })
       .on("mouseleave",function(){ 
         if(me.browser.panel_overlay.attr("show")==="help-overlayonly") return;
-        this.removeAttribute("expanded");
+        d3.select(this).classed("expanded",false);
       });
 
     this.DOM.overlay_control.append("div").attr("class","overlay_Close fa fa-times-circle")
@@ -2729,23 +2753,48 @@ Helpin.prototype = {
 
     var helpInModes = this.DOM.overlay_control.append("div").attr("class","helpInModes");
 
+    if(exp_train) return;
+
     helpInModes.append("span").attr("class","helpInMode_TopicListing")
       .html("<i class='fa fa-book'></i> Topic Listing")
-      .on("click",function(){ me.showTopicListing(); });
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Browse help topics" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",function(){ this.tipsy.hide(); me.showTopicListing(); });
 
     if(exp_basis) return;
     helpInModes.append("span").attr("class","helpInMode_Overview")
       .html("<i class='fa fa-binoculars'></i> Overview")
-      .on("click",function(){ me.showOverview(); });
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Get quick overview" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",function(){ this.tipsy.hide(); me.showOverview(); });
     helpInModes.append("span").attr("class","helpInMode_PointNLearn")
       .html("<i class='fa fa-hand-pointer-o'></i> Point &amp; Learn")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Point to select" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",function(){ me.showPointNLearn(); });
 
     if(exp_helpin) return;
     helpInModes.append("span").attr("class","helpInMode_GuidedTour")
       .html("<i class='fa fa-location-arrow'></i> Guided Tour")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Step-by-step introduction" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",function(){ me.showGuidedTour(); });
+    helpInModes.append("span").attr("class","helpInMode_Notification enabled")
+      .html("<i class='fa fa-bell'></i> Notifications <i class='fa fa-toggle-on'></i>")
+      .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Enable/disable<br> help notifications" }); })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",function(){ 
+        this.tipsy.hide();
+        me.enabledNotif = !me.enabledNotif;
+        d3.select(this).classed("enabled",me.enabledNotif);
+      });
     helpInModes.append("a").attr("class","helpInMode_Video").attr("target","_blank")
+      .style("margin-top","6px")
       .html("<i class='fa fa-youtube-play'></i> Video Tutorial")
       .attr("href","http://www.youtube.com/watch?v=3Hmvms-1grU");
     helpInModes.append("a").attr("class","helpInMode_Wiki").attr("target","_blank")
@@ -3178,14 +3227,10 @@ Helpin.prototype = {
     this.createStencils();
   },
   /** -- */
-  showPanel: function(){
+  showHelpPanel: function(){
     if(this.panelShown) return;
-    this.DOM.overlay_control.attr("expanded","true");
     this.panelShown = true;
-    var me=this;
-    setTimeout(function(){
-      me.DOM.overlay_control.attr("expanded",null);
-    },2000);
+    if(!this.helpOnKey) this.DOM.overlay_control.classed("expanded","true");
   },
   /** -- */
   closePanel: function(){
@@ -3544,7 +3589,7 @@ Helpin.prototype = {
   showOverlayOnly: function(){
     var me=this;
     this.initDOM();
-    this.showPanel();
+    this.showHelpPanel();
     this.browser.panel_overlay.attr("show","help-overlayonly").attr("lockedPointNLearn",null);
     this.DOM.overlay_control.selectAll('[class^="helpInMode_"]').attr("active",null);
   },
@@ -3552,7 +3597,7 @@ Helpin.prototype = {
   showPointNLearn: function(){
     var me=this;
     this.initDOM();
-    this.showPanel();
+    this.showHelpPanel();
 
     if(this.selectedTopic) this.closeTopic();
 
@@ -3652,7 +3697,7 @@ Helpin.prototype = {
     var me=this;
 
     this.initDOM();
-    this.showPanel();
+    this.showHelpPanel();
 
     if(this.selectedTopic) this.closeTopic();
 

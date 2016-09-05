@@ -169,8 +169,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
       border: solid 1px gray;
       text-align: left;
-      width: 110px;
-      padding: 1px 6px;
+      width: 115px;
+      padding: 1px 2px 1px 5px;
       margin-top: 2px;
       background-color: white;
       font-size: 0.8em;
@@ -202,12 +202,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    &[expanded] {
+    .helpInMode_Notification:not(.enabled) {
+      color: gray !important;
+      >.fa-toggle-on:before{
+        content: "\f204"; // OFF
+      }
+    }
+
+    &.expanded {
       right: 0px;
-      width: 115px;
+      width: 120px;
 
       [class^="helpInMode_"]{ color: black; }
-      > .helpInModes{ max-height: 124px; }
+      > .helpInModes{ max-height: 150px; }
       > .overlay_Close{ right: 36px; }
     }
   }
@@ -415,10 +422,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   .topicLink{
     cursor: pointer;
+    text-decoration: underline;
+
     &:hover{ 
-      text-decoration: underline;
       color: orangered;
     }
+    /*
     &:after{
       content: "*"; // "⚬";
       position: relative;
@@ -426,7 +435,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       top: -6px;
       //width: 8px;
       display: inline-block;
-    }
+    }*/
     &.weakTopicLink{
       color: gray;
       font-weight: 200;
@@ -464,6 +473,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       pointer-events: none !important;
       &:after{ display: none; }
     }
+    .showHelpIn{ display: none; }
+    .overlay_help_control{ display: none !important; }
   }
   &[exp]{
     .rightBoxes > {
