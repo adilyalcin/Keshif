@@ -2375,6 +2375,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           margin-left: -0.5px;
           pointer-events: none;
           background-color: rgba(0,0,0,0.4);
+          .transition(~'all 700ms ease-in-out');
           &.q_50 {
             width: 2px;
             margin-left: -1px;
@@ -2947,15 +2948,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             background-color: #D4D4D4;
                           }
                           &.active{
-                            display: none;
+                            display: block;
                             height: 8px;
                             top: 1px;
                             width:1px;
                             pointer-events: none;
                             background-color: #30B8C4;
-                            .transition(~"opacity 500ms");
+                            opacity: 0;
+                            .transition(~"left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms");
                             &[filtered=true]{
-                              display: block;
+                              opacity: 1;
                               pointer-events: all;
                             }
                             &:hover{ background-color: orangered !important; }
@@ -3013,11 +3015,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           &[dragging]:after{ border-style: solid; background-color: #30b8c4; }
                         }
                     }
-                    > .labelGroup{
+                    > .valueTickGroup{
                       cursor: default;
                       position:relative;
-                      > .tick{
+                      > .valueTick{
                         position:absolute;
+                        .transition(~"left 700ms ease-in-out, opacity 700ms");
                         > .text{
                           top: -1px;
                           font-size: 0.7em;
@@ -3035,9 +3038,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             max-width: 20px;
                             display: inline-block;
                             vertical-align: bottom;
-                            &:hover{
-                              overflow: visible;
-                            }
+                            &:hover{ overflow: visible; }
                           }
                           > .secondLayer{ font-weight: 400; }
                         }
@@ -3049,13 +3050,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           display: block;
                           pointer-events: none;
                         }
-                        &[minor] .line { 
+                        &.minor > .line { 
                           border-color: darken(#D4D4D4, 10%); // color of the horizontal line
                           height: 6px;
                           top: -9px;
                         }
                       }
-                    } // labelGroup
+                    } // valueTickGroup
                 } // intervalSlider
 
             } // summaryInterval

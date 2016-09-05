@@ -9960,45 +9960,47 @@ var Summary_Interval_functions = {
     /** --- */
     refreshValueTickPos: function(){
       var me=this;
-      this.DOM.labelGroup.style("left", (this.stepTicks ? (this.aggrWidth/2) : 0)+"px");
-      this.DOM.labelGroup.selectAll(".tick").style("left",function(d){ return me.valueScale(d.v)+"px"; });
+      this.DOM.valueTickGroup.style("left", (this.stepTicks ? (this.aggrWidth/2) : 0)+"px");
+      this.DOM.valueTickGroup.selectAll(".valueTick")
+        .style("left",function(d){ return me.valueScale(d.tickValue)+"px"; });
     },
     /** -- */
     updateValueTicks: function(){
       var me=this;
-      this.DOM.labelGroup.selectAll(".tick").data([]).exit().remove(); // remove all existing ticks
+      // this.DOM.valueTickGroup.selectAll(".valueTick").data([]).exit().remove(); // remove all existing ticks
 
       // Insert middle-ticks to show that this is log-scale
       var ticks = [];
       if(this.scaleType==="log"){
-        ticks = [{v: this.intervalTicks[0], l:true}];
+        ticks = [{tickValue: this.intervalTicks[0], major:true}];
         for(var i=1 ; i < this.intervalTicks.length ; i++){
           var _min = me.valueScale(this.intervalTicks[i-1]);
           var _max = me.valueScale(this.intervalTicks[i]);
           [1,1,1].forEach(function(){
             var x = (_min+_max)/2;
-            ticks.push( {v: me.valueScale.invert(x), l:false } );
+            ticks.push( {tickValue: me.valueScale.invert(x), major:false } );
             _min = x;
           });
-          ticks.push({v: this.intervalTicks[i], l: true});
+          ticks.push({tickValue: this.intervalTicks[i], major: true});
         }
       } else { 
-        this.intervalTicks.forEach(function(p){
-          ticks.push({v: p, l: true});
-        });
+        this.intervalTicks.forEach(function(p){ ticks.push({tickValue: p, major: true}); });
       }
       
-      var ddd = this.DOM.labelGroup.selectAll(".tick").data(ticks);
-      var ddd_enter = ddd.enter().append("span").attr("class","tick")
-        .attr("minor",function(d){ return d.l?null:true; });
-      ddd_enter.append("span").attr("class","line");
-      ddd_enter
-        .filter(function(d){ return d.l; })
-        .append("span").attr("class","text")
+      var ddd = this.DOM.valueTickGroup.selectAll(".valueTick").data(ticks,function(d){ return d.tickValue; });
+
+      ddd.exit().style("opacity",0);
+
+      var X = ddd.enter().append("span").attr("class","valueTick");
+      X.append("span").attr("class","line")
+      X.filter(function(d){ return d.major; }).append("span").attr("class","text");
+
+      ddd.style("opacity",1).classed("major",function(d){ return d.major?null:true; });
+      this.DOM.valueTickGroup.selectAll(".valueTick > .text")
         .each(function(d){
           this.bin = null;
           me._aggrs.every(function(bin){
-            if(bin.minV===d.v) {
+            if(bin.minV===d.tickValue) {
               this.bin = bin;
               return false;
             }
@@ -10015,14 +10017,15 @@ var Summary_Interval_functions = {
         .on("click",function(d){
           if(this.bin) me.onAggrClick(this.bin);
         });
+
       this.refreshValueTickLabels();
     },
     /** -- */
     refreshValueTickLabels: function(){
       var me=this;
-      if(this.DOM.labelGroup===undefined) return;
-      this.DOM.labelGroup.selectAll(".tick .text").html(function(d){ 
-        return me.printWithUnitName( me.intervalTickPrint(d.v) ); 
+      if(this.DOM.valueTickGroup===undefined) return;
+      this.DOM.valueTickGroup.selectAll(".valueTick > .text").html(function(d){ 
+        return me.printWithUnitName( me.intervalTickPrint(d.tickValue) ); 
       });
     },
     /** -- */
@@ -10401,7 +10404,7 @@ var Summary_Interval_functions = {
         .append("span").attr("class","recordValueText")
         .append("span").attr("class","recordValueText-v");
 
-      this.DOM.labelGroup = this.DOM.intervalSlider.append("div").attr("class","labelGroup");
+      this.DOM.valueTickGroup = this.DOM.intervalSlider.append("div").attr("class","valueTickGroup");
     },
     /** -- */
     updateBarScale2Active: function(){
@@ -10895,7 +10898,7 @@ var Summary_Interval_functions = {
       this.refreshViz_Axis();
       this.refreshHeight();
 
-      this.DOM.labelGroup.style("height",this.height_labels+"px");
+      this.DOM.valueTickGroup.style("height",this.height_labels+"px");
       this.DOM.rangeHandle.style({
         height: ( this.height_hist+23)+"px",
         top:    (-this.height_hist-13)+"px" });

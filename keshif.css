@@ -2998,6 +2998,10 @@ top:calc(50% - 5px);
   margin-left: -0.5px;
   pointer-events: none;
   background-color: rgba(0, 0, 0, 0.4);
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
 }
 .kshf *[class^="percentileChart"] > .quantile.q_pos.q_50 {
   width: 2px;
@@ -3725,19 +3729,20 @@ top:calc(50% - 5px);
   background-color: #D4D4D4;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active {
-  display: none;
+  display: block;
   height: 8px;
   top: 1px;
   width: 1px;
   pointer-events: none;
   background-color: #30B8C4;
-  -webkit-transition: opacity 500ms;
-  -moz-transition: opacity 500ms;
-  -o-transition: opacity 500ms;
-  transition: opacity 500ms;
+  opacity: 0;
+  -webkit-transition: left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms;
+  -moz-transition: left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms;
+  -o-transition: left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms;
+  transition: left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active[filtered=true] {
-  display: block;
+  opacity: 1;
   pointer-events: all;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .base.active:hover {
@@ -3808,14 +3813,18 @@ height:calc(100% - 10px);
   border-style: solid;
   background-color: #30b8c4;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup {
   cursor: default;
   position: relative;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick {
   position: absolute;
+  -webkit-transition: left 700ms ease-in-out, opacity 700ms;
+  -moz-transition: left 700ms ease-in-out, opacity 700ms;
+  -o-transition: left 700ms ease-in-out, opacity 700ms;
+  transition: left 700ms ease-in-out, opacity 700ms;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick > .text {
   top: -1px;
   font-size: 0.7em;
   font-weight: 300;
@@ -3826,7 +3835,7 @@ height:calc(100% - 10px);
   white-space: nowrap;
   cursor: pointer;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick > .text > .unitName {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -3834,13 +3843,13 @@ height:calc(100% - 10px);
   display: inline-block;
   vertical-align: bottom;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .unitName:hover {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick > .text > .unitName:hover {
   overflow: visible;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .text > .secondLayer {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick > .text > .secondLayer {
   font-weight: 400;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick > .line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick > .line {
   position: absolute;
   top: -10px;
   height: 8px;
@@ -3848,7 +3857,7 @@ height:calc(100% - 10px);
   display: block;
   pointer-events: none;
 }
-.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .labelGroup > .tick[minor] .line {
+.kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .valueTickGroup > .valueTick.minor > .line {
   border-color: #bbbbbb;
   height: 6px;
   top: -9px;
