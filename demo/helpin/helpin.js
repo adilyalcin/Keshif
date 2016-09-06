@@ -473,7 +473,9 @@ Helpin.prototype = {
     // visual scale mode
     var _metric = getMetricText.call(this.browser);
 
-    var encoding = "<p>The charts show the <span class='bolder'>" + _metric+"</span> ";
+    var encoding = "<p>The charts show the ";
+    if(this.browser.ratioModeActive) encoding +="percentage of the ";
+    encoding += "<span class='bolder'>" + _metric+"</span> ";
     if(this.browser.ratioModeActive) 
       encoding+= "among "+(this.browser.isFiltered()?"filtered":"all")+" "+recordName+" ";
     encoding += "per category/range (for the current selection). ";
