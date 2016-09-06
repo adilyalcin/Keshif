@@ -842,6 +842,7 @@ var Aggregate_EmptyRecords_functions = {
   init: function(){
     kshf.Aggregate.prototype.init.call(this,{id: null},'id');
     this.isVisible = true;
+    this.emptyRecordsAggregate = true;
   }
 }
 for(var index in Aggregate_EmptyRecords_functions){
