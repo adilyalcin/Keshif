@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>D.C. Political Campaign Contributions</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/moment.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+
+    <script type="text/javascript">
+
+var neighborhoodRegions = {};
+function dataLoad(){
+  var browser = this;
+  var query = location.search.substr(1,10000);
+  if(query==="") query = "14D5";
+  $.ajax({
+    //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
+    url: "http://ec2-52-73-208-76.compute-1.amazonaws.com/dc-campaign-finance/api/contributions/"+query,
+    success: function(data){
+      browser.primaryTableName = "Contributions";
+      kshf.dt.Contributions = [];
+      data.forEach(function(contribution,i){
+        contribution.id = i;
+        kshf.dt.Contributions.push(new kshf.Record(contribution,"id"));
+      });
+      browser.loadCharts();
+    }
+  });
+};
+
+$(document).ready( function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    categoryTextWidth: 150,
+    source: {
+      callback: dataLoad
+    },
+    onReady: function(){
+      this.setMeasureMetric("Sum", this.summaries_by_name.Amount);
+    },
+    summaries: [
+      { name: "Contribution Type", value: "contributionType" },
+      { name: "Contributor Type", value: function(){ return this.contributor.contributorType; } },
+      { name: "Contributor Name", value: function(){ return this.contributor.name; } },
+      { name: "Contributor Warnd", value: function(){ return this.contributor.address.ward; } },
+      { name: "Candidate", value: function(){ return this.candidate.name; } },
+      { name: "Race Type", value: function(){ return this.raceInfo.raceType; } },
+      { name: "Race Type Detail", value: function(){ return this.raceInfo.raceTypeDetail; } },
+      { name: "Amount", value: "amount", unitName: "$", panel: 'middle', collapsed: true },
+    ],
+    recordDisplay: {
+      sortBy: "Amount",
+      sortColWidth: 70,
+      recordView: function(){
+        return ""+
+          this.contributor.name + 
+            " <span style='font-weight:100; font-size: 0.8em; color: gray '>("+this.contributor.contributorType+")</span> " +
+          " gave $" + this.amount.toLocaleString() +
+          " to " + this.candidate.name + " for " + 
+            "<span style='font-weight:100; font-size: 0.8em; color: gray '>"+this.raceInfo.raceTypeDetail+"</span>.";
+      }
+    }
+  });
+});
+</script>
+<style id="kshfStyle">
+</style>
+	</head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle" align="center">D.C. Political Campaign Contributions</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Under development for <a href="http://codefordc.org/" target='_blank'>Code For DC</a> -
+      <a href='http://codefordc.org/dc-campaign-finance-watch/dist/' target="blank">
+        DC Campaign Finance Watch</a>
+      </div>
+  </body>
+</html>
