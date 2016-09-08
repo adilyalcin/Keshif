@@ -21,13 +21,11 @@
 
     <script type="text/javascript">
 
-var neighborhoodRegions = {};
 function dataLoad(){
   var browser = this;
-  var query = location.search.substr(1,10000);
-  if(query==="") query = "14D5";
+  // if no query is provided, use a sample one
+  var query = (location.search==="") ? "14D5 " : location.search.substr(1,10000);
   $.ajax({
-    //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
     url: "http://ec2-52-73-208-76.compute-1.amazonaws.com/dc-campaign-finance/api/contributions/"+query,
     success: function(data){
       browser.primaryTableName = "Contributions";
@@ -45,9 +43,7 @@ $(document).ready( function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 150,
-    source: {
-      callback: dataLoad
-    },
+    source: { callback: dataLoad },
     onReady: function(){
       this.setMeasureMetric("Sum", this.summaries_by_name.Amount);
     },
@@ -67,16 +63,19 @@ $(document).ready( function(){
       recordView: function(){
         return ""+
           this.contributor.name + 
-            " <span style='font-weight:100; font-size: 0.8em; color: gray '>("+this.contributor.contributorType+")</span> " +
+            " <span class='deEmphasize'>("+this.contributor.contributorType+")</span> " +
           " gave $" + this.amount.toLocaleString() +
           " to " + this.candidate.name + " for " + 
-            "<span style='font-weight:100; font-size: 0.8em; color: gray '>"+this.raceInfo.raceTypeDetail+"</span>.";
+            "<span class='deEmphasize'>"+this.raceInfo.raceTypeDetail+"</span>.";
       }
     }
   });
 });
 </script>
 <style id="kshfStyle">
+.deEmphasize{
+  font-weight:100; font-size: 0.8em; color: gray
+}
 </style>
 	</head>
   <body>
