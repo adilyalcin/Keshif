@@ -3433,6 +3433,9 @@ top:calc(50% - 5px);
   height: 20px;
   line-height: 20px;
 }
+.kshf .kshfSummary > .wrapper > .summaryCategorical .leaflet-zoom-anim .catMap_SVG {
+  display: none;
+}
 .kshf .kshfSummary > .wrapper > .summaryInterval {
   padding-top: 7px;
   padding-right: 11px;

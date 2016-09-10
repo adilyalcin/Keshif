@@ -1747,7 +1747,7 @@ kshf.RecordDisplay.prototype = {
         }
         
         // Enter pressed
-        if (event.keyCode == '13'){
+        if(event.key=== 'Enter'){
           dom.tipsy.hide();
           if(d3.event.shiftKey) {
             // Compare
@@ -2366,8 +2366,9 @@ kshf.RecordDisplay.prototype = {
           var DOM = this;
           if(this.tipsy) {
             this.tipsy.show();
-            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+            var browserPos = me.browser.DOM.root[0][0].getBoundingClientRect();
+            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
           }
 
           // mouse is moving fast, should wait a while...
@@ -2396,8 +2397,9 @@ kshf.RecordDisplay.prototype = {
         .on("mousemove", function(){
           this._mousemove = true;
           if(this.tipsy){
-            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX-this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY-this.tipsy.tipHeight/2)+"px";
+            var browserPos = me.browser.DOM.root[0][0].getBoundingClientRect();
+            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
           }
         })
         .on("click",function(d){
@@ -3703,7 +3705,7 @@ kshf.Browser.prototype = {
           if(me.helpin){
             if(exp_basis){
               me.helpin.showTopicListing();
-            } else if(exp_helpin){
+            } else if(exp_helpin || exp_train){
               me.helpin.showOverlayOnly();
             } else {
               me.helpin.showPointNLearn();
@@ -7691,7 +7693,7 @@ var Summary_Categorical_functions = {
       tickData_new.append("span").attr("class","text measureAxis_1");
       if(this.configRowCount>0){
         tickData_new.append("span").attr("class","text measureAxis_2").style("top",(-this.categoriesHeight-21)+"px");
-        this.DOM.chartAxis_Measure.selectAll(".scaleModeControl.measureAxis_2").style("top",(this.categoriesHeight-14)+"px");
+        this.DOM.chartAxis_Measure.selectAll(".scaleModeControl.measureAxis_2").style("top",-(this.categoriesHeight+14)+"px");
       }
 
       // Place the doms at the zero-point, so their position can be animated.
@@ -7780,8 +7782,8 @@ var Summary_Categorical_functions = {
       this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
       this.DOM.chartAxis_Measure.selectAll(".longRefLine").style("top",(-h+1)+"px").style("height",(h-2)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.text").style("top",(-h-21)+"px");
-      this.DOM.chartAxis_Measure.selectAll(".measureAxis_2.scaleModeControl").style("top",(-h-14)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".text.measureAxis_2").style("top",(-h-21)+"px");
+      this.DOM.chartAxis_Measure.selectAll(".scaleModeControl.measureAxis_2").style("top",(-h-14)+"px");
 
       if(this.viewType==='map'){
         this.DOM.catMap_Base.style("height",h+"px");
@@ -7999,7 +8001,9 @@ var Summary_Categorical_functions = {
       if(this.summaryFilter.selected_OR.length>0){
         if(this.viewType==='map') this.DOM.highlightedMeasureValue.style("opacity",0);
       }
-      d3.event.stopPropagation();
+      if(d3.event){
+        d3.event.stopPropagation();
+      }
     },
     /** -- */
     onCatLeave_OR: function(ctgry){
@@ -8012,9 +8016,10 @@ var Summary_Categorical_functions = {
       if(this.browser.helpin){
         this.browser.helpin.topicHistory.push(_material._topics.T_FilterOr);
       }
-
-      d3.event.stopPropagation();
-      d3.event.preventDefault();
+      if(d3.event){
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+      }
     },
     /** -- */
     onCatEnter_NOT: function(ctgry){
@@ -8022,7 +8027,9 @@ var Summary_Categorical_functions = {
       this.browser.preview_not = true;
       this.browser.setSelect_Highlight(ctgry);
       this.browser.refreshMeasureLabels("Highlight"); 
-      d3.event.stopPropagation();
+      if(d3.event){
+        d3.event.stopPropagation();
+      }
     },
     /** -- */
     onCatLeave_NOT: function(ctgry){
@@ -8042,8 +8049,10 @@ var Summary_Categorical_functions = {
         this.browser.helpin.topicHistory.push(_material._topics.T_FilterNot);
       }
 
-      d3.event.stopPropagation();
-      d3.event.preventDefault();
+      if(d3.event){
+        d3.event.stopPropagation();
+        d3.event.preventDefault();
+      }
     },
     /** - */
     insertCategories: function(){
@@ -8098,8 +8107,8 @@ var Summary_Categorical_functions = {
               gravity: me.panel.name==='right'?'se':'w',
               title: function(){ 
                 var isLocked = me.browser.selectedAggr["Compare_A"]===aggr ||
-                      me.browser.selectedAggr["Compare_B"]!==aggr ||
-                      me.browser.selectedAggr["Compare_C"]!==aggr
+                      me.browser.selectedAggr["Compare_B"]===aggr ||
+                      me.browser.selectedAggr["Compare_C"]===aggr
                 return kshf.lang.cur[ !isLocked ? 'LockToCompare' : 'Unlock']; 
               }
             });
@@ -8133,7 +8142,7 @@ var Summary_Categorical_functions = {
 
         ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
           DOM_cats_new.append("span").attr("class", "measure_"+m)
-            .on("mouseover" ,function(){ 
+            .on("mouseenter" ,function(){ 
               if(m!=="Total") me.browser.refreshMeasureLabels(this.classList[0].substr(8)); 
               d3.event.preventDefault();
               d3.event.stopPropagation();
@@ -8354,7 +8363,10 @@ var Summary_Categorical_functions = {
       var me = this;
       this.DOM.measure_Active.attr("d", function(_cat){
         _cat._d_ = me.catMap.call(_cat.data,_cat);
-        if(_cat._d_===undefined) return;
+        if(_cat._d_===undefined) {
+          console.log(_cat.data);
+          return;
+        }
         return me.geoPath(_cat._d_);
       });
       this.DOM.measure_Highlight.attr("d", function(_cat){
@@ -9377,7 +9389,11 @@ var Summary_Interval_functions = {
     /** -- */
     printWithUnitName: function(v,noDiv){
       if(v instanceof Date) return this.timeTyped.print(v);
-      v = v.toLocaleString();
+      if(v === null) {
+        v = "-";
+      } else {
+        v = v.toLocaleString();
+      }
       if(this.unitName){
         var s = noDiv ? this.unitName : ("<span class='unitName'>"+this.unitName+"</span>");
         if(this.unitName==='$' || this.unitName==='€'){
@@ -10040,7 +10056,7 @@ var Summary_Interval_functions = {
     /** -- */
     onAggrClick: function(aggr){
       if(this.highlightRangeLimits_Active) return;
-      if(d3.event.shiftKey){
+      if(d3.event && d3.event.shiftKey){
         this.browser.setSelect_Compare(true);
         return;
       }
@@ -10113,8 +10129,8 @@ var Summary_Interval_functions = {
             gravity: 's',
             title: function(){
               var isLocked = me.browser.selectedAggr["Compare_A"]===aggr ||
-                    me.browser.selectedAggr["Compare_B"]!==aggr ||
-                    me.browser.selectedAggr["Compare_C"]!==aggr
+                    me.browser.selectedAggr["Compare_B"]===aggr ||
+                    me.browser.selectedAggr["Compare_C"]===aggr
               return kshf.lang.cur[ !isLocked ? 'LockToCompare' : 'Unlock'];
             }
           });
