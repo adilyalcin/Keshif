@@ -685,8 +685,6 @@ Helpin.prototype = {
 
     var helpInModes = this.DOM.overlay_control.append("div").attr("class","helpInModes");
 
-    if(exp_train) return;
-
     helpInModes.append("span").attr("class","helpInMode_TopicListing")
       .html("<i class='fa fa-book'></i> Topic Listing")
       .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Browse help topics" }); })
@@ -708,7 +706,7 @@ Helpin.prototype = {
       .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",function(){ me.showPointNLearn(); });
 
-    if(exp_helpin) return;
+    if(exp_helpin || exp_train) return;
     helpInModes.append("span").attr("class","helpInMode_GuidedTour")
       .html("<i class='fa fa-location-arrow'></i> Guided Tour")
       .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'e', title: "Step-by-step introduction" }); })

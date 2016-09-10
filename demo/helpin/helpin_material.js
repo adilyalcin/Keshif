@@ -34,14 +34,14 @@ var measureLabelModeInfo = function(){
 };
 
 var visualScaleModeInfo = function(){ 
-  var _p = "part-of (%) active";
+  var _p = "relative (%) active";
   var _a = "absolute"
   var mode       = this.browser.percentModeActive?_p:_a;
   var mode_other = this.browser.percentModeActive?_a:_p;
   return ""+
-    "<p>Measurements are visually scaled as <span class='bolder'>"+mode+"</span> value. "+
-    "The alternative is <span class='bolder'>"+mode_other+"</span>.<p>"+
-    "<p>Part-of scale reveals trends on "+
+    "<p>Measurements are scaled visually as <span class='bolder'>"+mode+"</span> value. "+
+    "The alternative is scaling as <span class='bolder'>"+mode_other+"</span> value.<p>"+
+    "<p>Relative scale reveals trends on "+
       "<span class='bolder topicLink' topicName='T_SelectHighlight'>highlight</span> and "+
       "<span class='bolder topicLink' topicName='T_SelectCompare'>lock</span> selections.</p>"+
     "<p>All summaries have the same visual scale mode.</p>"+
@@ -83,8 +83,10 @@ var pickSelectedAggr = function(){
   var curMax = this.records.length;
   var hAggr;
   this.allAggregates.some(function(aggr){
+    if(aggr.emptyRecordsAggregate) return false;
     if((typeof aggr.isVisible)!=="undefined" && !aggr.isVisible ) return false;
     if(aggr.DOM.aggrGlyph===undefined) return false;
+    if(aggr.DOM.aggrGlyph.style.display === "none") return false;
     if(aggr.compared) return false; // lock-compare selection
     if(aggr.summary && aggr.summary.collapsed) return false;
     if(aggr.summary.isFiltered()) return false;
@@ -110,8 +112,11 @@ var pickExplainAggr = function(sT){
   var curMax = 1;
   this.allAggregates.some(function(aggr){
     if(aggr.emptyRecordsAggregate) return false;
+    if((typeof aggr.isVisible)!=="undefined" && !aggr.isVisible ) return false;
     if(aggr.DOM.aggrGlyph===undefined) return false;
+    if(aggr.DOM.aggrGlyph.style.display === "none") return false;
     if(aggr.summary && aggr.summary.collapsed) return false;
+    if(aggr.summary.skipExplain) return false;
     var _mActive = aggr._measure.Active;
     if(_mActive==0) return false; // no active records. do not describe
     // TODO: skip global aggregate, etc etc.
@@ -180,7 +185,7 @@ var aggrDescription = function(aggr, encodingIcon){
 
   var recordName = this.browser.recordName;
   var aggrLabel = summary.printAggrSelection(aggr);
-  var globalActive = browser.allRecordsAggr._measure.Active.toLocaleString();
+  var globalActive = browser.allRecordsAggr.recCnt.Active.toLocaleString();
 
   var _metric = getMetricText.call(this.browser);
 
@@ -202,9 +207,9 @@ var aggrDescription = function(aggr, encodingIcon){
     str += recordName + " are in " + aggrLabel + " " + summary.summaryName;
   } else {
     // Absolute labels
-    str += "There are "+measureLabel+" "+_metric + " in ";
-    str += " " + aggrLabel + " <i>" + summary.summaryName + "</i>";
-    if(this.browser.isFiltered()) str += ", among the " + globalActive + " filtered";
+    str += "There are <span class='bolder'>"+measureLabel+" "+_metric + "</span> in ";
+    str += " <i>" + aggrLabel + " " + summary.summaryName + "</i>";
+    if(this.browser.isFiltered()) str += ", among the " + globalActive + " filtered "+ recordName;
   };
   str += ".</p>";
 
@@ -215,7 +220,7 @@ var aggrDescription = function(aggr, encodingIcon){
   if(this.browser.ratioModeActive) encoding+= "selected percentage of ";
   encoding += _metric;
   if(this.browser.ratioModeActive) encoding+= " among all "+recordName;
-  encoding += " with "+ aggrLabel+" <i>"+summary.summaryName+"</i>.";
+  encoding += " with <i>"+ aggrLabel+" "+summary.summaryName+"</i>.";
   encoding += "</p>";
 
   var simpleMeasure = "";
@@ -259,6 +264,11 @@ var _material = {
     True: {
       descr: "Always true",
       v: function(){ return true; },
+      weight: 0
+    },
+    False: {
+      descr: "Always false",
+      v: function(){ return false; },
       weight: 0
     },
     SummaryInBrowser: {
@@ -549,6 +559,20 @@ var _material = {
         return aggrDescription.call(this,DOM.__data__, "fa-arrows-v");
       }
     },
+    "Numeric Range": { 
+      matches: '.kshfSummary:not([collapsed])[viewtype="bar"] .rangeGlyph', 
+      pos: "e",
+      info: function(DOM){
+        return aggrDescription.call(this,DOM.__data__, "fa-arrows-v");
+      }
+    },
+    "Time Range": { 
+      matches: '.kshfSummary:not([collapsed])[viewtype="line"] .rangeGlyph', 
+      pos: "e",
+      info: function(DOM){
+        return aggrDescription.call(this,DOM.__data__, "fa-arrows-v");
+      }
+    },
     "Percentile Chart": {
       matches: '.kshfSummary:not([collapsed]) .percentileGroup:not([percentileChartVisible="false"])', 
       pos: "s",
@@ -803,23 +827,23 @@ var _material = {
 
   _guideSteps: [
     { component: 'Record' },
+    { component: 'Global Measurement' },
     { component: 'Categorical Summary' },
     { component: 'Category' },
     { component: 'Time Summary' },
     { component: 'Number Summary' },
-    { component: 'Range' },
+    { component: 'Numeric Range' },
     { component: 'Percentile Chart' },
     { topic:     'T_SelectHighlight' },
     { topic:     'T_SelectFilter' },
     { topic:     'T_SelectCompare' },        
-    { component: 'Global Measurement' },
     { component: 'Metric' },
-    //{ component: 'Breadcrumbs' },
     { topic:     'T_ChangeVisualScale' },
     { topic:     'T_ChangeMeasureLabel' },
     { topic:     'T_RecSortChange' },
+    //{ component: 'Breadcrumbs' },
     //{ topic:     'T_ExploreMissingVal' },
-    { component: 'Help Button' },
+    //{ component: 'Help Button' },
   ],
 
 _topics: {
@@ -901,6 +925,7 @@ _topics: {
           if(!record.isWanted) return false;
           var DOM = record.DOM.record;
           if( typeof DOM === 'undefined' ) return false;
+          if( DOM.style.display === "none") return false;
           if( DOM.offsetTop < minY) return false;
           if( DOM.offsetTop+DOM.offsetHeight > maxY) return false;
           this.context.HighlightedDOM.push(record.DOM.record);
@@ -940,12 +965,12 @@ _topics: {
       if(exp_basis){
         breadcrumb = printBreadcrumb_Dummy("Filter","Summary Name","Value");
       } else {
-        breadcrumb = printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate);
+        breadcrumb = printBreadcrumb("Filter",this.context.highlightedSummary, this.context.highlightedAggregate);
       }
       
       str += ""+breadcrumb+"breadcrumb on the top section shows the filtered-selection.</p>"+ 
 
-        "<p>Filtered "+this.browser.recordName+" are removed from the data browser.</p>"+
+        "<p>"+this.browser.recordName+" that don't satisfy the selection are removed from the data browser.</p>"+
         //"<p>Use filtering to explore "+this.browser.recordName+" using multiple summaries.</p>"+
         "<p>Filtering on multiple summaries is merged with  <span class='AndOrNot_And'>And</span>.</p>"+
         "";
@@ -1010,6 +1035,7 @@ _topics: {
           if(!record.isWanted) return false;
           var DOM = record.DOM.record;
           if( typeof DOM === 'undefined' ) return false;
+          if( DOM.style.display === "none") return false;
           if( DOM.offsetTop < minY) return false;
           if( DOM.offsetTop+DOM.offsetHeight > maxY) return false;
           selRecord = record;
@@ -1083,7 +1109,7 @@ _topics: {
 
       // Highlight the selected aggregate ***********************************************
       this.context.HighlightedDOM = [this.context.highlightedAggregate.DOM.aggrGlyph];
-      this.fHighlightBox("1) Mouse over an aggregate","n","tipsy-primary2");
+      this.fHighlightBox("1) Mouse over an aggregate to highlight","n","tipsy-primary2");
     },
     animate: {
       0.5: function(){
@@ -1131,9 +1157,11 @@ _topics: {
         var minY = this.browser.recordDisplay.DOM.recordGroup[0][0].scrollTop;
         var maxY = minY + this.browser.recordDisplay.DOM.recordGroup[0][0].offsetHeight;
         this.browser.selectedAggr['Compare_'+cT].records.some(function(record){
+          if(!record.isWanted) return false;
           if(!record.selectCompared[cT]) return false;
           var DOM = record.DOM.record;
           if( typeof DOM === 'undefined' ) return false;
+          if( DOM.style.display === "none") return false;
           if( DOM.offsetTop < minY) return false;
           if( DOM.offsetTop+DOM.offsetHeight > maxY) return false;
           this.context.HighlightedDOM.push(record.DOM.record);
@@ -1423,7 +1451,7 @@ _topics: {
   },
   T_ChangeVisualScale: {
     q: function(){ 
-      return "Visually scale measurements as <b>"+(this.browser.ratioModeActive?"absolute":"part-of-active")+"</b>";
+      return "Visually scale measurements as <b>"+(this.browser.ratioModeActive?"absolute":"relative")+"</b>";
     },
     actions: "Explore+View",
     topics: "Measurement+Visual Scale Mode",
@@ -1446,24 +1474,51 @@ _topics: {
     },
     animate: {
       1: function(){
-        this.context.HighlightedDOM[0].stencilBox.append("div")
+        var s = this.context.HighlightedDOM[0].parentNode.__data__;
+        s.skipExplain = true;
+
+        this.context.lalalala = this.context.HighlightedDOM[0].stencilBox;
+        this.context.lalalala.append("div")
           .attr("class","pointerAction").append("span").attr("class","fa fa-bullseye");
         this.browser.setScaleMode(!this.browser.ratioModeActive);
       },
       2.5: function(){
         this.context.highlightedSummary.onAggrHighlight(this.context.highlightedAggregate);
       },
+      3.5: function(){
+        this.context.HighlightedDOM = [ this.browser.crumb_Highlight.DOM[0][0] ];
+        this.fHighlightBox("This breadcrumb shows <br> an example highlighted-selection.","n","",false,"deEmph");
+      },
       5: function(){
-        this.context.HighlightedDOM[0].stencilBox.append("div")
+        var _temp = pickExplainAggr.call(this.browser, 'Highlight');
+        this.context.HighlightedDOM = [ _temp.DOM.aggrGlyph ];
+        var aggrName = _temp.summary.printAggrSelection(_temp) + " " + _temp.summary.summaryName;
+        var _active = _temp.recCnt.Active;
+        var _highlight = _temp.recCnt.Highlight;
+        this.fHighlightBox(
+          this.browser.recordName + " in "+ 
+            printBreadcrumb("Highlight",this.context.highlightedSummary, this.context.highlightedAggregate)+"<br>"+
+          "<u>Relative</u>: "+ Math.round(100*(_highlight/_active))+"% of "+_active+" "+ aggrName + "<br>"+
+          "<u>Absolute</u>: "+_highlight+" of " + aggrName
+          ,
+          "n","",false,"deEmph");
+      },
+      8: function(){
+        this.context.lalalala.append("div")
           .attr("class","pointerAction").append("span").attr("class","fa fa-bullseye");
         this.browser.setScaleMode(!this.browser.ratioModeActive);
       },
-      7: function(){
-        this.context.highlightedSummary.onAggrLeave(this.context.highlightedAggregate);
+      10: function(){
       },
     },
     deactivate: function(){
       this.browser.showScaleModeControls(false);
+      if(this.context.highlightedSummary){
+        this.context.highlightedSummary.skipExplain = false;
+        this.context.highlightedSummary.onAggrLeave(this.context.highlightedAggregate);
+      }
+      this.context.highlightedSummary   = undefined;
+      this.context.highlightedAggregate = undefined;
     }
   },
   T_CatViewAs: {
@@ -1828,7 +1883,7 @@ _topics: {
     }
   },
   T_BinScale: {
-    q: "Change histogram binning scale (<b>log</b> / <b>linear</b>)",
+    q: "Change histogram range binning scale (<b>log/linear</b>)",
     actions: "Change",
     topics: "Number Summary+Bin Scale Type",
     context: ["SummaryInBrowser","IntervalSummary","NumberSummary","PositiveNumberSummary"],
@@ -2078,6 +2133,7 @@ _topics: {
   }
 };
 
+// The rest is for the experiment ONLY
 if(location.search==="?exp=basis" || location.search==="?exp=helpin" || location.search==="?exp=train"){
   delete _material._topics.T_CatViewAs;
   delete _material._topics.T_ViewRecRank;
@@ -2090,5 +2146,57 @@ if(location.search==="?exp=basis" || location.search==="?exp=helpin" || location
   delete _material._topics.T_RemRecPanel;
   delete _material._topics.T_SetMatrix;
   delete _material._topics.T_Fullscreen;
+
+  // Alert for reload / navigate away
+  window.onbeforeunload = function (e) {
+    var message="Please do not reload this page.";
+    e = e || window.event;
+    if (e) e.returnValue = message; // For IE and Firefox prior to version 4
+    return message;
+  };
+
+  var isTraining = window.location.href !== "http://localhost/keshif/demo/helpin_dc_homicides.html?exp=train";
+
+  var timeLimit = isTraining ? (60*2.5 + 10) : (60*8 + 20);
+
+  setTimeout(function(){
+    d3.select("body")
+      .append("div")
+        .attr("class","exp_timer")
+        .style({
+          position: 'absolute',
+          'font-family': 'Roboto, Helvetica, Arial, sans-serif',
+          color: 'gray',
+          'font-size': '1.1em',
+          right: '5px',
+          bottom: '5px'
+        })
+        .text("-")
+        ;
+
+    var timeCounter = 0;
+    var timerInterval = 0;
+
+    function pad(num, size){ return ('000000000' + num).substr(-size); }
+
+    window.onblur = function(){
+      if(timerInterval) clearInterval(timerInterval);
+    };
+
+    window.onfocus = function(){
+      if(timerInterval) clearInterval(timerInterval);
+      timeCounter = 0;
+      timerInterval = setInterval(function(){
+        timeCounter++;
+        d3.select(".exp_timer").text(""+pad(Math.floor(timeCounter/60),2)+":"+pad(timeCounter%60,2));
+        if(timeCounter>=timeLimit){
+          alert("Task time is up.");
+          clearInterval(timerInterval);
+        }
+      }, 1000);
+    };
+
+  },5000);
+
 }
 

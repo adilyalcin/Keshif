@@ -508,23 +508,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[exp="basis"] .ContextItem {
   color: black !important;
 }
-.kshf[exp="train"] .TopicInfoBlock {
-  display: none;
-}
-.kshf[exp="train"] .RelatedTopics {
-  display: none !important;
-}
-.kshf[exp="train"] .topicLink {
-  pointer-events: none !important;
-}
-.kshf[exp="train"] .topicLink:after {
-  display: none;
-}
-.kshf[exp="train"] .showHelpIn {
-  display: none;
-}
-.kshf[exp="train"] .overlay_help_control {
-  display: none !important;
+.kshf[exp="train"] {
+  /*.TopicInfoBlock{ display: none; }
+    .RelatedTopics{ display: none !important; }
+    //.GuidedTourStep.GuidedTourOneStep{ pointer-events: none !important; }
+    .topicLink{ 
+      pointer-events: none !important;
+      &:after{ display: none; }
+    }
+    .showHelpIn{ display: none; }
+    .overlay_help_control{ display: none !important; }*/
 }
 .kshf[exp] .rightBoxes .authorButton {
   display: none !important;
@@ -540,6 +533,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf[exp] .rightBoxes .logoHost {
   display: none !important;
+}
+.kshf[exp] .rightBoxes .showHelpIn {
+  animation: none;
 }
 .kshf .overlay_help {
   width: 540px;
@@ -650,7 +646,8 @@ left:calc(50% - 310px);
 }
 .kshf .overlay_help > .GuidedTour > .GuidedTourProgressBar {
   position: relative;
-  width: 100%;
+  width: 96%;
+  left: 2%;
   height: 2px;
   background-color: lightgray;
   z-index: 10;
@@ -1056,7 +1053,7 @@ left:calc(50% - 310px);
   position: absolute;
   right: 2px;
   top: 8px;
-  font-size: 0.9em;
+  font-size: 0.7em;
   color: #bebbb5;
   text-shadow: initial;
 }
@@ -1064,8 +1061,8 @@ left:calc(50% - 310px);
   display: none;
   position: absolute;
   left: 4px;
-  top: 8px;
-  font-size: 0.9em;
+  top: 5px;
+  font-size: 1.1em;
   color: #bebbb5;
   text-shadow: initial;
   cursor: pointer;
@@ -1253,14 +1250,14 @@ left:calc(50% - 185px);
 .kshf .panel_overlay[show="help-topiclisting"] .TopicBlock {
   font-size: 0.9em;
 }
-.kshf .panel_overlay[topicAnswer]:not([show="help-guidedtour"]) .SelectedThing_Header > .backButton {
-  display: block;
-}
-.kshf .panel_overlay[topicAnswer] > .overlay_answer {
+.kshf .panel_overlay[topicAnswer]:not([show="help-guidedtour"]) > .overlay_answer {
   pointer-events: all;
 }
-.kshf .panel_overlay[topicAnswer] .stencilBox {
+.kshf .panel_overlay[topicAnswer]:not([show="help-guidedtour"]) .stencilBox {
   cursor: pointer;
+}
+.kshf .panel_overlay[topicAnswer]:not([show="help-guidedtour"]) .SelectedThing_Header > .backButton {
+  display: block;
 }
 .kshf .panel_overlay[topicAnswer] > .overlay_help {
   width: 370px;
