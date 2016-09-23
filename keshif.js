@@ -3020,6 +3020,17 @@ kshf.Browser = function(options){
 
   this.domID = options.domID;
 
+  this.thumbvizSortFunction = function(summary_A,summary_B){
+    var a_cat = summary_A instanceof kshf.Summary_Categorical;
+    var b_cat = summary_B instanceof kshf.Summary_Categorical;
+    if(a_cat && !b_cat) return -1;
+    if(!a_cat && b_cat) return 1;
+    if(a_cat && b_cat && summary_A._aggrs && summary_B._aggrs){ 
+      return summary_A._aggrs.length - summary_B._aggrs.length;
+    }
+    return summary_A.summaryName.localeCompare(summary_B.summaryName, { sensitivity: 'base' });
+  };
+
   this.vizActive = {
     Highlight: false,
     Compare_A: false,
@@ -4177,27 +4188,8 @@ kshf.Browser.prototype = {
           .on("mouseleave", function(){ this.tipsy.hide(); })
           .on("click",      function(){ this.tipsy.hide(); me.autoCreateBrowser(); });
 
-      this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
 
-      this.DOM.dropZone_AttribList = this.DOM.attributeList.append("div").attr("class","dropZone dropZone_AttribList")
-        .attr("readyToDrop",false)
-        .on("mouseenter",function(event){
-          this.setAttribute("readyToDrop",true);
-        })
-        .on("mouseleave",function(event){
-          this.setAttribute("readyToDrop",false);
-        })
-        .on("mouseup",function(event){
-          var movedSummary = me.movedSummary;
-          movedSummary.removeFromPanel();
-          movedSummary.clearDOM();
-          movedSummary.browser.updateLayout();
-          me.movedSummary = null;
-        });
-      this.DOM.dropZone_AttribList.append("span").attr("class","dropIcon fa fa-angle-double-down");
-      this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
-
-      this.DOM.attributeList.append("div").attr("class","newAttribute").html("<i class='fa fa-plus-square'></i>")
+      this.DOM.attributePanel.append("div").attr("class","newAttribute").html("<i class='fa fa-plus-square'></i>")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: 'Add new attribute' }); })
         .on("mouseenter",function(){ this.tipsy.show(); })
         .on("mouseleave",function(){ this.tipsy.hide(); })
@@ -4218,6 +4210,26 @@ kshf.Browser.prototype = {
           }
           me.createSummary(name,safeFunc);
         });
+      this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
+
+      this.DOM.dropZone_AttribList = this.DOM.attributeList.append("div").attr("class","dropZone dropZone_AttribList")
+        .attr("readyToDrop",false)
+        .on("mouseenter",function(event){
+          this.setAttribute("readyToDrop",true);
+        })
+        .on("mouseleave",function(event){
+          this.setAttribute("readyToDrop",false);
+        })
+        .on("mouseup",function(event){
+          var movedSummary = me.movedSummary;
+          movedSummary.removeFromPanel();
+          movedSummary.clearDOM();
+          movedSummary.browser.updateLayout();
+          me.movedSummary = null;
+        });
+      this.DOM.dropZone_AttribList.append("span").attr("class","dropIcon fa fa-angle-double-down");
+      this.DOM.dropZone_AttribList.append("div").attr("class","dropText").text("Remove summary");
+
     },
     /** -- */
     updateRecordDetailPanel: function(record){
@@ -4705,6 +4717,8 @@ kshf.Browser.prototype = {
               summary.setScaleType(facetDescr.scaleType,true);
             }
           }
+
+          summary.sourceDescr = facetDescr;
         },this);
 
         this.panels.left.updateWidth_MeasureLabel();
@@ -4825,16 +4839,7 @@ kshf.Browser.prototype = {
     },
     /** -- */
     reorderNuggetList: function(){
-      this.summaries = this.summaries.sort(function(a,b){
-        var a_cat = a instanceof kshf.Summary_Categorical;
-        var b_cat = b instanceof kshf.Summary_Categorical;
-        if(a_cat && !b_cat) return -1;
-        if(!a_cat && b_cat) return 1;
-        if(a_cat && b_cat && a._aggrs && b._aggrs){ 
-          return a._aggrs.length - b._aggrs.length;
-        }
-        return a.summaryName.localeCompare(b.summaryName, { sensitivity: 'base' });
-      });
+      this.summaries = this.summaries.sort(this.thumbvizSortFunction);
 
       this.DOM.attributeList.selectAll(".nugget")
         .data(this.summaries, function(summary){return summary.summaryID;}).order();
@@ -6434,15 +6439,16 @@ var Summary_Categorical_functions = {
     this.refreshViz_Nugget();
   },
   /** -- */
-  refreshViz_Nugget: function(){
+  refreshViz_Nugget: function(force){
     if(this.DOM.nugget===undefined) return;
+    if(force===undefined) force=false;
     var nuggetChart = this.DOM.nugget.select(".nuggetChart");
 
     this.DOM.nugget
       .attr("aggr_initialized",this.aggr_initialized)
       .attr("datatype",this.getDataType());
 
-    if(!this.aggr_initialized) return;
+    if(!this.aggr_initialized && !force) return;
 
     if(this.uniqueCategories()){
       this.DOM.nugget.select(".nuggetInfo").html("<span class='fa fa-tag'></span><br>Unique");
@@ -6603,6 +6609,10 @@ var Summary_Categorical_functions = {
     this.updateCatSorting(0,true,true);
     this.refreshCatSortOptions();
     this.refreshSortButton();
+
+    if(opts){
+      this.refreshViz_Nugget(true);
+    }
   },
   /** -- */
   refreshSortButton: function(){
