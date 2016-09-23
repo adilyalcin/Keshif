@@ -881,7 +881,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: relative;
   height: 18px;
 }
-.kshf .textSearchBox > .textSearchInput {
+.kshf .textSearchBox > .summaryTextSearchInput {
   font-size: 0.7em;
   font-weight: 700;
   border-width: 0px;
@@ -890,22 +890,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   margin: 2px 0px 0px 0px;
   cursor: text;
 }
-.kshf .textSearchBox > .textSearchInput:focus {
+.kshf .textSearchBox > .summaryTextSearchInput:focus {
   outline-color: #cb5454;
   outline-width: 2px;
 }
-.kshf .textSearchBox > .textSearchInput:hover {
+.kshf .textSearchBox > .summaryTextSearchInput:hover {
   border: solid 1px #cb5454;
   padding: 0px 0px 0px 0px;
 }
-.kshf .textSearchBox > .textSearchInput::-webkit-input-placeholder {
+.kshf .textSearchBox > .summaryTextSearchInput::-webkit-input-placeholder {
   font-weight: 300;
   color: #cb5454;
 }
-.kshf .textSearchBox > .textSearchInput:focus::-webkit-input-placeholder {
+.kshf .textSearchBox > .summaryTextSearchInput:focus::-webkit-input-placeholder {
   color: #F3CDCD;
 }
-.kshf .textSearchBox > .textSearchInput:hover::-webkit-input-placeholder {
+.kshf .textSearchBox > .summaryTextSearchInput:hover::-webkit-input-placeholder {
   color: #F3CDCD;
 }
 .kshf .textSearchBox > .textSearchControl {
@@ -2614,7 +2614,6 @@ top:calc(50% - 5px);
 .kshf .aggrGlyph.rangeGlyph > .measureLabel {
   position: relative;
   display: block;
-  top: 1px;
   width: 100%;
   text-align: center;
   cursor: pointer;
@@ -3330,7 +3329,6 @@ top:calc(50% - 5px);
   position: absolute;
   display: inline-block;
   height: 100%;
-  top: 0px;
   padding-right: 1px;
   text-align: right;
   line-height: 18px;
@@ -3338,7 +3336,7 @@ top:calc(50% - 5px);
   cursor: inherit;
   pointer-events: all;
 }
-.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[activeItems='0'] .measureLabel {
+.kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph[activeItems='0'] > .measureLabel {
   visibility: hidden;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup > .catGlyph.locked > .catLabelGroup > .catLabel {
@@ -5169,39 +5167,13 @@ height:calc(100% - 10px);
 .kshf .recordDisplayHeader > .recordTextSearch > .dropZone_textSearch:hover {
   background-color: #ffbca3;
 }
-.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input {
+.kshf .recordDisplayHeader > .recordTextSearch > .textSearchInput {
   display: none;
-  font-size: 0.8em;
-  font-weight: 700;
-  color: #cb5454;
-  padding: 0px 2px;
-  background-color: rgba(255, 255, 255, 0);
-  pointer-events: all;
-  border-width: 0px;
-  border-style: solid;
-  border-color: #cb5454;
-  margin: 1px;
   width: calc(100% - 17px);
   -webkit-transition: background-color 150ms linear;
   -moz-transition: background-color 150ms linear;
   -o-transition: background-color 150ms linear;
   transition: background-color 150ms linear;
-}
-.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input:focus {
-  outline-color: #cb5454;
-  outline-width: 2px;
-}
-.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input:hover {
-  border-width: 1px;
-  background-color: white;
-  margin: 0px;
-}
-.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input::-webkit-input-placeholder {
-  color: #cb5454;
-  font-weight: 300;
-}
-.kshf .recordDisplayHeader > .recordTextSearch > .mainTextSearch_input:focus::-webkit-input-placeholder {
-  color: #F3CDCD;
 }
 .kshf .recordDisplayHeader > .recordTextSearch > .searchIcon {
   display: none;
@@ -5248,7 +5220,7 @@ height:calc(100% - 10px);
 .kshf .recordDisplayHeader > .recordTextSearch > .textSearchMode[mode="or"]:after {
   content: "some";
 }
-.kshf .recordDisplayHeader > .recordTextSearch[isActive="true"] > .mainTextSearch_input {
+.kshf .recordDisplayHeader > .recordTextSearch[isActive="true"] > .textSearchInput {
   display: inline-block;
 }
 .kshf .recordDisplayHeader > .recordTextSearch[isActive="true"] > .searchIcon {
@@ -5261,6 +5233,34 @@ height:calc(100% - 10px);
 .kshf .recordDisplayHeader > .recordTextSearch[mode="or"] > .textSearchMode[mode="or"] {
   opacity: 1;
   box-shadow: 0px 0px 2px black;
+}
+.kshf .textSearchInput {
+  font-size: 0.8em;
+  font-weight: 700;
+  color: #cb5454;
+  padding: 0px 2px;
+  background-color: rgba(255, 255, 255, 0);
+  pointer-events: all;
+  border-width: 0px;
+  border-style: solid;
+  border-color: #cb5454;
+  margin: 1px;
+}
+.kshf .textSearchInput:focus {
+  outline-color: #cb5454;
+  outline-width: 2px;
+}
+.kshf .textSearchInput:hover {
+  border-width: 1px;
+  background-color: white;
+  margin: 0px;
+}
+.kshf .textSearchInput::-webkit-input-placeholder {
+  color: #cb5454;
+  font-weight: 300;
+}
+.kshf .textSearchInput:focus::-webkit-input-placeholder {
+  color: #F3CDCD;
 }
 .kshf [class^="recordView_Set"] {
   color: gray;

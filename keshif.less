@@ -672,7 +672,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
       height: 18px;
 
-      > .textSearchInput {
+      > .summaryTextSearchInput {
         font-size: 0.7em;
         font-weight: 700;
         border-width: 0px;
@@ -2066,7 +2066,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .measureLabel{
           position: relative;
           display: block;
-          top: 1px;
           width: 100%;
           text-align: center;
           cursor: pointer;
@@ -2634,7 +2633,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       position: absolute;
                       display: inline-block;
                       height: 100%;
-                      top: 0px;
                       padding-right: 1px;
                       text-align: right;
                       line-height: 18px;
@@ -2643,7 +2641,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       pointer-events: all;
                     }
 
-                    &[activeItems='0'] .measureLabel{ visibility: hidden; }
+                    &[activeItems='0'] > .measureLabel{ visibility: hidden; }
 
                     &.locked > .catLabelGroup > .catLabel{ font-weight: 700; }
 
@@ -4056,36 +4054,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
             &:hover{ background-color: rgb(255, 188, 163); }
           }
-          > .mainTextSearch_input{
+          > .textSearchInput{
             display: none;
-            font-size: 0.8em;
-            font-weight: 700;
-            color: @color_hoverAction;
-            padding: 0px 2px;
-            background-color:rgba(255, 255, 255, 0);
-            pointer-events: all;
-            border-width: 0px;
-            border-style: solid;
-            border-color: @color_hoverAction;
-            margin: 1px;
             width: calc(~"100% - 17px");
-            .transition(~'background-color 150ms linear');
-            &:focus{
-              outline-color: @color_hoverAction;
-              outline-width: 2px;
-            }
-            &:hover{
-              border-width: 1px;
-              background-color: white;
-              margin: 0px;
-            }
-            &::-webkit-input-placeholder{
-              color: @color_hoverAction;
-              font-weight: 300;
-            }
-            &:focus::-webkit-input-placeholder{
-              color: #F3CDCD;
-            }
+            .transition(background-color 150ms linear);
           }
           > .searchIcon{
             display: none;
@@ -4125,7 +4097,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
           }
           &[isActive="true"]{
-            > .mainTextSearch_input{ display: inline-block; }
+            > .textSearchInput{ display: inline-block; }
             > .searchIcon{ display: inline-block; }
           }
           &[mode="and"] > .textSearchMode[mode="and"]{ 
@@ -4138,6 +4110,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         } // mainTextSearch
     } // recordDisplayHeader
+
+
+  .textSearchInput{
+    font-size: 0.8em;
+    font-weight: 700;
+    color: @color_hoverAction;
+    padding: 0px 2px;
+    background-color:rgba(255, 255, 255, 0);
+    pointer-events: all;
+    border-width: 0px;
+    border-style: solid;
+    border-color: @color_hoverAction;
+    margin: 1px;
+    &:focus{
+      outline-color: @color_hoverAction;
+      outline-width: 2px;
+    }
+    &:hover{
+      border-width: 1px;
+      background-color: white;
+      margin: 0px;
+    }
+    &::-webkit-input-placeholder{
+      color: @color_hoverAction;
+      font-weight: 300;
+    }
+    &:focus::-webkit-input-placeholder{
+      color: #F3CDCD;
+    }
+  }
 
   [class^="recordView_Set"]{
     color: gray;

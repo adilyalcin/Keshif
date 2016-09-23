@@ -1802,15 +1802,13 @@ kshf.RecordDisplay.prototype = {
       };
 
       this.DOM.recordTextSearch.append("i").attr("class","fa fa-search searchIcon");
-      this.DOM.recordTextSearch.append("input").attr("type","text").attr("class","mainTextSearch_input")
+      this.DOM.recordTextSearch.append("input").attr("type","text").attr("class","textSearchInput")
         .each(function(){ 
           this.tipsy = new Tipsy(this, {gravity: 'n', 
             title: '<b><u>Enter</u></b> to filter <i class="fa fa-filter"></i>.<br><br>'+
             '<b><u>Shift+Enter</u></b> to lock <i class="fa fa-lock"></i>.' }); 
         })
-        .on("blur",function(){
-          this.tipsy.hide();
-        })
+        .on("blur",function(){ this.tipsy.hide(); })
         .on("keydown",function() { d3.event.stopPropagation(); })
         .on("keypress",function(){ d3.event.stopPropagation(); })
         .on("keyup",function(){
@@ -4153,9 +4151,12 @@ kshf.Browser.prototype = {
           });
         });
       this.DOM.attribTextSearch.append("input")
-        .attr("class","textSearchInput")
+        .attr("class","summaryTextSearchInput")
         .attr("type","text")
         .attr("placeholder",kshf.lang.cur.Search)
+        .on("keydown",function() { d3.event.stopPropagation(); })
+        .on("keypress",function(){ d3.event.stopPropagation(); })
+        .on("keyup",function()   { d3.event.stopPropagation(); })
         .on("input",function(){
           if(this.timer) clearTimeout(this.timer);
           var x = this;
@@ -4527,7 +4528,6 @@ kshf.Browser.prototype = {
         return;
       }
       this.records = kshf.dt[this.primaryTableName];
-      this.records.forEach(function(r){ this.allRecordsAggr.addRecord(r); },this);
       
       if(this.recordName==="") this.recordName = this.primaryTableName;
 
@@ -4545,6 +4545,8 @@ kshf.Browser.prototype = {
         }
 
         if(this.onLoad) this.onLoad.call(this);
+
+        this.records.forEach(function(r){ this.allRecordsAggr.addRecord(r); },this);
 
         // Create a summary for each existing column in the data
         for(var column in this.records[0].data){
@@ -7194,81 +7196,84 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     initDOM_CatTextSearch: function(){
-        var me=this;
-        this.DOM.catTextSearch = this.DOM.summaryControls.append("div").attr("class","textSearchBox catTextSearch hasLabelWidth");
-        this.DOM.catTextSearchControl = this.DOM.catTextSearch.append("span")
-          .attr("class","textSearchControl fa")
-          .each(function(){
-            this.tipsy = new Tipsy(this, {
-              gravity: 'nw', title: "Clear text search"
-            });
-          })
-          .on("mouseenter", function(){ this.tipsy.show(); })
-          .on("mouseleave", function(){ this.tipsy.hide(); })
-          .on("click",      function(){ this.tipsy.hide();
-            me.DOM.catTextSearchControl.attr("showClear",false);
-            me.summaryFilter.clearFilter();
+      var me=this;
+      this.DOM.catTextSearch = this.DOM.summaryControls.append("div").attr("class","textSearchBox catTextSearch hasLabelWidth");
+      this.DOM.catTextSearchControl = this.DOM.catTextSearch.append("span")
+        .attr("class","textSearchControl fa")
+        .each(function(){
+          this.tipsy = new Tipsy(this, {
+            gravity: 'nw', title: "Clear text search"
           });
-        this.DOM.catTextSearchInput = this.DOM.catTextSearch.append("input")
-          .attr("class","textSearchInput")
-          .attr("type","text")
-          .attr("placeholder",kshf.lang.cur.Search)
-          .on("input",function(){
-            if(this.timer) clearTimeout(this.timer);
-            var x = this;
-            this.timer = setTimeout( function(){
-              me.unselectAllCategories();
-              var query = [];
+        })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide();
+          me.DOM.catTextSearchControl.attr("showClear",false);
+          me.summaryFilter.clearFilter();
+        });
+      this.DOM.catTextSearchInput = this.DOM.catTextSearch.append("input")
+        .attr("class","textSearchInput")
+        .attr("type","text")
+        .attr("placeholder",kshf.lang.cur.Search)
+        .on("keydown", function(){ d3.event.stopPropagation(); })
+        .on("keypress",function(){ d3.event.stopPropagation(); })
+        .on("keyup",   function(){ d3.event.stopPropagation(); })
+        .on("input",function(){
+          if(this.timer) clearTimeout(this.timer);
+          var x = this;
+          this.timer = setTimeout( function(){
+            me.unselectAllCategories();
+            var query = [];
 
-              // split the query by " character
-              var processed = x.value.toLowerCase().split('"');
-              processed.forEach(function(block,i){
-                if(i%2===0) {
-                  block.split(/\s+/).forEach(function(q){ query.push(q)});
+            // split the query by " character
+            var processed = x.value.toLowerCase().split('"');
+            processed.forEach(function(block,i){
+              if(i%2===0) {
+                block.split(/\s+/).forEach(function(q){ query.push(q)});
+              } else {
+                query.push(block);
+              }
+            });
+
+            // Remove the empty strings
+            query = query.filter(function(v){ return v!==""});
+
+            if(query.length>0){
+              me.DOM.catTextSearchControl.attr("showClear",true);
+              var labelFunc = me.catLabel_Func;
+              var tooltipFunc = me.catTooltip;
+              me._aggrs.forEach(function(_category){
+                var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
+                var f = query.every(function(query_str){
+                    if(catLabel.indexOf(query_str)!==-1){ return true; }
+                    if(tooltipFunc) {
+                        var tooltipText = tooltipFunc.call(_category.data);
+                        return (tooltipText && tooltipText.toLowerCase().indexOf(query_str)!==-1);
+                    }
+                    return false;
+                });
+                if(f){
+                  _category.set_OR(me.summaryFilter.selected_OR);
                 } else {
-                  query.push(block);
+                  _category.set_NONE(me.summaryFilter.selected_OR);
                 }
               });
 
-              // Remove the empty strings
-              query = query.filter(function(v){ return v!==""});
-
-              if(query.length>0){
-                me.DOM.catTextSearchControl.attr("showClear",true);
-                var labelFunc = me.catLabel_Func;
-                var tooltipFunc = me.catTooltip;
-                me._aggrs.forEach(function(_category){
-                  var catLabel = labelFunc.call(_category.data).toString().toLowerCase();
-                  var f = query.every(function(query_str){
-                      if(catLabel.indexOf(query_str)!==-1){ return true; }
-                      if(tooltipFunc) {
-                          var tooltipText = tooltipFunc.call(_category.data);
-                          return (tooltipText && tooltipText.toLowerCase().indexOf(query_str)!==-1);
-                      }
-                      return false;
-                  });
-                  if(f){
-                    _category.set_OR(me.summaryFilter.selected_OR);
-                  } else {
-                    _category.set_NONE(me.summaryFilter.selected_OR);
-                  }
-                });
-
-                // All categories are process, and the filtering state is set. Now, process the summary as a whole
-                if(me.summaryFilter.selectedCount_Total()===0){
-                  me.skipTextSearchClear = true;
-                  me.summaryFilter.clearFilter();
-                  me.skipTextSearchClear = false;
-                } else {
-                  me.summaryFilter.how = "All";
-                  me.missingValueAggr.filtered = false;
-                  me.summaryFilter.addFilter();
-                }
-              } else {
+              // All categories are process, and the filtering state is set. Now, process the summary as a whole
+              if(me.summaryFilter.selectedCount_Total()===0){
+                me.skipTextSearchClear = true;
                 me.summaryFilter.clearFilter();
+                me.skipTextSearchClear = false;
+              } else {
+                me.summaryFilter.how = "All";
+                me.missingValueAggr.filtered = false;
+                me.summaryFilter.addFilter();
               }
-            }, 750);
-          });
+            } else {
+              me.summaryFilter.clearFilter();
+            }
+          }, 750);
+        });
     },
 
     /** -- */
@@ -7345,7 +7350,7 @@ var Summary_Categorical_functions = {
     refreshHeight_Category_do: function(){
       this.DOM.aggrGlyphs.style("height",this.heightCat+"px")
       this.DOM.aggrGlyphs.selectAll(".catLabelGroup").style("padding-top",(this.heightCat/2-8)+"px");
-      this.DOM.aggrGlyphs.selectAll(".measureLabel").style("padding-top",(this.heightCat/2-7)+"px");
+      this.DOM.aggrGlyphs.selectAll(".measureLabel").style("padding-top",(this.heightCat/2-8)+"px");
       var fontSize = null;
       if(this.heightCat<15) fontSize = (this.heightCat-2)+"px";
       if(this.heightCat>25) fontSize = "15px";
@@ -8064,9 +8069,9 @@ var Summary_Categorical_functions = {
 
       var DOM_cats_new = aggrGlyphSelection.enter()
         .append(this.viewType=='list' ? 'span' : 'g')
-        .attr("class","aggrGlyph "+(this.viewType=='list'?'cat':'map')+"Glyph")
+        .attr("class","aggrGlyph "+(this.viewType=='list'?'cat':'map')+"Glyph") // mapGlyph, catGlyph
         .on("mousemove", function(){
-          if(this.tipsy){
+          if(this.viewType==='map'){
             var left = (d3.event.pageX-this.tipsy.tipWidth-10);
             var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
 
@@ -8078,7 +8083,7 @@ var Summary_Categorical_functions = {
             this.tipsy.jq_tip[0][0].style.top = top+"px";
           }
         })
-        .attr("title",me.catTooltip?function(_cat){ return me.catTooltip.call(_cat.data); }:null);
+        .attr("title",me.catTooltip ? function(_cat){ return me.catTooltip.call(_cat.data); } : null);
 
       this.updateCatIsVisible();
 
@@ -8137,13 +8142,22 @@ var Summary_Categorical_functions = {
           .on("mouseout",  function(_cat){ me.onCatLeave_NOT(_cat); })
           .on("click",     function(_cat){ me.onCatClick_NOT(_cat); });
 
-        domAttrLabel.append("span").attr("class","catLabel").html(function(aggr){ return me.catLabel_Func.call(aggr.data); });
+        domAttrLabel.append("span").attr("class","catLabel")
+          .html(function(aggr){ return me.catLabel_Func.call(aggr.data); });
         DOM_cats_new.append("span").attr("class","measureLabel");
 
         ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
           DOM_cats_new.append("span").attr("class", "measure_"+m)
             .on("mouseenter" ,function(){ 
-              if(m!=="Total") me.browser.refreshMeasureLabels(this.classList[0].substr(8)); 
+              if(m==="Compare_A" || m==="Compare_B" || m==="Compare_C"){
+                me.browser.refreshMeasureLabels(m); 
+              } else if(m==="Total" || m==="Active"){
+                // nothing
+              } else if(me.browser.measureLabelType==="Highlight"){
+                // nothing
+              } else {
+                me.browser.refreshMeasureLabels(m);
+              }
               d3.event.preventDefault();
               d3.event.stopPropagation();
             });
@@ -8360,6 +8374,7 @@ var Summary_Categorical_functions = {
 
     /** --  */
     map_projectCategories: function(){
+      if(me.panel===undefined) return;
       var me = this;
       this.DOM.measure_Active.attr("d", function(_cat){
         _cat._d_ = me.catMap.call(_cat.data,_cat);
@@ -11330,7 +11345,6 @@ var Summary_Clique_functions = {
     aggr.set_1.DOM.aggrGlyph.setAttribute("catselect","and");
     aggr.set_2.DOM.aggrGlyph.setAttribute("catselect","and");
     this.browser.setSelect_Highlight(aggr);
-    this.browser.refreshMeasureLabels("Highlight");
   },
   /** -- */
   onSetPairLeave: function(aggr){
