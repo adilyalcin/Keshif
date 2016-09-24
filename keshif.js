@@ -103,10 +103,11 @@ var kshf = {
       LoadingData: "Loading data sources",
       ShowAll: "Show All",
       ScrollToTop: "Top",
-      Absolute: "Absolute",
       Percent: "Percent",
-      PartOf: "Part-Of",
-      Width: "Length",
+      Absolute: "Absolute",
+      AbsoluteSize: "Absolute Size",
+      PartOfSize: "Relative Size",
+      Width: "Size",
       DragToFilter: "Drag",
       And: "And",
       Or: "Or",
@@ -146,7 +147,7 @@ var kshf = {
       ScrollToTop: "Yukarı",
       Absolute: "Net",
       Percent: "Yüzde",
-      PartOf: "Görece",
+      PartOfSize: "Görece",
       Width: "Genişlik",
       DragToFilter: "Sürükle",
       And: "Ve",
@@ -186,7 +187,7 @@ var kshf = {
       ScrollToTop: "Début",
       Absolute: "Absolue",
       Percent: "Pourcentage",
-      PartOf: "Part-Of",
+      PartOfSize: "Part-Of",
       Width: "Largeur",
       DragToFilter: "??",
       And: "??",
@@ -6230,7 +6231,7 @@ kshf.Summary_Base.prototype = {
           if(pos2==='nw' && d==="2") pos = 'ne';
           this.tipsy = new Tipsy(this, {
             gravity: pos, title: function(){
-              return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'PartOf']+" "+kshf.lang.cur.Width+
+              return kshf.lang.cur[me.browser.ratioModeActive?'AbsoluteSize':'PartOfSize']+
                 " <span class='fa fa-arrows-h'></span>";
             },
           });
@@ -8384,7 +8385,10 @@ var Summary_Categorical_functions = {
 
     /** --  */
     map_projectCategories: function(){
-      if(me.panel===undefined) return;
+      if(this.panel===undefined) return;
+      // the following is temporary
+      if(this.sourceDescr && this.sourceDescr.onMapProject) this.sourceDescr.onMapProject.call(this);
+      //
       var me = this;
       this.DOM.measure_Active.attr("d", function(_cat){
         _cat._d_ = me.catMap.call(_cat.data,_cat);
@@ -8562,7 +8566,7 @@ var Summary_Categorical_functions = {
       this.DOM.catMapColorScale.append("span").attr("class","scaleModeControl fa fa-arrows-h")
         .each(function(){
           this.tipsy = new Tipsy(this, { gravity: 'e', title: function(){
-            return kshf.lang.cur[me.browser.ratioModeActive?'Absolute':'PartOf']+" "+kshf.lang.cur.Width; }
+            return kshf.lang.cur[me.browser.ratioModeActive?'AbsoluteSize':'PartOfSize']; }
           });
         })
         .on("mouseenter", function(){ this.tipsy.show(); me.browser.showScaleModeControls(true); })
