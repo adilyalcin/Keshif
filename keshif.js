@@ -4600,10 +4600,22 @@ kshf.Browser.prototype = {
             }
           }
 
-          if( facetDescr.catLabel || facetDescr.catTooltip || facetDescr.catSplit ||
-              facetDescr.catTableName || facetDescr.catSortBy || facetDescr.catMap || facetDescr.catHeight){
+          if( facetDescr.catLabel || 
+              facetDescr.catTooltip || 
+              facetDescr.catSplit ||
+              facetDescr.catTableName || 
+              facetDescr.catSortBy || 
+              facetDescr.catMap || 
+              facetDescr.catHeight)
+          {
             facetDescr.type="categorical";
-          } else if(facetDescr.scaleType || facetDescr.showPercentile || facetDescr.unitName || facetDescr.timeFormat ){
+          } else 
+          if( facetDescr.scaleType || 
+              facetDescr.showPercentile || 
+              facetDescr.unitName || 
+              facetDescr.skipZero || 
+              facetDescr.timeFormat )
+          {
             facetDescr.type="interval";
           }
 
@@ -4651,6 +4663,9 @@ kshf.Browser.prototype = {
           }
           if(facetDescr.timeFormat){
             summary.setTimeFormat(facetDescr.timeFormat);
+          }
+          if(facetDescr.skipZero){
+            summary.skipZero = true;
           }
 
           summary.initializeAggregates();
@@ -8848,6 +8863,7 @@ var Summary_Interval_functions = {
         var v=this.summaryFunc.call(record.data,record);
         if(v===undefined) v=null;
         if(isNaN(v)) v=null;
+        if(v===0 && me.skipZero) v = null;
         if(v!==null){
           if(v instanceof Date){
             this.timeTyped.base = true;

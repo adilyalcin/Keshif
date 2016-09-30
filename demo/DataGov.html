@@ -61,8 +61,8 @@ document.addEventListener("DOMContentLoaded", function(){
     },
     summaries: [
       { name: "Topics", value: "topics", catLabel: iconMapping },
-      { name: "Total Views", value: "tracking_total" },
-      { name: "Recent Views", value: "tracking_recent" },
+      { name: "Total Views", value: "tracking_total", skipZero: true },
+      { name: "Recent Views", value: "tracking_recent", skipZero: true },
       { name: "<i class='fa fa-file'></i> Formats", value: "formats" },
       { name: "<i class='fa fa-university'></i> Organization", value: "organization", panel: 'right'},
       { name: "<i class='fa fa-tag'></i> Tags", value: "tags", panel: 'right', minAggrValue: 20},
