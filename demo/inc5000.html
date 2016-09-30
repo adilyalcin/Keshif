@@ -12,6 +12,10 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script type="text/javascript" src="./helpin/helpin_material.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./helpin/helpin.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./helpin/helpin.css" type="text/css">
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
@@ -25,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function(){
     recordName: "Companies",
     source: {
       url: "http://www.inc.com/inc5000/index.html",
-      dirPath: 'https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/',
+      dirPath: 'https://storage.googleapis.com/keshif-data/',
       fileType: 'json',
       tables: "inc5000_2014",
       callback: function(){ US_States.loadGeo(this); }
@@ -35,10 +39,10 @@ document.addEventListener("DOMContentLoaded", function(){
       { name: "State", value: 'state_l',
         catMap: function(){ return US_States.index_name[this.id].geo; } },
       { name: "<i class='fa fa-map-marker'></i> Metro Area", value: 'metro'},
-      { name: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', panel: "right"},
       { name: "# of Workers", value: 'workers', panel: "right"},
       { name: "<i class='fa fa-line-chart'></i> Growth", value: 'growth', panel: "right", unitName: "%"},
       { name: "<i class='fa fa-money'></i> Revenue", value: 'revenue', panel: "right", unitName: "$"},
+      { name: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', panel: "right", collapsed: true},
     ],
     recordDisplay: {
       sortBy: {title: 'growth', label: function(){ return simpleFormat(this.growth); }},

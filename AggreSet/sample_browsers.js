@@ -1,6 +1,6 @@
 var localDirPath_set_ = '../demo/data/set_';
 var upsetSourceURL = 'http://vcg.github.io/upset/';
-var googleDriveDir = "https://ca480fa8cd553f048c65766cc0d0f07f93f6fe2f.googledrive.com/host/0By6LdDWgaqgNfmpDajZMdHMtU3FWTEkzZW9LTndWdFg0Qk9MNzd0ZW9mcjA4aUJlV0p1Zk0/";
+var googleDriveDir = "https://storage.googleapis.com/keshif-data/";
 
 var browser_configs = {
   lesMiserables: {
