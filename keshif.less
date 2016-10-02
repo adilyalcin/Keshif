@@ -445,21 +445,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       > .attributePanelControl{
+        .display(flex);
+        .flex-direction(row);
         background-color: white;
         border-radius: 5px;
         box-shadow: 0px 0px 1px gray;
         margin: 4px 0px 2px;
-        .display(flex);
-        .flex-direction(row);
+        min-height: 20px;
 
         > .attribFilterIcon{
           margin: 2px;
           color: gray;
         }
-
         > .addAllSummaries{
           width: 20px;
-          display: inline-block;
+          display: none; // disabled for now
           cursor: pointer;
           &:hover{ color: @color_hoverAction; }
         }
@@ -467,13 +467,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .attribTextSearch{
           .flex(1);
         }
-
       } // attributePanelControl
 
       > .attributeList{
-        .display(flex);
-        .flex(1);
-        .flex-direction(column);
+        display: block;
+        //.display(flex);
+        //.flex(1);
+        //.flex-direction(column);
         overflow-y: auto;
         overflow-x: hidden;
         > .dropZone_AttribList{
@@ -505,14 +505,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       .nugget{
-        display: block;
+        .display(flex);
+        .flex-direction(row);
         position: relative;
         font-size: 0.8em;
         padding: 1px;
-        margin: 1px;
-        //min-height: 34px;
-        left: 0px;
-        border-radius: 3px;
+        margin: 4px 1px;
+        box-shadow: 0px 0px 1px lightgray;
+        border-radius: 4px;
         background-color: rgb(232, 232, 232);
         border: solid 1px lightgray;
         cursor: -moz-grab;
@@ -524,7 +524,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           display: inline-block;
           margin: 1px;
           overflow-wrap: break-word;
-          max-width: calc(~"100% - 70px");
+          .flex(1);
           padding: 1px;
           &:hover{ 
             cursor: text;
@@ -532,26 +532,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             border: solid 1px gray;
           }
         }
-        > .editCodeButton{
-          display: none;
+        > .thumbIcons{
+          width: 10px;
           font-size: 0.9em;
-          color: black;
-          cursor: pointer;
-          &:hover{ color: orangered; }
-        }
-        > .summaryTypeIcon{ float: right; }
-        > .addFromAttribute_Button{
-          display: none;
-          margin-left: 5px;
-          color: gray;
-          cursor: pointer;
-          &:hover{ color: orangered; }
-        }
-        > .splitCatAttribute_Button{
-          display: none;
-          cursor: pointer;
-          color: gray;
-          &:hover{ color: black; }
+          > .editCodeButton{
+            display: none;
+            color: black;
+            cursor: pointer;
+            &:hover{ color: orangered; }
+          }
+          > .addFromAttribute_Button{
+            display: none;
+            color: gray;
+            cursor: pointer;
+            &:hover{ color: orangered; }
+          }
+          > .splitCatAttribute_Button{
+            display: none;
+            cursor: pointer;
+            color: gray;
+            &:hover{ color: black; }
+          }
         }
         
         .nuggetInfo{
@@ -592,12 +593,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             }
           }
         }
+
         > .nuggetViz{
           .display(flex);
           height: 30px;
           background-color: #F8F6F6;
-          width: 50px;
-          float: right;
           width: 60px;
           border-radius: 5px;
           border: solid 1px rgb(200,200,200);
@@ -631,11 +631,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .nuggetInfo{ .order(2); max-height: 1em; }
         }
         &[datatype~='time']{
-          &:hover > .addFromAttribute_Button{ display: inline-block; }
+          &:hover .addFromAttribute_Button{ display: inline-block; }
           .num_right:before { content: '\f017'; } // fa-clock-o
         }
         &[datatype~='multivalue']{
-          &:hover > .addFromAttribute_Button{ display: inline-block; }
+          &:hover .addFromAttribute_Button{ display: inline-block; }
         }
         &[datatype~="categorical"]{
           > .nuggetViz{
@@ -648,12 +648,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[datatype~="categorical"][datatype~="singlevalue"]:hover{
-          > .splitCatAttribute_Button{
+          .splitCatAttribute_Button{
             display: inline-block;
           }
         }
         &[state='custom']{
-          > .editCodeButton{ display: inline-block; }
+          .editCodeButton{ display: inline-block; }
         }
         &[moved]{ opacity: 0.5 !important; }
         &[anim="disappear"]{

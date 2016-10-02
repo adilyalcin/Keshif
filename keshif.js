@@ -4189,6 +4189,7 @@ kshf.Browser.prototype = {
           .on("mouseleave", function(){ this.tipsy.hide(); })
           .on("click",      function(){ this.tipsy.hide(); me.autoCreateBrowser(); });
 
+      this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
 
       this.DOM.attributePanel.append("div").attr("class","newAttribute").html("<i class='fa fa-plus-square'></i>")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'n', title: 'Add new attribute' }); })
@@ -4211,7 +4212,6 @@ kshf.Browser.prototype = {
           }
           me.createSummary(name,safeFunc);
         });
-      this.DOM.attributeList = this.DOM.attributePanel.append("div").attr("class","attributeList");
 
       this.DOM.dropZone_AttribList = this.DOM.attributeList.append("div").attr("class","dropZone dropZone_AttribList")
         .attr("readyToDrop",false)
@@ -5848,7 +5848,9 @@ kshf.Summary_Base.prototype = {
         d3.event.stopPropagation();
       });
 
-    this.DOM.nugget.append("div").attr("class","fa fa-code editCodeButton")
+    var X = this.DOM.nugget.append("div").attr("class","thumbIcons");
+
+    X.append("div").attr("class","fa fa-code editCodeButton")
       .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.EditFormula }); })
       .on("mouseenter",function(){ this.tipsy.show(); })
       .on("mouseleave",function(){ this.tipsy.hide(); })
@@ -5868,7 +5870,7 @@ kshf.Summary_Base.prototype = {
         d3.event.preventDefault();
       });
 
-    this.DOM.nugget.append("div").attr("class","splitCatAttribute_Button fa fa-scissors")
+    X.append("div").attr("class","splitCatAttribute_Button fa fa-scissors")
       .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: "Split" });  })
       .on("mouseenter",function(){ this.tipsy.show(); })
       .on("mouseleave",function(){ this.tipsy.hide(); })
@@ -5884,7 +5886,7 @@ kshf.Summary_Base.prototype = {
         d3.event.preventDefault();
       });
 
-    this.DOM.nugget.append("div").attr("class","addFromAttribute_Button fa fa-plus-square")
+    X.append("div").attr("class","addFromAttribute_Button fa fa-plus-square")
       .each(function(){ 
         this.tipsy = new Tipsy(this, { 
           gravity: 'w',

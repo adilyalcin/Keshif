@@ -534,10 +534,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #cb5454;
 }
 .kshf > .attributePanel > .attributePanelControl {
-  background-color: white;
-  border-radius: 5px;
-  box-shadow: 0px 0px 1px gray;
-  margin: 4px 0px 2px;
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -550,6 +546,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0px 0px 1px gray;
+  margin: 4px 0px 2px;
+  min-height: 20px;
 }
 .kshf > .attributePanel > .attributePanelControl > .attribFilterIcon {
   margin: 2px;
@@ -557,7 +558,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf > .attributePanel > .attributePanelControl > .addAllSummaries {
   width: 20px;
-  display: inline-block;
+  display: none;
   cursor: pointer;
 }
 .kshf > .attributePanel > .attributePanelControl > .addAllSummaries:hover {
@@ -571,23 +572,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex: 1;
 }
 .kshf > .attributePanel > .attributeList {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -webkit-flex: 1;
-  -ms-flex: 1;
-  flex: 1;
-  -webkit-box-direction: normal;
-  -moz-box-direction: normal;
-  -webkit-box-orient: vertical;
-  -moz-box-orient: vertical;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
+  display: block;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -625,13 +610,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   color: #877676;
 }
 .kshf > .attributePanel .nugget {
-  display: block;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -moz-box-direction: normal;
+  -webkit-box-orient: horizontal;
+  -moz-box-orient: horizontal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   position: relative;
   font-size: 0.8em;
   padding: 1px;
-  margin: 1px;
-  left: 0px;
-  border-radius: 3px;
+  margin: 4px 1px;
+  box-shadow: 0px 0px 1px lightgray;
+  border-radius: 4px;
   background-color: #e8e8e8;
   border: solid 1px lightgray;
   cursor: -moz-grab;
@@ -650,7 +646,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: inline-block;
   margin: 1px;
   overflow-wrap: break-word;
-  max-width: calc(100% - 70px);
+  -webkit-box-flex: 1;
+  -moz-box-flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
   padding: 1px;
 }
 .kshf > .attributePanel .nugget > .summaryName:hover {
@@ -658,33 +658,32 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   padding: 0px;
   border: solid 1px gray;
 }
-.kshf > .attributePanel .nugget > .editCodeButton {
-  display: none;
+.kshf > .attributePanel .nugget > .thumbIcons {
+  width: 10px;
   font-size: 0.9em;
+}
+.kshf > .attributePanel .nugget > .thumbIcons > .editCodeButton {
+  display: none;
   color: black;
   cursor: pointer;
 }
-.kshf > .attributePanel .nugget > .editCodeButton:hover {
+.kshf > .attributePanel .nugget > .thumbIcons > .editCodeButton:hover {
   color: orangered;
 }
-.kshf > .attributePanel .nugget > .summaryTypeIcon {
-  float: right;
-}
-.kshf > .attributePanel .nugget > .addFromAttribute_Button {
+.kshf > .attributePanel .nugget > .thumbIcons > .addFromAttribute_Button {
   display: none;
-  margin-left: 5px;
   color: gray;
   cursor: pointer;
 }
-.kshf > .attributePanel .nugget > .addFromAttribute_Button:hover {
+.kshf > .attributePanel .nugget > .thumbIcons > .addFromAttribute_Button:hover {
   color: orangered;
 }
-.kshf > .attributePanel .nugget > .splitCatAttribute_Button {
+.kshf > .attributePanel .nugget > .thumbIcons > .splitCatAttribute_Button {
   display: none;
   cursor: pointer;
   color: gray;
 }
-.kshf > .attributePanel .nugget > .splitCatAttribute_Button:hover {
+.kshf > .attributePanel .nugget > .thumbIcons > .splitCatAttribute_Button:hover {
   color: black;
 }
 .kshf > .attributePanel .nugget .nuggetInfo {
@@ -743,8 +742,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   display: flex;
   height: 30px;
   background-color: #F8F6F6;
-  width: 50px;
-  float: right;
   width: 60px;
   border-radius: 5px;
   border: solid 1px #c8c8c8;
@@ -818,13 +815,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   order: 2;
   max-height: 1em;
 }
-.kshf > .attributePanel .nugget[datatype~='time']:hover > .addFromAttribute_Button {
+.kshf > .attributePanel .nugget[datatype~='time']:hover .addFromAttribute_Button {
   display: inline-block;
 }
 .kshf > .attributePanel .nugget[datatype~='time'] .num_right:before {
   content: '\f017';
 }
-.kshf > .attributePanel .nugget[datatype~='multivalue']:hover > .addFromAttribute_Button {
+.kshf > .attributePanel .nugget[datatype~='multivalue']:hover .addFromAttribute_Button {
   display: inline-block;
 }
 .kshf > .attributePanel .nugget[datatype~="categorical"] > .nuggetViz {
@@ -851,10 +848,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   flex-direction: column;
   height: 100%;
 }
-.kshf > .attributePanel .nugget[datatype~="categorical"][datatype~="singlevalue"]:hover > .splitCatAttribute_Button {
+.kshf > .attributePanel .nugget[datatype~="categorical"][datatype~="singlevalue"]:hover .splitCatAttribute_Button {
   display: inline-block;
 }
-.kshf > .attributePanel .nugget[state='custom'] > .editCodeButton {
+.kshf > .attributePanel .nugget[state='custom'] .editCodeButton {
   display: inline-block;
 }
 .kshf > .attributePanel .nugget[moved] {
