@@ -3842,9 +3842,9 @@ kshf.Browser.prototype = {
 
       creditString += "<div class='boxinbox' style='padding: 0px 15px'>";
       creditString += " <a href='http://hcil.umd.edu/' target='_blank'>"+
-        "<img src='http://www.keshif.me/AggreSet/img/logo_hcil.gif' style='height:50px; float: left'></a>";
+        "<img src='http://www.keshif.me/demo/img/index/logo_hcil.gif' style='height:50px; float: left'></a>";
       creditString += " <a href='http://www.umd.edu' target='_blank'>"+
-        "<img src='http://www.keshif.me/AggreSet/img/logo_umd.png' style='height:50px; float: right'></a>";
+        "<img src='http://www.keshif.me/demo/img/index/logo_umd.png' style='height:50px; float: right'></a>";
       creditString += "Designed &amp; developed by ";
       creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a><br><br>";
       creditString += "Advised by";
@@ -8860,6 +8860,11 @@ var Summary_Interval_functions = {
       if(this.aggr_initialized) return;
       var me = this;
       this.getRecordValue = function(record){ return record._valueCache[me.summaryID]; };
+
+      if(this.missingValueAggr.records.length>0){
+        this.missingValueAggr.records = [];
+        this.missingValueAggr.resetAggregateMeasures();
+      }
 
       this.records.forEach(function(record){
         var v=this.summaryFunc.call(record.data,record);
