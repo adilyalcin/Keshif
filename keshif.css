@@ -3120,41 +3120,48 @@ top:calc(50% - 5px);
   border-bottom: 1px solid #ccc;
   cursor: pointer;
   padding: 5px;
+  text-align: center;
 }
 .kshf .visViewControl > .fa:hover {
   background-color: #EEE;
   color: #cb5454;
 }
-.kshf .leaflet-container .visViewControl {
+.kshf .leaflet-container .visViewControl,
+.kshf .leaflet-control-container .visViewControl {
   left: 3px;
   top: 3px;
 }
-.kshf .leaflet-container .visViewControl > .fa:first-child {
+.kshf .leaflet-container .visViewControl > .fa:first-child,
+.kshf .leaflet-control-container .visViewControl > .fa:first-child {
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
-.kshf .leaflet-container .visViewControl > .fa:last-child {
+.kshf .leaflet-container .visViewControl > .fa:last-child,
+.kshf .leaflet-control-container .visViewControl > .fa:last-child {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   border-bottom: none;
 }
-.kshf .recordDisplayWrapper .visViewControl {
+.kshf .recordDisplay[displayType="map"] .visViewControl > .fa {
+  width: 25px;
+}
+.kshf .recordDisplay[displayType="nodelink"] .visViewControl {
   position: absolute;
   right: 0px;
   bottom: 0px;
   margin: 5px;
   font-size: 0.9em;
 }
-.kshf .recordDisplayWrapper .visViewControl > .fa {
+.kshf .recordDisplay[displayType="nodelink"] .visViewControl > .fa {
   display: inline-block;
   border-bottom: none;
   border-right: 1px solid #ccc;
 }
-.kshf .recordDisplayWrapper .visViewControl > .fa:first-child {
+.kshf .recordDisplay[displayType="nodelink"] .visViewControl > .fa:first-child {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
-.kshf .recordDisplayWrapper .visViewControl > .fa:last-child {
+.kshf .recordDisplay[displayType="nodelink"] .visViewControl > .fa:last-child {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
   border-bottom: none;
@@ -4296,9 +4303,6 @@ height:calc(100% - 10px);
   -o-transition: margin-top 700ms ease-in-out;
   transition: margin-top 700ms ease-in-out;
 }
-.kshf .recordDisplay .mapMouseControl {
-  display: none;
-}
 .kshf .recordDisplay > .dropZone_recordView {
   display: none;
   position: relative;
@@ -4506,15 +4510,6 @@ height:calc(100% - 10px);
 }
 .kshf .recordDisplay[displayType="map"] .sortButton {
   display: none;
-}
-.kshf .recordDisplay[displayType="map"] .mapMouseControl {
-  display: inline-block;
-  padding: 1px;
-  cursor: pointer;
-  text-align: center;
-}
-.kshf .recordDisplay[displayType="map"] .mapMouseControl:hover {
-  color: orangered;
 }
 .kshf .recordDisplay[displayType="map"][mapMouseControl="pan"] .mapMouseControl:after {
   content: "\f255";

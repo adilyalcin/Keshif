@@ -1641,16 +1641,26 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g").attr("class", "leaflet-zoom-hide recordGroup");
 
-      var customMapControls = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control");
+      var DOM_control = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control-container");
 
-      customMapControls.append("a")
-        .attr("class","leaflet-control-view-map")
+      var customMapControls = DOM_control.append("div").attr("class","visViewControl");
+
+      customMapControls.append("div")
+        .attr("class","fa fa-plus")
+        .attr("title","Zoom in")
+        .on("click",function(){ me.leafletRecordMap.zoomIn(); });
+
+      customMapControls.append("div")
+        .attr("class","fa fa-minus")
+        .attr("title","Zoom out")
+        .on("click",function(){ me.leafletRecordMap.zoomOut(); });
+
+      customMapControls.append("div")
+        .attr("class","fa fa-map-o")
         .attr("title","Show/Hide Map")
-        .attr("href","#")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Show/Hide Map"}); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
-        .html("<span class='viewMap fa fa-map-o'></span>")
         .on("dblclick",function(){
           d3.event.preventDefault();
           d3.event.stopPropagation();
@@ -1658,12 +1668,12 @@ kshf.RecordDisplay.prototype = {
         .on("click",function(){
           var x = d3.select(me.leafletRecordMap.getPanes().tilePane);
           x.attr("showhide", x.attr("showhide")==="hide"?"show":"hide");
-          d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.attr("showhide")==="hide")?"":"-o"));
+          d3.select(this).attr("class","fa fa-map"+((x.attr("showhide")==="hide")?"":"-o"));
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
 
-      customMapControls.append("a")
+      customMapControls.append("div")
         .attr("class","mapMouseControl fa")
         .each(function(){ 
           this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){
@@ -1677,13 +1687,12 @@ kshf.RecordDisplay.prototype = {
           me.DOM.root.attr("mapMouseControl",me.mapMouseControl);
         });
 
-      customMapControls.append("a")
-        .attr("class","leaflet-control-viewFit").attr("title",kshf.lang.cur.ZoomToFit)
-        .attr("href","#")
+      customMapControls.append("div")
+        .attr("class","viewFit fa fa-arrows-alt")
+        .attr("title",kshf.lang.cur.ZoomToFit)
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: kshf.lang.cur.ZoomToFit}); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
-        .html("<span class='viewFit fa fa-arrows-alt'></span>")
         .on("dblclick",function(){
           d3.event.preventDefault();
           d3.event.stopPropagation();
@@ -2199,7 +2208,7 @@ kshf.RecordDisplay.prototype = {
       _translate[0] = x.offsetWidth/2;
       _translate[1] = x.offsetHeight/2;
 
-      var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*2);
+      var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*4);
 
       this.nodeZoomBehavior.scale(_scale);
       this.nodeZoomBehavior.translate(_translate);
@@ -9346,7 +9355,8 @@ var Summary_Interval_functions = {
         }
       }
       this.updateScaleAndBins(true);
-      if(this.usedForSorting) this.browser.recordDisplay.refreshRecordColors();
+      if(this.usedForSorting && this.browser.recordDisplay)
+        this.browser.recordDisplay.refreshRecordColors();
     },
     /** -- */
     refreshPercentileChart: function(){

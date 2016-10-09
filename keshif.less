@@ -2470,6 +2470,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-bottom: 1px solid #ccc;
         cursor: pointer;
         padding: 5px;
+        text-align: center;
         &:hover{
           background-color: #EEE;
           color: @color_hoverAction;
@@ -2477,7 +2478,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .leaflet-container .visViewControl{
+    .leaflet-container .visViewControl, .leaflet-control-container .visViewControl{
       left: 3px;
       top: 3px;
       > .fa:first-child{
@@ -2491,7 +2492,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .recordDisplayWrapper .visViewControl{
+    .recordDisplay[displayType="map"] .visViewControl{
+      > .fa{ width: 25px; }
+    }
+    .recordDisplay[displayType="nodelink"] .visViewControl{
       position: absolute;
       right: 0px;
       bottom: 0px;
@@ -3416,8 +3420,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .flex-direction(column);
       .transition(margin-top 700ms ease-in-out);
 
-      .mapMouseControl{ display: none; }
-
       > .dropZone_recordView{
         display: none;
         position: relative;
@@ -3598,13 +3600,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: visible !important;
         .scrollToTop{ display: none; }
         .sortButton{ display: none; }
-        .mapMouseControl{ 
-          display: inline-block;
-          padding: 1px;
-          cursor: pointer;
-          text-align: center;
-          &:hover{ color: orangered; }
-        }
         &[mapMouseControl="pan"]{
           .mapMouseControl:after{ content: "\f255" } // fa-hand-rock-o
           .mapMouseControl:hover:after{ content: "\f096" } // fa-square-o
