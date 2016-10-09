@@ -65,6 +65,7 @@ var kshf = {
       boxZoom: false,
       touchZoom: false,
       doubleClickZoom: false,
+      zoomControl: false,
       /*continuousWorld: true, crs: L.CRS.EPSG3857 */
     },
     tileConfig: { 
@@ -574,7 +575,7 @@ kshf.Record.prototype = {
   /** -- */
   setRecordDetails: function(value){
     this.showDetails = value;
-    if(this.DOM.record) this.DOM.record.setAttribute('details', this.showDetails);
+    if(this.DOM.record) this.DOM.record.classed('showDetails', this.showDetails);
   },
   /** Called on mouse-over on a primary item type */
   highlightRecord: function(){
@@ -1031,10 +1032,10 @@ kshf.RecordDisplay = function(kshf_, config){
 
     this.config = config;
 
-    this.config.sortColWidth = this.config.sortColWidth || 50; // default is 50 px
+    this.sortColWidth = this.config.sortColWidth || 50; // default is 50 px
 
+    // this is the default behavior. No demo un-set's this. Keeping for future reference.
     this.autoExpandMore = true;
-    if(config.autoExpandMore===false) this.autoExpandMore = false;
 
     this.maxVisibleItems_Default = config.maxVisibleItems_Default || kshf.maxVisibleItems_Default;
     this.maxVisibleItems = this.maxVisibleItems_Default; // This is the dynamic property
@@ -1042,14 +1043,16 @@ kshf.RecordDisplay = function(kshf_, config){
     this.showRank = config.showRank || false;
     this.mapMouseControl = "pan";
 
-    this.displayType   = config.displayType   || 'list'; // 'grid', 'list', 'map', 'nodelink'
-    if(config.geo) this.displayType = 'map';
-    if(config.linkBy) {
-      this.displayType = 'nodelink';
-      if(!Array.isArray(config.linkBy)) config.linkBy = [config.linkBy];
-    } else {
-      config.linkBy = [];
-    }
+    this.viewRecAs = 'list'; // Default. Options: 'grid', 'list', 'map', 'nodelink'
+
+    this.linkBy = config.linkBy || [];
+    if(!Array.isArray(this.linkBy)) this.linkBy = [this.linkBy];
+
+    // implicitly set record view
+    if(config.geo) this.viewRecAs = 'map';
+    if(config.linkBy) this.viewRecAs = 'nodelink';
+    // explicit setting by API
+    if(config.displayType) this.viewRecAs = config.displayType;
 
     this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off)
 
@@ -1078,33 +1081,32 @@ kshf.RecordDisplay = function(kshf_, config){
     this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
 
     this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
-      .attr('detailsToggle',this.detailsToggle)
-      .attr('showRank',this.showRank)
-      .attr('mapMouseControl',this.mapMouseControl)
-      .attr('hasRecordView',false);
+      .attr({
+        detailsToggle  : this.detailsToggle,
+        showRank       : this.showRank,
+        mapMouseControl: this.mapMouseControl,
+        hasRecordView  : false
+      });
 
-    var zone = this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
-        .on("mouseenter",function(){ this.setAttribute("readyToDrop",true);  })
-        .on("mouseleave",function(){ this.setAttribute("readyToDrop",false); })
-        .on("mouseup",function(event){
-          var movedSummary = me.browser.movedSummary;
-          if(movedSummary===null || movedSummary===undefined) return;
+    this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
+      .on("mouseenter",function(){ this.setAttribute("readyToDrop",true);  })
+      .on("mouseleave",function(){ this.setAttribute("readyToDrop",false); })
+      .on("mouseup",function(event){
+        var movedSummary = me.browser.movedSummary;
+        if(movedSummary===null || movedSummary===undefined) return;
 
-          movedSummary.refreshNuggetDisplay();
-          me.setRecordViewSummary(movedSummary);
+        movedSummary.refreshThumbDisplay();
+        me.setRecordViewSummary(movedSummary);
 
-          if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
+        if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
 
-          me.browser.updateLayout();
-        });
-    zone.append("div").attr("class","dropIcon fa fa-list-ul");
+        me.browser.updateLayout();
+      })
+      .append("div").attr("class","dropIcon fa fa-list-ul");
     
-    this.DOM.recordDisplayHeader = this.DOM.root.append("div").attr("class","recordDisplayHeader");
-    this.initDOM_RecordViewHeader();
+    this.initDOM_RecordDisplayHeader();
 
     this.DOM.recordDisplayWrapper = this.DOM.root.append("div").attr("class","recordDisplayWrapper");
-
-    this.viewAs(this.displayType);
 
     if(config.recordView!==undefined){
       if(typeof(config.recordView)==="string"){
@@ -1152,30 +1154,30 @@ kshf.RecordDisplay.prototype = {
       var me=this;
       this.curHeight = v;
       this.DOM.recordDisplayWrapper.style("height",v+"px");
-      if(this.displayType==='map'){
-        setTimeout(function(){ 
-          me.leafletRecordMap.invalidateSize();
-        }, 1000);
+      if(this.viewRecAs==='map'){
+        setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
     },
     /** -- */
-    refreshWidth: function(widthMiddlePanel){
-      this.curWidth = widthMiddlePanel;
-      if(this.displayType==='map'){
-        this.leafletRecordMap.invalidateSize();
+    setWidth: function(v){
+      if(this.recordViewSummary===null) return;
+      var me=this;
+      this.curWidth = v;
+      if(this.viewRecAs==='map'){
+        setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
     },
     /** -- */
     getRecordEncoding: function(){
-      return (this.displayType==='map' || this.displayType==='nodelink') ? "color" : "sort";
+      return (this.viewRecAs==='map' || this.viewRecAs==='nodelink') ? "color" : "sort";
     },
     /** -- */
     map_refreshColorScaleBins: function(){
-      var me = this;
+      var invertColorScale = this.sortingOpt_Active.invertColorScale;
+      var mapColorTheme    = this.browser.mapColorTheme;
       this.DOM.recordColorScaleBins
         .style("background-color", function(d){
-          if(me.sortingOpt_Active.invertColorScale) d = 8-d;
-          return kshf.colorScale[me.browser.mapColorTheme][d];
+          return kshf.colorScale[mapColorTheme][ invertColorScale ? (8-d) : d];
         });
     },
     /** --  */
@@ -1213,388 +1215,10 @@ kshf.RecordDisplay.prototype = {
         );
     },
     /** -- */
-    initRecordGeoFeat: function(){
-      var _geo_ = this.config.geo;
-      if(typeof _geo_ === "string"){
-        if(_geo_.substr(0,8)==="function"){
-          eval("\"use strict\"; _geo_ = "+_geo_);
-        } else {
-          var x=_geo_;
-          _geo_ = function(){ return this[x]; }
-        }
-      }
-      // Compute _geoBound_ of each record
-      this.browser.records.forEach(function(record){
-        var feature = _geo_.call(record.data);
-        if(feature) record._geoFeat_ = feature;
-      });
-    },
-    /** -- */
-    initRecordGeoBound: function(){
-      // Compute _geoBound_ of each record
-      this.browser.records.forEach(function(record){
-        var feature = record._geoFeat_;
-        if(feature) record._geoBound_ = d3.geo.bounds(feature);
-      });
-    },
-    /** -- */
-    initDOM_MapView: function(){
-      var me = this;
-      if(this.DOM.recordMap_Base) {
-        this.DOM.recordGroup = this.DOM.recordMap_SVG.select(".recordGroup");
-        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
-        return; // Do not initialize twice
-      }
-
-      this.setSpatialFilter();
-
-      function updateRectangle(bounds){
-        var north_west = me.leafletRecordMap.latLngToLayerPoint(bounds.getNorthWest());
-        var south_east = me.leafletRecordMap.latLngToLayerPoint(bounds.getSouthEast());
-        this.style.left = (north_west.x)+"px";
-        this.style.top = (north_west.y)+"px";
-        this.style.height = Math.abs(south_east.y-north_west.y)+"px";
-        this.style.width  = Math.abs(south_east.x-north_west.x)+"px";
-      };
-
-      this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
-      var zoomInit;
-
-      this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], kshf.map.config )
-        .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
-        .on("viewreset",function(){ 
-          me.map_projectRecords();
-        })
-        .on("movestart",function(){
-          me.browser.DOM.root.attr("pointerEvents",false);
-          zoomInit = this.getZoom();
-          me.DOM.recordMap_SVG.style("opacity",0.3);
-          me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display","none");
-        })
-        .on("moveend",function(){
-          me.browser.DOM.root.attr("pointerEvents",true);
-          me.DOM.recordMap_SVG.style("opacity",null);
-          me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display",null);
-          me.refreshViz_Compare_All();
-          me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
-            .each(function(d){
-              var bounds = me.spatialFilter.bounds;
-              if(bounds) updateRectangle.call(this,bounds);
-            });
-          me.DOM.recordMap_Base.select(".spatialQueryBox_Highlight")
-            .each(function(d){
-              var bounds = me.browser.flexAggr_Highlight.bounds;
-              if(bounds) updateRectangle.call(this,bounds);
-            });
-          me.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
-            .each(function(d){
-              var bounds = me.browser['flexAggr_'+d].bounds;
-              if(bounds) updateRectangle.call(this,bounds);
-            });
-          if(this.getZoom()!==zoomInit) me.map_projectRecords();
-        });
-
-      this.recordGeoPath = d3.geo.path().projection( 
-        d3.geo.transform({
-          // Use Leaflet to implement a D3 geometric transformation.
-          point: function(x, y) {
-            if(x>kshf.map.wrapLongitude) x-=360;
-            var point = me.leafletRecordMap.latLngToLayerPoint(new L.LatLng(y, x));
-            this.stream.point(point.x, point.y);
-          }
-        }) 
-      );
-
-      this.initRecordGeoFeat();
-      this.initRecordGeoBound();
-
-      this.DOM.recordMap_Base.select(".leaflet-overlay-pane").selectAll(".spatialQueryBox")
-        .data(["Filter","Highlight","Compare_A","Compare_B","Compare_C"])
-        .enter()
-          .append("div").attr("class", function(d){ return "spatialQueryBox spatialQueryBox_"+d; })
-            .append("div").attr("class","clearSelection fa fa-times-circle")
-              .each(function(d){ 
-                this.tipsy = new Tipsy(this, {gravity: 'se', 
-                  title: (d==="Filter") ? kshf.lang.cur.RemoveFilter : kshf.lang.cur.Unlock
-                });
-              })
-              .on("mouseenter", function(){ this.tipsy.show(); })
-              .on("mouseleave", function(){ this.tipsy.hide(); })
-              .on("click", function(d){
-                if(d==="Filter"){
-                  me.spatialFilter.clearFilter();
-                } else if(d!=="Highlight"){
-                  me.browser.clearSelect_Compare(d.substr(8), true);
-                }
-                this.tipsy.hide();
-              });
-
-      this.drawSelect = false;
-      this.DOM.recordMap_Base.select(".leaflet-tile-pane")
-        .on("mousedown",function(){
-          if(me.mapMouseControl!=="draw") return;
-          if(me.drawSelect==="Highlight") return;
-          var mousePos = d3.mouse(this);  
-          var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(mousePos[0], mousePos[1]));
-          me.DOM.recordMap_Base.attr("drawSelect","Filter");
-          me.drawingStartPoint = curLatLong;
-          me.drawSelect = "Filter";
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        })
-        .on("mouseup",function(){ 
-          if(me.mapMouseControl!=="draw") return;
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-          me.DOM.recordMap_Base.attr("drawSelect",null);
-          if(me.drawSelect==="Filter"){
-            me.spatialFilter.addFilter();
-          } else if(me.drawSelect==="Highlight"){
-            var bounds = me.browser.flexAggr_Highlight.bounds;
-            var cT = me.browser.setSelect_Compare(false,true);
-            me.browser['flexAggr_Compare_'+cT].bounds = bounds;
-            me.DOM.recordMap_Base.select(".spatialQueryBox_Compare_"+cT)
-              .attr("active",true)
-              .each(function(d){ updateRectangle.call(this,bounds); });
-          }
-          me.drawSelect = false;
-        })
-        .on("mousemove",function(){
-          if(me.mapMouseControl!=="draw") return;
-          if(me.drawSelect!=="Filter" && !d3.event.shiftKey){
-            me.drawSelect = false;
-            me.DOM.recordMap_Base.attr("drawSelect",null);
-            me.browser.clearSelect_Highlight();
-          }
-          var mousePos = d3.mouse(this);
-          var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(mousePos[0], mousePos[1]));
-          if(d3.event.shiftKey && !me.drawSelect){
-            me.DOM.recordMap_Base.attr("drawSelect","Highlight");
-            me.drawingStartPoint = curLatLong;              
-            me.drawSelect = "Highlight";
-          }
-          if(!me.drawSelect) return;
-
-          var bounds = L.latLngBounds([me.drawingStartPoint,curLatLong]);
-          if(me.drawSelect==="Highlight"){
-            me.browser.flexAggr_Highlight.bounds = bounds;
-            //me.spatialQuery.highlight.setBounds(bounds);
-            // Refresh bounds
-            me.DOM.recordMap_Base.select(".spatialQueryBox_Highlight")
-              .each(function(d){ updateRectangle.call(this,bounds); });
-
-            var records = [];
-            me.browser.records.forEach(function(record){ 
-              if(!record.isWanted) return;
-              if(record._geoBound_ === undefined) return;
-              // already have "bounds" variable
-              if(kshf.intersects(record._geoBound_, bounds)){
-                records.push(record);
-              } else {
-                record.remForHighlight(true);
-              }
-            });
-            me.browser.flexAggr_Highlight.summary = me.recordViewSummary; // record display
-            me.browser.flexAggr_Highlight.records = records;
-            me.browser.setSelect_Highlight();
-          } else {
-            me.spatialFilter.bounds = bounds;
-            me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
-              .each(function(d){ updateRectangle.call(this,bounds); });
-            //me.spatialQuery.filter.setBounds(bounds);
-          }
-          d3.event.stopPropagation();
-          d3.event.preventDefault();
-        });
-
-      this.DOM.recordMap_SVG = d3.select(this.leafletRecordMap.getPanes().overlayPane)
-        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordMap_SVG");
-
-      // The fill pattern definition in SVG, used to denote geo-objects with no data.
-      // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
-      this.DOM.recordMap_SVG.append('defs')
-        .append('pattern')
-          .attr('id', 'diagonalHatch')
-          .attr('patternUnits', 'userSpaceOnUse')
-          .attr('width', 4)
-          .attr('height', 4)
-          .append('path')
-            .attr('d', 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2')
-            .attr('stroke', 'gray')
-            .attr('stroke-width', 1);
-
-      this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g").attr("class", "leaflet-zoom-hide recordGroup");
-
-      // Add custom controls
-      var DOM_control = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control");
-
-      DOM_control.append("a")
-        .attr("class","leaflet-control-view-map")
-        .attr("title","Show/Hide Map")
-        .attr("href","#")
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Show/Hide Map"}); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .html("<span class='viewMap fa fa-map-o'></span>")
-        .on("dblclick",function(){
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        })
-        .on("click",function(){
-          var x = d3.select(me.leafletRecordMap.getPanes().tilePane);
-          x.attr("showhide", x.attr("showhide")==="hide"?"show":"hide");
-          d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.attr("showhide")==="hide")?"":"-o"));
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        });
-
-      DOM_control.append("a").attr("class","mapMouseControl fa")
-        .each(function(){ 
-          this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){
-            return "Drag mouse to "+(me.mapMouseControl==="pan"?"draw":"pan");
-          } }); 
-        })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .on("click",function(){ 
-          me.mapMouseControl = me.mapMouseControl==="pan"?"draw":"pan";
-          me.DOM.root.attr("mapMouseControl",me.mapMouseControl);
-        });
-
-      DOM_control.append("a")
-        .attr("class","leaflet-control-viewFit").attr("title",kshf.lang.cur.ZoomToFit)
-        .attr("href","#")
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: kshf.lang.cur.ZoomToFit}); })
-        .on("mouseover",function(){ this.tipsy.show(); })
-        .on("mouseout", function(){ this.tipsy.hide(); })
-        .html("<span class='viewFit fa fa-arrows-alt'></span>")
-        .on("dblclick",function(){
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        })
-        .on("click",function(){
-          me.map_zoomToActive();
-          d3.event.preventDefault();
-          d3.event.stopPropagation();
-        });
-    },
-    /** -- */
-    refreshViz_Compare_All: function(){
-      if(this.displayType==='map') {
-        var me=this;
-        this.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
-          .attr("active", function(d){ return me.browser.vizActive[d] ? true : null; });
-      }
-    },
-    /** -- */
-    initDOM_NodeLinkView: function(){
-      var me = this;
-
-      if(this.DOM.recordNodeLink_SVG) {
-        this.DOM.recordGroup = this.DOM.recordNodeLink_SVG.select(".recordGroup");
-        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
-        return; // Do not initialize twice
-      }
-
-      this.initDOM_NodeLinkView_Settings();
-
-      this.nodeZoomBehavior = d3.behavior.zoom()
-        .scaleExtent([0.5, 8])
-        .on("zoom", function(){
-          gggg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-          me.refreshNodeVis();
-        });
-
-      this.DOM.recordNodeLink_SVG = this.DOM.recordDisplayWrapper
-        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordNodeLink_SVG")
-        .call(this.nodeZoomBehavior);
-
-      var gggg = this.DOM.recordNodeLink_SVG.append("g");
-      this.DOM.linkGroup   = gggg.append("g").attr("class","linkGroup");
-      this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup recordGroup_Node");
-
-      this.DOM.NodeLinkControl = this.DOM.recordDisplayWrapper.append("span").attr("class","NodeLinkControl");
-
-      var animationControl = this.DOM.NodeLinkControl.append("span").attr("class","animationControl");
-
-      animationControl.append("span").attr("class","NodeLinkAnim_Play fa fa-play")
-        .on("click",function(){ 
-          me.nodelink_Force.start(); 
-          me.DOM.root.attr("hideLinks",true);
-        });
-      animationControl.append("span").attr("class","NodeLinkAnim_Pause fa fa-pause")
-        .on("click",function(){ 
-          me.nodelink_Force.stop();
-          me.DOM.root.attr("hideLinks",null);
-        });
-      this.DOM.NodeLinkAnim_Refresh = this.DOM.NodeLinkControl.append("span")
-        .attr("class","NodeLinkAnim_Refresh fa fa-refresh")
-        .on("click",function(){ 
-          me.refreshNodeLinks();
-          this.style.display = null;
-        });
-    },
-    /** -- */
-    initDOM_ListView: function(){
-      var me = this;
-
-      if(this.DOM.recordGroup_List) return;
-
-      this.DOM.recordGroup_List = this.DOM.recordDisplayWrapper.append("div").attr("class","recordGroup_List");
-
-      this.DOM.recordGroup = this.DOM.recordGroup_List.append("div").attr("class","recordGroup")
-        .on("scroll",function(d){
-          if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
-            if(me.autoExpandMore===false){
-              me.DOM.showMore.attr("showMoreVisible",true);
-            } else {
-              me.showMoreRecordsOnList(); // automatically add more records
-            }
-          } else {
-            me.DOM.showMore.attr("showMoreVisible",false);
-          }
-          me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
-          me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
-        });
-
-      this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
-        .attr("class","adjustSortColumnWidth dragWidthHandle")
-        .on("mousedown", function (d, i) {
-          if(d3.event.which !== 1) return; // only respond to left-click
-          me.browser.DOM.root.style('cursor','ew-resize');
-          var _this = this;
-          var mouseDown_x = d3.mouse(document.body)[0];
-          var mouseDown_width = me.sortColWidth;
-
-          me.browser.DOM.pointerBlock.attr("active","");
-
-          me.browser.DOM.root.on("mousemove", function() {
-            _this.setAttribute("dragging","");
-            me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
-          }).on("mouseup", function(){
-            me.browser.DOM.root.style('cursor','default');
-            me.browser.DOM.pointerBlock.attr("active",null);
-            me.browser.DOM.root.on("mousemove", null).on("mouseup", null);
-            _this.removeAttribute("dragging");
-          });
-          d3.event.preventDefault();
-        });
-
-      this.DOM.showMore = this.DOM.root.append("div").attr("class","showMore")
-        .attr("showMoreVisible",false)
-        .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
-        .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
-        .on("click",function(){ me.showMoreRecordsOnList(); });
-      this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
-      this.DOM.showMore.append("span").attr("class","Count CountAbove");
-      this.DOM.showMore.append("span").attr("class","Count CountBelow");
-      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
-      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
-      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
-    },
-    /** -- */
-    initDOM_RecordViewHeader: function(){
+    initDOM_RecordDisplayHeader: function(){
       var me=this;
+
+      this.DOM.recordDisplayHeader = this.DOM.root.append("div").attr("class","recordDisplayHeader");
 
       this.DOM.recordColorScaleBins =  this.DOM.recordDisplayHeader.append("div").attr("class","recordColorScale")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Change color scale"}); })
@@ -1652,70 +1276,36 @@ kshf.RecordDisplay.prototype = {
         .on("click",      function(){ this.tipsy.hide(); kshf.Util.scrollToPos_do(me.DOM.recordGroup,0); });
     },
     /** -- */
-    setSpatialFilter: function(){
+    initDOM_SortSelect: function(){
       var me=this;
 
-      this.spatialFilter = this.browser.createFilter({
-        summary: this.recordViewSummary,
-        onClear: function(){
-          me.DOM.root.select(".spatialQueryBox_Filter").attr("active",null);
-        },
-        filterView_Detail: function(){
-          return "<i class='fa fa-square-o'></i>";
-        },
-        onFilter: function(){
-          me.DOM.root.select(".spatialQueryBox_Filter").attr("active",true);
-          me.browser.records.forEach(function(record){
-            if(record._geoBound_ === undefined) {
-              record.setFilterCache(this.filterID, false);
-              return;
-            }
-            record.setFilterCache(this.filterID, kshf.intersects(record._geoBound_, this.bounds));
-          },this);
-        }
-      });
-    },
-    /** -- */
-    setTextFilter: function(){
-      var me=this;
+      this.DOM.header_listSortColumn = this.DOM.recordDisplayHeader.append("div").attr("class","header_listSortColumn");
 
-      this.textFilter = this.browser.createFilter({
-        summary: me.textSearchSummary,
-        title: function(){ return me.textSearchSummary.summaryName; }, 
-        onClear: function(){
-          me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
-          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display","none"); 
-          me.DOM.recordTextSearch.select("input")[0][0].value = "";
-        },
-        filterView_Detail: function(){
-          return "*"+this.filterStr+"*";
-        },
-        onFilter: function(){
-          me.DOM.recordTextSearch.select(".clearSearchText").style('display','inline-block');
-          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",
-            this.filterQuery.length>1?"inline-block":"none"); 
+      this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
+        .attr("class","listSortOptionSelect")
+        .on("change", function(){ me.setSortingOpt_Active(this.selectedIndex); });
 
-          // go over all the records in the list, search each keyword separately
-          // If some search matches, return true (any function)
-          var summaryFunc = me.textSearchSummary.summaryFunc;
-          me.browser.records.forEach(function(record){
-            var f;
-            if(me.textFilter.multiMode==='or') 
-              f = ! this.filterQuery.every(function(v_i){
-                var v = summaryFunc.call(record.data,record);
-                if(v===null || v===undefined) return true;
-                return (""+v).toLowerCase().indexOf(v_i)===-1;
-              });
-            if(me.textFilter.multiMode==='and')
-              f = this.filterQuery.every(function(v_i){
-                var v = summaryFunc.call(record.data,record);
-                return (""+v).toLowerCase().indexOf(v_i)!==-1;
-              });
-            record.setFilterCache(this.filterID,f);
-          },this);
-        },
-      });
-      this.textFilter.multiMode = 'and';
+      this.refreshSortingOptions();
+
+      this.DOM.recordSortButton = this.DOM.recordDisplayHeader.append("span")
+        .attr("class","recordSortButton sortButton fa")
+        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",function(){
+          this.tipsy.hide();
+          // NOTE: Only on list/grid views
+          me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
+          this.setAttribute("inverse",me.sortingOpt_Active.inverse);
+          // TODO: Do not show no-value items on top, reversing needs to be a little smarter.
+          me.browser.records.reverse();
+
+          me.updateRecordRanks();
+          me.refreshRecordDOM();
+          me.refreshRecordRanks(me.DOM.recordRanks);
+
+          me.refreshRecordDOMOrder();
+        });
     },
     /** -- */
     initDOM_GlobalTextSearch: function(){
@@ -1840,6 +1430,441 @@ kshf.RecordDisplay.prototype = {
             me.textFilter.addFilter();
           });
     },
+
+    /** -- */
+    initRecord_geoX_: function(){
+      var _geo_ = this.config.geo;
+      if(typeof _geo_ === "string"){
+        if(_geo_.substr(0,8)==="function"){
+          eval("\"use strict\"; _geo_ = "+_geo_);
+        } else {
+          var x=_geo_;
+          _geo_ = function(){ return this[x]; }
+        }
+      }
+      // Compute _geoBound_ of each record
+      this.browser.records.forEach(function(record){
+        var feature = _geo_.call(record.data);
+        if(feature) record._geoFeat_ = feature;
+      });
+      // Compute _geoFeat_ of each record
+      this.browser.records.forEach(function(record){
+        if(record._geoFeat_) record._geoBound_ = d3.geo.bounds(record._geoFeat_);
+      });
+    },
+    /** -- */
+    initDOM_MapView: function(){
+      var me = this;
+      if(this.DOM.recordMap_Base) {
+        this.DOM.recordGroup = this.DOM.recordMap_SVG.select(".recordGroup");
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        return; // Do not initialize twice
+      }
+
+      this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
+
+      this.initRecord_geoX_();
+
+      this.setSpatialFilter();
+
+      function updateRectangle(bounds){
+        var north_west = me.leafletRecordMap.latLngToLayerPoint(bounds.getNorthWest());
+        var south_east = me.leafletRecordMap.latLngToLayerPoint(bounds.getSouthEast());
+        this.style.left = (north_west.x)+"px";
+        this.style.top = (north_west.y)+"px";
+        this.style.height = Math.abs(south_east.y-north_west.y)+"px";
+        this.style.width  = Math.abs(south_east.x-north_west.x)+"px";
+      };
+
+      this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], kshf.map.config )
+        .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
+        .on("viewreset",function(){ 
+          me.map_projectRecords();
+        })
+        .on("movestart",function(){
+          me.browser.DOM.root.attr("pointerEvents",false);
+          this._zoomInit_ = this.getZoom();
+          me.DOM.recordMap_SVG.style("opacity",0.3);
+          me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display","none");
+        })
+        .on("moveend",function(){
+          me.browser.DOM.root.attr("pointerEvents",true);
+          me.DOM.recordMap_SVG.style("opacity",null);
+          me.DOM.recordMap_Base.selectAll(".spatialQueryBox").style("display",null);
+          me.refreshViz_Compare_All();
+          me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
+            .each(function(d){
+              var bounds = me.spatialFilter.bounds;
+              if(bounds) updateRectangle.call(this,bounds);
+            });
+          me.DOM.recordMap_Base.select(".spatialQueryBox_Highlight")
+            .each(function(d){
+              var bounds = me.browser.flexAggr_Highlight.bounds;
+              if(bounds) updateRectangle.call(this,bounds);
+            });
+          me.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
+            .each(function(d){
+              var bounds = me.browser['flexAggr_'+d].bounds;
+              if(bounds) updateRectangle.call(this,bounds);
+            });
+          if(this.getZoom()!==this._zoomInit_) me.map_projectRecords();
+        });
+
+      this.recordGeoPath = d3.geo.path().projection( 
+        d3.geo.transform({
+          // Use Leaflet to implement a D3 geometric transformation.
+          point: function(x, y) {
+            if(x>kshf.map.wrapLongitude) x-=360;
+            var point = me.leafletRecordMap.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+          }
+        }) 
+      );
+
+      this.DOM.recordMap_Base.select(".leaflet-overlay-pane").selectAll(".spatialQueryBox")
+        .data(["Filter","Highlight","Compare_A","Compare_B","Compare_C"])
+        .enter()
+          .append("div").attr("class", function(d){ return "spatialQueryBox spatialQueryBox_"+d; })
+            .append("div").attr("class","clearSelection fa fa-times-circle")
+              .each(function(d){ 
+                this.tipsy = new Tipsy(this, {gravity: 'se', 
+                  title: (d==="Filter") ? kshf.lang.cur.RemoveFilter : kshf.lang.cur.Unlock
+                });
+              })
+              .on("mouseenter", function(){ this.tipsy.show(); })
+              .on("mouseleave", function(){ this.tipsy.hide(); })
+              .on("click", function(d){
+                if(d==="Filter"){
+                  me.spatialFilter.clearFilter();
+                } else if(d!=="Highlight"){
+                  me.browser.clearSelect_Compare(d.substr(8), true);
+                }
+                this.tipsy.hide();
+              });
+
+      this.drawSelect = false;
+      this.DOM.recordMap_Base.select(".leaflet-tile-pane")
+        .on("mousedown",function(){
+          if(me.mapMouseControl!=="draw") return;
+          if(me.drawSelect==="Highlight") return;
+          var mousePos = d3.mouse(this);  
+          var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(mousePos[0], mousePos[1]));
+          me.DOM.recordMap_Base.attr("drawSelect","Filter");
+          me.drawingStartPoint = curLatLong;
+          me.drawSelect = "Filter";
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        })
+        .on("mouseup",function(){ 
+          if(me.mapMouseControl!=="draw") return;
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+          me.DOM.recordMap_Base.attr("drawSelect",null);
+          if(me.drawSelect==="Filter"){
+            me.spatialFilter.addFilter();
+          } else if(me.drawSelect==="Highlight"){
+            var bounds = me.browser.flexAggr_Highlight.bounds;
+            var cT = me.browser.setSelect_Compare(false,true);
+            me.browser['flexAggr_Compare_'+cT].bounds = bounds;
+            me.DOM.recordMap_Base.select(".spatialQueryBox_Compare_"+cT)
+              .attr("active",true)
+              .each(function(d){ updateRectangle.call(this,bounds); });
+          }
+          me.drawSelect = false;
+        })
+        .on("mousemove",function(){
+          if(me.mapMouseControl!=="draw") return;
+          if(me.drawSelect!=="Filter" && !d3.event.shiftKey){
+            me.drawSelect = false;
+            me.DOM.recordMap_Base.attr("drawSelect",null);
+            me.browser.clearSelect_Highlight();
+          }
+          var mousePos = d3.mouse(this);
+          var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(mousePos[0], mousePos[1]));
+          if(d3.event.shiftKey && !me.drawSelect){
+            me.DOM.recordMap_Base.attr("drawSelect","Highlight");
+            me.drawingStartPoint = curLatLong;              
+            me.drawSelect = "Highlight";
+          }
+          if(!me.drawSelect) return;
+
+          var bounds = L.latLngBounds([me.drawingStartPoint,curLatLong]);
+          if(me.drawSelect==="Highlight"){
+            me.browser.flexAggr_Highlight.bounds = bounds;
+            //me.spatialQuery.highlight.setBounds(bounds);
+            // Refresh bounds
+            me.DOM.recordMap_Base.select(".spatialQueryBox_Highlight")
+              .each(function(d){ updateRectangle.call(this,bounds); });
+
+            var records = [];
+            me.browser.records.forEach(function(record){ 
+              if(!record.isWanted) return;
+              if(record._geoBound_ === undefined) return;
+              // already have "bounds" variable
+              if(kshf.intersects(record._geoBound_, bounds)){
+                records.push(record);
+              } else {
+                record.remForHighlight(true);
+              }
+            });
+            me.browser.flexAggr_Highlight.summary = me.recordViewSummary; // record display
+            me.browser.flexAggr_Highlight.records = records;
+            me.browser.setSelect_Highlight();
+          } else {
+            me.spatialFilter.bounds = bounds;
+            me.DOM.recordMap_Base.select(".spatialQueryBox_Filter")
+              .each(function(d){ updateRectangle.call(this,bounds); });
+            //me.spatialQuery.filter.setBounds(bounds);
+          }
+          d3.event.stopPropagation();
+          d3.event.preventDefault();
+        });
+
+      this.DOM.recordMap_SVG = d3.select(this.leafletRecordMap.getPanes().overlayPane)
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordMap_SVG");
+
+      // The fill pattern definition in SVG, used to denote geo-objects with no data.
+      // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
+      this.DOM.recordMap_SVG.append('defs')
+        .append('pattern')
+          .attr({
+            id: 'diagonalHatch',
+            patternUnits: 'userSpaceOnUse',
+            width: 4,
+            height: 4,
+          })
+          .append('path').attr({
+            d: 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2',
+            stroke: 'gray',
+            'stroke-width': 1
+          });
+
+      this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g").attr("class", "leaflet-zoom-hide recordGroup");
+
+      var customMapControls = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control");
+
+      customMapControls.append("a")
+        .attr("class","leaflet-control-view-map")
+        .attr("title","Show/Hide Map")
+        .attr("href","#")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Show/Hide Map"}); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .html("<span class='viewMap fa fa-map-o'></span>")
+        .on("dblclick",function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("click",function(){
+          var x = d3.select(me.leafletRecordMap.getPanes().tilePane);
+          x.attr("showhide", x.attr("showhide")==="hide"?"show":"hide");
+          d3.select(this.childNodes[0]).attr("class","fa fa-map"+((x.attr("showhide")==="hide")?"":"-o"));
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        });
+
+      customMapControls.append("a")
+        .attr("class","mapMouseControl fa")
+        .each(function(){ 
+          this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){
+            return "Drag mouse to "+(me.mapMouseControl==="pan"?"draw":"pan");
+          } }); 
+        })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .on("click",function(){ 
+          me.mapMouseControl = me.mapMouseControl==="pan"?"draw":"pan";
+          me.DOM.root.attr("mapMouseControl",me.mapMouseControl);
+        });
+
+      customMapControls.append("a")
+        .attr("class","leaflet-control-viewFit").attr("title",kshf.lang.cur.ZoomToFit)
+        .attr("href","#")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: kshf.lang.cur.ZoomToFit}); })
+        .on("mouseover",function(){ this.tipsy.show(); })
+        .on("mouseout", function(){ this.tipsy.hide(); })
+        .html("<span class='viewFit fa fa-arrows-alt'></span>")
+        .on("dblclick",function(){
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        })
+        .on("click",function(){
+          me.map_zoomToActive();
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+        });
+    },
+    /** -- */
+    initDOM_NodeLinkView: function(){
+      var me = this;
+
+      if(this.DOM.recordNodeLink_SVG) {
+        this.DOM.recordGroup = this.DOM.recordNodeLink_SVG.select(".recordGroup");
+        this.DOM.kshfRecordords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        return; // Do not initialize twice
+      }
+
+      this.initDOM_NodeLinkView_Settings();
+
+      this.nodeZoomBehavior = d3.behavior.zoom()
+        .scaleExtent([0.5, 8])
+        .on("zoom", function(){
+          gggg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+          me.refreshNodeVis();
+        });
+
+      this.DOM.recordNodeLink_SVG = this.DOM.recordDisplayWrapper
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordNodeLink_SVG")
+        .call(this.nodeZoomBehavior);
+
+      var gggg = this.DOM.recordNodeLink_SVG.append("g").attr("class","gggg");
+      this.DOM.linkGroup   = gggg.append("g").attr("class","linkGroup");
+      this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup recordGroup_Node");
+
+      var X = this.DOM.recordDisplayWrapper.append("span").attr("class","visViewControl");
+
+      X.append("span")
+        .attr("class","NodeLinkAnim_Play fa fa-play")
+        .on("click",function(){ me.nodelink_Force.start(); });
+      X.append("span")
+        .attr("class","NodeLinkAnim_Pause fa fa-pause")
+        .on("click",function(){ me.nodelink_Force.stop();  });
+      this.DOM.NodeLinkAnim_Refresh = X.append("span")
+        .attr("class","NodeLinkAnim_Refresh fa fa-refresh")
+        .on("click",function(){ 
+          me.refreshNodeLinks();
+          this.style.display = null;
+        });
+      X.append("span")
+        .attr("class","fa fa-arrows-alt")
+        .attr("title",kshf.lang.cur.ZoomToFit)
+        .on("click",function(){ me.nodelink_zoomToActive();  });
+
+    },
+    /** -- */
+    initDOM_ListView: function(){
+      var me = this;
+
+      if(this.DOM.recordGroup_List) return;
+
+      this.DOM.recordGroup_List = this.DOM.recordDisplayWrapper.append("div").attr("class","recordGroup_List");
+
+      this.DOM.recordGroup = this.DOM.recordGroup_List.append("div").attr("class","recordGroup")
+        .on("scroll",function(d){
+          if(this.scrollHeight-this.scrollTop-this.offsetHeight<10){
+            if(me.autoExpandMore){
+              me.showMoreRecordsOnList();
+            } else {
+              me.DOM.showMore.attr("showMoreVisible",true);
+            }
+          } else {
+            me.DOM.showMore.attr("showMoreVisible",false);
+          }
+          me.DOM.scrollToTop.style("visibility", this.scrollTop>0?"visible":"hidden");
+          me.DOM.adjustSortColumnWidth.style("top",(this.scrollTop-2)+"px")
+        });
+
+      this.DOM.adjustSortColumnWidth = this.DOM.recordGroup.append("div")
+        .attr("class","adjustSortColumnWidth dragWidthHandle")
+        .on("mousedown", function (d, i) {
+          if(d3.event.which !== 1) return; // only respond to left-click
+          me.browser.DOM.root.style('cursor','ew-resize');
+          var _this = this;
+          var mouseDown_x = d3.mouse(document.body)[0];
+          var mouseDown_width = me.sortColWidth;
+
+          me.browser.DOM.pointerBlock.attr("active","");
+
+          me.browser.DOM.root.on("mousemove", function() {
+            _this.setAttribute("dragging","");
+            me.setSortColumnWidth(mouseDown_width+(d3.mouse(document.body)[0]-mouseDown_x));
+          }).on("mouseup", function(){
+            me.browser.DOM.root.style('cursor','default');
+            me.browser.DOM.pointerBlock.attr("active",null);
+            me.browser.DOM.root.on("mousemove", null).on("mouseup", null);
+            _this.removeAttribute("dragging");
+          });
+          d3.event.preventDefault();
+        });
+
+      this.DOM.showMore = this.DOM.root.append("div").attr("class","showMore")
+        .attr("showMoreVisible",false)
+        .on("mouseenter",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",true); })
+        .on("mouseleave",function(){ d3.select(this).selectAll(".loading_dots").attr("anim",null); })
+        .on("click",function(){ me.showMoreRecordsOnList(); });
+      this.DOM.showMore.append("span").attr("class","MoreText").html("Show More");
+      this.DOM.showMore.append("span").attr("class","Count CountAbove");
+      this.DOM.showMore.append("span").attr("class","Count CountBelow");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_1");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_2");
+      this.DOM.showMore.append("span").attr("class","loading_dots loading_dots_3");
+    },
+    /** -- */
+    setSpatialFilter: function(){
+      var me=this;
+
+      this.spatialFilter = this.browser.createFilter({
+        summary: this.recordViewSummary,
+        onClear: function(){
+          me.DOM.root.select(".spatialQueryBox_Filter").attr("active",null);
+        },
+        filterView_Detail: function(){
+          return "<i class='fa fa-square-o'></i>";
+        },
+        onFilter: function(){
+          me.DOM.root.select(".spatialQueryBox_Filter").attr("active",true);
+          me.browser.records.forEach(function(record){
+            if(record._geoBound_ === undefined) {
+              record.setFilterCache(this.filterID, false);
+              return;
+            }
+            record.setFilterCache(this.filterID, kshf.intersects(record._geoBound_, this.bounds));
+          },this);
+        }
+      });
+    },
+    /** -- */
+    setTextFilter: function(){
+      var me=this;
+
+      this.textFilter = this.browser.createFilter({
+        summary: me.textSearchSummary,
+        title: function(){ return me.textSearchSummary.summaryName; }, 
+        onClear: function(){
+          me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
+          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display","none"); 
+          me.DOM.recordTextSearch.select("input")[0][0].value = "";
+        },
+        filterView_Detail: function(){
+          return "*"+this.filterStr+"*";
+        },
+        onFilter: function(){
+          me.DOM.recordTextSearch.select(".clearSearchText").style('display','inline-block');
+          me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display",
+            this.filterQuery.length>1?"inline-block":"none"); 
+
+          // go over all the records in the list, search each keyword separately
+          // If some search matches, return true (any function)
+          var summaryFunc = me.textSearchSummary.summaryFunc;
+          me.browser.records.forEach(function(record){
+            var f;
+            if(me.textFilter.multiMode==='or') 
+              f = ! this.filterQuery.every(function(v_i){
+                var v = summaryFunc.call(record.data,record);
+                if(v===null || v===undefined) return true;
+                return (""+v).toLowerCase().indexOf(v_i)===-1;
+              });
+            if(me.textFilter.multiMode==='and')
+              f = this.filterQuery.every(function(v_i){
+                var v = summaryFunc.call(record.data,record);
+                return (""+v).toLowerCase().indexOf(v_i)!==-1;
+              });
+            record.setFilterCache(this.filterID,f);
+          },this);
+        },
+      });
+      this.textFilter.multiMode = 'and';
+    },
     /** -- */
     initDOM_NodeLinkView_Settings: function(){
       var me=this;
@@ -1851,7 +1876,8 @@ kshf.RecordDisplay.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide();
-          me.DOM.root.attr("hideLinks", me.DOM.root.attr("hideLinks")?null:true ); });
+          me.DOM.root.classed("hideLinks", me.DOM.root.classed("hideLinks")?null:true );
+        });
 
       var s = this.DOM.NodeLinkAttrib.append("select")
         .on("change",function(){
@@ -1859,7 +1885,7 @@ kshf.RecordDisplay.prototype = {
           // TODO: change the network calculation
         });;
 
-      s.selectAll("option").data(this.config.linkBy).enter().append("option").text(function(d){ return d; });
+      s.selectAll("option").data(this.linkBy).enter().append("option").text(function(d){ return d; });
     },
     /** -- */
     setRecordViewSummary: function(summary){
@@ -1873,7 +1899,7 @@ kshf.RecordDisplay.prototype = {
       this.DOM.root.attr('hasRecordView',true);
       this.recordViewSummary = summary;
       this.recordViewSummary.isRecordView = true;
-      this.recordViewSummary.refreshNuggetDisplay();
+      this.recordViewSummary.refreshThumbDisplay();
       
       if(this.spatialFilter){
         this.spatialFilter.summary = this.recordViewSummary;
@@ -1881,27 +1907,17 @@ kshf.RecordDisplay.prototype = {
       }
 
       // TODO: Delete existing record DOM's and regenerate them
-      this.DOM.recordGroup.selectAll(".kshfRecord").data([]).exit().remove();
+      if(this.DOM.recordGroup)
+        this.DOM.recordGroup.selectAll(".kshfRecord").data([]).exit().remove();
 
-      if(this.displayType==='list' || this.displayType==="grid"){
-        this.sortRecords();
-        this.refreshRecordDOM();
-        this.setSortColumnWidth(this.config.sortColWidth);
-      } else if(this.displayType==='map'){
-        this.refreshRecordDOM();
-      } else if(this.displayType==='nodelink'){
-        this.setNodeLink();
-        this.refreshRecordDOM();
-      }
-
-      this.browser.DOM.root.attr("recordDisplayMapping",this.getRecordEncoding()); // "sort" or "color"
+      this.viewAs(this.viewRecAs);
     },
     /** -- */
     removeRecordViewSummary: function(){
       if(this.recordViewSummary===null) return;
       this.DOM.root.attr("hasRecordView",false);
       this.recordViewSummary.isRecordView = false;
-      this.recordViewSummary.refreshNuggetDisplay();
+      this.recordViewSummary.refreshThumbDisplay();
       this.recordViewSummary = null;
       this.browser.DOM.root.attr("recordDisplayMapping",null);
     },
@@ -1931,48 +1947,27 @@ kshf.RecordDisplay.prototype = {
       this.refreshSortingOptions();
     },
     /** -- */
-    initDOM_SortSelect: function(){
-      var me=this;
-
-      this.DOM.header_listSortColumn = this.DOM.recordDisplayHeader.append("div").attr("class","header_listSortColumn");
-
-      this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
-        .attr("class","listSortOptionSelect")
-        .on("change", function(){ me.setSortingOpt_Active(this.selectedIndex); });
-
-      this.refreshSortingOptions();
-
-      this.DOM.recordSortButton = this.DOM.recordDisplayHeader.append("span")
-        .attr("class","recordSortButton sortButton fa")
-        .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
-        .on("mouseenter", function(){ this.tipsy.show(); })
-        .on("mouseleave", function(){ this.tipsy.hide(); })
-        .on("click",function(){
-          this.tipsy.hide();
-          // NOTE: Only on list/grid views
-          me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
-          this.setAttribute("inverse",me.sortingOpt_Active.inverse);
-          // TODO: Do not show no-value items on top, reversing needs to be a little smarter.
-          me.browser.records.reverse();
-
-          me.updateRecordRanks();
-          me.refreshRecordDOM();
-          me.refreshRecordRanks(me.DOM.recordRanks);
-
-          me.DOM.kshfRecords = me.DOM.recordGroup.selectAll(".kshfRecord")
-            .data(me.browser.records, function(record){ return record.id(); })
-            .order();
-          kshf.Util.scrollToPos_do(me.DOM.recordGroup,0);
-        });
-    },
-    /** -- */
     refreshRecordRanks: function(d3_selection){
       if(!this.showRank) return; // Do not refresh if not shown...
       d3_selection.text(function(record){ return (record.recordRank<0)?"":record.recordRank+1; });
     },
     /** -- */
+    refreshRecordDOMOrder: function(){
+      this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
+        .data(this.browser.records, function(record){ return record.id(); })
+        .order();
+      kshf.Util.scrollToPos_do(this.DOM.recordGroup,0);
+    },
+    /** -- */
+    refreshViz_Compare_All: function(){
+      if(this.viewRecAs!=='map') return;
+      var me=this;
+      this.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
+        .attr("active", function(d){ return me.browser.vizActive[d] ? true : null; });
+    },
+    /** -- */
     setSortColumnWidth: function(v){
-      if(this.displayType!=='list') return;
+      if(this.viewRecAs!=='list') return;
       this.sortColWidth = Math.max(Math.min(v,110),30); // between 30 and 110 pixels
       this.DOM.recordSortCol.style("width",this.sortColWidth+"px");
       this.refreshAdjustSortColumnWidth();
@@ -1986,7 +1981,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
-      if(this.displayType!=='list') return; // Only list-view allows sorting
+      if(this.viewRecAs!=='list') return; // Only list-view allows sorting
       if(d3_selection===undefined) d3_selection = this.DOM.recordSortCol;
 
       var me=this;
@@ -2074,26 +2069,26 @@ kshf.RecordDisplay.prototype = {
       if(this.recordViewSummary===null) return;
 
       if(this.DOM.root===undefined) return;
-      if(this.displayType==='map' || this.displayType==='nodelink'){
-        this.refreshRecordColors();
-      } else {
-        this.sortRecords();
-        if(this.DOM.recordGroup===undefined) return;
-
-        this.refreshRecordDOM();
-        this.refreshRecordRanks(this.DOM.recordRanks);
-        kshf.Util.scrollToPos_do(this.DOM.recordGroup,0);
-
-        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord")
-          .data(this.browser.records, function(record){ return record.id(); })
-          .order();
-
-        this.refreshRecordSortLabels();
+      switch(this.viewRecAs){
+        case 'map':
+        case 'nodelink':
+          this.refreshRecordColors();
+          break;
+        case 'list':
+        case 'grid':
+          this.sortRecords();
+          if(this.DOM.recordGroup) {
+            this.refreshRecordDOM();
+            this.refreshRecordDOMOrder();
+            this.refreshRecordRanks(this.DOM.recordRanks);
+            this.refreshRecordSortLabels();
+          }
+          break;
       }
     },
     /** -- */
     refreshAdjustSortColumnWidth: function(){
-      if(this.displayType!=='list') return;
+      if(this.viewRecAs!=='list') return;
       this.DOM.adjustSortColumnWidth.style("left", (this.sortColWidth-2)+(this.showRank?15:0)+"px")
     },
     /** -- */
@@ -2103,6 +2098,7 @@ kshf.RecordDisplay.prototype = {
       this.refreshRecordRanks(this.DOM.recordRanks);
       this.refreshAdjustSortColumnWidth();
     },
+
     /** -- */
     refreshNodeLinks: function(){
       this.generateNodeLinks();
@@ -2113,14 +2109,14 @@ kshf.RecordDisplay.prototype = {
         .links(this.nodelink_links)
         .start();
 
-      if(this.nodelink_links.length>1000) this.DOM.root.attr("hideLinks",true);
+      if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
     },
     /** -- */
     generateNodeLinks: function(){
       this.nodelink_links = [];
 
       var recordsIndexed = kshf.dt_id[browser.primaryTableName];
-      var linkAttribName = this.config.linkBy[0];
+      var linkAttribName = this.linkBy[0];
 
       this.browser.records.forEach(function(recordFrom){
         if(!recordFrom.isWanted) return;
@@ -2139,24 +2135,79 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     initializeNetwork: function(){
       this.nodelink_Force.size([this.curWidth, this.curHeight]).start();
-      if(this.nodelink_links.length>1000) this.DOM.root.attr("hideLinks",true);
+      if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
 
       this.DOM.root.attr("NodeLinkState","started");
     },
     refreshNodeVis: function(){
       if(this.DOM.recordLinks===undefined) return;
 
-      // position & direction of the line
-      this.DOM.recordLinks.attr("x1", function(d) { return d.source.x; })
+      // position & direction of the links
+      this.DOM.recordLinks
+        .attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
       // position of the record
       var scale = "scale("+(1/this.nodeZoomBehavior.scale())+")";
-      this.DOM.kshfRecords.attr("transform", function(d){
-        return "translate("+d.x+","+d.y+") "+scale;
+      this.DOM.kshfRecords.attr("transform", function(d){ return "translate("+d.x+","+d.y+") "+scale; });
+    },
+    /** -- */
+    nodelink_zoomToActive: function(){
+      var _translate, _scale;
+
+      var bounds_x = [null,null];
+      var bounds_y = [null,null];
+
+      var grav_x = 0;
+      var grav_y = 0;
+
+      // compute rectangular bounding box of the nodes
+      var recs = this.browser.records.filter(function(record){ return record.isWanted; });
+      recs.forEach(function(d){
+        var _min_x = d.x-0.2;
+        var _max_x = d.x+0.2;
+        var _min_y = d.y-0.2;
+        var _max_y = d.y+0.2;
+
+        grav_x += d.x;
+        grav_y += d.y;
+
+        if(bounds_x[0]===null){
+          bounds_x = [_min_x, _max_x];
+          bounds_y = [_min_y, _max_y];
+        } else {
+          if(_min_x<bounds_x[0]) bounds_x[0] = _min_x;
+          if(_min_y<bounds_y[0]) bounds_y[0] = _min_y;
+          if(_max_x>bounds_x[1]) bounds_x[1] = _max_x;
+          if(_max_x>bounds_x[1]) bounds_x[1] = _max_x;
+        }
       });
+
+      var _translate = [ grav_x/recs.length , grav_y/recs.length ];
+
+      // translate() scale(0.03451730017461715)
+
+      // Target: [390.17426945709394,145.84263796999835]
+      // Before: [350.174269457094, 204.84263796999832]
+      // After:  [732.1742694570939, 344.84263796999835]
+      // x.offsetWidth/2:  380
+      // x.offsetHeight/2: 140
+
+      var x = this.DOM.recordDisplayWrapper[0][0];
+      _translate[0] = x.offsetWidth/2;
+      _translate[1] = x.offsetHeight/2;
+
+      var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*2);
+
+      this.nodeZoomBehavior.scale(_scale);
+      this.nodeZoomBehavior.translate(_translate);
+
+      this.refreshNodeVis();
+      // still need to manually update the view. d3 is no use.
+      this.DOM.recordNodeLink_SVG.select(".gggg")
+        .attr("transform", "translate(" + _translate[0] + "," + _translate[1] + ") scale(" + _scale + ")");
     },
     /** -- */
     setNodeLink: function(){
@@ -2172,7 +2223,7 @@ kshf.RecordDisplay.prototype = {
       this.nodelink_links = [];
 
       var recordsIndexed = kshf.dt_id[browser.primaryTableName];
-      var linkAttribName = this.config.linkBy[0];
+      var linkAttribName = this.linkBy[0];
 
       this.browser.records.forEach(function(recordFrom){
         var links = recordFrom.data[linkAttribName];
@@ -2189,7 +2240,7 @@ kshf.RecordDisplay.prototype = {
 
       this.generateNodeLinks();
 
-      this.DOM.recordLinks = this.DOM.linkGroup.selectAll(".recordLink").data(this.nodelink_links)
+      this.DOM.linkGroup.selectAll(".recordLink").data(this.nodelink_links)
         .enter().append("line").attr("class", "recordLink")
         .each(function(link){
           var recordFrom = link.source;
@@ -2197,6 +2248,8 @@ kshf.RecordDisplay.prototype = {
           recordFrom.DOM.links_To.push(this);
           recordTo.DOM.links_From.push(this);
         });
+
+      this.DOM.recordLinks = this.DOM.linkGroup.selectAll(".recordLink");
 
       this.nodelink_Force = d3.layout.force()
         .charge(-60)
@@ -2206,11 +2259,11 @@ kshf.RecordDisplay.prototype = {
         .links(this.nodelink_links)
         .on("start",function(){ 
           me.DOM.root.attr("NodeLinkState","started");
-          me.DOM.root.attr("hideLinks",true);
+          if(me.nodelink_links.length>1000) me.DOM.root.classed("hideLinks",true);
         })
         .on("end",  function(){ 
           me.DOM.root.attr("NodeLinkState","stopped");
-          me.DOM.root.attr("hideLinks",null);
+          me.DOM.root.classed("hideLinks",null);
         })
         .on("tick", function(){ me.refreshNodeVis(); });
     },
@@ -2244,7 +2297,7 @@ kshf.RecordDisplay.prototype = {
         .domain([0,9])
         .range(kshf.colorScale[me.browser.mapColorTheme]);
 
-      var undefinedFill = (this.displayType==='map') ? "url(#diagonalHatch)" : "white";
+      var undefinedFill = (this.viewRecAs==='map') ? "url(#diagonalHatch)" : "white";
 
       var fillFunc = function(d){ 
         var v = s_f.call(d.data);
@@ -2255,7 +2308,7 @@ kshf.RecordDisplay.prototype = {
         return me.colorQuantize(vv); 
       };
 
-      if(this.displayType==='map') {
+      if(this.viewRecAs==='map') {
         this.DOM.kshfRecords.each(function(d){ 
           var v = s_f.call(d.data);
           if(s_log && v<=0) v=undefined;
@@ -2270,7 +2323,7 @@ kshf.RecordDisplay.prototype = {
           this.style.stroke = me.colorQuantize(vv>=5?0:9);
         });
       }
-      if(this.displayType==='nodelink') {
+      if(this.viewRecAs==='nodelink') {
         this.DOM.kshfRecords.selectAll("circle").style("fill", function(d){ 
           var v = s_f.call(d.data);
           if(s_log && v<=0) v=undefined;
@@ -2288,7 +2341,7 @@ kshf.RecordDisplay.prototype = {
         dom.style.strokeOpacity = 1;
         dom.style.display = "block";
       });
-      var links = recordFrom.data[this.config.linkBy[0]];
+      var links = recordFrom.data[this.linkBy[0]];
       if(!links) return;
       var recordsIndexed = kshf.dt_id[browser.primaryTableName];
       links.forEach(function(recordTo_id){
@@ -2308,7 +2361,7 @@ kshf.RecordDisplay.prototype = {
         dom.style.strokeOpacity = null;
         dom.style.display = null;
       });
-      var links = recordFrom.data[this.config.linkBy[0]];
+      var links = recordFrom.data[this.linkBy[0]];
       if(!links) return;
       var recordsIndexed = kshf.dt_id[browser.primaryTableName];
       links.forEach(function(recordTo_id){
@@ -2323,8 +2376,11 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordDOM: function(){
       var me=this, x;
-      var records = (this.displayType==='map')?
-        this.browser.records :
+      var records = (this.viewRecAs==='map')?
+        // all records
+        this.browser.records
+        : 
+        // only top-sorted records
         this.browser.records.filter(function(record){
           return record.isWanted && (record.recordRank<me.maxVisibleItems);
         });
@@ -2337,7 +2393,7 @@ kshf.RecordDisplay.prototype = {
         'nodelink': 'g',
         'list'    : 'div',
         'grid'    : 'div'
-      })[this.displayType];
+      })[this.viewRecAs];
 
       // Shared structure per record view
       newRecords = newRecords
@@ -2348,7 +2404,7 @@ kshf.RecordDisplay.prototype = {
         .attr("rec_compared",function(record){ return record.selectCompared_str?record.selectCompared_str:null;})
         .each(function(record){ 
           record.DOM.record = this;
-          if(me.displayType==='map'){
+          if(me.viewRecAs==='map'){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
               title: function(){ 
@@ -2373,9 +2429,9 @@ kshf.RecordDisplay.prototype = {
           // mouse is moving fast, should wait a while...
           this.highlightTimeout = window.setTimeout(
             function(){ 
-              if(me.displayType==='nodelink') me.highlightLinked(record);
+              if(me.viewRecAs==='nodelink') me.highlightLinked(record);
               record.highlightRecord();
-              if(me.displayType==='map' || me.displayType==='nodelink'){
+              if(me.viewRecAs==='map' || me.viewRecAs==='nodelink'){
                 d3.select(DOM.parentNode.appendChild(DOM));
               }
             }, 
@@ -2387,7 +2443,7 @@ kshf.RecordDisplay.prototype = {
         .on("mouseleave",function(record){
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
           if(this.tipsy) this.tipsy.hide();
-          if(me.displayType==='nodelink') me.unhighlightLinked(record);
+          if(me.viewRecAs==='nodelink') me.unhighlightLinked(record);
           record.unhighlightRecord();
         })
         .on("mousedown", function(){
@@ -2403,12 +2459,12 @@ kshf.RecordDisplay.prototype = {
         })
         .on("click",function(d){
           if(this._mousemove) return; // Do not show the detail view if the mouse was used to drag the map
-          if(me.displayType==='map' || me.displayType==='nodelink'){
+          if(me.viewRecAs==='map' || me.viewRecAs==='nodelink'){
             me.browser.updateRecordDetailPanel(d);
           }
         });
       
-      if(this.displayType==='list' || this.displayType==="grid"){
+      if(this.viewRecAs==='list' || this.viewRecAs==="grid"){
         // RANK
         x = newRecords.append("span").attr("class","recordRank")
           .each(function(d){
@@ -2421,7 +2477,7 @@ kshf.RecordDisplay.prototype = {
           .on("mouseout"  ,function(){ this.tipsy.hide(); });
         this.refreshRecordRanks(x);
         // SORTING VALUE LABELS
-        if(this.displayType==='list'){
+        if(this.viewRecAs==='list'){
           x = newRecords.append("div").attr("class","recordSortCol").style("width",this.sortColWidth+"px");
           this.refreshRecordSortLabels(x);
         }
@@ -2431,7 +2487,7 @@ kshf.RecordDisplay.prototype = {
             this.tipsy = new Tipsy(this, {
               gravity:'s',
               title: function(){
-                if(me.detailsToggle==="one" && this.displayType==='list')
+                if(me.detailsToggle==="one" && this.viewRecAs==='list')
                   return d.showDetails===true?"Show less":"Show more";
                 return kshf.lang.cur.ShowMoreInfo;
               }
@@ -2441,7 +2497,7 @@ kshf.RecordDisplay.prototype = {
           .on("mouseleave", function(){ this.tipsy.hide(); })
           .on("click", function(record){
             this.tipsy.hide();
-            if(me.detailsToggle==="one" && me.displayType==='list'){
+            if(me.detailsToggle==="one" && me.viewRecAs==='list'){
               record.setRecordDetails(!record.showDetails);
             }
             if(me.detailsToggle==="zoom"){
@@ -2464,7 +2520,7 @@ kshf.RecordDisplay.prototype = {
           .order();
       }
 
-      if(this.displayType==='nodelink'){
+      if(this.viewRecAs==='nodelink'){
         newRecords.append("circle").attr("r",4);
         newRecords.append("text").attr("class","kshfRecord_label")
           .attr("dy",4).attr("dx",6)
@@ -2480,15 +2536,15 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
 
-      if(this.displayType==='map') {
+      if(this.viewRecAs==='map') {
         this.map_zoomToActive();
         this.map_projectRecords();
         this.refreshRecordColors();
-      } else if(this.displayType==='nodelink'){
+      } else if(this.viewRecAs==='nodelink'){
         this.refreshRecordColors();
       } else {
-        this.DOM.recordSortCol = this.DOM.recordGroup.selectAll(".recordSortCol");
-        this.DOM.recordRanks    = this.DOM.recordGroup.selectAll(".recordRank");
+        this.DOM.recordSortCol      = this.DOM.recordGroup.selectAll(".recordSortCol");
+        this.DOM.recordRanks        = this.DOM.recordGroup.selectAll(".recordRank");
         this.DOM.recordToggleDetail = this.DOM.recordGroup.selectAll(".recordToggleDetail");
       }
 
@@ -2496,7 +2552,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     showMoreRecordsOnList: function(){
-      if(this.displayType==='map') return;
+      if(this.viewRecAs==='map') return;
       this.DOM.showMore.attr("showMoreVisible",false);
       this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
       this.refreshRecordDOM();
@@ -2575,15 +2631,15 @@ kshf.RecordDisplay.prototype = {
       var me = this;
       var visibleItemCount=0;
 
-      if(me.displayType==='map'){
+      if(me.viewRecAs==='map'){
         this.DOM.kshfRecords.each(function(record){
           this.style.opacity = record.isWanted?0.9:0.2;
           this.style.pointerEvents = record.isWanted?"":"none";
           this.style.display = "block"; // Have this bc switching views can invalidate display
         });
-      } else if(me.displayType==='nodelink'){
-        this.browser.records.forEach(function(record){
-          if(record.DOM.record) record.DOM.record.style.display = record.isWanted?"block":"none";
+      } else if(me.viewRecAs==='nodelink'){
+        this.DOM.kshfRecords.each(function(record){
+          this.style.display = record.isWanted?"block":"none";
         });
         this.DOM.recordLinks.each(function(link){
           this.style.display = (!link.source.isWanted || !link.target.isWanted) ? "none" : null;
@@ -2602,10 +2658,10 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     updateAfterFilter: function(){
       if(this.recordViewSummary===null) return;
-      if(this.displayType==='map') {
+      if(this.viewRecAs==='map') {
         this.updateRecordVisibility();
         //this.map_zoomToActive();
-      } else if(this.displayType==='nodelink') {
+      } else if(this.viewRecAs==='nodelink') {
         this.updateRecordVisibility();
         this.DOM.NodeLinkAnim_Refresh.style('display','inline-block');
         // this.refreshNodeLinks();
@@ -2649,49 +2705,63 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     viewAs: function(d){
-      d = d.toLowerCase();
-      this.displayType = d;
-      this.DOM.root.attr("displayType",this.displayType);
+      this.viewRecAs = d.toLowerCase();
+      this.DOM.root.attr("displayType", this.viewRecAs);
 
-      if(this.displayType==='map'){
-        this.initDOM_MapView();
-        this.DOM.recordDisplayHeader.select(".recordView_HeaderSet").style("display","inline-block");
-        this.DOM.root.select(".recordView_SetList").style("display","inline-block");
-        if(this.nodelink_Force) this.nodelink_Force.stop();
-      } else if(this.displayType==='nodelink'){
-        this.initDOM_NodeLinkView();
-        this.DOM.recordDisplayHeader.select(".recordView_HeaderSet").style("display","inline-block");
-        this.DOM.root.select(".recordView_SetList").style("display","inline-block");
-      } else {
-        this.initDOM_ListView();
-        this.DOM.root.select(".recordView_SetList").style("display",null);
-        if(this.nodelink_Force) this.nodelink_Force.stop();
-      }
       this.DOM.root.select(".recordView_SetMap").style("display",
-        (this.config.geo && this.displayType!=='map') ? "inline-block" : null );
+        (this.config.geo && this.viewRecAs!=='map') ? "inline-block" : null );
       this.DOM.root.select(".recordView_SetNodeLink").style("display",
-        (this.config.linkBy.length>0 && this.displayType!=='nodelink') ? "inline-block" : null );
+        (this.linkBy.length>0 && this.viewRecAs!=='nodelink') ? "inline-block" : null );
+
+      this.browser.DOM.root.attr("recordDisplayMapping",this.getRecordEncoding()); // "sort" / "color"
 
       if(this.recordViewSummary) {
-        
-        if(this.displayType==='list' || this.displayType==="grid"){
-          this.sortRecords();
-          this.refreshRecordDOM();
-          this.setSortColumnWidth(this.config.sortColWidth || 50); // default: 50px;
-        } else if(this.displayType==='map'){
-          this.refreshRecordColors();
-        } else if(this.displayType==='nodelink'){
-          this.refreshRecordColors();
+        switch(this.viewRecAs){
+          case 'list':
+          case 'grid':
+            this.initDOM_ListView();
+            this.DOM.root.select(".recordView_SetList").style("display",null);
+
+            this.sortRecords();
+            this.refreshRecordDOM();
+            this.setSortColumnWidth(this.sortColWidth || 50); // default: 50px;
+
+            this.DOM.kshfRecords = this.DOM.recordGroup_List.selectAll(".kshfRecord");
+
+            break;
+          case 'map':
+            this.initDOM_MapView();
+            this.refreshRecordDOM();
+            this.refreshRecordColors();
+            break;
+          case 'nodelink':
+            this.initDOM_NodeLinkView();
+            this.setNodeLink();
+            this.refreshRecordDOM();
+            this.refreshRecordColors();
+            this.nodelink_Force.start();
+            break;
         }
+
+        switch(this.viewRecAs){
+          case 'map':
+          case 'nodelink':
+            this.DOM.recordDisplayHeader.select(".recordView_HeaderSet").style("display","inline-block");
+            this.DOM.root.select(".recordView_SetList").style("display","inline-block");
+            break;
+        }
+
+        if(this.nodelink_Force && this.viewRecAs!=='nodelink') this.nodelink_Force.stop();
+
         this.updateRecordVisibility();
 
-        this.browser.DOM.root.attr("recordDisplayMapping",this.getRecordEncoding()); // "sort" or "color"
+        this.DOM.kshfRecords.each(function(record){ record.DOM.record = this; });
       }
     },
     /** -- */
     exportConfig: function(){
       var c={};
-      c.displayType = this.displayType;
+      c.displayType = this.viewRecAs;
       if(this.textSearchSummary){
         c.textSearch = this.textSearchSummary.summaryName;
       }
@@ -4804,7 +4874,7 @@ kshf.Browser.prototype = {
 
         this.reorderNuggetList();
 
-        if(this.recordDisplay.displayType==='nodelink'){
+        if(this.recordDisplay.viewRecAs==='nodelink'){
           this.recordDisplay.initializeNetwork();
         }
 
@@ -4819,10 +4889,8 @@ kshf.Browser.prototype = {
 
         setTimeout(function(){ 
           if(me.options.enableAuthoring) me.enableAuthoring(true);
-          if(me.recordDisplay.displayType==='map'){
-            setTimeout(function(){ 
-              me.recordDisplay.map_zoomToActive();
-            }, 1000);
+          if(me.recordDisplay.viewRecAs==='map'){
+            setTimeout(function(){ me.recordDisplay.map_zoomToActive(); }, 1000);
           }
           me.setNoAnim(false);
         },1000);
@@ -5400,7 +5468,7 @@ kshf.Browser.prototype = {
 
       this.DOM.middleColumn.style("width",widthMiddlePanel+"px");
 
-      if(this.recordDisplay) this.recordDisplay.refreshWidth(widthMiddlePanel);
+      if(this.recordDisplay) this.recordDisplay.setWidth(widthMiddlePanel);
     },
     /** -- */
     getTickLabel: function(_val){
@@ -5695,7 +5763,7 @@ kshf.Summary_Base.prototype = {
     }
     panel.addSummary(this,index);
     this.panel.refreshDropZoneIndex();
-    this.refreshNuggetDisplay();
+    this.refreshThumbDisplay();
 
     if(this.type=="categorical"){
       this.refreshLabelWidth();
@@ -5711,7 +5779,7 @@ kshf.Summary_Base.prototype = {
   removeFromPanel: function(){
     if(this.panel===undefined) return;
     this.panel.removeSummary(this);
-    this.refreshNuggetDisplay();
+    this.refreshThumbDisplay();
   },
   /** -- */
   destroy: function(){
@@ -5928,7 +5996,7 @@ kshf.Summary_Base.prototype = {
         }
       });
 
-    this.refreshNuggetDisplay();
+    this.refreshThumbDisplay();
     if(this.aggr_initialized) this.refreshViz_Nugget();
   },
   /** -- */
@@ -5946,7 +6014,7 @@ kshf.Summary_Base.prototype = {
     this.style.display = "none";
   },
   /** -- */
-  refreshNuggetDisplay: function(){
+  refreshThumbDisplay: function(){
     if(this.DOM.nugget===undefined) return;
     var me=this;
     var nuggetHidden = (this.panel||this.isRecordView);
@@ -8500,7 +8568,6 @@ var Summary_Categorical_functions = {
         return; 
       }
 
-      var zoomInit;
       // See http://leaflet-extras.github.io/leaflet-providers/preview/ for alternative layers
       this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0], kshf.map.config )
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig ) )
@@ -8509,13 +8576,13 @@ var Summary_Categorical_functions = {
         })
         .on("movestart",function(){
           me.browser.DOM.root.attr("pointerEvents",false);
-          zoomInit = this.getZoom();
+          this._zoomInit_ = this.getZoom();
           me.DOM.catMap_SVG.style("opacity",0.3);
         })
         .on("moveend",function(){
           me.browser.DOM.root.attr("pointerEvents",true);
           me.DOM.catMap_SVG.style("opacity",null);
-          if(zoomInit !== this.getZoom()) me.map_projectCategories();
+          if(this._zoomInit_ !== this.getZoom()) me.map_projectCategories();
         })
         ;
 
@@ -8554,12 +8621,24 @@ var Summary_Categorical_functions = {
             .attr('stroke-width', 1);
 
       // Add custom controls
-      var DOM_control = d3.select(this.leafletAttrMap.getContainer()).select(".leaflet-control");
 
-      DOM_control.append("a")
-        .attr("class","leaflet-control-viewFit").attr("title",kshf.lang.cur.ZoomToFit)
-        .attr("href","#")
-        .html("<span class='viewFit fa fa-arrows-alt'></span>")
+      var DOM_control = d3.select(this.leafletAttrMap.getContainer()).select(".leaflet-control-container");
+
+      var X = DOM_control.append("div").attr("class","visViewControl");
+
+      X.append("div")
+        .attr("class","fa fa-plus")
+        .attr("title","Zoom in")
+        .on("click",function(){ me.leafletAttrMap.zoomIn(); });
+
+      X.append("div")
+        .attr("class","fa fa-minus")
+        .attr("title","Zoom out")
+        .on("click",function(){ me.leafletAttrMap.zoomOut(); });
+
+      X.append("div")
+        .attr("class","viewFit fa fa-arrows-alt")
+        .attr("title",kshf.lang.cur.ZoomToFit)
         .on("dblclick",function(){
           d3.event.preventDefault();
           d3.event.stopPropagation();
@@ -8752,7 +8831,7 @@ var Summary_Interval_functions = {
     /** -- */
     getHeight_RecordEncoding: function(){
       if(this.usedForSorting && this.browser.recordDisplay) {
-        if(this.browser.recordDisplay.displayType==='map' || this.browser.recordDisplay.displayType==='nodelink')
+        if(this.browser.recordDisplay.viewRecAs==='map' || this.browser.recordDisplay.viewRecAs==='nodelink')
           return this.height_recEncoding; 
       }
       return 0;

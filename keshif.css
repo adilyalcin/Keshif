@@ -2755,17 +2755,17 @@ top:calc(50% - 5px);
 .kshf div.kshfRecord .item_details {
   display: none;
 }
-.kshf div.kshfRecord[details="true"] {
+.kshf div.kshfRecord .showDetails {
   max-height: none;
 }
-.kshf div.kshfRecord[details="true"] > .recordToggleDetail {
+.kshf div.kshfRecord .showDetails > .recordToggleDetail {
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.kshf div.kshfRecord[details="true"] .item_details {
+.kshf div.kshfRecord .showDetails .item_details {
   display: block;
 }
 .kshf div.kshfRecord[selection^="onRecord"] {
@@ -3106,6 +3106,58 @@ top:calc(50% - 5px);
   border-radius: 4px;
   padding: 0px;
   background-color: #efeadf !important;
+}
+.kshf .visViewControl {
+  z-index: 1000;
+  display: block;
+  background-color: white;
+  position: absolute;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+}
+.kshf .visViewControl > .fa {
+  display: block;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+  padding: 5px;
+}
+.kshf .visViewControl > .fa:hover {
+  background-color: #EEE;
+  color: #cb5454;
+}
+.kshf .leaflet-container .visViewControl {
+  left: 3px;
+  top: 3px;
+}
+.kshf .leaflet-container .visViewControl > .fa:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.kshf .leaflet-container .visViewControl > .fa:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom: none;
+}
+.kshf .recordDisplayWrapper .visViewControl {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  margin: 5px;
+  font-size: 0.9em;
+}
+.kshf .recordDisplayWrapper .visViewControl > .fa {
+  display: inline-block;
+  border-bottom: none;
+  border-right: 1px solid #ccc;
+}
+.kshf .recordDisplayWrapper .visViewControl > .fa:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.kshf .recordDisplayWrapper .visViewControl > .fa:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom: none;
 }
 .kshf .measureAxis_2 {
   display: none;
@@ -4598,10 +4650,10 @@ height:calc(100% - 10px);
   stroke: #999;
   stroke-opacity: .3;
 }
-.kshf .recordDisplay[displayType="nodelink"][hideLinks] .recordLink {
+.kshf .recordDisplay[displayType="nodelink"].hideLinks .recordLink {
   display: none;
 }
-.kshf .recordDisplay[displayType="nodelink"][hideLinks] .NodeLinkAttribIcon {
+.kshf .recordDisplay[displayType="nodelink"].hideLinks .NodeLinkAttribIcon {
   color: #BABABA;
 }
 .kshf .recordDisplay[displayType="nodelink"][NodeLinkState="started"] .NodeLinkAnim_Play {
@@ -4765,20 +4817,6 @@ height:calc(100% - 10px);
 }
 .kshf .recordDisplay > .recordMap .viewFit {
   font-size: 1em;
-}
-.kshf .NodeLinkControl {
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  margin: 5px;
-}
-.kshf .NodeLinkControl .fa {
-  font-size: 0.9em;
-  padding: 0px 2px;
-  cursor: pointer;
-}
-.kshf .NodeLinkControl .fa:hover {
-  color: orangered;
 }
 .kshf .recordNodeLink_SVG {
   display: block;
