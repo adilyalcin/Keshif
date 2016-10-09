@@ -21,22 +21,6 @@
 
     <script type="text/javascript">
 
-function loadData(browser){
-  var records = kshf.dt_id["counties-gear"];
-  $.ajax({
-    // Load topojson file
-    url: 'data/us-counties-states-FIPS.json',
-    success: function(topojsonData){
-      topojson.feature(topojsonData, topojsonData.objects.counties)
-        .features.forEach(function(feature){
-          var record = records[feature.id];
-          if(record) record.data._geo_ = feature;
-        });
-      browser.loadCharts();
-    }
-  });
-};
-
 $(document).ready( function() {
   browser = new kshf.Browser({
     domID: "#demo_Browser",
@@ -50,7 +34,22 @@ $(document).ready( function() {
       dirPath: 'data/',
       fileType: 'tsv',
       tables: {name:"counties-gear", id:"fips"},
-      callback: loadData
+      callback: function(){
+        this.asyncDataWaitedCnt++;
+        var records = kshf.dt_id["counties-gear"];
+        $.ajax({
+          // Load topojson file
+          url: 'data/us-counties-states-FIPS.json',
+          success: function(topojsonData){
+            topojson.feature(topojsonData, topojsonData.objects.counties)
+              .features.forEach(function(feature){
+                var record = records[feature.id];
+                if(record) record.data._geo_ = feature;
+              });
+            browser.asyncDataLoaded();
+          }
+        });
+      }
     },
     summaries: [
       { name: "State", value: "state", catLabel: function(d){ return getStateName(this.id); } },
@@ -95,13 +94,13 @@ $(document).ready( function() {
           if(this['Other armored vehicle']>0) r.push('Other armored vehicle');
           return r;
         } },
-      { name: "Machine Gun", panel: 'left' },
-      { name: "Pistol", panel: 'right' },
-      { name: "Magazine", panel: 'right' },
-      { name: "Shotgun", panel: 'right' },
-      { name: "Armored Vehicle", panel: 'right' },
-      { name: "Personal Armor", panel: 'right', collapsed: true },
-      { name: "Night Vision", panel: 'right', collapsed: true },
+      { name: "Machine Gun", panel: 'left', skipZero: true },
+      { name: "Pistol", panel: 'right', skipZero: true },
+      { name: "Magazine", panel: 'right', skipZero: true },
+      { name: "Shotgun", panel: 'right', skipZero: true },
+      { name: "Armored Vehicle", panel: 'right', skipZero: true },
+      { name: "Personal Armor", panel: 'right', collapsed: true, skipZero: true },
+      { name: "Night Vision", panel: 'right', collapsed: true, skipZero: true },
       { name: "FIPS", value: "fips", panel: "none"}
     ],
     recordDisplay: {
