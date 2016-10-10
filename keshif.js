@@ -1119,9 +1119,23 @@ kshf.RecordDisplay = function(kshf_, config){
 
       this.setRecordViewSummary(
         (typeof config.recordView === 'string') ?
-          this.browser.summaries_by_name[config.recordView] :
-          // function
-          this.browser.createSummary('Records',config.recordView,'categorical')
+          this.browser.summaries_by_name[config.recordView]
+          :
+          this.browser.createSummary('_Records',config.recordView,'categorical')
+      );
+    }
+
+    if(config.recordView_Brief!==undefined){
+      if(typeof(config.recordView_Brief)==="string"){
+        if(config.recordView_Brief.substr(0,8)==="function"){
+          eval("\"use strict\"; config.recordView_Brief = "+config.recordView_Brief);
+        }
+      }
+      this.setRecordViewBriefSummary(
+        (typeof config.recordView_Brief === 'string') ?
+          this.browser.summaries_by_name[config.recordView_Brief]
+          :
+          this.browser.createSummary('_Records_Brief',config.recordView_Brief,'categorical')
       );
     }
 
@@ -1909,6 +1923,8 @@ kshf.RecordDisplay.prototype = {
       this.recordViewSummary = summary;
       this.recordViewSummary.isRecordView = true;
       this.recordViewSummary.refreshThumbDisplay();
+
+      this.setRecordViewBriefSummary(summary);
       
       if(this.spatialFilter){
         this.spatialFilter.summary = this.recordViewSummary;
@@ -1920,6 +1936,10 @@ kshf.RecordDisplay.prototype = {
         this.DOM.recordGroup.selectAll(".kshfRecord").data([]).exit().remove();
 
       this.viewAs(this.viewRecAs);
+    },
+    /** -- */
+    setRecordViewBriefSummary: function(summary){
+      this.recordViewSummaryBrief = summary;
     },
     /** -- */
     removeRecordViewSummary: function(){
@@ -2441,7 +2461,8 @@ kshf.RecordDisplay.prototype = {
               if(me.viewRecAs==='nodelink') me.highlightLinked(record);
               record.highlightRecord();
               if(me.viewRecAs==='map' || me.viewRecAs==='nodelink'){
-                d3.select(DOM.parentNode.appendChild(DOM));
+                // reorder dom so it appears on top.
+                DOM.parentNode.appendChild(DOM);
               }
             }, 
             (me.browser.mouseSpeed<0.2) ? 0 : me.browser.mouseSpeed*300);
@@ -2534,7 +2555,7 @@ kshf.RecordDisplay.prototype = {
         newRecords.append("text").attr("class","kshfRecord_label")
           .attr("dy",4).attr("dx",6)
           .html(function(record){ 
-            return me.recordViewSummary.summaryFunc.call(record.data, record);
+            return me.recordViewSummaryBrief.summaryFunc.call(record.data, record);
           });
       }
 
@@ -2749,6 +2770,8 @@ kshf.RecordDisplay.prototype = {
             this.refreshRecordDOM();
             this.refreshRecordColors();
             this.nodelink_Force.start();
+            // node layout on.start is not called, so doing some work here again
+            if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
             break;
         }
 
@@ -2777,7 +2800,7 @@ kshf.RecordDisplay.prototype = {
       if(typeof(this.recordViewSummary.summaryColumn)==="string"){
         c.recordView = this.recordViewSummary.summaryColumn;
       } else {
-        c.recordView = this.recordViewSummary.summaryFunc.toString();
+        c.recordView = this.recordViewSummary.summaryFunc.toString(); // converts function to string
       }
       c.sortBy = [];
       browser.recordDisplay.sortingOpts.forEach(function(summary){

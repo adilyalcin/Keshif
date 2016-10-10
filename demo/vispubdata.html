@@ -72,6 +72,7 @@ google.setOnLoadCallback(function(){
       linkBy: ["References", "Citations"],
       displayType: 'list',
       textSearch: "Paper Title",
+      recordView_Brief: 'Paper Title',
       recordView: function(){ 
         var str="";
         str+="<span class='paperTitle'>"+this['Paper Title']+"</span>";
@@ -93,7 +94,7 @@ google.setOnLoadCallback(function(){
         // Display: Paper Type
         // Display: Abstract (on demand)
         return str;
-      }
+      },
     }
   });
 });
