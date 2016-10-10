@@ -2385,7 +2385,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordDOM: function(){
       var me=this, x;
-      var records = (this.viewRecAs==='map')?
+      var records = (this.viewRecAs==='map' || this.viewRecAs==='nodelink')?
         // all records
         this.browser.records
         : 
