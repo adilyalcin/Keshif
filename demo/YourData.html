@@ -4,7 +4,9 @@
     <title>Keshif Your Data</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://apis.google.com/js/client.js"></script> <!-- Auth --> 
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -24,7 +26,7 @@
     <script type="text/javascript">
 window.onbeforeunload = function () { return "Exiting/reloading this page will clear this browser. Are you sure?"; };
 
-google.setOnLoadCallback(function(){
+google.charts.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 160,

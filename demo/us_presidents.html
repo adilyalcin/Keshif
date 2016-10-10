@@ -4,7 +4,7 @@
     <title>U.S. Presidents</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -18,14 +18,14 @@
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
 
     <script type="text/javascript">
-google.setOnLoadCallback( function(){
+google.charts.setOnLoadCallback( function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Presidents of the United States",
     categoryTextWidth: 160,
     source: {
       gdocId: '0Ai6LdDWgaqgNdG1WX29BanYzRHU4VHpDUTNPX3JLaUE',
-      tables: {name: "Presidents", id:"Position"},
+      tables: {name: "Presidents", id:"Position", auth: true},
       callback: function(){ US_States.loadGeo(this); }
     },
     summaries: [
@@ -59,7 +59,6 @@ google.setOnLoadCallback( function(){
     <div class="contents">
       <div id="demo_PageTitle">The Presidents of the United States</div>
       <div id="demo_Browser"></div>
-
 
       <div id="demo_Infobox">
         Data from 

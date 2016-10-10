@@ -4,7 +4,7 @@
     <title>Petroleum Spills &ge; 1 Barrel from OCS Oil &amp; Gas Activities</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -40,7 +40,7 @@ function getMaterial(){
   return toRet;
 }
 
-google.setOnLoadCallback( function(){
+google.charts.setOnLoadCallback( function(){
   var Districts = {
     1: "New Orleans",
     2: "Houma",

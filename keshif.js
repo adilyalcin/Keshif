@@ -34,7 +34,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // load google visualization library only if google scripts were included
 if(typeof google !== 'undefined'){
-  google.load('visualization', '1', {'packages': []});
+  google.charts.load('current', {packages: []});
+  //google.load('visualization', '1', {'packages': []});
 }
 
 var kshf = {
@@ -4234,7 +4235,10 @@ kshf.Browser.prototype = {
               case "GoogleSheet":
                 me.loadSource({
                   gdocId: sourceURL,
-                  tables: {name:sourceSheet, id:sheetID}
+                  tables: {
+                    name:sourceSheet, 
+                    id:sheetID
+                  }
                 });
                 break;
               case "GoogleDrive":
@@ -4450,7 +4454,7 @@ kshf.Browser.prototype = {
         if(!Array.isArray(this.source.tables)) this.source.tables = [this.source.tables];
 
         this.source.tables.forEach(function(tableDescr, i){
-            if(typeof tableDescr === "string") this.source.tables[i] = {name: tableDescr};
+          if(typeof tableDescr === "string") this.source.tables[i] = {name: tableDescr};
         }, this);
 
         // Reset loadedTableCount
@@ -4488,7 +4492,7 @@ kshf.Browser.prototype = {
     loadTable_Google: function(sheet){
       var me=this;
       var headers = sheet.headers ? sheet.headers : 1;
-      var qString='https://docs.google.com/spreadsheet/tq?key='+this.source.gdocId+'&headers='+headers;
+      var qString='https://docs.google.com/spreadsheets/d/'+this.source.gdocId+'/gviz/tq?headers='+headers;
       if(sheet.sheetID){
         qString+='&gid='+sheet.sheetID;
       } else {
@@ -4498,55 +4502,93 @@ kshf.Browser.prototype = {
         qString+="&range="+sheet.range;
       }
 
-      var googleQuery = new google.visualization.Query(qString);
-      if(sheet.query) googleQuery.setQuery(sheet.query);
-
-      googleQuery.send( function(response){
-        if(kshf.dt[sheet.name]){
-          me.incrementLoadedTableCount();
-          return;
+      function doQuery(){
+        if(sheet.auth){
+          qString += '&access_token=' + encodeURIComponent(gapi.auth.getToken().access_token);
         }
-        if(response.isError()) {
-          me.panel_overlay.select("div.status_text .info").text("Cannot load data");
-          me.panel_overlay.select("span.spinner").selectAll("span").remove();
-          me.panel_overlay.select("span.spinner").append('i').attr("class","fa fa-warning");
-          me.panel_overlay.select("div.status_text .dynamic").text("("+response.getMessage()+")");
-          return;
-        }
-
-        var j,r,i,arr=[],idIndex=-1,itemId=0;
-        var dataTable = response.getDataTable();
-        var numCols = dataTable.getNumberOfColumns();
-
-        // find the index with sheet.id (idIndex)
-        for(i=0; true ; i++){
-          if(i===numCols || dataTable.getColumnLabel(i).trim()===sheet.id) {
-            idIndex = i;
-            break;
+        var googleQuery = new google.visualization.Query(qString);
+        if(sheet.query) googleQuery.setQuery(sheet.query);
+        googleQuery.send(function(response){
+          if(kshf.dt[sheet.name]){
+            me.incrementLoadedTableCount();
+            return;
           }
-        }
-
-        var tmpTable=[];
-
-        // create the column name tables
-        for(j=0; j<dataTable.getNumberOfColumns(); j++){
-          tmpTable.push(dataTable.getColumnLabel(j).trim());
-        }
-
-        // create the item array
-        arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
-        for(r=0; r<dataTable.getNumberOfRows() ; r++){
-          var c={};
-          for(i=0; i<numCols ; i++) {
-            c[tmpTable[i]] = dataTable.getValue(r,i);
+          if(response.isError()) {
+            me.panel_overlay.select("div.status_text .info").text("Cannot load data");
+            me.panel_overlay.select("span.spinner").selectAll("span").remove();
+            me.panel_overlay.select("span.spinner").append('i').attr("class","fa fa-warning");
+            me.panel_overlay.select("div.status_text .dynamic").text("("+response.getMessage()+")");
+            return;
           }
-          // push unique id as the last column if necessary
-          if(c[sheet.id]===undefined) c[sheet.id] = itemId++;
-          arr[r] = new kshf.Record(c,sheet.id);
-        }
 
-        me.finishDataLoad(sheet,arr);
-      });
+          var j,r,i,arr=[],idIndex=-1,itemId=0;
+          var dataTable = response.getDataTable();
+          var numCols = dataTable.getNumberOfColumns();
+
+          // find the index with sheet.id (idIndex)
+          for(i=0; true ; i++){
+            if(i===numCols || dataTable.getColumnLabel(i).trim()===sheet.id) {
+              idIndex = i;
+              break;
+            }
+          }
+
+          var tmpTable=[];
+
+          // create the column name tables
+          for(j=0; j<dataTable.getNumberOfColumns(); j++){
+            tmpTable.push(dataTable.getColumnLabel(j).trim());
+          }
+
+          // create the item array
+          arr.length = dataTable.getNumberOfRows(); // pre-allocate for speed
+          for(r=0; r<dataTable.getNumberOfRows() ; r++){
+            var c={};
+            for(i=0; i<numCols ; i++) {
+              c[tmpTable[i]] = dataTable.getValue(r,i);
+            }
+            // push unique id as the last column if necessary
+            if(c[sheet.id]===undefined) c[sheet.id] = itemId++;
+            arr[r] = new kshf.Record(c,sheet.id);
+          }
+
+          me.finishDataLoad(sheet,arr);
+        });
+      };
+
+      if(sheet.auth){
+        gapi.load("client", function(){
+          gapi.auth.authorize(
+            { client_id: googleClientID, 
+              scope: 'https://spreadsheets.google.com/feeds', 
+              immediate: true
+            },
+            function(authResult) {
+              var authorizeButton = document.getElementById('authorize-button');
+              if (authResult && !authResult.error) {
+                if(authorizeButton) authorizeButton.style.visibility = 'hidden';
+                doQuery();
+              } else if(authorizeButton){
+                alert("Please click the Authorize button");
+                authorizeButton.style.visibility = '';
+                authorizeButton.onclick = function(event) {
+                  gapi.auth.authorize(
+                    { client_id: googleClientID, 
+                      scope: 'https://spreadsheets.google.com/feeds',
+                      immediate: false
+                    },
+                    function(authResult){
+                      if (authResult && !authResult.error) doQuery();
+                    });
+                  return false;
+                };
+              }
+            }
+          );
+        });
+      } else {
+        doQuery();
+      }
     },
     /** -- */
     loadTable_CSV: function(tableDescr){

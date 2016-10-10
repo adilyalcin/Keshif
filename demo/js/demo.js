@@ -462,6 +462,8 @@ kshf.Countries.data.forEach(function(s){
   kshf.Countries.index_name [s.name ] = s;
 });
 
+var googleClientID = "624759284872-vtmo5mmn4305c946tiq161dtjte4b46b.apps.googleusercontent.com";
+
 function getCountryName(v){
   var country = kshf.Countries.index_alpha[v];
   if(country) return country.name;

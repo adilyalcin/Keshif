@@ -4,7 +4,7 @@
     <title>D.C. Metro Ridership Numbers - October 2014</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -112,7 +112,7 @@ var stations = {
 // For future reference, here are the metro locations as lat-long geojson
 // -- https://github.com/benbalter/dc-maps/blob/master/maps/metro-stations-regional.geojson
 
-google.setOnLoadCallback(function(){
+google.charts.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Metro Trips",
