@@ -25,13 +25,12 @@ google.setOnLoadCallback(function(){
     leftPanelLabelWidth: 190,
     rightPanelLabelWidth: 170,
     source: {
-      //gdocId: '1Qd1TDAsqtIEE2fiIKlSJ0KSsCg6L2kKn_brCIMsqWyU',
       gdocId: '1R2CqmUzsBFD7PwC4Mk3GROozNjGDa8gEo0ySUoL-9To',
-      tables: {name:"Papers", id:"IEEE XPLORE Number"} // IEEE XPLORE Number is unique per paper
+      tables: {name:"Papers", id:"DOI"} // DOI is unique per paper
     },
     onLoad: function(){
-      kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";", false);
-      kshf.Util.cellToArray(kshf.dt.Papers, ['References'], ";", false);
+      kshf.Util.cellToArray(kshf.dt.Papers, ['First Author Affiliation'], ";");
+      kshf.Util.cellToArray(kshf.dt.Papers, ['References'], ";");
 
       // Remove whitespaces and |c| from author affiliation
       kshf.dt.Papers.forEach(function(paper){
@@ -49,12 +48,11 @@ google.setOnLoadCallback(function(){
           if(citesTo){ citesTo.data.Citations.push(paper); }
         });
       });
-
     },
     summaries: [
       { name: "Venue" },
       { name: "Type",  description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ...",
-        catLabel: { C: "Conference", M: "Miscallenous", T: "Journal (TVCG)" } },
+        catLabel: { C: "Conference", M: "Miscallenous", J: "Journal (TVCG)" } },
       { name: "# of Citations to Paper (within)", panel: 'left', 
         value: function(){ if(this.Citations.length>0) return this.Citations.length; } },
       { name: "# of References in Paper (within)", panel: 'left', 
@@ -62,6 +60,9 @@ google.setOnLoadCallback(function(){
       { name: "Year", panel: 'bottom', timeFormat: "%Y" },
       { name: "Authors", value: 'Deduped author names', catSplit: ";", panel: 'right', minAggrValue: 2,
         description: "Only authors with at least two papers are shown" },
+      { name: "Keywords", 
+        value: function(){ if(this["Author Keywords"]) return this["Author Keywords"].toLowerCase(); },
+        catSplit: ", ", minAggrValue: 3, panel: "right"}
       /*{ name: "First Author Affiliation", collapsed: false, minAggrValue: 2, panel: 'right', 
         description: "Only affiliations with at least two papers are shown" },*/
     ],
@@ -69,9 +70,9 @@ google.setOnLoadCallback(function(){
       sortBy: "# of Citations to Paper (within)",
       sortColWidth: 45,
       linkBy: ["References", "Citations"],
+      displayType: 'list',
       textSearch: "Paper Title",
-      recordView: "Paper Title",
-/*      recordView: function(){ 
+      recordView: function(){ 
         var str="";
         str+="<span class='paperTitle'>"+this['Paper Title']+"</span>";
 
@@ -92,7 +93,7 @@ google.setOnLoadCallback(function(){
         // Display: Paper Type
         // Display: Abstract (on demand)
         return str;
-      }*/
+      }
     }
   });
 });
