@@ -665,6 +665,9 @@ kshf.Aggregate.prototype = {
     // -1: selected for removal (NOT query)
     //  0: not selected
     this.selected = 0;
+
+    // Temp?
+    this.usedAggr = true;
     
     this.DOM = {
       aggrGlyph: undefined
@@ -3290,7 +3293,12 @@ kshf.Browser = function(options){
   this.insertDOM_AttributePanel();
 
   this.DOM.root.selectAll(".panel").on("mouseleave",function(){
-    setTimeout( function(){ me.updateLayout_Height(); }, 1500); // update layout after 1.5 seconds
+    setTimeout( function(){ 
+      if(me.needToRefreshLayout){
+        me.updateLayout_Height();
+        me.needToRefreshLayout = false;
+      }
+    }, 1500); // update layout after 1.5 seconds
   });
 
   kshf.loadFont();
@@ -5138,6 +5146,7 @@ kshf.Browser.prototype = {
       this.clearSelect_Compare('C',true);
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
+      this.needToRefreshLayout = true;
     },
     /** -- */
     isFiltered: function(){
@@ -5766,12 +5775,12 @@ kshf.Summary_Base.prototype = {
   /** returns the maximum active aggregate value per row in chart data */
   getMaxAggr: function(sType){
     if(this._aggrs===undefined || this.isEmpty()) return 0;
-    return d3.max(this._aggrs, function(aggr){ return aggr.measure(sType); }) || 1;
+    return d3.max(this._aggrs, function(aggr){ if(aggr.usedAggr) return aggr.measure(sType); }) || 1;
   },
   /** returns the maximum active aggregate value per row in chart data */
   getMinAggr: function(sType){
     if(this._aggrs===undefined || this.isEmpty()) return 0;
-    return d3.min(this._aggrs, function(aggr){ return aggr.measure(sType); });
+    return d3.min(this._aggrs, function(aggr){ if(aggr.usedAggr) return aggr.measure(sType); });
   },
   /** -- */
   getMaxAggr_All: function(){
@@ -7580,8 +7589,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     refreshViz_Total: function(){
-      if(this.isEmpty() || this.collapsed) return;
-      if(this.viewType==='map') return; // Maps do not display total distribution.
+      if(this.isEmpty() || this.collapsed || this.viewType==='map') return;
       if(this.browser.ratioModeActive){
         // Do not need to update total. Total value is invisible. Percent view is based on active count.
         this.DOM.measureTotalTip.style("opacity",0);
@@ -7619,7 +7627,10 @@ var Summary_Categorical_functions = {
     refreshMapColorScaleBounds: function(boundMin, boundMax){
       if(boundMin===undefined && boundMax===undefined){
         var maxAggr_Active = this.getMaxAggr('Active');
-        if(this.browser.ratioModeActive || this.browser.percentModeActive){
+        if(this.browser.ratioModeActive){
+          boundMin = 0;
+          boundMax = 100;
+        } else if(this.browser.percentModeActive){
           boundMin = 0;
           boundMax = 100*maxAggr_Active/this.browser.allRecordsAggr.measure('Active');
         } else {
@@ -7733,15 +7744,17 @@ var Summary_Categorical_functions = {
         }
         if(!isThisIt || this.isMultiValued) {
           var boundMin = ratioMode ? 
-            d3.min(this._aggrs, function(aggr){ 
-              if(aggr.recCnt.Active===0 || aggr.recCnt.Highlight===0) return null;
-              return 100*aggr.ratioHighlightToActive(); }) :
+            d3.min(this._aggrs, function(_cat){ 
+              if(_cat.recCnt.Active===0 || _cat.recCnt.Highlight===0) return null;
+              return 100*_cat.ratioHighlightToActive(); }) :
             1; //d3.min(this._aggrs, function(_cat){ return _cat.measure.Active; }), 
           var boundMax = ratioMode ? 
             d3.max(this._aggrs, function(_cat){ 
               return (_cat._measure.Active===0) ? null : 100*_cat.ratioHighlightToActive();
             }) : 
-            d3.max(this._aggrs, function(_cat){ return _cat.measure('Highlight'); });
+            d3.max(this._aggrs, function(_cat){ 
+              if(_cat.usedAggr) return _cat.measure('Highlight');
+            });
 
           this.refreshMapColorScaleBounds(boundMin, boundMax);
         }
