@@ -1733,7 +1733,7 @@ kshf.RecordDisplay.prototype = {
         .scaleExtent([0.5, 8])
         .on("zoom", function(){
           gggg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
-          me.refreshNodeVis();
+          me.refreshNodeLinkVis();
         });
 
       this.DOM.recordNodeLink_SVG = this.DOM.recordDisplayWrapper
@@ -1752,16 +1752,32 @@ kshf.RecordDisplay.prototype = {
       X.append("span")
         .attr("class","NodeLinkAnim_Pause fa fa-pause")
         .on("click",function(){ me.nodelink_Force.stop();  });
+
       this.DOM.NodeLinkAnim_Refresh = X.append("span")
         .attr("class","NodeLinkAnim_Refresh fa fa-refresh")
         .on("click",function(){ 
           me.refreshNodeLinks();
           this.style.display = null;
         });
+
+      X.append("span")
+        .attr("class","fa fa-plus")
+        .on("click",function(){ 
+          me.nodeZoomBehavior.scale(me.nodeZoomBehavior.scale()*2);
+          me._refreshNodeLinkSVG_Transform();
+        });
+      X.append("span")
+        .attr("class","fa fa-minus")
+        .on("click",function(){ 
+          me.nodeZoomBehavior.scale(me.nodeZoomBehavior.scale()/2);
+          me._refreshNodeLinkSVG_Transform();
+        });
       X.append("span")
         .attr("class","fa fa-arrows-alt")
         .attr("title",kshf.lang.cur.ZoomToFit)
-        .on("click",function(){ me.nodelink_zoomToActive();  });
+        .on("click",function(){ 
+          me.nodelink_zoomToActive();
+        });
 
     },
     /** -- */
@@ -2168,7 +2184,13 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.root.attr("NodeLinkState","started");
     },
-    refreshNodeVis: function(){
+    /** -- */
+    refreshVis_Nodes: function(){
+      var scale = "scale("+(1/this.nodeZoomBehavior.scale())+")";
+      this.DOM.kshfRecords.attr("transform", function(d){ return "translate("+d.x+","+d.y+") "+scale; });
+    },
+    /** -- */
+    refreshNodeLinkVis: function(){
       if(this.DOM.recordLinks===undefined) return;
 
       // position & direction of the links
@@ -2178,9 +2200,7 @@ kshf.RecordDisplay.prototype = {
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-      // position of the record
-      var scale = "scale("+(1/this.nodeZoomBehavior.scale())+")";
-      this.DOM.kshfRecords.attr("transform", function(d){ return "translate("+d.x+","+d.y+") "+scale; });
+      this.refreshVis_Nodes();
     },
     /** -- */
     nodelink_zoomToActive: function(){
@@ -2233,10 +2253,18 @@ kshf.RecordDisplay.prototype = {
       this.nodeZoomBehavior.scale(_scale);
       this.nodeZoomBehavior.translate(_translate);
 
-      this.refreshNodeVis();
+      this.refreshNodeLinkVis();
+      this._refreshNodeLinkSVG_Transform();
       // still need to manually update the view. d3 is no use.
+    },
+    /** -- */
+    _refreshNodeLinkSVG_Transform: function(){
+      var _scale = this.nodeZoomBehavior.scale();
+      var _translate = this.nodeZoomBehavior.translate();
       this.DOM.recordNodeLink_SVG.select(".gggg")
         .attr("transform", "translate(" + _translate[0] + "," + _translate[1] + ") scale(" + _scale + ")");
+
+      this.refreshVis_Nodes();
     },
     /** -- */
     setNodeLink: function(){
@@ -2294,7 +2322,7 @@ kshf.RecordDisplay.prototype = {
           me.DOM.root.attr("NodeLinkState","stopped");
           me.DOM.root.classed("hideLinks",null);
         })
-        .on("tick", function(){ me.refreshNodeVis(); });
+        .on("tick", function(){ me.refreshNodeLinkVis(); });
     },
     /** -- */
     refreshRecordColors: function(){
