@@ -9,7 +9,7 @@
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="./js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="./js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="./keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./keshif.css"/ type="text/css">
     <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
@@ -49,8 +49,8 @@ $(document).ready(function(){
   });
 
   d3.selectAll(".pageSectionA").on("click",function(){
-    var DOM = d3.select("body")[0][0]
-    var targetPos = d3.select(this.getAttribute("scrollTo"))[0][0].offsetTop;
+    var DOM = d3.select("body").node();
+    var targetPos = d3.select(this.getAttribute("scrollTo")).node().offsetTop;
     targetPos = Math.min(targetPos, DOM.scrollHeight - window.innerHeight );
     kshf.Util.scrollToPos_do( d3.select("body"), targetPos );
   });
@@ -85,11 +85,9 @@ $(document).ready(function(){
     scrollToImage("AbsRelInfoBox", (curImgIndex.AbsRelInfoBox+1)%2);
     window.clearInterval(autoScrollInterval);
   });
-
-  loadDemoBrowser();
 });
 
-var loadDemoBrowser = function(){
+google.charts.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#livedemo",
     categoryTextWidth: 150,
@@ -182,7 +180,7 @@ var loadDemoBrowser = function(){
       }
     }
   });
-};
+});
 	</script>
 	<style>
 

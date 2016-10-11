@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -37,9 +37,9 @@ google.charts.setOnLoadCallback(function(){
       { name: "Year", panel: 'bottom', timeFormat: "%Y" },
       { name: "Theme"},
       { name: "Sub-theme" },
-      { name: "# of Pieces", panel: 'right' },
+      { name: "# of Pieces", panel: 'right', skipZero: true },
       { name: "# of Mini-Figures", panel: 'right', type: 'interval' },
-      { name: "Cost", value: 'USD_MSRP', panel: 'right', unitName: "$" },
+      { name: "Cost", value: 'USD_MSRP', panel: 'right', unitName: "$", skipZero: true },
       { name: "Packaging", panel: "right" },
       { name: "Availability", panel: "right", collapsed: true}
     ],
@@ -48,7 +48,6 @@ google.charts.setOnLoadCallback(function(){
       sortBy: "Cost in USD$",
       textSearch: "Name",
       detailsToggle: "off",
-//      recordView: "Name",
       recordView : function(){
         return "<a target='_blank' href='http://brickset.com/sets/"+this.Item_Number+"'>"+
           "<img class='thumbImg' id='img_"+this.id+"' src='"+this.Image_URL.replace(/sets\/images/g,"sets\/small")+"'></a>"+

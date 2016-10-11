@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -85,7 +85,7 @@ google.charts.setOnLoadCallback(function(){
       sortBy: { name: "AoTY", inverse: false},
       textSearch: { name: "Artist & Album", value: function(){return this.Artist+" "+this.Album; } },
       recordView: function(){ 
-        var dateFormat = d3.time.format("%d %b, 2015");
+        var dateFormat = d3.timeFormat("%d %b, 2015");
         return ""+
           "<a target='_blank' href='"+this["Album_url"]+"''><img class='albumCover' src='"+this.Thumbnail+"'></a>"+
           "<a class='artistName' target='_blank' href='"+this["Artist Profile URL"]+"'>"+this["Artist"]+"</a> "+

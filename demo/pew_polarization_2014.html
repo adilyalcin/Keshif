@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
@@ -124,7 +124,6 @@ google.charts.setOnLoadCallback(function(){
                     {id:9, Name: "Don’t know/Refused"}
                 ]);
 
-                var parseDate = d3.time.format("%Y%m%e");
                 $.ajax({
                     url: "https://storage.googleapis.com/keshif-data/pew_polarization_2014.csv",
                     type: "GET",
@@ -142,7 +141,7 @@ google.charts.setOnLoadCallback(function(){
 
                         parsedData.data.forEach(function(row,i){
                             row.id = i;
-                            row.int_date = parseDate.parse(""+row.int_date);
+                            row.int_date = d3.timeParse("%Y%m%e").parse(""+row.int_date);
                             arr.push(new kshf.Record(row,'id'));
                         });
 

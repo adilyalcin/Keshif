@@ -4,7 +4,7 @@
     <title>Gordon and Betty Moore Foundation Grants</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -14,7 +14,6 @@
 
     <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-  var dateFormat = d3.time.format("%b %Y"); // 30-Sep-05
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Grants",
@@ -29,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function(){
     },
     onLoad: function(){
       this.records.forEach(function(record){
-        record.data.Date = dateFormat.parse(record.data.Date);
+        record.data.Date = d3.timeParse("%b %Y")(record.data.Date);
       });
     },
     summaries: [
@@ -54,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function(){
           "<span class='grantSummary'>"+this.Summary+"</span>"+
           "<span class='grantNotes'>"+
           "<span class='grantNote grantAmmount'>$"+this.Amount+"</span> - "+
-          "<span class='grantNote grantDate'>"+dateFormat(this.Date)+",</span>"+
+          "<span class='grantNote grantDate'>"+d3.timeFormat("%b %Y")(this.Date)+",</span>"+
           "<span class='grantNote grantTerm'>"+this.Term+"</span> - "+
           (this.Area?("<span class='grantNote grantArea'>"+this.Area.join(", ")+"</span> - "):"")+
           "<span class='grantNote grantOrganization'>" +this.Organization.name+"</span>"+

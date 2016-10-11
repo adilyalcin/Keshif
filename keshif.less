@@ -2199,7 +2199,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       .item_details{ display: none; }
 
-      .showDetails{
+      &.showDetails{
         max-height: none;
         > .recordToggleDetail{ .rotate(180deg); }
         .item_details{ display: block; }
@@ -2441,7 +2441,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .transition(~'color 100ms linear');
       cursor: pointer;
       z-index: 10;
-      &[filtered]{ 
+      &.filtered{
         color: black !important;
         border: solid 1px darken(lightgray,20%);
         border-radius: 4px;

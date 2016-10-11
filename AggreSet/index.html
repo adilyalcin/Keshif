@@ -4,7 +4,7 @@
     <title>AggreSet Visualization Technique</title><meta charset="utf-8">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
     <link rel="icon" href="../demo/img/favicon.png" type="image/png" >
@@ -70,7 +70,7 @@ function loadDemo(config){
   browser = new kshf.Browser(config.browser); 
 };
 
-$(document).ready( function(){
+google.charts.setOnLoadCallback(function(){
   $(window).resize(function(){
     if(browser) browser.updateLayout();
   });

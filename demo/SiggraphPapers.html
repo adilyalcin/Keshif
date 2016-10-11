@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css" type="text/css">
@@ -77,7 +77,9 @@ $(document).ready( function() {
       //{name: "Authors", minAggrValue: 2},
       { name: "Keywords", catLabel: function(){ return keywords[this.id].text; } },
       { name: "Citation Count" },
-      { name: "Citation Count (internal)", value: function(){ if(this.CitedBy) return this.CitedBy.length; } },
+      { name: "Citation Count (internal)", 
+        value: function(){ if(this.CitedBy) return this.CitedBy.length; }, 
+        skipZero: true },
       { name: "Year", timeFormat: "%Y", panel: "bottom" }
     ],
     recordDisplay: {

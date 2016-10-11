@@ -2755,17 +2755,17 @@ top:calc(50% - 5px);
 .kshf div.kshfRecord .item_details {
   display: none;
 }
-.kshf div.kshfRecord .showDetails {
+.kshf div.kshfRecord.showDetails {
   max-height: none;
 }
-.kshf div.kshfRecord .showDetails > .recordToggleDetail {
+.kshf div.kshfRecord.showDetails > .recordToggleDetail {
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.kshf div.kshfRecord .showDetails .item_details {
+.kshf div.kshfRecord.showDetails .item_details {
   display: block;
 }
 .kshf div.kshfRecord[selection^="onRecord"] {
@@ -3093,7 +3093,7 @@ top:calc(50% - 5px);
   cursor: pointer;
   z-index: 10;
 }
-.kshf .missingValueAggr[filtered] {
+.kshf .missingValueAggr.filtered {
   color: black !important;
   border: solid 1px #a0a0a0;
   border-radius: 4px;

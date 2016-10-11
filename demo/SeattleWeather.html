@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script type="text/javascript">
-document.addEventListener("DOMContentLoaded", function(){
+google.charts.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 200,
@@ -26,9 +26,6 @@ document.addEventListener("DOMContentLoaded", function(){
     source: {
       gdocId: '1b4xz1oPuZUVHG7p9J05Ycm-cQjm7vHL56rv6800uZCA',
       tables: 'Seattle Weather'
-//      dirPath: 'https://storage.googleapis.com/keshif-data/',
-//      fileType: 'csv',
-//      tables: "seattle-weather"
     },
     metric: { type: "Avg", summary: "Temperature (Min)" },
     summaries: [

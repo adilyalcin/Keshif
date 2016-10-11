@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -26,7 +26,6 @@ var loadData = function(browser){
       browser.primaryTableName = "Articles";
       kshf.dt.Articles = [];
       var arr = kshf.dt.Articles;
-      var timeFormat = d3.time.format("%B %Y");
 
       $collection.find("> Collection > Items > Item").each(function(){
         var $this = $(this);
@@ -54,7 +53,7 @@ var loadData = function(browser){
         // convert page views from string to number
         cData['Page Views'] = cData['Page Views']*1;
 
-        cData['Issue Date'] = timeFormat.parse(cData['Issue'][0]);
+        cData['Issue Date'] = d3.timeParse("%B %Y")(cData['Issue'][0]);
 
         if(cData['Column Name'][0]==="Feature Article or Unknown Column")
           cData['Column Name'] = null;

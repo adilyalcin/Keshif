@@ -4,7 +4,7 @@
 		<title>Knight Foundation Grants</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -14,7 +14,6 @@
 
     <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-  var dateParser = d3.time.format("%m/%d/%y"); // 09/01/11
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 200,
@@ -32,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function(){
           if(amount)
             d.data.Amount = parseInt(amount.replace(",","").replace("$",""));
           if(d.data.Meta["Date Awarded"])
-            d.data["Award Date"] = dateParser.parse(d.data.Meta["Date Awarded"]);
+            d.data["Award Date"] = d3.timeParse("%m/%d/%y")(d.data.Meta["Date Awarded"]);
           d.data.Community = d.data.Meta.Community;
           if(d.data.Meta["Focus Area"]) {
             d.data["Focus Areas"] = d.data.Meta["Focus Area"];
@@ -61,7 +60,8 @@ document.addEventListener("DOMContentLoaded", function(){
         str+=aOpen+"<span class='grantTitle'>"+this.Title+"</span></a>";
         str+="<div class='grantOrg'>"+this.Organization+"</div>";
         str+="<div>";
-          str+="<span class='grantDate'> <span class='fa fa-calendar'></span> "+dateParser(this["Award Date"])+"</span>";
+          str+="<span class='grantDate'> <span class='fa fa-calendar'></span> "+
+            d3.timeFormat("%m/%d/%y")(this["Award Date"])+"</span>";
           if(this.Community) str+="<span class='grantCommunity'> <span class='fa fa-map-marker'></span> "+this.Community+"</span>";
           str+="</div>";
         str+="<div class='grantPurpose'>"+this.Purpose+"</div>";

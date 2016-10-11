@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -36,13 +36,13 @@ google.charts.setOnLoadCallback(function(){
           3: "Class 3",
           4: "Class 4",
         }},
-      { name: "Land Size", value: "Land Square Feet", unitName: "ft<sup>2</sup>", panel: "right"},
-      { name: "Gross Size", value: "Gross Square Feet", unitName: "ft<sup>2</sup>", panel: "right"},
+      { name: "Land Size", value: "Land Square Feet", unitName: "ft<sup>2</sup>", skipZero: true, panel: "right"},
+      { name: "Gross Size", value: "Gross Square Feet", unitName: "ft<sup>2</sup>", skipZero: true, panel: "right"},
 
       { name: "Year Built", panel: "middle", timeFormat: "%Y"},
-      { name: "Total Units", panel: "middle"},
-      { name: "Residential Units", panel: "middle", collapsed: true},
-      { name: "Commercial Units", panel: "middle", collapsed: true},
+      { name: "Total Units", panel: "middle", skipZero: true},
+      { name: "Residential Units", panel: "middle", collapsed: true, skipZero: true},
+      { name: "Commercial Units", panel: "middle", collapsed: true, skipZero: true},
       { name: "Sale Price", unitName: "$", panel: "middle"},
       
       { name: "Sale Date", panel: "bottom" },

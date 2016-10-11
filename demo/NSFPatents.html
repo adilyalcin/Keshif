@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -15,7 +15,7 @@
 
     <script type="text/javascript">
 google.charts.setOnLoadCallback(function(){
-  var timeParser = d3.time.format("%Y%m%d");
+  var timeParser = d3.timeParse("%Y%m%d");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 150,
@@ -29,19 +29,13 @@ google.charts.setOnLoadCallback(function(){
       //{ name: "Genre" },
       { name: "Patent Publication Date", 
         panel: "middle",
-        value: function(){
-          return timeParser.parse(""+this.patpubdate);
-        }},
+        value: function(){ return timeParser(""+this.patpubdate); }},
       { name: "Patent Filing Date", collapsed: true,
         panel: "middle",
-        value: function(){
-          return timeParser.parse(""+this.filedate);
-        }},
+        value: function(){ return timeParser(""+this.filedate); }},
       { name: "Prior Publication Date", collapsed: true,
         panel: "middle",
-        value: function(){
-          return timeParser.parse(""+this.priorpubdate);
-        }},
+        value: function(){ return timeParser(""+this.priorpubdate); }},
 
       { name: "Organization",
         value: function(){

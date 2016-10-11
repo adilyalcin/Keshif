@@ -519,7 +519,7 @@ var _material = {
 
         // categories
         this.context.HighlightedDOM = this.browser.DOM.root
-          .selectAll('[catselect="onRecord"] > .catLabelGroup, .recordValueText-v')[0];
+          .selectAll('[catselect="onRecord"] > .catLabelGroup, .recordValueText-v').nodes();
         this.fHighlightBox("All values of<br> the selected record<br> are highlighted<br> on mouse over",
             "s","",false,"deEmph");
 
@@ -658,7 +658,7 @@ var _material = {
       info: function(DOM){
         var measureLabel = "<span class='bolder'>"+this.browser.getGlobalActiveMeasure()+"</span>";
 
-        var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter")[0].length;
+        var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter").nodes().length;
         if(filterSel===0) filterSel = "none";
 
         var str = '';
@@ -897,7 +897,7 @@ _topics: {
       },
       // Show breadcrumb *****************************************************************
       3: function(){
-        this.context.HighlightedDOM = [ this.browser.crumb_Highlight.DOM[0][0] ];
+        this.context.HighlightedDOM = [ this.browser.crumb_Highlight.DOM.node() ];
         this.fHighlightBox("This breadcrumb shows the highlighted-selection.","n","",false,"deEmph");
       },
       // Show the other (explain) aggregate *********************************************
@@ -919,8 +919,8 @@ _topics: {
       6: function(){
         if(this.browser.recordDisplay.recordViewSummary===null) return;
         this.context.HighlightedDOM = [];
-        var minY = this.browser.recordDisplay.DOM.recordGroup[0][0].scrollTop;
-        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup[0][0].offsetHeight;
+        var minY = this.browser.recordDisplay.DOM.recordGroup.node().scrollTop;
+        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup.node().offsetHeight;
         this.browser.selectedAggr.Highlight.records.some(function(record){
           if(!record.isWanted) return false;
           var DOM = record.DOM.record;
@@ -1011,7 +1011,7 @@ _topics: {
       },
       // Show breadcrumb ****************************************************************
       5: function(){
-        this.context.HighlightedDOM = [ this.context.highlightedSummary.summaryFilter.filterCrumb.DOM[0][0] ];
+        this.context.HighlightedDOM = [ this.context.highlightedSummary.summaryFilter.filterCrumb.DOM.node() ];
         this.fHighlightBox("This breadcrumb shows the filtered-selection.","n","",false,"deEmph");
       },
       // Show the other (explain) aggregate **************************************
@@ -1028,8 +1028,8 @@ _topics: {
       7.5: function(){
         if(this.browser.recordDisplay.recordViewSummary===null) return;
         this.context.HighlightedDOM = [];
-        var minY = this.browser.recordDisplay.DOM.recordGroup[0][0].scrollTop;
-        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup[0][0].offsetHeight;
+        var minY = this.browser.recordDisplay.DOM.recordGroup.node().scrollTop;
+        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup.node().offsetHeight;
         var selRecord = null;
         this.browser.records.some(function(record){
           if(!record.isWanted) return false;
@@ -1119,7 +1119,7 @@ _topics: {
       },
       2.5: function(){
         this.context.HighlightedDOM = [
-          d3.select(this.context.highlightedAggregate.DOM.aggrGlyph).select(".lockButton")[0][0]];
+          d3.select(this.context.highlightedAggregate.DOM.aggrGlyph).select(".lockButton").node()];
         this.fHighlightBox("2) Click the lock icon <br>Or Shift+Click the aggregate","s","tipsy-primary2",true);
 
         this.context.HighlightedDOM[0].stencilBox.append("div")
@@ -1130,7 +1130,7 @@ _topics: {
       },
       // Show breadcrumb ****************************************************************
       4.5: function(){
-        this.context.HighlightedDOM = [ this.browser['crumb_Compare_'+this.context.fakeCompare].DOM[0][0] ];
+        this.context.HighlightedDOM = [ this.browser['crumb_Compare_'+this.context.fakeCompare].DOM.node() ];
         this.fHighlightBox("This breadcrumb shows the locked-selection.","n","",false,"deEmph");
       },
       // Show the other (explain) aggregate *********************************************
@@ -1154,8 +1154,8 @@ _topics: {
         if(this.browser.recordDisplay.recordViewSummary===null) return;
         var cT = this.context.fakeCompare;
         this.context.HighlightedDOM = [];
-        var minY = this.browser.recordDisplay.DOM.recordGroup[0][0].scrollTop;
-        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup[0][0].offsetHeight;
+        var minY = this.browser.recordDisplay.DOM.recordGroup.node().scrollTop;
+        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup.node().offsetHeight;
         this.browser.selectedAggr['Compare_'+cT].records.some(function(record){
           if(!record.isWanted) return false;
           if(!record.selectCompared[cT]) return false;
@@ -1291,7 +1291,7 @@ _topics: {
       },
       2.5: function(){
         this.context.HighlightedDOM = [
-          d3.select(this.context.highlightedAggregate.DOM.aggrGlyph).select(".AndOrNot_Not")[0][0]];
+          d3.select(this.context.highlightedAggregate.DOM.aggrGlyph).select(".AndOrNot_Not").node()];
         this.fHighlightBox("2) Click on <span class='AndOrNot_Not'>Not</span>","s","tipsy-primary2",true);
       },
       3.5: function(){
@@ -1486,7 +1486,7 @@ _topics: {
         this.context.highlightedSummary.onAggrHighlight(this.context.highlightedAggregate);
       },
       3.5: function(){
-        this.context.HighlightedDOM = [ this.browser.crumb_Highlight.DOM[0][0] ];
+        this.context.HighlightedDOM = [ this.browser.crumb_Highlight.DOM.node() ];
         this.fHighlightBox("This breadcrumb shows <br> an example highlighted-selection.","n","",false,"deEmph");
       },
       5: function(){
@@ -1548,8 +1548,8 @@ _topics: {
       pos: "w",
       // only show tooltip for elements that are within view...
       filter: function(){
-        var minY = this.browser.recordDisplay.DOM.recordGroup[0][0].scrollTop;
-        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup[0][0].offsetHeight;
+        var minY = this.browser.recordDisplay.DOM.recordGroup.node().scrollTop;
+        var maxY = minY + this.browser.recordDisplay.DOM.recordGroup.node().offsetHeight;
         this.context.HighlightedDOM = this.context.HighlightedDOM.filter(function(d){
           var record = d.__data__;
           if(!record.isWanted) return false;
@@ -2163,7 +2163,7 @@ if(location.search==="?exp=basis" || location.search==="?exp=helpin" || location
     d3.select("body")
       .append("div")
         .attr("class","exp_timer")
-        .style({
+        .styles({
           position: 'absolute',
           'font-family': 'Roboto, Helvetica, Arial, sans-serif',
           color: 'gray',

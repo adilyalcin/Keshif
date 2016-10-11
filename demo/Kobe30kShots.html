@@ -4,7 +4,7 @@
     <title>All 30,000+ shots by Kobe Bryant</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
 
     <link rel="image_src" href="./demo_img/Kobe30kShots_thumb.png" />
@@ -20,7 +20,7 @@
 
     <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
-  var timeFormat = d3.time.format("%e %m %Y");
+  var timeFormat = d3.timeFormat("%e %m %Y");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 120,
@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function(){
       { name: "Shot Zone Range", value: "shot_zone_range", panel: "middle" },
       { name: "Distance from Hoop", value: "shot_distance", unitName: "ft", panel: "middle", collapsed: true },
       { name: "Date", panel: "middle",
-        value: function(){ return new Date(moment(this.game_date +" "+this.matchup)); }}, // moment parses better than d3...
-
+        value: function(){ return new Date(moment(this.game_date +" "+this.matchup)); }}, // moment has better parser
+        
       { name: "Season", value: "season", panel: "right", catSortBy: "id" },
       { name: "Period", value: "period", catSortBy: "id", panel: "right" },
       { name: "Minutes Remaining", value: "minutes_remaining", panel: "right" },

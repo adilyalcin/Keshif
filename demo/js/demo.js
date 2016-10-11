@@ -102,7 +102,7 @@ var US_States = {
   loadGeo: function(browser){
     browser.asyncDataWaitedCnt++;
     // Load US county geometries
-    d3.xhr('data/us-counties-states-FIPS.json')
+    d3.request('data/us-counties-states-FIPS.json')
       .get(function(error, data){
         var topojsonData = JSON.parse(data.response);
         topojson.feature(topojsonData, topojsonData.objects.states)
@@ -442,7 +442,7 @@ kshf.Countries = {
     // add ./demo directory if needed
     var x = document.location.pathname.split("/")
     var pre = x[x.length-2]==="gist"?"../demo/":"";
-    d3.xhr(pre+'data/world-countries.json')
+    d3.request(pre+'data/world-countries.json')
       .get(function(error, data){
         var topojsonData = JSON.parse(data.response);
         topojson.feature(topojsonData, topojsonData.objects.countries)
@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var demoHeader = d3.select("body").append("div").attr("class","demoHeader");
     
     var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
-    keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).style({width: "30px", height: "30px", float: "left"});
+    keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).styles({width: "30px", height: "30px", float: "left"});
     keshif_logo.append("span").attr("class","keshif_logo_content")
       .html(
         "<div class='subContent_2'>Created with</div>"+
@@ -505,13 +505,16 @@ document.addEventListener('DOMContentLoaded',function(){
 
     var openSource = demoHeader.append("div").attr("class","openSource");
     openSource.append("iframe")
-      .attr("src","http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small")
-      .attr("frameborder",0)
-      .attr("scrolling",0)
-      .attr("width","52px")
-      .attr("height","20px")
-      .style("position","relative")
-      .style("top","3px");
+      .attrs({
+        src: "http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small",
+        scrolling: 0,
+        frameborder: 0,
+        width: "52px",
+        height: "20px"
+      })
+      .styles({
+        position: "relative", top: "3px"
+      })
     openSource.append("a").attr("class","openSourceLabel")
       .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code")
         .append("span").attr("class","fa fa-code");

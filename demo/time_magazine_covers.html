@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
     <script type="text/javascript">
 google.charts.setOnLoadCallback(function(){
-  var timeFormat = d3.time.format("%B %d, %Y");
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     barChartWidth: 90,
@@ -39,7 +38,7 @@ google.charts.setOnLoadCallback(function(){
       recordView: function(){ 
         return "<a target='_blank' href='http://content.time.com"+this.MagazineURL+"'>"+
           "<img class='thumbImg' src='"+this.Thumbnail_2+"'></a>"+
-          "<span class='subTitle'>"+timeFormat(this.Date)+"</span>"+
+          "<span class='subTitle'>"+d3.timeFormat("%B %d, %Y")(this.Date)+"</span>"+
           "<span class='title'>"+this.MagazineTitle+"</span>";
       }
     }

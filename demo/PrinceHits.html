@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -43,7 +43,7 @@ google.charts.setOnLoadCallback(function(){
         return "<div class='Song'>"+this.Song+"</div> "+
           "<span class='Album'>"+this.Album+"</span> - "+
           "<span class='Info'>"+
-            "<i class='fa fa-calendar'></i>"+d3.time.format("%B %e, %Y")(this.Date)+" - "+
+            "<i class='fa fa-calendar'></i>"+d3.timeFormat("%B %e, %Y")(this.Date)+" - "+
             "<i class='fa fa-history'></i>"+this['Weeks on Chart']+" weeks - "+
             "Peak <i class='fa fa-arrow-circle-o-up'></i>"+this['Peak Position']+" - "+
           "</span>";

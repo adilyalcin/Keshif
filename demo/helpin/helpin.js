@@ -240,12 +240,12 @@ Helpin.prototype = {
       var DOMs;
       if(DOM_class){
         if(typeof DOM_class === "function"){
-          DOMs = DOM_class.call(CCC)[0];
+          DOMs = DOM_class.call(CCC).nodes();
         } if(typeof DOM_class === "string"){
-          DOMs = CCC.DOM[DOM_class][0];
+          DOMs = CCC.DOM[DOM_class].nodes();
         }
       } else {
-        DOMs = CCC.DOM.root.selectAll(matches)[0];
+        DOMs = CCC.DOM.root.selectAll(matches).nodes();
       }
       if(Array.isArray(DOMs)){
         this.context.HighlightedDOM = this.context.HighlightedDOM.concat( DOMs );
@@ -421,7 +421,7 @@ Helpin.prototype = {
 
     this.browser.panel_overlay.attr("show","help-overview");
     this.DOM.root
-      .style({left: null, right: null, top: null, bottom: null})
+      .styles({left: null, right: null, top: null, bottom: null})
       .attr("hideRelatedTopics",true);
 
     // change title
@@ -452,7 +452,7 @@ Helpin.prototype = {
       var filterStr = "";
       this.browser.filters.forEach(function(filter){
         if(!filter.isFiltered) return false;
-        filterStr+=filter.filterCrumb.DOM[0][0].outerHTML;
+        filterStr+=filter.filterCrumb.DOM.node().outerHTML;
       });
 
       var off='';
@@ -488,21 +488,21 @@ Helpin.prototype = {
     }
     if(this.browser.highlightSelectedSummary){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Highlight'></span></span> shows "+
-        this.browser.crumb_Highlight.DOM[0][0].outerHTML+"highlighted-selection. ";
+        this.browser.crumb_Highlight.DOM.node().outerHTML+"highlighted-selection. ";
     }
     if(this.browser.selectedAggr.Compare_A){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_A'></span></span> shows "+
-        "a locked-selection "+this.browser.crumb_Compare_A.DOM[0][0].outerHTML+". "+
+        "a locked-selection "+this.browser.crumb_Compare_A.DOM.node().outerHTML+". "+
           "<span class='topicLink weakTopicLink' topicName='T_UnlockSelection'>(Unlock)</span>";
     }
     if(this.browser.selectedAggr.Compare_B){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_B'></span></span> shows "+
-        "a locked-selection "+this.browser.crumb_Compare_B.DOM[0][0].outerHTML+". "+
+        "a locked-selection "+this.browser.crumb_Compare_B.DOM.node().outerHTML+". "+
           "<span class='topicLink weakTopicLink' topicName='T_UnlockSelection'>(Unlock)</span>";
     }
     if(this.browser.selectedAggr.Compare_C){
       content+="<br><span class='encodingInfo'><span class='colorCoding_Compare_C'></span></span> shows "+
-        "a locked-selection "+this.browser.crumb_Compare_C.DOM[0][0].outerHTML+". "+
+        "a locked-selection "+this.browser.crumb_Compare_C.DOM.node().outerHTML+". "+
           "<span class='topicLink weakTopicLink' topicName='T_UnlockSelection'>(Unlock)</span>";
     }
     content+="<p>";
@@ -553,19 +553,19 @@ Helpin.prototype = {
 
     this.browser.panel_overlay.attr("show","help-topiclisting");
     this.DOM.root
-      .style({left: null, right: null, top: null, bottom: null})
+      .styles({left: null, right: null, top: null, bottom: null})
       .attr("hideRelatedTopics",null);
 
     this.DOM.TopicBlock.style("font-size",null);
 
-    this.DOM.TopicsList[0][0].scrollTop = 0;
+    this.DOM.TopicsList.node().scrollTop = 0;
 
     // Clear all filtering. :: TODO: Check / incomplete
     while(true){
       if(this.qFilters.topics.length===0) break;
       this.unselectKeyword(this.qFilters.topics[0]);
     }
-    this.DOM.SearchTextBox[0][0].focus();
+    this.DOM.SearchTextBox.node().focus();
 
     this.filterTopics();
   },
@@ -587,16 +587,16 @@ Helpin.prototype = {
         
         me.DOM.root.style("transition","none");
         // MOVE HELPIN BOX
-        var initPos = d3.mouse(d3.select("body")[0][0]);
-        var DOM = me.DOM.root[0][0];
+        var initPos = d3.mouse(d3.select("body").node());
+        var DOM = me.DOM.root.node();
         var initLeft  = DOM.offsetLeft; // position relative to parent
         var initTop   = DOM.offsetTop; // position relative to parent
         var boxWidth  = DOM.getBoundingClientRect().width;
         var boxHeight = DOM.getBoundingClientRect().height;
-        var maxLeft   = me.browser.DOM.root[0][0].getBoundingClientRect().width  - boxWidth;
-        var maxTop    = me.browser.DOM.root[0][0].getBoundingClientRect().height - boxHeight;
+        var maxLeft   = me.browser.DOM.root.node().getBoundingClientRect().width  - boxWidth;
+        var maxTop    = me.browser.DOM.root.node().getBoundingClientRect().height - boxHeight;
         me.browser.DOM.root.on("mousemove", function() {
-          var newPos = d3.mouse(d3.select("body")[0][0]);
+          var newPos = d3.mouse(d3.select("body").node());
           DOM.style.left   = Math.min(maxLeft, Math.max(0, initLeft-initPos[0]+newPos[0] ))+"px";
           DOM.style.top    = Math.min(maxTop,  Math.max(0, initTop -initPos[1]+newPos[1] ))+"px";
         }).on("mouseup", function(){
@@ -652,7 +652,7 @@ Helpin.prototype = {
     this.initDOM_TopicList();
     this.initDOM_PointNClickInfo();
 
-    this.showPointNLearn(); // default mode on initialization
+    //this.showPointNLearn(); // default mode on initialization
   },
   /** -- */
   initDOM_PointNClickInfo: function(){
@@ -859,8 +859,8 @@ Helpin.prototype = {
       .on("mouseleave",function(){ this.tipsy.hide(); });;
     this.DOM.checkboxPrioritize =x.append("input").attr("type","checkbox").attr("id","checkboxPrioritize")
       .on("change",function(){
-        if(me.DOM.checkboxPrioritize[0][0].checked){
-          me.DOM.checkboxPrioritizeRecent[0][0].checked = false;
+        if(me.DOM.checkboxPrioritize.node().checked){
+          me.DOM.checkboxPrioritizeRecent.node().checked = false;
         } 
         me.filterTopics();
       });
@@ -874,8 +874,8 @@ Helpin.prototype = {
       .on("mouseleave",function(){ this.tipsy.hide(); });;
     this.DOM.checkboxPrioritizeRecent =x.append("input").attr("type","checkbox").attr("id","checkboxPrioritizeRecent")
       .on("change",function(){ 
-        if(me.DOM.checkboxPrioritizeRecent[0][0].checked){
-          me.DOM.checkboxPrioritize[0][0].checked = false;
+        if(me.DOM.checkboxPrioritizeRecent.node().checked){
+          me.DOM.checkboxPrioritize.node().checked = false;
         } 
         me.filterTopics();
       });
@@ -883,13 +883,13 @@ Helpin.prototype = {
   },
   /** -- */
   filterRelevantOnly: function(){
-    return !this.DOM.checkboxRelevant[0][0].checked;
+    return !this.DOM.checkboxRelevant.node().checked;
   },
   rankByUnusued: function(){
-    return this.DOM.checkboxPrioritize[0][0].checked;
+    return this.DOM.checkboxPrioritize.node().checked;
   },
   rankByMostRecent: function(){
-    return this.DOM.checkboxPrioritizeRecent[0][0].checked;
+    return this.DOM.checkboxPrioritizeRecent.node().checked;
   },
   /** -- */
   swapselectKeyword: function(keyword){
@@ -931,7 +931,7 @@ Helpin.prototype = {
     this.browser.panel_overlay.attr("topicAnswer","true");
 
     this.DOM.overlay_answer.style("display","block");
-    this.DOM.root.style({left: null, right: null, top: null, bottom: null});
+    this.DOM.root.styles({left: null, right: null, top: null, bottom: null});
 
     this.removeStencilBoxes();
 
@@ -981,7 +981,7 @@ Helpin.prototype = {
       var X = this.DOM.SelectedThing_Content.append("div").attr("class","animateState");
       var Y = X.append("span").attr("class","animationProgress").append("span").attr("class","animationProgressIn")
 
-      Y[0][0].addEventListener("animationend", function(){
+      Y.node().addEventListener("animationend", function(){
         X.append("span").attr("class","animationReplay")
           .html("<i class='fa fa-repeat' style='font-size: 0.9em;'></i> Replay")
           .on("click", function(){
@@ -1101,7 +1101,7 @@ Helpin.prototype = {
   /** -- */
   fHighlightBox: function(text,pos,className,skipStencil, moreClass){
     var me=this;
-    var bounds_browser = this.browser.DOM.root[0][0].getBoundingClientRect();
+    var bounds_browser = this.browser.DOM.root.node().getBoundingClientRect();
 
     kshf.activeTipsy = null;
 
@@ -1442,7 +1442,7 @@ Helpin.prototype = {
     // ADD DOM TREE BOXES
 
     pointedDOMTree.reverse();
-    var bounds_browser = this.browser.DOM.root[0][0].getBoundingClientRect();
+    var bounds_browser = this.browser.DOM.root.node().getBoundingClientRect();
 
     var X = this.DOM.overlay_answer.selectAll(".stencilBox")
       .data(pointedDOMTree, function(d,i){ return i; });
@@ -1537,7 +1537,7 @@ Helpin.prototype = {
     this.DOM.overlay_control.select(".helpInMode_PointNLearn").attr("active",true);
 
     this.DOM.root
-      .style({left: null, right: null, top: null, bottom: null})
+      .styles({left: null, right: null, top: null, bottom: null})
       .attr("hideRelatedTopics",true);
     this.DOM.TopicBlock.style("display","none");
 
@@ -1609,8 +1609,8 @@ Helpin.prototype = {
       if(g.component){
         var x = _material._components[g.component];
         var m = this.browser.DOM.root.select(x.matches);
-        if(m[0][0]!==null){
-          this.GuidedTourSeq.push({dom: m[0][0]});
+        if(m.node()!==null){
+          this.GuidedTourSeq.push({dom: m.node()});
         }
       } else if(g.topic!==undefined){
         var _t = _material._topics[g.topic];
@@ -1636,7 +1636,7 @@ Helpin.prototype = {
     this.DOM.overlay_control.selectAll('[class^="helpInMode_"]').attr("active",null);
     this.DOM.overlay_control.select(".helpInMode_GuidedTour").attr("active",true);
 
-    this.DOM.root.style({left: null, right: null, top: null, bottom: null});
+    this.DOM.root.styles({left: null, right: null, top: null, bottom: null});
     this.DOM.root.attr("hideRelatedTopics",true);
     this.DOM.TopicBlock.style("display","none");
 
@@ -1699,27 +1699,28 @@ Helpin.prototype = {
   /** -- */
   repositionHelpMenu: function(){
     var margin = 40;
-    var bounds_browser = this.browser.DOM.root[0][0].getBoundingClientRect();
+    var bounds_browser = this.browser.DOM.root.node().getBoundingClientRect();
+    var rootDOM = this.DOM.root.node();
 
-    var initLeft  = this.DOM.root[0][0].offsetLeft; // position relative to parent
-    var initTop   = this.DOM.root[0][0].offsetTop; // position relative to parent
-    var boxWidth  = this.DOM.root[0][0].getBoundingClientRect().width;
-    var boxHeight = this.DOM.root[0][0].getBoundingClientRect().height;
+    var initLeft  = rootDOM.offsetLeft; // position relative to parent
+    var initTop   = rootDOM.offsetTop; // position relative to parent
+    var boxWidth  = rootDOM.getBoundingClientRect().width;
+    var boxHeight = rootDOM.getBoundingClientRect().height;
     var browserWidth  = bounds_browser.width;
     var browserHeight = bounds_browser.height;
     var maxLeft   = browserWidth  - margin - boxWidth;
     var maxTop    = browserHeight - margin - boxHeight;
 
-    var x=this.DOM.root[0][0].getBoundingClientRect();
+    var x = rootDOM.getBoundingClientRect();
     var helpBox = {
-      left:   x.left  - bounds_browser.left,
-      right:  x.right - bounds_browser.left,
-      top:    x.top   - bounds_browser.top,
-      bottom: x.bottom   - bounds_browser.top,
+      left:   x.left   - bounds_browser.left,
+      right:  x.right  - bounds_browser.left,
+      top:    x.top    - bounds_browser.top,
+      bottom: x.bottom - bounds_browser.top,
     };
 
     var bestPos = null;
-    var bestIntSize = browserHeight*browserWidth;
+    var bestIntSize = browserHeight*browserWidth*100;
 
     var boxes = [];
     // add stencil boxes to avoid
@@ -1771,31 +1772,33 @@ Helpin.prototype = {
     });
 
     // use the best position
-    this.DOM.root[0][0].style.left = Math.min(maxLeft, Math.max(0, bestPos.left))+"px";
-    this.DOM.root[0][0].style.top  = Math.min(maxTop, Math.max(0, bestPos.top))+"px";
+    this.DOM.root.node().style.left = Math.min(maxLeft, Math.max(0, bestPos.left))+"px";
+    this.DOM.root.node().style.top  = Math.min(maxTop, Math.max(0, bestPos.top))+"px";
   },
   /** --*/
   checkBoxBoundaries: function(){
     var margin = 10;
-    var bounds_browser = this.browser.DOM.root[0][0].getBoundingClientRect();
+    var bounds_browser = this.browser.DOM.root.node().getBoundingClientRect();
+    var rootDOM = this.DOM.root.node();
 
-    var initLeft  = this.DOM.root[0][0].offsetLeft; // position relative to parent
-    var initTop   = this.DOM.root[0][0].offsetTop; // position relative to parent
-    var boxWidth  = this.DOM.root[0][0].getBoundingClientRect().width;
-    var boxHeight = this.DOM.root[0][0].getBoundingClientRect().height;
+    var initLeft  = rootDOM.offsetLeft; // position relative to parent
+    var initTop   = rootDOM.offsetTop; // position relative to parent
+    var boxWidth  = rootDOM.getBoundingClientRect().width;
+    var boxHeight = rootDOM.getBoundingClientRect().height;
     var browserWidth  = bounds_browser.width;
     var browserHeight = bounds_browser.height;
     var maxLeft   = browserWidth  - margin - boxWidth;
     var maxTop    = browserHeight - margin - boxHeight;
 
     // use the best position
-    this.DOM.root[0][0].style.left = Math.min(maxLeft, Math.max(0, initLeft))+"px";
-    this.DOM.root[0][0].style.top  = Math.min(maxTop, Math.max(0, initTop))+"px";
+    rootDOM.style.left = Math.min(maxLeft, Math.max(0, initLeft))+"px";
+    rootDOM.style.top  = Math.min(maxTop, Math.max(0, initTop))+"px";
   },
   /** -- */
   showNotification: function(){
     this.initDOM();
     // apply
+    this.showTopicListing();
     this.showResponse(this.notifyAction);
     this.clearNotification();
   },

@@ -34,9 +34,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // load google visualization library only if google scripts were included
 if(typeof google !== 'undefined'){
-  google.charts.load('current', {packages: []});
+  google.charts.load('current', {packages: ['corechart']});
   //google.load('visualization', '1', {'packages': []});
 }
+
+// Temporary: Until I build my own d3 bundle, this is not included in the main bundle
+// https://github.com/d3/d3-selection-multi Version 1.0.0. Copyright 2016 Mike Bostock.
+!function(t,n){"object"==typeof exports&&"undefined"!=typeof module?n(require("d3-selection"),require("d3-transition")):"function"==typeof define&&define.amd?define(["d3-selection","d3-transition"],n):n(t.d3,t.d3)}(this,function(t,n){"use strict";function r(n,r){return n.each(function(){var n=r.apply(this,arguments),e=t.select(this);for(var i in n)e.attr(i,n[i])})}function e(t,n){for(var r in n)t.attr(r,n[r]);return t}function i(t){return("function"==typeof t?r:e)(this,t)}function o(n,r,e){return n.each(function(){var n=r.apply(this,arguments),i=t.select(this);for(var o in n)i.style(o,n[o],e)})}function f(t,n,r){for(var e in n)t.style(e,n[e],r);return t}function u(t,n){return("function"==typeof t?o:f)(this,t,null==n?"":n)}function s(n,r){return n.each(function(){var n=r.apply(this,arguments),e=t.select(this);for(var i in n)e.property(i,n[i])})}function c(t,n){for(var r in n)t.property(r,n[r]);return t}function a(t){return("function"==typeof t?s:c)(this,t)}function p(n,r){return n.each(function(){var e=r.apply(this,arguments),i=t.select(this).transition(n);for(var o in e)i.attr(o,e[o])})}function l(t,n){for(var r in n)t.attr(r,n[r]);return t}function y(t){return("function"==typeof t?p:l)(this,t)}function h(n,r,e){return n.each(function(){var i=r.apply(this,arguments),o=t.select(this).transition(n);for(var f in i)o.style(f,i[f],e)})}function v(t,n,r){for(var e in n)t.style(e,n[e],r);return t}function d(t,n){return("function"==typeof t?h:v)(this,t,null==n?"":n)}t.selection.prototype.attrs=i,t.selection.prototype.styles=u,t.selection.prototype.properties=a,n.transition.prototype.attrs=y,n.transition.prototype.styles=d});
 
 var kshf = {
   browsers: [],
@@ -67,6 +71,7 @@ var kshf = {
       touchZoom: false,
       doubleClickZoom: false,
       zoomControl: false,
+      worldcopyjump: true
       /*continuousWorld: true, crs: L.CRS.EPSG3857 */
     },
     tileConfig: { 
@@ -286,12 +291,12 @@ var kshf = {
     },
     ignoreScrollEvents: false,
     scrollToPos_do: function(scrollDom, targetPos){
-      scrollDom = scrollDom[0][0];
+      scrollDom = scrollDom.node();
       kshf.Util.ignoreScrollEvents = true;
       // scroll to top
       var startTime = null;
       var scrollInit = scrollDom.scrollTop;
-      var easeFunc = d3.ease('cubic-in-out');
+      var easeFunc = d3.easeCubicOut;
       var scrollTime = 500;
       var animateToTop = function(timestamp){
         var progress;
@@ -392,7 +397,7 @@ var kshf = {
   gistLogin: false,
   getGistLogin: function(){
     if(this.githubToken===undefined) return;
-    d3.xhr('https://api.github.com/user')
+    d3.request('https://api.github.com/user')
       .header("Authorization","token "+kshf.githubToken)
       .get(function(error, data){ kshf.gistLogin = JSON.parse(data.response).login; });
   },
@@ -431,8 +436,8 @@ Tipsy.prototype = {
 
     this.jq_tipsy_inner.html(title);
     this.jq_tip.attr("class","tipsy"); // reset classname in case of dynamic gravity
-    this.jq_tip.style({top: 0, left: 0, visibility: 'hidden', display: 'block'});
-    kshf.browser.DOM.root[0][0].appendChild(this.jq_tip[0][0]);
+    this.jq_tip.styles({top: 0, left: 0, visibility: 'hidden', display: 'block'});
+    kshf.browser.DOM.root.node().appendChild(this.jq_tip.node());
 
     if(this.options.className) {
       this.jq_tip.attr("class", "tipsy "+maybeCall(this.options.className, this.jq_element));
@@ -440,8 +445,8 @@ Tipsy.prototype = {
 
     var pos = this.jq_element.getBoundingClientRect();
 
-    var actualWidth = this.jq_tip[0][0].offsetWidth,
-        actualHeight = this.jq_tip[0][0].offsetHeight,
+    var actualWidth  = this.jq_tip.node().offsetWidth,
+        actualHeight = this.jq_tip.node().offsetHeight,
         gravity = maybeCall(this.options.gravity, this.jq_element);
 
     this.tipWidth = actualWidth;
@@ -471,7 +476,7 @@ Tipsy.prototype = {
       }
     }
 
-    var browserPos = kshf.browser.DOM.root[0][0].getBoundingClientRect();
+    var browserPos = kshf.browser.DOM.root.node().getBoundingClientRect();
     tp.left = tp.left - browserPos.left;
     tp.top = tp.top - browserPos.top;
 
@@ -481,7 +486,7 @@ Tipsy.prototype = {
       .attr("class", this.jq_tip.attr("class")+' tipsy-' + gravity);
     this.jq_tipsy_arrow.attr("class", 'tipsy-arrow tipsy-arrow-' + gravity.charAt(0));
 
-    this.jq_tip.style({opacity: 0, visibility: 'visible'}).transition().duration(200).style('opacity',1);
+    this.jq_tip.styles({opacity: 0, visibility: 'visible'}).transition().duration(200).style('opacity',1);
   },
   hide: function(){
     kshf.activeTipsy = undefined;
@@ -576,7 +581,7 @@ kshf.Record.prototype = {
   /** -- */
   setRecordDetails: function(value){
     this.showDetails = value;
-    if(this.DOM.record) this.DOM.record.classed('showDetails', this.showDetails);
+    if(this.DOM.record) d3.select(this.DOM.record).classed('showDetails', this.showDetails);
   },
   /** Called on mouse-over on a primary item type */
   highlightRecord: function(){
@@ -894,7 +899,7 @@ kshf.BreadCrumb.prototype = {
     this.DOM.attr("ready",false);
     setTimeout(function(){ 
       if(me.DOM===null) return;
-      me.DOM[0][0].parentNode.removeChild(me.DOM[0][0]);
+      me.DOM.node().parentNode.removeChild(me.DOM.node());
       me.DOM = null;
     }, 350);
   },
@@ -943,11 +948,11 @@ kshf.BreadCrumb.prototype = {
     y.append("span").attr("class","crumbHeader");
     y.append("span").attr("class","crumbDetails");
     // animate appear
-    window.getComputedStyle(this.DOM[0][0]).opacity; // force redraw
+    window.getComputedStyle(this.DOM.node()).opacity; // force redraw
     this.DOM.attr("ready",true);
 
     // Push the save button to the end of list
-    var dom = this.browser.DOM.saveSelection[0][0];
+    var dom = this.browser.DOM.saveSelection.node();
     dom.parentNode.appendChild(dom);
   },
 };
@@ -1085,7 +1090,7 @@ kshf.RecordDisplay = function(kshf_, config){
     this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
 
     this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
-      .attr({
+      .attrs({
         detailsToggle  : this.detailsToggle,
         showRank       : this.showRank,
         mapMouseControl: this.mapMouseControl,
@@ -1467,7 +1472,7 @@ kshf.RecordDisplay.prototype = {
       });
       // Compute _geoFeat_ of each record
       this.browser.records.forEach(function(record){
-        if(record._geoFeat_) record._geoBound_ = d3.geo.bounds(record._geoFeat_);
+        if(record._geoFeat_) record._geoBound_ = d3.geoBounds(record._geoFeat_);
       });
     },
     /** -- */
@@ -1494,8 +1499,9 @@ kshf.RecordDisplay.prototype = {
         this.style.width  = Math.abs(south_east.x-north_west.x)+"px";
       };
 
-      this.leafletRecordMap = L.map(this.DOM.recordMap_Base[0][0], kshf.map.config )
+      this.leafletRecordMap = L.map(this.DOM.recordMap_Base.node(), kshf.map.config )
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
+        .setView(L.latLng(0,0),0)
         .on("viewreset",function(){ 
           me.map_projectRecords();
         })
@@ -1528,8 +1534,8 @@ kshf.RecordDisplay.prototype = {
           if(this.getZoom()!==this._zoomInit_) me.map_projectRecords();
         });
 
-      this.recordGeoPath = d3.geo.path().projection( 
-        d3.geo.transform({
+      this.recordGeoPath = d3.geoPath().projection( 
+        d3.geoTransform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
             if(x>kshf.map.wrapLongitude) x-=360;
@@ -1645,13 +1651,13 @@ kshf.RecordDisplay.prototype = {
       // http://stackoverflow.com/questions/17776641/fill-rect-with-pattern
       this.DOM.recordMap_SVG.append('defs')
         .append('pattern')
-          .attr({
+          .attrs({
             id: 'diagonalHatch',
             patternUnits: 'userSpaceOnUse',
             width: 4,
             height: 4,
           })
-          .append('path').attr({
+          .append('path').attrs({
             d: 'M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2',
             stroke: 'gray',
             'stroke-width': 1
@@ -1733,10 +1739,12 @@ kshf.RecordDisplay.prototype = {
 
       this.initDOM_NodeLinkView_Settings();
 
-      this.nodeZoomBehavior = d3.behavior.zoom()
-        .scaleExtent([0.5, 8])
+      this.nodeZoomBehavior = d3.zoom()
+        .scaleExtent([0.1, 80])
         .on("zoom", function(){
-          gggg.attr("transform", "translate(" + d3.event.translate + ") scale(" + d3.event.scale + ")");
+          gggg.attr("transform", 
+            "translate(" + d3.event.transform.x + "," + d3.event.transform.y+ ") "+
+            "scale(" + d3.event.transform.k + ")");
           me.refreshNodeLinkVis();
         });
 
@@ -1752,28 +1760,28 @@ kshf.RecordDisplay.prototype = {
 
       X.append("span")
         .attr("class","NodeLinkAnim_Play fa fa-play")
-        .on("click",function(){ me.nodelink_Force.start(); });
+        .on("click",function(){ 
+          me.nodelink_Force.alpha(0.5);
+          me.nodelink_restart();
+        });
       X.append("span")
         .attr("class","NodeLinkAnim_Pause fa fa-pause")
-        .on("click",function(){ me.nodelink_Force.stop();  });
-
-      this.DOM.NodeLinkAnim_Refresh = X.append("span")
-        .attr("class","NodeLinkAnim_Refresh fa fa-refresh")
         .on("click",function(){ 
-          me.refreshNodeLinks();
-          this.style.display = null;
+          me.nodelink_Force.stop();
+          me.DOM.root.attr("NodeLinkState","stopped");
+          me.DOM.root.classed("hideLinks",null);
         });
 
       X.append("span")
         .attr("class","fa fa-plus")
         .on("click",function(){ 
-          me.nodeZoomBehavior.scale(me.nodeZoomBehavior.scale()*2);
+          me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 2);
           me._refreshNodeLinkSVG_Transform();
         });
       X.append("span")
         .attr("class","fa fa-minus")
         .on("click",function(){ 
-          me.nodeZoomBehavior.scale(me.nodeZoomBehavior.scale()/2);
+          me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 1/2);
           me._refreshNodeLinkSVG_Transform();
         });
       X.append("span")
@@ -1876,7 +1884,7 @@ kshf.RecordDisplay.prototype = {
         onClear: function(){
           me.DOM.recordTextSearch.select(".clearSearchText").style('display','none');
           me.DOM.recordTextSearch.selectAll(".textSearchMode").style("display","none"); 
-          me.DOM.recordTextSearch.select("input")[0][0].value = "";
+          me.DOM.recordTextSearch.select("input").node().value = "";
         },
         filterView_Detail: function(){
           return "*"+this.filterStr+"*";
@@ -2046,7 +2054,7 @@ kshf.RecordDisplay.prototype = {
       x.exit().each(function(summary){ summary.sortingSummary = false; });
       this.sortingOpts.forEach(function(summary, i){
         if(summary===me.sortingOpt_Active) {
-          var DOM = me.DOM.listSortOptionSelect[0][0];
+          var DOM = me.DOM.listSortOptionSelect.node();
           DOM.selectedIndex = i;
         }
       });
@@ -2147,19 +2155,6 @@ kshf.RecordDisplay.prototype = {
       this.refreshRecordRanks(this.DOM.recordRanks);
       this.refreshAdjustSortColumnWidth();
     },
-
-    /** -- */
-    refreshNodeLinks: function(){
-      this.generateNodeLinks();
-      this.nodelink_nodes = this.browser.records.filter(function(record){ return record.isWanted; });
-
-      this.nodelink_Force
-        .nodes(this.nodelink_nodes)
-        .links(this.nodelink_links)
-        .start();
-
-      if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
-    },
     /** -- */
     generateNodeLinks: function(){
       this.nodelink_links = [];
@@ -2182,15 +2177,15 @@ kshf.RecordDisplay.prototype = {
       },this);
     },
     /** -- */
-    initializeNetwork: function(){
-      this.nodelink_Force.size([this.curWidth, this.curHeight]).start();
-      if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
-
+    nodelink_restart: function(){
+      this.nodelink_Force.restart();
       this.DOM.root.attr("NodeLinkState","started");
+      if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
     },
     /** -- */
     refreshVis_Nodes: function(){
-      var scale = "scale("+(1/this.nodeZoomBehavior.scale())+")";
+      var t = d3.zoomTransform(this.DOM.recordNodeLink_SVG.node());
+      var scale = "scale("+(1/t.k)+")";
       this.DOM.kshfRecords.attr("transform", function(d){ return "translate("+d.x+","+d.y+") "+scale; });
     },
     /** -- */
@@ -2248,23 +2243,26 @@ kshf.RecordDisplay.prototype = {
       // x.offsetWidth/2:  380
       // x.offsetHeight/2: 140
 
-      var x = this.DOM.recordDisplayWrapper[0][0];
-      _translate[0] = x.offsetWidth/2;
-      _translate[1] = x.offsetHeight/2;
+      var x = this.DOM.recordDisplayWrapper.node();
 
-      var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*4);
+      var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*3);
 
-      this.nodeZoomBehavior.scale(_scale);
-      this.nodeZoomBehavior.translate(_translate);
+      this.DOM.recordNodeLink_SVG.transition().duration(750).call(
+        this.nodeZoomBehavior.transform,
+        d3.zoomIdentity
+          .translate( x.offsetWidth/2, x.offsetHeight/2)
+          .scale(_scale)
+      );
 
       this.refreshNodeLinkVis();
-      this._refreshNodeLinkSVG_Transform();
+//      this._refreshNodeLinkSVG_Transform();
       // still need to manually update the view. d3 is no use.
     },
     /** -- */
     _refreshNodeLinkSVG_Transform: function(){
-      var _scale = this.nodeZoomBehavior.scale();
-      var _translate = this.nodeZoomBehavior.translate();
+      var t = d3.zoomTransform(this.DOM.recordNodeLink_SVG.node());
+      var _scale = t.k;
+      var _translate = [t.x, t.y];
       this.DOM.recordNodeLink_SVG.select(".gggg")
         .attr("transform", "translate(" + _translate[0] + "," + _translate[1] + ") scale(" + _scale + ")");
 
@@ -2312,21 +2310,26 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordLinks = this.DOM.linkGroup.selectAll(".recordLink");
 
-      this.nodelink_Force = d3.layout.force()
-        .charge(-60)
-        .gravity(0.8)
-        .alpha(0.4)
-        .nodes(this.browser.records)
-        .links(this.nodelink_links)
-        .on("start",function(){ 
-          me.DOM.root.attr("NodeLinkState","started");
-          if(me.nodelink_links.length>1000) me.DOM.root.classed("hideLinks",true);
-        })
+      this.nodelink_Force = d3.forceSimulation()
+        .force("charge", d3.forceManyBody().strength(-5))
+        .force("link", d3.forceLink(this.nodelink_links).strength(0.05).iterations(3) )
+        //.force("center", d3.forceCenter())
+        // Old params
+        //.charge(-60)
+        //.gravity(0.8)
+        //.alpha(0.4)
+        .alphaMin(0.1)
+        .velocityDecay(0.3)
         .on("end",  function(){ 
           me.DOM.root.attr("NodeLinkState","stopped");
           me.DOM.root.classed("hideLinks",null);
         })
-        .on("tick", function(){ me.refreshNodeLinkVis(); });
+        .on("tick", function(){ 
+          me.refreshNodeLinkVis();
+        });
+
+      this.nodelink_Force.nodes(this.browser.records);
+
     },
     /** -- */
     refreshRecordColors: function(){
@@ -2336,10 +2339,10 @@ kshf.RecordDisplay.prototype = {
       var s_log;
 
       if(this.sortingOpt_Active.scaleType==='log'){
-        this.recordColorScale = d3.scale.log();
+        this.recordColorScale = d3.scaleLog();
         s_log = true;
       } else {
-        this.recordColorScale = d3.scale.linear();
+        this.recordColorScale = d3.scaleLinear();
         s_log = false;
       }
       var min_v = this.sortingOpt_Active.intervalRange.total.min;
@@ -2354,7 +2357,7 @@ kshf.RecordDisplay.prototype = {
         .range([0, 9])
         .domain( [min_v, max_v] );
 
-      this.colorQuantize = d3.scale.quantize()
+      this.colorQuantize = d3.scaleQuantize()
         .domain([0,9])
         .range(kshf.colorScale[me.browser.mapColorTheme]);
 
@@ -2482,9 +2485,11 @@ kshf.RecordDisplay.prototype = {
           var DOM = this;
           if(this.tipsy) {
             this.tipsy.show();
-            var browserPos = me.browser.DOM.root[0][0].getBoundingClientRect();
-            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
+            var browserPos = me.browser.DOM.root.node().getBoundingClientRect();
+            this.tipsy.jq_tip.node().style.left = 
+              (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip.node().style.top = 
+              (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
           }
 
           // mouse is moving fast, should wait a while...
@@ -2514,9 +2519,11 @@ kshf.RecordDisplay.prototype = {
         .on("mousemove", function(){
           this._mousemove = true;
           if(this.tipsy){
-            var browserPos = me.browser.DOM.root[0][0].getBoundingClientRect();
-            this.tipsy.jq_tip[0][0].style.left = (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip[0][0].style.top = (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
+            var browserPos = me.browser.DOM.root.node().getBoundingClientRect();
+            this.tipsy.jq_tip.node().style.left =
+              (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
+            this.tipsy.jq_tip.node().style.top =
+              (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
           }
         })
         .on("click",function(d){
@@ -2725,14 +2732,12 @@ kshf.RecordDisplay.prototype = {
         //this.map_zoomToActive();
       } else if(this.viewRecAs==='nodelink') {
         this.updateRecordVisibility();
-        this.DOM.NodeLinkAnim_Refresh.style('display','inline-block');
-        // this.refreshNodeLinks();
       } else {
         var me=this;
         var startTime = null;
-        var scrollDom = this.DOM.recordGroup[0][0];
+        var scrollDom = this.DOM.recordGroup.node();
         var scrollInit = scrollDom.scrollTop;
-        var easeFunc = d3.ease('cubic-in-out');
+        var easeFunc = d3.easeCubic;
         var animateToTop = function(timestamp){
           var progress;
           if(startTime===null) startTime = timestamp;
@@ -2801,9 +2806,7 @@ kshf.RecordDisplay.prototype = {
             this.setNodeLink();
             this.refreshRecordDOM();
             this.refreshRecordColors();
-            this.nodelink_Force.start();
-            // node layout on.start is not called, so doing some work here again
-            if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
+            this.nodelink_restart();
             break;
         }
 
@@ -2815,7 +2818,11 @@ kshf.RecordDisplay.prototype = {
             break;
         }
 
-        if(this.nodelink_Force && this.viewRecAs!=='nodelink') this.nodelink_Force.stop();
+        if(this.nodelink_Force && this.viewRecAs!=='nodelink') {
+          this.nodelink_Force.stop();
+          this.DOM.root.attr("NodeLinkState","stopped");
+          this.DOM.root.classed("hideLinks",null);
+        }
 
         this.updateRecordVisibility();
 
@@ -2890,7 +2897,7 @@ kshf.Panel.prototype = {
       this.summaries.splice(index,0,summary);
     }
     this.summaries.forEach(function(s,i){ s.panelOrder = i; });
-    this.addDOM_DropZone(summary.DOM.root[0][0]);
+    this.addDOM_DropZone(summary.DOM.root.node());
     this.refreshAdjustWidth();
   },
   /** -- */
@@ -2899,7 +2906,7 @@ kshf.Panel.prototype = {
     this.summaries.forEach(function(s,i){ if(s===summary) indexFrom = i; });
     if(indexFrom===-1) return; // given summary is not within this panel
 
-    var toRemove=this.DOM.root.selectAll(".dropZone_between_wrapper")[0][indexFrom];
+    var toRemove = this.DOM.root.selectAll(".dropZone_between_wrapper").nodes()[indexFrom];
     toRemove.parentNode.removeChild(toRemove);
 
     this.summaries.splice(indexFrom,1);
@@ -2935,8 +2942,8 @@ kshf.Panel.prototype = {
       .on("mouseup",function(){
         var movedSummary = me.browser.movedSummary;
         if(movedSummary.panel){ // if the summary was in the panels already
-          movedSummary.DOM.root[0][0].nextSibling.style.display = "";
-          movedSummary.DOM.root[0][0].previousSibling.style.display = "";
+          movedSummary.DOM.root.node().nextSibling.style.display = "";
+          movedSummary.DOM.root.node().previousSibling.style.display = "";
         }
 
         movedSummary.addToPanel(me,this.__data__);
@@ -2970,8 +2977,8 @@ kshf.Panel.prototype = {
         var movedSummary = me.browser.movedSummary;
         if(movedSummary===undefined) return;
         if(movedSummary.panel){ // if the summary was in the panels already
-            movedSummary.DOM.root[0][0].nextSibling.style.display = "";
-            movedSummary.DOM.root[0][0].previousSibling.style.display = "";
+            movedSummary.DOM.root.node().nextSibling.style.display = "";
+            movedSummary.DOM.root.node().previousSibling.style.display = "";
         }
         movedSummary.addToPanel(me);
         me.browser.updateLayout();
@@ -3247,7 +3254,7 @@ kshf.Browser = function(options){
     });
 
   // remove any DOM elements under this domID, kshf takes complete control over what's inside
-  var rootDomNode = this.DOM.root[0][0];
+  var rootDomNode = this.DOM.root.node();
   while (rootDomNode.hasChildNodes()) rootDomNode.removeChild(rootDomNode.lastChild);
 
   this.DOM.pointerBlock  = this.DOM.root.append("div").attr("class","pointerBlock");
@@ -3483,7 +3490,7 @@ kshf.Browser.prototype = {
       var me=this;
       if(this.DOM.measureSelectBox) return;
       this.DOM.measureSelectBox = this.DOM.measureSelectBox_Wrapper.append("div").attr("class","measureSelectBox")
-        .style({ left: "0px", top: "0px" });
+        .styles({ left: "0px", top: "0px" });
       this.DOM.measureSelectBox.append("div").attr("class","measureSelectBox_Close fa fa-times-circle")
         .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e', title: kshf.lang.cur.Close }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
@@ -3494,18 +3501,18 @@ kshf.Browser.prototype = {
         .on("mousedown", function (d, i) {
           me.DOM.root.attr("pointerEvents",false);
 
-          var initPos = d3.mouse(d3.select("body")[0][0]);
-          var DOM = me.DOM.measureSelectBox[0][0];
+          var initPos = d3.mouse(d3.select("body").node());
+          var DOM = me.DOM.measureSelectBox.node();
           var initX = parseInt(DOM.style.left);
           var initY = parseInt(DOM.style.top);
           var boxWidth  = DOM.getBoundingClientRect().width;
           var boxHeight = DOM.getBoundingClientRect().height;
-          var maxWidth  = me.DOM.root[0][0].getBoundingClientRect().width  - boxWidth;
-          var maxHeight = me.DOM.root[0][0].getBoundingClientRect().height - boxHeight;
+          var maxWidth  = me.DOM.root.node().getBoundingClientRect().width  - boxWidth;
+          var maxHeight = me.DOM.root.node().getBoundingClientRect().height - boxHeight;
           me.DOM.root.attr("drag_cursor","grabbing");
 
           d3.select("body").on("mousemove", function() {
-            var newPos = d3.mouse(d3.select("body")[0][0]);
+            var newPos = d3.mouse(d3.select("body").node());
             DOM.style.left = Math.min(maxWidth , Math.max(0, initX-initPos[0]+newPos[0] ))+"px";
             DOM.style.top  = Math.min(maxHeight, Math.max(0, initY-initPos[1]+newPos[1] ))+"px";
           }).on("mouseup", function(){
@@ -3532,7 +3539,7 @@ kshf.Browser.prototype = {
           }
           this.setAttribute("selected","");
           me.DOM.measureSelectBox.select(".sdsso23oadsa").attr("disabled",null);
-          me.setMeasureMetric(d.v, me.DOM.sdsso23oadsa[0][0].selectedOptions[0].__data__);
+          me.setMeasureMetric(d.v, me.DOM.sdsso23oadsa.node().selectedOptions[0].__data__);
         });
 
       this.DOM.sdsso23oadsa = m.append("div").attr("class","measureSelectBox_Content_Summaries")
@@ -3556,7 +3563,7 @@ kshf.Browser.prototype = {
     closeMeasureSelectBox: function(){
       this.DOM.measureSelectBox_Wrapper.attr("showMeasureBox",false); // Close box
       this.DOM.measureSelectBox = undefined;
-      var d = this.DOM.measureSelectBox_Wrapper[0][0];
+      var d = this.DOM.measureSelectBox_Wrapper.node();
       while (d.hasChildNodes()) d.removeChild(d.lastChild);
     },
     /** -- */
@@ -3639,13 +3646,13 @@ kshf.Browser.prototype = {
           if(curState===null || curState==="false"){
             this.parentNode.setAttribute("edittitle",true);
             var parentDOM = d3.select(this.parentNode);
-            var v=parentDOM.select(".recordName")[0][0];
+            var v=parentDOM.select(".recordName").node();
             v.setAttribute("contenteditable",true);
             v.focus();
           } else {
             this.parentNode.setAttribute("edittitle",false);
             var parentDOM = d3.select(this.parentNode);
-            var v=parentDOM.select(".recordName")[0][0];
+            var v=parentDOM.select(".recordName").node();
             v.setAttribute("contenteditable",false);
             me.recordName = this.textContent;
           }
@@ -3729,7 +3736,7 @@ kshf.Browser.prototype = {
           // Set description (from page title if it exists)
           var description = "Keshif Browser Configuration";
           // In demo pages, demo_PageTitle gives more context - use it as description
-          if(d3.select("#demo_PageTitle")[0][0]){
+          if(d3.select("#demo_PageTitle").node()){
             description = d3.select("#demo_PageTitle").html();
           }
 
@@ -3740,7 +3747,7 @@ kshf.Browser.prototype = {
           };
           // Add style file, if custom style exists
           var badiStyle = d3.select("#kshfStyle");
-          if(badiStyle[0].length > 0 && badiStyle[0][0]!==null){
+          if(badiStyle[0].length > 0 && badiStyle.node()!==null){
             githubLoad.files["kshf_style.css"] = { content: badiStyle.text()};
           }
 
@@ -3763,7 +3770,7 @@ kshf.Browser.prototype = {
                 });
           };
           function gist_sendEdit(){
-            var xhr = d3.xhr('https://api.github.com/gists/'+kshf.gistInfo.id);
+            var xhr = d3.request('https://api.github.com/gists/'+kshf.gistInfo.id);
             if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
             xhr.send('PATCH',JSON.stringify(githubLoad),
               function(error, data){ 
@@ -3796,7 +3803,7 @@ kshf.Browser.prototype = {
           // AUTHOIZED, EXISTING GIST, FROM ANOTHER USER
           if(kshf.gistInfo.owner===undefined || kshf.gistInfo.owner.login !== kshf.gistLogin){
             // Fork it
-            var xhr = d3.xhr('https://api.github.com/gists'+kshf.gistInfo.id+"/forks");
+            var xhr = d3.request('https://api.github.com/gists'+kshf.gistInfo.id+"/forks");
             if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
             xhr.post( JSON.stringify(githubLoad), // data
                 function(error, data){ 
@@ -3891,7 +3898,7 @@ kshf.Browser.prototype = {
     /** -- */
     refreshTotalViz: function(){
       var me=this;
-      var totalScale = d3.scale.linear()
+      var totalScale = d3.scaleLinear()
         .domain([0, this.allRecordsAggr.measure(this.ratioModeActive ? 'Active' : 'Total') ])
         .range([0, this.getWidth_Browser()])
         .clamp(true);
@@ -4244,14 +4251,14 @@ kshf.Browser.prototype = {
               case "GoogleDrive":
                 me.loadSource({
                   dirPath: sourceURL,
-                  fileType: DOMfileType[0][0].value,
+                  fileType: DOMfileType.node().value,
                   tables: {name:sourceSheet, id:sheetID}
                 });
                 break;
               case "Dropbox":
                 me.loadSource({
                   dirPath: sourceURL,
-                  fileType: DOMfileType[0][0].value,
+                  fileType: DOMfileType.node().value,
                   tables: {name:sourceSheet, id:sheetID}
                 });
                 break;
@@ -4298,7 +4305,7 @@ kshf.Browser.prototype = {
       this.DOM.attribTextSearchControl = this.DOM.attribTextSearch.append("span")
         .attr("class","textSearchControl fa")
         .on("click",function() { 
-          me.DOM.attribTextSearchControl.attr("showClear",false)[0][0].value="";
+          me.DOM.attribTextSearchControl.attr("showClear",false).node().value="";
           me.summaries.forEach(function(summary){
             if(summary.DOM.nugget===undefined) return;
             summary.DOM.nugget.attr("filtered",false);
@@ -4413,7 +4420,7 @@ kshf.Browser.prototype = {
     /** -- */
     showFullscreen: function(){
       this.isFullscreen = this.isFullscreen?false:true;
-      var elem = this.DOM.root[0][0];
+      var elem = this.DOM.root.node();
       if(this.isFullscreen){
         if (elem.requestFullscreen) {
           elem.requestFullscreen();
@@ -4633,7 +4640,7 @@ kshf.Browser.prototype = {
         } else {
           if(me.source.callback) me.asyncDataWaitedCnt++;
           // TODO: If callback is defined, perform a SYNC request...
-          d3.xhr(this.source.dirPath+tableDescr.name+"."+this.source.fileType)
+          d3.request(this.source.dirPath+tableDescr.name+"."+this.source.fileType)
             .get(function(error, data){ 
               Papa.parse(data.response,config);
               if(me.source.callback) me.asyncDataLoaded();
@@ -4674,7 +4681,7 @@ kshf.Browser.prototype = {
         reader.readAsText(tableDescr);
       } else {
         if(me.source.callback) me.asyncDataWaitedCnt++;
-        d3.xhr(this.source.dirPath+tableDescr.name+".json?dl=0")
+        d3.request(this.source.dirPath+tableDescr.name+".json?dl=0")
           .get(function(error, data){ 
             try { 
               processJSONText(JSON.parse(data.response)); 
@@ -4985,14 +4992,14 @@ kshf.Browser.prototype = {
         this.reorderNuggetList();
 
         if(this.recordDisplay.viewRecAs==='nodelink'){
-          this.recordDisplay.initializeNetwork();
+          this.recordDisplay.nodelink_restart();
         }
 
         if(this.onReady) this.onReady();
 
         if(this.helpin) {
-          this.DOM.showHelpIn[0][0].tipsy.show();
-          setTimeout(function(){ me.DOM.showHelpIn[0][0].tipsy.hide(); }, 5000);
+          this.DOM.showHelpIn.node().tipsy.show();
+          setTimeout(function(){ me.DOM.showHelpIn.node().tipsy.hide(); }, 5000);
         }
 
         this.finalized = true;
@@ -5537,7 +5544,7 @@ kshf.Browser.prototype = {
             if(this.recordDisplay.recordViewSummary){
                 panelHeight -= 200; // give 200px fo the list display
             } else {
-                panelHeight -= this.recordDisplay.DOM.root[0][0].offsetHeight;
+                panelHeight -= this.recordDisplay.DOM.root.node().offsetHeight;
             }
             midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
@@ -5549,7 +5556,7 @@ kshf.Browser.prototype = {
         if(this.recordDisplay){
           // get height of header
           var listDisplayHeight = divHeight_Total
-            - this.recordDisplay.DOM.recordDisplayHeader[0][0].offsetHeight 
+            - this.recordDisplay.DOM.recordDisplayHeader.node().offsetHeight 
             - midPanelHeight 
             - bottomPanelHeight;
           if(this.showDropZones && this.panels.middle.summaries.length===0) listDisplayHeight*=0.5;
@@ -5704,7 +5711,7 @@ kshf.Summary_Base.prototype = {
 
     if(kshf.Summary_Set && this instanceof kshf.Summary_Set) return;
 
-    this.chartScale_Measure = d3.scale.linear().clamp(true);
+    this.chartScale_Measure = d3.scaleLinear().clamp(true);
 
     this.records = this.browser.records;
     if(this.records===undefined||this.records===null||this.records.length===0){
@@ -5775,7 +5782,7 @@ kshf.Summary_Base.prototype = {
   },
   /** -- */
   clearDOM: function(){
-    var dom = this.DOM.root[0][0];
+    var dom = this.DOM.root.node();
     dom.parentNode.removeChild(dom);
   },
   /** -- */
@@ -5790,7 +5797,7 @@ kshf.Summary_Base.prototype = {
   getHeight_Header: function(){
     if(!this.DOM.inited) return 0;
     if(this._height_header==undefined) {
-      this._height_header = this.DOM.headerGroup[0][0].offsetHeight;
+      this._height_header = this.DOM.headerGroup.node().offsetHeight;
     }
     return this._height_header;
   },
@@ -5862,13 +5869,13 @@ kshf.Summary_Base.prototype = {
       this.panel.summaries.forEach(function(s,i){ if(s===this) curIndex = i; },this);
       // inserting the summary to the same index as current one
       if(curIndex===index) return;
-      var toRemove=this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][curIndex];
+      var toRemove=this.panel.DOM.root.selectAll(".dropZone_between_wrapper")._groups[0][curIndex];
       toRemove.parentNode.removeChild(toRemove);
     }
-    var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between_wrapper")[0][index];
+    var beforeDOM = this.panel.DOM.root.selectAll(".dropZone_between_wrapper")._groups[0][index];
     if(this.DOM.root){
       this.DOM.root.style("display","");
-      panel.DOM.root[0][0].insertBefore(this.DOM.root[0][0],beforeDOM);
+      panel.DOM.root.node().insertBefore(this.DOM.root.node(),beforeDOM);
     } else {
       this.initDOM(beforeDOM);
     }
@@ -5896,10 +5903,10 @@ kshf.Summary_Base.prototype = {
   destroy: function(){
     this.browser.destroySummary(this);
     if(this.DOM.root){
-      this.DOM.root[0][0].parentNode.removeChild(this.DOM.root[0][0]);
+      this.DOM.root.node().parentNode.removeChild(this.DOM.root.node());
     }
     if(this.DOM.nugget){
-      this.DOM.nugget[0][0].parentNode.removeChild(this.DOM.nugget[0][0]);
+      this.DOM.nugget.node().parentNode.removeChild(this.DOM.nugget.node());
     }
   },
   /** -- */
@@ -5941,8 +5948,8 @@ kshf.Summary_Base.prototype = {
               me.browser.prepareDropZones(me,"attributePanel");
               me.attribMoved = true;
             }
-            var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
-            kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
+            var mousePos = d3.mouse(me.browser.DOM.root.node());
+            kshf.Util.setTransform(me.browser.DOM.attribDragBox.node(),
                 "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
             d3.event.stopPropagation();
             d3.event.preventDefault();
@@ -5990,7 +5997,7 @@ kshf.Summary_Base.prototype = {
 
         var parentDOM = d3.select(this.parentNode);
         var summaryName = parentDOM.select(".summaryName");
-        var summaryName_DOM = parentDOM.select(".summaryName")[0][0];
+        var summaryName_DOM = parentDOM.select(".summaryName").node();
 
         var curState=this.parentNode.getAttribute("edittitle");
         if(curState===null || curState==="false"){
@@ -6060,9 +6067,6 @@ kshf.Summary_Base.prototype = {
         if(catSplit!==null){
           me.setCatSplit(catSplit);
         }
-        // stop dragging event start
-        d3.event.stopPropagation();
-        d3.event.preventDefault();
       });
 
     X.append("div").attr("class","addFromAttribute_Button fa fa-plus-square")
@@ -6181,8 +6185,8 @@ kshf.Summary_Base.prototype = {
               me.browser.prepareDropZones(me,"browser");
               moved = true;
             }
-            var mousePos = d3.mouse(me.browser.DOM.root[0][0]);
-            kshf.Util.setTransform(me.browser.DOM.attribDragBox[0][0],
+            var mousePos = d3.mouse(me.browser.DOM.root.node());
+            kshf.Util.setTransform(me.browser.DOM.attribDragBox.node(),
               "translate("+(mousePos[0]-20)+"px,"+(mousePos[1]+5)+"px)");
             d3.event.stopPropagation();
             d3.event.preventDefault();
@@ -6298,13 +6302,13 @@ kshf.Summary_Base.prototype = {
         if(curState===null || curState==="false"){
           this.parentNode.setAttribute("edittitle",true);
           var parentDOM = d3.select(this.parentNode);
-          var v=parentDOM.select(".summaryName_text")[0][0];
+          var v=parentDOM.select(".summaryName_text").node();
           v.setAttribute("contenteditable",true);
           v.focus();
         } else {
           this.parentNode.setAttribute("edittitle",false);
           var parentDOM = d3.select(this.parentNode);
-          var v=parentDOM.select(".summaryName_text")[0][0];
+          var v=parentDOM.select(".summaryName_text").node();
           v.setAttribute("contenteditable",false);
           me.browser.changeSummaryName(me.summaryName,v.textContent);
         }
@@ -6501,13 +6505,12 @@ kshf.Summary_Base.prototype = {
         me.summaryFilter.clearFilter();
         if(me.missingValueAggr.filtered){
           me.missingValueAggr.filtered = false;
-          this.removeAttribute("filtered");
         } else {
           me.missingValueAggr.filtered = true;
-          this.setAttribute("filtered",true);
           me.summaryFilter.how = "All";
           me.summaryFilter.addFilter();
         }
+        d3.select(this).classed("filtered",me.missingValueAggr.filtered);
       });
   },
   /** -- */
@@ -7236,7 +7239,7 @@ var Summary_Categorical_functions = {
 
     this.insertRoot(beforeDOM);
 
-    this.DOM.root.attr({
+    this.DOM.root.attrs({
       filtered_or: 0,
       filtered_and: 0,
       filtered_not: 0,
@@ -7306,7 +7309,7 @@ var Summary_Categorical_functions = {
         })
         .on("scroll",function(){
           if(kshf.Util.ignoreScrollEvents===true) return;
-          me.scrollTop_cache = me.DOM.aggrGroup[0][0].scrollTop;
+          me.scrollTop_cache = me.DOM.aggrGroup.node().scrollTop;
 
           me.DOM.scrollToTop.style("visibility", me.scrollTop_cache>0?"visible":"hidden");
 
@@ -7332,11 +7335,11 @@ var Summary_Categorical_functions = {
           me.browser.DOM.pointerBlock.attr("active","");
           me.browser.DOM.root.style('cursor','col-resize');
           me.browser.setNoAnim(true);
-          var mouseDown_x = d3.mouse(d3.select("body")[0][0])[0];
+          var mouseDown_x = d3.mouse(d3.select("body").node())[0];
           var initWidth = me.panel.width_catLabel;
 
           d3.select("body").on("mousemove", function() {
-            var mouseDown_x_diff = d3.mouse(d3.select("body")[0][0])[0]-mouseDown_x;
+            var mouseDown_x_diff = d3.mouse(d3.select("body").node())[0]-mouseDown_x;
             me.panel.setWidthCatLabel(initWidth+mouseDown_x_diff);
           }).on("mouseup", function(){
             me.panel.DOM.root.attr("catLabelDragging",false);
@@ -7356,7 +7359,7 @@ var Summary_Categorical_functions = {
         .attr("class","hasLabelWidth scroll_display_more")
         .on("click",function(){
           kshf.Util.scrollToPos_do(
-            me.DOM.aggrGroup, me.DOM.aggrGroup[0][0].scrollTop+me.heightCat);
+            me.DOM.aggrGroup, me.DOM.aggrGroup.node().scrollTop+me.heightCat);
         });
 
       this.insertCategories();
@@ -7486,7 +7489,7 @@ var Summary_Categorical_functions = {
     /** -- */
     _update_Selected: function(){
       if(this.DOM.root) {
-        this.DOM.root.attr({
+        this.DOM.root.attrs({
           "filtered":     this.isFiltered()?"true":null,
           "filtered_or":  this.summaryFilter.selected_OR .length,
           "filtered_and": this.summaryFilter.selected_AND.length,
@@ -7501,14 +7504,14 @@ var Summary_Categorical_functions = {
         aggr.set_NONE();
       });
       this.summaryFilter.selected_All_clear();
-      if(this.DOM.inited) this.DOM.missingValueAggr.attr("filtered",null);
+      if(this.DOM.inited) this.DOM.missingValueAggr.classed("filtered",false);
     },
     /** -- */
     clearCatTextSearch: function(){
       if(!this.showTextSearch) return;
       if(this.skipTextSearchClear) return;
       this.DOM.catTextSearchControl.attr("showClear",false);
-      this.DOM.catTextSearchInput[0][0].value = '';
+      this.DOM.catTextSearchInput.node().value = '';
     },
     /** -- */
     updateChartScale_Measure: function(){
@@ -7681,7 +7684,7 @@ var Summary_Categorical_functions = {
         }
       }
       
-      this.mapColorScale = d3.scale.linear().range([0, 9]).domain([boundMin, boundMax]);
+      this.mapColorScale = d3.scaleLinear().range([0, 9]).domain([boundMin, boundMax]);
 
       this.DOM.catMapColorScale.select(".boundMin").html( this.browser.getTickLabel(boundMin) );
       this.DOM.catMapColorScale.select(".boundMax").html( this.browser.getTickLabel(boundMax) );
@@ -7770,7 +7773,7 @@ var Summary_Categorical_functions = {
           if(this.viewType==='map'){
             //this.DOM.highlightedMeasureValue.style("left",(100*(this.mapColorScale(aggr.measure.Highlight)/9))+"%");
           } else {
-            this.DOM.highlightedMeasureValue.style({
+            this.DOM.highlightedMeasureValue.styles({
               opacity: 1,
               left: (this.browser.allRecordsAggr.ratioHighlightToTotal()*maxWidth)+"px" });
           }
@@ -7872,7 +7875,7 @@ var Summary_Categorical_functions = {
       var axis_Scale = this.chartScale_Measure;
 
       function setCustomAxis(maxValue){
-        axis_Scale = d3.scale.linear()
+        axis_Scale = d3.scaleLinear()
           .rangeRound([0, chartWidth])
           .nice(me.chartAxis_Measure_TickSkip())
           .clamp(true)
@@ -7942,14 +7945,14 @@ var Summary_Categorical_functions = {
 
       this.DOM.chartCatLabelResize.style("left",(width_Label+1)+"px");
       this.DOM.summaryCategorical.selectAll(".hasLabelWidth").style("width",width_Label+"px");
-      this.DOM.measureLabel.style({
+      this.DOM.measureLabel.styles({
         left:  width_Label+"px",
         width: this.panel.width_catMeasureLabel+"px"
       });
       this.DOM.chartAxis_Measure.each(function(){
         kshf.Util.setTransform(this,"translateX("+width_totalText+"px)");
       });
-      this.DOM.catSortButton.style({
+      this.DOM.catSortButton.styles({
         left: width_Label+"px",
         width: this.panel.width_catMeasureLabel+"px"
       });
@@ -8286,12 +8289,12 @@ var Summary_Categorical_functions = {
             var left = (d3.event.pageX-this.tipsy.tipWidth-10);
             var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
 
-            var browserPos = kshf.browser.DOM.root[0][0].getBoundingClientRect();
+            var browserPos = kshf.browser.DOM.root.node().getBoundingClientRect();
             left = left - browserPos.left;
             top = top - browserPos.top;
 
-            this.tipsy.jq_tip[0][0].style.left = left+"px";
-            this.tipsy.jq_tip[0][0].style.top = top+"px";
+            this.tipsy.jq_tip.node().style.left = left+"px";
+            this.tipsy.jq_tip.node().style.top = top+"px";
           }
         })
         .attr("title",me.catTooltip ? function(_cat){ return me.catTooltip.call(_cat.data); } : null);
@@ -8393,12 +8396,12 @@ var Summary_Categorical_functions = {
               var left = (d3.event.pageX-this.tipsy.tipWidth-10);
               var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
 
-              var browserPos = kshf.browser.DOM.root[0][0].getBoundingClientRect();
+              var browserPos = kshf.browser.DOM.root.node().getBoundingClientRect();
               left = left - browserPos.left;
               top = top - browserPos.top;
 
-              this.tipsy.jq_tip[0][0].style.left = left+"px";
-              this.tipsy.jq_tip[0][0].style.top = top+"px";
+              this.tipsy.jq_tip.node().style.left = left+"px";
+              this.tipsy.jq_tip.node().style.top = top+"px";
             }
             if(me.browser.mouseSpeed<0.2) { 
               me.onAggrHighlight(_cat);
@@ -8462,7 +8465,7 @@ var Summary_Categorical_functions = {
     /** -- */
     cullAttribs: function(){
       if(this.viewType==='map') return; // no culling on maps, for now.  
-      this.DOM.aggrGlyphs.style({
+      this.DOM.aggrGlyphs.styles({
         visibility: function(_cat){ return _cat.isVisible?"visible":"hidden"; },
         display   : function(_cat){ return _cat.isVisible?"block"  :"none"  ; }} );
       if(this.onCatCull) this.onCatCull.call(this);
@@ -8524,7 +8527,7 @@ var Summary_Categorical_functions = {
         .transition()
           .duration(1)
           .delay(sortDelay)
-          .each("end",function(ctgry){
+          .on("end",function(ctgry){
             this.style.opacity = 0;
             ctgry.posX = xRemoveOffset;
             ctgry.posY = ctgry.posY;
@@ -8537,7 +8540,7 @@ var Summary_Categorical_functions = {
         .transition()
           .duration(1)
           .delay(sortDelay)
-          .each("end",function(ctgry){
+          .on("end",function(ctgry){
             this.style.opacity = 0;
             ctgry.posX = xRemoveOffset;
             ctgry.posY = ctgry.posY;
@@ -8554,7 +8557,7 @@ var Summary_Categorical_functions = {
             var x = ctgry.isActiveBefore ? 0:(me.catCount_InDisplay-5)*perCatDelay; // appear animation is further delayed
             return 100 + sortDelay + x + Math.min(ctgry.orderIndex,me.catCount_InDisplay+2) * perCatDelay; 
           })
-          .each("end",function(ctgry){
+          .on("end",function(ctgry){
             if(ctgry.isVisible || ctgry.isVisibleBefore){
               this.style.visibility = "visible";
               this.style.display = "block";
@@ -8622,7 +8625,7 @@ var Summary_Categorical_functions = {
         if(!_cat.isActive) return;
         var feature = me.catMap.call(_cat.data,_cat);
         if(typeof feature === 'undefined') return;
-        var b = d3.geo.bounds(feature);
+        var b = d3.geoBounds(feature);
         if(isNaN(b[0][0])) return;
         // Change wrapping
         if(b[0][0]>kshf.map.wrapLongitude) b[0][0]-=360;
@@ -8684,7 +8687,7 @@ var Summary_Categorical_functions = {
       }
 
       // See http://leaflet-extras.github.io/leaflet-providers/preview/ for alternative layers
-      this.leafletAttrMap = L.map(this.DOM.catMap_Base[0][0], kshf.map.config )
+      this.leafletAttrMap = L.map(this.DOM.catMap_Base.node(), kshf.map.config )
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig ) )
         .on("viewreset",function(){ 
           me.map_projectCategories()
@@ -8703,8 +8706,8 @@ var Summary_Categorical_functions = {
 
       //var width = 500, height = 500;
       //var projection = d3.geo.albersUsa().scale(900).translate([width / 2, height / 2]);
-      this.geoPath = d3.geo.path().projection( 
-        d3.geo.transform({
+      this.geoPath = d3.geoPath().projection( 
+        d3.geoTransform({
           // Use Leaflet to implement a D3 geometric transformation.
           point: function(x, y) {
             if(x>kshf.map.wrapLongitude) x-=360;
@@ -8714,7 +8717,7 @@ var Summary_Categorical_functions = {
         }) 
       );
 
-      this.mapColorQuantize = d3.scale.quantize()
+      this.mapColorQuantize = d3.scaleQuantize()
         .domain([0,9])
         .range(kshf.colorScale.converge);
 
@@ -8870,14 +8873,14 @@ var Summary_Interval_functions = {
         base: false,
         maxDateRes: function(){
           //if(this.hour ) return "hour";
-          if(this.day  ) return "day";
-          if(this.month) return "month";
-          if(this.year ) return "year";
+          if(this.day  ) return "Day";
+          if(this.month) return "Month";
+          if(this.year ) return "Year";
         },
         minDateRes: function(){
-          if(this.year ) return "year";
-          if(this.month) return "month";
-          if(this.day  ) return "day";
+          if(this.year ) return "Year";
+          if(this.month) return "Month";
+          if(this.day  ) return "Day";
           //if(this.hour ) return "hour";
         }
       };
@@ -9109,7 +9112,7 @@ var Summary_Interval_functions = {
         if(this.timeTyped.month) f = "%b "+f;
         if(this.timeTyped.day) f = "%e " + f;
         if(this.timeTyped.year && !this.timeTyped.month) f = "%Y"; // Full year
-        this.timeTyped.print = d3.time.format.utc(f);
+        this.timeTyped.print = d3.utcFormat(f);
       }
 
       // remove records that map to null / undefined
@@ -9149,7 +9152,7 @@ var Summary_Interval_functions = {
         return;
         timeFormatFunc = null;
       } else {
-        timeFormatFunc = d3.time.format(fmt).parse;
+        timeFormatFunc = d3.timeParse(fmt);
       }
       var f=this.summaryFunc;
       this.summaryFunc = function(record){
@@ -9218,7 +9221,7 @@ var Summary_Interval_functions = {
           }
           me.resetFilterRangeToTotal();
           me.refreshIntervalSlider();
-          if(me.DOM.missingValueAggr) me.DOM.missingValueAggr.attr("filtered",false);
+          if(me.DOM.missingValueAggr) me.DOM.missingValueAggr.classed("filtered",false);
         },
         onFilter: function(){
           me.DOM.root.attr("filtered",true);
@@ -9627,7 +9630,7 @@ var Summary_Interval_functions = {
     /** -- */
     setUnitName: function(v){
       this.unitName = v;
-      if(this.unitName && this.DOM.unitNameInput) this.DOM.unitNameInput[0][0].value = this.unitName;
+      if(this.unitName && this.DOM.unitNameInput) this.DOM.unitNameInput.node().value = this.unitName;
       this.refreshValueTickLabels();
       if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
         this.browser.recordDisplay.refreshRecordSortLabels();
@@ -9821,127 +9824,127 @@ var Summary_Interval_functions = {
 
             // Listing time resolutions, from high-res to low-res
             var timeMult = {
-              'second': 1000,
-              'minute': 1000*60,
-              'hour'  : 1000*60*60,
-              'day'   : 1000*60*60*24,
-              'month' : 1000*60*60*24*30,
-              'year'  : 1000*60*60*24*365,
+              'Second': 1000,
+              'Minute': 1000*60,
+              'Hour'  : 1000*60*60,
+              'Day'   : 1000*60*60*24,
+              'Month' : 1000*60*60*24*30,
+              'Year'  : 1000*60*60*24*365,
             };
 
             var timeRes = [
               {
-                type: 'second',
+                type: 'Second',
                 step: 1,
                 format: '%S'
               },{
-                type: 'second',
+                type: 'Second',
                 step: 5,
                 format: '%S'
               },{
-                type: 'second',
+                type: 'Second',
                 step: 15,
                 format: '%S'
               },{
-                type: 'minute',
+                type: 'Minute',
                 step: 1,
                 format: '%M'
               },{
-                type: 'minute',
+                type: 'Minute',
                 step: 5,
                 format: '%M'
               },{
-                type: 'minute',
+                type: 'Minute',
                 step: 15,
                 format: '%M'
               },{
-                type: 'hour',
+                type: 'Hour',
                 step: 1,
                 format: '%H'
               },{
-                type: 'hour',
+                type: 'Hour',
                 step: 6,
                 format: '%H'
               },{
-                type: 'day',
+                type: 'Day',
                 step: 1,
                 format: '%e'
               },{
-                type: 'day',
+                type: 'Day',
                 step: 4,
                 format: function(v){
                   var suffix = kshf.Util.ordinal_suffix_of(v.getUTCDate());
-                  var first=d3.time.format.utc("%-b")(v);
+                  var first=d3.utcFormat("%-b")(v);
                   return suffix+"<br>"+first;
                 },
                 twoLine: true
               },{
-                type: 'month',
+                type: 'Month',
                 step: 1,
                 format: function(v){
                   var nextTick = timeInterval.offset(v, 1);
-                  var first=d3.time.format.utc("%-b")(v);
+                  var first=d3.utcFormat("%-b")(v);
                   var s=first;
-                  if(first==="Jan") s+="<br><span class='secondLayer'>"+(d3.time.format("%Y")(nextTick))+"</span>";
+                  if(first==="Jan") s+="<br><span class='secondLayer'>"+(d3.utcFormat("%Y")(nextTick))+"</span>";
                   return s;
                 },
                 twoLine: true
               },{
-                type: 'month',
+                type: 'Month',
                 step: 3,
                 format: function(v){
                   var nextTick = timeInterval.offset(v, 3);
-                  var first=d3.time.format.utc("%-b")(v);
+                  var first=d3.utcFormat("%-b")(v);
                   var s=first;
-                  if(first==="Jan") s+="<br><span class='secondLayer'>"+(d3.time.format("%Y")(nextTick))+"</span>";
+                  if(first==="Jan") s+="<br><span class='secondLayer'>"+(d3.utcFormat("%Y")(nextTick))+"</span>";
                   return s;
                 },
                 twoLine: true
               },{
-                type: 'month',
+                type: 'Month',
                 step: 6,
                 format: function(v){
                   var nextTick = timeInterval.offset(v, 6);
-                  var first=d3.time.format.utc("%-b")(v);
+                  var first=d3.utcFormat("%-b")(v);
                   var s=first;
-                  if(first==="Jan") s+="<br>"+(d3.time.format("%Y")(nextTick));
+                  if(first==="Jan") s+="<br>"+(d3.utcFormat("%Y")(nextTick));
                   return s;
                 },
                 twoLine: true
               },{
-                type: 'year',
+                type: 'Year',
                 step: 1,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 2,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 3,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 5,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 10,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 25,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 50,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 100,
                 format: "%Y"
               },{
-                type: 'year',
+                type: 'Year',
                 step: 500,
                 format: "%Y"
               }
@@ -9951,16 +9954,17 @@ var Summary_Interval_functions = {
               var stopIteration = i===timeRes.length-1 || 
                 timeRange_ms/(timeMult[tRes.type]*tRes.step) < optimalTickCount;
               if(stopIteration){
-                if(tRes.type==="day" && this.timeTyped.maxDateRes()==="month")  stopIteration = false;
-                if(tRes.type==="day" && this.timeTyped.maxDateRes()==="year")   stopIteration = false;
-                if(tRes.type==="month" && this.timeTyped.maxDateRes()==="year") stopIteration = false;
-                if(tRes.type==="hour" && this.timeTyped.maxDateRes()==="day")   stopIteration = false;
+                if(tRes.type==="Day"   && this.timeTyped.maxDateRes()==="Month") stopIteration = false;
+                if(tRes.type==="Day"   && this.timeTyped.maxDateRes()==="Year" ) stopIteration = false;
+                if(tRes.type==="Month" && this.timeTyped.maxDateRes()==="Year" ) stopIteration = false;
+                if(tRes.type==="Hour"  && this.timeTyped.maxDateRes()==="Day"  ) stopIteration = false;
               }
               if(stopIteration){
-                timeInterval = d3.time[tRes.type].utc;
+                // TODO: Fix D3
+                timeInterval = d3['utc'+[tRes.type]];
                 this.timeTyped.activeRes = tRes;
                 if(typeof tRes.format === "string"){
-                  this.intervalTickPrint = d3.time.format.utc(tRes.format);
+                  this.intervalTickPrint = d3.utcFormat(tRes.format);
                 } else {
                   this.intervalTickPrint = tRes.format;
                 }
@@ -9995,17 +9999,14 @@ var Summary_Interval_functions = {
           this.intervalTickPrint = d3.format(".1s");
         } else {
           this.valueScale.nice(optimalTickCount);
-          this.valueScale.nice(optimalTickCount);
-          ticks = this.valueScale.ticks(optimalTickCount);
-          this.valueScale.nice(optimalTickCount);
           ticks = this.valueScale.ticks(optimalTickCount);
 
           if(!this.hasFloat) ticks = ticks.filter(function(tick){return tick===0||tick%1===0;});
 
-          // Does TICKS have a floating number
-          var ticksFloat = ticks.some(function(tick){ return tick%1!==0; });
+          // Do ticks have a floating number?
+          var floatNumTicks = ticks.some(function(tick){ return tick%1!==0; });
 
-          var d3Formating = d3.format(ticksFloat?".2f":".2s");
+          var d3Formating = d3.format(floatNumTicks?".2f":".2s");
           this.intervalTickPrint = function(d){
             if(!me.hasFloat && d<10) return d;
             if(!me.hasFloat && Math.abs(ticks[1]-ticks[0])<1000) return d;
@@ -10044,9 +10045,9 @@ var Summary_Interval_functions = {
       if(this.isEmpty()) return;
 
       switch(this.scaleType){
-        case 'linear': this.valueScale = d3.scale.linear();      break;
-        case 'log':    this.valueScale = d3.scale.log().base(2); break;
-        case 'time':   this.valueScale = d3.time.scale.utc();    break;
+        case 'linear': this.valueScale = d3.scaleLinear();      break;
+        case 'log':    this.valueScale = d3.scaleLog().base(2); break;
+        case 'time':   this.valueScale = d3.scaleUtc();        break;
       }
 
       var _width_ = this.getWidth_Chart();
@@ -10157,6 +10158,8 @@ var Summary_Interval_functions = {
         this.refreshValueTickPos();
 
         this.refreshIntervalSlider();
+
+        this.updateValueTicks();
       }
     },
     /** -- */
@@ -10245,13 +10248,17 @@ var Summary_Interval_functions = {
       
       var ddd = this.DOM.valueTickGroup.selectAll(".valueTick").data(ticks,function(d){ return d.tickValue; });
 
-      ddd.exit().style("opacity",0);
+      var EXIT = ddd.exit().transition().style("opacity",0);
 
-      var X = ddd.enter().append("span").attr("class","valueTick");
+      var X = ddd.enter().append("span").attr("class","valueTick").style("opacity",1);
       X.append("span").attr("class","line")
-      X.append("span").attr("class","text");
+      X.append("span").attr("class","text")
+        
+      this.DOM.valueTickGroup.selectAll(".valueTick")
+        .style("opacity",1).classed("major",function(d){ 
+          return d.major?true:false;
+        });
 
-      ddd.style("opacity",1).classed("major",function(d){ return d.major?true:false; });
       this.DOM.valueTickGroup.selectAll(".valueTick > .text")
         .each(function(d){
           this.bin = null;
@@ -10711,7 +10718,8 @@ var Summary_Interval_functions = {
         this.DOM.measure_Total_Area
           .transition().duration(this.browser.noAnim?0:700)
           .attr("d", 
-            d3.svg.area().interpolate("cardinal")
+            d3.area()
+              .curve(d3.curveMonotoneX)
               .x(this.timeAxis_XFunc)
               .y0(me.height_hist-zeroPos)
               .y1(function(aggr){ 
@@ -10771,7 +10779,8 @@ var Summary_Interval_functions = {
         this.DOM.measure_Active_Area
           .transition().duration(durationTime)
           .attr("d", 
-            d3.svg.area().interpolate("cardinal")
+            d3.area()
+              .curve(d3.curveMonotoneX)
               .x (this.timeAxis_XFunc)
               .y0(me.height_hist+2-zeroPos)
               .y1(yFunc)
@@ -10856,7 +10865,8 @@ var Summary_Interval_functions = {
         var dTime = 200;
         this.DOM["measure_Compare_Area_"+cT]
           .transition().duration(dTime)
-          .attr("d", d3.svg.area().interpolate("cardinal")
+          .attr("d", d3.area()
+            .curve(d3.curveMonotoneX)
             .x(this.timeAxis_XFunc)
             //.y(me.height_hist+2-zeroPos)
             .y(yFunc));
@@ -10952,7 +10962,8 @@ var Summary_Interval_functions = {
         this.DOM.measure_Highlight_Area
           .transition().duration(dTime)
           .attr("d", 
-            d3.svg.area().interpolate("cardinal")
+            d3.area()
+              .curve(d3.curveMonotoneX)
               .x(this.timeAxis_XFunc)
               .y0(me.height_hist+2 - zeroPos)
               .y1(yFunc));
@@ -11025,7 +11036,7 @@ var Summary_Interval_functions = {
       if(this.browser.ratioModeActive || this.browser.percentModeActive) {
         maxValue = (this.browser.ratioModeActive) ? 100
           : Math.round(100*me.getMaxAggr('Active')/me.browser.allRecordsAggr.measure('Active'));
-        axis_Scale = d3.scale.linear()
+        axis_Scale = d3.scaleLinear()
           .rangeRound([0, this.height_hist])
           .domain([0,maxValue])
           .clamp(true);
@@ -11113,7 +11124,7 @@ var Summary_Interval_functions = {
       this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
       this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
-      var labelTranslate ="translateY("+this.height_hist+"px)";
+      var labelTranslate ="translateY("+(this.height_hist+1)+"px)";
       if(this.DOM.measureLabel)
         this.DOM.measureLabel.each(function(bar){ kshf.Util.setTransform(this,labelTranslate); });
       if(this.DOM.timeSVG)
@@ -11129,7 +11140,7 @@ var Summary_Interval_functions = {
       
       this.DOM.wrapper.attr("showMeasureAxis_2",wideChart?"true":null);
 
-      this.DOM.summaryInterval.style({
+      this.DOM.summaryInterval.styles({
         'width'        : this.getWidth()+"px",
         'padding-left' : this.width_measureAxisLabel+"px",
         'padding-right': ( wideChart ? this.width_measureAxisLabel : 11)+"px" });
@@ -11155,7 +11166,7 @@ var Summary_Interval_functions = {
       this.refreshHeight();
 
       this.DOM.valueTickGroup.style("height",this.height_labels+"px");
-      this.DOM.rangeHandle.style({
+      this.DOM.rangeHandle.styles({
         height: ( this.height_hist+23)+"px",
         top:    (-this.height_hist-13)+"px" });
       this.DOM.highlightRangeLimits.style("height",this.height_hist+"px");
@@ -11226,7 +11237,7 @@ var Summary_Interval_functions = {
 
       var percentileChart = this.DOM.percentileGroup.select(".percentileChart_"+distr);
 
-      percentileChart.style({opacity: 1, "margin-left": (this.stepTicks ? ((this.aggrWidth/2)+"px") : null) });
+      percentileChart.styles({opacity: 1, "margin-left": (this.stepTicks ? ((this.aggrWidth/2)+"px") : null) });
       percentileChart.selectAll(".q_pos")
         .each(function(q){ kshf.Util.setTransform(this,"translateX("+me.valueScale(me.quantile_val[distr+q])+"px)"); });
       percentileChart.selectAll(".quantile.aggrGlyph")
@@ -11324,12 +11335,12 @@ var Summary_Clique_functions = {
         browser.DOM.root.attr('adjustWidth',true).attr("pointerEvents",false);
         me.DOM.root.attr('noanim',true);
         me.DOM.setPairGroup.attr("animate_position",false);
-        var mouseInit_x = d3.mouse(d3.select("body")[0][0])[0];
+        var mouseInit_x = d3.mouse(d3.select("body").node())[0];
         console.log("mouseInit_x: "+mouseInit_x);
         var initWidth = me.getWidth();
         var myHeight = me.getHeight();
         d3.select("body").on("mousemove", function() {
-          var mouseDif = d3.mouse(d3.select("body")[0][0])[0]-mouseInit_x;
+          var mouseDif = d3.mouse(d3.select("body").node())[0]-mouseInit_x;
           me.noanim = true;
           me.summaryWidth = (me.popupSide==="left") ? initWidth-mouseDif : initWidth+mouseDif;
           me.checkWidth();
@@ -11382,7 +11393,7 @@ var Summary_Clique_functions = {
         var gridPan_x_init = me.gridPan_x;
 
         // scroll the setlist summary too...
-        var scrollDom = me.setListSummary.DOM.aggrGroup[0][0];
+        var scrollDom = me.setListSummary.DOM.aggrGroup.node();
         var initScrollPos = scrollDom.scrollTop;
         var w=me.getWidth();
         var h=me.getHeight();
@@ -11530,7 +11541,7 @@ var Summary_Clique_functions = {
     this.DOM.strengthControl.append("span").attr("class","strengthLabel").text("Strong");
 
     this.DOM.scaleLegend_SVG = this.DOM.summaryControls
-      .append("svg").attr({class: "sizeLegend", xmlns:"http://www.w3.org/2000/svg",})
+      .append("svg").attrs({class: "sizeLegend", xmlns:"http://www.w3.org/2000/svg",})
 
     this.DOM.legendHeader = this.DOM.scaleLegend_SVG.append("text").attr("class","legendHeader").text("#");
     this.DOM.legend_Group = this.DOM.scaleLegend_SVG.append("g");

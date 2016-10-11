@@ -4,7 +4,7 @@
     <title>Billionaires By Forbes</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <script type="text/javascript" src="../js/d3.3.5.5.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
     <link rel="stylesheet" href="../keshif.css"/ type="text/css">
     <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(){
     ],
     recordDisplay: {
       sortColWidth: 50,
-      sortBy: { name: "Worth", label: function(){ return d3.format("s")(this.Worth).replace("G","B"); }},
+      sortBy: { name: "Worth", label: function(){ return d3.format(".2s")(this.Worth).replace("G","B"); }},
       showRank: true,
       textSearch: "name",
       recordView: function(){ 
