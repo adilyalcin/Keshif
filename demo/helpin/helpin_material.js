@@ -715,9 +715,9 @@ var _material = {
     "Breadcrumbs": { 
       matches: '.breadcrumbs', 
       info: function(DOM){ 
-        var totalSel = this.browser.DOM.breadcrumbs.selectAll(".breadCrumb")[0].length;
-        var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter")[0].length;
-        var compareSel = this.browser.DOM.breadcrumbs.selectAll('[class*="crumbMode_Compare_"]')[0].length;
+        var totalSel = this.browser.DOM.breadcrumbs.selectAll(".breadCrumb").nodes().length;
+        var filterSel = this.browser.DOM.breadcrumbs.selectAll(".crumbMode_Filter").nodes().length;
+        var compareSel = this.browser.DOM.breadcrumbs.selectAll('[class*="crumbMode_Compare_"]').nodes().length;
         if(filterSel===0) filterSel = "none";
         if(compareSel===0) compareSel = "none";
         return ""+
