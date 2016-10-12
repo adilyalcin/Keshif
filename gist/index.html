@@ -32,6 +32,7 @@ google.charts.setOnLoadCallback(function(){
         return;
       }
       d3.select("#demo_PageTitle").html(response.description);
+      d3.select("title").text("Keshif ▶ "+response.description);
       browser = new kshf.Browser(JSON.parse(response.files['kshf_config.json'].content));
       kshf.gistInfo = response;
       if(response.files['kshf_style.css']){
