@@ -3747,12 +3747,12 @@ kshf.Browser.prototype = {
           };
           // Add style file, if custom style exists
           var badiStyle = d3.select("#kshfStyle");
-          if(badiStyle[0].length > 0 && badiStyle.node()!==null){
+          if(badiStyle.node()!==null){
             githubLoad.files["kshf_style.css"] = { content: badiStyle.text()};
           }
 
           function gist_createNew(){
-            var xhr = d3.xhr('https://api.github.com/gists');
+            var xhr = d3.request('https://api.github.com/gists');
             if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
             xhr.post( JSON.stringify(githubLoad), // data
                 function(error, data){ 
