@@ -3952,8 +3952,13 @@ kshf.Browser.prototype = {
           .selectAll(".spinner_x").data([1,2,3,4,5]).enter()
             .append("span").attr("class",function(d){ return "spinner_x spinner_"+d; });
         var hmmm=this.DOM.loadingBox.append("div").attr("class","status_text");
-        hmmm.append("span").attr("class","status_text_sub info").text(kshf.lang.cur.LoadingData);
+        hmmm.append("span").attr("class","status_text_sub info").html(
+          kshf.lang.cur.LoadingData);
         this.DOM.status_text_sub_dynamic = hmmm.append("span").attr("class","status_text_sub dynamic");
+        hmmm.append("button")
+          .attr("id","kshf-Sheets-Auth-Button")
+          .styles({visibility: "hidden", display: 'block', margin: '0 auto'})
+          .text("Authorize");
 
         // CREDITS 
         this.DOM.overlay_infobox = this.panel_overlay.append("div").attr("class","overlay_content overlay_infobox");
@@ -4509,13 +4514,46 @@ kshf.Browser.prototype = {
         qString+="&range="+sheet.range;
       }
 
-      function doQuery(){
-        if(sheet.auth){
-          qString += '&access_token=' + encodeURIComponent(gapi.auth.getToken().access_token);
-        }
-        var googleQuery = new google.visualization.Query(qString);
-        if(sheet.query) googleQuery.setQuery(sheet.query);
-        googleQuery.send(function(response){
+      var googleQuery;
+
+      var getWithAuth = function(){
+        gapi.load("client", function(){
+          gapi.auth.authorize(
+            { client_id: googleClientID, 
+              scope: 'https://spreadsheets.google.com/feeds', 
+              immediate: true
+            },
+            function(authResult) {
+              var authorizeButton = document.getElementById('kshf-Sheets-Auth-Button');
+              if (authResult && !authResult.error) {
+                if(authorizeButton) authorizeButton.style.visibility = 'hidden';
+                doQuery();
+              } else if(authorizeButton){
+                alert("Please click the Authorize button");
+                authorizeButton.style.visibility = '';
+                authorizeButton.onclick = function(event) {
+                  gapi.auth.authorize(
+                    { client_id: googleClientID, 
+                      scope: 'https://spreadsheets.google.com/feeds',
+                      immediate: false },
+                    function(authResult){
+                      if (authResult && !authResult.error) doQuery();
+                    });
+                  return false;
+                };
+              }
+            }
+          );
+        });
+      }
+
+      kshfHandleGoogleSheetResponse = function(response){
+        if(response.status==="error"){
+          if(response.errors[0].reason==="access_denied"){
+            // need to run it in authenticated mode
+            getWithAuth();
+          }
+        } else {
           if(kshf.dt[sheet.name]){
             me.incrementLoadedTableCount();
             return;
@@ -4524,7 +4562,10 @@ kshf.Browser.prototype = {
             me.panel_overlay.select("div.status_text .info").text("Cannot load data");
             me.panel_overlay.select("span.spinner").selectAll("span").remove();
             me.panel_overlay.select("span.spinner").append('i').attr("class","fa fa-warning");
-            me.panel_overlay.select("div.status_text .dynamic").text("("+response.getMessage()+")");
+            google.visualization.errors.addErrorFromQueryResponse(
+              me.panel_overlay.select("div.status_text .dynamic").node(),
+              response
+              );
             return;
           }
 
@@ -4560,41 +4601,44 @@ kshf.Browser.prototype = {
           }
 
           me.finishDataLoad(sheet,arr);
-        });
+        }
+      };
+
+      function doQuery(){
+        var queryString = qString;
+        if(sheet.auth){
+          queryString += '&access_token=' + encodeURIComponent(gapi.auth.getToken().access_token);
+        }
+        queryString += '&tqx=responseHandler:kshfHandleGoogleSheetResponse';
+
+        googleQuery = new google.visualization.Query(queryString);
+        if(sheet.query) googleQuery.setQuery(sheet.query);
+        googleQuery.send(kshfHandleGoogleSheetResponse);
+      };
+
+
+      kshfCheckSheetPrivacy = function(response){
+        if(response.status==="error"){
+          if(response.errors[0].reason==="access_denied"){
+            sheet.auth = true;
+            // need to run it in authenticated mode
+            getWithAuth();
+          }
+        } else {
+          doQuery();
+        }
       };
 
       if(sheet.auth){
-        gapi.load("client", function(){
-          gapi.auth.authorize(
-            { client_id: googleClientID, 
-              scope: 'https://spreadsheets.google.com/feeds', 
-              immediate: true
-            },
-            function(authResult) {
-              var authorizeButton = document.getElementById('authorize-button');
-              if (authResult && !authResult.error) {
-                if(authorizeButton) authorizeButton.style.visibility = 'hidden';
-                doQuery();
-              } else if(authorizeButton){
-                alert("Please click the Authorize button");
-                authorizeButton.style.visibility = '';
-                authorizeButton.onclick = function(event) {
-                  gapi.auth.authorize(
-                    { client_id: googleClientID, 
-                      scope: 'https://spreadsheets.google.com/feeds',
-                      immediate: false
-                    },
-                    function(authResult){
-                      if (authResult && !authResult.error) doQuery();
-                    });
-                  return false;
-                };
-              }
-            }
-          );
-        });
+        getWithAuth();
       } else {
-        doQuery();
+        // Do a simple access to see if the response would be an access error.
+        var queryString = qString;
+        queryString += '&tqx=responseHandler:kshfCheckSheetPrivacy&range=A1:A1';
+        var scriptDOM = document.createElement("script");
+        scriptDOM.type = "text/javascript";
+        scriptDOM.src = queryString;
+        document.head.appendChild(scriptDOM);
       }
     },
     /** -- */
@@ -5766,9 +5810,6 @@ kshf.Summary_Base.prototype = {
       if(!this.aggr_initialized) return str+=" uninitialized";
       if(this.isTimeStamp()) return "interval time";
       return "interval numeric";
-      //
-      if(this.hasFloat) return "floating";
-      return "integer";
     }
     return "?";
   },
@@ -8943,7 +8984,7 @@ var Summary_Interval_functions = {
         this.height_hist_topGap+
         this.height_labels+
         this.height_slider+
-        this.height_recEncoding
+        this.height_recEncoding+
         this.height_percentile;
     },
     /** -- */
@@ -9150,7 +9191,6 @@ var Summary_Interval_functions = {
         timeFormatFunc = function(v){ if(v && v!=="") return new Date(1*v,0); };
       } else if(fmt===undefined || fmt===null) {
         return;
-        timeFormatFunc = null;
       } else {
         timeFormatFunc = d3.timeParse(fmt);
       }
@@ -10459,7 +10499,7 @@ var Summary_Interval_functions = {
           this.tipsy = new Tipsy(this, {
             gravity: 's', title: function(){
               return "<b>"+me.intervalTickPrint(this._minValue)+"</b> to "+
-                "<b>"+me.intervalTickPrint(this._maxValue);+"</b>"; }
+                "<b>"+me.intervalTickPrint(this._maxValue)+"</b>"; }
           });
         })
         .on("mouseenter",function(d,i){ 
