@@ -6911,6 +6911,9 @@ var Summary_Categorical_functions = {
         // selected on top of the list
         if(!a.f_selected() &&  b.f_selected()) return  1;
         if( a.f_selected() && !b.f_selected()) return -1;
+        // usedAggr === false => on the bottom
+        if(!a.usedAggr &&  b.usedAggr) return  1;
+        if( a.usedAggr && !b.usedAggr) return -1;
         // Rest
         var x = b.measure('Active') - a.measure('Active');
         if(x===0) x = b.measure('Total') - a.measure('Total');
@@ -8053,6 +8056,7 @@ var Summary_Categorical_functions = {
     },
     /** -- */
     isCatActive: function(category){
+      if(!category.usedAggr) return false;
       if(category.f_selected()) return true;
       if(category.recCnt.Active!==0) return true;
       // summary is not filtered yet, don't show categories with no records
@@ -8724,6 +8728,7 @@ var Summary_Categorical_functions = {
         this.map_zoomToActive();
         this.map_projectCategories();
         this.refreshViz_Active();
+        this.refreshViz_All();
         return; 
       }
 
@@ -11534,7 +11539,7 @@ var Summary_Clique_functions = {
   },
   /** -- */
   updateWidthFromHeight: function(){
-    this.summaryWidth = this.getHeight()+25;
+    this.summaryWidth = this.getHeight()+80;
     this.checkWidth();
   },
   /** -- */
