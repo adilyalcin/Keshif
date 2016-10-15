@@ -3989,6 +3989,9 @@ height:calc(100% - 10px);
   pointer-events: all;
   color: black;
 }
+.kshf .kshfSummary[viewType="map"] {
+  z-index: 1;
+}
 .kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
   display: none;
 }
@@ -4921,8 +4924,8 @@ height:calc(100% - 10px);
   width: 0px;
   height: 100%;
   pointer-events: all;
-  border-width: 0px 2px 0px 0px;
-  border-style: dotted;
+  border-width: 0px 5px 0px 0px;
+  border-style: solid;
   border-color: lightgray;
   cursor: col-resize;
   opacity: 0.5;
