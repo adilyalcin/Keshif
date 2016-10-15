@@ -1209,7 +1209,7 @@ kshf.RecordDisplay.prototype = {
       this.DOM.kshfRecords.attr("d", function(record){ return me.recordGeoPath(record._geoFeat_); });
     },
     /** -- */
-    map_zoomToActive: function(){
+    recMap_zoomToActive: function(){
       // Insert the bounds for each record path into the bs
       var bs = [];
       this.browser.records.forEach(function(record){
@@ -1722,7 +1722,7 @@ kshf.RecordDisplay.prototype = {
           d3.event.stopPropagation();
         })
         .on("click",function(){
-          me.map_zoomToActive();
+          me.recMap_zoomToActive();
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
@@ -2606,7 +2606,7 @@ kshf.RecordDisplay.prototype = {
       this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
 
       if(this.viewRecAs==='map') {
-        this.map_zoomToActive();
+        this.recMap_zoomToActive();
         this.map_projectRecords();
         this.refreshRecordColors();
       } else if(this.viewRecAs==='nodelink'){
@@ -2729,7 +2729,7 @@ kshf.RecordDisplay.prototype = {
       if(this.recordViewSummary===null) return;
       if(this.viewRecAs==='map') {
         this.updateRecordVisibility();
-        //this.map_zoomToActive();
+        //this.recMap_zoomToActive();
       } else if(this.viewRecAs==='nodelink') {
         this.updateRecordVisibility();
       } else {
@@ -5051,7 +5051,7 @@ kshf.Browser.prototype = {
         setTimeout(function(){ 
           if(me.options.enableAuthoring) me.enableAuthoring(true);
           if(me.recordDisplay.viewRecAs==='map'){
-            setTimeout(function(){ me.recordDisplay.map_zoomToActive(); }, 1000);
+            setTimeout(function(){ me.recordDisplay.recMap_zoomToActive(); }, 1000);
           }
           me.setNoAnim(false);
         },1000);
@@ -7581,8 +7581,9 @@ var Summary_Categorical_functions = {
       newHeight -= this.getHeight_Header()+this.getHeight_Config()+this.getHeight_Bottom();
       if(this.viewType==='map'){
         this.categoriesHeight = newHeight;
-        if(this.categoriesHeight!==attribHeight_old)
-          setTimeout(function(){ me.map_zoomToActive();}, 1000);
+        if(this.categoriesHeight!==attribHeight_old){
+          setTimeout(function(){ me.catMap_zoomToActive(); }, 1000);
+        }
         return;
       }
 
@@ -7644,8 +7645,6 @@ var Summary_Categorical_functions = {
       
       if(this.viewType==='map'){
         this.updateCatCount_Active();
-        //this.map_refreshBounds_Active();
-        //setTimeout(function(){ me.map_zoomToActive(); }, 1000);
         this.refreshMeasureLabel();
         this.refreshViz_Active();
         return;
@@ -8682,10 +8681,17 @@ var Summary_Categorical_functions = {
       this.mapBounds_Active = new L.latLngBounds(bs);
     },
     /** --  */
-    map_zoomToActive: function(){
+    catMap_zoomToActive: function(){
       if(this.asdsds===undefined){ // First time: just fit bounds
         this.asdsds = true;
         this.leafletAttrMap.fitBounds(this.mapBounds_Active);
+        return;
+      }
+      if(this.sourceDescr.mapInitView){
+        this.leafletAttrMap.setView(
+          L.latLng(this.sourceDescr.mapInitView[0],this.sourceDescr.mapInitView[1]) , 
+          this.sourceDescr.mapInitView[2]);
+        delete this.sourceDescr.mapInitView;
         return;
       }
 
@@ -8716,6 +8722,7 @@ var Summary_Categorical_functions = {
         if(this.heightRow_category_dirty) this.refreshHeight_Category();
         this.refreshDOMcats();
         this.updateCatSorting(0,true,true);
+        this.DOM.measureLabel.style("display",null);
         return;
       }
       // 'map'
@@ -8725,7 +8732,7 @@ var Summary_Categorical_functions = {
         this.refreshDOMcats();
 
         this.map_refreshBounds_Active();
-        this.map_zoomToActive();
+        this.catMap_zoomToActive();
         this.map_projectCategories();
         this.refreshViz_Active();
         this.refreshViz_All();
@@ -8809,7 +8816,7 @@ var Summary_Categorical_functions = {
         })
         .on("click",function(){
           me.map_refreshBounds_Active();
-          me.map_zoomToActive();
+          me.catMap_zoomToActive();
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
@@ -8871,7 +8878,7 @@ var Summary_Categorical_functions = {
       
       this.map_refreshColorScale();
       this.map_refreshBounds_Active();
-      this.map_zoomToActive();
+      this.catMap_zoomToActive();
       this.map_projectCategories();
       this.refreshMeasureLabel();
       this.refreshViz_Active();
