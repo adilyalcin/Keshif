@@ -7181,6 +7181,10 @@ var Summary_Categorical_functions = {
       // make mapping an array if it is not
       if(!(mapping instanceof Array)) mapping = [mapping];
 
+      mapping.forEach(function(d,i){
+        if(mapping[i]) mapping[i] = (""+mapping[i]).trim();
+      });
+
       // Filter invalid / duplicate values
       var found = {};
       mapping = mapping.filter(function(e){
