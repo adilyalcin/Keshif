@@ -2632,7 +2632,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                 > .aggrGroup{
                   position: relative;
-                  overflow-y: auto;
+                  overflow-y: hidden;
                   overflow-x: hidden;
                   display: block;
                   z-index: 5;
@@ -3163,6 +3163,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .headerGroup {
           box-shadow: 0px 0px 2px #646464, 0px 0px 5px #999;
           > .header_display_control > .fa{ opacity: 1; }
+        }
+        > .wrapper > .summaryCategorical > .aggrGroup{
+          overflow-y: auto;
         }
         .missingValueAggr{ color: gray }
       }

@@ -651,6 +651,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -webkit-flex: 1;
   -ms-flex: 1;
   flex: 1;
+  max-width: calc(100% - 70px);
   padding: 1px;
 }
 .kshf > .attributePanel .nugget > .summaryName:hover {
@@ -743,6 +744,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   height: 30px;
   background-color: #F8F6F6;
   width: 60px;
+  min-width: 60px;
   border-radius: 5px;
   border: solid 1px #c8c8c8;
 }
@@ -3309,7 +3311,7 @@ top:calc(50% - 5px);
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .aggrGroup {
   position: relative;
-  overflow-y: auto;
+  overflow-y: hidden;
   overflow-x: hidden;
   display: block;
   z-index: 5;
@@ -3977,6 +3979,9 @@ height:calc(100% - 10px);
 }
 .kshf .kshfSummary:hover > .headerGroup > .header_display_control > .fa {
   opacity: 1;
+}
+.kshf .kshfSummary:hover > .wrapper > .summaryCategorical > .aggrGroup {
+  overflow-y: auto;
 }
 .kshf .kshfSummary:hover .missingValueAggr {
   color: #808080;
