@@ -3774,7 +3774,7 @@ kshf.Browser.prototype = {
             if(kshf.gistLogin) xhr.header("Authorization","token "+kshf.githubToken);
             xhr.send('PATCH',JSON.stringify(githubLoad),
               function(error, data){ 
-                var response = data.response;
+                var response = JSON.parse(data.response);
                 var gistURL = response.html_url;
                 var gistID = gistURL.replace(/.*github.*\//g,'');
                 var keshifGist = "keshif.me/gist?"+gistID;
@@ -10189,7 +10189,7 @@ var Summary_Interval_functions = {
           if(existingBinIndex!==null){ record._aggrCache.splice(existingBinIndex,1); }
           // ******************************************************************
 
-          bin.addRecord(record);
+          if(bin) bin.addRecord(record);
         },this);
 
         if(this.stepTicks) this.intervalTicks.pop();
