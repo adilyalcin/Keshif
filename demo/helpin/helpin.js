@@ -1772,6 +1772,7 @@ Helpin.prototype = {
     });
 
     // use the best position
+    if(bestPos===null) return;
     this.DOM.root.node().style.left = Math.min(maxLeft, Math.max(0, bestPos.left))+"px";
     this.DOM.root.node().style.top  = Math.min(maxTop, Math.max(0, bestPos.top))+"px";
   },
