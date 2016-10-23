@@ -4390,7 +4390,7 @@ kshf.Browser.prototype = {
     updateRecordDetailPanel: function(record){
       var str="";
       if(this.recordDisplay.config && this.recordDisplay.config.onDetail){
-        str = this.recordDisplay.config.onDetail.call(record);
+        str = this.recordDisplay.config.onDetail.call(record.data, record);
       } else {
         for(var column in record.data){
           var v=record.data[column];
@@ -8725,6 +8725,7 @@ var Summary_Categorical_functions = {
         this.DOM.aggrGroup = this.DOM.aggrGroup_list;
         if(this.heightRow_category_dirty) this.refreshHeight_Category();
         this.refreshDOMcats();
+        this.updateCatCount_Active();
         this.updateCatSorting(0,true,true);
         this.DOM.measureLabel.style("display",null);
         return;

@@ -2318,16 +2318,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:before {
-  content: "\f0ca";
+  content: "\f0ac";
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:hover:before {
-  content: "\f0ac";
+  content: "\f0ca";
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:before {
-  content: "\f0ac";
+  content: "\f0ca";
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:hover:before {
-  content: "\f0ca";
+  content: "\f0ac";
 }
 .kshf .headerGroup > .summaryIcons > .useForRecordDisplay {
   opacity: 0;
