@@ -4514,6 +4514,8 @@ kshf.Browser.prototype = {
         qString+="&range="+sheet.range;
       }
 
+      var sheetName = sheet.name;
+
       var googleQuery;
 
       var getWithAuth = function(){
@@ -4554,7 +4556,7 @@ kshf.Browser.prototype = {
             getWithAuth();
           }
         } else {
-          if(kshf.dt[sheet.name]){
+          if(kshf.dt[sheetName]){
             me.incrementLoadedTableCount();
             return;
           }
@@ -5304,6 +5306,8 @@ kshf.Browser.prototype = {
     /** -- */
     setSelect_Compare: function(noReclick, _copy){
       var selAggregate = this.selectedAggr.Highlight;
+
+      if(selAggregate===undefined) return;
 
       if(selAggregate.compared){
         var x=selAggregate.compared;
@@ -8412,7 +8416,8 @@ var Summary_Categorical_functions = {
           DOM_cats_new.append("span").attr("class", "measure_"+m)
             .on("mouseenter" ,function(){ 
               if(m==="Compare_A" || m==="Compare_B" || m==="Compare_C"){
-                me.browser.refreshMeasureLabels(m); 
+                // (if active)
+                if(me.browser.vizActive[m]) me.browser.refreshMeasureLabels(m); 
               } else if(m==="Total" || m==="Active"){
                 // nothing
               } else if(me.browser.measureLabelType==="Highlight"){
@@ -10731,7 +10736,7 @@ var Summary_Interval_functions = {
       var maxMeasureValue = this.getMaxAggr_All();
       var minMeasureValue = 0;
       if(this.browser.measureFunc!=="Count" && this.browser.measureSummary.intervalRange.org.min<0){
-        minMeasureValue = this.getMinAggr_All();
+        minMeasureValue = Math.min(0, this.getMinAggr_All());
       }
       this.getMinAggr_All();
       this.chartScale_Measure
