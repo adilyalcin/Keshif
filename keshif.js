@@ -4633,6 +4633,8 @@ kshf.Browser.prototype = {
 
       if(sheet.auth){
         getWithAuth();
+      } else if(this.source.tables.length>1){
+        doQuery();
       } else {
         // Do a simple access to see if the response would be an access error.
         var queryString = qString;
