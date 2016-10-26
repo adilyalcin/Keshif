@@ -2584,9 +2584,7 @@ kshf.RecordDisplay.prototype = {
 
         // Fixes ordering problem when new records are made visible on the list
         // TODO: Try to avoid this.
-        this.DOM.recordGroup.selectAll(".kshfRecord")
-          .data(records, function(record){ return record.id(); })
-          .order();
+        this.DOM.recordGroup.selectAll(".kshfRecord").order();
       }
 
       if(this.viewRecAs==='nodelink'){
@@ -2621,7 +2619,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     showMoreRecordsOnList: function(){
-      if(this.viewRecAs==='map') return;
+      if(this.viewRecAs==='map' || this.viewRecAs==='nodelink') return;
       this.DOM.showMore.attr("showMoreVisible",false);
       this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
       this.refreshRecordDOM();
