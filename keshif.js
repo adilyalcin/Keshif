@@ -338,7 +338,7 @@ var kshf = {
   loadFont: function(){
     if(this.fontLoaded===true) return;
     WebFontConfig = {
-      google: { families: [ 'Roboto:400,500,300,100,700:latin', 'Montserrat:400,700:latin' ] }
+      google: { families: [ 'Roboto:400,500,300,100,700:latin', 'Montserrat:400,700:latin', 'Roboto+Slab:700'] }
     };
     var wf = document.createElement('script');
     wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +

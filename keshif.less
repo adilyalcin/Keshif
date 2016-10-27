@@ -1811,6 +1811,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           font-size: 0.9em;
           padding: 0px 3px;
           cursor: default;
+          font-family: 'Roboto Slab', serif;
+          //line-height: 1em;
+          margin-top: -2px;
           &:focus{
             background-color: white;
             box-shadow: 0 0 3px #2CABCF;
@@ -1859,7 +1862,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           pointer-events: none;
         }
         > .setMatrixButton{
-          &[helpin]{ display: inline-block; }
+          opacity: 0;
+          &[helpin]{ opacity: 1; }
         }
       }
 
@@ -2623,9 +2627,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                   vertical-align: top;
                   padding-right: 5px;
                   cursor: pointer;
-                  color: rgb(180, 180, 180);
+                  color: #b7b7b7;
                   opacity:1;
                   pointer-events: all;
+                  font-weight: 300;
                   display: inline-block;
                   &:hover{ color: @color_hoverAction; }
                 }
@@ -3150,7 +3155,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
         &[isMultiValued]{
           .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not{ display: inline !important; }
-          &:hover .setMatrixButton{ display: inline-block !important; }
+          .setMatrixButton{ display: inline-block !important; }
+          &:hover .setMatrixButton{ opacity: 1; }
         }
 
 /*        &:before{

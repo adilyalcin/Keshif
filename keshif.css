@@ -2269,6 +2269,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   font-size: 0.9em;
   padding: 0px 3px;
   cursor: default;
+  font-family: 'Roboto Slab', serif;
+  margin-top: -2px;
 }
 .kshf .headerGroup > .summaryName > .summaryName_text:focus {
   background-color: white;
@@ -2333,8 +2335,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 0;
   pointer-events: none;
 }
+.kshf .headerGroup > .summaryIcons > .setMatrixButton {
+  opacity: 0;
+}
 .kshf .headerGroup > .summaryIcons > .setMatrixButton[helpin] {
-  display: inline-block;
+  opacity: 1;
 }
 .kshf .headerGroup > .header_display_control {
   display: block;
@@ -3301,9 +3306,10 @@ top:calc(50% - 5px);
   vertical-align: top;
   padding-right: 5px;
   cursor: pointer;
-  color: #b4b4b4;
+  color: #b7b7b7;
   opacity: 1;
   pointer-events: all;
+  font-weight: 300;
   display: inline-block;
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical .scroll_display_more:hover {
@@ -3971,8 +3977,11 @@ height:calc(100% - 10px);
 .kshf .kshfSummary[isMultiValued] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
   display: inline !important;
 }
-.kshf .kshfSummary[isMultiValued]:hover .setMatrixButton {
+.kshf .kshfSummary[isMultiValued] .setMatrixButton {
   display: inline-block !important;
+}
+.kshf .kshfSummary[isMultiValued]:hover .setMatrixButton {
+  opacity: 1;
 }
 .kshf .kshfSummary:hover > .headerGroup {
   box-shadow: 0px 0px 2px #646464, 0px 0px 5px #999;
