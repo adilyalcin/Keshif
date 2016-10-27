@@ -294,8 +294,14 @@ google.charts.setOnLoadCallback( function(){
             return "<span class='book_stars'>"+this['★'] + "</span>" + this.Year;
           } },
         sortColWidth: 100,
+        displayType: 'grid',
         textSearch: "Title",
         recordView: function(){
+          var str="";
+          str+="<a target='_blank' href='"+this.URL+"' class='thumbnail'>"+
+            "<img class='thumbImg' src='"+this.ImageURL+"'></a>";
+          return str;
+          return "<img src='"+this.ImageURL+"'>";
           var str="";
           str+="<span class='book_title'>"+this.Title;
           if(this.URL) str+="<a href='"+this.URL+"' target='_blank' class='book_url fa fa-external-link'></a>";
@@ -353,6 +359,18 @@ google.charts.setOnLoadCallback( function(){
   #vistools_div .content{
     padding: 3px;
   }
+
+  #vistools_div .thumbnail{
+    box-shadow: 5px 5px 8px lightgray;
+  }
+
+  #visbooks_div .kshfRecord{
+    width: 150px;
+  }
+  #visbooks_div .content{
+    padding: 10px;
+  }
+
   .theLabel > .chart-icon{
   	width: 14px;
   }
