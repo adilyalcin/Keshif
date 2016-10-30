@@ -2320,16 +2320,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   text-align: center;
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:before {
-  content: "\f0ac";
+  content: "\f0ca";
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:hover:before {
-  content: "\f0ca";
+  content: "\f0ac";
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:before {
-  content: "\f0ca";
+  content: "\f0ac";
 }
 .kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:hover:before {
-  content: "\f0ac";
+  content: "\f0ca";
 }
 .kshf .headerGroup > .summaryIcons > .useForRecordDisplay {
   opacity: 0;
@@ -3132,6 +3132,9 @@ top:calc(50% - 5px);
 .kshf .visViewControl > .fa:hover {
   background-color: #EEE;
   color: #cb5454;
+}
+.kshf .leaflet-tile-container {
+  pointer-events: all !important;
 }
 .kshf .leaflet-container .visViewControl,
 .kshf .leaflet-control-container .visViewControl {
@@ -4560,6 +4563,7 @@ height:calc(100% - 10px);
   stroke-width: 0.5px;
   stroke-opacity: 0.2;
   cursor: pointer;
+  pointer-events: all;
 }
 .kshf .recordDisplay[displayType="map"] .kshfRecord[selection="onRecord"] {
   stroke: #463b23 !important;

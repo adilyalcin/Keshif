@@ -76,7 +76,7 @@ var kshf = {
     },
     tileConfig: { 
       attribution: '© <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'+
-        ' contributors &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
+        ' contrib.\'s &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
       subdomains: 'abcd',
       maxZoom: 19,
       //noWrap: true
@@ -338,7 +338,13 @@ var kshf = {
   loadFont: function(){
     if(this.fontLoaded===true) return;
     WebFontConfig = {
-      google: { families: [ 'Roboto:400,500,300,100,700:latin', 'Montserrat:400,700:latin', 'Roboto+Slab:700'] }
+      google: { 
+        families: [ 
+          'Roboto:400,500,300,100,700:latin', 
+          'Montserrat:400,700:latin', 
+          'Roboto+Slab:700'
+        ]
+      }
     };
     var wf = document.createElement('script');
     wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +

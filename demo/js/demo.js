@@ -521,17 +521,6 @@ document.addEventListener('DOMContentLoaded',function(){
 
     d3.select("body").append("script").attr("type","text/javascript").attr("async","async")
       .attr("src","//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e");
-
-    WebFontConfig = {
-      google: { families: [ 'Montserrat:400,500,300,100,700:latin', ] }
-    };
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
   }
 
   // Add favicon to all demos

@@ -1852,10 +1852,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .summaryViewAs{
           width: 15px;
           text-align: center;
-          &[viewAs="map"]:before{ content: "\f0ac"; } // globe
-          &[viewAs="map"]:hover:before{ content: "\f0ca"; } // list-ul
-          &[viewAs="list"]:before{ content: "\f0ca"; } // list-ul
-          &[viewAs="list"]:hover:before{ content: "\f0ac"; } // globe
+          &[viewAs="map"]:before{ content: "\f0ca"; } // globe
+          &[viewAs="map"]:hover:before{ content: "\f0ac"; } // list-ul
+          &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
+          &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
         }
         > .useForRecordDisplay{ 
           opacity: 0;
@@ -2482,6 +2482,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           color: @color_hoverAction;
         }
       }
+    }
+
+    .leaflet-tile-container{
+      pointer-events: all !important;
     }
 
     .leaflet-container .visViewControl, .leaflet-control-container .visViewControl{
@@ -3631,6 +3635,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           stroke-opacity: 0.2;
           //paint-order: stroke;
           cursor: pointer;
+          pointer-events: all;
           &[selection="onRecord"]{
             stroke: darken(@color_onRecord_back, 70%) !important;
             stroke-width: 2px;

@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
 
     <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function(){
@@ -27,11 +27,16 @@ document.addEventListener("DOMContentLoaded", function(){
       url: "http://apps.washingtonpost.com/investigative/homicides/",
       dirPath: 'https://storage.googleapis.com/keshif-data/',
       fileType: "json",
-      tables: "titleix"
+      tables: "titleix",
+      callback: function(){ US_States.loadGeo(this); }
     },
     summaries: [
       { name: "college", panel: "left" },
-      { name: "State", value: "state_name", panel: "right" },
+      { name: "State", value: "state_name", panel: "right",
+        catMap: function(){ 
+          var x=this.id;
+          return US_States.index_name[x].geo;
+        } },
       { name: "Sector", value: "sector", panel: "right" },
       { name: "Status", value: "status", panel: "right" },
       { name: "Start Time", panel: "bottom",
