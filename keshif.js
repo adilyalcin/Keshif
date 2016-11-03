@@ -4790,6 +4790,8 @@ kshf.Browser.prototype = {
     },
     /** -- */
     _loadCharts: function(){
+      if(this.chartsLoaded) return;
+      this.chartsLoaded = true;
         var me=this;
 
         if(typeof Helpin !== 'undefined'){
@@ -8342,19 +8344,6 @@ var Summary_Categorical_functions = {
       var DOM_cats_new = aggrGlyphSelection.enter()
         .append(this.viewType=='list' ? 'span' : 'g')
         .attr("class","aggrGlyph "+(this.viewType=='list'?'cat':'map')+"Glyph") // mapGlyph, catGlyph
-        .on("mousemove", function(){
-          if(this.viewType==='map'){
-            var left = (d3.event.pageX-this.tipsy.tipWidth-10);
-            var top  = (d3.event.pageY-this.tipsy.tipHeight/2);
-
-            var browserPos = kshf.browser.DOM.root.node().getBoundingClientRect();
-            left = left - browserPos.left;
-            top = top - browserPos.top;
-
-            this.tipsy.jq_tip.node().style.left = left+"px";
-            this.tipsy.jq_tip.node().style.top = top+"px";
-          }
-        })
         .attr("title",me.catTooltip ? function(_cat){ return me.catTooltip.call(_cat.data); } : null);
 
       this.updateCatIsVisible();
@@ -8468,13 +8457,22 @@ var Summary_Categorical_functions = {
               this.highlightTimeout = window.setTimeout( function(){ me.onAggrHighlight(_cat) }, me.browser.mouseSpeed*500);
             }
           })
+          .on("mousemove", function(){
+            var browserPos = kshf.browser.DOM.root.node().getBoundingClientRect();
+            var left = (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10); // left - browserPos.left;
+            var top = (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2); // top - browserPos.top;
+
+            this.tipsy.jq_tip.node().style.left = left+"px";
+            this.tipsy.jq_tip.node().style.top = top+"px";
+          })
           .on("mouseleave",function(_cat){ 
             if(this.tipsy) this.tipsy.hide();
             if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
             me.onAggrLeave(_cat);
           });
 
-        DOM_cats_new.append("path").attr("class","measure_Active").on("click", function(aggr){ me.onCatClick(aggr); });
+        DOM_cats_new.append("path").attr("class","measure_Active")
+          .on("click", function(aggr){ me.onCatClick(aggr); });
         DOM_cats_new.append("text").attr("class","measureLabel"); // label on top of (after) all the rest
       }
       this.refreshDOMcats();

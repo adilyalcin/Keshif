@@ -128,7 +128,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         .aggrGlyph { 
           > .catLabelGroup{ pointer-events: all; }
-          > .measureLabel{ pointer-events: all; }
+          &:not(.mapGlyph) > .measureLabel{ pointer-events: all; }
           &:not([NoActiveRecords]) > [class^="measure_"]{ pointer-events: all; }
         }
       }

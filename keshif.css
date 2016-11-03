@@ -145,7 +145,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph > .catLabelGroup {
   pointer-events: all;
 }
-.kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph > .measureLabel {
+.kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph:not(.mapGlyph) > .measureLabel {
   pointer-events: all;
 }
 .kshf[pointerEvents="true"] .kshfSummary > .wrapper .aggrGlyph:not([NoActiveRecords]) > [class^="measure_"] {
