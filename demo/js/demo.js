@@ -1,6 +1,8 @@
 // turn on social share by default
 var socialShare = true;
 
+var demoHeader = true;
+
 var browser;
 
 var getIcon = function(v){
@@ -485,47 +487,51 @@ document.addEventListener('DOMContentLoaded',function(){
     ga('send', 'pageview');
   }
 
-  if(socialShare===true){
-    var demoHeader = d3.select("body").append("div").attr("class","demoHeader");
-    
-    var keshif_logo = demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
+  if(demoHeader!==false){
+    var _demoHeader = d3.select("body").append("div").attr("class","demoHeader");
+
+    var keshif_logo = _demoHeader.append("a").attr("class","keshif_logo").attr("href","http://www.keshif.me").attr("target","_blank");
     keshif_logo.append("span").attr("class","kshfLogo").html(kshf.kshfLogo).styles({width: "30px", height: "30px", float: "left"});
     keshif_logo.append("span").attr("class","keshif_logo_content")
       .html(
         "<div class='subContent_2'>Created with</div>"+
         "<div class='subTitle'>Keshif</div>"+
         "<div class='subContent'>Data Made Explorable</div>");
+      
+      if(socialShare===true){
+        _demoHeader.append("div").attr("class","addthis_sharing_toolbox");
+      }
 
-    demoHeader.append("div").attr("class","addthis_sharing_toolbox");
+      var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
+      var pageName = window.location.pathname.split("/");
+      pageName = pageName[pageName.length-1];
+      if(pageName.indexOf("html")===-1) pageName+=".html";
 
-    var githubDemoRoot = "https://github.com/adilyalcin/Keshif/blob/master/demo/";
-    var pageName = window.location.pathname.split("/");
-    pageName = pageName[pageName.length-1];
-    if(pageName.indexOf("html")===-1) pageName+=".html";
+      var openSource = _demoHeader.append("div").attr("class","openSource");
+      openSource.append("iframe")
+        .attrs({
+          src: "http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small",
+          scrolling: 0,
+          frameborder: 0,
+          width: "52px",
+          height: "20px"
+        })
+        .styles({
+          position: "relative", top: "3px"
+        })
+      openSource.append("a").attr("class","openSourceLabel")
+        .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code")
+          .append("span").attr("class","fa fa-code");
 
-    var openSource = demoHeader.append("div").attr("class","openSource");
-    openSource.append("iframe")
-      .attrs({
-        src: "http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=star&count=false&size=small",
-        scrolling: 0,
-        frameborder: 0,
-        width: "52px",
-        height: "20px"
-      })
-      .styles({
-        position: "relative", top: "3px"
-      })
-    openSource.append("a").attr("class","openSourceLabel")
-      .attr("target","_blank").attr("href",githubDemoRoot+pageName).attr("title","Get Code")
-        .append("span").attr("class","fa fa-code");
 
-    d3.select("body").append("script").attr("type","text/javascript").attr("async","async")
-      .attr("src","//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e");
+      if(socialShare===true){
+        d3.select("body").append("script").attr("type","text/javascript").attr("async","async")
+          .attr("src","//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-534742f736ae906e");
+      }
   }
 
   // Add favicon to all demos
   d3.select("head").append("link").attr("rel","icon").attr("type","image/png")
     .attr("href","http://keshif.me/demo/img/favicon.png");
-
 });
 
