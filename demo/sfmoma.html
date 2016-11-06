@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>SFMOMA Art Collection</title>
+    <title>San Francisco Museum of Modern Art Collection</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
@@ -16,35 +16,26 @@
     <script type="text/javascript">
 function loadData(browser){
   $.ajax( {
-    url: 'https://storage.googleapis.com/keshif-data/Pivot_SFMOMACollection.xml',
-    dataType:"xml",
-    async: false,
+    url: 'https://storage.googleapis.com/keshif-data/sfmoma.xml',
+    dataType: "xml",
     success: function(collection){
       browser.primaryTableName = "Artworks";
       kshf.dt.Artworks = [];
 
-      $(collection).find("> Collection > Items > Item").each(function(){
+      $(collection).find("> collection > artwork").each(function(){
         var $this = $(this);
         var cData = {};
-        cData.url = $this.attr("Href");
-        cData.id = parseInt($this.attr("Id"));
-        cData.Name = $this.attr("Name");
-        cData.Description = $this.find("Description").text();
+        cData.id = 1*$this.attr("id");
+        cData.Title = $this.find("title").text();
+        cData.Year  = 1*$this.find("date-created").attr("year");
+        cData.Type  = $this.find("type").text();
+        cData.Dimensions = $this.find("dimensions").text();
+        cData.Materials = $this.find("materials").text().toLowerCase();
+        cData.Terms = $this.find("terms").text().toLowerCase().split("; ");
 
-        $this.find(">Facets>Facet").each(function(d){
-          var columnName = this.getAttribute("Name");
-          var $item = $(this);
-          cData[columnName] = [];
-          if($item.find(">String").length>0) {
-            $item.find(">String").each(function(){
-              cData[columnName].push(this.getAttribute("Value"));
-            })
-          } else if($item.find(">Number").length>0) {
-            cData[columnName] = parseInt($item.find(">Number").attr("Value"));
-          } else {
-            cData[columnName] = undefined;
-          }
-        });
+        cData.Artist = $this.find("creator").text().trim();
+
+        cData.Artist_Gender = $this.find("creator").attr("gender").toLowerCase();
 
         kshf.dt.Artworks.push(new kshf.Record(cData,"id"));
       });
@@ -62,33 +53,62 @@ $(document).ready( function(){
     rightPanelLabelWidth: 280,
     barChartWidth: 70,
     source: {
-      url: 'http://research.microsoft.com/en-us/um/people/bibuxton/buxtoncollection/',    
+      url: 'https://www.sfmoma.org/artists-artworks/',
       callback: loadData
     },
     summaries: [
-      { name: "Artist", minAggrValue: 3, panel: 'right', collapsed: true },
-      { name: "Nationality", panel: 'right' },
-      { name: "Gender", panel: 'right' },
-      { name: "Living", panel: 'right' },
-      { name: "Year Born", timeFormat: "%Y", panel: 'right' },
-      { name: "Collection", collapsed: true },
-      { name: "Object Type", },
-      { name: "Medium", minAggrValue: 2},
-      { name: "Creation Date", timeFormat: "%Y", panel: 'bottom' },
-      { name: "Department" },
-      { name: "On Display" }, 
-      { name: "Key Words", minAggrValue: 10, collapsed: true }
+      { name: "Artist", minAggrValue: 5, panel: 'right' },
+      { name: "Year", panel: 'middle', timeFormat: "%Y" },
+      { name: "Type", },
+      { name: "Materials", minAggrValue: 5 },
+      { name: "Terms", minAggrValue: 20 },
+      { name: "Artist_Gender", panel: 'right' }
     ],
     recordDisplay: {
-      sortBy: "Creation Date",
-      textSearch: "Name",
-      recordView: "Name"
+      sortBy: "Year",
+      textSearch: "Title",
+      recordView: function(){
+        return "<span class='artTitle'>"+this.Title +"</span> by <span class='artist'>"+this.Artist+"</span> "+
+          " - <a href='https://www.sfmoma.org/artwork/"+this.id+"' target='_blank' class='outLink'>"+
+            "<i class='fa fa-external-link'></i>view</a>";
+      },
+      /*
+      onDetail: function(){
+        // not allowed
+        return "<iframe src='https://www.sfmoma.org/artwork/"+this.id+"' style='height: 70vh; width: 70vw;'>";
+      }
+      */
     }
   });
 });
     </script>
-    </head>
+<style type="text/css" media="screen">
+  .artTitle{
+    font-family: 'Roboto Slab', serif;
+    font-weight: bolder;
+  }
+  .artist{
+    font-weight: lighter;
+    /* font-style: italic; */
+  }
+  .outLink{
+    color: gray;
+    font-size: 0.8em;
+  }
+  .outLink:hover{
+    color: orangered;
+  }
+</style>
+  </head>
   <body>
-    <div class="contents"><div id="demo_Browser"></div></div>
+    <div class="contents">
+      <div id="demo_PageTitle">San Francisco Museum of Modern Art Collection</div>
+      <div id="demo_Browser"></div>
+      </div>
+    
+    <div id="demo_Infobox">
+      Data from
+      <a href='https://www.sfmoma.org/experience/artscope/' target='_blank'>SFMOMA Artscope</a> project.
+      </div>
   </body>
 </html>
