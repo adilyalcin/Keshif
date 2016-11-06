@@ -3014,6 +3014,7 @@ kshf.Panel.prototype = {
           if(me.name==='right') mouseDif *= -1;
           var oldhideBarAxis = me.hideBarAxis;
           me.setWidthCatBars(mouseDown_width+mouseDif);
+          me.browser.updateMiddlePanelWidth();
           if(me.hideBarAxis!==oldhideBarAxis){
             me.browser.updateLayout_Height();
           }
@@ -3079,7 +3080,6 @@ kshf.Panel.prototype = {
       .attr("hidebars", _w_<=5)
       .attr("hideBarAxis", this.hideBarAxis);
     this.updateSummariesWidth();
-    if(this.name!=="middle") this.browser.updateMiddlePanelWidth();
   },
   /** --- */
   updateSummariesWidth: function(){
@@ -6635,7 +6635,7 @@ kshf.Summary_Base.prototype = {
     }
     if(this.minAggrValue>1) config.minAggrValue = this.minAggrValue;
     if(this.unitName) config.unitName = this.unitName;
-    if(this.scaleType_forced) config.intervalScale = this.scaleType_forced;
+    if(this.scaleType_locked) config.intervalScale = this.scaleType_locked;
     if(this.percentileChartVisible) config.showPercentile = this.percentileChartVisible;
     // catSortBy
     if(this.catSortBy){
@@ -9208,7 +9208,7 @@ var Summary_Interval_functions = {
 
       this.updateIntervalRange_Total();
 
-      this.detectScaleType();
+      this.refreshScaleType();
       this.resetFilterRangeToTotal();
 
       this.aggr_initialized = true;
@@ -9242,7 +9242,7 @@ var Summary_Interval_functions = {
       this.aggr_initialized = false;
     },
     /** -- */
-    detectScaleType: function(){
+    refreshScaleType: function(){
       if(this.isEmpty()) return;
       var me = this;
       this.stepTicks = false;
@@ -9253,7 +9253,6 @@ var Summary_Interval_functions = {
       }
 
       // decide scale type based on the filtered records
-      // NOT TIME!
       var inViewRecords = function(record){
         var v = record._valueCache[me.summaryID];
         if(v>=me.intervalRange.active.min && v<me.intervalRange.getActiveMax()) return v; // value is within filtered range
@@ -9511,10 +9510,14 @@ var Summary_Interval_functions = {
         this.DOM.root.attr("viewType",this.viewType);
       }
 
-      if(force===false && this.scaleType_forced) return;
+      if(force===false && this.scaleType_locked) return;
+
+      if(this.scaleType===t) return;
 
       this.scaleType = t;
-      if(force) this.scaleType_forced = this.scaleType;
+      if(force) {
+        this.scaleType_locked = this.scaleType;
+      }
       
       if(this.DOM.inited){
         this.DOM.summaryConfig.selectAll(".summaryConfig_ScaleType .configOption").attr("active",false);
@@ -9683,7 +9686,8 @@ var Summary_Interval_functions = {
       this.initDOM_RecordMapColor();
       this.initDOM_Percentile();
 
-      this.detectScaleType();
+      this.refreshScaleType();
+      this.insertVizDOM();
 
       this.setCollapsed(this.collapsed);
       this.setUnitName(this.unitName);
@@ -9702,7 +9706,7 @@ var Summary_Interval_functions = {
         this.resetActiveRangeToTotal();
         this.DOM.zoomControl.attr("sign","plus");
       }
-      this.detectScaleType();
+      if(this.scaleType!=='time') this.refreshScaleType(); // linear vs log
       this.updateScaleAndBins();
     },
     /** -- */
@@ -10236,8 +10240,6 @@ var Summary_Interval_functions = {
         this.refreshValueTickPos();
 
         this.refreshIntervalSlider();
-
-        this.updateValueTicks();
       }
     },
     /** -- */
@@ -10313,7 +10315,7 @@ var Summary_Interval_functions = {
         for(var i=1 ; i < this.intervalTicks.length ; i++){
           var _min = me.valueScale(this.intervalTicks[i-1]);
           var _max = me.valueScale(this.intervalTicks[i]);
-          [1,1,1].forEach(function(){
+          [1,1,1,1].forEach(function(){
             var x = (_min+_max)/2;
             ticks.push( {tickValue: me.valueScale.invert(x), major:false } );
             _min = x;
@@ -10324,7 +10326,8 @@ var Summary_Interval_functions = {
         this.intervalTicks.forEach(function(p){ ticks.push({tickValue: p, major: true}); });
       }
       
-      var ddd = this.DOM.valueTickGroup.selectAll(".valueTick").data(ticks,function(d){ return d.tickValue; });
+      var ddd = this.DOM.valueTickGroup.selectAll(".valueTick").data(ticks,function(d){ return d.tickValue; })
+        .style("opacity",1);
 
       var EXIT = ddd.exit().transition().style("opacity",0);
 
@@ -11210,7 +11213,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshWidth: function(){
-      this.detectScaleType();
+      this.refreshScaleType();
       this.updateScaleAndBins();
       if(this.DOM.inited===false) return;
       var chartWidth = this.getWidth_Chart();
