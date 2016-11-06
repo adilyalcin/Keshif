@@ -4152,19 +4152,31 @@ kshf.Browser.prototype = {
               return;
             }
             localFile = files[0];
-            switch(localFile.type){
-              case "application/json": // json
+            var extension = localFile.name.split(".").pop();
+            switch(extension){
+              case "json": // json
+              //case "application/json": // json
                 localFile.fileType = "json";
                 localFile.name = localFile.name.replace(".json","");
                 break;
-              case "text/csv": // csv
+
+              case "csv":
+//              case "text/csv": // csv
+//              case "text/comma-separated-values":
+//              case "application/csv":
+//              case "application/excel":
+//              case "application/vnd.ms-excel":
+//              case "application/vnd.msexcel":
                 localFile.fileType = "csv";
                 localFile.name = localFile.name.replace(".csv","");
                 break;
-              case "text/tab-separated-values":  // tsv
+
+              case "tsv":
+//              case "text/tab-separated-values":  // tsv
                 localFile.fileType = "tsv";
                 localFile.name = localFile.name.replace(".tsv","");
                 break;
+
               default:
                 localFile = undefined;
                 actionButton.attr("disabled",true);
