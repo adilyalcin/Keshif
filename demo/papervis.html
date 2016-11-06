@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Set Visualization Techniques</title>
+    <title>Visual Approaches for Analyzing Scientific Literature and Patents</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
@@ -18,7 +18,7 @@
     <script type="text/javascript">
 function loadData(browser){
   $.ajax( {
-    url: "./data/setviz.bib",
+    url: "./data/papervis.bib",
     async: false,
     success: function(bibdata){
       browser.primaryTableName = "Visualizations";
@@ -53,9 +53,9 @@ $(document).ready( function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     categoryTextWidth: 250,
-    recordName: "Set Visualization Techniques",
+    recordName: "Paper/Patent Vis. Techniques",
     source: {
-      url: "http://www.cvast.tuwien.ac.at/SetViz",
+      url: "http://ieg.ifs.tuwien.ac.at/~federico/LiPatVis/",
       callback: loadData
     },
     summaries: [
@@ -71,7 +71,7 @@ $(document).ready( function(){
       displayType: 'grid',
       recordView: function(){
           return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+"' class='thumbnail'>"+
-            "<img class='thumbImg' src='http://www.cs.umd.edu/~yalcin/keshif_res/setvis/"+this.Key+".png'></a>"+
+            "<img class='thumbImg' src='http://www.cs.umd.edu/~yalcin/keshif_res/papervis/"+this.Key+".png'></a>"+
             "<span class='title'>"+this.Title+"</span>";
       }
     }
@@ -81,17 +81,18 @@ $(document).ready( function(){
 <style id="kshfStyle">
 .kshfRecord{ width: 150px; }
 .content{ padding: 3px; }
-.thumbnail{ height: 165px; }
+.thumbnail{ height: 105px; }
+#demo_Browser{ height: calc(100vh - 100px); }
 </style>
   </head>
   <body>
     <div class="contents">
-      <div id="demo_PageTitle" align="center">Visual Techniques for Analysing Set-typed Data</div>
+      <div id="demo_PageTitle" align="center">Visual Techniques for Analyzing Scientific Literature and Patents</div>
       <div id="demo_Browser"></div>
       </div>
 
     <div id="demo_Infobox">
-      Data provided by <a href="http://www.cvast.tuwien.ac.at/SetViz" target='_blank'>SetViz survey</a>. All rights for the technique images belong to their respective owners.
+      Data provided by <a href="http://ieg.ifs.tuwien.ac.at/~federico/LiPatVis/" target='_blank'>PaperViz.org</a>, based on "A Survey on Visual Approaches for Analyzing Scientific Literature and Patents", P. Federico, F. Heimerl, S. Koch and S. Miksch, TVCG, 2016. All rights for the technique images belong to their respective owners.
       </div>
   </body>
 </html>
