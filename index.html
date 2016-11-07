@@ -125,6 +125,9 @@ google.charts.setOnLoadCallback(function(){
             r.push("Time <span class='fa fa-clock-o'></span>");
           if(this["Spatial"] && this["Spatial"]!=="")
             r.push("Map <span class='fa fa-globe'></span>");
+          if(this["Facet - MultiValue"]> 0)
+            r.push("Multi-Valued <span class='fa fa-tags'></span>");
+          
           return r;
         } },
       { name: "Record Display", panel: "right",
@@ -367,7 +370,7 @@ my-email::before {
 }
 #livedemo {
   margin: 0 auto;
-  height: 490px;
+  height: 520px;
   font-size: 12pt;
   line-height: initial;
 }
