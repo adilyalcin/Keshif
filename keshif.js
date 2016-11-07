@@ -5479,6 +5479,14 @@ kshf.Browser.prototype = {
         case 'Avg'  : return "Average "+this.measureSummary.summaryName+" of ";
       }
     },
+    /** -- */
+    getMeasureFuncTypeText_Brief: function(){
+      switch(this.measureFunc){
+        case 'Count': return this.recordName;
+        case 'Sum'  : return "Total "  +this.measureSummary.summaryName;
+        case 'Avg'  : return "Average "+this.measureSummary.summaryName;
+      }
+    },
     /** metricType: "Sum" or "Avg" */
     setMeasureMetric: function(metricType, summary){
       if(summary===undefined || summary.type!=='interval' || summary.scaleType==='time'){
@@ -8502,15 +8510,19 @@ var Summary_Categorical_functions = {
         });
         DOM_cats_new.append("span").attr("class", "total_tip");
 
-      } else {
-        // map-view
+      } else if(this.viewType==='map'){
         DOM_cats_new
           .each(function(_cat){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
               title: function(){ 
-                return "<span class='mapItemName'>"+me.catLabel_Func.call(_cat.data)+"</span>"+
-                  me.browser.getMeasureLabel(_cat)+" "+me.browser.recordName;
+                var str="";
+                str += "<span class='mapItemName'>"+me.catLabel_Func.call(_cat.data)+"</span>";
+                str += me.browser.getMeasureLabel(_cat)+" "+me.browser.getMeasureFuncTypeText_Brief();
+                if(me.browser.measureFunc!=="Count"){
+                  str+="<br>in "+(_cat.recCnt.Active)+" "+me.browser.recordName;
+                }
+                return str;
               }
             });
           })
