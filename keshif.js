@@ -3328,7 +3328,7 @@ kshf.Browser = function(options){
 kshf.Browser.prototype = {
     /** -- */
     setNoAnim: function(v){
-      if(v===this.noAnim) return;
+      //if(v===this.noAnim) return;
       if(this.finalized===undefined) return;
       this.noAnim=v;
       this.DOM.root.attr("noanim",this.noAnim);
@@ -5779,7 +5779,8 @@ kshf.Summary_Base.prototype = {
 
     if(kshf.Summary_Set && this instanceof kshf.Summary_Set) return;
 
-    this.chartScale_Measure = d3.scaleLinear().clamp(true);
+    this.chartScale_Measure      = d3.scaleLinear().clamp(true);
+    this.chartScale_Measure_prev = d3.scaleLinear().clamp(true);
 
     this.records = this.browser.records;
     if(this.records===undefined||this.records===null||this.records.length===0){
@@ -7593,11 +7594,17 @@ var Summary_Categorical_functions = {
       if(this.browser.measureFunc!=="Count" && this.browser.measureSummary.intervalRange.org.min<0){
         minMeasureValue = this.getMinAggr_All();
       }
+
+      this.chartScale_Measure_prev
+        .domain(this.chartScale_Measure.domain())
+        .range (this.chartScale_Measure.range() )
+        .nice(this.chartAxis_Measure_TickSkip() )
+        .clamp(false);
+
       this.chartScale_Measure
         .domain([minMeasureValue, maxMeasureValue])
         .range([0, this.getWidth_CatChart()])
-        .nice(this.chartAxis_Measure_TickSkip())
-        ;
+        .nice(this.chartAxis_Measure_TickSkip());
       this.refreshViz_All();
     },
     /** -- */
@@ -7943,7 +7950,11 @@ var Summary_Categorical_functions = {
       var me=this;
       var tickValues, posFunc, transformFunc;
       var chartWidth = this.getWidth_CatChart();
-      var axis_Scale = this.chartScale_Measure;
+
+      var axis_Scale = d3.scaleLinear()
+        .clamp(false)
+        .domain(this.chartScale_Measure.domain())
+        .range (this.chartScale_Measure.range() );
 
       function setCustomAxis(maxValue){
         axis_Scale = d3.scaleLinear()
@@ -7972,8 +7983,10 @@ var Summary_Categorical_functions = {
 
       var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick")
         .data(tickValues,function(i){return i;});
+      
       // Remove old ones
-      tickDoms.exit().remove();
+      tickDoms.exit().transition().style("opacity",0).transition().remove();
+      
       // Add new ones
       var tickData_new=tickDoms.enter().append("span").attr("class","tick");
 
@@ -7987,24 +8000,21 @@ var Summary_Categorical_functions = {
       }
 
       // Place the doms at the zero-point, so their position can be animated.
-      tickData_new.each(function(){ kshf.Util.setTransform(this,"translatex(0px)"); });
+      tickData_new.each(function(d){
+        kshf.Util.setTransform(this,"translateX("+(me.chartScale_Measure_prev(d)-0.5)+"px)"); 
+      });
 
-      // set text of each label
       this.DOM.chartAxis_Measure_TickGroup.selectAll(".text")
         .html(function(d){ return me.browser.getTickLabel(d); });
 
+      var transformFunc = function(d){
+        kshf.Util.setTransform(this,"translateX("+(axis_Scale(d)-0.5)+"px)");
+      }
+
+      this.DOM.wrapper.attr("showMeasureAxis_2", me.configRowCount>0?"true":null);
       setTimeout(function(){
-        var transformFunc = function(d){
-          kshf.Util.setTransform(this,"translateX("+(axis_Scale(d)-0.5)+"px)");
-        }
-
-        var x=me.browser.noAnim;
-        if(x===false) me.browser.setNoAnim(true);
-        me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
-        if(x===false) me.browser.setNoAnim(false);
-
-        me.DOM.wrapper.attr("showMeasureAxis_2", me.configRowCount>0?"true":null);
-      }, 10 );
+        me.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick").each(transformFunc).style("opacity",1);
+      });
     },
     /** -- */
     refreshLabelWidth: function(){
@@ -8999,7 +9009,6 @@ var Summary_Interval_functions = {
       this.quantile_val = {};
 
       this.timeAxis_XFunc = function(aggr){ 
-        //return me.valueScale(aggr.minV) + me.getWidth_Bin()/2;
         return (me.valueScale(aggr.minV) + me.valueScale(aggr.maxV))/2;
       };
     },
@@ -10256,17 +10265,43 @@ var Summary_Interval_functions = {
     /** -- */
     insertVizDOM: function(){
       if(this.scaleType==='time' && this.DOM.root) {
+        var zeroPos = this.chartScale_Measure(0);
+
         // delete existing DOM:
         // TODO: Find  a way to avoid this?
         this.DOM.timeSVG.selectAll('[class^="measure_"]').remove();
 
         this.DOM.measure_Total_Area = this.DOM.timeSVG
-          .append("path").attr("class","measure_Total_Area").datum(this._aggrs);
+          .append("path")
+            .attr("class","measure_Total_Area")
+            .datum(this._aggrs)
+            .attr("d", 
+              d3.area()
+                .curve(d3.curveMonotoneX)
+                .x (this.timeAxis_XFunc)
+                .y0(this.height_hist+2-zeroPos)
+                .y1(this.height_hist+2-zeroPos)
+              );;;
         this.DOM.measure_Active_Area = this.DOM.timeSVG
-          .append("path").attr("class","measure_Active_Area").datum(this._aggrs);
+          .append("path")
+            .attr("class","measure_Active_Area")
+            .datum(this._aggrs)
+            .attr("d", 
+              d3.area()
+                .curve(d3.curveMonotoneX)
+                .x (this.timeAxis_XFunc)
+                .y0(this.height_hist+2-zeroPos)
+                .y1(this.height_hist+2-zeroPos)
+              );;
         this.DOM.lineTrend_ActiveLine = this.DOM.timeSVG.selectAll(".measure_Active_Line")
           .data(this._aggrs, function(d,i){ return i; })
-          .enter().append("line").attr("class","measure_Active_Line").attr("marker-end","url(#kshfLineChartTip_Active)");
+          .enter().append("line")
+            .attr("class","measure_Active_Line")
+            .attr("marker-end","url(#kshfLineChartTip_Active)")
+            .attr("x1",this.timeAxis_XFunc)
+            .attr("x2",this.timeAxis_XFunc)
+            .attr("y1",this.height_hist+3-zeroPos)
+            .attr("y2",this.height_hist+3-zeroPos);
 
         this.DOM.measure_Highlight_Area = this.DOM.timeSVG
           .append("path").attr("class","measure_Highlight_Area").datum(this._aggrs);
@@ -10758,10 +10793,15 @@ var Summary_Interval_functions = {
         minMeasureValue = Math.min(0, this.getMinAggr_All());
       }
       this.getMinAggr_All();
+      // store previous state
+      this.chartScale_Measure_prev
+        .domain(this.chartScale_Measure.domain())
+        .range (this.chartScale_Measure.range() )
+        .clamp(false);
+      // store previous state
       this.chartScale_Measure
         .domain([minMeasureValue, maxMeasureValue])
-        .range ([0, this.height_hist])
-        ;
+        .range ([0, this.height_hist]);
     },
     /** -- */
     refreshBins_Translate: function(){
@@ -10863,14 +10903,14 @@ var Summary_Interval_functions = {
             d3.area()
               .curve(d3.curveMonotoneX)
               .x (this.timeAxis_XFunc)
-              .y0(me.height_hist+2-zeroPos)
+              .y0(this.height_hist+2-zeroPos)
               .y1(yFunc)
             );
 
         this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc)
-          .attr("y1",me.height_hist+3-zeroPos)
+          .attr("y1",this.height_hist+3-zeroPos)
           .attr("y2",yFunc);
       }
 
@@ -11112,7 +11152,10 @@ var Summary_Interval_functions = {
       var me = this;
       var tickValues, maxValue;
       var chartAxis_Measure_TickSkip = me.height_hist/17;
-      var axis_Scale = this.chartScale_Measure;
+      var axis_Scale = d3.scaleLinear()
+        .clamp(false)
+        .domain(this.chartScale_Measure.domain())
+        .range (this.chartScale_Measure.range() );
 
       if(this.browser.ratioModeActive || this.browser.percentModeActive) {
         maxValue = (this.browser.ratioModeActive) ? 100
@@ -11136,42 +11179,45 @@ var Summary_Interval_functions = {
 
       var tickDoms = this.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick")
         .data(tickValues,function(i){return i;});
+      
       // remove old ones
-      tickDoms.exit().remove();
+      tickDoms.exit().transition().style("opacity",0).transition().remove();
+      
       // add new ones
-      var tickData_new=tickDoms.enter().append("span").attr("class","tick");
+      var tickData_new=tickDoms.enter().append("span").attr("class","tick").style("opacity",0);
 
       tickData_new.append("span").attr("class","line");
       tickData_new.append("span").attr("class","text measureAxis_1");
       tickData_new.append("span").attr("class","text measureAxis_2");
 
-      // Place the doms at the bottom of the histogram, so their position is animated.
-      tickData_new.each(function(){ kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)"); });
+      tickData_new.each(function(d){ 
+        kshf.Util.setTransform(this,"translateY("+(me.height_hist-me.chartScale_Measure_prev(d))+"px)");
+      });
 
       this.DOM.chartAxis_Measure_TickGroup.selectAll(".text")
         .html(function(d){ return me.browser.getTickLabel(d); });
 
-      setTimeout(function(){
-        var transformFunc;
-        if(me.browser.ratioModeActive){
+      this.browser.setNoAnim(false);
+
+      var transformFunc;
+      if(me.browser.ratioModeActive){
+        transformFunc=function(d){
+          kshf.Util.setTransform(this,"translateY("+ (me.height_hist-d*me.height_hist/100)+"px)");
+        };
+      } else {
+        if(me.browser.percentModeActive){
           transformFunc=function(d){
-            kshf.Util.setTransform(this,"translateY("+ (me.height_hist-d*me.height_hist/100)+"px)");
+            kshf.Util.setTransform(this,"translateY("+(me.height_hist-(d/maxValue)*me.height_hist)+"px)");
           };
         } else {
-          if(me.browser.percentModeActive){
-            transformFunc=function(d){
-              kshf.Util.setTransform(this,"translateY("+(me.height_hist-(d/maxValue)*me.height_hist)+"px)");
-            };
-          } else {
-            transformFunc=function(d){
-              kshf.Util.setTransform(this,"translateY("+(me.height_hist-me.chartScale_Measure(d))+"px)");
-            };
-          }
+          transformFunc=function(d){
+            kshf.Util.setTransform(this,"translateY("+(me.height_hist - axis_Scale(d))+"px)");
+          };
         }
-        var x = me.browser.noAnim;
-        if(x===false) me.browser.setNoAnim(true);
-        me.DOM.chartAxis_Measure.selectAll(".tick").style("opacity",1).each(transformFunc);
-        if(x===false) me.browser.setNoAnim(false);
+      }
+
+      setTimeout(function(){
+        me.DOM.chartAxis_Measure_TickGroup.selectAll("span.tick").each(transformFunc).style("opacity",1);
       });
     },
     /** -- */

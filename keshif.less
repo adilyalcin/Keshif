@@ -106,7 +106,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &[noanim=false]{
       .chartAxis_Measure{
         .transition(@layout_animation);
-        .tick{ .transition(transform 500ms ease-out); }
+        .tick{ .transition(transform 500ms ease-out, opacity 500ms); }
       }
       .wrapper{ .transition(@layout_transition); }
       .panels_Above{ .transition(@layout_transition); }
@@ -1924,7 +1924,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
       }
 
-      > .total_tip{ pointer-events: none; }
+      > .total_tip{ 
+        pointer-events: none;
+        .transition(opacity 700ms);
+      }
 
       > span{
         &[class^="measure_"]{
@@ -2075,7 +2078,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 100%;
           text-align: center;
           cursor: pointer;
-          .transition(~'transform 700ms ease-in-out');
+          .transition(transform 700ms ease-in-out);
         }
       } // .rangeGlyph
 
@@ -2569,7 +2572,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     font-size: 0.7em;
                     text-align: right;
                     padding-right: 2px;
-                    .transition(~'opacity 200ms linear');
+                    .transition(opacity 200ms linear);
                     &:hover{ color: @color_hoverAction; }
                     &:before{ content: "\f161"; }
                     &[inverse='true']:before{ content: "\f160" !important; }
@@ -2652,7 +2655,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     width: 1px;
                     display: block;
                     position: relative; // so label resize gets its full height.
-                    .transition(~'opacity 250ms');
+                    .transition(opacity 250ms);
                     > .chartCatLabelResize{
                       display: none;
                       height: 100%;
@@ -2807,7 +2810,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    overflow-y: visible;
                     .transition(@layout_transition);
                     > .timeSVG{
-                      .transition(~'opacity 500ms linear');
+                      .transition(opacity 500ms linear);
                       //overflow: visible;
                       > [class^="measure_Highlight_"]{ opacity: 0; }
                       > [class^="measure_Compare_"]{ opacity: 0; }
@@ -2965,7 +2968,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           z-index: 20;
                           top: 1px;
                           display: none;
-                          .transition(~'all 450ms ease-in-out');
+                          .transition(all 450ms ease-in-out);
                           > .recordValueScaleMark{
                             display: block;
                             border-radius: 2px;
