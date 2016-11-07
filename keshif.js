@@ -6416,7 +6416,10 @@ kshf.Summary_Base.prototype = {
 
     this.DOM.setMatrixButton = this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
       .each(function(d){
-        this.tipsy = new Tipsy(this, { gravity: 'ne', title: "Show/Hide pair-wise relations" });
+        this.tipsy = new Tipsy(this, { 
+          gravity: 'ne', 
+          title: function(){ return (!me.show_set_matrix?"Show":"Hide")+" pair-wise relations"; }
+        });
       })
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
@@ -7740,10 +7743,26 @@ var Summary_Categorical_functions = {
       this.show_set_matrix = v;
       this.DOM.root.attr("show_set_matrix",this.show_set_matrix);
 
-      if(this.setSummary===undefined){
-        this.setSummary = new kshf.Summary_Set();
-        this.setSummary.initialize(this.browser,this);
-        this.browser.summaries.push(this.setSummary);
+      if(this.show_set_matrix){
+        if(this.setSummary===undefined){
+          this.setSummary = new kshf.Summary_Set();
+          this.setSummary.initialize(this.browser,this);
+          this.browser.summaries.push(this.setSummary);
+        } else {
+          this.setSummary.prepareSetMatrixSorting();
+        }
+      } else {
+        // remove sorting option
+        this.catSortBy = this.catSortBy.filter(function(sortingOpt){
+          return sortingOpt.name !== "Relatedness";
+        });
+
+        this.catSortBy_Active = this.catSortBy[0];
+        this.refreshCatSortOptions();
+        this.refreshSortButton();
+        this.updateCatSorting(0,true);
+
+        this.onCatSort = undefined;
       }
     },
     /** -- */
@@ -11406,22 +11425,8 @@ var Summary_Clique_functions = {
     this.pausePanning=false;
     this.gridPan_x=0;
 
-    // Update sorting options of setListSummary (adding relatednesness metric...)
-    this.setListSummary.catSortBy[0].name = this.browser.recordName+" #";
-    this.setListSummary.insertSortingOption({
-      name: "Relatedness",
-      value: function(category){ return -category.MST.index; },
-      prep: function(){ me.updatePerceptualOrder(); }
-    });
-    this.setListSummary.refreshCatSortOptions();
+    this.prepareSetMatrixSorting();
 
-    this.setListSummary.onCatSort = function(){
-      me.refreshWindowSize();
-      me.refreshRow();
-      me.DOM.setPairGroup.attr("animate_position",false);
-      me.refreshSetPair_Position();
-      setTimeout(function(){ me.DOM.setPairGroup.attr("animate_position",true); },1000);
-    };
     this.setListSummary.onCatCull = function(){
       if(me.pausePanning) return;
       me.checkPan();
@@ -11601,6 +11606,25 @@ var Summary_Clique_functions = {
     this.refreshViz_Active();
 
     this.refreshWindowSize();
+  },
+  /** -- */
+  prepareSetMatrixSorting: function(){
+    var me=this;
+    // Update sorting options of setListSummary (adding relatednesness metric...)
+    this.setListSummary.catSortBy[0].name = "# "+this.browser.recordName;
+    this.setListSummary.insertSortingOption({
+      name: "Relatedness",
+      value: function(category){ return -category.MST.index; },
+      prep: function(){ me.updatePerceptualOrder(); }
+    });
+    this.setListSummary.refreshCatSortOptions();
+    this.setListSummary.onCatSort = function(){
+      me.refreshWindowSize();
+      me.refreshRow();
+      me.DOM.setPairGroup.attr("animate_position",false);
+      me.refreshSetPair_Position();
+      setTimeout(function(){ me.DOM.setPairGroup.attr("animate_position",true); },1000);
+    };
   },
   /** -- */
   refreshHeight: function(){
