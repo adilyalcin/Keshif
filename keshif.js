@@ -9228,7 +9228,8 @@ var Summary_Interval_functions = {
     setStepTicks: function(v){
       this.stepTicks = v;
       if(this.stepTicks && !this.zoomed){
-        this.resetFilterRangeToTotal();
+        // Hmm, why. This was breaking filter setting after zoom in/out.
+        // this.resetFilterRangeToTotal();
       }
     },
     /** -- */
@@ -10244,7 +10245,9 @@ var Summary_Interval_functions = {
         }
 
         this.refreshBins_Translate();
-        this.refreshViz_Scale();
+        setTimeout(function(){
+          me.refreshViz_Scale();
+        }, 10);
 
         this.refreshValueTickPos();
 
@@ -10449,6 +10452,10 @@ var Summary_Interval_functions = {
     insertBins: function(){
       var me=this;
 
+      var zeroPos = this.chartScale_Measure(0);
+      var width=this.getWidth_Bin();
+      var offset = (this.stepTicks)? this.width_barGap : 0;
+
       // just remove all aggrGlyphs that existed before.
       this.DOM.histogram_bins.selectAll(".aggrGlyph").data([]).exit().remove();
 
@@ -10481,7 +10488,12 @@ var Summary_Interval_functions = {
         .on("click",function(aggr){ me.onAggrClick(aggr); });
 
       ["Total","Active","Highlight","Compare_A","Compare_B","Compare_C"].forEach(function(m){
-        var X = newBins.append("span").attr("class","measure_"+m);
+        var X = newBins.append("span").attr("class","measure_"+m)
+          .each(function(aggr){
+            kshf.Util.setTransform(this, 
+              "translateY("+(me.height_hist-zeroPos)+"px) "+
+              "scale("+width+",0)");
+          });
         if(m!=="Total" && m!=="Active" && m!=="Highlight"){
           X.on("mouseenter" ,function(){
             me.browser.refreshMeasureLabels(this.classList[0].substr(8));
@@ -10490,7 +10502,7 @@ var Summary_Interval_functions = {
             me.browser.refreshMeasureLabels("Active");
           });
         }
-      });
+      },this);
 
       newBins.append("span").attr("class","total_tip");
       newBins.append("span").attr("class","lockButton fa")
@@ -10521,9 +10533,8 @@ var Summary_Interval_functions = {
           d3.event.stopPropagation();
         });
 
-      newBins.append("span").attr("class","measureLabel").each(function(bar){
-        kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)");
-      });
+      newBins.append("span").attr("class","measureLabel")
+        .each(function(bar){ kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)"); });
 
       this.DOM.aggrGlyphs      = this.DOM.histogram_bins.selectAll(".aggrGlyph");
       this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
