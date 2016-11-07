@@ -11146,20 +11146,26 @@ var Summary_Interval_functions = {
         var yFunc = function(aggr){
           return ((aggr._measure.Highlight===0) ? (me.height_hist-zeroPos) : (me.height_hist-getAggrHeight_Preview(aggr)))-zeroPos;
         };
-        var dTime=200;
-        this.DOM.measure_Highlight_Area
-          .transition().duration(dTime)
+        var dTime=250;
+        var x = this.DOM.measure_Highlight_Area
+          .style("opacity",1)
+          .transition().duration(dTime).ease(d3.easeCubic)
           .attr("d", 
             d3.area()
               .curve(d3.curveMonotoneX)
               .x(this.timeAxis_XFunc)
               .y0(this.height_hist - zeroPos)
               .y1(yFunc));
-        this.DOM.measure_Highlight_Line.transition().duration(dTime)
+        var y = this.DOM.measure_Highlight_Line.transition().duration(dTime)
+          .style("opacity",1)
           .attr("y1",me.height_hist - zeroPos)
           .attr("y2",yFunc)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc);
+        if(!this.browser.vizActive.Highlight){
+          x.transition().style("opacity",0);
+          y.transition().style("opacity",0);
+        }
       } else {
         if(!this.browser.vizActive.Highlight){
           var xx = (width / (totalC+1));

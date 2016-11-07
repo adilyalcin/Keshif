@@ -2816,8 +2816,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       width: 100%;
                       .transition(opacity 500ms linear, height 700ms ease-in-out,);
                       //overflow: visible;
-                      > [class^="measure_Highlight_"]{ opacity: 0; }
-                      > [class^="measure_Compare_"]{ opacity: 0; }
+                      > [class^="measure_Highlight_"]{
+                        .transition(opacity 200ms linear);
+                      }
+                      > [class^="measure_Compare_"]{ 
+                        opacity: 0;
+                        .transition(opacity 200ms linear); 
+                      }
                       > .measure_Active_Line    { stroke: @color_bars; }
                       > .measure_Highlight_Line { stroke: @color_preview; }
                       > .measure_Compare_Line_A { stroke: @color_Compare_A; }
@@ -3411,7 +3416,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         color: orangered;
         fill: orangered;
       }
-      .timeSVG > [class^="measure_Highlight_"]{ opacity: 1 !important; }
       .previewLine{ opacity: 1 !important; }
     }
 

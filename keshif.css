@@ -3536,10 +3536,17 @@ height:calc(100% - 12px);
   transition: opacity 500ms linear, height 700ms ease-in-out;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Highlight_"] {
-  opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Compare_"] {
   opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > .measure_Active_Line {
   stroke: #b1bdc5;
@@ -4270,9 +4277,6 @@ height:calc(100% - 10px);
 .kshf[selectHighlight] .aggrGlyph > .measureLabel {
   color: orangered;
   fill: orangered;
-}
-.kshf[selectHighlight] .timeSVG > [class^="measure_Highlight_"] {
-  opacity: 1 !important;
 }
 .kshf[selectHighlight] .previewLine {
   opacity: 1 !important;
