@@ -4945,6 +4945,8 @@ kshf.Browser.prototype = {
           // If summary object is not found/created, nothing else to do
           if(summary===undefined) return;
 
+          summary.sourceDescr = facetDescr;
+
           if(facetDescr.catSplit){
             summary.setCatSplit(facetDescr.catSplit);
           }
@@ -5020,8 +5022,6 @@ kshf.Browser.prototype = {
               summary.setScaleType(facetDescr.scaleType,true);
             }
           }
-
-          summary.sourceDescr = facetDescr;
         },this);
 
         this.panels.left.updateWidth_MeasureLabel();
@@ -8773,14 +8773,15 @@ var Summary_Categorical_functions = {
     catMap_zoomToActive: function(){
       if(this.asdsds===undefined){ // First time: just fit bounds
         this.asdsds = true;
-        this.leafletAttrMap.fitBounds(this.mapBounds_Active);
-        return;
-      }
-      if(this.sourceDescr.mapInitView){
-        this.leafletAttrMap.setView(
-          L.latLng(this.sourceDescr.mapInitView[0],this.sourceDescr.mapInitView[1]) , 
-          this.sourceDescr.mapInitView[2]);
-        delete this.sourceDescr.mapInitView;
+        if(this.sourceDescr.mapInitView){
+          this.leafletAttrMap.setView(
+            L.latLng(this.sourceDescr.mapInitView[0],this.sourceDescr.mapInitView[1]) , 
+            this.sourceDescr.mapInitView[2]);
+          delete this.sourceDescr.mapInitView;
+          return;
+        } else {
+          this.leafletAttrMap.fitBounds(this.mapBounds_Active);
+        }
         return;
       }
 
