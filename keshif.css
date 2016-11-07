@@ -2619,15 +2619,12 @@ top:calc(50% - 5px);
   margin-top: 12px;
 }
 .kshf .aggrGlyph.rangeGlyph > .measureLabel {
-  position: relative;
   display: block;
   width: 100%;
   text-align: center;
   cursor: pointer;
-  -webkit-transition: -webkit-transform 700ms ease-in-out;
-  -moz-transition: -moz-transform 700ms ease-in-out;
-  -o-transition: -o-transform 700ms ease-in-out;
-  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+  position: absolute;
+  bottom: -2px;
 }
 .kshf .aggrGlyph > .measureLabel {
   color: #969da3;
@@ -2653,10 +2650,10 @@ top:calc(50% - 5px);
 .kshf .aggrGlyph.mapGlyph > path.measure_Active {
   opacity: 0.8;
   stroke-width: 1px;
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
+  -webkit-transition: opacity 500ms linear, fill 600ms linear;
+  -moz-transition: opacity 500ms linear, fill 600ms linear;
+  -o-transition: opacity 500ms linear, fill 600ms linear;
+  transition: opacity 500ms linear, fill 600ms linear;
 }
 .kshf .aggrGlyph.mapGlyph > .measureLabel {
   color: black;
@@ -3527,10 +3524,16 @@ top:calc(50% - 5px);
   transition: height 700ms ease-in-out;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG {
-  -webkit-transition: opacity 500ms linear;
-  -moz-transition: opacity 500ms linear;
-  -o-transition: opacity 500ms linear;
-  transition: opacity 500ms linear;
+  -lh-property: 0;
+height:-webkit-calc(100% - 12px);
+height:-moz-calc(100% - 12px);
+height:calc(100% - 12px);
+;
+  width: 100%;
+  -webkit-transition: opacity 500ms linear, height 700ms ease-in-out;
+  -moz-transition: opacity 500ms linear, height 700ms ease-in-out;
+  -o-transition: opacity 500ms linear, height 700ms ease-in-out;
+  transition: opacity 500ms linear, height 700ms ease-in-out;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .timeSVG > [class^="measure_Highlight_"] {
   opacity: 0;
@@ -3983,8 +3986,8 @@ height:calc(100% - 10px);
 .kshf .kshfSummary[isMultiValued] .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not {
   display: inline !important;
 }
-.kshf .kshfSummary[isMultiValued] .setMatrixButton {
-  display: inline-block !important;
+.kshf .kshfSummary[isMultiValued][viewType="list"] .headerGroup > .summaryIcons > .fa.setMatrixButton {
+  display: inline-block;
 }
 .kshf .kshfSummary[isMultiValued]:hover .setMatrixButton {
   opacity: 1;
@@ -4827,9 +4830,36 @@ height:calc(100% - 10px);
 .kshf .recordDisplay[hasRecordView="true"] > .dropZone_recordView {
   position: absolute;
 }
+.kshf .recordDisplay[collapsed] .recordDisplayWrapper {
+  height: 0px !important;
+}
+.kshf .recordDisplay[collapsed] .recordColorScale {
+  display: none;
+}
+.kshf .recordDisplay[collapsed] .header_listSortColumn {
+  display: none;
+}
+.kshf .recordDisplay[collapsed] .recordSortButton {
+  display: none;
+}
+.kshf .recordDisplay[collapsed] .scrollToTop {
+  visibility: hidden;
+}
+.kshf .recordDisplay[collapsed] .buttonRecordViewCollapse {
+  display: none;
+}
+.kshf .recordDisplay[collapsed] .buttonRecordViewExpand {
+  display: block;
+}
+.kshf .recordDisplay[collapsed]:hover .buttonRecordViewExpand {
+  opacity: 1;
+}
 .kshf .recordDisplay:hover > .recordDisplayHeader > .recordSortButton {
   opacity: 1;
   pointer-events: all;
+}
+.kshf .recordDisplay:hover .buttonRecordViewCollapse {
+  opacity: 1;
 }
 .kshf .recordDisplay > .recordMap .viewMap {
   font-size: 0.9em;
@@ -5157,7 +5187,7 @@ height:calc(100% - 10px);
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;
   align-self: flex-end;
-  width: 17px;
+  width: 14px;
   height: 16px;
   padding-top: 3px;
   font-size: 0.9em;
@@ -5171,17 +5201,58 @@ height:calc(100% - 10px);
 .kshf .recordDisplayHeader > .recordSortButton[helpin] {
   opacity: 1;
 }
+.kshf .recordDisplayHeader > .recordDisplayName {
+  font-weight: 100;
+  font-size: 0.8em;
+  padding: 1px;
+  cursor: default;
+  pointer-events: none;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewCollapse {
+  display: block;
+  opacity: 0;
+  cursor: pointer;
+  margin-top: 2px;
+  -webkit-transition: opacity 250ms linear;
+  -moz-transition: opacity 250ms linear;
+  -o-transition: opacity 250ms linear;
+  transition: opacity 250ms linear;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewCollapse:hover {
+  color: #cb5454;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewCollapse[helpin] {
+  display: block;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewExpand {
+  display: none;
+  opacity: 0;
+  cursor: pointer;
+  margin-top: 2px;
+  -webkit-transition: opacity 250ms linear;
+  -moz-transition: opacity 250ms linear;
+  -o-transition: opacity 250ms linear;
+  transition: opacity 250ms linear;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewExpand:hover {
+  color: #cb5454;
+}
+.kshf .recordDisplayHeader > .buttonRecordViewExpand[helpin] {
+  display: block;
+}
 .kshf .recordDisplayHeader > .buttonRecordViewRemove {
   display: none;
   cursor: pointer;
+  margin-top: 2px;
 }
 .kshf .recordDisplayHeader > .buttonRecordViewRemove:hover {
   color: #cb5454;
 }
 .kshf .recordDisplayHeader > .buttonRecordViewRemove[helpin] {
-  display: inline-block;
+  display: block;
 }
 .kshf .recordDisplayHeader > .scrollToTop {
+  display: none;
   padding-top: 2px;
 }
 .kshf .recordDisplayHeader > .recordTextSearch {
@@ -5198,6 +5269,7 @@ height:calc(100% - 10px);
   vertical-align: bottom;
   position: relative;
   height: 18px;
+  padding-left: 4px;
 }
 .kshf .recordDisplayHeader > .recordTextSearch > .dropZone_textSearch {
   display: none;
@@ -5223,7 +5295,7 @@ height:calc(100% - 10px);
 }
 .kshf .recordDisplayHeader > .recordTextSearch > .textSearchInput {
   display: none;
-  width: calc(100% - 17px);
+  width: calc(100% - 14px);
   -webkit-transition: background-color 150ms linear;
   -moz-transition: background-color 150ms linear;
   -o-transition: background-color 150ms linear;

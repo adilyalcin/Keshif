@@ -76,7 +76,7 @@ var kshf = {
     },
     tileConfig: { 
       attribution: '© <a href="http://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'+
-        ' contrib.\'s &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
+        ' &amp; <a href="http://cartodb.com/attributions" target="_blank">CartoDB</a>',
       subdomains: 'abcd',
       maxZoom: 19,
       //noWrap: true
@@ -1051,6 +1051,7 @@ kshf.RecordDisplay = function(kshf_, config){
 
     // this is the default behavior. No demo un-set's this. Keeping for future reference.
     this.autoExpandMore = true;
+    this.collapsed = false;
 
     this.maxVisibleItems_Default = config.maxVisibleItems_Default || kshf.maxVisibleItems_Default;
     this.maxVisibleItems = this.maxVisibleItems_Default; // This is the dynamic property
@@ -1276,8 +1277,26 @@ kshf.RecordDisplay.prototype = {
       this.initDOM_SortSelect();
       this.initDOM_GlobalTextSearch();
 
+      this.DOM.recordDisplayName = this.DOM.recordDisplayHeader.append("div")
+        .attr("class","recordDisplayName")
+        .html('<i class="fa fa-angle-down"></i> '+this.browser.recordName);
+
+      this.DOM.recordDisplayHeader.append("div")
+        .attr("class","buttonRecordViewCollapse fa fa-compress")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Collapse" }); })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.collapseRecordViewSummary(true); });
+
+      this.DOM.recordDisplayHeader.append("div")
+        .attr("class","buttonRecordViewExpand fa fa-expand")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Open" }); })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.collapseRecordViewSummary(false); });
+
       this.DOM.buttonRecordViewRemove = this.DOM.recordDisplayHeader.append("div")
-        .attr("class","buttonRecordViewRemove fa fa-times")
+        .attr("class","buttonRecordViewRemove fa fa-times-circle-o")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
@@ -1974,6 +1993,12 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     setRecordViewBriefSummary: function(summary){
       this.recordViewSummaryBrief = summary;
+    },
+    /** -- */
+    collapseRecordViewSummary: function(collapsed){
+      this.collapsed = collapsed;
+      this.DOM.root.attr("collapsed",collapsed?true:null);
+      this.browser.updateLayout_Height();
     },
     /** -- */
     removeRecordViewSummary: function(){
@@ -3436,6 +3461,13 @@ kshf.Browser.prototype = {
       summary.setSummaryName(newName);
       return summary;
     },
+    setRecordName: function(v){
+      this.recordName = v;
+      this.DOM.recordName.html(this.recordName);
+      if(this.recordDisplay && this.recordDisplay.recordViewSummary){
+        this.recordDisplay.DOM.recordDisplayName.html('<i class="fa fa-angle-down"></i> '+this.recordName);
+      }
+    },
     /** -- */
     updateWidth_Total: function(){
       this.divWidth = parseInt(this.DOM.root.style("width"));
@@ -3632,7 +3664,7 @@ kshf.Browser.prototype = {
         .on("blur",function(){
           this.parentNode.setAttribute("edittitle",false);
           this.setAttribute("contenteditable", false);
-          me.recordName = this.textContent;
+          me.setRecordName(this.textContent);
         })
         .on("keyup"   ,function(){ d3.event.stopPropagation(); })
         .on("keypress",function(){ d3.event.stopPropagation(); })
@@ -3640,7 +3672,7 @@ kshf.Browser.prototype = {
           if(event.keyCode===13){ // ENTER
             this.parentNode.setAttribute("edittitle",false);
             this.setAttribute("contenteditable", false);
-            me.recordName = this.textContent;
+            me.setRecordName(this.textContent);
           }
           d3.event.stopPropagation();
         })
@@ -3658,7 +3690,7 @@ kshf.Browser.prototype = {
             var parentDOM = d3.select(this.parentNode);
             var v=parentDOM.select(".recordName").node();
             v.setAttribute("contenteditable",false);
-            me.recordName = this.textContent;
+            me.setRecordName(this.textContent);
           }
         });
 
@@ -4793,7 +4825,9 @@ kshf.Browser.prototype = {
       }
       this.records = kshf.dt[this.primaryTableName];
       
-      if(this.recordName==="") this.recordName = this.primaryTableName;
+      if(this.recordName==="") {
+        this.setRecordName(this.primaryTableName);
+      }
 
       var me=this;
       this.panel_overlay.select("div.status_text .info").text(kshf.lang.cur.CreatingBrowser);
@@ -5608,20 +5642,24 @@ kshf.Browser.prototype = {
         // Middle Panel
         var midPanelHeight = 0;
         if(this.panels.middle.summaries.length>0){
-            var panelHeight = topPanelsHeight;
-            if(this.recordDisplay.recordViewSummary){
-                panelHeight -= 200; // give 200px fo the list display
+          var panelHeight = topPanelsHeight;
+          if(this.recordDisplay.recordViewSummary){
+            if(this.recordDisplay.collapsed){
+              panelHeight -= this.recordDisplay.DOM.recordDisplayHeader.node().offsetHeight;
             } else {
-                panelHeight -= this.recordDisplay.DOM.root.node().offsetHeight;
+              panelHeight -= 200; // give 200px for recordDisplay
             }
-            midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
+          } else {
+            panelHeight -= this.recordDisplay.DOM.root.node().offsetHeight;
+          }
+          midPanelHeight = panelHeight - doLayout.call(this,panelHeight, this.panels.middle.summaries);
         }
         this.panels.middle.DOM.root.style("height",midPanelHeight+"px");
 
         // The part where summary DOM is updated
         this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.refreshHeight(); });
 
-        if(this.recordDisplay){
+        if(this.recordDisplay && !this.recordDisplay.collapsed){
           // get height of header
           var listDisplayHeight = divHeight_Total
             - this.recordDisplay.DOM.recordDisplayHeader.node().offsetHeight 
@@ -6272,6 +6310,21 @@ kshf.Summary_Base.prototype = {
 
     var header_display_control = this.DOM.headerGroup.append("span").attr("class","header_display_control");
 
+    this.DOM.buttonSummaryRemove = header_display_control.append("span")
+      .attr("class","buttonSummaryRemove fa fa-times-circle-o")
+      .each(function(){
+        this.tipsy = new Tipsy(this, {
+          gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.RemoveSummary
+        });
+      })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide();
+        me.removeFromPanel();
+        me.clearDOM();
+        me.browser.updateLayout();
+      });
+
     this.DOM.buttonSummaryCollapse = header_display_control.append("span")
       .attr("class","buttonSummaryCollapse fa fa-compress")
       .each(function(){
@@ -6320,21 +6373,6 @@ kshf.Summary_Base.prototype = {
       .on("click",      function(){ this.tipsy.hide();
         me.panel.collapseAllSummaries(me);
         me.browser.updateLayout_Height();
-      });
-
-    this.DOM.buttonSummaryRemove = header_display_control.append("span")
-      .attr("class","buttonSummaryRemove fa fa-remove")
-      .each(function(){
-        this.tipsy = new Tipsy(this, {
-          gravity: function(){ return me.panelOrder!==0?'sw':'nw'; }, title: kshf.lang.cur.RemoveSummary
-        });
-      })
-      .on("mouseenter", function(){ this.tipsy.show(); })
-      .on("mouseleave", function(){ this.tipsy.hide(); })
-      .on("click",      function(){ this.tipsy.hide();
-        me.removeFromPanel();
-        me.clearDOM();
-        me.browser.updateLayout();
       });
 
     this.DOM.summaryName = this.DOM.headerGroup.append("span")
@@ -6516,13 +6554,13 @@ kshf.Summary_Base.prototype = {
     this.DOM.highlightedMeasureValue.append("div").attr('class','fa fa-mouse-pointer highlightedAggrValuePointer');
   },
   /** -- */
-  setCollapsedAndLayout: function(hide){
-    this.setCollapsed(hide);
+  setCollapsedAndLayout: function(collapsed){
+    this.setCollapsed(collapsed);
     this.browser.updateLayout_Height();
   },
   /** -- */
-  setCollapsed: function(v){
-    this.collapsed = v;
+  setCollapsed: function(collapsed){
+    this.collapsed = collapsed;
     if(this.DOM.root){
       this.DOM.root
         .attr("collapsed",this.collapsed?true:null)
@@ -7619,9 +7657,6 @@ var Summary_Categorical_functions = {
       newHeight -= this.getHeight_Header()+this.getHeight_Config()+this.getHeight_Bottom();
       if(this.viewType==='map'){
         this.categoriesHeight = newHeight;
-        if(this.categoriesHeight!==attribHeight_old){
-          setTimeout(function(){ me.catMap_zoomToActive(); }, 1000);
-        }
         return;
       }
 
@@ -8778,9 +8813,13 @@ var Summary_Categorical_functions = {
         this.updateCatCount_Active();
         this.updateCatSorting(0,true,true);
         this.DOM.measureLabel.style("display",null);
+        this.refreshViz_All();
         return;
       }
-      // 'map'
+      
+      // this.viewType => 'map'
+
+      if(this.setSummary) this.setShowSetMatrix(false);
       // The map view is already initialized
       if(this.leafletAttrMap) {
         this.DOM.aggrGroup = this.DOM.summaryCategorical.select(".catMap_SVG > .aggrGroup");
@@ -8809,8 +8848,7 @@ var Summary_Categorical_functions = {
           me.browser.DOM.root.attr("pointerEvents",true);
           me.DOM.catMap_SVG.style("opacity",null);
           if(this._zoomInit_ !== this.getZoom()) me.map_projectCategories();
-        })
-        ;
+        });
 
       //var width = 500, height = 500;
       //var projection = d3.geo.albersUsa().scale(900).translate([width / 2, height / 2]);
@@ -9682,7 +9720,7 @@ var Summary_Interval_functions = {
       if(this.scaleType==='time'){
         this.DOM.timeSVG = this.DOM.histogram.append("svg").attr("class","timeSVG")
           .attr("xmlns","http://www.w3.org/2000/svg")
-          .style("margin-left",(this.width_barGap)+"px");
+          .style("margin-left",(this.width_barGap/2)+"px");
 
         var x = this.DOM.timeSVG.append('defs')
           .selectAll("marker")
@@ -10552,8 +10590,7 @@ var Summary_Interval_functions = {
           d3.event.stopPropagation();
         });
 
-      newBins.append("span").attr("class","measureLabel")
-        .each(function(bar){ kshf.Util.setTransform(this,"translateY("+me.height_hist+"px)"); });
+      newBins.append("span").attr("class","measureLabel");
 
       this.DOM.aggrGlyphs      = this.DOM.histogram_bins.selectAll(".aggrGlyph");
       this.DOM.measureLabel    = this.DOM.aggrGlyphs.selectAll(".measureLabel");
@@ -10867,14 +10904,14 @@ var Summary_Interval_functions = {
 
       if(this.scaleType==='time'){
         this.DOM.measure_Total_Area
-          .transition().duration(this.browser.noAnim?0:700)
+          .transition().duration(this.browser.noAnim?0:700).ease(d3.easeCubic)
           .attr("d", 
             d3.area()
               .curve(d3.curveMonotoneX)
-              .x(this.timeAxis_XFunc)
-              .y0(me.height_hist-zeroPos)
+              .x (this.timeAxis_XFunc)
+              .y0(this.height_hist - zeroPos)
               .y1(function(aggr){ 
-                return ((aggr._measure.Total===0) ? (me.height_hist+3) : (me.height_hist-heightTotal(aggr)))-zeroPos;
+                return ((aggr._measure.Total===0) ? (me.height_hist-zeroPos) : (me.height_hist-heightTotal(aggr)))-zeroPos;
               }));
           ;
       } else {
@@ -10925,22 +10962,22 @@ var Summary_Interval_functions = {
       if(this.scaleType==='time'){
         var durationTime = this.browser.noAnim ? 0 : 700;
         var yFunc = function(aggr){
-          return ((aggr._measure.Active===0) ? me.height_hist+3 : (me.height_hist-heightActive(aggr)+1))-zeroPos;
+          return ((aggr._measure.Active===0) ? (me.height_hist-zeroPos) : (me.height_hist-heightActive(aggr)))-zeroPos;
         };
         this.DOM.measure_Active_Area
-          .transition().duration(durationTime)
+          .transition().duration(durationTime).ease(d3.easeCubic)
           .attr("d", 
             d3.area()
               .curve(d3.curveMonotoneX)
               .x (this.timeAxis_XFunc)
-              .y0(this.height_hist+2-zeroPos)
+              .y0(this.height_hist - zeroPos)
               .y1(yFunc)
             );
 
         this.DOM.lineTrend_ActiveLine.transition().duration(durationTime)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc)
-          .attr("y1",this.height_hist+3-zeroPos)
+          .attr("y1",this.height_hist-zeroPos)
           .attr("y2",yFunc);
       }
 
@@ -11010,7 +11047,7 @@ var Summary_Interval_functions = {
       // Time (line chart) update
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return ((aggr._measure[compId]===0) ? (me.height_hist+3) : (me.height_hist-heightCompare(aggr)))-zeroPos;
+          return ((aggr._measure[compId]===0) ? (me.height_hist-zeroPos) : (me.height_hist-heightCompare(aggr)))-zeroPos;
         };
 
         var dTime = 200;
@@ -11018,7 +11055,7 @@ var Summary_Interval_functions = {
           .transition().duration(dTime)
           .attr("d", d3.area()
             .curve(d3.curveMonotoneX)
-            .x(this.timeAxis_XFunc)
+            .x (this.timeAxis_XFunc)
             //.y(me.height_hist+2-zeroPos)
             .y(yFunc));
 
@@ -11107,7 +11144,7 @@ var Summary_Interval_functions = {
 
       if(this.scaleType==='time'){
         var yFunc = function(aggr){
-          return ((aggr._measure.Highlight===0) ? (me.height_hist+3) : (me.height_hist-getAggrHeight_Preview(aggr)))-zeroPos;
+          return ((aggr._measure.Highlight===0) ? (me.height_hist-zeroPos) : (me.height_hist-getAggrHeight_Preview(aggr)))-zeroPos;
         };
         var dTime=200;
         this.DOM.measure_Highlight_Area
@@ -11116,10 +11153,10 @@ var Summary_Interval_functions = {
             d3.area()
               .curve(d3.curveMonotoneX)
               .x(this.timeAxis_XFunc)
-              .y0(me.height_hist+2 - zeroPos)
+              .y0(this.height_hist - zeroPos)
               .y1(yFunc));
         this.DOM.measure_Highlight_Line.transition().duration(dTime)
-          .attr("y1",me.height_hist+3 - zeroPos)
+          .attr("y1",me.height_hist - zeroPos)
           .attr("y2",yFunc)
           .attr("x1",this.timeAxis_XFunc)
           .attr("x2",this.timeAxis_XFunc);
@@ -11277,15 +11314,23 @@ var Summary_Interval_functions = {
     },
     /** -- */
     refreshHeight: function(){
+      if(!this.DOM.inited) return;
+      this.DOM.valueTickGroup.style("height",this.height_labels+"px");
+      this.DOM.rangeHandle.styles({
+        height: ( this.height_hist+23)+"px",
+        top:    (-this.height_hist-13)+"px" });
+      this.DOM.highlightRangeLimits.style("height",this.height_hist+"px");
+
       this.DOM.histogram.style("height",(this.height_hist+this.height_hist_topGap)+"px")
       this.DOM.wrapper.style("height",(this.collapsed?"0":this.getHeight_Content())+"px");
       this.DOM.root.style("max-height",(this.getHeight()+1)+"px");
 
-      var labelTranslate ="translateY("+(this.height_hist+1)+"px)";
-      if(this.DOM.measureLabel)
-        this.DOM.measureLabel.each(function(bar){ kshf.Util.setTransform(this,labelTranslate); });
-      if(this.DOM.timeSVG)
-        this.DOM.timeSVG.style("height",(this.height_hist+2)+"px");
+      this.refreshBins_Translate();
+
+      this.refreshViz_Scale();
+      this.refreshViz_Highlight();
+      this.refreshViz_Compare_All();
+      this.refreshViz_Axis();
     },
     /** -- */
     refreshWidth: function(){
@@ -11303,7 +11348,6 @@ var Summary_Interval_functions = {
         'padding-right': ( wideChart ? this.width_measureAxisLabel : 11)+"px" });
       
       this.DOM.summaryName.style("max-width",(this.getWidth()-40)+"px");
-      if(this.DOM.timeSVG) this.DOM.timeSVG.style("width",(chartWidth+2)+"px")
     },
     /** -- */
     setHeight: function(targetHeight){
@@ -11312,21 +11356,6 @@ var Summary_Interval_functions = {
       if(this.height_hist===c) return;
       this.height_hist = c;
       this.updateBarScale2Active();
-
-      if(!this.DOM.inited) return;
-      this.refreshBins_Translate();
-
-      this.refreshViz_Scale();
-      this.refreshViz_Highlight();
-      this.refreshViz_Compare_All();
-      this.refreshViz_Axis();
-      this.refreshHeight();
-
-      this.DOM.valueTickGroup.style("height",this.height_labels+"px");
-      this.DOM.rangeHandle.styles({
-        height: ( this.height_hist+23)+"px",
-        top:    (-this.height_hist-13)+"px" });
-      this.DOM.highlightRangeLimits.style("height",this.height_hist+"px");
     },
     /** -- */
     updateAfterFilter: function(){

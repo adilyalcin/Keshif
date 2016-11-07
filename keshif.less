@@ -2073,12 +2073,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[inside]{ margin-top: 12px; }
         }
         > .measureLabel{
-          position: relative;
+          //position: relative;
           display: block;
           width: 100%;
           text-align: center;
           cursor: pointer;
-          .transition(transform 700ms ease-in-out);
+          position: absolute;
+          bottom: -2px;
+          //.transition(transform 700ms ease-in-out);
         }
       } // .rangeGlyph
 
@@ -2102,7 +2104,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > path.measure_Active{
           opacity: 0.8;
           stroke-width: 1px;
-          .transition(opacity 500ms linear);
+          .transition(opacity 500ms linear, fill 600ms linear);
         };
         >.measureLabel{
           color: black;
@@ -2810,7 +2812,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //                    overflow-y: visible;
                     .transition(@layout_transition);
                     > .timeSVG{
-                      .transition(opacity 500ms linear);
+                      .calc(height, ~"100% - 12px");
+                      width: 100%;
+                      .transition(opacity 500ms linear, height 700ms ease-in-out,);
                       //overflow: visible;
                       > [class^="measure_Highlight_"]{ opacity: 0; }
                       > [class^="measure_Compare_"]{ opacity: 0; }
@@ -3162,7 +3166,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:not([filtered_and="0"]) .catGlyph:not([cFiltered])[mouseOver] .AndOrNot_Or{ display: inline !important; }
         &[isMultiValued]{
           .catGlyph:not([cFiltered]):not([NoActiveRecords])[mouseOver] .AndOrNot_Not{ display: inline !important; }
-          .setMatrixButton{ display: inline-block !important; }
+          &[viewType="list"] .headerGroup > .summaryIcons > .fa.setMatrixButton{ display: inline-block; }
           &:hover .setMatrixButton{ opacity: 1; }
         }
 
@@ -3804,11 +3808,24 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .recordDisplayHeader{ .display(flex); }
         > .dropZone_recordView{ position: absolute; }
       }
+      &[collapsed]{
+        .recordDisplayWrapper{ height: 0px !important; }
+        .recordColorScale{ display: none; }
+        .header_listSortColumn{ display: none; }
+        .recordSortButton{ display: none; }
+        .scrollToTop{ visibility: hidden;}
+        .buttonRecordViewCollapse{ display: none }
+        .buttonRecordViewExpand{ display: block; }
+        &:hover{
+          .buttonRecordViewExpand{ opacity: 1; }
+        }
+      }
       &:hover{
         > .recordDisplayHeader > .recordSortButton{
           opacity: 1;
           pointer-events: all;
         }
+        .buttonRecordViewCollapse{ opacity: 1; }
       }
       > .recordMap{
         .viewMap{ font-size: 0.9em; }
@@ -4067,7 +4084,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .recordSortButton{
           opacity: 0;
           .align-self(flex-end);
-          width: 17px;
+          width: 14px;
           height: 16px;
           padding-top: 3px;
           font-size: 0.9em;
@@ -4076,13 +4093,42 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .transition(opacity 250ms linear);
           &[helpin]{ opacity: 1; }
         }
+        > .recordDisplayName{
+          font-weight: 100;
+          font-size: 0.8em;
+          padding: 1px;
+          cursor: default;
+          pointer-events: none;
+        }
+        > .buttonRecordViewCollapse{
+          display: block;
+          opacity: 0;
+          cursor: pointer;
+          margin-top: 2px;
+          .transition(opacity 250ms linear);
+          &:hover{ color: @color_hoverAction; }
+          &[helpin]{ display: block; }
+        }
+        > .buttonRecordViewExpand{
+          display: none;
+          opacity: 0;
+          cursor: pointer;
+          margin-top: 2px;
+          .transition(opacity 250ms linear);
+          &:hover{ color: @color_hoverAction; }
+          &[helpin]{ display: block; }
+        }
         > .buttonRecordViewRemove{
           display: none;
           cursor: pointer;
+          margin-top: 2px;
           &:hover{ color: @color_hoverAction; }
-          &[helpin]{ display: inline-block; }
+          &[helpin]{ display: block; }
         }
-        > .scrollToTop{ padding-top: 2px; }
+        > .scrollToTop{ 
+          display: none;
+          padding-top: 2px;
+        }
 
         > .recordTextSearch {
           .flex(1);
@@ -4092,6 +4138,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           vertical-align: bottom;
           position: relative;
           height: 18px;
+          padding-left: 4px;
           > .dropZone_textSearch{
             display: none;
             position: absolute;
@@ -4114,7 +4161,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
           > .textSearchInput{
             display: none;
-            width: calc(~"100% - 17px");
+            width: calc(~"100% - 14px");
             .transition(background-color 150ms linear);
           }
           > .searchIcon{
