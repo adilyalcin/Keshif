@@ -6631,9 +6631,15 @@ kshf.Summary_Base.prototype = {
           me.browser.setSelect_Compare(true);
           return;
         }
-        me.summaryFilter.clearFilter();
-        if(me.missingValueAggr.filtered){
-          me.missingValueAggr.filtered = false;
+        if(me.summaryFilter.isFiltered){
+          if(me.missingValueAggr.filtered){
+            me.summaryFilter.clearFilter();
+          } else {
+            me.summaryFilter.clearFilter();
+            me.missingValueAggr.filtered = true;
+            me.summaryFilter.how = "All";
+            me.summaryFilter.addFilter();
+          }
         } else {
           me.missingValueAggr.filtered = true;
           me.summaryFilter.how = "All";
@@ -7109,6 +7115,7 @@ var Summary_Categorical_functions = {
         summary: this,
         title: function(){ return me.summaryName },
         onClear: function(){
+          me.missingValueAggr.filtered = false;
           me.clearCatTextSearch();
           me.unselectAllCategories();
           me._update_Selected();
@@ -7270,7 +7277,8 @@ var Summary_Categorical_functions = {
       if(!(mapping instanceof Array)) mapping = [mapping];
 
       mapping.forEach(function(d,i){
-        if(mapping[i]) mapping[i] = (""+mapping[i]).trim();
+        var v = mapping[i];
+        if(v && typeof v === 'string') mapping[i] = v.trim();
       });
 
       // Filter invalid / duplicate values
@@ -8804,7 +8812,6 @@ var Summary_Categorical_functions = {
             L.latLng(this.sourceDescr.mapInitView[0],this.sourceDescr.mapInitView[1]) , 
             this.sourceDescr.mapInitView[2]);
           delete this.sourceDescr.mapInitView;
-          return;
         } else {
           this.leafletAttrMap.fitBounds(this.mapBounds_Active);
         }
@@ -9383,6 +9390,7 @@ var Summary_Interval_functions = {
         summary: this,
         title: function(){ return me.summaryName; },
         onClear: function(){
+          me.missingValueAggr.filtered = false;
           if(this.filteredBin){
             this.filteredBin = undefined;
           }
