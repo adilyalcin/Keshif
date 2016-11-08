@@ -4443,7 +4443,21 @@ kshf.Browser.prototype = {
         for(var column in record.data){
           var v=record.data[column];
           if(v===undefined || v===null) continue;
-          str+="<b>"+column+":</b> "+ v.toString()+"<br>";
+          var defaultStr = "<b>"+column+":</b> "+ v.toString()+"<br>";
+          var s = this.summaries_by_name[column];
+          if(s){
+            if(s instanceof kshf.Summary_Categorical){
+              if(s.catLabel_table){
+                str += "<b>"+column+":</b> "+ s.catLabel_table[v] + "<br>";
+              } else {
+                str += defaultStr;
+              }
+            } else if(s instanceof kshf.Summary_Interval){
+              str += "<b>"+column+":</b> "+ s.printWithUnitName(v)+"<br>";
+            }
+          } else {
+            str += defaultStr;
+          }
         }
       }
       this.DOM.overlay_recordDetails_content.html(str);
