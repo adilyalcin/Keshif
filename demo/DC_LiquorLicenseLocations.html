@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>DC Liquor License Locations</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+    <script type="text/javascript">
+var wards_geo = {}
+google.charts.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 80,
+    leftPanelLabelWidth: 220,
+    rightPanelLabelWidth: 270,
+    middlePanelLabelWidth: 210,
+    recordName: "Employees",
+    source: {
+      gdocId: '1eiqiibSGlDPc5BpMo_3vCCvRQsiuhRmyYM8BPNhlRqw',
+      tables: "Locations",
+      callback: function(){
+        browser.asyncDataWaitedCnt++;
+        d3.request('data/dc-wards-2012.geojson')
+          .get(function(error, data){
+            JSON.parse(data.response).features.forEach(function(feature){
+              wards_geo[feature.properties.WARD] = feature;
+            });
+            browser.asyncDataLoaded();
+          });
+        }
+    },
+    summaries: [
+      { name: "Type", value: "TYPE"},
+      //{ name: "Description", value: "DESCRIPTIO" },
+      { name: "Class", value: "CLASS", catSortBy: 'id' },
+      { name: "Status", value: "STATUS", panel: 'middle' },
+      { name: "Features", collapsed: true,
+        value: function(){
+          var r=[];
+          if(this.BREW_PUB) r.push('Brewery/Pub');
+          if(this.ENTERTAINMENT) r.push('Entertainment');
+          if(this.SALES_CONSUMPTION) r.push('Sales/Consumption');
+          if(this.SIDEWALK_CAFE) r.push('Sidewalk Cafe');
+          if(this.SUMMER_GARDEN) r.push('Summer Garden');
+          return r;
+        },},
+      { name: "Ward", value: "WARD", 
+        catMap: function(){ 
+          return wards_geo[1*this.id.substr(5,1)];
+        },
+        panel: 'left',
+        viewAs: 'map'
+      },
+      
+    ],
+    recordDisplay: {
+      sortColWidth: 70,
+      sortBy: "id",
+      displayType: 'grid',
+      textSearch: "TRADE_NAME",
+      recordView: function(){
+        return "<span class='tradeName'>"+this.TRADE_NAME + "</span><br> <span class='address'>"+this.ADDRESS+"</span>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.kshfRecord {
+  width: 200px;
+  /* height: 100px; */
+  margin: 5px !important;
+  text-align: center;
+}
+.content{
+  padding: 0px 15px;
+}
+.address{
+  font-weight: 100;
+  font-size: 0.9em; 
+}
+.tradeName{
+  font-weight: bolder;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">Washington D.C. Liquor License Locations</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from
+      <a href='http://opendata.dc.gov/datasets/cabe9dcef0b344518c7fae1a3def7de1_5' target='_blank'>
+        District of Columbia Open Data</a>
+      </div>
+  </body>
+</html>
