@@ -44,7 +44,6 @@ function dataLoad(){
         success: function(topojsonData){
           topojsonData.features.forEach(function(feature){
             neighborhoodRegions[feature.properties.subhood] = feature.geometry;
-            var x;
           });
         }
       });
