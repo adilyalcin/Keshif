@@ -58,6 +58,7 @@ google.charts.setOnLoadCallback(function(){
       { name: "# of References in Paper (within)", panel: 'left', 
         value: function(){ if(this.References) return this.References.length; } },
       { name: "Year", panel: 'bottom', timeFormat: "%Y" },
+      { name: "Highlights", value: "Best", catLabel: {'BP': 'Best Paper', 'HM': 'Honorable Mention'}, panel:'right' },
       { name: "Authors", value: 'Deduped author names', catSplit: ";", panel: 'right', minAggrValue: 2,
         description: "Only authors with at least two papers are shown" },
       { name: "Keywords", 
