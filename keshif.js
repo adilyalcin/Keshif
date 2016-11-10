@@ -1094,7 +1094,9 @@ kshf.RecordDisplay = function(kshf_, config){
     this.prepSortingOpts();
     this.alphabetizeSortingOptions();
 
-    this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
+    if(this.sortingOpts.length>0){
+      this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
+    }
 
     this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
       .attrs({
@@ -1203,7 +1205,8 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     map_refreshColorScaleBins: function(){
-      var invertColorScale = this.sortingOpt_Active.invertColorScale;
+      var invertColorScale = false;
+      if(this.sortingOpt_Active) invertColorScale = this.sortingOpt_Active.invertColorScale;
       var mapColorTheme    = this.browser.mapColorTheme;
       this.DOM.recordColorScaleBins
         .style("background-color", function(d){
@@ -2117,6 +2120,8 @@ kshf.RecordDisplay.prototype = {
 
         this.sortingOpts[i] = summary;
       },this);
+
+      this.sortingOpts = this.sortingOpts.filter(function(s){ return s instanceof kshf.Summary_Interval; });
     },
     /** -- */
     alphabetizeSortingOptions: function(){
@@ -4139,7 +4144,7 @@ kshf.Browser.prototype = {
                   gdocLink_ready.attr("ready",true);
               } else {
                   sourceURL = null;
-                  gdocLink_ready.attr("ready",false);
+                  gdocLink_ready.attr("ready",null);
               }
             }
             if(source_type==="GoogleDrive"){
@@ -4151,7 +4156,7 @@ kshf.Browser.prototype = {
                   gdocLink_ready.attr("ready",true);
               } else {
                   sourceURL = null;
-                  gdocLink_ready.attr("ready",false);
+                  gdocLink_ready.attr("ready",null);
               }
             }
             if(source_type==="Dropbox"){
@@ -4163,7 +4168,7 @@ kshf.Browser.prototype = {
                   gdocLink_ready.attr("ready",true);
               } else {
                   sourceURL = null;
-                  gdocLink_ready.attr("ready",false);
+                  gdocLink_ready.attr("ready",null);
               }
             }
             actionButton.attr("disabled",!readyToLoad());
@@ -8805,6 +8810,7 @@ var Summary_Categorical_functions = {
     },
     /** --  */
     catMap_zoomToActive: function(){
+      var me=this;
       if(this.asdsds===undefined){ // First time: just fit bounds
         this.asdsds = true;
         if(this.sourceDescr.mapInitView){
@@ -8814,6 +8820,9 @@ var Summary_Categorical_functions = {
           delete this.sourceDescr.mapInitView;
         } else {
           this.leafletAttrMap.fitBounds(this.mapBounds_Active);
+          setTimeout(function(){
+           me.catMap_zoomToActive();
+          },1000);
         }
         return;
       }

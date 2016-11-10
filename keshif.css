@@ -1771,10 +1771,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   content: "\f057";
   color: red;
 }
-.kshf .panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready[ready=true] {
+.kshf .panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready[ready] {
   pointer-events: all;
 }
-.kshf .panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready[ready=true]:before {
+.kshf .panel_overlay > .overlay_source > .source_wrapper .gdocLink_ready[ready]:before {
   content: "\f058";
   color: green;
 }
