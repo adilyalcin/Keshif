@@ -391,7 +391,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[showDropZone=true][dropSource="browser"] > .attributePanel > .attributeList > .dropZone_AttribList {
   display: block;
 }
-.kshf[showDropZone=true] .recordDisplay[hasRecordView="false"] {
+.kshf[showDropZone=true] .recordDisplay:not([hasRecordView]) {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -4806,10 +4806,13 @@ height:calc(100% - 10px);
 .kshf .recordDisplay[detailsToggle="one"] .recordGroup > .kshfRecord > .recordToggleDetail:before {
   content: "\f078";
 }
-.kshf .recordDisplay[hasRecordView="false"] > .recordDisplayHeader {
+.kshf .recordDisplay:not([hasRecordView]) > .recordDisplayHeader {
   display: none;
 }
-.kshf .recordDisplay[hasRecordView="false"] > .dropZone_recordView {
+.kshf .recordDisplay:not([hasRecordView]) > .recordDisplayWrapper {
+  display: none;
+}
+.kshf .recordDisplay:not([hasRecordView]) > .dropZone_recordView {
   -webkit-box-flex: 1;
   -moz-box-flex: 1;
   -webkit-flex: 1;
@@ -4817,21 +4820,18 @@ height:calc(100% - 10px);
   flex: 1;
   position: absolute;
 }
-.kshf .recordDisplay[hasRecordView="false"] .recordGroup {
-  display: none;
-}
-.kshf .recordDisplay[hasRecordView="true"] {
+.kshf .recordDisplay[hasRecordView] {
   box-shadow: 0px 0px 2px #89713c;
   margin: 0px 2px 2px 2px;
 }
-.kshf .recordDisplay[hasRecordView="true"] > .recordDisplayHeader {
+.kshf .recordDisplay[hasRecordView] > .recordDisplayHeader {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
-.kshf .recordDisplay[hasRecordView="true"] > .dropZone_recordView {
+.kshf .recordDisplay[hasRecordView] > .dropZone_recordView {
   position: absolute;
 }
 .kshf .recordDisplay[collapsed] .recordDisplayWrapper {

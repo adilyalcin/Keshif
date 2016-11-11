@@ -1103,7 +1103,6 @@ kshf.RecordDisplay = function(kshf_, config){
         detailsToggle  : this.detailsToggle,
         showRank       : this.showRank,
         mapMouseControl: this.mapMouseControl,
-        hasRecordView  : false
       });
 
     this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
@@ -2006,7 +2005,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     removeRecordViewSummary: function(){
       if(this.recordViewSummary===null) return;
-      this.DOM.root.attr("hasRecordView",false);
+      this.DOM.root.attr("hasRecordView",null);
       this.recordViewSummary.isRecordView = false;
       this.recordViewSummary.refreshThumbDisplay();
       this.recordViewSummary = null;

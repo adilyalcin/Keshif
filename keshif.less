@@ -328,7 +328,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .attributePanel > .attributeList > .dropZone_AttribList{ display: block; }
       }
       //&[dropattrtype~="unique"] {
-        .recordDisplay[hasRecordView="false"]{
+        .recordDisplay:not([hasRecordView]){
           .flex(1);
           min-height: 50px;
         }
@@ -3798,15 +3798,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &:before{ content: "\f078"; }
       }
 
-      &[hasRecordView="false"]{
+      &:not([hasRecordView]){
         > .recordDisplayHeader{ display: none; }
+        > .recordDisplayWrapper{ display: none; }
         > .dropZone_recordView{ 
           .flex(1);
           position: absolute; 
         }
-        .recordGroup{ display: none; }
       }
-      &[hasRecordView="true"]{
+      &[hasRecordView]{
         box-shadow: 0px 0px 2px rgb(137, 113, 60);
         margin: 0px 2px 2px 2px;
         > .recordDisplayHeader{ .display(flex); }
