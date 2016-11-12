@@ -878,6 +878,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .panel_Basic{
       .display(flex);
       .flex-direction(row);
+      z-index: 99;
+
       position: relative;
       background-color: rgb(239, 234, 223);
       box-shadow: 0px 0px 2px #B8AF9A;
@@ -1031,7 +1033,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
       margin-right: 4px;
       margin-top: 1px;
-      max-width: 0px;
       color: rgb(37, 33, 18);
       background-color: rgba(255,255,255,0.5);
       font-weight: 300;
@@ -1066,8 +1067,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
       }
       &[filtered=false]{ display: none; }
-      &[ready=true]{ max-width: 100%; }
-      &[ready=false]{ max-width: 0px; }
       &.crumbMode_Filter {
         border: solid 1px @color_filter_clear;
         > .breadCrumbIcon {

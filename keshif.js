@@ -878,7 +878,10 @@ kshf.BreadCrumb.prototype = {
   isCompareSelection: function(){
     return this.selectType.substr(0,7)==="Compare";
   },
+  /** -- */
   showCrumb: function(summary){
+    var _pre = this.browser.getHeight_PanelBasic();
+    var _pre_ = parseInt(this.browser.DOM.panelsTop.style('margin-top'));
     if(this.DOM===null) {
       this._insertDOM_crumb(summary);
     }
@@ -898,19 +901,38 @@ kshf.BreadCrumb.prototype = {
     }
     details = "" + details; // convert to string, in case the return value is a number...
     if(details) this.DOM.select(".crumbDetails").html(details.replace(/<br>/gi," "));
+
+    if(this.selectType==="Highlight"){
+      var _post = this.browser.getHeight_PanelBasic();
+      this.browser.DOM.panelsTop.style('margin-top',(_pre_+_pre-_post)+"px");
+    } else {
+      this.browser.DOM.panelsTop.style('margin-top',"0px");
+    }
   },
-  removeCrumb: function(){
+  /** -- */
+  removeCrumb: function(noAnim){
     if(this.DOM === null) return;
     var me=this;
-    this.DOM.attr("ready",false);
-    setTimeout(function(){ 
-      if(me.DOM===null) return;
-      me.DOM.node().parentNode.removeChild(me.DOM.node());
-      me.DOM = null;
-    }, 350);
+    if(noAnim){
+      this.DOM.remove();
+    } else {
+      var _pre = this.browser.getHeight_PanelBasic();
+      var _pre_ = parseInt(me.browser.DOM.panelsTop.style('margin-top'));
+      this.DOM.style("opacity",0)
+        .transition().delay(300).remove()
+        .on("end",function(){ 
+          var _post = me.browser.getHeight_PanelBasic();
+          var v = _pre_+_pre-_post;
+          if(me.selectType!=="Highlight") v=0;
+          me.browser.DOM.panelsTop.style('margin-top',v+"px");
+        });
+    }
+    this.DOM = null;
   },
+  /** -- */
   _insertDOM_crumb: function(summary){
     var me=this;
+
     this.DOM = this.browser.DOM.breadcrumbs.append("span")
       .attr("class","breadCrumb crumbMode_"+this.selectType)
       .each(function(){
@@ -944,7 +966,7 @@ kshf.BreadCrumb.prototype = {
         } else if(me.selectType==="Highlight") {
           me.browser.clearSelect_Highlight(true);
         } else {
-          me.browser.clearSelect_Compare(me.selectType.substr(8), true);
+          me.browser.clearSelect_Compare(me.selectType.substr(8));
           me.browser.refreshMeasureLabels();
         }
       });
@@ -953,9 +975,8 @@ kshf.BreadCrumb.prototype = {
     var y = this.DOM.append("span").attr("class","crumbText");
     y.append("span").attr("class","crumbHeader");
     y.append("span").attr("class","crumbDetails");
-    // animate appear
-    window.getComputedStyle(this.DOM.node()).opacity; // force redraw
-    this.DOM.attr("ready",true);
+
+    this.DOM.style("opacity",0).style("display","inline-block").transition().style("opacity",1);
 
     // Push the save button to the end of list
     var dom = this.browser.DOM.saveSelection.node();
@@ -986,6 +1007,8 @@ kshf.Filter.prototype = {
   addFilter: function(){
     this.isFiltered = true;
 
+    this.browser.clearSelect_Highlight(true);
+
     if(this.onFilter) this.onFilter.call(this);
 
     var stateChanged = false;
@@ -1004,7 +1027,6 @@ kshf.Filter.prototype = {
 
     this.browser.update_Records_Wanted_Count();
     this.browser.refresh_filterClearAll();
-    this.browser.clearSelect_Highlight(true);
     if(stateChanged) this.browser.updateAfterFilter();
   },
   /** -- */
@@ -1588,7 +1610,7 @@ kshf.RecordDisplay.prototype = {
                 if(d==="Filter"){
                   me.spatialFilter.clearFilter();
                 } else if(d!=="Highlight"){
-                  me.browser.clearSelect_Compare(d.substr(8), true);
+                  me.browser.clearSelect_Compare(d.substr(8));
                 }
                 this.tipsy.hide();
               });
@@ -5308,9 +5330,9 @@ kshf.Browser.prototype = {
     /** -- */
     updateAfterFilter: function(){
       kshf.browser = this;
-      this.clearSelect_Compare('A',true);
-      this.clearSelect_Compare('B',true);
-      this.clearSelect_Compare('C',true);
+      this.clearSelect_Compare('A');
+      this.clearSelect_Compare('B');
+      this.clearSelect_Compare('C');
       this.summaries.forEach(function(summary){ summary.updateAfterFilter(); });
       this.recordDisplay.updateAfterFilter();
       this.needToRefreshLayout = true;
@@ -5383,7 +5405,7 @@ kshf.Browser.prototype = {
 
       if(selAggregate.compared){
         var x=selAggregate.compared;
-        this.clearSelect_Compare(selAggregate.compared, true);
+        this.clearSelect_Compare(selAggregate.compared);
         if(noReclick){
           this["crumb_Compare_"+x].removeCrumb(); 
           return;
@@ -5432,6 +5454,8 @@ kshf.Browser.prototype = {
 
       this.refreshTotalViz();
 
+      this.clearSelect_Highlight(true);
+
       this["crumb_"+compId].showCrumb(selAggregate.summary);
 
       if(this.helpin){
@@ -5460,13 +5484,16 @@ kshf.Browser.prototype = {
 
       // if the crumb is shown, start the hide timeout
       if(this.highlightCrumbTimeout_Hide) clearTimeout(this.highlightCrumbTimeout_Hide);
-      this.highlightCrumbTimeout_Hide = setTimeout(function(){ 
-        me.crumb_Highlight.removeCrumb();
-        this.highlightCrumbTimeout_Hide = undefined;
-      },now?0:1000);
+      if(now){
+        me.crumb_Highlight.removeCrumb(now);
+      } else {
+        this.highlightCrumbTimeout_Hide = setTimeout(function(){ 
+          this.highlightCrumbTimeout_Hide = undefined;
+          me.crumb_Highlight.removeCrumb();
+        },1000);
+      }
 
       this.refreshMeasureLabels("Active");
-
     },
     /** -- */
     setSelect_Highlight: function(selAggregate){
@@ -5567,13 +5594,15 @@ kshf.Browser.prototype = {
       this.refreshTotalViz();
     },
     /** -- */
+    getHeight_PanelBasic: function(){
+      return Math.max(parseInt(this.DOM.panel_Basic.style("height")),24)+6;
+    },
+    /** -- */
     updateLayout_Height: function(){
         var me=this;
         var divHeight_Total = parseInt(this.DOM.root.style("height"));
 
-        var panel_Basic_height = Math.max(parseInt(this.DOM.panel_Basic.style("height")),24)+6;
-
-        divHeight_Total-=panel_Basic_height;
+        divHeight_Total-=this.getHeight_PanelBasic();
 
         // initialize all summaries as not yet processed.
         this.summaries.forEach(function(summary){ if(summary.inBrowser()) summary.heightProcessed = false; });
