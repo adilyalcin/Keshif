@@ -51,7 +51,7 @@ google.charts.setOnLoadCallback(function(){
     },
     summaries: [
       { name: "Venue" },
-      { name: "Type",  description: "Miscallenous means: Panel, Keynote, Captstone, Demo, Poster, ...",
+      { name: "Type",  description: "Miscallenous means:<br> Panel, Keynote, Captstone, Demo, Poster, ...",
         catLabel: { C: "Conference", M: "Miscallenous", J: "Journal (TVCG)" } },
       { name: "# of Citations to Paper (within)", panel: 'left', 
         value: function(){ if(this.Citations.length>0) return this.Citations.length; } },
@@ -59,6 +59,14 @@ google.charts.setOnLoadCallback(function(){
         value: function(){ if(this.References) return this.References.length; } },
       { name: "Year", panel: 'bottom', timeFormat: "%Y" },
       { name: "Highlights", value: "Best", catLabel: {'BP': 'Best Paper', 'HM': 'Honorable Mention'}, panel:'right' },
+      { name: "Selected Paper Type", value: "[Type]", panel: 'right',
+        catLabel: { 
+          TM : 'InfoVis: Theory/Model',
+          E  : 'InfoVis: Evaluation', 
+          A  : 'InfoVis: Application/Design Study', 
+          S  : 'InfoVis: System',
+          TQ : 'InfoVis: Technique'
+        } },
       { name: "Authors", value: 'Deduped author names', catSplit: ";", panel: 'right', minAggrValue: 2,
         description: "Only authors with at least two papers are shown" },
       { name: "Keywords", 
