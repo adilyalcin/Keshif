@@ -49,6 +49,13 @@ google.charts.setOnLoadCallback(function(){
         });
       });
     },
+    onReady: function(){
+      if(location.search==="?BestAndHonorable"){
+        var s = browser.summaries_by_name.Highlights;
+        s.filterCategory(s._aggrs[0],"OR","All");
+        s.filterCategory(s._aggrs[1],"OR","All");
+      }
+    },
     summaries: [
       { name: "Venue" },
       { name: "Type",  description: "Miscallenous means:<br> Panel, Keynote, Captstone, Demo, Poster, ...",
