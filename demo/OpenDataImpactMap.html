@@ -13,8 +13,13 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.0/dist/leaflet.js"></script>
+
     <script type="text/javascript">
 google.charts.setOnLoadCallback(function(){
+  kshf.map.wrapLongitude = 180;
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Companies",
@@ -24,7 +29,8 @@ google.charts.setOnLoadCallback(function(){
     source: {
       dirPath: "https://storage.googleapis.com/keshif-data/",
       fileType: 'json',
-      tables: "OpenDataImpactMap"
+      tables: "OpenDataImpactMap",
+      callback: function(){ kshf.Countries.loadGeo(this); }
     },
     summaries: [
       { name: "Types",
@@ -48,7 +54,30 @@ google.charts.setOnLoadCallback(function(){
       { name: "Organizational Optimization", panel: 'left', collapsed: true },
 
       { name: "Region", panel: 'right' },
-      { name: "Country", panel: 'right', description: "Country of origin" },
+      { name: "Country", 
+        panel: 'right',
+        description: "Country of origin",
+        catMap: function(){
+          var v = this.id;
+          switch(v){
+            case "United States": v = 'United States of America'; break;
+            case "United Kingdom": v = 'United Kingdom of Great Britain and Northern Ireland'; break;
+            case "Korea, Rep.": v = 'Korea, Republic of'; break;
+            case "Taiwan": v = 'Taiwan, Province of China'; break;
+            case "Tanzania": v = 'Tanzania, United Republic of'; break;
+            case "Slovak Republic": v = 'Slovakia'; break;
+            case "Moldova": v = 'Moldova, Republic of'; break;
+            case "Venezuela, RB": v = 'Venezuela, Bolivarian Republic of'; break;
+            case "Macedonia, FYR": v = 'Macedonia, the former Yugoslav Republic of'; break;
+            case "Kosovo": v = ''; break;
+            case "Gambia, The": v = 'Gambia'; break;
+            case "Congo, Dem. Rep.": v = 'Congo, the Democratic Republic of the'; break;
+          }
+          var v=kshf.Countries.index_name[v];
+          if(v) return v.geo;
+          else console.log(this.id);
+        }
+      },
       { name: "City", panel: 'right', collapsed: true },
       //{ name: "Founding Year", panel: 'bottom'}
       { name: "Founding Year", timeFormat: "%Y", panel: 'middle'}
