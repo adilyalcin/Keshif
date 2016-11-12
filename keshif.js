@@ -1458,7 +1458,8 @@ kshf.RecordDisplay.prototype = {
           });
           me.browser.clearSelect_Highlight();
           me.browser.flexAggr_Highlight.records = records;
-          me.browser.flexAggr_Highlight.summary = me.recordViewSummary;
+          me.browser.flexAggr_Highlight.summary = me.textSearchSummary;
+          me.browser.flexAggr_Highlight.data = {id: me.textFilter.filterStr};
           me.browser.setSelect_Highlight();
           dom.timer = null;
         }, 200);
@@ -1468,8 +1469,8 @@ kshf.RecordDisplay.prototype = {
       this.DOM.recordTextSearch.append("input").attr("type","text").attr("class","textSearchInput")
         .each(function(){ 
           this.tipsy = new Tipsy(this, {gravity: 'n', 
-            title: '<b><u>Enter</u></b> to filter <i class="fa fa-filter"></i>.<br><br>'+
-            '<b><u>Shift+Enter</u></b> to lock <i class="fa fa-lock"></i>.' }); 
+            title: '<b><u>Enter</u></b> to filter <i class="fa fa-filter"></i><br><br>'+
+            '<b><u>Shift+Enter</u></b> to lock <i class="fa fa-lock"></i>' }); 
         })
         .on("blur",function(){ this.tipsy.hide(); })
         .on("keydown",function() { d3.event.stopPropagation(); })
