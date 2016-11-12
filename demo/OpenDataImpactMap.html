@@ -38,8 +38,13 @@ google.charts.setOnLoadCallback(function(){
         } },
       { name: "Organization Type", panel: 'left' },
       { name: "Size", panel: 'left',
-        catSortBy: [ '1-10', '11-50', '51-200', '201-1000', '1000+' ] },
-      { name: "Industry", value: "Industry Category" },
+        catSortBy: [ '1 to 10', '11 to 50', '51 to 200', '201 to 1000', '1000', '1000+' ]
+        },
+      { name: "Industry", value: "Sectors" },
+      { name: 'Data Types',
+        value: 'Type of Data Used', 
+        catSplit: ", "
+        },
       { name: "Organizational Optimization", panel: 'left', collapsed: true },
 
       { name: "Region", panel: 'right' },
@@ -51,10 +56,10 @@ google.charts.setOnLoadCallback(function(){
     recordDisplay: {
       sortColWidth: 45,
       sortBy: "Founding Year",
-      textSearch: "Company Name",
+      textSearch: "Organization Name",
       recordView: function(){
         var str='';
-        str+="<a href='"+this.URL+"' target='_blank' class='compLink'>"+this["Company Name"]+
+        str+="<a href='"+this.URL+"' target='_blank' class='compLink'>"+this["Organization Name"]+
           " <i class='fa fa-external-link'></i></a>";
         if(this["Description"]) 
           str+="<span class='comDecr comDescription'>"+this["Description"]+"</span>";
