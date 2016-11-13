@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>IEEEVIS Network</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    
+    <script type="text/javascript">
+
+function dataLoad(){
+  var browser = this;
+  $.ajax({
+    url: "./data/ieeevisNetwork.json",
+    success: function(data){
+      browser.primaryTableName = "Accounts";
+      kshf.dt.Accounts = [];
+      data.nodes.forEach(function(account){
+        account.id = 1*account.id;
+        kshf.dt.Accounts.push(new kshf.Record(account,"id"));
+      });
+      browser.loadCharts();
+    }
+  });
+};
+
+document.addEventListener("DOMContentLoaded", function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    categoryTextWidth: 150,
+    barChartWidth: 100,
+    source: {
+      url: "http://johnguerra.co/viz/influentials/ieeevis/",
+      callback: dataLoad
+    },
+    summaries: [
+      { name: "IEEEVIS Ranking", value: "count", skipZero: true,
+        description: "The number of followers in IEEEVIS"},
+      { name: "# of Followers", value: 'followers_count', skipZero: true},
+      { name: "# of Favourites", value: "favourites_count", skipZero: true },
+
+      { name: "# of Statuses", value: "statuses_count", skipZero: true, collapsed: true },
+      { name: "# of Friends", value: 'friends_count', skipZero: true, collapsed: true},
+      { name: "# Listed", value: 'listed_count', skipZero: true, collapsed: true},
+      
+      { name: "Location", value: "location", collapsed: true},
+      { name: "Verified", value: "verified"},
+//      {name: "Visualization Type", value: "visualizationType", catSplit: "; "},
+//      {name: "Author", value: "author", catSplit: "; "}
+    ],
+    recordDisplay: {
+      sortBy: "IEEEVIS Ranking",
+      displayType: 'grid',
+      detailsToggle: 'off',
+      textSearch: "screen_name",
+      recordView: function(){
+        var str="";
+        var link_open = "<a class='ProfileName' target='_blank' href='http://www.twitter.com/"+this.screen_name+"'>";
+        var img="<img src='"+this.profile_image_url+"' class='profileImage'>";
+        return str+link_open+img+this.name+"</a>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.profileImage{
+  display: block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  margin: 0 auto;
+  box-shadow: 0px 0px 4px gray;
+}
+.ProfileName{
+  display: block;
+  color: #2aa0f2;
+  font-weight: 900;
+  text-decoration: none;
+}
+.kshfRecord{ max-width: 150px; }
+.content{ 
+  padding: 3px;
+  text-align: center;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">IEEEVIS Network</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data collected by <a href="http://christopheviau.com/d3list/gallery.html" target='_blank'>Christophe Viau</a>.
+      </div>
+  </body>
+</html>
