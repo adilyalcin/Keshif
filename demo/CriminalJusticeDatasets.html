@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+    <title>U.S. Criminal Justice Datasets</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./helpin/helpin_material.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./helpin/helpin.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./helpin/helpin.css" type="text/css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+    <script type="text/javascript">
+google.charts.setOnLoadCallback(function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    recordName: "Datasets",
+    source: {
+      gdocId: "1_mIKkX44e6GMIUUvu_OelB_Py5dTQQccHboc6zRhzxI",
+      tables: "Datasets",
+      callback: function(){ US_States.loadGeo(this); }
+    },
+    leftPanelLabelWidth: 160,
+    rightPanelLabelWidth: 160,
+    middlePanelLabelWidth: 160,
+    summaries: [
+      { name: "State",
+        panel: "middle",
+        catLabel: function(){ 
+          var v = US_States.index_code[this.id];
+          return v ? v.name : this.id;
+        },
+        catMap: function(){ 
+          var v = US_States.index_code[this.id];
+          if(v) return v.geo;
+        },
+        viewAs: 'map'
+      },
+      { name: "Access type",
+        catSplit: ", ",
+        panel: "left" },
+      { name: 'Features',
+        value: function(){
+          var r=[];
+          if(this["Population data? (Y/N)"]==="Y") r.push("Population data");
+          if(this["Internet availability? (Y/N)"]==="Y") r.push("Available on Internet");
+          if(this["Mappable? (Y/N)"]==="Y") r.push("Mappable");
+          if(this["Is this data updated? (Y/N)"]==="Y") r.push("Updated");
+          return r;
+        }
+      },
+      { name: "Private/Government",
+        panel: "left",
+        catSplit: ", " },
+      { name: "Category",
+        panel: "right",
+        catSplit: ", " },
+      { name: "Subcategory",
+        panel: "right",
+        catSplit: ", " },
+      { name: "Format",
+        panel: "right",
+        catSplit: ", " },
+      { name: "Frequency",
+        panel: "right",
+        collapsed: true }
+    ],
+    recordDisplay: {
+      sortBy: { name: "id", inverse: true}, 
+      sortColWidth: 50,
+      detailsToggle: "zoom",
+      textSearch: "Description",
+      recordView: function(){
+        return "<a href='"+this.URL+"' target='_blank' class='Title'>"+this.Title+
+            " - ("+ this.State+") <i class='fa fa-arrow-right'></i></a>"+
+          "<span class='Description'>"+this.Description+"</span>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.Description{
+  font-size: 0.9em;
+  font-weight: 200;
+  display: block;
+}
+.Title{
+  color: black;
+}
+/* #demo_Browser { max-width: 1100px; } */
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">U.S. Criminal Justice Datasets</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+
+    <div id="demo_Infobox">
+      Data was collected by the 
+      <a href="http://sunlightfoundation.com/" target='_blank'>Hall of Justice Project</a>
+      for the 
+      <a href="http://hallofjustice.sunlightfoundation.com/" target='_blank'>Hall of Justice Project</a>
+      </div>
+
+  </body>
+</html>
