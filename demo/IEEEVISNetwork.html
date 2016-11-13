@@ -24,9 +24,19 @@ function dataLoad(){
     success: function(data){
       browser.primaryTableName = "Accounts";
       kshf.dt.Accounts = [];
+      kshf.dt_id.Accounts = {};
       data.nodes.forEach(function(account){
         account.id = 1*account.id;
-        kshf.dt.Accounts.push(new kshf.Record(account,"id"));
+        account.FollowedBy = [];
+        var k = new kshf.Record(account,"id");
+        kshf.dt.Accounts.push(k);
+        kshf.dt_id.Accounts[k.id()] = k;
+      });
+
+      data.links.forEach(function(link){
+        var source = kshf.dt_id.Accounts[link.source];
+        var target = kshf.dt_id.Accounts[link.target];
+        target.data.FollowedBy.push(link.source);
       });
       browser.loadCharts();
     }
@@ -45,23 +55,23 @@ document.addEventListener("DOMContentLoaded", function(){
     summaries: [
       { name: "IEEEVIS Ranking", value: "count", skipZero: true,
         description: "The number of followers in IEEEVIS"},
+      { name: '# of Tweets in IEEEVIS', value: 'query_tweet_count', skipZero: true },
+      { name: "# of Tweets (Total)", value: "statuses_count", skipZero: true, collapsed: true },
       { name: "# of Followers", value: 'followers_count', skipZero: true},
       { name: "# of Favourites", value: "favourites_count", skipZero: true },
 
-      { name: "# of Statuses", value: "statuses_count", skipZero: true, collapsed: true },
       { name: "# of Friends", value: 'friends_count', skipZero: true, collapsed: true},
       { name: "# Listed", value: 'listed_count', skipZero: true, collapsed: true},
       
       { name: "Location", value: "location", collapsed: true},
-      { name: "Verified", value: "verified"},
-//      {name: "Visualization Type", value: "visualizationType", catSplit: "; "},
-//      {name: "Author", value: "author", catSplit: "; "}
+      { name: "Verified", value: "verified", collapsed: true},
     ],
     recordDisplay: {
       sortBy: "IEEEVIS Ranking",
       displayType: 'grid',
       detailsToggle: 'off',
       textSearch: "screen_name",
+      linkBy: "FollowedBy",
       recordView: function(){
         var str="";
         var link_open = "<a class='ProfileName' target='_blank' href='http://www.twitter.com/"+this.screen_name+"'>";
