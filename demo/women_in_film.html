@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function(){
         } },
       { name: "Clarity of Pass", collapsed: true },
       { name: "Plot Keywords (top 10)", catSplit: ", ", minAggrValue: 5 },
-      { name: "IMDb Popularity", panel: 'middle', },
+      { name: "IMDb Popularity", value: "IMDb Popularity Score", panel: 'middle', skipZero: true },
       { name: "Award Popularity", panel: 'left', collapsed: true },
       { name: "Rating", catSplit: ", " },
       { name: "Genre", catSplit: ", ", panel: 'right' },
@@ -53,10 +53,10 @@ document.addEventListener("DOMContentLoaded", function(){
     recordDisplay: {
       displayType: 'grid',
       textSearch: "Movie Title",
-      sortingOpts: "IMDb Popularity",
+      sortBy: "IMDb Popularity",
       recordView: function(){
         return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'>"+
-          "<img class='thumbImg' src='http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+
+          "<img class='thumbImg' src='https://storage.googleapis.com/keshif-data/img/imdbPosters/"+
             this['IMDB Link'].substr(26,9)+".jpg'></a>";
       }
     }

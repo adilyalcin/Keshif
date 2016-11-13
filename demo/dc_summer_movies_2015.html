@@ -56,7 +56,7 @@ function loadMovies(browser){
 
 var myLoc=null;
 
-$(document).ready( function(){
+google.charts.setOnLoadCallback(function(){
   // subtracting because movies are considered to start at midnight, and I want to see the movies playing today first.
   var m_now = moment().subtract('days',1);
   var m_thisweek = moment().add('days',7);
@@ -185,7 +185,7 @@ $(document).ready( function(){
         if(movieData){
           str+="<span class='item_details'><a target='_blank' href='http://www.imdb.com/title/"+
             movieData.imdbID+"'>"+
-            "<img class='moviePoster' src='http://www.cs.umd.edu/~yalcin/keshif_res/imdbPosters/"+movieData.imdbID+".jpg'></a></span>";
+            "<img class='moviePoster' src='https://storage.googleapis.com/keshif-data/img/imdbPosters/"+movieData.imdbID+".jpg'></a></span>";
         }
         // movie name
         str+="<div class='movieName'>"+this.Movie+"</div>";
