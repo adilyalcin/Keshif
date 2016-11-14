@@ -1749,17 +1749,17 @@ kshf.RecordDisplay.prototype = {
       var customMapControls = DOM_control.append("div").attr("class","visViewControl");
 
       customMapControls.append("div")
-        .attr("class","fa fa-plus")
+        .attr("class","visViewControlButton fa fa-plus")
         .attr("title","Zoom in")
         .on("click",function(){ me.leafletRecordMap.zoomIn(); });
 
       customMapControls.append("div")
-        .attr("class","fa fa-minus")
+        .attr("class","visViewControlButton fa fa-minus")
         .attr("title","Zoom out")
         .on("click",function(){ me.leafletRecordMap.zoomOut(); });
 
       customMapControls.append("div")
-        .attr("class","fa fa-map-o")
+        .attr("class","visViewControlButton fa fa-map-o")
         .attr("title","Show/Hide Map")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Show/Hide Map"}); })
         .on("mouseover",function(){ this.tipsy.show(); })
@@ -1777,7 +1777,7 @@ kshf.RecordDisplay.prototype = {
         });
 
       customMapControls.append("div")
-        .attr("class","mapMouseControl fa")
+        .attr("class","visViewControlButton mapMouseControl fa")
         .each(function(){ 
           this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){
             return "Drag mouse to "+(me.mapMouseControl==="pan"?"draw":"pan");
@@ -1791,7 +1791,7 @@ kshf.RecordDisplay.prototype = {
         });
 
       customMapControls.append("div")
-        .attr("class","viewFit fa fa-arrows-alt")
+        .attr("class","visViewControlButton viewFit fa fa-arrows-alt")
         .attr("title",kshf.lang.cur.ZoomToFit)
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: kshf.lang.cur.ZoomToFit}); })
         .on("mouseover",function(){ this.tipsy.show(); })
@@ -2861,7 +2861,7 @@ kshf.RecordDisplay.prototype = {
         this.DOM.root.select(".recordDisplay_ViewAsNodeLink").style("display",
           (this.linkBy.length>0 && this.viewRecAs!=='nodelink') ? "inline-block" : null );
 
-        this.DOM.recordDisplayHeader.select(".recordView_HeaderSet")
+        this.DOM.recordDisplayHeader.select(".recordDisplay_ViewGroup")
           .style("display",(viewAsOptions.Map || viewAsOptions.NodeLink ) ? "inline-block" : null);
 
         switch(this.viewRecAs){

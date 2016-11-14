@@ -5395,12 +5395,14 @@ height:calc(100% - 10px);
 .kshf [class^="recordDisplay_ViewAs"]:hover {
   color: orangered;
 }
+.kshf .recordDisplay_ViewGroup {
+  display: none;
+}
 .kshf .recordView_HeaderSet {
   font-weight: 300;
   font-size: 0.8em;
   cursor: default;
   padding: 1px;
-  display: none;
   margin-right: 2px;
   vertical-align: top;
 }
