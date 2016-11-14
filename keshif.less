@@ -262,13 +262,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .measure_Compare_C{ opacity: 1 !important; pointer-events: all !important;}
       .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C{ display: block; }
     }
-    &[recordDisplayMapping="sort"]{
+    &[recordEncoding="sort"]{
       .kshfSummary[summary_type="interval"] .useForRecordDisplay{
         &:before{ content: "\f0dc"; } // Sorting icon
         &:hover{ color: @color_hoverAction; }
       }
     }
-    &[recordDisplayMapping="color"]{
+    &[recordEncoding="color"]{
       .kshfSummary[summary_type="interval"]{
         .useForRecordDisplay{
           // Great CSS trick at https://codepen.io/thebabydino/pen/hkxGp
@@ -2475,7 +2475,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       border-radius: 4px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.65);
 
-      > .fa{
+      > .visViewControlButton{
         display: block;
         border-bottom: 1px solid #ccc;
         cursor: pointer;
@@ -2486,6 +2486,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           color: @color_hoverAction;
         }
       }
+      > .NodeLink_LinkAttribute:before{
+        content: "Link: ";
+        font-weight: 400;
+        font-size: 0.8em;
+        height: 25px;
+      }
     }
 
     .leaflet-tile-container{
@@ -2495,11 +2501,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .leaflet-container .visViewControl, .leaflet-control-container .visViewControl{
       left: 3px;
       top: 3px;
-      > .fa:first-child{
+      > .visViewControlButton:first-child{
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
       }
-      > .fa:last-child{
+      > .visViewControlButton:last-child{
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
         border-bottom: none;
@@ -2507,7 +2513,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     .recordDisplay[displayType="map"] .visViewControl{
-      > .fa{ width: 25px; }
+      > .visViewControlButton{ width: 25px; }
     }
     .recordDisplay[displayType="nodelink"] .visViewControl{
       position: absolute;
@@ -2515,19 +2521,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       bottom: 0px;
       margin: 5px;
       font-size: 0.9em;
-      > .fa{ 
+      > .visViewControlButton{ 
         display: inline-block;
         border-bottom: none;
         border-right: 1px solid #ccc;
       }
-      > .fa:first-child{
+      > .visViewControlButton:first-child{
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;
       }
-      > .fa:last-child{
+      > .visViewControlButton:last-child{
         border-top-right-radius: 4px;
         border-bottom-right-radius: 4px;
         border-bottom: none;
+        border-right: none;
       }
     }
 
@@ -3434,10 +3441,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
     }
 
-    .NodeLinkAttrib{
-      display: none;
-    }
-
     .recordDisplay{
       position: relative;
       top: 0px;
@@ -3671,17 +3674,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         .recordGroup_List{ display: none; }
 
-        .NodeLinkAttrib{
-          display: block;
-          > .NodeLinkAttribIcon{
-            padding: 1px 3px;
-            color: black;
-            cursor: pointer;
-            text-shadow: 0px 0px 5px white;
-            &:hover{ color: orangered !important; }
-          }
-        }
-
         g.kshfRecord{
           > circle{
             stroke: gray;
@@ -3712,10 +3704,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[rec_compared^="B"]{ > circle { stroke: @color_Compare_B; } }
           &[rec_compared^="C"]{ > circle { stroke: @color_Compare_C; } }
         }
+
         .recordLink {
           stroke: #999;
           stroke-opacity: .3;
         }
+
         &.hideLinks {
           .recordLink { display: none; }
           .NodeLinkAttribIcon{ color: #BABABA; }
@@ -3729,65 +3723,69 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .NodeLinkAnim_Refresh{ display: none; }
       }
 
-      &[displayType="grid"][hasrecordview="true"] {
-        .recordGroup {
-          .display(flex);
-          .flex-direction(row);
-          .flex-wrap(wrap);
-          .align-items(flex-start);
-          .align-content(flex-start);
-          .justify-content(space-around);
-          
-          > .kshfRecord{
-            display: block;
-            .align-self(flex-start);
-            > .recordRank{
+      &[hasrecordview="true"]{
+        &[displayType="grid"] {
+          .recordGroup {
+            .display(flex);
+            .flex-direction(row);
+            .flex-wrap(wrap);
+            .align-items(flex-start);
+            .align-content(flex-start);
+            .justify-content(space-around);
+            
+            > .kshfRecord{
+              display: block;
+              .align-self(flex-start);
+              > .recordRank{
+                vertical-align: top;
+                margin-right: 2px;
+                position: absolute;
+              }
+              > .content{ display: block; }
+              > .recordToggleDetail{
+                position: absolute;
+                left: 0px;
+                z-index: 2;
+              }
+            }
+          }
+        }
+        &[displayType="list"]{
+          .recordMap_Base{ display: none; }
+          .recordNodeLink_SVG{ display: none; }
+          .kshfRecord{
+            .display(flex);
+            .flex-direction(row);
+            width: 100%;
+            padding-top: 0px;
+            border-top: solid 1px lightgray;
+            > .recordSortCol{
+              padding-right: 3px;
+              padding-top: 2px;
+              font-weight: 300;
+              text-align: right;
+              font-size: 0.8em;
+              cursor: default;
               vertical-align: top;
-              margin-right: 2px;
-              position: absolute;
-            }
-            > .content{ display: block; }
-            > .recordToggleDetail{
-              position: absolute;
-              left: 0px;
-              z-index: 2;
-            }
-          }
-        }
-      }
-      &[displayType="list"][hasrecordview="true"] {
-        .recordMap_Base{ display: none; }
-        .recordNodeLink_SVG{ display: none; }
-        .kshfRecord{
-          .display(flex);
-          .flex-direction(row);
-          width: 100%;
-          padding-top: 0px;
-          border-top: solid 1px lightgray;
-          > .recordSortCol{
-            padding-right: 3px;
-            padding-top: 2px;
-            font-weight: 300;
-            text-align: right;
-            font-size: 0.8em;
-            cursor: default;
-            vertical-align: top;
 
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            > .unitName{ margin-right: 1px; }
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              > .unitName{ margin-right: 1px; }
+            }
+            > .recordRank{
+              float: left;
+              margin-top: 4px;
+              width: 15px;
+              padding-right: 2px;
+            }
+            > .recordToggleDetail{ padding-top: 1px; }
+            > .content{ .flex(1); }
           }
-          > .recordRank{
-            float: left;
-            margin-top: 4px;
-            width: 15px;
-            padding-right: 2px;
-          }
-          > .recordToggleDetail{ padding-top: 1px; }
-          > .content{ .flex(1); }
         }
+
       }
+
       &[detailsToggle="zoom"] .recordGroup > .kshfRecord > .recordToggleDetail{
         display: inline-block;
         &:before{ content: "\f05a"; } // new: info-circle - old bullseye
@@ -4132,6 +4130,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           display: none;
           padding-top: 2px;
         }
+        > .recordDisplay_ViewGroup{
+          border: solid 1px gray;
+          border-radius: 5px;
+          margin: 0px 3px;
+          padding: 0px 2px;
+          background-color: white;
+          font-size: 0.9em;
+        }
 
         > .recordTextSearch {
           .flex(1);
@@ -4249,7 +4255,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
   }
 
-  [class^="recordView_Set"]{
+  [class^="recordDisplay_ViewAs"]{
     color: gray;
     padding: 1px;
     cursor: pointer;

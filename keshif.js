@@ -80,7 +80,12 @@ var kshf = {
       subdomains: 'abcd',
       maxZoom: 19,
       //noWrap: true
-    }
+    },
+    flyConfig:{ 
+      padding: [0,0], 
+      pan: {animate: true, duration: 1.2}, 
+      zoom: {animate: true} 
+    },
   },
 
   lang: {
@@ -386,11 +391,6 @@ var kshf = {
 
   /* -- */
   intersects: function(d3bound, leafletbound){
-    // d3bound: [​[left, bottom], [right, top]​]
-    // leafletBound._southWest.lat
-    // leafletBound._southWest.long
-    // leafletBound._northEast.lat
-    // leafletBound._northEast.long
     if(d3bound[0][0]>leafletbound._northEast.lng) return false;
     if(d3bound[0][1]>leafletbound._northEast.lat) return false;
     if(d3bound[1][0]<leafletbound._southWest.lng) return false;
@@ -532,6 +532,7 @@ kshf.Record = function(d, idIndex){
   // Wanted item / not filtered out
   this.isWanted = true;
 
+  // Rank order of the record
   this.recordRank = 0;
 
   // The data that's used for mapping this item, used as a cache.
@@ -541,6 +542,7 @@ kshf.Record = function(d, idIndex){
       // - If this is a paper, it can be paper type. If this is author, it can be author affiliation.
   this._valueCache = []; // caching the values this item was mapped to
 
+  // Aggregates which this record falls under
   this._aggrCache = [];
 
   this.DOM = { record: undefined };
@@ -564,24 +566,24 @@ kshf.Record.prototype = {
     this._filterCache[index] = v;
     this._filterCacheIsDirty = true;
   },
-  /** Updates isWanted state, and notifies all related filter attributes of the change */
+  /** Updates isWanted state, and notifies all related aggregates of the change */
   updateWanted: function(){
     if(!this._filterCacheIsDirty) return false;
     var me = this;
 
     var oldWanted = this.isWanted;
     this.isWanted = this._filterCache.every(function(f){ return f; });
+    this._filterCacheIsDirty = false;
 
     if(this.measure_Self && this.isWanted !== oldWanted){ // There is some change that affects computation
       var valToAdd = (this.isWanted && !oldWanted) ? this.measure_Self /*add*/ : -this.measure_Self /*remove*/;
-      var cntToAdd = valToAdd>0?1:-1;
+      var cntToAdd = this.isWanted ? 1 : -1; // more record : less record
       this._aggrCache.forEach(function(aggr){ 
         aggr._measure.Active += valToAdd;
-        if(valToAdd) aggr.recCnt.Active+=cntToAdd;
+        aggr.recCnt.Active   += cntToAdd;
       });
     }
 
-    this._filterCacheIsDirty = false;
     return this.isWanted !== oldWanted;
   },
   /** -- */
@@ -661,36 +663,19 @@ kshf.Record.prototype = {
 /**
  * @constructor
  */
-kshf.Aggregate = function(){};
+kshf.Aggregate = function(summary){
+  // Which summary does this aggregate appear in?
+  this.summary = summary;
+  // Records which are mapped to this aggregate
+  this.records = [];
+  // To signal that this aggregate should not be shown, set this to false;
+  this.usedAggr = true;
+  // DOM
+  this.DOM = { aggrGlyph: undefined };
+  // Reset
+  this.resetAggregateMeasures();
+};
 kshf.Aggregate.prototype = {
-  /** -- */
-  init: function(d,idIndex){
-    // Records which are mapped to this aggregate
-    this.records = [];
-    // What this aggregate represents
-    this.data = d;
-    // Aggregates can also be defined by an index
-    this.idIndex = idIndex;
-    // Selection state
-    //  1: selected for inclusion (AND)
-    //  2: selected for inclusion (OR)
-    // -1: selected for removal (NOT query)
-    //  0: not selected
-    this.selected = 0;
-
-    // Temp?
-    this.usedAggr = true;
-    
-    this.DOM = {
-      aggrGlyph: undefined
-    };
-
-    this.resetAggregateMeasures();
-  },
-  /** Returns unique ID of the aggregate. */
-  id: function(){
-    return this.data[this.idIndex];
-  },
   /** -- */
   resetAggregateMeasures: function(){
     this._measure = {
@@ -782,8 +767,7 @@ kshf.Aggregate.prototype = {
   },
   /** -- */
   clearCompare: function(cT){
-    d3.select(this.DOM.aggrGlyph).classed("locked",false);
-    if(this.DOM.aggrGlyph) this.DOM.aggrGlyph.removeAttribute("compare");
+    d3.select(this.DOM.aggrGlyph).classed("locked",false).attr("compare",null);
     this.compared = false;
     this.records.forEach(function(record){ record.unsetCompared(cT); });
   }, 
@@ -795,8 +779,35 @@ kshf.Aggregate.prototype = {
   clearHighlight: function(){
     this.records.forEach(function(record){ record.remForHighlight(false); });
   }, 
+};
 
-  // CATEGORICAL AGGREGATES ONLY
+/**
+ * @constructor
+ */
+kshf.Aggregate_Category = function(summary, d, idIndex){
+  kshf.Aggregate.call(this, summary);
+
+  // What this aggregate represents
+  this.data = d;
+
+  // Categories can be indexed
+  this.idIndex = idIndex;
+
+  // Selection state
+  //  1: selected for inclusion (AND)
+  //  2: selected for inclusion (OR)
+  // -1: selected for removal (NOT query)
+  //  0: not selected
+  this.selected = 0;
+};
+kshf.Aggregate_Category.prototype = Object.create(kshf.Aggregate.prototype);
+kshf.Aggregate_Category.constructor = kshf.Aggregate_Category;
+var Aggregate_Category_functions = {
+  /** Returns unique ID of the aggregate. */
+  id: function(){
+    return this.data[this.idIndex];
+  },
+
   f_selected: function(){ return this.selected!== 0; },
   f_included: function(){ return this.selected >  0; },
   is_NONE   : function(){ return this.selected=== 0; },
@@ -850,21 +861,42 @@ kshf.Aggregate.prototype = {
       this.DOM.aggrGlyph.setAttribute("cFiltered",v);
     }
   },
-};
+}
+for(var index in Aggregate_Category_functions){
+  kshf.Aggregate_Category.prototype[index] = Aggregate_Category_functions[index];
+}
 
-kshf.Aggregate_EmptyRecords = function(){};
-kshf.Aggregate_EmptyRecords.prototype = new kshf.Aggregate();
-var Aggregate_EmptyRecords_functions = {
-  /** -- */
-  init: function(){
-    kshf.Aggregate.prototype.init.call(this,{id: null},'id');
-    this.isVisible = true;
-    this.emptyRecordsAggregate = true;
-  }
-}
-for(var index in Aggregate_EmptyRecords_functions){
-  kshf.Aggregate_EmptyRecords.prototype[index] = Aggregate_EmptyRecords_functions[index];
-}
+/**
+ * @constructor
+ */
+kshf.Aggregate_Interval = function(summary, minV, maxV){
+  kshf.Aggregate.call(this, summary);
+  this.minV = minV;
+  this.maxV = maxV;
+};
+kshf.Aggregate_Interval.prototype = Object.create(kshf.Aggregate.prototype);
+kshf.Aggregate_Interval.constructor = kshf.Aggregate_Interval;
+
+/**
+ * @constructor
+ */
+kshf.Aggregate_Set = function(summary, set_1, set_2){
+  kshf.Aggregate.call(this, summary);
+  this.set_1 = set_1;
+  this.set_2 = set_2;
+};
+kshf.Aggregate_Set.prototype = Object.create(kshf.Aggregate.prototype);
+kshf.Aggregate_Set.constructor = kshf.Aggregate_Set;
+
+/**
+ * @constructor
+ */
+kshf.Aggregate_EmptyRecords = function(summary){
+  kshf.Aggregate_Category.call(this, summary, {id:null}, 'id');
+  this.isVisible = true;
+  this.emptyRecordsAggregate = true;
+};
+kshf.Aggregate_EmptyRecords.prototype = Object.create(kshf.Aggregate_Category.prototype);
 
 /**
  * @constructor
@@ -946,7 +978,7 @@ kshf.BreadCrumb.prototype = {
             switch(me.selectType){
               case "Filter":    return kshf.lang.cur.RemoveFilter;
               case "Highlight": return "Remove Highlight";
-              default:          return kshf.lang.cur.Unlock; // Compare
+              default:          return kshf.lang.cur.Unlock; // Compare_A, Compare_B, Compare_C
             }
           }
         });
@@ -1062,144 +1094,143 @@ kshf.Filter.prototype = {
 };
 
 /** -- */
-kshf.RecordDisplay = function(kshf_, config){
-    var me = this;
-    this.browser = kshf_;
-    this.DOM = {};
+kshf.RecordDisplay = function(browser, config){
+  var me = this;
+  this.browser = browser;
+  this.DOM = {};
 
-    this.config = config;
+  this.config = config;
 
-    this.sortColWidth = this.config.sortColWidth || 50; // default is 50 px
+  this.sortColWidth = this.config.sortColWidth || 50; // default is 50 px
 
-    // this is the default behavior. No demo un-set's this. Keeping for future reference.
-    this.autoExpandMore = true;
-    this.collapsed = false;
+  // this is the default behavior. No demo un-set's this. Keeping for future reference.
+  this.autoExpandMore = true;
+  this.collapsed = false;
 
-    this.maxVisibleItems_Default = config.maxVisibleItems_Default || kshf.maxVisibleItems_Default;
-    this.maxVisibleItems = this.maxVisibleItems_Default; // This is the dynamic property
+  this.maxVisibleItems_Default = config.maxVisibleItems_Default || kshf.maxVisibleItems_Default;
+  this.maxVisibleItems = this.maxVisibleItems_Default; // This is the dynamic property
 
-    this.showRank = config.showRank || false;
-    this.mapMouseControl = "pan";
+  this.showRank = config.showRank || false;
+  this.mapMouseControl = "pan";
 
-    this.viewRecAs = 'list'; // Default. Options: 'grid', 'list', 'map', 'nodelink'
+  this.viewRecAs = 'list'; // Default. Options: 'grid', 'list', 'map', 'nodelink'
 
-    this.linkBy = config.linkBy || [];
-    if(!Array.isArray(this.linkBy)) this.linkBy = [this.linkBy];
+  this.linkBy = config.linkBy || [];
+  if(!Array.isArray(this.linkBy)) this.linkBy = [this.linkBy];
 
-    // implicitly set record view
-    if(config.geo) this.viewRecAs = 'map';
-    if(config.linkBy) this.viewRecAs = 'nodelink';
-    // explicit setting by API
-    if(config.displayType) this.viewRecAs = config.displayType;
+  // implicitly set record view
+  if(config.geo) this.viewRecAs = 'map';
+  if(config.linkBy) this.viewRecAs = 'nodelink';
+  // explicit setting by API
+  if(config.displayType) this.viewRecAs = config.displayType;
 
-    this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off)
+  this.detailsToggle = config.detailsToggle || 'zoom'; // 'one', 'zoom', 'off' (any other string counts as off)
 
-    this.textSearchSummary = null;
-    this.recordViewSummary = null;
+  this.textSearchSummary = null;
+  this.recordViewSummary = null;
 
-    /***********
-     * SORTING OPTIONS
-     *************************************************************************/
-    config.sortingOpts = config.sortBy; // depracated option (sortingOpts)
+  /***********
+   * SORTING OPTIONS
+   *************************************************************************/
+  config.sortingOpts = config.sortBy; // depracated option (sortingOpts)
 
-    this.sortingOpts = config.sortingOpts || [ {title:this.browser.records[0].idIndex} ]; // Sort by id by default
-    if(!Array.isArray(this.sortingOpts)) this.sortingOpts = [this.sortingOpts];
+  this.sortingOpts = config.sortingOpts || [ {title:this.browser.records[0].idIndex} ]; // Sort by id by default
+  if(!Array.isArray(this.sortingOpts)) this.sortingOpts = [this.sortingOpts];
 
-    this.prepSortingOpts();
-    var firstSortOpt = this.sortingOpts[0];
-    // Add all interval summaries as sorting options
-    this.browser.summaries.forEach(function(summary){
-      if(summary.panel===undefined) return; // Needs to be within view
-      if(summary.type!=="interval") return; // Needs to be interval (numeric)
-      this.addSortingOption(summary);
-    },this);
-    this.prepSortingOpts();
-    this.alphabetizeSortingOptions();
+  this.prepSortingOpts();
+  var firstSortOpt = this.sortingOpts[0];
+  // Add all interval summaries as sorting options
+  this.browser.summaries.forEach(function(summary){
+    if(! (summary instanceof kshf.Summary_Interval) ) return;
+    if(summary.panel===undefined) return; // Needs to be within view
+    this.addSortingOption(summary);
+  },this);
+  this.prepSortingOpts();
+  this.alphabetizeSortingOptions();
 
-    if(this.sortingOpts.length>0){
-      this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
-    }
+  if(this.sortingOpts.length>0){
+    this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
+  }
 
-    this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
-      .attrs({
-        detailsToggle  : this.detailsToggle,
-        showRank       : this.showRank,
-        mapMouseControl: this.mapMouseControl,
-      });
+  this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
+    .attrs({
+      detailsToggle  : this.detailsToggle,
+      showRank       : this.showRank,
+      mapMouseControl: this.mapMouseControl,
+    });
 
-    this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
-      .on("mouseenter",function(){ this.setAttribute("readyToDrop",true);  })
-      .on("mouseleave",function(){ this.setAttribute("readyToDrop",false); })
-      .on("mouseup",function(event){
-        var movedSummary = me.browser.movedSummary;
-        if(movedSummary===null || movedSummary===undefined) return;
+  this.DOM.root.append("div").attr("class","dropZone dropZone_recordView")
+    .on("mouseenter",function(){ this.setAttribute("readyToDrop",true);  })
+    .on("mouseleave",function(){ this.setAttribute("readyToDrop",false); })
+    .on("mouseup",function(event){
+      var movedSummary = me.browser.movedSummary;
+      if(movedSummary===null || movedSummary===undefined) return;
 
-        movedSummary.refreshThumbDisplay();
-        me.setRecordViewSummary(movedSummary);
+      movedSummary.refreshThumbDisplay();
+      me.setRecordViewSummary(movedSummary);
 
-        if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
+      if(me.textSearchSummary===null) me.setTextSearchSummary(movedSummary);
 
-        me.browser.updateLayout();
-      })
-      .append("div").attr("class","dropIcon fa fa-list-ul");
-    
-    this.initDOM_RecordDisplayHeader();
+      me.browser.updateLayout();
+    })
+    .append("div").attr("class","dropIcon fa fa-list-ul");
+  
+  this.initDOM_RecordDisplayHeader();
 
-    this.DOM.recordDisplayWrapper = this.DOM.root.append("div").attr("class","recordDisplayWrapper");
+  this.DOM.recordDisplayWrapper = this.DOM.root.append("div").attr("class","recordDisplayWrapper");
 
-    if(config.recordView!==undefined){
-      if(typeof(config.recordView)==="string"){
-        // it may be a function definition if so, evaluate
-        if(config.recordView.substr(0,8)==="function"){
-          // Evaluate string to a function!!
-          eval("\"use strict\"; config.recordView = "+config.recordView);
-        }
-      }
-
-      this.setRecordViewSummary(
-        (typeof config.recordView === 'string') ?
-          this.browser.summaries_by_name[config.recordView]
-          :
-          this.browser.createSummary('_Records',config.recordView,'categorical')
-      );
-    }
-
-    if(config.recordView_Brief!==undefined){
-      if(typeof(config.recordView_Brief)==="string"){
-        if(config.recordView_Brief.substr(0,8)==="function"){
-          eval("\"use strict\"; config.recordView_Brief = "+config.recordView_Brief);
-        }
-      }
-      this.setRecordViewBriefSummary(
-        (typeof config.recordView_Brief === 'string') ?
-          this.browser.summaries_by_name[config.recordView_Brief]
-          :
-          this.browser.createSummary('_Records_Brief',config.recordView_Brief,'categorical')
-      );
-    }
-
-    if(config.textSearch){
-      // Find the summary. If it is not there, create it
-      if(typeof(config.textSearch)==="string"){
-        this.setTextSearchSummary( this.browser.summaries_by_name[config.textSearch] );
-      } else {
-        var name = config.textSearch.name;
-        var value = config.textSearch.value;
-        if(name!==undefined){
-          var summary = this.browser.summaries_by_name[config.textSearch];
-          if(!summary){
-            if(typeof(value)==="function"){
-              summary = browser.createSummary(name,value,'categorical');
-            } else if(typeof(value)==="string"){
-              summary = browser.changeSummaryName(value,name);
-            };
-          }
-        }
-        this.setTextSearchSummary(summary);
+  if(config.recordView!==undefined){
+    if(typeof(config.recordView)==="string"){
+      // it may be a function definition if so, evaluate
+      if(config.recordView.substr(0,8)==="function"){
+        // Evaluate string to a function!!
+        eval("\"use strict\"; config.recordView = "+config.recordView);
       }
     }
+
+    this.setRecordViewSummary(
+      (typeof config.recordView === 'string') ?
+        this.browser.summaries_by_name[config.recordView]
+        :
+        this.browser.createSummary('_Records',config.recordView,'categorical')
+    );
+  }
+
+  if(config.recordView_Brief!==undefined){
+    if(typeof(config.recordView_Brief)==="string"){
+      if(config.recordView_Brief.substr(0,8)==="function"){
+        eval("\"use strict\"; config.recordView_Brief = "+config.recordView_Brief);
+      }
+    }
+    this.setRecordViewBriefSummary(
+      (typeof config.recordView_Brief === 'string') ?
+        this.browser.summaries_by_name[config.recordView_Brief]
+        :
+        this.browser.createSummary('_Records_Brief',config.recordView_Brief,'categorical')
+    );
+  }
+
+  if(config.textSearch){
+    // Find the summary. If it is not there, create it
+    if(typeof(config.textSearch)==="string"){
+      this.setTextSearchSummary( this.browser.summaries_by_name[config.textSearch] );
+    } else {
+      var name = config.textSearch.name;
+      var value = config.textSearch.value;
+      if(name!==undefined){
+        var summary = this.browser.summaries_by_name[config.textSearch];
+        if(!summary){
+          if(typeof(value)==="function"){
+            summary = browser.createSummary(name,value,'categorical');
+          } else if(typeof(value)==="string"){
+            summary = browser.changeSummaryName(value,name);
+          };
+        }
+      }
+      this.setTextSearchSummary(summary);
+    }
+  }
 };
-
 kshf.RecordDisplay.prototype = {
     /** -- */
     setHeight: function(v){
@@ -1220,12 +1251,12 @@ kshf.RecordDisplay.prototype = {
         setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
     },
-    /** -- */
+    /** Encode by color or by sorting */
     getRecordEncoding: function(){
       return (this.viewRecAs==='map' || this.viewRecAs==='nodelink') ? "color" : "sort";
     },
     /** -- */
-    map_refreshColorScaleBins: function(){
+    recMap_refreshColorScaleBins: function(){
       var invertColorScale = false;
       if(this.sortingOpt_Active) invertColorScale = this.sortingOpt_Active.invertColorScale;
       var mapColorTheme    = this.browser.mapColorTheme;
@@ -1235,13 +1266,13 @@ kshf.RecordDisplay.prototype = {
         });
     },
     /** --  */
-    map_projectRecords: function(){
+    recMap_projectRecords: function(){
       var me = this;
       this.DOM.kshfRecords.attr("d", function(record){ return me.recordGeoPath(record._geoFeat_); });
     },
     /** -- */
     recMap_zoomToActive: function(){
-      // Insert the bounds for each record path into the bs
+      // Insert the bounds for each record path
       var bs = [];
       this.browser.records.forEach(function(record){
         if(!record.isWanted) return;
@@ -1258,15 +1289,9 @@ kshf.RecordDisplay.prototype = {
       var bounds = new L.latLngBounds(bs);
       if(!this.browser.finalized){ // First time: just fit bounds
         this.leafletRecordMap.fitBounds( bounds );
-        return;
+      } else {
+        this.leafletRecordMap.flyToBounds( bounds, kshf.map.flyConfig );
       }
-      this.leafletRecordMap.flyToBounds(
-        bounds,
-        { padding: [0,0], 
-          pan: {animate: true, duration: 1.2}, 
-          zoom: {animate: true} 
-        }
-        );
     },
     /** -- */
     initDOM_RecordDisplayHeader: function(){
@@ -1281,13 +1306,13 @@ kshf.RecordDisplay.prototype = {
         .on("click"    ,function(){
           me.browser.mapColorTheme = (me.browser.mapColorTheme==="converge") ? "diverge" : "converge";
           me.refreshRecordColors();
-          me.map_refreshColorScaleBins();
+          me.recMap_refreshColorScaleBins();
           me.sortingOpt_Active.map_refreshColorScale();
         })
         .selectAll(".recordColorScaleBin").data([0,1,2,3,4,5,6,7,8])
           .enter().append("div").attr("class","recordColorScaleBin");
       
-      this.map_refreshColorScaleBins();
+      this.recMap_refreshColorScaleBins();
 
       this.DOM.itemRank_control = this.DOM.recordDisplayHeader.append("div").attr("class","itemRank_control fa")
         .each(function(){
@@ -1301,10 +1326,27 @@ kshf.RecordDisplay.prototype = {
       this.initDOM_SortSelect();
       this.initDOM_GlobalTextSearch();
 
+      // Change record display view
+      var x= this.DOM.recordDisplayHeader.append("span").attr("class","recordDisplay_ViewGroup");
+      x.append("span").text("View as: ").attr("class","recordView_HeaderSet");
+      x.selectAll("span.fa").data([
+        {v:'Map', i:"globe"},
+        {v:'List', i:"list-ul"},
+        {v:'NodeLink', i:"share-alt"} ]
+      ).enter()
+        .append("span").attr("class", function(d){ return "recordDisplay_ViewAs"+d.v+" fa fa-"+d.i; })
+        .each(function(d){ 
+          this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return d.v; } }); 
+        })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(d){ this.tipsy.hide(); me.viewAs(d.v); });
+
       this.DOM.recordDisplayName = this.DOM.recordDisplayHeader.append("div")
         .attr("class","recordDisplayName")
         .html('<i class="fa fa-angle-down"></i> '+this.browser.recordName);
 
+      // Collapse record display button
       this.DOM.recordDisplayHeader.append("div")
         .attr("class","buttonRecordViewCollapse fa fa-compress")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Collapse" }); })
@@ -1312,6 +1354,7 @@ kshf.RecordDisplay.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.collapseRecordViewSummary(true); });
 
+      // Expand record display button
       this.DOM.recordDisplayHeader.append("div")
         .attr("class","buttonRecordViewExpand fa fa-expand")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: "Open" }); })
@@ -1319,27 +1362,13 @@ kshf.RecordDisplay.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.collapseRecordViewSummary(false); });
 
+      // Remove record display button
       this.DOM.buttonRecordViewRemove = this.DOM.recordDisplayHeader.append("div")
         .attr("class","buttonRecordViewRemove fa fa-times-circle-o")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'ne', title: kshf.lang.cur.RemoveRecords }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.removeRecordViewSummary(); });
-
-      var x= this.DOM.recordDisplayHeader.append("span");
-      x.append("span").text("View: ").attr("class","recordView_HeaderSet");
-      x.selectAll("span.fa").data([
-        {v:'Map', i:"globe"},
-        {v:'List', i:"list-ul"},
-        {v:'NodeLink', i:"share-alt"} ]
-      ).enter()
-        .append("span").attr("class", function(d){ return "recordView_Set"+d.v+" fa fa-"+d.i; })
-        .each(function(d){ 
-          this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return "View as "+d.v; } }); 
-        })
-        .on("mouseenter", function(){ this.tipsy.show(); })
-        .on("mouseleave", function(){ this.tipsy.hide(); })
-        .on("click",      function(d){ this.tipsy.hide(); me.viewAs(d.v); });
 
       this.DOM.scrollToTop = this.DOM.recordDisplayHeader.append("div").attr("class","scrollToTop fa fa-arrow-up")
         .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'e', title: kshf.lang.cur.ScrollToTop }); })
@@ -1553,7 +1582,7 @@ kshf.RecordDisplay.prototype = {
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
         .setView(L.latLng(0,0),0)
         .on("viewreset",function(){ 
-          me.map_projectRecords();
+          me.recMap_projectRecords();
         })
         .on("movestart",function(){
           me.browser.DOM.root.attr("pointerEvents",false);
@@ -1581,7 +1610,7 @@ kshf.RecordDisplay.prototype = {
               var bounds = me.browser['flexAggr_'+d].bounds;
               if(bounds) updateRectangle.call(this,bounds);
             });
-          if(this.getZoom()!==this._zoomInit_) me.map_projectRecords();
+          if(this.getZoom()!==this._zoomInit_) me.recMap_projectRecords();
         });
 
       this.recordGeoPath = d3.geoPath().projection( 
@@ -1787,8 +1816,6 @@ kshf.RecordDisplay.prototype = {
         return; // Do not initialize twice
       }
 
-      this.initDOM_NodeLinkView_Settings();
-
       this.nodeZoomBehavior = d3.zoom()
         .scaleExtent([0.1, 80])
         .on("zoom", function(){
@@ -1808,14 +1835,35 @@ kshf.RecordDisplay.prototype = {
 
       var X = this.DOM.recordDisplayWrapper.append("span").attr("class","visViewControl");
 
+      X.append("span").attr("class","visViewControlButton NodeLinkAttribIcon fa fa-share-alt")
+        .each(function(){ 
+          this.tipsy = new Tipsy(this, { gravity: 's',  
+            title: function(){
+              return (me.DOM.root.classed("hideLinks")?"Show":"Hide")+" Links";
+            }});
+        })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide();
+          me.DOM.root.classed("hideLinks", me.DOM.root.classed("hideLinks")?null:true );
+        });
+
+      // Options
+      var s = X.append("span").attr("class","visViewControlButton NodeLink_LinkAttribute").append("select")
+        .on("change",function(){
+          var s = this.selectedOptions[0].__data__;
+          // TODO: change the network calculation
+        });;
+      s.selectAll("option").data(this.linkBy).enter().append("option").text(function(d){ return d; });
+
       X.append("span")
-        .attr("class","NodeLinkAnim_Play fa fa-play")
+        .attr("class","visViewControlButton NodeLinkAnim_Play fa fa-play")
         .on("click",function(){ 
           me.nodelink_Force.alpha(0.5);
           me.nodelink_restart();
         });
       X.append("span")
-        .attr("class","NodeLinkAnim_Pause fa fa-pause")
+        .attr("class","visViewControlButton NodeLinkAnim_Pause fa fa-pause")
         .on("click",function(){ 
           me.nodelink_Force.stop();
           me.DOM.root.attr("NodeLinkState","stopped");
@@ -1823,24 +1871,23 @@ kshf.RecordDisplay.prototype = {
         });
 
       X.append("span")
-        .attr("class","fa fa-plus")
+        .attr("class","visViewControlButton fa fa-plus")
         .on("click",function(){ 
           me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 2);
           me._refreshNodeLinkSVG_Transform();
         });
       X.append("span")
-        .attr("class","fa fa-minus")
+        .attr("class","visViewControlButton fa fa-minus")
         .on("click",function(){ 
           me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 1/2);
           me._refreshNodeLinkSVG_Transform();
         });
       X.append("span")
-        .attr("class","fa fa-arrows-alt")
+        .attr("class","visViewControlButton fa fa-arrows-alt")
         .attr("title",kshf.lang.cur.ZoomToFit)
         .on("click",function(){ 
           me.nodelink_zoomToActive();
         });
-
     },
     /** -- */
     initDOM_ListView: function(){
@@ -1967,28 +2014,6 @@ kshf.RecordDisplay.prototype = {
       this.textFilter.multiMode = 'and';
     },
     /** -- */
-    initDOM_NodeLinkView_Settings: function(){
-      var me=this;
-
-      this.DOM.NodeLinkAttrib = this.DOM.recordDisplayHeader.append("span").attr("class","NodeLinkAttrib");
-
-      this.DOM.NodeLinkAttrib.append("span").attr("class","fa fa-share-alt NodeLinkAttribIcon")
-        .each(function(d){ this.tipsy = new Tipsy(this, { gravity: 'e',  title: "Show/Hide Links" }); })
-        .on("mouseenter", function(){ this.tipsy.show(); })
-        .on("mouseleave", function(){ this.tipsy.hide(); })
-        .on("click",      function(){ this.tipsy.hide();
-          me.DOM.root.classed("hideLinks", me.DOM.root.classed("hideLinks")?null:true );
-        });
-
-      var s = this.DOM.NodeLinkAttrib.append("select")
-        .on("change",function(){
-          var s = this.selectedOptions[0].__data__;
-          // TODO: change the network calculation
-        });;
-
-      s.selectAll("option").data(this.linkBy).enter().append("option").text(function(d){ return d; });
-    },
-    /** -- */
     setRecordViewSummary: function(summary){
       if(summary===undefined || summary===null) {
         this.removeRecordViewSummary();
@@ -2020,19 +2045,13 @@ kshf.RecordDisplay.prototype = {
       this.recordViewSummaryBrief = summary;
     },
     /** -- */
-    collapseRecordViewSummary: function(collapsed){
-      this.collapsed = collapsed;
-      this.DOM.root.attr("collapsed",collapsed?true:null);
-      this.browser.updateLayout_Height();
-    },
-    /** -- */
     removeRecordViewSummary: function(){
       if(this.recordViewSummary===null) return;
       this.DOM.root.attr("hasRecordView",null);
       this.recordViewSummary.isRecordView = false;
       this.recordViewSummary.refreshThumbDisplay();
       this.recordViewSummary = null;
-      this.browser.DOM.root.attr("recordDisplayMapping",null);
+      this.browser.DOM.root.attr("recordEncoding",null);
     },
     /** -- */
     setTextSearchSummary: function(summary){
@@ -2046,18 +2065,10 @@ kshf.RecordDisplay.prototype = {
       this.textSearchSummary.summaryFilter = this.textFilter;
     },
     /** -- */
-    addSortingOption: function(summary){
-      // If parameter summary is already a sorting option, nothing else to do
-      if(this.sortingOpts.some(function(o){ return o===summary; })) return;
-
-      this.sortingOpts.push(summary);
-
-      summary.sortLabel   = summary.summaryFunc;
-      summary.sortInverse = false;
-      summary.sortFunc    = this.getSortFunc(summary.summaryFunc);
-
-      this.prepSortingOpts();
-      this.refreshSortingOptions();
+    collapseRecordViewSummary: function(collapsed){
+      this.collapsed = collapsed;
+      this.DOM.root.attr("collapsed",collapsed?true:null);
+      this.browser.updateLayout_Height();
     },
     /** -- */
     refreshRecordRanks: function(d3_selection){
@@ -2086,8 +2097,8 @@ kshf.RecordDisplay.prototype = {
       this.refreshAdjustSortColumnWidth();
     },
     /** -- */
-    getSortingLabel: function(d){
-      var s = this.sortingOpt_Active.sortLabel.call(d.data,d);
+    getSortingLabel: function(record){
+      var s = this.sortingOpt_Active.sortLabel.call(record.data,record);
       if(s===null || s===undefined) return "";
       if(typeof s!=="string") s = this.sortColFormat(s);
       return this.sortingOpt_Active.printWithUnitName(s);
@@ -2098,7 +2109,21 @@ kshf.RecordDisplay.prototype = {
       if(d3_selection===undefined) d3_selection = this.DOM.recordSortCol;
 
       var me=this;
-      d3_selection.html(function(d){ return me.getSortingLabel(d); });
+      d3_selection.html(function(record){ return me.getSortingLabel(record); });
+    },
+    /** -- */
+    addSortingOption: function(summary){
+      // If parameter summary is already a sorting option, nothing else to do
+      if(this.sortingOpts.some(function(o){ return o===summary; })) return;
+
+      this.sortingOpts.push(summary);
+
+      summary.sortLabel   = summary.summaryFunc;
+      summary.sortInverse = false;
+      summary.sortFunc    = this.getSortFunc(summary.summaryFunc);
+
+      this.prepSortingOpts();
+      this.refreshSortingOptions();
     },
     /** -- */
     refreshSortingOptions: function(){
@@ -2143,6 +2168,7 @@ kshf.RecordDisplay.prototype = {
         this.sortingOpts[i] = summary;
       },this);
 
+      // Only interval summaries can be used as sorting options
       this.sortingOpts = this.sortingOpts.filter(function(s){ return s instanceof kshf.Summary_Interval; });
     },
     /** -- */
@@ -2293,14 +2319,6 @@ kshf.RecordDisplay.prototype = {
 
       var _translate = [ grav_x/recs.length , grav_y/recs.length ];
 
-      // translate() scale(0.03451730017461715)
-
-      // Target: [390.17426945709394,145.84263796999835]
-      // Before: [350.174269457094, 204.84263796999832]
-      // After:  [732.1742694570939, 344.84263796999835]
-      // x.offsetWidth/2:  380
-      // x.offsetHeight/2: 140
-
       var x = this.DOM.recordDisplayWrapper.node();
 
       var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*3);
@@ -2313,8 +2331,6 @@ kshf.RecordDisplay.prototype = {
       );
 
       this.refreshNodeLinkVis();
-//      this._refreshNodeLinkSVG_Transform();
-      // still need to manually update the view. d3 is no use.
     },
     /** -- */
     _refreshNodeLinkSVG_Transform: function(){
@@ -2371,13 +2387,13 @@ kshf.RecordDisplay.prototype = {
       this.nodelink_Force = d3.forceSimulation()
         .force("charge", d3.forceManyBody().strength(-5))
         .force("link", d3.forceLink(this.nodelink_links).strength(0.05).iterations(3) )
+        .alphaMin(0.1)
+        .velocityDecay(0.3)
         //.force("center", d3.forceCenter())
         // Old params
         //.charge(-60)
         //.gravity(0.8)
         //.alpha(0.4)
-        .alphaMin(0.1)
-        .velocityDecay(0.3)
         .on("end",  function(){ 
           me.DOM.root.attr("NodeLinkState","stopped");
           me.DOM.root.classed("hideLinks",null);
@@ -2392,6 +2408,9 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordColors: function(){
       if(!this.recordViewSummary) return;
+      if(this.viewRecAs!=='map' && this.viewRecAs!=='nodelink') return;
+      if(!this.sortingOpt_Active) return;
+
       var me=this;
       var s_f  = this.sortingOpt_Active.summaryFunc;
       var s_log;
@@ -2511,10 +2530,10 @@ kshf.RecordDisplay.prototype = {
         .data(records, function(record){ return record.id(); }).enter();
 
       var nodeType = ({
-        'map'     : 'path',
-        'nodelink': 'g',
-        'list'    : 'div',
-        'grid'    : 'div'
+        map      : 'path',
+        nodelink : 'g',
+        list     : 'div',
+        grid     : 'div'
       })[this.viewRecAs];
 
       // Shared structure per record view
@@ -2632,9 +2651,7 @@ kshf.RecordDisplay.prototype = {
             }
           });
 
-        // Insert the custom content!
-        // Note: the value was already evaluated and stored in the record object
-        var recordViewID = this.recordViewSummary.summaryID;
+        // Insert the content
         newRecords.append("div").attr("class","content")
           .html(function(record){ 
             return me.recordViewSummary.summaryFunc.call(record.data, record);
@@ -2663,7 +2680,7 @@ kshf.RecordDisplay.prototype = {
 
       if(this.viewRecAs==='map') {
         this.recMap_zoomToActive();
-        this.map_projectRecords();
+        this.recMap_projectRecords();
         this.refreshRecordColors();
       } else if(this.viewRecAs==='nodelink'){
         this.refreshRecordColors();
@@ -2831,19 +2848,27 @@ kshf.RecordDisplay.prototype = {
       this.viewRecAs = d.toLowerCase();
       this.DOM.root.attr("displayType", this.viewRecAs);
 
-      this.DOM.root.select(".recordView_SetMap").style("display",
-        (this.config.geo && this.viewRecAs!=='map') ? "inline-block" : null );
-      this.DOM.root.select(".recordView_SetNodeLink").style("display",
-        (this.linkBy.length>0 && this.viewRecAs!=='nodelink') ? "inline-block" : null );
-
-      this.browser.DOM.root.attr("recordDisplayMapping",this.getRecordEncoding()); // "sort" / "color"
-
       if(this.recordViewSummary) {
+        var viewAsOptions = { List: true }; // list-view is always available
+        if(this.config.geo)    viewAsOptions.Map = true;
+        if(this.linkBy.length) viewAsOptions.NodeLink = true;
+
+        this.browser.DOM.root.attr("recordEncoding",this.getRecordEncoding()); // "sort" / "color"
+
+        this.DOM.root.select(".recordDisplay_ViewAsMap").style("display",
+          (this.config.geo && this.viewRecAs!=='map') ? "inline-block" : null );
+
+        this.DOM.root.select(".recordDisplay_ViewAsNodeLink").style("display",
+          (this.linkBy.length>0 && this.viewRecAs!=='nodelink') ? "inline-block" : null );
+
+        this.DOM.recordDisplayHeader.select(".recordView_HeaderSet")
+          .style("display",(viewAsOptions.Map || viewAsOptions.NodeLink ) ? "inline-block" : null);
+
         switch(this.viewRecAs){
           case 'list':
           case 'grid':
             this.initDOM_ListView();
-            this.DOM.root.select(".recordView_SetList").style("display",null);
+            this.DOM.root.select(".recordDisplay_ViewAsList").style("display",null);
 
             this.sortRecords();
             this.refreshRecordDOM();
@@ -2853,24 +2878,18 @@ kshf.RecordDisplay.prototype = {
 
             break;
           case 'map':
+            this.DOM.root.select(".recordDisplay_ViewAsList").style("display","inline-block");
             this.initDOM_MapView();
             this.refreshRecordDOM();
             this.refreshRecordColors();
             break;
           case 'nodelink':
+          this.DOM.root.select(".recordDisplay_ViewAsList").style("display","inline-block");
             this.initDOM_NodeLinkView();
             this.setNodeLink();
             this.refreshRecordDOM();
             this.refreshRecordColors();
             this.nodelink_restart();
-            break;
-        }
-
-        switch(this.viewRecAs){
-          case 'map':
-          case 'nodelink':
-            this.DOM.recordDisplayHeader.select(".recordView_HeaderSet").style("display","inline-block");
-            this.DOM.root.select(".recordView_SetList").style("display","inline-block");
             break;
         }
 
@@ -2908,7 +2927,9 @@ kshf.RecordDisplay.prototype = {
     }
 };
 
-
+/** 
+ * @constructor
+ */
 kshf.Panel = function(options){
   this.browser = options.browser;
   this.name = options.name;
@@ -2919,9 +2940,9 @@ kshf.Panel = function(options){
 
   this.DOM = {};
   this.DOM.root = options.parentDOM.append("div")
-      .attr("hasSummaries",false)
-      .attr("class", "panel panel_"+options.name+
-          ((options.name==="left"||options.name==="right")?" panel_side":""));
+    .attr("hasSummaries",false)
+    .attr("class", "panel panel_"+options.name+
+      ((options.name==="left"||options.name==="right")?" panel_side":""));
   this.initDOM_AdjustWidth();
   this.initDOM_DropZone();
 };
@@ -3256,12 +3277,6 @@ kshf.Browser = function(options){
   this.flexAggr_Compare_A = new kshf.Aggregate();
   this.flexAggr_Compare_B = new kshf.Aggregate();
   this.flexAggr_Compare_C = new kshf.Aggregate();
-
-  this.allRecordsAggr    .init();
-  this.flexAggr_Highlight.init();
-  this.flexAggr_Compare_A.init();
-  this.flexAggr_Compare_B.init();
-  this.flexAggr_Compare_C.init();
 
   this.allAggregates = [];
   this.allAggregates.push(this.allRecordsAggr);
@@ -5234,10 +5249,8 @@ kshf.Browser.prototype = {
         longName+=filter.getRichText();
       });
 
-      var aggr = new kshf.Aggregate();
       var catId = summary._aggrs.length;
-      aggr.init({ id: catId, name: longName},"id");
-      aggr.summary = summary;
+      var aggr = new kshf.Aggregate_Category(summary, { id: catId, name: longName},"id");
       this.allAggregates.push(aggr);
 
       var multiValued_New = false;
@@ -5864,9 +5877,7 @@ kshf.Summary_Base.prototype = {
     this.summaryColumn = attribFunc?null:name;
     this.summaryFunc   = attribFunc || function(){ return this[name]; };
 
-    this.missingValueAggr = new kshf.Aggregate_EmptyRecords();
-    this.missingValueAggr.init();
-    this.missingValueAggr.summary = this;
+    this.missingValueAggr = new kshf.Aggregate_EmptyRecords(this);
     this.browser.allAggregates.push(this.missingValueAggr);
 
     this.DOM = { inited: false};
@@ -7282,9 +7293,8 @@ var Summary_Categorical_functions = {
     // Converting from kshf.Record to kshf.Aggregate
     if(kshf.dt[this.catTableName] && kshf.dt[this.catTableName][0] instanceof kshf.Record ){
       kshf.dt[this.catTableName].forEach(function(record){
-        var aggr = new kshf.Aggregate();
-        aggr.init(record.data,record.idIndex);
-        aggr.summary = this;
+        var aggr = new kshf.Aggregate_Category(this, record.data, record.idIndex);
+
         aggrTable_id[aggr.id()] = aggr;
         aggrTable.push(aggr);
         this.browser.allAggregates.push(aggr);
@@ -7339,9 +7349,7 @@ var Summary_Categorical_functions = {
 
         var aggr = aggrTable_id[v];
         if(aggr==undefined) {
-          aggr = new kshf.Aggregate();
-          aggr.summary = this;
-          aggr.init({id:v},'id');
+          aggr = new kshf.Aggregate_Category(this, {id:v}, 'id');
           aggrTable_id[v] = aggr;
           this._aggrs.push(aggr);
           this.browser.allAggregates.push(aggr);
@@ -7436,7 +7444,7 @@ var Summary_Categorical_functions = {
     this.DOM.summaryConfig_CatHeight = this.DOM.summaryConfig.append("div")
       .attr("class","summaryConfig_CatHeight summaryConfig_Option");
     this.DOM.summaryConfig_CatHeight.append("span").html("<i class='fa fa-arrows-v'></i> Row Height: ");
-    x = this.DOM.summaryConfig_CatHeight.append("span").attr("class","optionGroup");
+    var x = this.DOM.summaryConfig_CatHeight.append("span").attr("class","optionGroup");
     x.selectAll(".configOption").data(
       [ 
         {l:"<i class='fa fa-minus'></i>", v: "minus"},
@@ -8849,20 +8857,12 @@ var Summary_Categorical_functions = {
           delete this.sourceDescr.mapInitView;
         } else {
           this.leafletAttrMap.fitBounds(this.mapBounds_Active);
-          setTimeout(function(){
-           me.catMap_zoomToActive();
-          },1000);
+          setTimeout(function(){ me.catMap_zoomToActive(); },1000); // need to call again to refresh. Hmmm. TODO
         }
         return;
       }
 
-      this.leafletAttrMap.flyToBounds(
-        this.mapBounds_Active,
-        { padding: [0,0], 
-          pan: {animate: true, duration: 1.2}, 
-          zoom: {animate: true} 
-        }
-        );
+      this.leafletAttrMap.flyToBounds( this.mapBounds_Active, kshf.map.flyConfig );
     },
     /** -- */
     map_refreshColorScale: function(){
@@ -10316,11 +10316,7 @@ var Summary_Interval_functions = {
         this._aggrs = [];
         // Create _aggrs as kshf.Aggregate
         this.intervalTicks.forEach(function(tick,i){
-          var d = new kshf.Aggregate();
-          d.summary = this;
-          d.init();
-          d.minV = tick;
-          d.maxV = this.intervalTicks[i+1];
+          var d = new kshf.Aggregate_Interval(this, tick, this.intervalTicks[i+1]);
           d.summary = this;
           this._aggrs.push(d);
           me.browser.allAggregates.push(d);
@@ -10695,7 +10691,7 @@ var Summary_Interval_functions = {
         .on("click", function(){
           me.invertColorScale = !me.invertColorScale;
           me.browser.recordDisplay.refreshRecordColors();
-          me.browser.recordDisplay.map_refreshColorScaleBins();
+          me.browser.recordDisplay.recMap_refreshColorScaleBins();
           me.map_refreshColorScale();
         });
 
@@ -12218,15 +12214,11 @@ var Summary_Clique_functions = {
 
       var targetClique = me._setPairs_ID[set_1.id()][set_2.id()];
       if(targetClique===undefined){
-        targetClique = new kshf.Aggregate();
-        targetClique.summary = me.setListSummary;
-        targetClique.init([me._setPairs.length],0);
+        targetClique = new kshf.Aggregate_Set(me.setListSummary, set_1, set_2);
+
         me.browser.allAggregates.push(targetClique);
-        targetClique.set_1 = set_1;
-        targetClique.set_2 = set_2;
         set_1.setPairs.push(targetClique);
         set_2.setPairs.push(targetClique);
-
         me._setPairs.push(targetClique);
         me._setPairs_ID[set_1.id()][set_2.id()] = targetClique;
       }
