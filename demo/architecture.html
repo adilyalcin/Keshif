@@ -58,9 +58,9 @@ $(document).ready( function(){
       displayType: "grid",
       maxVisibleItems_Default: 48,
       textSearch: "Name",
-      recordView: function(d){
+      recordView: function(){
         return "<span class='thumbnail'>"+
-          "<img class='thumbImg' src='https://www.googleapis.com/freebase/v1/image/"+d.data.img_url+"'></span>"+
+          "<img class='thumbImg' src='https://www.googleapis.com/freebase/v1/image/"+this.img_url+"'></span>"+
           "<span class='title'>"+this.Name+"</span>";
       }
     }
