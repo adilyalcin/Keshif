@@ -13,8 +13,6 @@
     <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
     <link rel="stylesheet" href="./css/demo.css" type="text/css">
 
-    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
-    
     <script type="text/javascript">
 
 function dataLoad(){
@@ -25,7 +23,8 @@ function dataLoad(){
       browser.primaryTableName = "Accounts";
       kshf.dt.Accounts = [];
       kshf.dt_id.Accounts = {};
-      data.nodes.forEach(function(account){
+      data.nodes.forEach(function(account, i){
+        //if(i>100) return;
         account.id = 1*account.id;
         account.FollowedBy = [];
         var k = new kshf.Record(account,"id");
@@ -36,7 +35,7 @@ function dataLoad(){
       data.links.forEach(function(link){
         var source = kshf.dt_id.Accounts[link.source];
         var target = kshf.dt_id.Accounts[link.target];
-        target.data.FollowedBy.push(link.source);
+        if(source && target) target.data.FollowedBy.push(link.source);
       });
       browser.loadCharts();
     }
@@ -68,15 +67,18 @@ document.addEventListener("DOMContentLoaded", function(){
     ],
     recordDisplay: {
       sortBy: "IEEEVIS Ranking",
-      displayType: 'grid',
+      displayType: 'list',
+      showRank: true,
+      //displayType: 'grid',
       detailsToggle: 'off',
       textSearch: "screen_name",
       linkBy: "FollowedBy",
       recordView: function(){
         var str="";
+        var bar = "<div class='profileBar' style='width:"+this.count*5+"px'></div>"
         var link_open = "<a class='ProfileName' target='_blank' href='http://www.twitter.com/"+this.screen_name+"'>";
         var img="<img src='"+this.profile_image_url+"' class='profileImage'>";
-        return str+link_open+img+this.name+"</a>";
+        return link_open+img+" - "+this.name+"</a>"+bar;
       }
     }
   });
@@ -84,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function(){
     </script>
 <style id="kshfStyle">
 .profileImage{
-  display: block;
+  display: inline-block;
   width: 50px;
   height: 50px;
   border-radius: 50px;
@@ -97,12 +99,26 @@ document.addEventListener("DOMContentLoaded", function(){
   font-weight: 900;
   text-decoration: none;
 }
-.kshfRecord{ 
-  width: 150px;
+.profileBar{
+  height: 13px;
+  display: inline-block;
+  background-color: #40a7ee;
+  position: relative;
 }
+.profileBar:after{
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  content: "IEEEVIS Rank ➔";
+  font-weight: 100;
+  font-size: 0.7em;
+  color: white;
+}
+
+/* .kshfRecord{  width: 150px; } */
 .content{ 
   padding: 3px;
-  text-align: center;
+  /*text-align: center; */
 }
 </style>
   </head>
