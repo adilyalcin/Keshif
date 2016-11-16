@@ -75,10 +75,10 @@ document.addEventListener("DOMContentLoaded", function(){
       linkBy: "FollowedBy",
       recordView: function(){
         var str="";
-        var bar = "<div class='profileBar' style='width:"+this.count*5+"px'></div>"
+        var bar = "<div class='profileBar' style='width:"+(this.count/1.8)+"%'></div>"
         var link_open = "<a class='ProfileName' target='_blank' href='http://www.twitter.com/"+this.screen_name+"'>";
         var img="<img src='"+this.profile_image_url+"' class='profileImage'>";
-        return link_open+img+" - "+this.name+"</a>"+bar;
+        return link_open+img+" - "+this.name+" <span style='font-weight: 300'>(@"+this.screen_name+")</span></a>"+bar;
       }
     }
   });
