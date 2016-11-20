@@ -1241,6 +1241,21 @@ kshf.RecordDisplay.prototype = {
       if(this.viewRecAs==='map'){
         setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
+      if(this.viewRecAs==='scatter'){
+        this.refreshScatterVis(true);
+        this.DOM.root.select("#scatterClipPath > rect")
+          .transition().duration(750)
+          .attr("height",this.curHeight-50);
+        this.DOM.scatterSVG_Axis_X
+          .transition().duration(750)
+          .attr("transform","translate(0,"+(this.curHeight-50)+")");
+        this.DOM.root.select(".scatterAxisLine_Y")
+          .transition().duration(750)
+          .attr("y1",0)
+          .attr("y2",this.curHeight-50);
+
+        this.DOM.scatterSVG_Axis_X.selectAll("line.tickLine").attr("y2",-this.curHeight);
+      }
     },
     /** -- */
     setWidth: function(v){
@@ -1250,10 +1265,21 @@ kshf.RecordDisplay.prototype = {
       if(this.viewRecAs==='map'){
         setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
+      if(this.viewRecAs==='scatter'){
+        this.refreshScatterVis(true);
+        this.DOM.root.select("#scatterClipPath > rect")
+          .transition().duration(750)
+          .attr("width",this.curWidth-35);
+        this.DOM.root.select(".scatterAxisLine_X")
+          .transition().duration(750)
+          .attr("x2",this.curWidth);
+      }
     },
     /** Encode by color or by sorting */
     getRecordEncoding: function(){
-      return (this.viewRecAs==='map' || this.viewRecAs==='nodelink') ? "color" : "sort";
+      if(this.viewRecAs==='map' || this.viewRecAs==='nodelink') return "color";
+      if(this.viewRecAs==='scatter') return "scatter";
+      return "sort";
     },
     /** -- */
     recMap_refreshColorScaleBins: function(){
@@ -1328,19 +1354,32 @@ kshf.RecordDisplay.prototype = {
 
       // Change record display view
       var x= this.DOM.recordDisplayHeader.append("span").attr("class","recordDisplay_ViewGroup");
-      x.append("span").text("View as: ").attr("class","recordView_HeaderSet");
+      x.append("span").text("View ").attr("class","recordView_HeaderSet");
+      x = x.append("span").attr("class","pofffffff");
       x.selectAll("span.fa").data([
         {v:'Map', i:"globe"},
         {v:'List', i:"list-ul"},
-        {v:'NodeLink', i:"share-alt"} ]
+        {v:'NodeLink', i:"share-alt"}]
       ).enter()
-        .append("span").attr("class", function(d){ return "recordDisplay_ViewAs"+d.v+" fa fa-"+d.i; })
+        .append("span").attr("class", function(d){ return "recordDisplay_ViewAs"+d.v; })
         .each(function(d){ 
           this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return d.v; } }); 
         })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
-        .on("click",      function(d){ this.tipsy.hide(); me.viewAs(d.v); });
+        .on("click",      function(d){ this.tipsy.hide(); me.viewAs(d.v); })
+        .append("span").attr("class", function(d){ return " fa fa-"+d.i; });
+      x.append("span").attr("class","recordDisplay_ViewAsScatter")
+        .each(function(d){ this.tipsy = new Tipsy(this, {gravity: 'n', title: "Scatter"});  })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide(); me.viewAs('scatter'); })
+        .html('<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24">'+
+          '<path d="M 0 0 L 0 23 L 0 24 L 1 24 L 24 24 L 24 22 L 2 22 L 2 0 L 0 0 z"></path>'+
+            '<circle cx="10" cy="10" r="3"/><circle cx="18" cy="15" r="3"/><circle cx="19" cy="7" r="3"/>'+
+            '<circle cx="8" cy="17" r="3"/>'+
+          '</svg>')
+
 
       this.DOM.recordDisplayName = this.DOM.recordDisplayHeader.append("div")
         .attr("class","recordDisplayName")
@@ -1353,7 +1392,6 @@ kshf.RecordDisplay.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.collapseRecordViewSummary(true); });
-
       // Expand record display button
       this.DOM.recordDisplayHeader.append("div")
         .attr("class","buttonRecordViewExpand fa fa-expand")
@@ -1361,7 +1399,6 @@ kshf.RecordDisplay.prototype = {
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",      function(){ this.tipsy.hide(); me.collapseRecordViewSummary(false); });
-
       // Remove record display button
       this.DOM.buttonRecordViewRemove = this.DOM.recordDisplayHeader.append("div")
         .attr("class","buttonRecordViewRemove fa fa-times-circle-o")
@@ -1380,22 +1417,22 @@ kshf.RecordDisplay.prototype = {
     initDOM_SortSelect: function(){
       var me=this;
 
-      this.DOM.header_listSortColumn = this.DOM.recordDisplayHeader.append("div").attr("class","header_listSortColumn");
+      this.DOM.recordSortOptions = this.DOM.recordDisplayHeader.append("div").attr("class","recordSortOptions");
 
-      this.DOM.listSortOptionSelect = this.DOM.header_listSortColumn.append("select")
-        .attr("class","listSortOptionSelect")
+      this.DOM.recordSortSelectbox = this.DOM.recordSortOptions.append("select")
+        .attr("class","recordSortSelectbox")
         .on("change", function(){ me.setSortingOpt_Active(this.selectedIndex); });
 
       this.refreshSortingOptions();
 
-      this.DOM.recordSortButton = this.DOM.recordDisplayHeader.append("span")
-        .attr("class","recordSortButton sortButton fa")
+      this.DOM.recordDisplayHeader.append("span")
+        .attr("class","recordReverseSortButton sortButton fa")
         .each(function(){ this.tipsy = new Tipsy(this, { gravity: 'w', title: kshf.lang.cur.ReverseOrder }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",function(){
           this.tipsy.hide();
-          // NOTE: Only on list/grid views
+          // NOTE: Only available on list/grid views (?)
           me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
           this.setAttribute("inverse",me.sortingOpt_Active.inverse);
           // TODO: Do not show no-value items on top, reversing needs to be a little smarter.
@@ -1534,27 +1571,6 @@ kshf.RecordDisplay.prototype = {
     },
 
     /** -- */
-    initRecord_geoX_: function(){
-      var _geo_ = this.config.geo;
-      if(typeof _geo_ === "string"){
-        if(_geo_.substr(0,8)==="function"){
-          eval("\"use strict\"; _geo_ = "+_geo_);
-        } else {
-          var x=_geo_;
-          _geo_ = function(){ return this[x]; }
-        }
-      }
-      // Compute _geoBound_ of each record
-      this.browser.records.forEach(function(record){
-        var feature = _geo_.call(record.data);
-        if(feature) record._geoFeat_ = feature;
-      });
-      // Compute _geoFeat_ of each record
-      this.browser.records.forEach(function(record){
-        if(record._geoFeat_) record._geoBound_ = d3.geoBounds(record._geoFeat_);
-      });
-    },
-    /** -- */
     initDOM_MapView: function(){
       var me = this;
       if(this.DOM.recordMap_Base) {
@@ -1565,7 +1581,25 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
 
-      this.initRecord_geoX_();
+      // init _geo_ property
+      var _geo_ = this.config.geo;
+      if(typeof _geo_ === "string"){
+        if(_geo_.substr(0,8)==="function"){
+          eval("\"use strict\"; _geo_ = "+_geo_);
+        } else {
+          var x=_geo_;
+          _geo_ = function(){ return this[x]; }
+        }
+      }
+      // Compute _geoFeat_ of each record
+      this.browser.records.forEach(function(record){
+        var feature = _geo_.call(record.data);
+        if(feature) record._geoFeat_ = feature;
+      });
+      // Compute _geoBound_ of each record
+      this.browser.records.forEach(function(record){
+        if(record._geoFeat_) record._geoBound_ = d3.geoBounds(record._geoFeat_);
+      });
 
       this.setSpatialFilter();
 
@@ -1746,38 +1780,114 @@ kshf.RecordDisplay.prototype = {
 
       var DOM_control = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control-container");
 
-      var customMapControls = DOM_control.append("div").attr("class","visViewControl");
+      this.initDOM_CustomControls();
+    },
+    /** -- */
+    initDOM_CustomControls: function(){
+      var me = this;
 
-      customMapControls.append("div")
+      var X = this.DOM.recordDisplayWrapper.append("span").attr("class","visViewControl");
+
+      X.append("span").attr("class","NodeLinkControl-LinkIcon visViewControlButton fa fa-share-alt")
+        .each(function(){ 
+          this.tipsy = new Tipsy(this, { gravity: 's',  
+            title: function(){
+              return (me.DOM.root.classed("hideLinks")?"Show":"Hide")+" Links";
+            }});
+        })
+        .on("mouseenter", function(){ this.tipsy.show(); })
+        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .on("click",      function(){ this.tipsy.hide();
+          me.DOM.root.classed("hideLinks", me.DOM.root.classed("hideLinks")?null:true );
+        });
+
+      // Link Options
+      var s = X.append("span").attr("class","NodeLinkControl-LinkAttribute visViewControlButton").append("select")
+        .on("change",function(){
+          // TODO
+        });;
+      s.selectAll("option").data(this.linkBy).enter().append("option").text(function(d){ return d; });
+
+      // Scatter Options
+      var s = X.append("span").attr("class","ScatterControl-XAttrib visViewControlButton").append("select")
+        .on("change",function(d){
+          me.setScatterAttrib(this.selectedOptions[0].__data__);
+        });;
+      this.refreshScatterOptions();
+
+      X.append("span")
+        .attr("class","NodeLinkControl-AnimPlay visViewControlButton fa fa-play")
+        .on("click",function(){ 
+          me.nodelink_Force.alpha(0.5);
+          me.nodelink_restart();
+        });
+      X.append("span")
+        .attr("class","NodeLinkControl-AnimPause visViewControlButton fa fa-pause")
+        .on("click",function(){ 
+          me.nodelink_Force.stop();
+          me.DOM.root.attr("NodeLinkState","stopped");
+          me.DOM.root.classed("hideLinks",null);
+        });
+
+      X.append("span")
         .attr("class","visViewControlButton fa fa-plus")
         .attr("title","Zoom in")
-        .on("click",function(){ me.leafletRecordMap.zoomIn(); });
-
-      customMapControls.append("div")
+        .on("click",function(){ 
+          if(me.viewRecAs==='map'){
+            me.leafletRecordMap.zoomIn();
+          } else if(me.viewRecAs==='scatter'){
+            me.scatterPositionAnim = true;
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordScatter_SVG, 2);
+            me.refreshScatterVis();
+            me.scatterPositionAnim = false;
+          } else if(me.viewRecAs==='nodelink'){
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 2);
+            me._refreshNodeLinkSVG_Transform();
+          }
+        });
+      X.append("span")
         .attr("class","visViewControlButton fa fa-minus")
         .attr("title","Zoom out")
-        .on("click",function(){ me.leafletRecordMap.zoomOut(); });
-
-      customMapControls.append("div")
-        .attr("class","visViewControlButton fa fa-map-o")
-        .attr("title","Show/Hide Map")
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Show/Hide Map"}); })
+        .on("click",function(){ 
+          if(me.viewRecAs==='map'){
+            me.leafletRecordMap.zoomOut();
+          } else if(me.viewRecAs==='scatter'){
+            me.scatterPositionAnim = true;
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordScatter_SVG, 1/2);
+            me.refreshScatterVis();
+            me.scatterPositionAnim = false;
+          } else if(me.viewRecAs==='nodelink'){
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 1/2);
+            me._refreshNodeLinkSVG_Transform();
+          }
+        });
+      X.append("span")
+        .attr("class","visViewControlButton fa fa-arrows-alt")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: kshf.lang.cur.ZoomToFit}); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("dblclick",function(){
           d3.event.preventDefault();
           d3.event.stopPropagation();
         })
-        .on("click",function(){
-          var x = d3.select(me.leafletRecordMap.getPanes().tilePane);
-          x.attr("showhide", x.attr("showhide")==="hide"?"show":"hide");
-          d3.select(this).attr("class","fa fa-map"+((x.attr("showhide")==="hide")?"":"-o"));
+        .on("click",function(){ 
+          if(me.viewRecAs==='map'){
+            me.recMap_zoomToActive();
+          } else if(me.viewRecAs==='nodelink'){
+            me.nodelink_zoomToActive();
+          } else if(me.viewRecAs==='scatter'){
+            me.scatterPositionAnim = true;
+            me.nodeZoomBehavior.transform(me.DOM.recordScatter_SVG, d3.zoomIdentity);
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordScatter_SVG, 1);
+            me.nodeZoomBehavior.translateBy(me.DOM.recordScatter_SVG, 50, 15);
+            me.scatterPositionAnim = false;
+          }
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
 
-      customMapControls.append("div")
-        .attr("class","visViewControlButton mapMouseControl fa")
+      X.append("span")
+        .attr("class","MapControl-MouseMode visViewControlButton fa")
         .each(function(){ 
           this.tipsy = new Tipsy(this, {gravity: 'w', title: function(){
             return "Drag mouse to "+(me.mapMouseControl==="pan"?"draw":"pan");
@@ -1790,10 +1900,10 @@ kshf.RecordDisplay.prototype = {
           me.DOM.root.attr("mapMouseControl",me.mapMouseControl);
         });
 
-      customMapControls.append("div")
-        .attr("class","visViewControlButton viewFit fa fa-arrows-alt")
-        .attr("title",kshf.lang.cur.ZoomToFit)
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: kshf.lang.cur.ZoomToFit}); })
+      X.append("span")
+        .attr("class","MapControl-ShowHideMap visViewControlButton fa fa-map-o")
+        .attr("title","Show/Hide Map")
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'w', title: "Show/Hide Map"}); })
         .on("mouseover",function(){ this.tipsy.show(); })
         .on("mouseout", function(){ this.tipsy.hide(); })
         .on("dblclick",function(){
@@ -1801,10 +1911,81 @@ kshf.RecordDisplay.prototype = {
           d3.event.stopPropagation();
         })
         .on("click",function(){
-          me.recMap_zoomToActive();
+          var x = d3.select(me.leafletRecordMap.getPanes().tilePane);
+          x.attr("showhide", x.attr("showhide")==="hide"?"show":"hide");
+          d3.select(this).attr("class","MapControl-ShowHideMap visViewControlButton fa fa-map"+((x.attr("showhide")==="hide")?"":"-o"));
           d3.event.preventDefault();
           d3.event.stopPropagation();
         });
+    },
+    /** -- */
+    initDOM_Scatter: function(){
+      var me = this;
+
+      if(this.DOM.recordScatter_SVG) {
+        this.DOM.recordGroup = this.DOM.recordScatter_SVG.select(".recordGroup");
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        return; // Do not initialize twice
+      }
+
+      this.scatterTransform = {x:0, y:0, z:1 };
+      this.scatterPositionAnim = false;
+      this.nodeZoomBehavior = d3.zoom()
+        .scaleExtent([0.5, 8]) // 1 can cover the whole dataset.
+        .on("zoom", function(){
+          me.scatterTransform.x = d3.event.transform.x;
+          me.scatterTransform.y = d3.event.transform.y;
+          me.scatterTransform.z = d3.event.transform.k;
+          me.DOM.recordGroup
+            .transition().duration(me.scatterPositionAnim?200:0)
+            .attr("transform", 
+              "translate(" + d3.event.transform.x + "," + d3.event.transform.y+ ") "+
+              "scale(" + d3.event.transform.k + ")");
+          me.refreshScatterVis();
+        });
+
+      this.DOM.recordScatter_SVG = this.DOM.recordDisplayWrapper
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordScatter_SVG")
+        .call(this.nodeZoomBehavior);
+
+      var defs = this.DOM.recordScatter_SVG.append("defs").html(
+        '<clipPath id="scatterClipPath"><rect x="35" y="0" '+
+          'width="'+(this.curWidth-35)+'" '+
+          'height="'+(this.curHeight-50)+'" id= /></clipPath>'
+      );
+      var g;
+
+      this.DOM.axisGroup = this.DOM.recordScatter_SVG.append("g").attr("class","axisGroup");
+
+      this.DOM.scatterSVG_Axis_X = this.DOM.axisGroup.append("g").attr("class","scatterSVG_Axis scatterSVG_Axis_X")
+        .attr("transform","translate(0,"+(this.curHeight-50)+")");
+      this.DOM.scatterSVG_Axis_X.append("line").attr("class","scatterAxisLine scatterAxisLine_X")
+        .attr("x1",35)
+        .attr("x2",this.curWidth)
+        .attr("y1",0)
+        .attr("y2",0);
+      this.DOM.scatterSVG_Axis_X.append("g").attr("class","tickGroup");
+      this.DOM.scatterSVG_Axis_X.append("g").attr("class","onRecordLine").html("<text></text>"+
+        "<line class='tickLine' x1='0' x2='0' y1='0' y2='"+(-this.curHeight)+"'></line>");
+
+      this.DOM.scatterSVG_Axis_Y = this.DOM.axisGroup.append("g").attr("class","scatterSVG_Axis scatterSVG_Axis_Y");
+      this.DOM.scatterSVG_Axis_Y.append("line").attr("class","scatterAxisLine scatterAxisLine_Y")
+        .attr("x1",35)
+        .attr("x2",35)
+        .attr("y1",0)
+        .attr("y2",this.curHeight-50);
+      this.DOM.scatterSVG_Axis_Y.append("g").attr("class","tickGroup");
+      this.DOM.scatterSVG_Axis_Y.append("g").attr("class","onRecordLine").html("<text></text>"+
+        "<line class='tickLine' x1='35' x2='"+this.curWidth+"' y1='0' y2='0'></line>");
+
+      this.DOM.recordGroup = this.DOM.recordScatter_SVG.append("g")
+        .attr("clip-path","url(#scatterClipPath)")
+        .append("g")
+          .attr("class","recordGroup recordGroup_Scatter");
+
+      this.nodeZoomBehavior.translateBy(this.DOM.recordScatter_SVG, 50, 15);
+
+      this.initDOM_CustomControls();
     },
     /** -- */
     initDOM_NodeLinkView: function(){
@@ -1812,7 +1993,7 @@ kshf.RecordDisplay.prototype = {
 
       if(this.DOM.recordNodeLink_SVG) {
         this.DOM.recordGroup = this.DOM.recordNodeLink_SVG.select(".recordGroup");
-        this.DOM.kshfRecordords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
         return; // Do not initialize twice
       }
 
@@ -1829,65 +2010,11 @@ kshf.RecordDisplay.prototype = {
         .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordNodeLink_SVG")
         .call(this.nodeZoomBehavior);
 
-      var gggg = this.DOM.recordNodeLink_SVG.append("g").attr("class","gggg");
+      var gggg = this.DOM.recordNodeLink_SVG.append("g");
       this.DOM.linkGroup   = gggg.append("g").attr("class","linkGroup");
       this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup recordGroup_Node");
 
-      var X = this.DOM.recordDisplayWrapper.append("span").attr("class","visViewControl");
-
-      X.append("span").attr("class","visViewControlButton NodeLinkAttribIcon fa fa-share-alt")
-        .each(function(){ 
-          this.tipsy = new Tipsy(this, { gravity: 's',  
-            title: function(){
-              return (me.DOM.root.classed("hideLinks")?"Show":"Hide")+" Links";
-            }});
-        })
-        .on("mouseenter", function(){ this.tipsy.show(); })
-        .on("mouseleave", function(){ this.tipsy.hide(); })
-        .on("click",      function(){ this.tipsy.hide();
-          me.DOM.root.classed("hideLinks", me.DOM.root.classed("hideLinks")?null:true );
-        });
-
-      // Options
-      var s = X.append("span").attr("class","visViewControlButton NodeLink_LinkAttribute").append("select")
-        .on("change",function(){
-          var s = this.selectedOptions[0].__data__;
-          // TODO: change the network calculation
-        });;
-      s.selectAll("option").data(this.linkBy).enter().append("option").text(function(d){ return d; });
-
-      X.append("span")
-        .attr("class","visViewControlButton NodeLinkAnim_Play fa fa-play")
-        .on("click",function(){ 
-          me.nodelink_Force.alpha(0.5);
-          me.nodelink_restart();
-        });
-      X.append("span")
-        .attr("class","visViewControlButton NodeLinkAnim_Pause fa fa-pause")
-        .on("click",function(){ 
-          me.nodelink_Force.stop();
-          me.DOM.root.attr("NodeLinkState","stopped");
-          me.DOM.root.classed("hideLinks",null);
-        });
-
-      X.append("span")
-        .attr("class","visViewControlButton fa fa-plus")
-        .on("click",function(){ 
-          me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 2);
-          me._refreshNodeLinkSVG_Transform();
-        });
-      X.append("span")
-        .attr("class","visViewControlButton fa fa-minus")
-        .on("click",function(){ 
-          me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 1/2);
-          me._refreshNodeLinkSVG_Transform();
-        });
-      X.append("span")
-        .attr("class","visViewControlButton fa fa-arrows-alt")
-        .attr("title",kshf.lang.cur.ZoomToFit)
-        .on("click",function(){ 
-          me.nodelink_zoomToActive();
-        });
+      this.initDOM_CustomControls();
     },
     /** -- */
     initDOM_ListView: function(){
@@ -2093,7 +2220,7 @@ kshf.RecordDisplay.prototype = {
     setSortColumnWidth: function(v){
       if(this.viewRecAs!=='list') return;
       this.sortColWidth = Math.max(Math.min(v,110),30); // between 30 and 110 pixels
-      this.DOM.recordSortCol.style("width",this.sortColWidth+"px");
+      this.DOM.recordSortValue.style("width",this.sortColWidth+"px");
       this.refreshAdjustSortColumnWidth();
     },
     /** -- */
@@ -2106,7 +2233,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
       if(this.viewRecAs!=='list') return; // Only list-view allows sorting
-      if(d3_selection===undefined) d3_selection = this.DOM.recordSortCol;
+      if(d3_selection===undefined) d3_selection = this.DOM.recordSortValue;
 
       var me=this;
       d3_selection.html(function(record){ return me.getSortingLabel(record); });
@@ -2126,16 +2253,26 @@ kshf.RecordDisplay.prototype = {
       this.refreshSortingOptions();
     },
     /** -- */
+    refreshScatterOptions: function(){
+      if(this.DOM.root===undefined) return;
+      this.DOM.root.selectAll(".ScatterControl-XAttrib > select > option").remove();
+      this.DOM.root.selectAll(".ScatterControl-XAttrib > select").selectAll("option")
+        .data(this.getScatterAttributes()).enter()
+          .append("option")
+            .text(function(summary){ return summary.summaryName; })
+            .attr("selected",function(summary){ return summary.encodesRecordsBy==='scatter'?true:null; });
+    },
+    /** -- */
     refreshSortingOptions: function(){
-      if(this.DOM.listSortOptionSelect===undefined) return;
-      this.DOM.listSortOptionSelect.selectAll("option").remove();
+      if(this.DOM.recordSortSelectbox===undefined) return;
+      this.DOM.recordSortSelectbox.selectAll("option").remove();
       var me=this;
-      var x = this.DOM.listSortOptionSelect.selectAll("option").data(this.sortingOpts);
+      var x = this.DOM.recordSortSelectbox.selectAll("option").data(this.sortingOpts);
       x.enter().append("option").html(function(summary){ return summary.summaryName; })
       x.exit().each(function(summary){ summary.sortingSummary = false; });
       this.sortingOpts.forEach(function(summary, i){
         if(summary===me.sortingOpt_Active) {
-          var DOM = me.DOM.listSortOptionSelect.node();
+          var DOM = me.DOM.recordSortSelectbox.node();
           DOM.selectedIndex = i;
         }
       });
@@ -2178,10 +2315,20 @@ kshf.RecordDisplay.prototype = {
       });
     },
     /** -- */
+    setScatterAttrib: function(attrib){
+      if(this.scatterAttrib) {
+        this.scatterAttrib.clearEncodesRecordsBy();
+      }
+      this.scatterAttrib = attrib;
+      this.scatterAttrib.setEncodesRecordsBy("scatter");
+      this.refreshScatterVis();
+      this.refreshScatterOptions();
+    },
+    /** -- */
     setSortingOpt_Active: function(index){
       if(this.sortingOpt_Active){
         var curHeight = this.sortingOpt_Active.getHeight();
-        this.sortingOpt_Active.clearAsRecordSorting();
+        this.sortingOpt_Active.clearEncodesRecordsBy();
         this.sortingOpt_Active.setHeight(curHeight);
       }
       
@@ -2196,7 +2343,7 @@ kshf.RecordDisplay.prototype = {
 
       {
         var curHeight = this.sortingOpt_Active.getHeight();
-        this.sortingOpt_Active.setAsRecordSorting();
+        this.sortingOpt_Active.setEncodesRecordsBy("sort");
         this.sortingOpt_Active.setHeight(curHeight);
       }
 
@@ -2214,6 +2361,9 @@ kshf.RecordDisplay.prototype = {
         case 'map':
         case 'nodelink':
           this.refreshRecordColors();
+          break;
+        case 'scatter':
+          this.refreshScatterVis();
           break;
         case 'list':
         case 'grid':
@@ -2271,6 +2421,111 @@ kshf.RecordDisplay.prototype = {
       var t = d3.zoomTransform(this.DOM.recordNodeLink_SVG.node());
       var scale = "scale("+(1/t.k)+")";
       this.DOM.kshfRecords.attr("transform", function(d){ return "translate("+d.x+","+d.y+") "+scale; });
+    },
+    /** -- */
+    refreshScatterVis: function(anim){
+      if(this.DOM.recordScatter_SVG===undefined) return;
+      var me = this;
+      var t = d3.zoomTransform(this.DOM.recordScatter_SVG.node());
+      var scale = "scale("+(1/t.k)+")";
+
+      var sX = this.scatterAttrib;
+      var sY = this.sortingOpt_Active;
+
+      var accX = sX.summaryID;
+      var accY = sY.summaryID;
+
+      this.scatterScaleX = sX.scaleType==='log' ? d3.scaleLog() : d3.scaleLinear();
+      this.scatterScaleX.domain([sX.intervalRange.active.min, sX.intervalRange.active.max])
+        .range([0, (this.curWidth-80)]);
+
+      this.scatterScaleY = sY.scaleType==='log' ? d3.scaleLog() : d3.scaleLinear();
+      this.scatterScaleY.domain([sY.intervalRange.active.min, sY.intervalRange.active.max])
+        .range([(this.curHeight-80),0]);
+
+      this.DOM.kshfRecords
+        .transition().duration(750)
+        .attr("transform", function(record){
+          // browser.records[0]._valueCache[14]
+          return "translate("+
+            me.scatterScaleX(record._valueCache[accX])+
+            ","+
+            me.scatterScaleY(record._valueCache[accY])+
+            ") "+scale;
+        });
+
+      this.refreshScatterTicks(anim);
+    },
+    /** -- */
+    refreshScatterTicks: function(anim){
+      var me=this;
+      if(anim===undefined) anim=false;
+
+      // Compute bounds in SVG coordinates after transform is applied.
+      var minX_real = (35-this.scatterTransform.x)/this.scatterTransform.z;
+      var maxX_real = minX_real + (this.curWidth-35)/this.scatterTransform.z;
+      var minY_real = (-this.scatterTransform.y)/this.scatterTransform.z;
+      var maxY_real = minY_real + (this.curHeight-50)/this.scatterTransform.z;
+
+      var minX_v = this.scatterScaleX.invert(minX_real);
+      var maxX_v = this.scatterScaleX.invert(maxX_real);
+      var minY_v = this.scatterScaleY.invert(minY_real);
+      var maxY_v = this.scatterScaleY.invert(maxY_real);
+
+      var tGroup;
+
+      this.scatterAxisScale_X = this.scatterScaleX.copy()
+        .domain([minX_v, maxX_v])
+        .range([35, this.curWidth]);
+      var ticksX = this.scatterAxisScale_X.ticks(Math.floor((this.curWidth-40)/30) );
+      if(!this.scatterAttrib.hasFloat){
+        ticksX = ticksX.filter(function(t){ return t%1===0; });
+      }
+
+      this.scatterAxisScale_Y = this.scatterScaleY.copy()
+        .domain([minY_v, maxY_v])
+        .range([0,this.curHeight-50]);
+      var ticksY = this.scatterAxisScale_Y.ticks(Math.floor((this.curHeight-50)/30) );
+      if(!this.sortingOpt_Active.hasFloat){
+        ticksY = ticksY.filter(function(t){ return t%1===0; });
+      }
+
+      tGroup = this.DOM.scatterSVG_Axis_X.select(".tickGroup");
+
+      var hm = tGroup.selectAll(".hmTicks").data(ticksX, function(t){ return t; });
+      hm.transition().duration(anim?750:0)
+        .attr("transform", function(tick){ return "translate(" + me.scatterAxisScale_X(tick) + ")"; });
+      hm.exit().remove();
+      var tk = hm.enter().append("g").attr("class","hmTicks")
+        .attr("zero",function(tick){ return tick===0?true:null})
+        .attr("transform", function(tick){ return "translate(" + me.scatterAxisScale_X(tick) + ")"; });
+      tk.append("text")
+        .attr("transform", "translate(0,14)")
+        .html(function(tick){ return me.scatterAttrib.printWithUnitName(tick, true); })
+      tk.append("line").attr("class","tickLine")
+        .attr("x1",0)
+        .attr("x2",0)
+        .attr("y1",0)
+        .attr("y2",-this.curHeight);
+      
+      tGroup = this.DOM.scatterSVG_Axis_Y.select(".tickGroup");
+
+      var hm = tGroup.selectAll(".hmTicks").data(ticksY, function(t){ return t; });
+      hm.transition().duration(anim?750:0)
+        .attr("transform", function(tick){ return "translate(0," + me.scatterAxisScale_Y(tick) + ")"; });
+      hm.exit().remove();
+      var tk = hm.enter().append("g").attr("class","hmTicks")
+        .attr("zero",function(tick){ return tick===0?true:null})
+        .attr("transform", function(tick){ return "translate(0," + me.scatterAxisScale_Y(tick) + ")"; });
+      tk.append("text")
+        .attr("transform", "translate(32,6)")
+        .html(function(tick){ return me.sortingOpt_Active.printWithUnitName(tick, true); });
+      tk.append("line").attr("class","tickLine")
+        .attr("x1",35)
+        .attr("x2",this.curWidth)
+        .attr("y1",0)
+        .attr("y2",0);
+      setTimeout(function(){ me.DOM.root.selectAll(".hmTicks").style("opacity",1); },10);
     },
     /** -- */
     refreshNodeLinkVis: function(){
@@ -2403,7 +2658,15 @@ kshf.RecordDisplay.prototype = {
         });
 
       this.nodelink_Force.nodes(this.browser.records);
-
+    },
+    /** -- */ 
+    changeOfScale: function(){
+      if(this.viewRecAs!=='map' && this.viewRecAs!=='nodelink'){
+        this.refreshRecordColors();
+      }
+      if(this.viewRecAs==='scatter'){
+        this.refreshScatterVis(true);
+      }
     },
     /** -- */
     refreshRecordColors: function(){
@@ -2515,9 +2778,48 @@ kshf.RecordDisplay.prototype = {
       },this);
     },
     /** -- */
+    onRecordMouseOver: function(record){
+      if(this.viewRecAs==='nodelink') this.highlightLinked(record);
+      record.highlightRecord();
+      if(this.viewRecAs==='scatter'){
+        this.DOM.root.selectAll(".onRecordLine").style('opacity',1);
+        var accX = this.scatterAttrib.summaryID;
+        var accY = this.sortingOpt_Active.summaryID;
+
+        var recX = this.scatterAxisScale_X(record._valueCache[accX]);
+        var recY = this.scatterAxisScale_Y(record._valueCache[accY]);
+        this.DOM.scatterSVG_Axis_X.select(".onRecordLine").attr("transform","translate(  "+recX+")");
+        this.DOM.scatterSVG_Axis_Y.select(".onRecordLine").attr("transform","translate(0,"+recY+")");
+
+        // Print the values on the tick lines
+/*        this.DOM.scatterSVG_Axis_X.select(".onRecordLine > text").text(
+          this.scatterAttrib.printWithUnitName(record._valueCache[accX],true));
+        this.DOM.scatterSVG_Axis_Y.select(".onRecordLine > text").text(
+          this.sortingOpt_Active .printWithUnitName(record._valueCache[accY],true));*/
+      }
+      if(this.viewRecAs==='map' || this.viewRecAs==='nodelink' || this.viewRecAs==='scatter'){
+        // reorder dom so it appears on top.
+        record.DOM.record.parentNode.appendChild(record.DOM.record);
+      }
+    },
+    /** -- */
+    onRecordMouseLeave: function(record){
+      if(this.viewRecAs==='nodelink') {
+        this.unhighlightLinked(record);
+      }
+      if(this.viewRecAs==='scatter'){
+        this.DOM.root.selectAll(".onRecordLine").style('opacity',null);
+      }
+      record.unhighlightRecord();
+    },
+    /** -- */
     refreshRecordDOM: function(){
       var me=this, x;
-      var records = (this.viewRecAs==='map' || this.viewRecAs==='nodelink')?
+      var records = (
+        this.viewRecAs==='map' || 
+        this.viewRecAs==='nodelink' ||
+        this.viewRecAs==='scatter'
+      )?
         // all records
         this.browser.records
         : 
@@ -2532,6 +2834,7 @@ kshf.RecordDisplay.prototype = {
       var nodeType = ({
         map      : 'path',
         nodelink : 'g',
+        scatter  : 'g',
         list     : 'div',
         grid     : 'div'
       })[this.viewRecAs];
@@ -2540,10 +2843,9 @@ kshf.RecordDisplay.prototype = {
       newRecords = newRecords
         .append( nodeType )
         .attr('class','kshfRecord')
-        .attr('details',false)
         .attr("id",function(record){ return "kshfRecord_"+record.id(); }) // can be used to apply custom CSS
         .attr("rec_compared",function(record){ return record.selectCompared_str?record.selectCompared_str:null;})
-        .each(function(record){ 
+        .each(function(record){
           record.DOM.record = this;
           if(me.viewRecAs==='map'){
             this.tipsy = new Tipsy(this, {
@@ -2572,12 +2874,7 @@ kshf.RecordDisplay.prototype = {
           // mouse is moving fast, should wait a while...
           this.highlightTimeout = window.setTimeout(
             function(){ 
-              if(me.viewRecAs==='nodelink') me.highlightLinked(record);
-              record.highlightRecord();
-              if(me.viewRecAs==='map' || me.viewRecAs==='nodelink'){
-                // reorder dom so it appears on top.
-                DOM.parentNode.appendChild(DOM);
-              }
+              me.onRecordMouseOver(record);
             }, 
             (me.browser.mouseSpeed<0.2) ? 0 : me.browser.mouseSpeed*300);
 
@@ -2587,8 +2884,7 @@ kshf.RecordDisplay.prototype = {
         .on("mouseleave",function(record){
           if(this.highlightTimeout) window.clearTimeout(this.highlightTimeout);
           if(this.tipsy) this.tipsy.hide();
-          if(me.viewRecAs==='nodelink') me.unhighlightLinked(record);
-          record.unhighlightRecord();
+          me.onRecordMouseLeave(record);
         })
         .on("mousedown", function(){
           this._mousemove = false;
@@ -2605,12 +2901,13 @@ kshf.RecordDisplay.prototype = {
         })
         .on("click",function(d){
           if(this._mousemove) return; // Do not show the detail view if the mouse was used to drag the map
-          if(me.viewRecAs==='map' || me.viewRecAs==='nodelink'){
+          if(me.viewRecAs==='map' || me.viewRecAs==='nodelink' || me.viewRecAs==='scatter'){
             me.browser.updateRecordDetailPanel(d);
           }
         });
       
       if(this.viewRecAs==='list' || this.viewRecAs==="grid"){
+        newRecords.attr('details',false);
         // RANK
         x = newRecords.append("span").attr("class","recordRank")
           .each(function(d){
@@ -2624,7 +2921,7 @@ kshf.RecordDisplay.prototype = {
         this.refreshRecordRanks(x);
         // SORTING VALUE LABELS
         if(this.viewRecAs==='list'){
-          x = newRecords.append("div").attr("class","recordSortCol").style("width",this.sortColWidth+"px");
+          x = newRecords.append("div").attr("class","recordSortValue").style("width",this.sortColWidth+"px");
           this.refreshRecordSortLabels(x);
         }
         // TOGGLE DETAIL
@@ -2662,11 +2959,11 @@ kshf.RecordDisplay.prototype = {
         this.DOM.recordGroup.selectAll(".kshfRecord").order();
       }
 
-      if(this.viewRecAs==='nodelink'){
+      if(this.viewRecAs==='nodelink' || this.viewRecAs==='scatter'){
         newRecords.append("circle").attr("r",4);
         newRecords.append("text").attr("class","kshfRecord_label")
-          .attr("dy",4).attr("dx",6)
-          .html(function(record){ 
+          .attr("dy",-4).attr("dx",4)
+          .html(function(record){
             return me.recordViewSummaryBrief.summaryFunc.call(record.data, record);
           });
       }
@@ -2685,7 +2982,7 @@ kshf.RecordDisplay.prototype = {
       } else if(this.viewRecAs==='nodelink'){
         this.refreshRecordColors();
       } else {
-        this.DOM.recordSortCol      = this.DOM.recordGroup.selectAll(".recordSortCol");
+        this.DOM.recordSortValue    = this.DOM.recordGroup.selectAll(".recordSortValue");
         this.DOM.recordRanks        = this.DOM.recordGroup.selectAll(".recordRank");
         this.DOM.recordToggleDetail = this.DOM.recordGroup.selectAll(".recordToggleDetail");
       }
@@ -2694,7 +2991,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     showMoreRecordsOnList: function(){
-      if(this.viewRecAs==='map' || this.viewRecAs==='nodelink') return;
+      if(this.viewRecAs==='map' || this.viewRecAs==='nodelink' || this.viewRecAs==='scatter') return;
       this.DOM.showMore.attr("showMoreVisible",false);
       this.maxVisibleItems += Math.min(this.maxVisibleItems,250);
       this.refreshRecordDOM();
@@ -2786,6 +3083,10 @@ kshf.RecordDisplay.prototype = {
         this.DOM.recordLinks.each(function(link){
           this.style.display = (!link.source.isWanted || !link.target.isWanted) ? "none" : null;
         });
+      } else if(me.viewRecAs==='scatter'){
+        this.DOM.kshfRecords.each(function(record){
+          this.style.display = record.isWanted?"block":"none";
+        });
       } else {
         this.DOM.kshfRecords.each(function(record){
           var recordIsVisible = (record.recordRank>=0) && (record.recordRank<me.maxVisibleItems);
@@ -2844,6 +3145,14 @@ kshf.RecordDisplay.prototype = {
       this.maxVisibleItems = this.maxVisibleItems_Default;
     },
     /** -- */
+    getScatterAttributes: function(){
+      if(this.sortingOpt_Active.scaleType==='time') return [];
+      var me=this;
+      return this.sortingOpts.filter(function(s){ 
+        return s.scaleType!=='time' && s.summaryID!==me.sortingOpt_Active.summaryID;
+      });
+    },
+    /** -- */
     viewAs: function(d){
       this.viewRecAs = d.toLowerCase();
       this.DOM.root.attr("displayType", this.viewRecAs);
@@ -2852,44 +3161,54 @@ kshf.RecordDisplay.prototype = {
         var viewAsOptions = { List: true }; // list-view is always available
         if(this.config.geo)    viewAsOptions.Map = true;
         if(this.linkBy.length) viewAsOptions.NodeLink = true;
+        viewAsOptions.Scatter = this.getScatterAttributes();
+
+        this.DOM.root.select(".recordDisplay_ViewAsList")    
+          .style("display", "inline-block");
+        this.DOM.root.select(".recordDisplay_ViewAsMap")     
+          .style("display", (viewAsOptions.Map) ? "inline-block" : null );
+        this.DOM.root.select(".recordDisplay_ViewAsNodeLink")
+          .style("display", (viewAsOptions.NodeLink) ? "inline-block" : null );
+        this.DOM.root.select(".recordDisplay_ViewAsScatter") 
+          .style("display", (viewAsOptions.Scatter.length>0) ? "inline-block" : null );
 
         this.browser.DOM.root.attr("recordEncoding",this.getRecordEncoding()); // "sort" / "color"
 
-        this.DOM.root.select(".recordDisplay_ViewAsMap").style("display",
-          (this.config.geo && this.viewRecAs!=='map') ? "inline-block" : null );
-
-        this.DOM.root.select(".recordDisplay_ViewAsNodeLink").style("display",
-          (this.linkBy.length>0 && this.viewRecAs!=='nodelink') ? "inline-block" : null );
-
         this.DOM.recordDisplayHeader.select(".recordDisplay_ViewGroup")
-          .style("display",(viewAsOptions.Map || viewAsOptions.NodeLink ) ? "inline-block" : null);
+          .style("display",
+            (viewAsOptions.Map || viewAsOptions.NodeLink || viewAsOptions.Scatter.length>0 ) 
+              ? "inline-block" 
+              : null
+          );
 
         switch(this.viewRecAs){
           case 'list':
           case 'grid':
             this.initDOM_ListView();
-            this.DOM.root.select(".recordDisplay_ViewAsList").style("display",null);
-
             this.sortRecords();
             this.refreshRecordDOM();
             this.setSortColumnWidth(this.sortColWidth || 50); // default: 50px;
-
             this.DOM.kshfRecords = this.DOM.recordGroup_List.selectAll(".kshfRecord");
-
             break;
           case 'map':
-            this.DOM.root.select(".recordDisplay_ViewAsList").style("display","inline-block");
             this.initDOM_MapView();
             this.refreshRecordDOM();
             this.refreshRecordColors();
             break;
           case 'nodelink':
-          this.DOM.root.select(".recordDisplay_ViewAsList").style("display","inline-block");
             this.initDOM_NodeLinkView();
             this.setNodeLink();
             this.refreshRecordDOM();
             this.refreshRecordColors();
             this.nodelink_restart();
+            break;
+          case 'scatter':
+            if(this.scatterAttrib===undefined){
+              this.setScatterAttrib(viewAsOptions.Scatter[0]);
+            }
+            this.initDOM_Scatter();
+            this.refreshRecordDOM();
+            this.refreshScatterVis();
             break;
         }
 
@@ -5822,8 +6141,10 @@ kshf.Browser.prototype = {
         }
       } else if(this.measureSummary){
         // Print with the measure summary unit
-        return this.measureSummary.printWithUnitName(kshf.Util.formatForItemCount(
-          _val),(aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g") );
+        return this.measureSummary.printWithUnitName(
+          kshf.Util.formatForItemCount(_val),
+          (aggr.DOM && aggr.DOM.aggrGlyph.nodeName==="g")
+        );
       } else {
         return kshf.Util.formatForItemCount(_val);
       }
@@ -6519,7 +6840,7 @@ kshf.Summary_Base.prototype = {
         me.DOM.root.attr("showConfig",open?true:null);
       });
 
-    this.DOM.setMatrixButton = this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
+    this.DOM.summaryIcons.append("span").attr("class", "setMatrixButton fa fa-tags")
       .each(function(d){
         this.tipsy = new Tipsy(this, { 
           gravity: 'ne', 
@@ -6530,21 +6851,27 @@ kshf.Summary_Base.prototype = {
       .on("mouseleave", function(){ this.tipsy.hide(); })
       .on("click",      function(){ this.tipsy.hide(); me.setShowSetMatrix(!me.show_set_matrix); });
 
-    this.DOM.useForRecordDisplay = this.DOM.summaryIcons.append("span")
-      .attr("class", "useForRecordDisplay fa")
-      .each(function(d){
+    // These shouldn't be visible if there is not active record display.
+    this.DOM.summaryIcons.selectAll(".encodeRecordButton").data(["sort","scatter","color"])
+      .enter()
+      .append("span")
+      .attr("class", "encodeRecordButton fa")
+      .attr("encodingType",function(t){ return t; })
+      .each(function(t){
         this.tipsy = new Tipsy(this, {
-          gravity: 'ne', title: function(){
-            return "Use to "+me.browser.recordDisplay.getRecordEncoding()+" "+me.browser.recordName;
-          }
+          gravity: 'ne', title: function(){ return "Use to "+t+" "+me.browser.recordName; }
         });
       })
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
-      .on("click",      function(){ this.tipsy.hide();
-        if(me.browser.recordDisplay.recordViewSummary===null) return;
-        me.browser.recordDisplay.setSortingOpt_Active(me);
-        me.browser.recordDisplay.refreshSortingOptions();
+      .on("click",      function(t){ this.tipsy.hide();
+        var recDisplay = me.browser.recordDisplay;
+        if(t==='scatter'){
+          recDisplay.setScatterAttrib(me);
+        } else {
+          recDisplay.setSortingOpt_Active(me);
+          recDisplay.refreshSortingOptions();
+        }
       });
 
     this.DOM.summaryViewAs = this.DOM.summaryIcons.append("span")
@@ -8805,6 +9132,7 @@ var Summary_Categorical_functions = {
       this.DOM.measure_Active.attr("d", function(_cat){
         _cat._d_ = me.catMap.call(_cat.data,_cat);
         if(_cat._d_===undefined) {
+          this.parentNode.style.display = "none";
           console.log(_cat.data);
           return;
         }
@@ -8963,17 +9291,15 @@ var Summary_Categorical_functions = {
       var X = DOM_control.append("div").attr("class","visViewControl");
 
       X.append("div")
-        .attr("class","fa fa-plus")
+        .attr("class","visViewControlButton fa fa-plus")
         .attr("title","Zoom in")
         .on("click",function(){ me.leafletAttrMap.zoomIn(); });
-
       X.append("div")
-        .attr("class","fa fa-minus")
+        .attr("class","visViewControlButton fa fa-minus")
         .attr("title","Zoom out")
         .on("click",function(){ me.leafletAttrMap.zoomOut(); });
-
       X.append("div")
-        .attr("class","viewFit fa fa-arrows-alt")
+        .attr("class","visViewControlButton viewFit fa fa-arrows-alt")
         .attr("title",kshf.lang.cur.ZoomToFit)
         .on("dblclick",function(){
           d3.event.preventDefault();
@@ -9106,7 +9432,7 @@ var Summary_Interval_functions = {
       this.unitName = undefined; // the text appended to the numeric value (TODO: should not apply to time)
       this.percentileChartVisible = false;
       this.zoomed = false;
-      this.usedForSorting = false;
+      this.encodesRecordsBy = false;
       this.invertColorScale = false;
 
       this.highlightRangeLimits_Active = false;
@@ -9165,7 +9491,7 @@ var Summary_Interval_functions = {
     },
     /** -- */
     getHeight_RecordEncoding: function(){
-      if(this.usedForSorting && this.browser.recordDisplay) {
+      if(this.encodesRecordsBy && this.browser.recordDisplay) {
         if(this.browser.recordDisplay.viewRecAs==='map' || this.browser.recordDisplay.viewRecAs==='nodelink')
           return this.height_recEncoding; 
       }
@@ -9685,8 +10011,9 @@ var Summary_Interval_functions = {
         }
       }
       this.updateScaleAndBins(true);
-      if(this.usedForSorting && this.browser.recordDisplay)
-        this.browser.recordDisplay.refreshRecordColors();
+      if(this.encodesRecordsBy && this.browser.recordDisplay){
+        this.browser.recordDisplay.changeOfScale();
+      }
     },
     /** -- */
     refreshPercentileChart: function(){
@@ -9721,7 +10048,7 @@ var Summary_Interval_functions = {
       this.insertRoot(beforeDOM);
       this.DOM.root
         .attr("summary_type","interval")
-        .attr("usedForSorting",this.usedForSorting)
+        .attr("encodesRecordsBy",this.encodesRecordsBy)
         .attr("viewType",this.viewType);
 
       this.insertHeader();
@@ -9854,7 +10181,7 @@ var Summary_Interval_functions = {
       this.unitName = v;
       if(this.unitName && this.DOM.unitNameInput) this.DOM.unitNameInput.node().value = this.unitName;
       this.refreshValueTickLabels();
-      if(this.usedForSorting && this.browser.recordDisplay.recordViewSummary){
+      if(this.encodesRecordsBy && this.browser.recordDisplay.recordViewSummary){
         this.browser.recordDisplay.refreshRecordSortLabels();
       }
     },
@@ -9867,7 +10194,10 @@ var Summary_Interval_functions = {
         v = v.toLocaleString();
       }
       if(this.unitName){
-        var s = noDiv ? this.unitName : ("<span class='unitName'>"+this.unitName+"</span>");
+        var s = noDiv ? 
+          ("<tspan class='unitName'>"+this.unitName+"</tspan>")
+          :
+          ("<span class='unitName'>"+this.unitName+"</span>");
         if(this.unitName==='$' || this.unitName==='€'){
           s = s+v;
           // replace abbrevation G with B
@@ -9880,14 +10210,14 @@ var Summary_Interval_functions = {
       return v;
     },
     /** -- */
-    setAsRecordSorting: function(){
-      this.usedForSorting = true;
-      if(this.DOM.root) this.DOM.root.attr("usedForSorting","true");
+    setEncodesRecordsBy: function(type){
+      this.encodesRecordsBy = type;
+      if(this.DOM.root) this.DOM.root.attr("encodesRecordsBy",this.encodesRecordsBy);
     },
     /** -- */
-    clearAsRecordSorting: function(){
-      this.usedForSorting = false;
-      if(this.DOM.root) this.DOM.root.attr("usedForSorting","false");
+    clearEncodesRecordsBy: function(){
+      this.encodesRecordsBy = false;
+      if(this.DOM.root) this.DOM.root.attr("encodesRecordsBy",null);
     },
     /** -- */
     initDOM_IntervalConfig: function(){
@@ -10218,7 +10548,14 @@ var Summary_Interval_functions = {
           }
           if(!this.hasFloat)
             ticks = ticks.filter(function(d){return d%1===0;});
-          this.intervalTickPrint = d3.format(".1s");
+
+          var d3Formating = d3.format(floatNumTicks?".2f":".2s");
+          this.intervalTickPrint = function(d){
+            if(!me.hasFloat && d<10) return d;
+            if(!me.hasFloat && Math.abs(ticks[1]-ticks[0])<1000) return d;
+            return d3Formating(d);
+          }
+
         } else {
           this.valueScale.nice(optimalTickCount);
           ticks = this.valueScale.ticks(optimalTickCount);

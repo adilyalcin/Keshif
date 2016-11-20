@@ -263,38 +263,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C{ display: block; }
     }
     &[recordEncoding="sort"]{
-      .kshfSummary[summary_type="interval"] .useForRecordDisplay{
-        &:before{ content: "\f0dc"; } // Sorting icon
-        &:hover{ color: @color_hoverAction; }
+      .kshfSummary[summary_type="interval"] {
+        .encodeRecordButton[encodingtype='sort']{ display: inline-block; }
       }
     }
     &[recordEncoding="color"]{
       .kshfSummary[summary_type="interval"]{
-        .useForRecordDisplay{
-          // Great CSS trick at https://codepen.io/thebabydino/pen/hkxGp
-          position: relative;
-          margin: 0;
-          border: solid 1px white;
-          width: 1em; height: 1em;
-          border-radius: 50%;
-          background: 
-            linear-gradient(36deg, #272b66 42.34%, transparent 42.34%) 0 0,
-            linear-gradient(72deg, #2d559f 75.48%, transparent 75.48%) 0 0,
-            linear-gradient(-36deg, #9ac147 42.34%, transparent 42.34%) 100% 0,
-            linear-gradient(-72deg, #639b47 75.48%, transparent 75.48%) 100% 0, 
-            linear-gradient(36deg, transparent 57.66%, #e1e23b 57.66%) 100% 100%,
-            linear-gradient(72deg, transparent 24.52%, #f7941e 24.52%) 100% 100%,
-            linear-gradient(-36deg, transparent 57.66%, #662a6c 57.66%) 0 100%,
-            linear-gradient(-72deg, transparent 24.52%, #9a1d34 24.52%) 0 100%, 
-            #43a1cd linear-gradient(#ba3e2e, #ba3e2e) 50% 100%;
-          background-repeat: no-repeat;
-          background-size: 50% 50%;
-          transition: 1s;
-          &:hover { transform: rotate(360deg); }
-          // ::before{ content: "\f278"; } // Map-icon
-        }
-
+        .encodeRecordButton[encodingtype='color']{ display: inline-block; }
         &[usedforsorting="true"] > .wrapper > .summaryInterval > .mapColorBar { .display(flex); }
+      }
+    }
+    &[recordEncoding="scatter"]{
+      .kshfSummary[summary_type="interval"] {
+        .encodeRecordButton[encodingtype='sort']   { display: inline-block; }
+        .encodeRecordButton[encodingtype='scatter']{ display: inline-block; }
       }
     }
     &[showDropZone=true]{
@@ -342,9 +324,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .scaleModeControl{ opacity: 1; }
     }
 
-    .unitName{
+    span.unitName{
       margin-left: 1px;
       opacity: 0.6; //color: gray;
+    }
+
+    tspan.unitName{
+      opacity: 0.6;
+      margin-left: 1px;
     }
     
     .saveBrowserConfig{
@@ -1784,6 +1771,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
+    .encodeRecordButton{
+      display: none;
+      opacity: 0;
+      pointer-events: none;
+      &[encodingType='sort']{
+        &:before{ content: "\f0dc"; } // Sorting icon
+        &:hover{ color: @color_hoverAction; }
+      }
+      &[encodingType='scatter']{
+        .transform( rotate(90deg) );
+        width: 14px;
+        height: 14px;
+        &:before{ content: "\f0dc"; } // Sorting icon
+        &:hover{ color: @color_hoverAction; }
+      }
+      &[encodingType='color']{
+        // Great CSS trick at https://codepen.io/thebabydino/pen/hkxGp
+        position: relative;
+        margin: 0;
+        border: solid 1px white;
+        width: 1em; height: 1em;
+        border-radius: 50%;
+        background: 
+          linear-gradient(36deg, #272b66 42.34%, transparent 42.34%) 0 0,
+          linear-gradient(72deg, #2d559f 75.48%, transparent 75.48%) 0 0,
+          linear-gradient(-36deg, #9ac147 42.34%, transparent 42.34%) 100% 0,
+          linear-gradient(-72deg, #639b47 75.48%, transparent 75.48%) 100% 0, 
+          linear-gradient(36deg, transparent 57.66%, #e1e23b 57.66%) 100% 100%,
+          linear-gradient(72deg, transparent 24.52%, #f7941e 24.52%) 100% 100%,
+          linear-gradient(-36deg, transparent 57.66%, #662a6c 57.66%) 0 100%,
+          linear-gradient(-72deg, transparent 24.52%, #9a1d34 24.52%) 0 100%, 
+          #43a1cd linear-gradient(#ba3e2e, #ba3e2e) 50% 100%;
+        background-repeat: no-repeat;
+        background-size: 50% 50%;
+        transition: 1s;
+        &:hover { transform: rotate(360deg); }
+      }
+    }
+
     .headerGroup{
       position: relative;
       text-align: center;
@@ -1855,10 +1881,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[viewAs="map"]:hover:before{ content: "\f0ac"; } // list-ul
           &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
           &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
-        }
-        > .useForRecordDisplay{ 
-          opacity: 0;
-          pointer-events: none;
         }
         > .setMatrixButton{
           opacity: 0;
@@ -2439,7 +2461,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     // PERCENTILE CHART STYLES - END
     // ***********************************************************************************************************
 
-
     .missingValueAggr{
       display: none;
       position: absolute;
@@ -2469,28 +2490,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     .visViewControl{
       z-index: 1000;
-      display: block;
+      display: none;
       background-color: white;
       position: absolute;
       border-radius: 4px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.65);
 
+      > span[class^='NodeLinkControl']{
+        display: none !important;
+      }
+      > span[class^='MapControl']{
+        display: none !important;
+      }
+      > span[class^='ScatterControl']{
+        display: none !important;
+      }
+
       > .visViewControlButton{
-        display: block;
         border-bottom: 1px solid #ccc;
         cursor: pointer;
-        padding: 5px;
+        padding: 3px;
         text-align: center;
         &:hover{
           background-color: #EEE;
           color: @color_hoverAction;
         }
       }
-      > .NodeLink_LinkAttribute:before{
+      > .NodeLinkControl-LinkAttribute:before{
         content: "Link: ";
         font-weight: 400;
         font-size: 0.8em;
         height: 25px;
+      }
+      > .ScatterControl-XAttrib{
+        font-weight: 400;
+        font-size: 0.8em;
+        height: 25px;
+        &:before{
+          content: "Vs: ";
+        }
       }
     }
 
@@ -2512,20 +2550,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .recordDisplay[displayType="map"] .visViewControl{
-      > .visViewControlButton{ width: 25px; }
+    .recordDisplay[displayType="map"]:not([collapsed]) .visViewControl{
+      display: block;
+      left: 3px;
+      top: 3px;
+      font-size: 0.8em;
+      > .visViewControlButton{ 
+        width: 22px;
+        display: block;
+      }
+      > span[class^='MapControl']{ display: block !important; }
     }
-    .recordDisplay[displayType="nodelink"] .visViewControl{
-      position: absolute;
-      right: 0px;
-      bottom: 0px;
-      margin: 5px;
+    .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl{
+      display: block;
+      right: 3px;
+      bottom: 3px;
       font-size: 0.9em;
       > .visViewControlButton{ 
         display: inline-block;
         border-bottom: none;
         border-right: 1px solid #ccc;
       }
+      > span[class^='NodeLinkControl']{ display: block !important; }
       > .visViewControlButton:first-child{
         border-top-left-radius: 4px;
         border-bottom-left-radius: 4px;
@@ -3201,15 +3247,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[hasMap="true"]:not([collapsed]){
         .summaryViewAs{ display: inline-block; }
       }
-      &[usedForSorting="true"]{
-        .headerGroup > .summaryIcons > .useForRecordDisplay{
-          opacity: 1;
-          pointer-events: all;
-          color: black;
-        }
-      }
       &[viewType="map"]{
         z-index: 1;
+        .visViewControl{ 
+          display: block;
+          left: 3px;
+          top: 3px;
+          font-size: 0.8em;
+          > .visViewControlButton{ 
+            width: 22px;
+            display: block;
+          }
+          > span[class^='MapControl']{ display: block !important; }
+        }
+
         .summaryCategorical{
           > .summaryControls > {
             .sortOptionSelectGroup{ display: none; }
@@ -3232,8 +3283,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       &[summary_type='interval']{
-        .useForRecordDisplay{ display: inline-block !important; }
-        &:hover .useForRecordDisplay{ opacity: 1 !important; pointer-events: all !important; }
+        &[encodesRecordsBy='sort']{
+          .encodeRecordButton{
+            &[encodingtype='sort']{
+              opacity: 1;
+              pointer-events: all;
+              color: black;
+            }
+            &:not([encodingtype='sort']){ display: none; }
+          }
+        }
+        &[encodesRecordsBy='scatter']{
+          .encodeRecordButton{
+            &[encodingtype='scatter']{
+              opacity: 1;
+              pointer-events: all;
+              color: black;
+            }
+            &:not([encodingtype='scatter']){ display: none; }
+          }
+        }
+        &:hover .encodeRecordButton{ opacity: 1 !important; pointer-events: all !important; }
       }
 
       &:not([collapsed]){
@@ -3425,6 +3495,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .previewLine{ opacity: 1 !important; }
     }
 
+    .scatterSVG_Axis_Y .hmTicks > text{ text-anchor: end; }
+    .scatterSVG_Axis_X .hmTicks > text{ text-anchor: middle; }
+
+    .scatterSVG_Axis{
+      > .tickGroup > .hmTicks {
+        opacity: 0;
+        .transition(opacity 500ms);
+        > text{
+          font-weight: 200;
+          font-size: 0.7em;
+          pointer-events: none;
+        }
+        > line{ stroke: #EEE; }
+        &[zero] > line { stroke: #999; stroke-dasharray: 4 1; }
+      }
+      > .onRecordLine{
+        opacity: 0;
+        .transition(opacity 200ms);
+        > line{
+          stroke: #d0be96;
+          stroke-width: 2;
+        }
+      }
+    }
+
     .selectVertLine {
       display: inline-block;
       background-color: #EEDDDE;
@@ -3441,6 +3536,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: relative;
     }
 
+    .recordDisplay_ViewAsScatter{
+      width: 14px;
+      > svg { fill: gray; } 
+      &:hover > svg { fill: @color_hoverAction; }
+    }
+
     .recordDisplay{
       position: relative;
       top: 0px;
@@ -3448,6 +3549,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .display(flex);
       .flex-direction(column);
       .transition(margin-top 700ms ease-in-out);
+
+      &[collapsed]{
+        .recordDisplay_ViewGroup{ display: none !important; }
+      }
 
       > .dropZone_recordView{
         display: none;
@@ -3476,10 +3581,23 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
       .recordDisplayWrapper{
         .transition(@layout_transition);
+        position: relative;
+      }
+
+      .recordNodeLink_SVG{
+        display: none;
+        width: 100%;
+        height: 100%;
+      }
+      .recordScatter_SVG{ 
+        display: none;
+        width: 100%;
+        height: 100%;
       }
       .recordMap_Base{
         height: 100%;
         background: white;
+        display: none;
         .spatialQueryBox{
           display: none;
           position: absolute;
@@ -3625,17 +3743,102 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .itemRank_control{ color: gray; }
       }
 
+      .scatterAxisLine{ stroke: #999; }
+
+      &[displayType="scatter"]{
+        overflow: visible !important;
+        .scrollToTop{ display: none; }
+        .sortButton{ display: none; }
+        .recordGroup_List{ display: none; }
+
+        .recordScatter_SVG{ display: block; }
+        .recordDisplay_ViewAsScatter {
+          background-color: white;
+          > svg { fill: black; }
+        }
+        &:not([collapsed]) .visViewControl{
+          display: block;
+          right: 3px;
+          bottom: 3px;
+          font-size: 0.8em;
+
+          > .visViewControlButton{ 
+            display: inline-block;
+            border-bottom: none;
+            border-right: 1px solid #ccc;
+          }
+          > span[class^='ScatterControl']{ display: inline-block !important; }
+          > .visViewControlButton:first-child{
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+          }
+          > .visViewControlButton:last-child{
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+            border-bottom: none;
+            border-right: none;
+          }
+        }
+
+        .recordGroup{ overflow: visible !important; }
+        .kshfRecord{
+          stroke-width: 0.5px;
+          stroke-opacity: 0.5;
+          //paint-order: stroke;
+          cursor: pointer;
+          pointer-events: all;
+        }
+
+        g.kshfRecord{
+          .transition(opacity 500ms ease, background-color 100ms linear, transform 250ms ease-in-out);
+          > circle{
+            stroke: gray;
+            stroke-width: 1;
+            fill: #c9d3da; // temp - static color
+            cursor: pointer;
+            .transition(all 400ms ease-in-out);
+          }
+          > text.kshfRecord_label{
+            opacity: 0;
+            font-size: 0.8em;
+            pointer-events: none;
+            text-shadow: 0px 0px 5px white, 0px 0px 5px white, 0px 0px 2px white;
+            .transition(opacity 200ms linear);
+          }
+          &[selection="onRecord"]{
+            > circle { fill: @color_onRecord_back !important; stroke: darken(@color_onRecord_back, 70%); stroke-width: 2; }
+            > text.kshfRecord_label{ opacity: 1; }
+          }
+          &[selection="related"]{
+            > circle { stroke: green; stroke-width: 2; }
+            > text.kshfRecord_label{ opacity: 1; fill: green; }
+          }
+          &[selection="highlighted"]{
+            > circle { fill: orangered !important; stroke: orangered; stroke-width: 2; }
+          }
+          &[rec_compared] > circle{ stroke-width: 2; }
+          &[rec_compared^="A"]{ > circle { fill: @color_Compare_A; stroke: @color_Compare_A; } }
+          &[rec_compared^="B"]{ > circle { fill: @color_Compare_B; stroke: @color_Compare_B; } }
+          &[rec_compared^="C"]{ > circle { fill: @color_Compare_C; stroke: @color_Compare_C; } }
+        }
+      }
+
       &[displayType="map"]{
         overflow: visible !important;
         .scrollToTop{ display: none; }
         .sortButton{ display: none; }
+        // mapControl-MouseMode
+        .recordDisplay_ViewAsMap{ color: black; background-color: white; }
+
+        .recordMap_Base{ display: block; }
+
         &[mapMouseControl="pan"]{
-          .mapMouseControl:after{ content: "\f255" } // fa-hand-rock-o
-          .mapMouseControl:hover:after{ content: "\f096" } // fa-square-o
+          .MapControl-MouseMode:after{ content: "\f255" } // fa-hand-rock-o
+          .MapControl-MouseMode:hover:after{ content: "\f096" } // fa-square-o
         }
         &[mapMouseControl="draw"]{
-          .mapMouseControl:after{ content: "\f096" } // fa-square-o
-          .mapMouseControl:hover:after{ content: "\f255" } // fa-hand-rock-o
+          .MapControl-MouseMode:after{ content: "\f096" } // fa-square-o
+          .MapControl-MouseMode:hover:after{ content: "\f255" } // fa-hand-rock-o
           .recordMap_Base{ cursor: crosshair; }
         }
 
@@ -3669,6 +3872,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         overflow: visible !important;
         .scrollToTop{ display: none; }
         .sortButton{ display: none; }
+
+        .recordDisplay_ViewAsNodeLink{ color: black;  background-color: white; }
+
+        .recordNodeLink_SVG{ display: block; }
 
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
 
@@ -3712,19 +3919,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
         &.hideLinks {
           .recordLink { display: none; }
-          .NodeLinkAttribIcon{ color: #BABABA; }
+          .NodeLinkControl-LinkIcon{ color: #BABABA; }
         }
         &[NodeLinkState="started"]{
-          .NodeLinkAnim_Play{ display: none; }
+          .NodeLinkControl-AnimPlay{ display: none; }
         }
         &[NodeLinkState="stopped"]{
-          .NodeLinkAnim_Pause{ display: none; }
+          .NodeLinkControl-AnimPause{ display: none; }
         }
-        .NodeLinkAnim_Refresh{ display: none; }
       }
 
       &[hasrecordview="true"]{
         &[displayType="grid"] {
+          .recordDisplay_ViewAsList{ color: black; background-color: white; }
           .recordGroup {
             .display(flex);
             .flex-direction(row);
@@ -3751,15 +3958,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[displayType="list"]{
-          .recordMap_Base{ display: none; }
-          .recordNodeLink_SVG{ display: none; }
+          .recordDisplay_ViewAsList{ color: black; background-color: white; }
           .kshfRecord{
             .display(flex);
             .flex-direction(row);
             width: 100%;
             padding-top: 0px;
             border-top: solid 1px lightgray;
-            > .recordSortCol{
+            > .recordSortValue{
               padding-right: 3px;
               padding-top: 2px;
               font-weight: 300;
@@ -3812,8 +4018,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[collapsed]{
         .recordDisplayWrapper{ height: 0px !important; }
         .recordColorScale{ display: none; }
-        .header_listSortColumn{ display: none; }
-        .recordSortButton{ display: none; }
+        .recordSortOptions{ display: none; }
+        .recordReverseSortButton{ display: none; }
         .scrollToTop{ visibility: hidden;}
         .buttonRecordViewCollapse{ display: none }
         .buttonRecordViewExpand{ display: block; }
@@ -3822,7 +4028,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
       &:hover{
-        > .recordDisplayHeader > .recordSortButton{
+        > .recordDisplayHeader > .recordReverseSortButton{
           opacity: 1;
           pointer-events: all;
         }
@@ -3833,12 +4039,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .viewFit{ font-size: 1em; }
       }
     } // .recordDisplay
-
-    .recordNodeLink_SVG{
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
 
     .Summary_Set{
       display: block;
@@ -4061,28 +4261,19 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &:hover{ border: solid 1px gray; }
           > .recordColorScaleBin{ .flex(1); }
         }
-        > .header_listSortColumn{
+        > .recordSortOptions{
           display: inline-block;
           .align-self(flex-end);
           white-space: nowrap;
           text-align: right;
           padding-right: 1px;
           position: relative;
-          > .sortColumnName{
-            font-weight: 300;
-            font-size: 0.9em;
-            margin: 0px 0px 1px 3px;
-            display: inline-block;
-            cursor: default;
-            .user-select(none);
-            pointer-events: none;
-          }
-          > .listSortOptionSelect{
+          > .recordSortSelectbox{
             width: 100%;
-            bottom:0px;
+            bottom: 0px;
           }
         }
-        > .recordSortButton{
+        > .recordReverseSortButton{
           opacity: 0;
           .align-self(flex-end);
           width: 14px;
@@ -4129,14 +4320,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .scrollToTop{ 
           display: none;
           padding-top: 2px;
-        }
-        > .recordDisplay_ViewGroup{
-          border: solid 1px gray;
-          border-radius: 5px;
-          margin: 0px 3px;
-          padding: 0px 2px;
-          background-color: white;
-          font-size: 0.9em;
         }
 
         > .recordTextSearch {
@@ -4255,23 +4438,30 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
   }
 
-  [class^="recordDisplay_ViewAs"]{
-    color: gray;
-    padding: 1px;
-    cursor: pointer;
-    display: none;
-    &:hover{ color: orangered; }
-  }
   .recordDisplay_ViewGroup{
     display: none;
+    height: 18px;
+    margin: 0px 3px;
+    padding: 0px 2px;
+    font-size: 0.9em;
+    > .pofffffff{
+      display: inline-block;
+    }
+  }
+  [class^="recordDisplay_ViewAs"]{
+    color: gray;
+    padding: 1px 2px 0px;
+    cursor: pointer;
+    display: none;
+    vertical-align: top;
+    &:hover{ color: @color_hoverAction; }
   }
   .recordView_HeaderSet{
-    font-weight: 300;
+    font-weight: 200;
     font-size: 0.8em;
     cursor: default;
-    padding: 1px;
-    margin-right: 2px;
-    vertical-align: top;
+    margin: 1px 3px 1px 1px;
+    display: inline-block;
   }
 
   #kshfLineChartTip_Active   { fill: darken(@color_bars     , 10%); }
