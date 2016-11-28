@@ -1602,7 +1602,7 @@ kshf.RecordDisplay.prototype = {
       }
       if(this.viewRecAs==='scatter'){
         this.refreshScatterVis();
-        this.DOM.scatterSVG_Axis_X.selectAll(".tickLine")
+        this.DOM.scatterAxis_X.selectAll(".tickLine")
           .style("height",(this.curHeight-50)+"px")
           .style("top",(-this.curHeight+50)+"px");
       }
@@ -1904,13 +1904,13 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     initDOM_MapView: function(){
       var me = this;
-      if(this.DOM.recordMap_Base) {
+      if(this.DOM.recordBase_Map) {
         this.DOM.recordGroup = this.DOM.recordMap_SVG.select(".recordGroup");
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
         return; // Do not initialize twice
       }
 
-      this.DOM.recordMap_Base = this.DOM.recordDisplayWrapper.append("div").attr("class","recordMap_Base");
+      this.DOM.recordBase_Map = this.DOM.recordDisplayWrapper.append("div").attr("class","recordBase_Map");
 
       // init _geo_ property
       var _geo_ = this.config.geo;
@@ -1943,7 +1943,7 @@ kshf.RecordDisplay.prototype = {
         this.style.width  = Math.abs(south_east.x-north_west.x)+"px";
       };
 
-      this.leafletRecordMap = L.map(this.DOM.recordMap_Base.node(), kshf.map.config )
+      this.leafletRecordMap = L.map(this.DOM.recordBase_Map.node(), kshf.map.config )
         .addLayer( new L.TileLayer( kshf.map.tileTemplate, kshf.map.tileConfig) )
         .setView(L.latLng(0,0),0)
         .on("viewreset",function(){ 
@@ -1985,14 +1985,14 @@ kshf.RecordDisplay.prototype = {
         }) 
       );
 
-      this.insertQueryBoxes(this.DOM.recordMap_Base.select(".leaflet-overlay-pane"),
+      this.insertQueryBoxes(this.DOM.recordBase_Map.select(".leaflet-overlay-pane"),
         function(t){
           if(d3.event.which !== 1) return; // only respond to left-click
           me.setDrawSelect("Drag");
           me.DOM.recordDisplayWrapper.attr("dragging",true);
           var bounds;
           d3.select("body").on("mousemove", function(e){
-            var curPos = d3.mouse(me.DOM.recordMap_Base.select(".leaflet-tile-pane").node());
+            var curPos = d3.mouse(me.DOM.recordBase_Map.select(".leaflet-tile-pane").node());
             //var curLatLong = me.leafletRecordMap.layerPointToLatLng(L.point(curPos[0], curPos[1]));
             var north_west = me.leafletRecordMap.latLngToLayerPoint(me.spatialFilter.bounds.getNorthWest());
             var south_east = me.leafletRecordMap.latLngToLayerPoint(me.spatialFilter.bounds.getSouthEast());
@@ -2027,11 +2027,11 @@ kshf.RecordDisplay.prototype = {
           if(d3.event.which !== 1) return; // only respond to left-click
           me.setDrawSelect("Drag");
           me.DOM.recordDisplayWrapper.attr("dragging",true);
-          var initPos = d3.mouse(me.DOM.recordMap_Base.select(".leaflet-tile-pane").node());
+          var initPos = d3.mouse(me.DOM.recordBase_Map.select(".leaflet-tile-pane").node());
           var north_west = me.leafletRecordMap.latLngToLayerPoint(me.spatialFilter.bounds.getNorthWest());
           var south_east = me.leafletRecordMap.latLngToLayerPoint(me.spatialFilter.bounds.getSouthEast());
           d3.select("body").on("mousemove", function(e){
-            var curPos = d3.mouse(me.DOM.recordMap_Base.select(".leaflet-tile-pane").node());
+            var curPos = d3.mouse(me.DOM.recordBase_Map.select(".leaflet-tile-pane").node());
             var difPos = [ initPos[0]-curPos[0], initPos[1]-curPos[1] ];
             // TODO: Move the bounds, do not draw a new one
             var bounds = L.latLngBounds([
@@ -2062,7 +2062,7 @@ kshf.RecordDisplay.prototype = {
       );
 
       this.drawSelect = null;
-      this.DOM.recordMap_Base.select(".leaflet-tile-pane")
+      this.DOM.recordBase_Map.select(".leaflet-tile-pane")
         .on("mousedown",function(){
           if(me.visMouseMode!=="draw") return;
           if(me.drawSelect==="Highlight") return;
@@ -2111,26 +2111,27 @@ kshf.RecordDisplay.prototype = {
 
           var bounds = L.latLngBounds([me.drawingStartPoint,curLatLong]);
           if(me.drawSelect==="Highlight"){
-            me.browser.flexAggr_Highlight.bounds = bounds;
-            //me.spatialQuery.highlight.setBounds(bounds);
-            // Refresh bounds
             me.DOM.recordDisplayWrapper.select(".spatialQueryBox_Highlight")
               .each(function(d){ updateRectangle.call(this,bounds); });
 
-            var records = [];
-            me.browser.records.forEach(function(record){ 
-              if(!record.isWanted) return;
-              if(record._geoBound_ === undefined) return;
-              // already have "bounds" variable
-              if(kshf.intersects(record._geoBound_, bounds)){
-                records.push(record);
-              } else {
-                record.remForHighlight(true);
-              }
-            });
-            me.browser.flexAggr_Highlight.summary = me.recordViewSummary; // record display
-            me.browser.flexAggr_Highlight.records = records;
-            me.browser.setSelect_Highlight();
+            if(this.tempTimer) clearTimeout(this.tempTimer);
+            this.tempTimer = setTimeout(function(){
+              var records = [];
+              me.browser.records.forEach(function(record){ 
+                if(!record.isWanted) return;
+                if(record._geoBound_ === undefined) return;
+                // already have "bounds" variable
+                if(kshf.intersects(record._geoBound_, bounds)){
+                  records.push(record);
+                } else {
+                  record.remForHighlight(true);
+                }
+              });
+              me.browser.flexAggr_Highlight.summary = me.recordViewSummary; // record display
+              me.browser.flexAggr_Highlight.records = records;
+              me.browser.flexAggr_Highlight.bounds = bounds;
+              me.browser.setSelect_Highlight();
+            }, 150);
           } else {
             me.spatialFilter.bounds = bounds;
             me.refreshQueryBox_Filter(bounds);
@@ -2330,8 +2331,13 @@ kshf.RecordDisplay.prototype = {
       if(this.viewRecAs!=='scatter' && this.viewRecAs!=='map') return;
       var _left, _right, _top, _bottom;
 
-      if(this.viewRecAs==='map' && bounds===undefined){
-        bounds = this.spatialFilter.bounds;
+      if(this.viewRecAs==='map' && bounds===undefined && this.spatialFilter.isFiltered){
+        var north_west = this.leafletRecordMap.latLngToLayerPoint(this.spatialFilter.bounds.getNorthWest());
+        var south_east = this.leafletRecordMap.latLngToLayerPoint(this.spatialFilter.bounds.getSouthEast());
+        _left = north_west.x;
+        _right = south_east.x
+        _top = north_west.y;
+        _bottom = south_east.y;
       }
 
       if( (typeof L !== 'undefined') && bounds instanceof L.LatLngBounds){
@@ -2424,8 +2430,8 @@ kshf.RecordDisplay.prototype = {
     initDOM_Scatter: function(){
       var me = this;
 
-      if(this.DOM.scatterGroup) {
-        this.DOM.recordGroup = this.DOM.scatterGroup.select(".recordGroup");
+      if(this.DOM.recordBase_Scatter) {
+        this.DOM.recordGroup = this.DOM.recordBase_Scatter.select(".recordGroup");
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
         return; // Do not initialize twice
       }
@@ -2458,53 +2464,76 @@ kshf.RecordDisplay.prototype = {
           }
         });
 
-      this.DOM.scatterGroup = this.DOM.recordDisplayWrapper
-        .append("div").attr("class","scatterGroup");
+      this.DOM.recordBase_Scatter = this.DOM.recordDisplayWrapper
+        .append("div").attr("class","recordBase_Scatter");
 
-      this.DOM.axisGroup = this.DOM.scatterGroup.append("div").attr("class","axisGroup");
+      this.DOM.scatterAxisGroup = this.DOM.recordBase_Scatter.append("div").attr("class","scatterAxisGroup");
 
-      this.DOM.scatterSVG_Axis_X = this.DOM.axisGroup.append("div").attr("class","scatterSVG_Axis scatterSVG_Axis_X");
-      this.DOM.scatterSVG_Axis_X.append("div").attr("class","tickGroup");
-      this.DOM.scatterSVG_Axis_X.append("div").attr("class","onRecordLine").html(
+      this.DOM.scatterAxis_X = this.DOM.scatterAxisGroup.append("div").attr("class","scatterAxis scatterAxis_X");
+      this.DOM.scatterAxis_X.append("div").attr("class","tickGroup");
+      this.DOM.scatterAxis_X.append("div").attr("class","onRecordLine").html(
         "<div class='tickLine'></div><div class='tickText'></div>");
 
-      this.DOM.scatterSVG_Axis_X.selectAll(".tickLine").style("height",(this.curHeight-50)+"px").style("top",(-this.curHeight+50)+"px");
+      this.DOM.scatterAxis_X.selectAll(".tickLine").style("height",(this.curHeight-50)+"px").style("top",(-this.curHeight+50)+"px");
 
-      this.DOM.scatterSVG_Axis_Y = this.DOM.axisGroup.append("div").attr("class","scatterSVG_Axis scatterSVG_Axis_Y");
-      this.DOM.scatterSVG_Axis_Y.append("div").attr("class","tickGroup");
-      this.DOM.scatterSVG_Axis_Y.append("div").attr("class","onRecordLine").html(
+      this.DOM.scatterAxis_Y = this.DOM.scatterAxisGroup.append("div").attr("class","scatterAxis scatterAxis_Y");
+      this.DOM.scatterAxis_Y.append("div").attr("class","tickGroup");
+      this.DOM.scatterAxis_Y.append("div").attr("class","onRecordLine").html(
         "<div class='tickLine' style='width: "+(this.curWidth)+"px; left: 0px; height: 0px'></div>"+
         "<div class='tickText'></div>");
 
-      //this.setScatterFilter();
+      function updateRectangle(bounds){
+        var _left   = me.scatterScaleX(bounds.left);
+        var _right  = me.scatterScaleX(bounds.right);
+        var _top    = me.scatterScaleY(bounds.top);
+        var _bottom = me.scatterScaleY(bounds.bottom);
+        d3.select(this)
+          .style("left",  _left+"px")
+          .style("top",   _top +"px")
+          .style("width", Math.abs(_right-_left)+"px")
+          .style("height",Math.abs(_bottom-_top)+"px");
+      };
 
       this.drawSelect = null;
-      this.DOM.recordGroupHolder = this.DOM.scatterGroup.append("div").attr("class","recordGroupHolder")
+      this.DOM.recordGroupHolder = this.DOM.recordBase_Scatter.append("div").attr("class","recordGroupHolder")
         .on("mousedown",function(){
           if(me.visMouseMode!=="draw") return;
           if(me.drawSelect==="Highlight") return;
           me.DOM.recordDisplayWrapper.attr("dragging",true);
           me.setDrawSelect("Filter");
+          var mousePos = d3.mouse(this);
           me.drawingStartPoint = [
-            me.scatterAxisScale_X.invert(d3.mouse(this)[0]), 
-            me.scatterAxisScale_Y.invert(d3.mouse(this)[1])
+            me.scatterAxisScale_X.invert(mousePos[0]), me.scatterAxisScale_Y.invert(mousePos[1])
           ];
           d3.event.stopPropagation();
           d3.event.preventDefault();
         })
         .on("mouseup",function(){ 
           if(me.visMouseMode!=="draw") return;
+          if(me.drawSelect==="Drag") return;
           if(me.drawSelect===null) return;
           me.DOM.recordDisplayWrapper.attr("dragging",null);
           if(me.drawSelect==="Filter"){
+            var mousePos = d3.mouse(this);
             var curMousePos = [
-              me.scatterAxisScale_X.invert(d3.mouse(this)[0]), 
-              me.scatterAxisScale_Y.invert(d3.mouse(this)[1])];
-
+              me.scatterAxisScale_X.invert(mousePos[0]), me.scatterAxisScale_Y.invert(mousePos[1])
+            ];
             if(curMousePos[1]!==me.drawingStartPoint[1] && me.drawingStartPoint[0] !== curMousePos[0]){
+              // enable filtering on both axis
               me.sortingOpt_Active.setRangeFilter(me.drawingStartPoint[1], curMousePos[1]);
               me.scatterAttrib.setRangeFilter(me.drawingStartPoint[0], curMousePos[0]);
             }
+          } else if(me.drawSelect==="Highlight"){
+            // Set compare selection
+            var cT = me.browser.setSelect_Compare(false,true);
+            var bounds = me.browser.flexAggr_Highlight.bounds;
+            me.browser['flexAggr_Compare_'+cT].bounds = bounds;
+            me.DOM.recordDisplayWrapper.select(".spatialQueryBox_Compare_"+cT)
+              .attr("active",true)
+              .each(function(){ 
+                // TODO: FIX!
+                updateRectangle.call(this,bounds);
+              });
           }
           me.setDrawSelect(null);
           d3.event.stopPropagation();
@@ -2512,30 +2541,71 @@ kshf.RecordDisplay.prototype = {
         })
         .on("mousemove",function(){
           if(me.visMouseMode!=="draw") return;
-          if(me.drawSelect===null) return;
-          if(me.drawSelect!=="Filter" && !d3.event.shiftKey){
-            me.setDrawSelect(null);
-            me.browser.clearSelect_Highlight();
-          }
           var mousePos = d3.mouse(this);
           var curMousePos = [
-            me.scatterAxisScale_X.invert(mousePos[0]), 
-            me.scatterAxisScale_Y.invert(mousePos[1])];
+            me.scatterAxisScale_X.invert(mousePos[0]), me.scatterAxisScale_Y.invert(mousePos[1])
+          ];
+          if(me.drawSelect===null){
+            if(d3.event.shiftKey){
+              me.setDrawSelect("Highlight");
+              me.drawingStartPoint = curMousePos;
+            } else {
+              return;
+            }
+          } else if(me.drawSelect==="Highlight"){
+            if(!d3.event.shiftKey){
+              me.setDrawSelect(null);
+              me.browser.clearSelect_Highlight();
+            } else {
+              // Highlight the area
+              var bounds = {
+                left: curMousePos[0],
+                right: me.drawingStartPoint[0],
+                top: curMousePos[1],
+                bottom: me.drawingStartPoint[1],
+              };
+              if(bounds.left>bounds.right){
+                var temp = bounds.left;
+                bounds.left = bounds.right;
+                bounds.right = temp;
+              }
+              if(bounds.top<bounds.bottom){
+                var temp = bounds.top;
+                bounds.top = bounds.bottom;
+                bounds.bottom = temp;
+              }
+              me.DOM.recordDisplayWrapper.select(".spatialQueryBox_Highlight")
+                .each(function(){ updateRectangle.call(this,bounds); });
 
-          if(d3.event.shiftKey && !me.drawSelect){
-            me.setDrawSelect("Highlight");
-            me.drawingStartPoint = curMousePos;
-          }
-          if(!me.drawSelect) return;
-
-          var bounds = {
-            left: curMousePos[0],
-            right: me.drawingStartPoint[0],
-            top: curMousePos[1],
-            bottom: me.drawingStartPoint[1],
-          };
-
-          if(me.drawSelect==="Filter"){
+              if(this.tempTimer) clearTimeout(this.tempTimer);
+              this.tempTimer = setTimeout(function(){
+                var records = [];
+                var yID = me.sortingOpt_Active.summaryID;
+                var xID = me.scatterAttrib.summaryID;
+                me.browser.records.forEach(function(record){ 
+                  if(!record.isWanted) return;
+                  var _x = record._valueCache[xID];
+                  var _y = record._valueCache[yID];
+                  if(_x>=bounds.left && _x<bounds.right && _y>=bounds.bottom && _y<bounds.top){
+                    records.push(record);
+                  } else {
+                    record.remForHighlight(true);
+                  }
+                });
+                me.browser.flexAggr_Highlight.records = records;
+                me.browser.flexAggr_Highlight.summary = me.textSearchSummary;
+                me.browser.flexAggr_Highlight.bounds = bounds;
+                me.browser.flexAggr_Highlight.data = {id: "<i class='fa fa-square-o'></i> (Area)"};
+                me.browser.setSelect_Highlight();
+              }, 150);
+            }
+          } else if(me.drawSelect==="Filter"){
+            var bounds = {
+              left: curMousePos[0],
+              right: me.drawingStartPoint[0],
+              top: curMousePos[1],
+              bottom: me.drawingStartPoint[1],
+            };
             me.refreshQueryBox_Filter(bounds);
           }
           d3.event.stopPropagation();
@@ -2632,8 +2702,8 @@ kshf.RecordDisplay.prototype = {
           if(d==="Filter"){
             me.scatterAttrib.summaryFilter.clearFilter();
             me.sortingOpt_Active.summaryFilter.clearFilter();
-          } else if(d!=="Highlight"){
-            //me.browser.clearSelect_Compare(d.substr(8));
+          } else if(d!=="Highlight"){ // Compare_X
+            me.browser.clearSelect_Compare(d.substr(8));
           }
           this.tipsy.hide();
         }
@@ -2654,14 +2724,14 @@ kshf.RecordDisplay.prototype = {
           .on("mousedown", setSizeCb);
 
       queryBoxes.append("div").attr("class","dragSelection fa fa-arrows")
-        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'sw', title: "Drag" }); })
+        .each(function(){ this.tipsy = new Tipsy(this, {gravity: 'se', title: "Drag" }); })
         .on("mouseenter", function(){ this.tipsy.show(); })
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("mousedown", dragCb);
 
       queryBoxes.append("div").attr("class","clearFilterButton fa")
         .each(function(d){ 
-          this.tipsy = new Tipsy(this, {gravity: 'sw', 
+          this.tipsy = new Tipsy(this, {gravity: 'nw', 
             title: (d==="Filter") ? kshf.lang.cur.RemoveFilter : kshf.lang.cur.Unlock
           });
         })
@@ -2840,9 +2910,8 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     refreshViz_Compare_All: function(){
-      if(this.viewRecAs!=='map') return;
       var me=this;
-      this.DOM.recordMap_Base.selectAll("[class*='spatialQueryBox_Comp']")
+      this.DOM.root.selectAll("[class*='spatialQueryBox_Comp']")
         .attr("active", function(d){ return me.browser.vizActive[d] ? true : null; });
     },
     /** -- */
@@ -3054,7 +3123,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     refreshScatterVis: function(){
-      if(this.DOM.scatterGroup===undefined) return;
+      if(this.DOM.recordBase_Scatter===undefined) return;
       var me = this;
       var scale = "scale("+(1/this.scatterTransform.z)+")";
 
@@ -3131,7 +3200,7 @@ kshf.RecordDisplay.prototype = {
 
       // TODO: add translateZ to reduce redraw (but causes flickering on chrome)
       var addTicks = function(axis, _translate){
-        var tGroup = me.DOM["scatterSVG_Axis_"+axis].select(".tickGroup");
+        var tGroup = me.DOM["scatterAxis_"+axis].select(".tickGroup");
         var axisScale = me["scatterAxisScale_"+axis];
         var axisScale_old = me["scatterAxisScale_"+axis+"_old"];
 
@@ -3153,15 +3222,15 @@ kshf.RecordDisplay.prototype = {
       addTicks("X","translateX(");
       addTicks("Y","translateY(");
 
-      this.DOM.scatterSVG_Axis_X.selectAll(".tickText")
+      this.DOM.scatterAxis_X.selectAll(".tickText")
         .html(function(tick){ return me.scatterAttrib.printWithUnitName(me.browser.getTickLabel(tick)); })
-      this.DOM.scatterSVG_Axis_Y.selectAll(".tickText")
+      this.DOM.scatterAxis_Y.selectAll(".tickText")
         .html(function(tick){ return me.sortingOpt_Active.printWithUnitName(me.browser.getTickLabel(tick)); })
 
-      this.DOM.scatterSVG_Axis_X.selectAll(".tickLine")
+      this.DOM.scatterAxis_X.selectAll(".tickLine")
         .style("height",(me.curHeight-50)+"px")
         .style("top",(-me.curHeight+50)+"px");
-      this.DOM.scatterSVG_Axis_Y.selectAll(".tickLine")
+      this.DOM.scatterAxis_Y.selectAll(".tickLine")
         .style("width",(this.curWidth)+"px");
 
       this.refreshQueryBox_Filter();
@@ -3427,12 +3496,12 @@ kshf.RecordDisplay.prototype = {
 
         var recX = this.scatterAxisScale_X(record._valueCache[accX]);
         var recY = this.scatterAxisScale_Y(record._valueCache[accY]);
-        this.DOM.scatterSVG_Axis_X.select(".onRecordLine").style("transform","translate(  "+recX+"px,0px)");
-        this.DOM.scatterSVG_Axis_Y.select(".onRecordLine").style("transform","translate(0px,"+recY+"px)");
+        this.DOM.scatterAxis_X.select(".onRecordLine").style("transform","translate(  "+recX+"px,0px)");
+        this.DOM.scatterAxis_Y.select(".onRecordLine").style("transform","translate(0px,"+recY+"px)");
 
-        this.DOM.scatterSVG_Axis_X.select(".onRecordLine > .tickText").html(
+        this.DOM.scatterAxis_X.select(".onRecordLine > .tickText").html(
           this.scatterAttrib.printWithUnitName(record._valueCache[accX] ));
-        this.DOM.scatterSVG_Axis_Y.select(".onRecordLine > .tickText").html(
+        this.DOM.scatterAxis_Y.select(".onRecordLine > .tickText").html(
           this.sortingOpt_Active.printWithUnitName(record._valueCache[accY] ));
       }
       if(this.viewRecAs==='map' || this.viewRecAs==='nodelink' || this.viewRecAs==='scatter'){
@@ -11503,7 +11572,7 @@ var Summary_Interval_functions = {
         } else {
           me.summaryFilter.clearFilter();
         }
-        delete me.setRangetimer;
+        delete me.rangeFilterTimer;
       }
       if(useTimer===undefined) {
         doFilter(this);

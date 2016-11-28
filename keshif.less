@@ -1656,7 +1656,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         background-color: white;
         color: @color_hoverAction;
         border-color: @color_hoverAction;
-        &:before{ content: "\f00d"; } // cross
+        &:before{ content: "\f00d" !important; } // cross
       }
     }
 
@@ -3444,7 +3444,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .previewLine{ opacity: 1 !important; }
     }
 
-    .scatterSVG_Axis_X{
+    .scatterAxis_X{
       width: 100%;
       position: absolute;
       bottom: -20px;
@@ -3466,7 +3466,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .scatterSVG_Axis_Y{
+    .scatterAxis_Y{
       height: 100%;
       position: absolute;
       width: 0px;
@@ -3491,7 +3491,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .scatterSVG_Axis{
+    .scatterAxis{
       > .tickGroup > .hmTicks {
         position: absolute;
         opacity: 0;
@@ -3599,10 +3599,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .recordMap_SVG{ pointer-events: none !important; }
           .kshfRecord{ pointer-events: none !important; }
           .recordGroup{ pointer-events: none !important; }
-          .scatterSVG_Axis{
+          .scatterAxis{
             > .tickGroup > .hmTicks { .transition(opacity 500ms); }
           }
-          .scatterGroup > .recordGroupHolder > .recordGroup_Scatter{ 
+          .recordBase_Scatter > .recordGroupHolder > .recordGroup_Scatter{ 
             pointer-events: none !important;
             .transition(none);
           }
@@ -3630,13 +3630,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: 100%;
         height: 100%;
       }
-      .scatterGroup{ 
+      .recordBase_Scatter{ 
         display: none;
         position: absolute;
         left: 35px;
         .calc(width, ~'100% - 35px');
         .calc(height, ~'100% - 50px');
-        > .axisGroup{
+        > .scatterAxisGroup{
           position: absolute;
           width: 100%;
           height: 100%;
@@ -3665,7 +3665,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-style: solid;
         z-index: 800;
         pointer-events: none;
-        .transition(all 700ms ease-in-out);
+        .transition(all 700ms ease-in-out, opacity 50ms linear);
         > .clearFilterButton{
           display: none;
           position: absolute;
@@ -3674,8 +3674,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           pointer-events: all;
           font-size: 0.9em;
           opacity: 1;
-          box-shadow: 0px 0px 2px white, 0px 0px 5px white, 0px 0px 5px white;
-          &:hover{ color: @color_hoverAction; }
+          &:hover{ 
+            color: @color_hoverAction;
+            background-color: white !important;
+          }
         }
         > .dragSelection{
           display: none;
@@ -3684,15 +3686,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           bottom: -0.5em;
           pointer-events: all;
           cursor: pointer;
-          font-size: 1.5em;
+          font-size: 20px; // absolute size bc leaflet messes up the font default size...
           border-radius: 50%;
           color: white;
+          text-shadow: 0px 0px 3px gray;
           &:hover{ 
             color: @color_hoverAction;
-            text-shadow: 0px 0px 3px white !important;
+            text-shadow: 0px 0px 3px white;
           }
         }
         > [class^='setSize']{
+          display: none;
           position: absolute;
           pointer-events: all;
           background-color: @color_hoverAction;
@@ -3717,46 +3721,57 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[active]{
           display: block;
           > .clearFilterButton{ display: block; }
-          > .dragSelection{ display: block; }
         }
 
         &.spatialQueryBox_Filter   { 
           border-color: @color_filter_range;
           color: @color_filter_range; 
           box-shadow : 0px 0px 20px darken(@color_filter_range, 20%);
-          > .dragSelection{ text-shadow: 0px 0px 3px @color_filter_range; }
           > .clearFilterButton{
             border-color: @color_filter_range;
             background-color: @color_filter_range;
           }
+          > .dragSelection{ display: block; }
+          > [class^='setSize']{ display: block; }
         }
         &.spatialQueryBox_Highlight{ 
           border-color: #ff7800;
           color: #ff7800; 
           box-shadow : 0px 0px 5px darken(#ff7800, 20%);
-          > .dragSelection{ background-color: #ff7800; }
+          pointer-events: none;
+          .transition(none);
+          > [class^='setSize']{ pointer-events: none; }
         }
         &.spatialQueryBox_Compare_A{ 
           border-color: @color_Compare_A;
           color: @color_Compare_A; 
           box-shadow : 0px 0px 20px @color_Compare_A;
-          > .dragSelection{ background-color: @color_Compare_A; }
+          > .clearFilterButton{
+            background-color: @color_Compare_A;
+            &:before{ content: "\f023"; }
+          }
         }
         &.spatialQueryBox_Compare_B{ 
           border-color: @color_Compare_B;
           color: @color_Compare_B; 
           box-shadow : 0px 0px 20px @color_Compare_B;
-          > .dragSelection{ background-color: @color_Compare_B; }
+          > .clearFilterButton{
+            background-color: @color_Compare_B;
+            &:before{ content: "\f023"; }
+          }
         }
         &.spatialQueryBox_Compare_C{ 
           border-color: @color_Compare_C;
           color: @color_Compare_C; 
           box-shadow : 0px 0px 10px #7A7A77, 0px 0px 10px #7A7A77;
-          > .dragSelection{ background-color: @color_Compare_C; }
+          > .clearFilterButton{
+            background-color: @color_Compare_C;
+            &:before{ content: "\f023"; }
+          }
         }
       }
 
-      .recordMap_Base{
+      .recordBase_Map{
         height: 100%;
         background: white;
         display: none;
@@ -3863,13 +3878,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .sortButton      { display: none; }
         .recordGroup_List{ display: none; }
 
-        .scatterGroup    { display: block; }
+        .recordBase_Scatter    { display: block; }
         .recordDisplay_ViewAsScatter {
           background-color: white;
           > svg { fill: black; }
         }
-
-        .spatialQueryBox{ z-index: -1;}
 
         .kshfRecord{
           opacity: 0.9;
@@ -3935,12 +3948,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[visMouseMode="pan"]{
         .MouseMode-pan { color: black;     cursor: default; }
         .MouseMode-draw{ color: lightgray; cursor: pointer; }
-        .recordMap_Base{
+        .recordBase_Map{
           cursor: -moz-grab;
           cursor: -webkit-grab;
           cursor: grab;
         }
-        .scatterGroup{        
+        .recordBase_Scatter{        
           cursor: -moz-grab;
           cursor: -webkit-grab;
           cursor: grab;
@@ -3949,8 +3962,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[visMouseMode="draw"]{
         .MouseMode-pan { color: lightgray; cursor: pointer; }
         .MouseMode-draw{ color: black;     cursor: default; }
-        .recordMap_Base{ cursor: crosshair; }
-        .scatterGroup{ cursor: crosshair; }
+        .recordBase_Map{ cursor: crosshair; }
+        .recordBase_Scatter{ cursor: crosshair; }
       }
 
       &[displayType="map"]{
@@ -3960,7 +3973,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         // mapControl-MouseMode
         .recordDisplay_ViewAsMap{ color: black; background-color: white; }
 
-        .recordMap_Base{ display: block; }
+        .recordBase_Map{ display: block; }
 
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
         .recordGroup_List{ display: none; }
