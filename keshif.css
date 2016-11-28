@@ -133,7 +133,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: -o-transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
   transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out, background-color 100ms linear, opacity 200ms linear;
 }
-.kshf[adjustWidth="true"] {
+.kshf[adjustWidth] {
   cursor: ew-resize;
 }
 .kshf[pointerEvents="true"] .scaleModeControl {
@@ -193,16 +193,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf[authoringMode] .kshfSummary[viewType='list']:not([collapsed]):hover .chartCatLabelResize {
   display: block !important;
 }
-.kshf[authoringMode] .recordName {
-  cursor: text;
-  pointer-events: all !important;
-}
-.kshf[authoringMode] .recordName:hover {
-  margin: -1px;
-  border: solid 1px gray;
-}
 .kshf[authoringMode] .recordInfo {
   pointer-events: none !important;
+}
+.kshf[authoringMode] .recordInfo > .recordName {
+  pointer-events: all;
 }
 .kshf[authoringMode] .summaryName_text {
   cursor: text;
@@ -308,21 +303,21 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompare_A] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_A {
+.kshf[selectCompare_A] .percentileGroup[percentileChartVisible] > .percentileChart_Compare_A {
   display: block;
 }
 .kshf[selectCompare_B] .measure_Compare_B {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompare_B] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_B {
+.kshf[selectCompare_B] .percentileGroup[percentileChartVisible] > .percentileChart_Compare_B {
   display: block;
 }
 .kshf[selectCompare_C] .measure_Compare_C {
   opacity: 1 !important;
   pointer-events: all !important;
 }
-.kshf[selectCompare_C] .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C {
+.kshf[selectCompare_C] .percentileGroup[percentileChartVisible] > .percentileChart_Compare_C {
   display: block;
 }
 .kshf[recordEncoding="sort"] .kshfSummary[summary_type="interval"] .encodeRecordButton[encodingtype='sort'] {
@@ -402,10 +397,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf span.unitName {
   margin-left: 1px;
   opacity: 0.6;
-}
-.kshf tspan.unitName {
-  opacity: 0.6;
-  margin-left: 1px;
 }
 .kshf .saveBrowserConfig {
   display: none;
@@ -715,18 +706,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf > .attributePanel .nugget[hidden='true'] {
   display: none;
 }
-.kshf > .attributePanel .nugget[aggr_initialized=false] > .nuggetViz > .nuggetInfo {
+.kshf > .attributePanel .nugget[aggr_initialized] > .nuggetViz > .nuggetInfo {
   font-size: 2em;
   text-align: center;
   position: relative;
 }
-.kshf > .attributePanel .nugget[aggr_initialized=false] > .nuggetViz > .nuggetInfo:before {
+.kshf > .attributePanel .nugget[aggr_initialized] > .nuggetViz > .nuggetInfo:before {
   content: "\f110";
 }
-.kshf > .attributePanel .nugget[aggr_initialized=false] > .nuggetViz > .nuggetChart {
+.kshf > .attributePanel .nugget[aggr_initialized] > .nuggetViz > .nuggetChart {
   display: none !important;
 }
-.kshf > .attributePanel .nugget[aggr_initialized=false] > .nuggetViz:hover > .nuggetInfo {
+.kshf > .attributePanel .nugget[aggr_initialized] > .nuggetViz:hover > .nuggetInfo {
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
 }
@@ -952,6 +943,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .recordInfo > .recordName {
   pointer-events: none;
+  cursor: text;
+}
+.kshf .recordInfo > .recordName:hover {
+  margin: -1px;
+  border: solid 1px gray;
 }
 .kshf .filterClearAll {
   display: none;
@@ -986,6 +982,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -moz-osx-font-smoothing: grayscale;
   content: "\f0b0";
   vertical-align: top;
+  margin-right: 2px;
 }
 .kshf .filterClearAll:after {
   content: "Show all";
@@ -1150,7 +1147,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .panel_Basic > .measureSelectBox_Wrapper {
   position: relative;
 }
-.kshf .panel_Basic > .measureSelectBox_Wrapper[showMeasureBox="true"] > .measureSelectBox {
+.kshf .panel_Basic > .measureSelectBox_Wrapper[showMeasureBox] > .measureSelectBox {
   display: block;
 }
 .kshf .panel_Basic > .filterClearAll {
@@ -1363,10 +1360,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   left: 0px;
   text-align: center;
   color: white;
-  -webkit-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  -moz-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  -o-transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
-  transition: background-color 100ms linear,color 100ms linear, opacity 400ms;
+  -webkit-transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
+  -moz-transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
+  -o-transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
+  transition: background-color 100ms linear, color 100ms linear, opacity 400ms;
 }
 .kshf .breadCrumb[filtered=false] {
   display: none;
@@ -1495,29 +1492,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   position: absolute;
   z-index: 230;
 }
-.kshf .panel .dropIcon {
-  pointer-events: none;
-  margin: 0px;
-  font-size: 2em;
-  color: #7E8A96;
-  text-shadow: 1px 1px 1px #B6BCC2;
-  display: inline-block;
-}
-.kshf .panel .dropText {
-  display: none;
-  margin-left: 4px;
-  font-size: 1.0em;
-  font-weight: 300;
-}
-.kshf .panel[hidebars=true] .catGlyph {
-  display: none;
-}
-.kshf .panel[hidebaraxis=true] .summaryCategorical .chartAxis_Measure {
-  display: none;
-}
-.kshf .panel[hidebaraxis=true] .summaryCategorical .barChartMainInfo {
-  display: none;
-}
 .kshf .panel > .panelAdjustWidth {
   display: none;
   opacity: 0;
@@ -1544,6 +1518,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 .kshf .panel > .panelAdjustWidth[helpin] {
   display: block;
+}
+.kshf .panel .dropIcon {
+  pointer-events: none;
+  margin: 0px;
+  font-size: 2em;
+  color: #7E8A96;
+  text-shadow: 1px 1px 1px #B6BCC2;
+  display: inline-block;
+}
+.kshf .panel .dropText {
+  display: none;
+  margin-left: 4px;
+  font-size: 1.0em;
+  font-weight: 300;
+}
+.kshf .panel[hideBars] .catGlyph {
+  display: none;
+}
+.kshf .panel[hideBarAxis] .summaryCategorical .chartAxis_Measure {
+  display: none;
 }
 .kshf .panel.panel_bottom {
   display: -webkit-box;
@@ -2484,10 +2478,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   transition: -webkit-transform 250ms ease-in-out,-moz-transform 250ms ease-in-out,-o-transform 250ms ease-in-out,transform 250ms ease-in-out;
 }
 .kshf .aggrGlyph > span[class^="measure_Compare"] {
-  -webkit-transition: -webkit-transform 500ms ease-in-out, opacity 300ms ease-in-out;
-  -moz-transition: -moz-transform 500ms ease-in-out, opacity 300ms ease-in-out;
-  -o-transition: -o-transform 500ms ease-in-out, opacity 300ms ease-in-out;
-  transition: -webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out, opacity 300ms ease-in-out;
+  -webkit-transition: opacity 300ms ease-in-out;
+  -moz-transition: opacity 300ms ease-in-out;
+  -o-transition: opacity 300ms ease-in-out;
+  transition: opacity 300ms ease-in-out;
   opacity: 0;
 }
 .kshf .aggrGlyph > span[class^="measure_Compare_A"] {
@@ -2754,17 +2748,17 @@ top:calc(50% - 5px);
   font-style: italic;
   font-weight: 300;
 }
-.kshf div.kshfRecord {
+.kshf .kshfRecord:not(.kshfRecord_Scatter) {
   vertical-align: top;
 }
-.kshf div.kshfRecord > .recordRank {
+.kshf .kshfRecord:not(.kshfRecord_Scatter) > .recordRank {
   font-size: 0.6em;
   color: gray;
   font-weight: 300;
   font-style: italic;
   text-align: right;
 }
-.kshf div.kshfRecord > .recordToggleDetail {
+.kshf .kshfRecord:not(.kshfRecord_Scatter) > .recordToggleDetail {
   display: none;
   vertical-align: top;
   width: 18px;
@@ -2782,66 +2776,66 @@ top:calc(50% - 5px);
   -o-transition: color 200ms linear, -o-transform 500ms ease-in-out;
   transition: color 200ms linear,-webkit-transform 500ms ease-in-out,-moz-transform 500ms ease-in-out,-o-transform 500ms ease-in-out,transform 500ms ease-in-out;
 }
-.kshf div.kshfRecord > .recordToggleDetail:hover {
+.kshf .kshfRecord:not(.kshfRecord_Scatter) > .recordToggleDetail:hover {
   color: #cb5454;
 }
-.kshf div.kshfRecord .item_details {
+.kshf .kshfRecord:not(.kshfRecord_Scatter) .item_details {
   display: none;
 }
-.kshf div.kshfRecord.showDetails {
+.kshf .kshfRecord:not(.kshfRecord_Scatter).showDetails {
   max-height: none;
 }
-.kshf div.kshfRecord.showDetails > .recordToggleDetail {
+.kshf .kshfRecord:not(.kshfRecord_Scatter).showDetails > .recordToggleDetail {
   -webkit-transform: rotate(180deg);
   -moz-transform: rotate(180deg);
   -ms-transform: rotate(180deg);
   -o-transform: rotate(180deg);
   transform: rotate(180deg);
 }
-.kshf div.kshfRecord.showDetails .item_details {
+.kshf .kshfRecord:not(.kshfRecord_Scatter).showDetails .item_details {
   display: block;
 }
-.kshf div.kshfRecord[selection^="onRecord"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[selection^="onRecord"] {
   padding: 0px;
   background-color: #efeadf !important;
   border: solid 1px #ab9157 !important;
   border-radius: 6px;
 }
-.kshf div.kshfRecord[selection="highlighted"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[selection="highlighted"] {
   padding: 0px;
   background-color: #ffece5;
   border: solid 1px #ff6a33 !important;
 }
-.kshf div.kshfRecord[rec_compared] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared] {
   padding: 0px;
 }
-.kshf div.kshfRecord[rec_compared^="A"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared^="A"] {
   background-color: #bed8d8;
   border: solid 1px #2f4f4f !important;
 }
-.kshf div.kshfRecord[rec_compared^="A"][selection="highlighted"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared^="A"][selection="highlighted"] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNiZWQ4ZDgiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjYmVkOGQ4IiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
   background-image: -webkit-linear-gradient(left, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
   background-image: -moz-linear-gradient(left, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
   background-image: -o-linear-gradient(left, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
   background-image: linear-gradient(to right, #bed8d8 0%, #bed8d8 20%, #ffece5 80%, #ffece5 100%);
 }
-.kshf div.kshfRecord[rec_compared^="B"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared^="B"] {
   background-color: #c7facd;
   border: solid 1px #12e32c !important;
 }
-.kshf div.kshfRecord[rec_compared^="B"][selection="highlighted"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared^="B"][selection="highlighted"] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNjN2ZhY2QiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjYzdmYWNkIiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
   background-image: -webkit-linear-gradient(left, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
   background-image: -moz-linear-gradient(left, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
   background-image: -o-linear-gradient(left, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
   background-image: linear-gradient(to right, #c7facd 0%, #c7facd 20%, #ffece5 80%, #ffece5 100%);
 }
-.kshf div.kshfRecord[rec_compared^="C"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared^="C"] {
   background-color: #fffda9;
   border: solid 1px #fff810 !important;
 }
-.kshf div.kshfRecord[rec_compared^="C"][selection="highlighted"] {
+.kshf .kshfRecord:not(.kshfRecord_Scatter)[rec_compared^="C"][selection="highlighted"] {
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmZkYTkiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMjAlIiBzdG9wLWNvbG9yPSIjZmZmZGE5IiBzdG9wLW9wYWNpdHk9IjEiLz48c3RvcCBvZmZzZXQ9IjgwJSIgc3RvcC1jb2xvcj0iI2ZmZWNlNSIgc3RvcC1vcGFjaXR5PSIxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZmZlY2U1IiBzdG9wLW9wYWNpdHk9IjEiLz48L2xpbmVhckdyYWRpZW50PjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjbGVzc2hhdC1nZW5lcmF0ZWQpIiAvPjwvc3ZnPg==);
   background-image: -webkit-linear-gradient(left, #fffda9 0%, #fffda9 20%, #ffece5 80%, #ffece5 100%);
   background-image: -moz-linear-gradient(left, #fffda9 0%, #fffda9 20%, #ffece5 80%, #ffece5 100%);
@@ -2956,6 +2950,11 @@ top:calc(50% - 5px);
   border-style: solid;
   border-color: lightgray;
   border-width: 1px 0px;
+  opacity: 0;
+  -webkit-transition: opacity 500ms linear;
+  -moz-transition: opacity 500ms linear;
+  -o-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
 }
 .kshf .percentileGroup > .percentileTitle {
   font-size: 0.6em;
@@ -2975,10 +2974,10 @@ top:calc(50% - 5px);
   -o-transition: opacity 500ms linear;
   transition: opacity 500ms linear;
 }
-.kshf .percentileGroup[percentileChartVisible="Basic"] > .percentileChart_Active > .quantile {
-  height: 11px;
+.kshf .percentileGroup[percentileChartVisible] {
+  opacity: 1;
 }
-.kshf .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Active > .quantile {
+.kshf .percentileGroup[percentileChartVisible] > .percentileChart_Active > .quantile {
   height: 28px;
 }
 .kshf .percentileGroup:hover > .percentileTitle {
@@ -3147,6 +3146,9 @@ top:calc(50% - 5px);
   position: absolute;
   border-radius: 4px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+  left: 3px;
+  bottom: 5px;
+  font-size: 0.9em;
 }
 .kshf .visViewControl > span[class^='NodeLinkControl'] {
   display: none !important;
@@ -3158,14 +3160,33 @@ top:calc(50% - 5px);
   display: none !important;
 }
 .kshf .visViewControl > .visViewControlButton {
-  border-bottom: 1px solid #ccc;
+  display: inline-block;
+  border-right: 1px solid #ccc;
   cursor: pointer;
   padding: 3px;
   text-align: center;
 }
+.kshf .visViewControl > .visViewControlButton.fa-plus {
+  border-left: solid 2px #ccc;
+  padding-left: 5px;
+}
+.kshf .visViewControl > .visViewControlButton.fa-square-o {
+  border-left: solid 2px #ccc;
+  padding-left: 5px;
+}
 .kshf .visViewControl > .visViewControlButton:hover {
   background-color: #EEE;
   color: #cb5454;
+}
+.kshf .visViewControl > .visViewControlButton:first-child {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.kshf .visViewControl > .visViewControlButton:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom: none;
+  border-right: none;
 }
 .kshf .visViewControl > .NodeLinkControl-LinkAttribute:before {
   content: "Link: ";
@@ -3174,68 +3195,31 @@ top:calc(50% - 5px);
   height: 25px;
 }
 .kshf .visViewControl > .ScatterControl-XAttrib {
-  font-weight: 400;
+  font-weight: 300;
   font-size: 0.8em;
-  height: 25px;
-}
-.kshf .visViewControl > .ScatterControl-XAttrib:before {
-  content: "Vs: ";
+  padding: 1px 7px;
 }
 .kshf .leaflet-tile-container {
   pointer-events: all !important;
 }
-.kshf .leaflet-container .visViewControl,
-.kshf .leaflet-control-container .visViewControl {
-  left: 3px;
-  top: 3px;
-}
-.kshf .leaflet-container .visViewControl > .visViewControlButton:first-child,
-.kshf .leaflet-control-container .visViewControl > .visViewControlButton:first-child {
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-}
-.kshf .leaflet-container .visViewControl > .visViewControlButton:last-child,
-.kshf .leaflet-control-container .visViewControl > .visViewControlButton:last-child {
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom: none;
-}
 .kshf .recordDisplay[displayType="map"]:not([collapsed]) .visViewControl {
-  display: block;
-  left: 3px;
-  top: 3px;
-  font-size: 0.8em;
-}
-.kshf .recordDisplay[displayType="map"]:not([collapsed]) .visViewControl > .visViewControlButton {
-  width: 22px;
   display: block;
 }
 .kshf .recordDisplay[displayType="map"]:not([collapsed]) .visViewControl > span[class^='MapControl'] {
-  display: block !important;
+  display: inline-block !important;
 }
 .kshf .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl {
   display: block;
-  right: 3px;
-  bottom: 3px;
-  font-size: 0.9em;
-}
-.kshf .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl > .visViewControlButton {
-  display: inline-block;
-  border-bottom: none;
-  border-right: 1px solid #ccc;
 }
 .kshf .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl > span[class^='NodeLinkControl'] {
-  display: block !important;
+  display: inline-block !important;
 }
-.kshf .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl > .visViewControlButton:first-child {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
+.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl {
+  display: block;
+  left: 35px;
 }
-.kshf .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl > .visViewControlButton:last-child {
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom: none;
-  border-right: none;
+.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl > span[class^='ScatterControl'] {
+  display: inline-block !important;
 }
 .kshf .measureAxis_2 {
   display: none;
@@ -3247,6 +3231,10 @@ top:calc(50% - 5px);
   -moz-transition: max-height 700ms ease-in-out;
   -o-transition: max-height 700ms ease-in-out;
   transition: max-height 700ms ease-in-out;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   /*        &:before{
             content:''; width:100%; height:100%;
             position:absolute; top:0; left:0;
@@ -3677,7 +3665,6 @@ height:calc(100% - 12px);
   top: 0px;
   width: 100%;
   height: 100%;
-  margin-left: -2px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .measurePercentControl {
   bottom: -1px;
@@ -3698,15 +3685,9 @@ height:calc(100% - 12px);
   left: auto;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedMeasureValue {
-  position: absolute;
   width: 100%;
   height: 2px;
-  border-bottom: solid 1px #ffb599;
-  opacity: 0;
-  -webkit-transition: opacity 200ms linear;
-  -moz-transition: opacity 200ms linear;
-  -o-transition: opacity 200ms linear;
-  transition: opacity 200ms linear;
+  border-bottom-width: 1px;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .histogram > .chartAxis_Measure > .highlightedMeasureValue > .highlightedAggrValuePointer {
   left: -10px;
@@ -3780,6 +3761,10 @@ height:calc(100% - 12px);
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider {
   position: relative;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .zoomControl {
   display: none;
@@ -3805,6 +3790,10 @@ height:calc(100% - 12px);
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine {
   height: 11px;
   cursor: ew-resize;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .recordValue {
   position: absolute;
@@ -3865,7 +3854,7 @@ height:calc(100% - 12px);
   top: 1px;
   width: 1px;
   pointer-events: none;
-  background-color: #30B8C4;
+  background-color: #30b8c4;
   opacity: 0;
   -webkit-transition: left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms;
   -moz-transition: left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms;
@@ -3880,6 +3869,10 @@ height:calc(100% - 12px);
   background-color: orangered !important;
 }
 .kshf .kshfSummary > .wrapper > .summaryInterval > .intervalSlider > .controlLine > .rangeHandle {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   position: absolute;
   cursor: col-resize;
   z-index: 10;
@@ -4026,6 +4019,9 @@ height:calc(100% - 10px);
 .kshf .kshfSummary[collapsed] > .wrapper .summaryInterval > .intervalSlider {
   display: none;
 }
+.kshf .kshfSummary[collapsed] .percentileGroup {
+  display: none;
+}
 .kshf .kshfSummary[filtered=true] > .headerGroup .clearFilterButton {
   opacity: 1;
   pointer-events: all;
@@ -4080,16 +4076,9 @@ height:calc(100% - 10px);
 }
 .kshf .kshfSummary[viewType="map"] .visViewControl {
   display: block;
-  left: 3px;
-  top: 3px;
-  font-size: 0.8em;
-}
-.kshf .kshfSummary[viewType="map"] .visViewControl > .visViewControlButton {
-  width: 22px;
-  display: block;
 }
 .kshf .kshfSummary[viewType="map"] .visViewControl > span[class^='MapControl'] {
-  display: block !important;
+  display: inline-block !important;
 }
 .kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
   display: none;
@@ -4217,6 +4206,17 @@ height:calc(100% - 10px);
   text-shadow: 0px 0px 1px #ff6a33, 0px 0px 1px #ff6a33;
   opacity: 0.8;
 }
+.kshf .highlightedMeasureValue {
+  position: absolute;
+  -webkit-transition: -webkit-transform 200ms ease-in-out, opacity 200ms linear;
+  -moz-transition: -moz-transform 200ms ease-in-out, opacity 200ms linear;
+  -o-transition: -o-transform 200ms ease-in-out, opacity 200ms linear;
+  transition: -webkit-transform 200ms ease-in-out,-moz-transform 200ms ease-in-out,-o-transform 200ms ease-in-out,transform 200ms ease-in-out, opacity 200ms linear;
+  opacity: 0;
+  border-color: #ffb599;
+  border-style: solid;
+  border-width: 0px;
+}
 .kshf .belowCatChart {
   position: relative;
   height: 18px;
@@ -4230,14 +4230,8 @@ height:calc(100% - 10px);
   height: 13px;
 }
 .kshf .belowCatChart > .chartAxis_Measure > .highlightedMeasureValue {
-  position: absolute;
-  border-left: solid 1px #ffb599;
+  border-left-width: 1px;
   margin-left: -1px;
-  opacity: 0;
-  -webkit-transition: opacity 200ms linear;
-  -moz-transition: opacity 200ms linear;
-  -o-transition: opacity 200ms linear;
-  transition: opacity 200ms linear;
 }
 .kshf .belowCatChart > .chartAxis_Measure > .highlightedMeasureValue > .highlightedAggrValuePointer {
   bottom: -14px;
@@ -4285,12 +4279,10 @@ height:calc(100% - 10px);
   top: -1px;
 }
 .kshf .belowCatChart > .catMapColorScale > .scaleModeControl {
-  position: absolute;
   left: auto;
   right: -57px;
   top: -1px;
   color: gray;
-  cursor: pointer;
   padding: 0px 2px;
   line-height: 0.7em;
   border-radius: 5px;
@@ -4306,18 +4298,12 @@ height:calc(100% - 10px);
   color: black;
 }
 .kshf .belowCatChart > .catMapColorScale > .highlightedMeasureValue {
-  position: absolute;
   top: 2px;
   margin-left: -3px;
   height: 6px;
   width: 6px;
   border-radius: 10px;
   background-color: orangered;
-  -webkit-transition: opacity 250ms linear;
-  -moz-transition: opacity 250ms linear;
-  -o-transition: opacity 250ms linear;
-  transition: opacity 250ms linear;
-  opacity: 0;
 }
 .kshf .belowCatChart > .catMapColorScale > .mapColorBlock {
   -webkit-box-flex: 1;
@@ -4363,41 +4349,96 @@ height:calc(100% - 10px);
 .kshf[selectHighlight] .previewLine {
   opacity: 1 !important;
 }
-.kshf .scatterSVG_Axis_Y .hmTicks > text {
-  text-anchor: end;
+.kshf .scatterSVG_Axis_X {
+  width: 100%;
+  position: absolute;
+  bottom: -20px;
+  height: 20px;
 }
-.kshf .scatterSVG_Axis_X .hmTicks > text {
-  text-anchor: middle;
+.kshf .scatterSVG_Axis_X > .tickGroup > .hmTicks > .tickLine {
+  border-left: solid 1px #EEE;
+}
+.kshf .scatterSVG_Axis_X > .tickGroup > .hmTicks > .tickText {
+  position: relative;
+  left: -50%;
+  top: -4px;
+  text-align: center;
+}
+.kshf .scatterSVG_Axis_X > .onRecordLine > .tickText {
+  left: -50%;
+  position: relative !important;
+}
+.kshf .scatterSVG_Axis_X > .onRecordLine > .tickLine {
+  border-width: 0px 1px 0px 1px;
+}
+.kshf .scatterSVG_Axis_Y {
+  height: 100%;
+  position: absolute;
+  width: 0px;
+  left: 0px;
+  top: 0px;
+}
+.kshf .scatterSVG_Axis_Y > .tickGroup > .hmTicks > .tickLine {
+  border-top: solid 1px #EEE;
+  top: 0px;
+}
+.kshf .scatterSVG_Axis_Y > .tickGroup > .hmTicks > .tickText {
+  position: absolute;
+  width: 33px;
+  left: -35px;
+  text-align: right;
+  top: -0.5em;
+}
+.kshf .scatterSVG_Axis_Y > .onRecordLine > .tickText {
+  right: 0px;
+  top: -0.5em;
+}
+.kshf .scatterSVG_Axis_Y > .onRecordLine > .tickLine {
+  border-width: 1px 0px 1px 0px;
 }
 .kshf .scatterSVG_Axis > .tickGroup > .hmTicks {
+  position: absolute;
   opacity: 0;
-  -webkit-transition: opacity 500ms;
-  -moz-transition: opacity 500ms;
-  -o-transition: opacity 500ms;
-  transition: opacity 500ms;
+  z-index: -1;
+  -webkit-transition: opacity 500ms, -webkit-transform 700ms ease-in-out;
+  -moz-transition: opacity 500ms, -moz-transform 700ms ease-in-out;
+  -o-transition: opacity 500ms, -o-transform 700ms ease-in-out;
+  transition: opacity 500ms,-webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
-.kshf .scatterSVG_Axis > .tickGroup > .hmTicks > text {
+.kshf .scatterSVG_Axis > .tickGroup > .hmTicks > .tickText {
+  display: inline-block;
+  white-space: nowrap;
   font-weight: 200;
   font-size: 0.7em;
   pointer-events: none;
 }
-.kshf .scatterSVG_Axis > .tickGroup > .hmTicks > line {
-  stroke: #EEE;
+.kshf .scatterSVG_Axis > .tickGroup > .hmTicks > .tickLine {
+  position: absolute;
+  left: 0px;
 }
-.kshf .scatterSVG_Axis > .tickGroup > .hmTicks[zero] > line {
-  stroke: #999;
-  stroke-dasharray: 4 1;
+.kshf .scatterSVG_Axis > .tickGroup > .hmTicks[zero] > .tickLine {
+  border-color: #999;
 }
 .kshf .scatterSVG_Axis > .onRecordLine {
+  display: inline;
+  position: absolute;
   opacity: 0;
   -webkit-transition: opacity 200ms;
   -moz-transition: opacity 200ms;
   -o-transition: opacity 200ms;
   transition: opacity 200ms;
 }
-.kshf .scatterSVG_Axis > .onRecordLine > line {
-  stroke: #d0be96;
-  stroke-width: 2;
+.kshf .scatterSVG_Axis > .onRecordLine > .tickLine {
+  position: absolute;
+  border-color: #d0be96;
+  border-style: solid;
+}
+.kshf .scatterSVG_Axis > .onRecordLine > .tickText {
+  position: absolute;
+  background-color: #f5f1e8;
+  border: solid 1px #d5c5a2;
+  font-weight: 700;
+  font-size: 0.7em;
 }
 .kshf .selectVertLine {
   display: inline-block;
@@ -4494,87 +4535,255 @@ height:calc(100% - 10px);
   transition: height 700ms ease-in-out;
   position: relative;
 }
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .leaflet-overlay-pane {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .leaflet-interactive {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .recordMap_SVG {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .kshfRecord {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .recordGroup {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .scatterSVG_Axis > .tickGroup > .hmTicks {
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .scatterGroup > .recordGroupHolder > .recordGroup_Scatter {
+  pointer-events: none !important;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .spatialQueryBox {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .dragSelection {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] .clearFilterButton {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[dragging] [class^='setSize'] {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] {
+  cursor: cell !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] .leaflet-overlay-pane {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] .leaflet-interactive {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] .recordMap_SVG {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] .kshfRecord {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] .recordGroup {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect] .recordGroup_Scatter {
+  pointer-events: none !important;
+}
+.kshf .recordDisplay .recordDisplayWrapper[drawSelect="Highlight"] .spatialQueryBox_Highlight {
+  display: block;
+}
 .kshf .recordDisplay .recordNodeLink_SVG {
   display: none;
   width: 100%;
   height: 100%;
 }
-.kshf .recordDisplay .recordScatter_SVG {
+.kshf .recordDisplay .scatterGroup {
   display: none;
+  position: absolute;
+  left: 35px;
+  -lh-property: 0;
+width:-webkit-calc(100% - 35px);
+width:-moz-calc(100% - 35px);
+width:calc(100% - 35px);
+;
+  -lh-property: 0;
+height:-webkit-calc(100% - 50px);
+height:-moz-calc(100% - 50px);
+height:calc(100% - 50px);
+;
+}
+.kshf .recordDisplay .scatterGroup > .axisGroup {
+  position: absolute;
   width: 100%;
   height: 100%;
 }
-.kshf .recordDisplay .recordMap_Base {
+.kshf .recordDisplay .scatterGroup > .recordGroupHolder {
+  position: absolute;
+  width: 100%;
   height: 100%;
-  background: white;
-  display: none;
+  overflow: hidden;
+  border-left: solid 1px gray;
+  border-bottom: solid 1px gray;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox {
+.kshf .recordDisplay .scatterGroup > .recordGroupHolder > .recordGroup_Scatter {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  -webkit-transform-origin: top left;
+  -moz-transform-origin: top left;
+  -ms-transform-origin: top left;
+  -o-transform-origin: top left;
+  transform-origin: top left;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
+}
+.kshf .recordDisplay .spatialQueryBox {
   display: none;
   position: absolute;
   border-width: 2px;
   border-style: solid;
   z-index: 800;
   pointer-events: none;
+  -webkit-transition: all 700ms ease-in-out;
+  -moz-transition: all 700ms ease-in-out;
+  -o-transition: all 700ms ease-in-out;
+  transition: all 700ms ease-in-out;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox > .clearSelection {
+.kshf .recordDisplay .spatialQueryBox > .clearFilterButton {
+  display: none;
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  pointer-events: all;
+  font-size: 0.9em;
+  opacity: 1;
+  box-shadow: 0px 0px 2px white, 0px 0px 5px white, 0px 0px 5px white;
+}
+.kshf .recordDisplay .spatialQueryBox > .clearFilterButton:hover {
+  color: #cb5454;
+}
+.kshf .recordDisplay .spatialQueryBox > .dragSelection {
   display: none;
   position: absolute;
   right: -0.5em;
-  top: -0.5em;
-  background-color: white;
+  bottom: -0.5em;
   pointer-events: all;
-  border-radius: 1em;
-  font-size: 1.2em;
-  height: 15px;
-  width: 15px;
-  line-height: 0.9em;
-}
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox:hover {
-  border-color: orangered !important;
-  color: orangered;
   cursor: pointer;
+  font-size: 1.5em;
+  border-radius: 50%;
+  color: white;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox[active] {
+.kshf .recordDisplay .spatialQueryBox > .dragSelection:hover {
+  color: #cb5454;
+  text-shadow: 0px 0px 3px white !important;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'] {
+  position: absolute;
+  pointer-events: all;
+  background-color: #cb5454;
+  opacity: 0;
+  -webkit-transition: opacity 200ms linear;
+  -moz-transition: opacity 200ms linear;
+  -o-transition: opacity 200ms linear;
+  transition: opacity 200ms linear;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize']:hover {
+  opacity: 1;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-l,
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-r {
+  cursor: ew-resize;
+  height: 100%;
+  width: 6px;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-t,
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-b {
+  cursor: ns-resize;
+  width: 100%;
+  height: 6px;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-l {
+  left: -3px;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-r {
+  right: -3px;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-t {
+  top: -3px;
+}
+.kshf .recordDisplay .spatialQueryBox > [class^='setSize'].setSize-b {
+  bottom: -3px;
+}
+.kshf .recordDisplay .spatialQueryBox[active] {
   display: block;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox[active] > .clearSelection {
+.kshf .recordDisplay .spatialQueryBox[active] > .clearFilterButton {
   display: block;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Filter {
-  border-color: #b1bdc5;
-  box-shadow: 0px 0px 20px #5A7283;
+.kshf .recordDisplay .spatialQueryBox[active] > .dragSelection {
+  display: block;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Highlight {
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Filter {
+  border-color: #30b8c4;
+  color: #30b8c4;
+  box-shadow: 0px 0px 20px #1c6b72;
+}
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Filter > .dragSelection {
+  text-shadow: 0px 0px 3px #30b8c4;
+}
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Filter > .clearFilterButton {
+  border-color: #30b8c4;
+  background-color: #30b8c4;
+}
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Highlight {
   border-color: #ff7800;
+  color: #ff7800;
   box-shadow: 0px 0px 5px #994800;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_A {
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Highlight > .dragSelection {
+  background-color: #ff7800;
+}
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Compare_A {
   border-color: #2f4f4f;
+  color: #2f4f4f;
   box-shadow: 0px 0px 20px #2f4f4f;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_B {
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Compare_A > .dragSelection {
+  background-color: #2f4f4f;
+}
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Compare_B {
   border-color: #39ef4f;
+  color: #39ef4f;
   box-shadow: 0px 0px 20px #39ef4f;
 }
-.kshf .recordDisplay .recordMap_Base .spatialQueryBox.spatialQueryBox_Compare_C {
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Compare_B > .dragSelection {
+  background-color: #39ef4f;
+}
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Compare_C {
   border-color: #fffedc;
+  color: #fffedc;
   box-shadow: 0px 0px 10px #7A7A77, 0px 0px 10px #7A7A77;
 }
-.kshf .recordDisplay .recordMap_Base[drawSelect] {
-  cursor: cell !important;
+.kshf .recordDisplay .spatialQueryBox.spatialQueryBox_Compare_C > .dragSelection {
+  background-color: #fffedc;
 }
-.kshf .recordDisplay .recordMap_Base[drawSelect] .leaflet-overlay-pane {
-  pointer-events: none;
-}
-.kshf .recordDisplay .recordMap_Base[drawSelect] .leaflet-interactive {
-  pointer-events: none;
-}
-.kshf .recordDisplay .recordMap_Base[drawSelect="Filter"] .spatialQueryBox_Filter {
-  display: block;
-}
-.kshf .recordDisplay .recordMap_Base[drawSelect="Highlight"] .spatialQueryBox_Highlight {
-  display: block;
+.kshf .recordDisplay .recordMap_Base {
+  height: 100%;
+  background: white;
+  display: none;
 }
 .kshf .recordDisplay .leaflet-control > a:hover {
   color: orangered;
@@ -4671,12 +4880,6 @@ height:calc(100% - 10px);
 .kshf .recordDisplay[showRank=false] .itemRank_control {
   color: gray;
 }
-.kshf .recordDisplay .scatterAxisLine {
-  stroke: #999;
-}
-.kshf .recordDisplay[displayType="scatter"] {
-  overflow: visible !important;
-}
 .kshf .recordDisplay[displayType="scatter"] .scrollToTop {
   display: none;
 }
@@ -4686,7 +4889,7 @@ height:calc(100% - 10px);
 .kshf .recordDisplay[displayType="scatter"] .recordGroup_List {
   display: none;
 }
-.kshf .recordDisplay[displayType="scatter"] .recordScatter_SVG {
+.kshf .recordDisplay[displayType="scatter"] .scatterGroup {
   display: block;
 }
 .kshf .recordDisplay[displayType="scatter"] .recordDisplay_ViewAsScatter {
@@ -4695,100 +4898,125 @@ height:calc(100% - 10px);
 .kshf .recordDisplay[displayType="scatter"] .recordDisplay_ViewAsScatter > svg {
   fill: black;
 }
-.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl {
-  display: block;
-  right: 3px;
-  bottom: 3px;
-  font-size: 0.8em;
-}
-.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl > .visViewControlButton {
-  display: inline-block;
-  border-bottom: none;
-  border-right: 1px solid #ccc;
-}
-.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl > span[class^='ScatterControl'] {
-  display: inline-block !important;
-}
-.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl > .visViewControlButton:first-child {
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-}
-.kshf .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl > .visViewControlButton:last-child {
-  border-top-right-radius: 4px;
-  border-bottom-right-radius: 4px;
-  border-bottom: none;
-  border-right: none;
-}
-.kshf .recordDisplay[displayType="scatter"] .recordGroup {
-  overflow: visible !important;
+.kshf .recordDisplay[displayType="scatter"] .spatialQueryBox {
+  z-index: -1;
 }
 .kshf .recordDisplay[displayType="scatter"] .kshfRecord {
-  stroke-width: 0.5px;
-  stroke-opacity: 0.5;
+  opacity: 0.9;
+  position: absolute;
   cursor: pointer;
   pointer-events: all;
+  overflow: visible;
+  -webkit-transition: -webkit-transform 700ms ease-in-out;
+  -moz-transition: -moz-transform 700ms ease-in-out;
+  -o-transition: -o-transform 700ms ease-in-out;
+  transition: -webkit-transform 700ms ease-in-out,-moz-transform 700ms ease-in-out,-o-transform 700ms ease-in-out,transform 700ms ease-in-out;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord {
-  -webkit-transition: opacity 500ms ease, background-color 100ms linear, -webkit-transform 250ms ease-in-out;
-  -moz-transition: opacity 500ms ease, background-color 100ms linear, -moz-transform 250ms ease-in-out;
-  -o-transition: opacity 500ms ease, background-color 100ms linear, -o-transform 250ms ease-in-out;
-  transition: opacity 500ms ease, background-color 100ms linear,-webkit-transform 250ms ease-in-out,-moz-transform 250ms ease-in-out,-o-transform 250ms ease-in-out,transform 250ms ease-in-out;
-}
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord > circle {
-  stroke: gray;
-  stroke-width: 1;
-  fill: #c9d3da;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord > .recordDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  border: solid 1px gray;
+  background-color: #c9d3da;
   cursor: pointer;
   -webkit-transition: all 400ms ease-in-out;
   -moz-transition: all 400ms ease-in-out;
   -o-transition: all 400ms ease-in-out;
   transition: all 400ms ease-in-out;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord > text.kshfRecord_label {
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord > .kshfRecord_label {
+  display: block;
+  position: absolute;
+  left: 4px;
+  top: -1em;
+  white-space: nowrap;
   opacity: 0;
+  padding: 1px 3px;
   font-size: 0.8em;
   pointer-events: none;
-  text-shadow: 0px 0px 5px white, 0px 0px 5px white, 0px 0px 2px white;
+  text-shadow: 0px 0px 5px white;
   -webkit-transition: opacity 200ms linear;
   -moz-transition: opacity 200ms linear;
   -o-transition: opacity 200ms linear;
   transition: opacity 200ms linear;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[selection="onRecord"] > circle {
-  fill: #efeadf !important;
-  stroke: #463b23;
-  stroke-width: 2;
-}
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[selection="onRecord"] > text.kshfRecord_label {
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[selection="onRecord"] {
   opacity: 1;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[selection="related"] > circle {
-  stroke: green;
-  stroke-width: 2;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[selection="onRecord"] > .recordDot {
+  background-color: #efeadf;
+  border-color: #463b23;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[selection="related"] > text.kshfRecord_label {
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[selection="onRecord"] > .kshfRecord_label {
   opacity: 1;
-  fill: green;
+  background-color: white;
+  border: solid 1px #b5a686;
+  border-radius: 5px;
+  padding: 0px 2px;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[selection="highlighted"] > circle {
-  fill: orangered !important;
-  stroke: orangered;
-  stroke-width: 2;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[selection="related"] > .recordDot {
+  background-color: green;
+  border-width: 2;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[rec_compared] > circle {
-  stroke-width: 2;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[selection="related"] > .kshfRecord_label {
+  opacity: 1;
+  color: green;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[rec_compared^="A"] > circle {
-  fill: #2f4f4f;
-  stroke: #2f4f4f;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[selection="highlighted"] > .recordDot {
+  background-color: orangered;
+  border-color: orangered;
+  border-width: 2px;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[rec_compared^="B"] > circle {
-  fill: #39ef4f;
-  stroke: #39ef4f;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[rec_compared] > .recordDot {
+  border-width: 2;
 }
-.kshf .recordDisplay[displayType="scatter"] g.kshfRecord[rec_compared^="C"] > circle {
-  fill: #fffedc;
-  stroke: #fffedc;
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[rec_compared^="A"] > .recordDot {
+  background-color: #2f4f4f;
+  border-color: #2f4f4f;
+}
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[rec_compared^="B"] > .recordDot {
+  background-color: #39ef4f;
+  border-color: #39ef4f;
+}
+.kshf .recordDisplay[displayType="scatter"] .kshfRecord[rec_compared^="C"] > .recordDot {
+  background-color: #fffedc;
+  border-color: #fffedc;
+}
+.kshf .recordDisplay[visMouseMode="pan"] .MouseMode-pan {
+  color: black;
+  cursor: default;
+}
+.kshf .recordDisplay[visMouseMode="pan"] .MouseMode-draw {
+  color: lightgray;
+  cursor: pointer;
+}
+.kshf .recordDisplay[visMouseMode="pan"] .recordMap_Base {
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.kshf .recordDisplay[visMouseMode="pan"] .scatterGroup {
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+.kshf .recordDisplay[visMouseMode="draw"] .MouseMode-pan {
+  color: lightgray;
+  cursor: pointer;
+}
+.kshf .recordDisplay[visMouseMode="draw"] .MouseMode-draw {
+  color: black;
+  cursor: default;
+}
+.kshf .recordDisplay[visMouseMode="draw"] .recordMap_Base {
+  cursor: crosshair;
+}
+.kshf .recordDisplay[visMouseMode="draw"] .scatterGroup {
+  cursor: crosshair;
 }
 .kshf .recordDisplay[displayType="map"] {
   overflow: visible !important;
@@ -4805,21 +5033,6 @@ height:calc(100% - 10px);
 }
 .kshf .recordDisplay[displayType="map"] .recordMap_Base {
   display: block;
-}
-.kshf .recordDisplay[displayType="map"][mapMouseControl="pan"] .MapControl-MouseMode:after {
-  content: "\f255";
-}
-.kshf .recordDisplay[displayType="map"][mapMouseControl="pan"] .MapControl-MouseMode:hover:after {
-  content: "\f096";
-}
-.kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .MapControl-MouseMode:after {
-  content: "\f096";
-}
-.kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .MapControl-MouseMode:hover:after {
-  content: "\f255";
-}
-.kshf .recordDisplay[displayType="map"][mapMouseControl="draw"] .recordMap_Base {
-  cursor: crosshair;
 }
 .kshf .recordDisplay[displayType="map"] > .recordDisplayHeader > .recordColorScale {
   display: -webkit-box;
@@ -5643,6 +5856,8 @@ height:calc(100% - 10px);
 }
 .kshf .recordDisplay_ViewGroup > .pofffffff {
   display: inline-block;
+  vertical-align: top;
+  margin-top: 1px;
 }
 .kshf [class^="recordDisplay_ViewAs"] {
   color: gray;

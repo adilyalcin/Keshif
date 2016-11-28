@@ -49,6 +49,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @color_filter_clear: #788D9B;
 @color_preview_clear: orangered;
 @color_onRecord_back: #EFEADF;
+@color_filter_range: #30B8C4;
 
 @color_query_and: #1D4870;
 @color_query_or:  #1C737A;
@@ -115,13 +116,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .rangeHandle{ .transition(@bar_animation); }
       }
     }
-    &[adjustWidth="true"]{
-      cursor: ew-resize;
-    }
+    &[adjustWidth]{ cursor: ew-resize; }
     &[pointerEvents="true"]{
-      .scaleModeControl{
-        pointer-events: all;
-      }
+      .scaleModeControl{ pointer-events: all; }
       .kshfSummary > .wrapper > {
         .summaryInterval > .intervalSlider{ 
           pointer-events: all;
@@ -159,7 +156,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &[authoringMode]{
       //left: 120px;
       > .attributePanel{
-          .display(flex);
+        .display(flex);
       }
       > .panel_Wrapper{
         margin-left: 220px;
@@ -175,15 +172,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .chartCatLabelResize{ display: block !important; }
         }
       }
-      .recordName{
-        cursor: text;
-        pointer-events: all !important;
-        &:hover{
-          margin: -1px;
-          border: solid 1px gray;
-        }
+      .recordInfo {
+        pointer-events: none !important;
+        > .recordName{ pointer-events: all; }
       }
-      .recordInfo{ pointer-events: none !important; }
       .summaryName_text{ 
         cursor: text;
         &:hover {
@@ -252,18 +244,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     &[selectCompare_A]{
       .measure_Compare_A{ opacity: 1 !important; pointer-events: all !important; }
-      .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_A{ display: block; }
+      .percentileGroup[percentileChartVisible] > .percentileChart_Compare_A{ display: block; }
     }
     &[selectCompare_B]{
       .measure_Compare_B{ opacity: 1 !important; pointer-events: all !important;}
-      .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_B{ display: block; }
+      .percentileGroup[percentileChartVisible] > .percentileChart_Compare_B{ display: block; }
     }
     &[selectCompare_C]{
       .measure_Compare_C{ opacity: 1 !important; pointer-events: all !important;}
-      .percentileGroup[percentileChartVisible="Extended"] > .percentileChart_Compare_C{ display: block; }
+      .percentileGroup[percentileChartVisible] > .percentileChart_Compare_C{ display: block; }
     }
     &[recordEncoding="sort"]{
-      .kshfSummary[summary_type="interval"] {
+      .kshfSummary[summary_type="interval"]{
         .encodeRecordButton[encodingtype='sort']{ display: inline-block; }
       }
     }
@@ -274,7 +266,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
     &[recordEncoding="scatter"]{
-      .kshfSummary[summary_type="interval"] {
+      .kshfSummary[summary_type="interval"]{
         .encodeRecordButton[encodingtype='sort']   { display: inline-block; }
         .encodeRecordButton[encodingtype='scatter']{ display: inline-block; }
       }
@@ -329,14 +321,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       opacity: 0.6; //color: gray;
     }
 
-    tspan.unitName{
-      opacity: 0.6;
-      margin-left: 1px;
-    }
-    
-    .saveBrowserConfig{
-      display: none;
-    }
+    .saveBrowserConfig{ display: none; }
+
     .configUser{
       display: none;
       &[auth="false"] {
@@ -349,9 +335,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
     }
 
-    .fa-dropbox{
-      color: #007EE5 !important;
-    }
+    .fa-dropbox{ color: #007EE5 !important; }
 
     .sortButton{
       cursor: pointer;
@@ -564,7 +548,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[filtered='true']{ display: none; }
         &[hidden='true']{ display: none; }
-        &[aggr_initialized=false]{
+        &[aggr_initialized]{
           > .nuggetViz {
             > .nuggetInfo{
               font-size: 2em;
@@ -720,11 +704,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         margin-right: 3px;
         > .unitName{ font-weight: 400; }
       }
-      > .measureFuncType{
-        font-weight: 300;
-      }
-      > .recordName{
+      > .measureFuncType{ font-weight: 300; }
+      > .recordName{ 
         pointer-events: none;
+        cursor: text;
+        &:hover{
+          margin: -1px;
+          border: solid 1px gray;
+        }
       }
     }
 
@@ -753,10 +740,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         -moz-osx-font-smoothing: grayscale;
         content: "\f0b0"; // fa-filter
         vertical-align: top;
+        margin-right: 2px;
       }
-      &:after{
-        content: "Show all";
-      }
+      &:after{ content: "Show all"; }
     }
 
     .measureSelectBox{
@@ -873,11 +859,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       margin-bottom: 4px;
       padding-bottom: 3px;
 
-      // ***************************************************************************
-      // MEASURE SELECT BOX
       > .measureSelectBox_Wrapper{
         position: relative;
-        &[showMeasureBox="true"] > .measureSelectBox{ display: block; }
+        &[showMeasureBox] > .measureSelectBox{ display: block; }
       }
       
       > .filterClearAll{ top: 3px; }
@@ -960,45 +944,45 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
 
     > .warningBox_wrapper{
-        position: absolute;
-        top: -20px;
-        opacity: 0;
-        margin: 0 auto;
-        width: 100%;
-        text-align: center;
-        z-index: 50;
-        pointer-events: none;
-        .transition(opacity 500ms ease-in-out, top 500ms);
-        > .warningBox{
-          display: inline-block;
-          background-color: #F8EE82;
-          border-radius: 5px;
+      position: absolute;
+      top: -20px;
+      opacity: 0;
+      margin: 0 auto;
+      width: 100%;
+      text-align: center;
+      z-index: 50;
+      pointer-events: none;
+      .transition(opacity 500ms ease-in-out, top 500ms);
+      > .warningBox{
+        display: inline-block;
+        background-color: #F8EE82;
+        border-radius: 5px;
+        font-size: 0.8em;
+        font-weight: 100;
+        padding: 2px 5px;
+        border: solid 1px rgb(214, 206, 121);
+        box-shadow: 1px 1px 3px gray;
+        > .warningText{
+          cursor: default;
+          > a{
+            color: #665F17;
+            font-weight: 500;
+          }
+        }
+        > .dismiss{
+          margin-left: 5px;
+          color: gray;
+          cursor: pointer;
+          text-decoration: underline;
           font-size: 0.8em;
-          font-weight: 100;
-          padding: 2px 5px;
-          border: solid 1px rgb(214, 206, 121);
-          box-shadow: 1px 1px 3px gray;
-          > .warningText{
-            cursor: default;
-            > a{
-              color: #665F17;
-              font-weight: 500;
-            }
-          }
-          > .dismiss{
-            margin-left: 5px;
-            color: gray;
-            cursor: pointer;
-            text-decoration: underline;
-            font-size: 0.8em;
-            &:hover{ color: orangered; }
-          }
+          &:hover{ color: orangered; }
         }
-        &[shown=true]{
-          opacity: 1;
-          top: 5px;
-          pointer-events: all;
-        }
+      }
+      &[shown=true]{
+        opacity: 1;
+        top: 5px;
+        pointer-events: all;
+      }
     }
 
     > .pointerBlock{
@@ -1051,7 +1035,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         left: 0px;
         text-align: center;
         color: white;
-        .transition(~"background-color 100ms linear,color 100ms linear, opacity 400ms");
+        .transition(background-color 100ms linear,color 100ms linear, opacity 400ms);
       }
       &[filtered=false]{ display: none; }
       &.crumbMode_Filter {
@@ -1169,29 +1153,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         position: absolute;
         z-index: 230;
       }
-      .dropIcon{
-        pointer-events: none;
-        margin: 0px;
-        font-size: 2em;
-        color: #7E8A96;
-        text-shadow: 1px 1px 1px #B6BCC2;
-        display: inline-block;
-      }
-      .dropText{
-        display: none;
-        margin-left: 4px;
-        font-size: 1.0em;
-        font-weight: 300;
-      }
-      &[hidebars=true] {
-        .catGlyph{ display:none; }
-      }
-      &[hidebaraxis=true] {
-        .summaryCategorical{
-          .chartAxis_Measure{ display:none; }
-          .barChartMainInfo { display:none; }
-        }
-      }
       > .panelAdjustWidth{
         display: none;
         opacity: 0;
@@ -1214,6 +1175,22 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[helpin]{ display: block; }
       }
+      .dropIcon{
+        pointer-events: none;
+        margin: 0px;
+        font-size: 2em;
+        color: #7E8A96;
+        text-shadow: 1px 1px 1px #B6BCC2;
+        display: inline-block;
+      }
+      .dropText{
+        display: none;
+        margin-left: 4px;
+        font-size: 1.0em;
+        font-weight: 300;
+      }
+      &[hideBars] .catGlyph{ display:none; }
+      &[hideBarAxis] .summaryCategorical .chartAxis_Measure{ display:none; }
       &.panel_bottom{
         .display(flex);
         .flex-direction(column);
@@ -1968,7 +1945,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .transition(~'transform 250ms ease-in-out');
         }
         &[class^="measure_Compare"]{
-          .transition(~'transform 500ms ease-in-out, opacity 300ms ease-in-out');
+          .transition(opacity 300ms ease-in-out);
           opacity: 0;
         }
         &[class^="measure_Compare_A"]{ background-color: @color_Compare_A; }
@@ -2002,7 +1979,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           margin-top: 4px;
           margin-bottom: 4px;
         }
-        //> [class^="measure_Active"]{ pointer-events: none; }
         > [class^="measure_Compare"]{ 
           height: 1px;
           margin: 0px;
@@ -2207,7 +2183,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     } // .kshfRecord
 
     // List / Grid Views
-    div.kshfRecord{
+    .kshfRecord:not(.kshfRecord_Scatter){
       vertical-align: top;
       > .recordRank{
         font-size: 0.6em;
@@ -2352,10 +2328,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .display(flex);
       .flex-direction(column);
       position: relative;
-      // height: 16px; Depends on UI state
       border-style: solid;
       border-color: lightgray;
       border-width: 1px 0px;
+      opacity: 0;
+      .transition(opacity 500ms linear);
       > .percentileTitle{
         font-size: 0.6em;
         position: absolute;
@@ -2371,9 +2348,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         opacity: 0;
         .transition(opacity 500ms linear);
       }
-      // Fixed height for active selection: So it covers the whole chart. Compare selections will be on top.
-      &[percentileChartVisible="Basic"] > .percentileChart_Active > .quantile{ height: 11px; }
-      &[percentileChartVisible="Extended"] > .percentileChart_Active > .quantile{ height: 28px; }
+      &[percentileChartVisible] {
+        opacity: 1;
+        > .percentileChart_Active > .quantile{ height: 28px; }
+      }
       &:hover > .percentileTitle{ opacity: 1; }
     } // percentileGroup
 
@@ -2495,6 +2473,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       position: absolute;
       border-radius: 4px;
       box-shadow: 0 1px 5px rgba(0,0,0,0.65);
+      left: 3px;
+      bottom: 5px;
+      font-size: 0.9em;
 
       > span[class^='NodeLinkControl']{
         display: none !important;
@@ -2507,13 +2488,26 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       > .visViewControlButton{
-        border-bottom: 1px solid #ccc;
+        display: inline-block;
+        border-right: 1px solid #ccc;
         cursor: pointer;
         padding: 3px;
         text-align: center;
+        &.fa-plus{ border-left: solid 2px #ccc; padding-left: 5px; }
+        &.fa-square-o{ border-left: solid 2px #ccc; padding-left: 5px; }
         &:hover{
           background-color: #EEE;
           color: @color_hoverAction;
+        }
+        &:first-child{
+          border-top-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+        }
+        &:last-child{
+          border-top-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+          border-bottom: none;
+          border-right: none;
         }
       }
       > .NodeLinkControl-LinkAttribute:before{
@@ -2523,12 +2517,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         height: 25px;
       }
       > .ScatterControl-XAttrib{
-        font-weight: 400;
+        font-weight: 300;
         font-size: 0.8em;
-        height: 25px;
-        &:before{
-          content: "Vs: ";
-        }
+        padding: 1px 7px;
       }
     }
 
@@ -2536,53 +2527,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       pointer-events: all !important;
     }
 
-    .leaflet-container .visViewControl, .leaflet-control-container .visViewControl{
-      left: 3px;
-      top: 3px;
-      > .visViewControlButton:first-child{
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-      }
-      > .visViewControlButton:last-child{
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-        border-bottom: none;
-      }
-    }
-
     .recordDisplay[displayType="map"]:not([collapsed]) .visViewControl{
       display: block;
-      left: 3px;
-      top: 3px;
-      font-size: 0.8em;
-      > .visViewControlButton{ 
-        width: 22px;
-        display: block;
-      }
-      > span[class^='MapControl']{ display: block !important; }
+      > span[class^='MapControl']{      display: inline-block !important; }
     }
     .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl{
       display: block;
-      right: 3px;
-      bottom: 3px;
-      font-size: 0.9em;
-      > .visViewControlButton{ 
-        display: inline-block;
-        border-bottom: none;
-        border-right: 1px solid #ccc;
-      }
-      > span[class^='NodeLinkControl']{ display: block !important; }
-      > .visViewControlButton:first-child{
-        border-top-left-radius: 4px;
-        border-bottom-left-radius: 4px;
-      }
-      > .visViewControlButton:last-child{
-        border-top-right-radius: 4px;
-        border-bottom-right-radius: 4px;
-        border-bottom: none;
-        border-right: none;
-      }
+      > span[class^='NodeLinkControl']{ display: inline-block !important; }
     }
+    .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl{
+      display: block;
+      left: 35px;
+      > span[class^='ScatterControl']{ display: inline-block !important; }
+    }
+
 
 
     .measureAxis_2{ display: none; }
@@ -2591,6 +2549,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: block;
         position: relative;
         .transition(max-height 700ms ease-in-out);
+        .user-select(none);
 
         > .wrapper{
             position: relative;
@@ -2922,7 +2881,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         top: 0px;
                         width: 100%;
                         height: 100%;
-                        margin-left: -2px;
                         > .measurePercentControl{
                           bottom: -1px;
                           width: 24px;
@@ -2942,15 +2900,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           }
                         }
                         > .highlightedMeasureValue{
-                          position: absolute;
                           width: 100%;
                           height: 2px;
-                          border-bottom: solid 1px lighten(@color_preview,20%);
-                          opacity: 0;
-                          .transition(opacity 200ms linear);
-                          > .highlightedAggrValuePointer{
-                            left: -10px;
-                          }
+                          border-bottom-width: 1px;
+                          > .highlightedAggrValuePointer{ left: -10px; }
                         }
                         > .tickGroup > .tick{
                             width: calc(~"100% - 21px");
@@ -3008,6 +2961,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                 }
                 > .intervalSlider{
                     position:relative;
+                    .user-select(none);
                     > .zoomControl{
                       display: none;
                       position: absolute;
@@ -3024,6 +2978,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .controlLine {
                         height: 11px;
                         cursor: ew-resize;
+                        .user-select(none);
                         > .recordValue{
                           position:absolute;
                           z-index: 20;
@@ -3076,7 +3031,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                             top: 1px;
                             width:1px;
                             pointer-events: none;
-                            background-color: #30B8C4;
+                            background-color: @color_filter_range;
                             opacity: 0;
                             .transition(~"left 700ms ease-in-out, width 700ms ease-in-out, opacity 500ms");
                             &[filtered=true]{
@@ -3087,6 +3042,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                           }
                         }
                         > .rangeHandle{
+                          .user-select(none);
                           position: absolute;
                           cursor: col-resize;
                           z-index: 10;
@@ -3143,7 +3099,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       position:relative;
                       > .valueTick{
                         position:absolute;
-                        .transition(~"left 700ms ease-in-out, opacity 700ms");
+                        .transition(left 700ms ease-in-out, opacity 700ms);
                         > .text{
                           top: -1px;
                           font-size: 0.7em;
@@ -3203,6 +3159,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .histogram { display: none; }
             > .intervalSlider { display: none; }
           }
+          .percentileGroup{ display: none; }
         }
 
         &[filtered=true] {
@@ -3251,14 +3208,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         z-index: 1;
         .visViewControl{ 
           display: block;
-          left: 3px;
-          top: 3px;
-          font-size: 0.8em;
-          > .visViewControlButton{ 
-            width: 22px;
-            display: block;
-          }
-          > span[class^='MapControl']{ display: block !important; }
+          > span[class^='MapControl']{ display: inline-block !important; }
         }
 
         .summaryCategorical{
@@ -3369,6 +3319,15 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       opacity: 0.8;
     }
 
+    .highlightedMeasureValue{
+      position: absolute;
+      .transition(transform 200ms ease-in-out, opacity 200ms linear);
+      opacity: 0;
+      border-color: lighten(@color_preview,20%);
+      border-style: solid;
+      border-width: 0px;
+    }
+
     .belowCatChart{
       position:relative;
       height: 18px;
@@ -3378,15 +3337,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           right: 0px;
           top: 1px;
         }
-        > .scaleModeControl{ 
-          height: 13px;
-        }
+        > .scaleModeControl{ height: 13px; }
         > .highlightedMeasureValue{
-          position: absolute;
-          border-left: solid 1px lighten(@color_preview,20%);
+          border-left-width: 1px;
           margin-left: -1px;
-          opacity: 0;
-          .transition(opacity 200ms linear);
           > .highlightedAggrValuePointer{
             bottom: -14px;
             left: -3px;
@@ -3422,12 +3376,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           top: -1px;
         }
         > .scaleModeControl{
-          position: absolute;
           left: auto;
           right: -57px;
           top: -1px;
           color: gray;
-          cursor: pointer;
           padding: 0px 2px;
           line-height: 0.7em;
           border-radius: 5px;
@@ -3440,15 +3392,12 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         > .highlightedMeasureValue{
-          position: absolute;
           top: 2px;
           margin-left: -3px; // center the circle
           height: 6px;
           width: 6px;
           border-radius: 10px;
           background-color: orangered;
-          .transition(opacity 250ms linear);
-          opacity: 0;
         }
         > .mapColorBlock{
           .flex(1);
@@ -3495,29 +3444,91 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .previewLine{ opacity: 1 !important; }
     }
 
-    .scatterSVG_Axis_Y .hmTicks > text{ text-anchor: end; }
-    .scatterSVG_Axis_X .hmTicks > text{ text-anchor: middle; }
+    .scatterSVG_Axis_X{
+      width: 100%;
+      position: absolute;
+      bottom: -20px;
+      height: 20px;
+      > .tickGroup > .hmTicks {
+        > .tickLine{
+          border-left: solid 1px #EEE;
+        }
+        > .tickText{
+          position: relative;
+          left: -50%;
+          top: -4px;
+          text-align: center;
+        }
+      }
+      > .onRecordLine {
+        > .tickText{ left: -50%; position: relative !important; }
+        > .tickLine{ border-width: 0px 1px 0px 1px; }
+      }
+    }
+
+    .scatterSVG_Axis_Y{
+      height: 100%;
+      position: absolute;
+      width: 0px;
+      left: 0px;
+      top: 0px;
+      > .tickGroup > .hmTicks {
+        > .tickLine{
+          border-top: solid 1px #EEE;
+          top: 0px;
+        }
+        > .tickText{
+          position: absolute;
+          width: 33px;
+          left: -35px;
+          text-align: right;
+          top: -0.5em;
+        }
+      }
+      > .onRecordLine {
+        > .tickText{ right: 0px; top: -0.5em; }
+        > .tickLine{ border-width: 1px 0px 1px 0px; }
+      }
+    }
 
     .scatterSVG_Axis{
       > .tickGroup > .hmTicks {
+        position: absolute;
         opacity: 0;
-        .transition(opacity 500ms);
-        > text{
+        z-index: -1;
+        .transition(opacity 500ms, transform 700ms ease-in-out);
+        > .tickText{
+          display: inline-block;
+          white-space: nowrap;
           font-weight: 200;
           font-size: 0.7em;
           pointer-events: none;
         }
-        > line{ stroke: #EEE; }
-        &[zero] > line { stroke: #999; stroke-dasharray: 4 1; }
+        > .tickLine{ 
+          position: absolute;
+          left: 0px;
+        }
+        &[zero] > .tickLine { border-color: #999;  }
       }
       > .onRecordLine{
+        display: inline;
+        position: absolute;
         opacity: 0;
         .transition(opacity 200ms);
-        > line{
-          stroke: #d0be96;
-          stroke-width: 2;
+        > .tickLine{
+          position: absolute;
+          border-color: #d0be96;
+          border-style: solid;
+        }
+        > .tickText{
+          position: absolute;
+          background-color: lighten(#d5c5a2, 20%);
+          border: solid 1px #d5c5a2;
+          font-weight: 700;
+          font-size: 0.7em;
         }
       }
+
     }
 
     .selectVertLine {
@@ -3582,6 +3593,36 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       .recordDisplayWrapper{
         .transition(@layout_transition);
         position: relative;
+        &[dragging]{
+          .leaflet-overlay-pane{ pointer-events: none !important; }
+          .leaflet-interactive { pointer-events: none !important; }
+          .recordMap_SVG{ pointer-events: none !important; }
+          .kshfRecord{ pointer-events: none !important; }
+          .recordGroup{ pointer-events: none !important; }
+          .scatterSVG_Axis{
+            > .tickGroup > .hmTicks { .transition(opacity 500ms); }
+          }
+          .scatterGroup > .recordGroupHolder > .recordGroup_Scatter{ 
+            pointer-events: none !important;
+            .transition(none);
+          }
+          .spatialQueryBox{ .transition(none); pointer-events: none !important; }
+          .dragSelection{ pointer-events: none !important; }
+          .clearFilterButton{ pointer-events: none !important; }
+          [class^='setSize']{ pointer-events: none !important; }
+        }
+        &[drawSelect]{
+          cursor: cell !important;
+          .leaflet-overlay-pane{ pointer-events: none !important; }
+          .leaflet-interactive { pointer-events: none !important; }
+          .recordMap_SVG{ pointer-events: none !important; }
+          .kshfRecord{ pointer-events: none !important; }
+          .recordGroup{ pointer-events: none !important; }
+          .recordGroup_Scatter{ pointer-events: none !important; }
+        }
+        &[drawSelect="Highlight"]{
+          .spatialQueryBox_Highlight{ display: block; }
+        }
       }
 
       .recordNodeLink_SVG{
@@ -3589,63 +3630,136 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         width: 100%;
         height: 100%;
       }
-      .recordScatter_SVG{ 
+      .scatterGroup{ 
         display: none;
-        width: 100%;
-        height: 100%;
+        position: absolute;
+        left: 35px;
+        .calc(width, ~'100% - 35px');
+        .calc(height, ~'100% - 50px');
+        > .axisGroup{
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+        > .recordGroupHolder{
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          border-left: solid 1px gray;
+          border-bottom: solid 1px gray;
+          > .recordGroup_Scatter{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            .transform-origin(top left);
+            .transition(transform 700ms ease-in-out);
+          }
+        }
       }
+
+      .spatialQueryBox{
+        display: none;
+        position: absolute;
+        border-width: 2px;
+        border-style: solid;
+        z-index: 800;
+        pointer-events: none;
+        .transition(all 700ms ease-in-out);
+        > .clearFilterButton{
+          display: none;
+          position: absolute;
+          left: -2px;
+          top: -2px;
+          pointer-events: all;
+          font-size: 0.9em;
+          opacity: 1;
+          box-shadow: 0px 0px 2px white, 0px 0px 5px white, 0px 0px 5px white;
+          &:hover{ color: @color_hoverAction; }
+        }
+        > .dragSelection{
+          display: none;
+          position: absolute;
+          right: -0.5em;
+          bottom: -0.5em;
+          pointer-events: all;
+          cursor: pointer;
+          font-size: 1.5em;
+          border-radius: 50%;
+          color: white;
+          &:hover{ 
+            color: @color_hoverAction;
+            text-shadow: 0px 0px 3px white !important;
+          }
+        }
+        > [class^='setSize']{
+          position: absolute;
+          pointer-events: all;
+          background-color: @color_hoverAction;
+          opacity: 0;
+          .transition(opacity 200ms linear);
+          &:hover{ opacity: 1; }
+          &.setSize-l, &.setSize-r{
+            cursor: ew-resize;
+            height: 100%;
+            width: 6px;
+          }
+          &.setSize-t, &.setSize-b{
+            cursor: ns-resize;
+            width: 100%;
+            height: 6px;
+          }
+          &.setSize-l{ left: -3px;}
+          &.setSize-r{ right: -3px;}
+          &.setSize-t{ top: -3px;}
+          &.setSize-b{ bottom: -3px;}
+        }
+        &[active]{
+          display: block;
+          > .clearFilterButton{ display: block; }
+          > .dragSelection{ display: block; }
+        }
+
+        &.spatialQueryBox_Filter   { 
+          border-color: @color_filter_range;
+          color: @color_filter_range; 
+          box-shadow : 0px 0px 20px darken(@color_filter_range, 20%);
+          > .dragSelection{ text-shadow: 0px 0px 3px @color_filter_range; }
+          > .clearFilterButton{
+            border-color: @color_filter_range;
+            background-color: @color_filter_range;
+          }
+        }
+        &.spatialQueryBox_Highlight{ 
+          border-color: #ff7800;
+          color: #ff7800; 
+          box-shadow : 0px 0px 5px darken(#ff7800, 20%);
+          > .dragSelection{ background-color: #ff7800; }
+        }
+        &.spatialQueryBox_Compare_A{ 
+          border-color: @color_Compare_A;
+          color: @color_Compare_A; 
+          box-shadow : 0px 0px 20px @color_Compare_A;
+          > .dragSelection{ background-color: @color_Compare_A; }
+        }
+        &.spatialQueryBox_Compare_B{ 
+          border-color: @color_Compare_B;
+          color: @color_Compare_B; 
+          box-shadow : 0px 0px 20px @color_Compare_B;
+          > .dragSelection{ background-color: @color_Compare_B; }
+        }
+        &.spatialQueryBox_Compare_C{ 
+          border-color: @color_Compare_C;
+          color: @color_Compare_C; 
+          box-shadow : 0px 0px 10px #7A7A77, 0px 0px 10px #7A7A77;
+          > .dragSelection{ background-color: @color_Compare_C; }
+        }
+      }
+
       .recordMap_Base{
         height: 100%;
         background: white;
         display: none;
-        .spatialQueryBox{
-          display: none;
-          position: absolute;
-          border-width: 2px;
-          border-style: solid;
-          z-index: 800;
-          pointer-events: none;
-          > .clearSelection{
-            display: none;
-            position: absolute;
-            right: -0.5em;
-            top: -0.5em;
-            background-color: white;
-            pointer-events: all;
-            border-radius: 1em;
-            font-size: 1.2em;
-            height: 15px;
-            width: 15px;
-            line-height: 0.9em;
-          }
-          &:hover{ 
-            border-color: orangered !important;
-            color: orangered;
-            cursor: pointer;
-          }
-          &[active]{
-            display: block;
-            > .clearSelection{ display: block; }
-            //background-color: initial;
-          }
-
-          &.spatialQueryBox_Filter   { border-color: #b1bdc5; box-shadow : 0px 0px 20px #5A7283; }
-          &.spatialQueryBox_Highlight{ border-color: #ff7800; box-shadow : 0px 0px 5px darken(#ff7800, 20%); }
-          &.spatialQueryBox_Compare_A{ border-color: @color_Compare_A; box-shadow : 0px 0px 20px @color_Compare_A; }
-          &.spatialQueryBox_Compare_B{ border-color: @color_Compare_B; box-shadow : 0px 0px 20px @color_Compare_B; }
-          &.spatialQueryBox_Compare_C{ border-color: @color_Compare_C; box-shadow : 0px 0px 10px #7A7A77, 0px 0px 10px #7A7A77; }
-        }
-        &[drawSelect]{
-          cursor: cell !important;
-          .leaflet-overlay-pane{ pointer-events: none; }
-          .leaflet-interactive { pointer-events: none; }
-        }
-        &[drawSelect="Filter"]{
-          .spatialQueryBox_Filter{ display: block; }
-        }
-        &[drawSelect="Highlight"]{
-          .spatialQueryBox_Highlight{ display: block; }
-        }
       }
 
       .leaflet-control > a:hover{
@@ -3743,84 +3857,100 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .itemRank_control{ color: gray; }
       }
 
-      .scatterAxisLine{ stroke: #999; }
 
       &[displayType="scatter"]{
-        overflow: visible !important;
-        .scrollToTop{ display: none; }
-        .sortButton{ display: none; }
+        .scrollToTop     { display: none; }
+        .sortButton      { display: none; }
         .recordGroup_List{ display: none; }
 
-        .recordScatter_SVG{ display: block; }
+        .scatterGroup    { display: block; }
         .recordDisplay_ViewAsScatter {
           background-color: white;
           > svg { fill: black; }
         }
-        &:not([collapsed]) .visViewControl{
-          display: block;
-          right: 3px;
-          bottom: 3px;
-          font-size: 0.8em;
 
-          > .visViewControlButton{ 
-            display: inline-block;
-            border-bottom: none;
-            border-right: 1px solid #ccc;
-          }
-          > span[class^='ScatterControl']{ display: inline-block !important; }
-          > .visViewControlButton:first-child{
-            border-top-left-radius: 4px;
-            border-bottom-left-radius: 4px;
-          }
-          > .visViewControlButton:last-child{
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-            border-bottom: none;
-            border-right: none;
-          }
-        }
+        .spatialQueryBox{ z-index: -1;}
 
-        .recordGroup{ overflow: visible !important; }
         .kshfRecord{
-          stroke-width: 0.5px;
-          stroke-opacity: 0.5;
-          //paint-order: stroke;
+          opacity: 0.9;
+          position: absolute;
           cursor: pointer;
           pointer-events: all;
-        }
-
-        g.kshfRecord{
-          .transition(opacity 500ms ease, background-color 100ms linear, transform 250ms ease-in-out);
-          > circle{
-            stroke: gray;
-            stroke-width: 1;
-            fill: #c9d3da; // temp - static color
+          overflow: visible;
+          .transition(transform 700ms ease-in-out);
+          > .recordDot{
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: block;
+            position: absolute;
+            left: -4px;
+            top: -4px;
+            border: solid 1px gray;
+            background-color: #c9d3da;
             cursor: pointer;
             .transition(all 400ms ease-in-out);
           }
-          > text.kshfRecord_label{
+          > .kshfRecord_label{
+            display: block;
+            position: absolute;
+            left: 4px;
+            top: -1em;
+            white-space: nowrap;
             opacity: 0;
+            padding: 1px 3px;
             font-size: 0.8em;
             pointer-events: none;
-            text-shadow: 0px 0px 5px white, 0px 0px 5px white, 0px 0px 2px white;
+            text-shadow: 0px 0px 5px white;
             .transition(opacity 200ms linear);
           }
           &[selection="onRecord"]{
-            > circle { fill: @color_onRecord_back !important; stroke: darken(@color_onRecord_back, 70%); stroke-width: 2; }
-            > text.kshfRecord_label{ opacity: 1; }
+            opacity: 1;
+            > .recordDot { 
+              background-color: @color_onRecord_back; 
+              border-color: darken(@color_onRecord_back, 70%); 
+            }
+            > .kshfRecord_label{ 
+              opacity: 1;
+              background-color: white;
+              border: solid 1px #b5a686;
+              border-radius: 5px;
+              padding: 0px 2px;
+            }
           }
           &[selection="related"]{
-            > circle { stroke: green; stroke-width: 2; }
-            > text.kshfRecord_label{ opacity: 1; fill: green; }
+            > .recordDot { background-color: green; border-width: 2; }
+            > .kshfRecord_label{ opacity: 1; color: green; }
           }
           &[selection="highlighted"]{
-            > circle { fill: orangered !important; stroke: orangered; stroke-width: 2; }
+            > .recordDot { background-color: orangered; border-color: orangered; border-width: 2px; }
           }
-          &[rec_compared] > circle{ stroke-width: 2; }
-          &[rec_compared^="A"]{ > circle { fill: @color_Compare_A; stroke: @color_Compare_A; } }
-          &[rec_compared^="B"]{ > circle { fill: @color_Compare_B; stroke: @color_Compare_B; } }
-          &[rec_compared^="C"]{ > circle { fill: @color_Compare_C; stroke: @color_Compare_C; } }
+          &[rec_compared]       > .recordDot { border-width: 2; }
+          &[rec_compared^="A"]{ > .recordDot { background-color: @color_Compare_A; border-color: @color_Compare_A; } }
+          &[rec_compared^="B"]{ > .recordDot { background-color: @color_Compare_B; border-color: @color_Compare_B; } }
+          &[rec_compared^="C"]{ > .recordDot { background-color: @color_Compare_C; border-color: @color_Compare_C; } }
         }
+      }
+
+      &[visMouseMode="pan"]{
+        .MouseMode-pan { color: black;     cursor: default; }
+        .MouseMode-draw{ color: lightgray; cursor: pointer; }
+        .recordMap_Base{
+          cursor: -moz-grab;
+          cursor: -webkit-grab;
+          cursor: grab;
+        }
+        .scatterGroup{        
+          cursor: -moz-grab;
+          cursor: -webkit-grab;
+          cursor: grab;
+        }
+      }
+      &[visMouseMode="draw"]{
+        .MouseMode-pan { color: lightgray; cursor: pointer; }
+        .MouseMode-draw{ color: black;     cursor: default; }
+        .recordMap_Base{ cursor: crosshair; }
+        .scatterGroup{ cursor: crosshair; }
       }
 
       &[displayType="map"]{
@@ -3831,16 +3961,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .recordDisplay_ViewAsMap{ color: black; background-color: white; }
 
         .recordMap_Base{ display: block; }
-
-        &[mapMouseControl="pan"]{
-          .MapControl-MouseMode:after{ content: "\f255" } // fa-hand-rock-o
-          .MapControl-MouseMode:hover:after{ content: "\f096" } // fa-square-o
-        }
-        &[mapMouseControl="draw"]{
-          .MapControl-MouseMode:after{ content: "\f096" } // fa-square-o
-          .MapControl-MouseMode:hover:after{ content: "\f255" } // fa-hand-rock-o
-          .recordMap_Base{ cursor: crosshair; }
-        }
 
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
         .recordGroup_List{ display: none; }
@@ -3887,7 +4007,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             stroke-width: 1;
             fill: white;
             cursor: pointer;
-            .transition(~'all 400ms ease-in-out');
+            .transition(all 400ms ease-in-out);
           }
           > text.kshfRecord_label{
             display: none;
@@ -4446,6 +4566,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     font-size: 0.9em;
     > .pofffffff{
       display: inline-block;
+      vertical-align: top;
+      margin-top: 1px;
     }
   }
   [class^="recordDisplay_ViewAs"]{
