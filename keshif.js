@@ -662,6 +662,12 @@ kshf.Record.prototype = {
     } else {
       this.DOM.record.setAttribute("rec_compared",this.selectCompared_str);
     }
+  },
+  initLinks: function(){
+    this.DOM.links_To = [];
+    this.DOM.links_From = [];
+    this.links_To = [];
+    this.links_From = [];
   }
 };
 
@@ -761,6 +767,7 @@ kshf.Aggregate.prototype = {
     }
     if(this.DOM.matrixRow) {
       this.DOM.matrixRow.removeAttribute("selection");
+      this.DOM.matrixRow.removeAttribute("catselect");
     }
   },
 
@@ -1601,10 +1608,7 @@ kshf.RecordDisplay.prototype = {
         setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
       if(this.viewRecAs==='scatter'){
-        this.refreshScatterVis();
-        this.DOM.scatterAxis_X.selectAll(".tickLine")
-          .style("height",(this.curHeight-50)+"px")
-          .style("top",(-this.curHeight+50)+"px");
+        this.refreshScatterVis(true);
       }
     },
     /** -- */
@@ -1616,7 +1620,7 @@ kshf.RecordDisplay.prototype = {
         setTimeout(function(){ me.leafletRecordMap.invalidateSize(); }, 1000);
       }
       if(this.viewRecAs==='scatter'){
-        this.refreshScatterVis();
+        this.refreshScatterVis(true);
       }
     },
     /** Encode by color or by sorting */
@@ -1727,7 +1731,7 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordDisplayName = this.DOM.recordDisplayHeader.append("div")
         .attr("class","recordDisplayName")
-        .html('<i class="fa fa-angle-down"></i> '+this.browser.recordName);
+        .html(this.browser.recordName);
 
       // Collapse record display button
       this.DOM.recordDisplayHeader.append("div")
@@ -1950,15 +1954,13 @@ kshf.RecordDisplay.prototype = {
           me.recMap_projectRecords();
         })
         .on("movestart",function(){
+          me.DOM.recordDisplayWrapper.attr("dragging",true);
           me.browser.DOM.root.attr("pointerEvents",false);
           this._zoomInit_ = this.getZoom();
-          me.DOM.recordMap_SVG.style("opacity",0.3);
-          me.DOM.recordDisplayWrapper.selectAll(".spatialQueryBox").style("opacity",0.3);
         })
         .on("moveend",function(){
+          me.DOM.recordDisplayWrapper.attr("dragging",null);
           me.browser.DOM.root.attr("pointerEvents",true);
-          me.DOM.recordMap_SVG.style("opacity",null);
-          me.DOM.recordDisplayWrapper.selectAll(".spatialQueryBox").style("opacity",null);
           me.refreshViz_Compare_All();
           me.refreshQueryBox_Filter();
           me.DOM.recordDisplayWrapper.select(".spatialQueryBox_Highlight")
@@ -2168,22 +2170,34 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     initDOM_CustomControls: function(){
       var me = this;
+      if(this.DOM.visViewControl) return;
 
       var X = this.DOM.recordDisplayWrapper.append("span").attr("class","visViewControl");
+      this.DOM.visViewControl = X;
 
       // **************************************************
-      // NODE-LINK OPTIONS
-      var s = X.append("span").attr("class","NodeLinkControl-LinkAttribute visViewControlButton").append("select")
+      // SCATTER OPTIONS
+      var s = X.append("span").attr("class","ScatterControl-ScatterAttrib visViewControlButton");
+      s.append("span").text("→ Vs: ");
+      s.append("select")
+        .on("change",function(){ me.setScatterAttrib(this.selectedOptions[0].__data__); });;
+      this.refreshScatterOptions();
+
+      // ***************************************************
+      // LINK OPTIONS
+      var s = X.append("span").attr("class","LinkControl-LinkAttrib visViewControlButton").append("select")
         .on("change",function(){
           // TODO
         });;
       s.selectAll("option").data(this.linkBy).enter().append("option").text(function(d){ return d; });
 
+      // **************************************************
+      // FORCE LAYOUT OPTIONS
       X.append("span").attr("class","NodeLinkControl-LinkIcon visViewControlButton fa fa-share-alt")
         .each(function(){ 
           this.tipsy = new Tipsy(this, { gravity: 's',  
             title: function(){
-              return (me.DOM.root.classed("hideLinks")?"Show":"Hide")+" Links";
+              return (me.DOM.root.classed("hideLinks")?"Show":"Hide")+" All Links";
             }});
         })
         .on("mouseenter", function(){ this.tipsy.show(); })
@@ -2191,7 +2205,6 @@ kshf.RecordDisplay.prototype = {
         .on("click",      function(){ this.tipsy.hide();
           me.DOM.root.classed("hideLinks", me.DOM.root.classed("hideLinks")?null:true );
         });
-
       X.append("span")
         .attr("class","NodeLinkControl-AnimPlay visViewControlButton fa fa-play")
         .on("click",function(){ 
@@ -2205,14 +2218,6 @@ kshf.RecordDisplay.prototype = {
           me.DOM.root.attr("NodeLinkState","stopped");
           me.DOM.root.classed("hideLinks",null);
         });
-
-      // **************************************************
-      // SCATTER OPTIONS
-      var s = X.append("span").attr("class","ScatterControl-XAttrib visViewControlButton");
-      s.append("span").text("→ Vs: ");
-      s.append("select")
-        .on("change",function(){ me.setScatterAttrib(this.selectedOptions[0].__data__); });;
-      this.refreshScatterOptions();
 
       // **************************************************
       // MAP OPTIONS
@@ -2277,7 +2282,7 @@ kshf.RecordDisplay.prototype = {
             me.scatterZoom.scaleBy(me.DOM.recordGroupHolder, 2);
             me.scatterPositionAnim = false;
           } else if(me.viewRecAs==='nodelink'){
-            me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 2);
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordBase_NodeLink, 2);
             me._refreshNodeLinkSVG_Transform();
           }
         });
@@ -2294,7 +2299,7 @@ kshf.RecordDisplay.prototype = {
             me.scatterZoom.scaleBy(me.DOM.recordGroupHolder, 1/2);
             me.scatterPositionAnim = false;
           } else if(me.viewRecAs==='nodelink'){
-            me.nodeZoomBehavior.scaleBy(me.DOM.recordNodeLink_SVG, 1/2);
+            me.nodeZoomBehavior.scaleBy(me.DOM.recordBase_NodeLink, 1/2);
             me._refreshNodeLinkSVG_Transform();
           }
         });
@@ -2433,10 +2438,11 @@ kshf.RecordDisplay.prototype = {
       if(this.DOM.recordBase_Scatter) {
         this.DOM.recordGroup = this.DOM.recordBase_Scatter.select(".recordGroup");
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        this.DOM.linkGroup   = this.DOM.recordGroup_Scatter.select(".linkGroup");
         return; // Do not initialize twice
       }
 
-      this.scatterTransform = {x:0, y:0, z:0 };
+      this.scatterTransform = {x:0, y:0, z:1 };
       this.scatterPositionAnim = false;
       this.scatterZoom = d3.zoom()
         .scaleExtent([0.5, 8]) // 1 can cover the whole dataset.
@@ -2454,7 +2460,6 @@ kshf.RecordDisplay.prototype = {
           me.DOM.recordGroup_Scatter
             .style("transform", 
               "translate(" + d3.event.transform.x + "px," + d3.event.transform.y+ "px) "+
-              "translateZ(0) "+
               "scale(" + d3.event.transform.k + ","+ d3.event.transform.k+") "
               );
           if(me.scatterTransform.z!==old_z){
@@ -2464,23 +2469,16 @@ kshf.RecordDisplay.prototype = {
           }
         });
 
-      this.DOM.recordBase_Scatter = this.DOM.recordDisplayWrapper
-        .append("div").attr("class","recordBase_Scatter");
+      this.DOM.recordBase_Scatter = this.DOM.recordDisplayWrapper.append("div").attr("class","recordBase_Scatter");
+      this.DOM.scatterAxisGroup   = this.DOM.recordBase_Scatter  .append("div").attr("class","scatterAxisGroup");
 
-      this.DOM.scatterAxisGroup = this.DOM.recordBase_Scatter.append("div").attr("class","scatterAxisGroup");
-
-      this.DOM.scatterAxis_X = this.DOM.scatterAxisGroup.append("div").attr("class","scatterAxis scatterAxis_X");
-      this.DOM.scatterAxis_X.append("div").attr("class","tickGroup");
-      this.DOM.scatterAxis_X.append("div").attr("class","onRecordLine").html(
-        "<div class='tickLine'></div><div class='tickText'></div>");
-
-      this.DOM.scatterAxis_X.selectAll(".tickLine").style("height",(this.curHeight-50)+"px").style("top",(-this.curHeight+50)+"px");
-
-      this.DOM.scatterAxis_Y = this.DOM.scatterAxisGroup.append("div").attr("class","scatterAxis scatterAxis_Y");
-      this.DOM.scatterAxis_Y.append("div").attr("class","tickGroup");
-      this.DOM.scatterAxis_Y.append("div").attr("class","onRecordLine").html(
-        "<div class='tickLine' style='width: "+(this.curWidth)+"px; left: 0px; height: 0px'></div>"+
-        "<div class='tickText'></div>");
+      var scatterAxisTemplate = "<div class='tickGroup'></div><div class='onRecordLine'><div class='tickLine'></div><div class='tickText'></div></div>";
+      this.DOM.scatterAxis_X = this.DOM.scatterAxisGroup.append("div")
+        .attr("class","scatterAxis scatterAxis_X")
+        .html(scatterAxisTemplate);
+      this.DOM.scatterAxis_Y = this.DOM.scatterAxisGroup.append("div")
+        .attr("class","scatterAxis scatterAxis_Y")
+        .html(scatterAxisTemplate);
 
       function updateRectangle(bounds){
         var _left   = me.scatterScaleX(bounds.left);
@@ -2611,12 +2609,21 @@ kshf.RecordDisplay.prototype = {
           d3.event.stopPropagation();
           d3.event.preventDefault();
         });
-        ;
+
       this.DOM.recordGroupHolder.call(this.scatterZoom);
 
       this.DOM.recordGroup_Scatter = this.DOM.recordGroupHolder.append("div").attr("class","recordGroup_Scatter");
 
-      this.DOM.recordGroup = this.DOM.recordGroup_Scatter.append("div").attr("class","recordGroup");
+      var _svg = this.DOM.recordGroup_Scatter.append("svg").attr("xmlns","http://www.w3.org/2000/svg")
+        .attr("class","asdasdasdsadas");
+
+      if(this.linkBy.length>0){
+        this.DOM.linkGroup = _svg.append("g").attr("class","linkGroup");
+        this.prepareRecordLinks();
+        this.insertDOM_RecordLinks();
+      }
+
+      this.DOM.recordGroup = _svg.append("g").attr("class","recordGroup");
 
       this.insertQueryBoxes(this.DOM.recordGroup_Scatter,
         function(t){
@@ -2753,14 +2760,21 @@ kshf.RecordDisplay.prototype = {
     initDOM_NodeLinkView: function(){
       var me = this;
 
-      if(this.DOM.recordNodeLink_SVG) {
-        this.DOM.recordGroup = this.DOM.recordNodeLink_SVG.select(".recordGroup");
+      if(this.DOM.recordBase_NodeLink) {
+        this.DOM.recordGroup = this.DOM.recordBase_NodeLink.select(".recordGroup");
         this.DOM.kshfRecords = this.DOM.recordGroup.selectAll(".kshfRecord");
+        this.DOM.linkGroup   = this.DOM.recordBase_NodeLink.select(".linkGroup");
         return; // Do not initialize twice
       }
 
       this.nodeZoomBehavior = d3.zoom()
         .scaleExtent([0.1, 80])
+        .on("start",function(){
+          me.DOM.recordDisplayWrapper.attr("dragging",true);
+        })
+        .on("end",function(){
+          me.DOM.recordDisplayWrapper.attr("dragging",null);
+        })
         .on("zoom", function(){
           gggg.attr("transform", 
             "translate(" + d3.event.transform.x + "," + d3.event.transform.y+ ") "+
@@ -2768,13 +2782,13 @@ kshf.RecordDisplay.prototype = {
           me.refreshNodeLinkVis();
         });
 
-      this.DOM.recordNodeLink_SVG = this.DOM.recordDisplayWrapper
-        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordNodeLink_SVG")
+      this.DOM.recordBase_NodeLink = this.DOM.recordDisplayWrapper
+        .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordBase_NodeLink")
         .call(this.nodeZoomBehavior);
 
-      var gggg = this.DOM.recordNodeLink_SVG.append("g");
+      var gggg = this.DOM.recordBase_NodeLink.append("g");
       this.DOM.linkGroup   = gggg.append("g").attr("class","linkGroup");
-      this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup recordGroup_Node");
+      this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup");
 
       this.initDOM_CustomControls();
     },
@@ -2953,8 +2967,8 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshScatterOptions: function(){
       if(this.DOM.root===undefined) return;
-      this.DOM.root.selectAll(".ScatterControl-XAttrib > select > option").remove();
-      this.DOM.root.selectAll(".ScatterControl-XAttrib > select").selectAll("option")
+      this.DOM.root.selectAll(".ScatterControl-ScatterAttrib > select > option").remove();
+      this.DOM.root.selectAll(".ScatterControl-ScatterAttrib > select").selectAll("option")
         .data(this.getScatterAttributes()).enter()
           .append("option")
             .text(function(summary){ return summary.summaryName; })
@@ -3019,7 +3033,7 @@ kshf.RecordDisplay.prototype = {
       }
       this.scatterAttrib = attrib;
       this.scatterAttrib.setEncodesRecordsBy("scatter");
-      this.refreshScatterVis();
+      this.refreshScatterVis(true);
       this.refreshSortingOptions();
     },
     /** -- */
@@ -3062,7 +3076,7 @@ kshf.RecordDisplay.prototype = {
           break;
         case 'scatter':
           this.refreshSortingOptions();
-          this.refreshScatterVis();
+          this.refreshScatterVis(true);
           break;
         case 'list':
         case 'grid':
@@ -3089,40 +3103,19 @@ kshf.RecordDisplay.prototype = {
       this.refreshAdjustSortColumnWidth();
     },
     /** -- */
-    generateNodeLinks: function(){
-      this.nodelink_links = [];
-
-      var recordsIndexed = kshf.dt_id[browser.primaryTableName];
-      var linkAttribName = this.linkBy[0];
-
-      this.browser.records.forEach(function(recordFrom){
-        if(!recordFrom.isWanted) return;
-        var links = recordFrom.data[linkAttribName];
-        if(links) {
-          links.forEach(function(recordTo_id){
-            var recordTo = recordsIndexed[recordTo_id];
-            if(recordTo) {
-              if(!recordTo.isWanted) return;
-              this.nodelink_links.push({source:recordFrom, target: recordTo});
-            }
-          },this);
-        }
-      },this);
-    },
-    /** -- */
     nodelink_restart: function(){
       this.nodelink_Force.restart();
       this.DOM.root.attr("NodeLinkState","started");
-      if(this.nodelink_links.length>1000) this.DOM.root.classed("hideLinks",true);
+      if(this.recordLinks.length>1000) this.DOM.root.classed("hideLinks",true);
     },
     /** -- */
     refreshVis_Nodes: function(){
-      var t = d3.zoomTransform(this.DOM.recordNodeLink_SVG.node());
+      var t = d3.zoomTransform(this.DOM.recordBase_NodeLink.node());
       var scale = "scale("+(1/t.k)+")";
       this.DOM.kshfRecords.attr("transform", function(d){ return "translate("+d.x+","+d.y+") "+scale; });
     },
     /** -- */
-    refreshScatterVis: function(){
+    refreshScatterVis: function(animate){
       if(this.DOM.recordBase_Scatter===undefined) return;
       var me = this;
       var scale = "scale("+(1/this.scatterTransform.z)+")";
@@ -3133,23 +3126,33 @@ kshf.RecordDisplay.prototype = {
       var accX = sX.summaryID;
       var accY = sY.summaryID;
 
-      this.scatterScaleX = sX.scaleType==='log' ? d3.scaleLog() : d3.scaleLinear();
+      this.scatterScaleX = sX.scaleType==='log' ? d3.scaleLog().base(2) : d3.scaleLinear();
       this.scatterScaleX.domain([sX.intervalRange.active.min, sX.intervalRange.active.max])
         .range([0, (this.curWidth-80)])
         .clamp(false);
 
-      this.scatterScaleY = sY.scaleType==='log' ? d3.scaleLog() : d3.scaleLinear();
+      this.scatterScaleY = sY.scaleType==='log' ? d3.scaleLog().base(2) : d3.scaleLinear();
       this.scatterScaleY.domain([sY.intervalRange.active.min, sY.intervalRange.active.max])
         .range([(this.curHeight-80),0])
         .clamp(false);
 
-      this.DOM.kshfRecords.style("transform",function(record){
-        return "translate("+
-          me.scatterScaleX(record._valueCache[accX])+"px,"+
-          me.scatterScaleY(record._valueCache[accY])+"px) "+" translateZ(0) "+
-          scale;
+      var x = this.DOM.kshfRecords;
+      if(animate) x = x.transition().duration(700).ease(d3.easeCubic);
+      x.attr("transform",function(record){
+        record.x = me.scatterScaleX(record._valueCache[accX]);
+        record.y = me.scatterScaleY(record._valueCache[accY]);
+        return "translate("+record.x+","+record.y+") "+scale;
       });
       this.refreshScatterTicks();
+
+      if(this.DOM.recordLinks){
+        // position & direction of the links
+        this.DOM.recordLinks
+          .attr("x1", function(link) { return link.source.x; })
+          .attr("y1", function(link) { return link.source.y; })
+          .attr("x2", function(link) { return link.target.x; })
+          .attr("y2", function(link) { return link.target.y; });
+        }
     },
     /** -- */
     refreshScatterTicks: function(){
@@ -3205,15 +3208,15 @@ kshf.RecordDisplay.prototype = {
         var axisScale_old = me["scatterAxisScale_"+axis+"_old"];
 
         var hm = tGroup.selectAll(".hmTicks").data(ticks[axis], function(t){ return t; });
-        hm.style("transform", function(tick){ return _translate + axisScale(tick) + "px)"; });
+        hm.style("transform", function(tick){ return _translate + axisScale(tick) + "px) translateZ(0)"; });
         hm.exit()
-          .style("transform", function(tick){ return _translate + axisScale(tick) + "px)"; })
+          .style("transform", function(tick){ return _translate + axisScale(tick) + "px) translateZ(0)"; })
           .style("opacity",0).transition().duration(0).delay(500).remove();
         var tk = hm.enter().append("div").attr("class","hmTicks")
           .attr("zero",function(tick){ return tick===0?true:null})
-          .style("transform", function(tick){ return _translate + axisScale_old(tick) + "px)"; });
+          .style("transform", function(tick){ return _translate + axisScale_old(tick) + "px) translateZ(0)"; });
         tk.transition().duration(0).delay(10)
-          .style("transform", function(tick){ return _translate + axisScale(tick) + "px)"; })
+          .style("transform", function(tick){ return _translate + axisScale(tick) + "px) translateZ(0)"; })
           .style("opacity",1);
         tk.append("div").attr("class","tickText");
         tk.append("div").attr("class","tickLine");
@@ -3223,15 +3226,11 @@ kshf.RecordDisplay.prototype = {
       addTicks("Y","translateY(");
 
       this.DOM.scatterAxis_X.selectAll(".tickText")
-        .html(function(tick){ return me.scatterAttrib.printWithUnitName(me.browser.getTickLabel(tick)); })
+        .html(function(tick){ 
+          return me.scatterAttrib.printWithUnitName(me.browser.getTickLabel(tick));
+        })
       this.DOM.scatterAxis_Y.selectAll(".tickText")
         .html(function(tick){ return me.sortingOpt_Active.printWithUnitName(me.browser.getTickLabel(tick)); })
-
-      this.DOM.scatterAxis_X.selectAll(".tickLine")
-        .style("height",(me.curHeight-50)+"px")
-        .style("top",(-me.curHeight+50)+"px");
-      this.DOM.scatterAxis_Y.selectAll(".tickLine")
-        .style("width",(this.curWidth)+"px");
 
       this.refreshQueryBox_Filter();
     },
@@ -3286,7 +3285,7 @@ kshf.RecordDisplay.prototype = {
 
       var _scale = x.offsetHeight / ((bounds_y[1]-bounds_y[0])*3);
 
-      this.DOM.recordNodeLink_SVG.transition().duration(750).call(
+      this.DOM.recordBase_NodeLink.transition().duration(750).call(
         this.nodeZoomBehavior.transform,
         d3.zoomIdentity
           .translate( x.offsetWidth/2, x.offsetHeight/2)
@@ -3297,29 +3296,22 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     _refreshNodeLinkSVG_Transform: function(){
-      var t = d3.zoomTransform(this.DOM.recordNodeLink_SVG.node());
+      var t = d3.zoomTransform(this.DOM.recordBase_NodeLink.node());
       var _scale = t.k;
       var _translate = [t.x, t.y];
-      this.DOM.recordNodeLink_SVG.select(".gggg")
+      this.DOM.recordBase_NodeLink.select(".gggg")
         .attr("transform", "translate(" + _translate[0] + "," + _translate[1] + ") scale(" + _scale + ")");
 
       this.refreshVis_Nodes();
     },
     /** -- */
-    setNodeLink: function(){
-      var me=this;
-
-      this.browser.records.forEach(function(record){
-        record.DOM.links_To = [];
-        record.DOM.links_From = [];
-        record.links_To = [];
-        record.links_From = [];
-      });
-
-      this.nodelink_links = [];
+    prepareRecordLinks: function(){
+      this.browser.records.forEach(function(record){ record.initLinks(); });
 
       var recordsIndexed = kshf.dt_id[browser.primaryTableName];
       var linkAttribName = this.linkBy[0];
+
+      this.recordLinks = [];
 
       this.browser.records.forEach(function(recordFrom){
         var links = recordFrom.data[linkAttribName];
@@ -3329,14 +3321,16 @@ kshf.RecordDisplay.prototype = {
             if(recordTo) {
               recordFrom.links_To.push(recordTo);
               recordTo.links_From.push(recordFrom);
+              this.recordLinks.push({source:recordFrom, target: recordTo});
             }
           },this);
         }
       },this);
-
-      this.generateNodeLinks();
-
-      this.DOM.linkGroup.selectAll(".recordLink").data(this.nodelink_links)
+    },
+    /** -- */
+    insertDOM_RecordLinks: function(){
+      this.DOM.linkGroup.selectAll(".recordLink").remove();
+      this.DOM.recordLinks = this.DOM.linkGroup.selectAll(".recordLink").data(this.recordLinks)
         .enter().append("line").attr("class", "recordLink")
         .each(function(link){
           var recordFrom = link.source;
@@ -3344,12 +3338,17 @@ kshf.RecordDisplay.prototype = {
           recordFrom.DOM.links_To.push(this);
           recordTo.DOM.links_From.push(this);
         });
+    },
+    /** -- */
+    setNodeLink: function(){
+      var me=this;
 
-      this.DOM.recordLinks = this.DOM.linkGroup.selectAll(".recordLink");
+      this.prepareRecordLinks();
+      this.insertDOM_RecordLinks();
 
       this.nodelink_Force = d3.forceSimulation()
         .force("charge", d3.forceManyBody().strength(-5))
-        .force("link", d3.forceLink(this.nodelink_links).strength(0.05).iterations(3) )
+        .force("link", d3.forceLink(this.recordLinks).strength(0.05).iterations(3) )
         .alphaMin(0.1)
         .velocityDecay(0.3)
         //.force("center", d3.forceCenter())
@@ -3373,7 +3372,7 @@ kshf.RecordDisplay.prototype = {
         this.refreshRecordColors();
       }
       if(this.viewRecAs==='scatter'){
-        this.refreshScatterVis();
+        this.refreshScatterVis(true);
       }
     },
     /** -- */
@@ -3436,7 +3435,7 @@ kshf.RecordDisplay.prototype = {
         });
       }
       if(this.viewRecAs==='nodelink') {
-        this.DOM.kshfRecords.selectAll("circle").style("fill", function(d){ 
+        this.DOM.kshfRecords.style("fill", function(d){ 
           var v = s_f.call(d.data);
           if(s_log && v<=0) v=undefined;
           if(v===undefined) return undefinedFill;
@@ -3448,9 +3447,8 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     highlightLinked: function(recordFrom){
+      if(recordFrom.DOM.links_To===undefined) return;
       recordFrom.DOM.links_To.forEach(function(dom){
-        dom.style.stroke = "green";
-        dom.style.strokeOpacity = 1;
         dom.style.display = "block";
       });
       var links = recordFrom.data[this.linkBy[0]];
@@ -3468,9 +3466,8 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     unhighlightLinked: function(recordFrom){
+      if(recordFrom.DOM.links_To===undefined) return;
       recordFrom.DOM.links_To.forEach(function(dom){
-        dom.style.stroke = null;
-        dom.style.strokeOpacity = null;
         dom.style.display = null;
       });
       var links = recordFrom.data[this.linkBy[0]];
@@ -3487,8 +3484,8 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     onRecordMouseOver: function(record){
-      if(this.viewRecAs==='nodelink') this.highlightLinked(record);
       record.highlightRecord();
+      this.highlightLinked(record);
       if(this.viewRecAs==='scatter'){
         this.DOM.root.selectAll(".onRecordLine").style('opacity',1);
         var accX = this.scatterAttrib.summaryID;
@@ -3511,13 +3508,11 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     onRecordMouseLeave: function(record){
-      if(this.viewRecAs==='nodelink') {
-        this.unhighlightLinked(record);
-      }
+      record.unhighlightRecord();
+      this.unhighlightLinked(record);
       if(this.viewRecAs==='scatter'){
         this.DOM.root.selectAll(".onRecordLine").style('opacity',null);
       }
-      record.unhighlightRecord();
     },
     /** -- */
     refreshRecordDOM: function(){
@@ -3540,8 +3535,8 @@ kshf.RecordDisplay.prototype = {
 
       var nodeType = ({
         map      : 'path',
-        nodelink : 'g',
-        scatter  : 'div',
+        nodelink : 'circle',
+        scatter  : 'circle',
         list     : 'div',
         grid     : 'div'
       })[this.viewRecAs];
@@ -3563,31 +3558,37 @@ kshf.RecordDisplay.prototype = {
               title: function(){ 
                 var v = me.sortingOpt_Active.summaryFunc.call(record.data,record);
                 return ""+
-                  "<span class='mapItemName'>"+me.recordViewSummary.summaryFunc.call(record.data,record)+"</span>"+
+                  "<span class='mapItemName'>"+record._valueCache[mainSummaryID]+"</span>"+
                   "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryName+"</span>: "+
                   "<span class='mapTooltipValue'>"+me.sortingOpt_Active.printWithUnitName(v)+"</span>";
               }
             });
           }
+          if(me.viewRecAs==='scatter' || me.viewRecAs==='nodelink'){
+            this.tipsy = new Tipsy(this, {
+              gravity: 'e',
+              className: 'recordTip',
+              title: function(){ return record._valueCache[mainSummaryID]; }
+            });
+          }
         })
         .on("mouseenter",function(record){
           var DOM = this;
-          if(this.tipsy) {
-            this.tipsy.show();
-            var browserPos = me.browser.DOM.root.node().getBoundingClientRect();
-            this.tipsy.jq_tip.node().style.left = 
-              (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
-            this.tipsy.jq_tip.node().style.top = 
-              (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
-          }
-
-          // mouse is moving fast, should wait a while...
-          this.highlightTimeout = window.setTimeout(
-            function(){ 
-              me.onRecordMouseOver(record);
-            }, 
-            (me.browser.mouseSpeed<0.2) ? 0 : me.browser.mouseSpeed*300);
-
+          var event = d3.event;
+          if(this.highlightTimeout) clearTimeout(this.highlightTimeout);
+          this.highlightTimeout = setTimeout(function(){ 
+            if(DOM.tipsy) {
+              DOM.tipsy.show();
+              if(me.viewRecAs==='map'){
+                var browserPos = me.browser.DOM.root.node().getBoundingClientRect();
+                DOM.tipsy.jq_tip.node().style.left = 
+                  (event.pageX - browserPos.left - DOM.tipsy.tipWidth-10)+"px";
+                DOM.tipsy.jq_tip.node().style.top = 
+                  (event.pageY - browserPos.top -DOM.tipsy.tipHeight/2)+"px";
+                }
+            }
+            me.onRecordMouseOver(record);
+          }, (me.browser.mouseSpeed<0.2) ? 0 : me.browser.mouseSpeed*300);
           d3.event.stopPropagation();
           d3.event.preventDefault();
         })
@@ -3603,7 +3604,7 @@ kshf.RecordDisplay.prototype = {
         })
         .on("mousemove", function(){
           this._mousemove = true;
-          if(this.tipsy){
+          if(me.viewRecAs==='map' && this.tipsy && this.tipsy.jq_tip){
             var browserPos = me.browser.DOM.root.node().getBoundingClientRect();
             this.tipsy.jq_tip.node().style.left =
               (d3.event.pageX - browserPos.left - this.tipsy.tipWidth-10)+"px";
@@ -3611,10 +3612,11 @@ kshf.RecordDisplay.prototype = {
               (d3.event.pageY - browserPos.top -this.tipsy.tipHeight/2)+"px";
           }
         })
-        .on("click",function(d){
+        .on("click",function(_record){
+          if(this.tipsy) this.tipsy.hide();
           if(this._mousemove) return; // Do not show the detail view if the mouse was used to drag the map
           if(me.viewRecAs==='map' || me.viewRecAs==='nodelink' || me.viewRecAs==='scatter'){
-            me.browser.updateRecordDetailPanel(d);
+            me.browser.updateRecordDetailPanel(_record);
           }
         });
       
@@ -3622,10 +3624,10 @@ kshf.RecordDisplay.prototype = {
         newRecords.attr('details',false);
         // RANK
         x = newRecords.append("span").attr("class","recordRank")
-          .each(function(d){
+          .each(function(_record){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
-              title: function(){ return kshf.Util.ordinal_suffix_of((d.recordRank+1)); }
+              title: function(){ return kshf.Util.ordinal_suffix_of((_record.recordRank+1)); }
             });
           })
           .on("mouseenter",function(){ this.tipsy.show(); })
@@ -3662,27 +3664,15 @@ kshf.RecordDisplay.prototype = {
 
         // Insert the content
         newRecords.append("div").attr("class","content")
-          .html(function(record){ 
-            return record._valueCache[mainSummaryID];
-          });
+          .html(function(record){ return record._valueCache[mainSummaryID]; });
 
         // Fixes ordering problem when new records are made visible on the list
         // TODO: Try to avoid this.
         this.DOM.recordGroup.selectAll(".kshfRecord").order();
       }
 
-      if(this.viewRecAs==='nodelink'){
-        newRecords.append("circle").attr("r",4);
-        newRecords.append("text").attr("class","kshfRecord_label")
-          .attr("dy",-4).attr("dx",4)
-          .html(function(record){ return record._valueCache[briefSummaryID]; });
-      }
-
-      if(this.viewRecAs==='scatter'){
-        newRecords.classed("kshfRecord_Scatter",true);
-        newRecords.append("div").attr("class","recordDot");
-        newRecords.append("div").attr("class","kshfRecord_label")
-          .html(function(record){ return record._valueCache[briefSummaryID]; });
+      if(this.viewRecAs==='nodelink' || this.viewRecAs==='scatter'){
+        newRecords.attr("r",4);
       }
 
       // Call the onDOM function for all the records that have been inserted to the page
@@ -3782,42 +3772,32 @@ kshf.RecordDisplay.prototype = {
       }
       return sortValueFunction;
     },
-    /** Updates visibility of individual records */
+    /** -- */
     updateRecordVisibility: function(){
+      var me = this;
       if(this.DOM.kshfRecords===undefined) return;
 
-      var me = this;
-      var visibleItemCount=0;
-
-      if(me.viewRecAs==='map'){
-        this.DOM.kshfRecords.each(function(record){
-          this.style.opacity = record.isWanted?0.9:0.2;
-          this.style.pointerEvents = record.isWanted?"":"none";
-          this.style.display = "block"; // Have this bc switching views can invalidate display
-        });
-      } else if(me.viewRecAs==='nodelink'){
-        this.DOM.kshfRecords.each(function(record){
-          this.style.display = record.isWanted?"block":"none";
-        });
-        this.DOM.recordLinks.each(function(link){
-          this.style.display = (!link.source.isWanted || !link.target.isWanted) ? "none" : null;
-        });
-      } else if(me.viewRecAs==='scatter'){
+      if(this.viewRecAs==='map' || this.viewRecAs==='nodelink' || this.viewRecAs==='scatter'){
         this.DOM.kshfRecords.each(function(record){
           this.style.opacity = record.isWanted?0.9:0.2;
           this.style.pointerEvents = record.isWanted?"":"none";
           this.style.display = "block"; // Have this bc switching views can invalidate display
         });
       } else {
+        var visibleItemCount=0;
         this.DOM.kshfRecords.each(function(record){
           var recordIsVisible = (record.recordRank>=0) && (record.recordRank<me.maxVisibleItems);
           if(recordIsVisible) visibleItemCount++;
           this.style.display = recordIsVisible?null:'none';
         });
-
         this.DOM.showMore.select(".CountAbove").html("&#x25B2;"+visibleItemCount+" shown");
         this.DOM.showMore.select(".CountBelow").html((this.browser.recordsWantedCount-visibleItemCount)+" below&#x25BC;");
       };
+      if(this.viewRecAs==='nodelink'){
+        this.DOM.recordLinks.each(function(link){
+          this.style.display = (!link.source.isWanted || !link.target.isWanted) ? "none" : null;
+        });
+      } 
     },
     /** -- */
     updateAfterFilter: function(){
@@ -3880,73 +3860,76 @@ kshf.RecordDisplay.prototype = {
       this.viewRecAs = d.toLowerCase();
       this.DOM.root.attr("displayType", this.viewRecAs);
 
-      if(this.recordViewSummary) {
-        var viewAsOptions = { List: true }; // list-view is always available
-        if(this.config.geo)    viewAsOptions.Map = true;
-        if(this.linkBy.length) viewAsOptions.NodeLink = true;
-        viewAsOptions.Scatter = this.getScatterAttributes();
+      if(this.recordViewSummary===null) return;
 
-        this.DOM.root.select(".recordDisplay_ViewAsList")    
-          .style("display", "inline-block");
-        this.DOM.root.select(".recordDisplay_ViewAsMap")     
-          .style("display", (viewAsOptions.Map) ? "inline-block" : null );
-        this.DOM.root.select(".recordDisplay_ViewAsNodeLink")
-          .style("display", (viewAsOptions.NodeLink) ? "inline-block" : null );
-        this.DOM.root.select(".recordDisplay_ViewAsScatter") 
-          .style("display", (viewAsOptions.Scatter.length>0) ? "inline-block" : null );
+      var viewAsOptions = { List: true }; // list-view is always available
+      if(this.config.geo)    viewAsOptions.Map = true;
+      if(this.linkBy.length) viewAsOptions.NodeLink = true;
+      viewAsOptions.Scatter = this.getScatterAttributes();
 
-        this.browser.DOM.root.attr("recordEncoding",this.getRecordEncoding()); // "sort" / "color"
+      this.DOM.root.select(".recordDisplay_ViewAsList")    
+        .style("display", "inline-block");
+      this.DOM.root.select(".recordDisplay_ViewAsMap")     
+        .style("display", (viewAsOptions.Map) ? "inline-block" : null );
+      this.DOM.root.select(".recordDisplay_ViewAsNodeLink")
+        .style("display", (viewAsOptions.NodeLink) ? "inline-block" : null );
+      this.DOM.root.select(".recordDisplay_ViewAsScatter") 
+        .style("display", (viewAsOptions.Scatter.length>0) ? "inline-block" : null );
 
-        this.DOM.recordDisplayHeader.select(".recordDisplay_ViewGroup")
-          .style("display",
-            (viewAsOptions.Map || viewAsOptions.NodeLink || viewAsOptions.Scatter.length>0 ) 
-              ? "inline-block" 
-              : null
-          );
+      this.browser.DOM.root.attr("recordEncoding",this.getRecordEncoding()); // "sort" / "color"
 
-        switch(this.viewRecAs){
-          case 'list':
-          case 'grid':
-            this.initDOM_ListView();
-            this.sortRecords();
-            this.refreshRecordDOM();
-            this.setSortColumnWidth(this.sortColWidth || 50); // default: 50px;
-            this.DOM.kshfRecords = this.DOM.recordGroup_List.selectAll(".kshfRecord");
-            break;
-          case 'map':
-            this.initDOM_MapView();
-            this.refreshRecordDOM();
-            this.refreshRecordColors();
-            break;
-          case 'nodelink':
-            this.initDOM_NodeLinkView();
-            this.setNodeLink();
-            this.refreshRecordDOM();
-            this.refreshRecordColors();
-            this.nodelink_restart();
-            break;
-          case 'scatter':
-            if(this.scatterAttrib===undefined){
-              this.setScatterAttrib(viewAsOptions.Scatter[0]);
-            }
-            this.initDOM_Scatter();
-            this.refreshRecordDOM();
-            this.refreshScatterVis();
-            this.resetScatterZoom();
-            this.refreshQueryBox_Filter();
-            break;
-        }
+      this.DOM.recordDisplayHeader.select(".recordDisplay_ViewGroup")
+        .style("display",
+          (viewAsOptions.Map || viewAsOptions.NodeLink || viewAsOptions.Scatter.length>0 ) 
+            ? "inline-block" 
+            : null
+        );
 
-        if(this.nodelink_Force && this.viewRecAs!=='nodelink') {
-          this.nodelink_Force.stop();
-          this.DOM.root.attr("NodeLinkState","stopped");
-          this.DOM.root.classed("hideLinks",null);
-        }
-
-        this.updateRecordVisibility();
-
-        this.DOM.kshfRecords.each(function(record){ record.DOM.record = this; });
+      switch(this.viewRecAs){
+        case 'list':
+        case 'grid':
+          this.initDOM_ListView();
+          this.sortRecords();
+          this.refreshRecordDOM();
+          this.setSortColumnWidth(this.sortColWidth || 50); // default: 50px;
+          this.DOM.kshfRecords = this.DOM.recordGroup_List.selectAll(".kshfRecord");
+          break;
+        case 'map':
+          this.initDOM_MapView();
+          this.refreshRecordDOM();
+          this.refreshRecordColors();
+          break;
+        case 'nodelink':
+          this.initDOM_NodeLinkView();
+          this.setNodeLink();
+          this.refreshRecordDOM();
+          this.refreshRecordColors();
+          this.nodelink_restart();
+          break;
+        case 'scatter':
+          if(this.scatterAttrib===undefined){
+            this.setScatterAttrib(viewAsOptions.Scatter[0]);
+          }
+          this.initDOM_Scatter();
+          this.refreshRecordDOM();
+          this.refreshScatterVis();
+          this.resetScatterZoom();
+          this.refreshQueryBox_Filter();
+          break;
       }
+
+      if(this.nodelink_Force && this.viewRecAs!=='nodelink') {
+        this.nodelink_Force.stop();
+        this.DOM.root.attr("NodeLinkState","stopped");
+        this.DOM.root.classed("hideLinks",null);
+      }
+
+      // set style after initializing dom...
+      this.DOM.root.select(".LinkControl-LinkAttrib").style("display", this.linkBy.length ? "inline-block" : "none");
+
+      this.updateRecordVisibility();
+
+      this.DOM.kshfRecords.each(function(record){ record.DOM.record = this; });
     },
     /** -- */
     exportConfig: function(){
@@ -9733,7 +9716,6 @@ var Summary_Categorical_functions = {
         _cat._d_ = me.catMap.call(_cat.data,_cat);
         if(_cat._d_===undefined) {
           this.parentNode.style.display = "none";
-          console.log(_cat.data);
           return;
         }
         return me.geoPath(_cat._d_);
@@ -10126,7 +10108,9 @@ var Summary_Interval_functions = {
     /** -- */
     getWidth_OptimumTick: function(){
       if(!this.inBrowser()) return 10;
-      return this.optimumTickWidth;
+      var v = this.optimumTickWidth;
+      if(this.unitName) v += 10*this.unitName.length;
+      return v;
     },
     /** -- */
     getWidth_Bin: function(){
@@ -10399,7 +10383,7 @@ var Summary_Interval_functions = {
       var nuggetChart = this.DOM.nugget.select(".nuggetChart");
 
       this.DOM.nugget
-        .attr("aggr_initialized",this.aggr_initialized)
+        .attr("aggr_initialized",this.aggr_initialized?true:null)
         .attr("datatype",this.getDataType());
 
       if(!this.aggr_initialized) return;

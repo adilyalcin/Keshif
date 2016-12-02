@@ -140,14 +140,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       pointer-events: none;
     }
     &[drag_cursor="grab"]{
-      cursor: -moz-grab !important;
-      cursor: -webkit-grab !important;
-      cursor: grab !important;
+      .cursorGrab();
     }
     &[drag_cursor="grabbing"]{
-      cursor: -moz-grabbing !important;
-      cursor: -webkit-grabbing !important;
-      cursor: grabbing !important;
+      .cursorGrabbing();
     }
     .panel[catLabelDragging=true] .chartCatLabelResize{
       display: block !important;
@@ -338,6 +334,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .fa-dropbox{ color: #007EE5 !important; }
 
     .sortButton{
+      display: none;
       cursor: pointer;
       &:hover{ color: @color_hoverAction; }
       &:before{ content: "\f161"; } // decreasing
@@ -486,9 +483,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-radius: 4px;
         background-color: rgb(232, 232, 232);
         border: solid 1px lightgray;
-        cursor: -moz-grab;
-        cursor: -webkit-grab;
-        cursor: grab;
+        .cursorGrab();
         .user-select(none);
         .transition(opacity 400ms linear, transform 400ms ease-in-out);
         > .summaryName{
@@ -548,7 +543,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         &[filtered='true']{ display: none; }
         &[hidden='true']{ display: none; }
-        &[aggr_initialized]{
+        &:not([aggr_initialized]){
           > .nuggetViz {
             > .nuggetInfo{
               font-size: 2em;
@@ -776,9 +771,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         border-radius: 4px 4px 0px 0px;
         border-bottom: solid 1px gray;
         white-space: nowrap;
-        cursor: -moz-grab;
-        cursor: -webkit-grab;
-        cursor: grab;
+        .cursorGrab();
       }
       > .measureSelectBox_Content{
         display: block;
@@ -2477,16 +2470,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       bottom: 5px;
       font-size: 0.9em;
 
-      > span[class^='NodeLinkControl']{
-        display: none !important;
-      }
-      > span[class^='MapControl']{
-        display: none !important;
-      }
-      > span[class^='ScatterControl']{
-        display: none !important;
-      }
-
       > .visViewControlButton{
         display: inline-block;
         border-right: 1px solid #ccc;
@@ -2510,38 +2493,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           border-right: none;
         }
       }
-      > .NodeLinkControl-LinkAttribute:before{
-        content: "Link: ";
-        font-weight: 400;
+      //
+      > .LinkControl-LinkIcon{ display: none; }
+      // play & pause needs to have same width
+      > .NodeLinkControl-LinkAttrib{
+        display: none;
+        font-weight: 300;
         font-size: 0.8em;
-        height: 25px;
+        padding: 1px 7px;
+        &:before{ content: "Link: "; }
       }
-      > .ScatterControl-XAttrib{
+      > .NodeLinkControl-AnimPlay { width: 20px; }
+      > .NodeLinkControl-AnimPause{ width: 20px; }
+      //
+      > .ScatterControl-ScatterAttrib{
         font-weight: 300;
         font-size: 0.8em;
         padding: 1px 7px;
       }
     }
 
-    .leaflet-tile-container{
-      pointer-events: all !important;
-    }
-
-    .recordDisplay[displayType="map"]:not([collapsed]) .visViewControl{
-      display: block;
-      > span[class^='MapControl']{      display: inline-block !important; }
-    }
-    .recordDisplay[displayType="nodelink"]:not([collapsed]) .visViewControl{
-      display: block;
-      > span[class^='NodeLinkControl']{ display: inline-block !important; }
-    }
-    .recordDisplay[displayType="scatter"]:not([collapsed]) .visViewControl{
-      display: block;
-      left: 35px;
-      > span[class^='ScatterControl']{ display: inline-block !important; }
-    }
-
-
+    .leaflet-tile-container{ pointer-events: all !important; }
 
     .measureAxis_2{ display: none; }
 
@@ -3204,12 +3176,10 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[hasMap="true"]:not([collapsed]){
         .summaryViewAs{ display: inline-block; }
       }
+      &:not([viewType="map"]) .visViewControl > span[class^='MapControl']    { display: none; }
       &[viewType="map"]{
         z-index: 1;
-        .visViewControl{ 
-          display: block;
-          > span[class^='MapControl']{ display: inline-block !important; }
-        }
+        .visViewControl{ display: block; }
 
         .summaryCategorical{
           > .summaryControls > {
@@ -3447,11 +3417,14 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     .scatterAxis_X{
       width: 100%;
       position: absolute;
-      bottom: -20px;
-      height: 20px;
+      height: 100%;
+      top: 100%;
       > .tickGroup > .hmTicks {
+        height: 100%;
         > .tickLine{
           border-left: solid 1px #EEE;
+          height: 100%;
+          top: -100%;
         }
         > .tickText{
           position: relative;
@@ -3461,20 +3434,28 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
       > .onRecordLine {
+        top: 0px;
+        height: 100%;
         > .tickText{ left: -50%; position: relative !important; }
-        > .tickLine{ border-width: 0px 1px 0px 1px; }
+        > .tickLine{
+          height: 100%;
+          top: -100%;
+          border-width: 0px 1px 0px 1px;
+        }
       }
     }
 
     .scatterAxis_Y{
       height: 100%;
+      width: 100%;
       position: absolute;
-      width: 0px;
       left: 0px;
       top: 0px;
       > .tickGroup > .hmTicks {
+        width: 100%;
         > .tickLine{
           border-top: solid 1px #EEE;
+          width: 100%;
           top: 0px;
         }
         > .tickText{
@@ -3486,29 +3467,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
       > .onRecordLine {
-        > .tickText{ right: 0px; top: -0.5em; }
-        > .tickLine{ border-width: 1px 0px 1px 0px; }
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        > .tickText{ right: 100%; top: -0.5em; }
+        > .tickLine{
+          width: 100%;
+          top: 0px;
+          border-width: 1px 0px 1px 0px;
+        }
       }
     }
 
     .scatterAxis{
-      > .tickGroup > .hmTicks {
-        position: absolute;
-        opacity: 0;
-        z-index: -1;
-        .transition(opacity 500ms, transform 700ms ease-in-out);
-        > .tickText{
-          display: inline-block;
-          white-space: nowrap;
-          font-weight: 200;
-          font-size: 0.7em;
-          pointer-events: none;
-        }
-        > .tickLine{ 
+      > .tickGroup{
+        height: 100%;
+        width: 100%;
+        > .hmTicks {
           position: absolute;
-          left: 0px;
+          opacity: 0;
+          z-index: -1;
+          .transition(opacity 500ms, transform 700ms ease-in-out);
+          > .tickText{
+            display: inline-block;
+            white-space: nowrap;
+            font-weight: 200;
+            font-size: 0.7em;
+            pointer-events: none;
+          }
+          > .tickLine{ 
+            position: absolute;
+            left: 0px;
+          }
+          &[zero] > .tickLine { border-color: #999;  }
         }
-        &[zero] > .tickLine { border-color: #999;  }
       }
       > .onRecordLine{
         display: inline;
@@ -3597,16 +3589,31 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           .leaflet-overlay-pane{ pointer-events: none !important; }
           .leaflet-interactive { pointer-events: none !important; }
           .recordMap_SVG{ pointer-events: none !important; }
+          &:not([drawselect]) .recordMap_SVG{ opacity: 0.3; }
           .kshfRecord{ pointer-events: none !important; }
           .recordGroup{ pointer-events: none !important; }
           .scatterAxis{
             > .tickGroup > .hmTicks { .transition(opacity 500ms); }
           }
-          .recordBase_Scatter > .recordGroupHolder > .recordGroup_Scatter{ 
-            pointer-events: none !important;
-            .transition(none);
+          .recordBase_Scatter {
+            .cursorGrabbing();
+            > .recordGroupHolder > .recordGroup_Scatter{ 
+              pointer-events: none !important;
+              .transition(none);
+            }
           }
-          .spatialQueryBox{ .transition(none); pointer-events: none !important; }
+          .recordBase_Map{ 
+            .cursorGrabbing();
+          }
+          .recordBase_NodeLink{ 
+            .cursorGrabbing();
+          }
+          .spatialQueryBox{
+            .transition(opacity 50ms linear);
+            pointer-events: none !important;
+          }
+          &:not([drawselect]) .spatialQueryBox{ opacity: 0.3; }
+
           .dragSelection{ pointer-events: none !important; }
           .clearFilterButton{ pointer-events: none !important; }
           [class^='setSize']{ pointer-events: none !important; }
@@ -3625,7 +3632,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
       }
 
-      .recordNodeLink_SVG{
+      .recordBase_NodeLink{
         display: none;
         width: 100%;
         height: 100%;
@@ -3652,8 +3659,16 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             position: absolute;
             top: 0px;
             left: 0px;
+            height: 100%;
+            width: 100%;
             .transform-origin(top left);
             .transition(transform 700ms ease-in-out);
+            > svg.asdasdasdsadas{
+              display: block;
+              height: 100%;
+              width: 100%;
+              overflow: visible;
+            }
           }
         }
       }
@@ -3713,10 +3728,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             width: 100%;
             height: 6px;
           }
-          &.setSize-l{ left: -3px;}
-          &.setSize-r{ right: -3px;}
-          &.setSize-t{ top: -3px;}
-          &.setSize-b{ bottom: -3px;}
+          // 2px is border width of the parent box
+          &.setSize-l{ left: -2px;}
+          &.setSize-r{ right: -2px;}
+          &.setSize-t{ top: -2px;}
+          &.setSize-b{ bottom: -2px;}
         }
         &[active]{
           display: block;
@@ -3791,6 +3807,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       .recordGroup_List{
+        display: none;
         height: 100%;
         > .recordGroup{
           width: 100%;
@@ -3872,111 +3889,79 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .itemRank_control{ color: gray; }
       }
 
+      // shared by network and scatterplot views
+      circle.kshfRecord{
+        stroke: gray;
+        stroke-width: 1;
+        cursor: pointer;
+        .transition(all 700ms ease-in-out);
+        &[selection] { stroke-width: 2; }
+        &[selection="onRecord"]   { stroke: darken(@color_onRecord_back, 70%); }
+        &[selection="related"]    { stroke: green; }
+        &[selection="highlighted"]{ stroke: orangered; }
+
+        &[rec_compared]{ stroke-width: 2; }
+        &[rec_compared^="A"]{ stroke: @color_Compare_A; }
+        &[rec_compared^="B"]{ stroke: @color_Compare_B; }
+        &[rec_compared^="C"]{ stroke: @color_Compare_C; }
+      }
+
+      &.hideLinks {
+        .recordLink { display: none; }
+        .LinkControl-LinkIcon{ color: #BABABA; }
+      }
+
+      &:not([displayType="scatter"])  span[class^='ScatterControl'] { display: none; }
+      &:not([displayType="map"])      span[class^='MapControl']     { display: none; }
+      &:not([displayType="nodelink"]) span[class^='NodeLinkControl']{ display: none; }
 
       &[displayType="scatter"]{
         .scrollToTop     { display: none; }
-        .sortButton      { display: none; }
-        .recordGroup_List{ display: none; }
 
         .recordBase_Scatter    { display: block; }
+
         .recordDisplay_ViewAsScatter {
           background-color: white;
           > svg { fill: black; }
         }
 
-        .kshfRecord{
-          opacity: 0.9;
-          position: absolute;
-          cursor: pointer;
-          pointer-events: all;
-          overflow: visible;
-          .transition(transform 700ms ease-in-out);
-          > .recordDot{
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: block;
-            position: absolute;
-            left: -4px;
-            top: -4px;
-            border: solid 1px gray;
-            background-color: #c9d3da;
-            cursor: pointer;
-            .transition(all 400ms ease-in-out);
-          }
-          > .kshfRecord_label{
-            display: block;
-            position: absolute;
-            left: 4px;
-            top: -1em;
-            white-space: nowrap;
-            opacity: 0;
-            padding: 1px 3px;
-            font-size: 0.8em;
-            pointer-events: none;
-            text-shadow: 0px 0px 5px white;
-            .transition(opacity 200ms linear);
-          }
-          &[selection="onRecord"]{
-            opacity: 1;
-            > .recordDot { 
-              background-color: @color_onRecord_back; 
-              border-color: darken(@color_onRecord_back, 70%); 
-            }
-            > .kshfRecord_label{ 
-              opacity: 1;
-              background-color: white;
-              border: solid 1px #b5a686;
-              border-radius: 5px;
-              padding: 0px 2px;
-            }
-          }
-          &[selection="related"]{
-            > .recordDot { background-color: green; border-width: 2; }
-            > .kshfRecord_label{ opacity: 1; color: green; }
-          }
-          &[selection="highlighted"]{
-            > .recordDot { background-color: orangered; border-color: orangered; border-width: 2px; }
-          }
-          &[rec_compared]       > .recordDot { border-width: 2; }
-          &[rec_compared^="A"]{ > .recordDot { background-color: @color_Compare_A; border-color: @color_Compare_A; } }
-          &[rec_compared^="B"]{ > .recordDot { background-color: @color_Compare_B; border-color: @color_Compare_B; } }
-          &[rec_compared^="C"]{ > .recordDot { background-color: @color_Compare_C; border-color: @color_Compare_C; } }
+        &:not([collapsed]) .visViewControl{
+          display: block;
+          left: 35px;
         }
+
+        line.recordLink {
+          pointer-events: none;
+          display: none;
+          stroke: #d0be96;
+          stroke-opacity: .7;
+        }
+
+        circle.kshfRecord{ fill: @color_distr_total; }
       }
 
       &[visMouseMode="pan"]{
         .MouseMode-pan { color: black;     cursor: default; }
         .MouseMode-draw{ color: lightgray; cursor: pointer; }
-        .recordBase_Map{
-          cursor: -moz-grab;
-          cursor: -webkit-grab;
-          cursor: grab;
-        }
-        .recordBase_Scatter{        
-          cursor: -moz-grab;
-          cursor: -webkit-grab;
-          cursor: grab;
-        }
+        [class^='recordBase_']{ .cursorGrab(); }
       }
       &[visMouseMode="draw"]{
         .MouseMode-pan { color: lightgray; cursor: pointer; }
         .MouseMode-draw{ color: black;     cursor: default; }
-        .recordBase_Map{ cursor: crosshair; }
-        .recordBase_Scatter{ cursor: crosshair; }
+        [class^='recordBase_']{ cursor: crosshair; }
       }
 
       &[displayType="map"]{
         overflow: visible !important;
         .scrollToTop{ display: none; }
-        .sortButton{ display: none; }
         // mapControl-MouseMode
         .recordDisplay_ViewAsMap{ color: black; background-color: white; }
 
         .recordBase_Map{ display: block; }
+        &:not([collapsed]) .visViewControl{ display: block; }
+
 
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
-        .recordGroup_List{ display: none; }
 
         .recordGroup{ overflow: visible !important; }
         .kshfRecord{
@@ -4004,66 +3989,40 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       &[displayType="nodelink"]{
         overflow: visible !important;
         .scrollToTop{ display: none; }
-        .sortButton{ display: none; }
 
-        .recordDisplay_ViewAsNodeLink{ color: black;  background-color: white; }
+        &:not([collapsed]) .visViewControl{ display: block; }
 
-        .recordNodeLink_SVG{ display: block; }
+        .recordDisplay_ViewAsNodeLink{ 
+          color: black;
+          background-color: white;
+        }
+
+        .recordBase_NodeLink{ display: block; }
+
 
         > .recordDisplayHeader > .recordColorScale{ .display(flex); }
 
-        .recordGroup_List{ display: none; }
 
-        g.kshfRecord{
-          > circle{
-            stroke: gray;
-            stroke-width: 1;
-            fill: white;
-            cursor: pointer;
-            .transition(all 400ms ease-in-out);
-          }
-          > text.kshfRecord_label{
-            display: none;
-            font-size: 0.8em;
-            pointer-events: none;
-            text-shadow: 0px 0px 5px white, 0px 0px 5px white, 0px 0px 2px white;
-          }
-          &[selection="onRecord"]{
-            > circle { stroke: darken(@color_onRecord_back, 70%); stroke-width: 2; }
-            > text.kshfRecord_label{ display: block; }
-          }
-          &[selection="related"]{
-            > circle { stroke: green; stroke-width: 2; }
-            > text.kshfRecord_label{ display: block; fill: green; }
-          }
-          &[selection="highlighted"]{
-            > circle { stroke: orangered; stroke-width: 2; }
-          }
-          &[rec_compared] > circle{ stroke-width: 2; }
-          &[rec_compared^="A"]{ > circle { stroke: @color_Compare_A; } }
-          &[rec_compared^="B"]{ > circle { stroke: @color_Compare_B; } }
-          &[rec_compared^="C"]{ > circle { stroke: @color_Compare_C; } }
-        }
+        circle.kshfRecord{ fill: white; }
 
-        .recordLink {
+        line.recordLink {
           stroke: #999;
           stroke-opacity: .3;
         }
 
-        &.hideLinks {
-          .recordLink { display: none; }
-          .NodeLinkControl-LinkIcon{ color: #BABABA; }
-        }
         &[NodeLinkState="started"]{
-          .NodeLinkControl-AnimPlay{ display: none; }
+          .NodeLinkControl-AnimPlay{ display: none !important; }
         }
         &[NodeLinkState="stopped"]{
-          .NodeLinkControl-AnimPause{ display: none; }
+          .NodeLinkControl-AnimPause{ display: none !important; }
         }
+
       }
 
       &[hasrecordview="true"]{
         &[displayType="grid"] {
+          .sortButton { display: block; }
+          .recordGroup_List{ display: block; }
           .recordDisplay_ViewAsList{ color: black; background-color: white; }
           .recordGroup {
             .display(flex);
@@ -4091,6 +4050,8 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           }
         }
         &[displayType="list"]{
+          .sortButton { display: block; }
+          .recordGroup_List{ display: block; }
           .recordDisplay_ViewAsList{ color: black; background-color: white; }
           .kshfRecord{
             .display(flex);
@@ -4155,7 +4116,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         .recordReverseSortButton{ display: none; }
         .scrollToTop{ visibility: hidden;}
         .buttonRecordViewCollapse{ display: none }
-        .buttonRecordViewExpand{ display: block; }
+        .buttonRecordViewExpand{ display: block; opacity: 1; }
         &:hover{
           .buttonRecordViewExpand{ opacity: 1; }
         }
@@ -4314,9 +4275,9 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             > .label{ fill: @color_preview; }
             > .line{ stroke: @color_preview; }
           }
-          &[selection="onRecord"] {
-            > .label{ fill: darken(@color_onRecord_back, 60%); }
-            > .line{ stroke: darken(@color_onRecord_back, 50%); }
+          &[catselect="onRecord"] {
+            > .label{ fill: darken(@color_onRecord_back, 60%); font-weight: 700; }
+            > .line{ stroke: darken(@color_onRecord_back, 50%); stroke-width: 2; }
           }
         }
       } // .rows
@@ -4419,11 +4380,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           &[helpin]{ opacity: 1; }
         }
         > .recordDisplayName{
-          font-weight: 100;
-          font-size: 0.8em;
-          padding: 1px;
-          cursor: default;
+          font-family: 'Roboto Slab', serif;
+          font-size: 0.9em;
+          font-weight: 600;
           pointer-events: none;
+          cursor: default;
         }
         > .buttonRecordViewCollapse{
           display: block;
@@ -4612,6 +4573,17 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     z-index: 100000;
     pointer-events: none;
 
+    &.recordTip{
+      > .tipsy-inner{
+        background-color: white;
+        font-family: inherit;
+        color: black;
+        text-align: inherit;
+        border: solid 1px lightgray;
+        font-weight: 500;
+      }
+    }
+
     > .tipsy-inner {
       font-family: Helvetica, Arial, sans-serif;
       padding: 3px;
@@ -4659,6 +4631,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
   }
 }
+
+.cursorGrabbing(){
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+}
+.cursorGrab(){
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
 
 @-webkit-keyframes stretchdelay {.stretchdelay_do;}
 @-moz-keyframes stretchdelay {.stretchdelay_do;}
