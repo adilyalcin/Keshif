@@ -1495,12 +1495,16 @@ kshf.RecordDisplay = function(browser, config){
   this.textSearchSummary = null;
   this.recordViewSummary = null;
 
+  this.sortAttrib    = null;
+  this.scatterAttrib = null;
+  this.colorAttrib   = null;
+
+  if(config.scatterBy) this.setScatterAttrib(browser.summaries_by_name[config.scatterBy]);
+
   /***********
    * SORTING OPTIONS
    *************************************************************************/
-  config.sortingOpts = config.sortBy; // depracated option (sortingOpts)
-
-  this.sortingOpts = config.sortingOpts || [ {title:this.browser.records[0].idIndex} ]; // Sort by id by default
+  this.sortingOpts = config.sortBy || [ {name: this.browser.records[0].idIndex} ]; // Sort by id by default
   if(!Array.isArray(this.sortingOpts)) this.sortingOpts = [this.sortingOpts];
 
   this.prepSortingOpts();
@@ -1515,7 +1519,7 @@ kshf.RecordDisplay = function(browser, config){
   this.alphabetizeSortingOptions();
 
   if(this.sortingOpts.length>0){
-    this.setSortingOpt_Active(firstSortOpt || this.sortingOpts[0]);
+    this.setSortAttrib(firstSortOpt || this.sortingOpts[0]);
   }
 
   this.DOM.root = this.browser.DOM.root.select(".recordDisplay")
@@ -1632,11 +1636,11 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     recMap_refreshColorScaleBins: function(){
       var invertColorScale = false;
-      if(this.sortingOpt_Active) invertColorScale = this.sortingOpt_Active.invertColorScale;
-      var mapColorTheme    = this.browser.mapColorTheme;
+      if(this.sortAttrib) invertColorScale = this.sortAttrib.invertColorScale;
+      var mapColorTheme = kshf.colorScale[this.browser.mapColorTheme];
       this.DOM.recordColorScaleBins
         .style("background-color", function(d){
-          return kshf.colorScale[mapColorTheme][ invertColorScale ? (8-d) : d];
+          return mapColorTheme[ invertColorScale ? (8-d) : d];
         });
     },
     /** --  */
@@ -1681,7 +1685,7 @@ kshf.RecordDisplay.prototype = {
           me.browser.mapColorTheme = (me.browser.mapColorTheme==="converge") ? "diverge" : "converge";
           me.refreshRecordColors();
           me.recMap_refreshColorScaleBins();
-          me.sortingOpt_Active.map_refreshColorScale();
+          me.sortAttrib.map_refreshColorScale();
         })
         .selectAll(".recordColorScaleBin").data([0,1,2,3,4,5,6,7,8])
           .enter().append("div").attr("class","recordColorScaleBin");
@@ -1769,7 +1773,7 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordSortSelectbox = this.DOM.recordSortOptions.append("select")
         .attr("class","recordSortSelectbox")
-        .on("change", function(){ me.setSortingOpt_Active(this.selectedOptions[0].__data__); });
+        .on("change", function(){ me.setSortAttrib(this.selectedOptions[0].__data__); });
 
       this.refreshSortingOptions();
 
@@ -1780,9 +1784,8 @@ kshf.RecordDisplay.prototype = {
         .on("mouseleave", function(){ this.tipsy.hide(); })
         .on("click",function(){
           this.tipsy.hide();
-          // NOTE: Only available on list/grid views (?)
-          me.sortingOpt_Active.inverse = me.sortingOpt_Active.inverse?false:true;
-          this.setAttribute("inverse",me.sortingOpt_Active.inverse);
+          me.sortAttrib.inverse = me.sortAttrib.inverse?false:true;
+          this.setAttribute("inverse",me.sortAttrib.inverse);
           // TODO: Do not show no-value items on top, reversing needs to be a little smarter.
           me.browser.records.reverse();
 
@@ -2179,8 +2182,7 @@ kshf.RecordDisplay.prototype = {
       // SCATTER OPTIONS
       var s = X.append("span").attr("class","ScatterControl-ScatterAttrib visViewControlButton");
       s.append("span").text("→ Vs: ");
-      s.append("select")
-        .on("change",function(){ me.setScatterAttrib(this.selectedOptions[0].__data__); });;
+      s.append("select").on("change",function(){ me.setScatterAttrib(this.selectedOptions[0].__data__); });;
       this.refreshScatterOptions();
 
       // ***************************************************
@@ -2357,8 +2359,8 @@ kshf.RecordDisplay.prototype = {
           // use summary filter ranges
           _left   = this.scatterAttrib.summaryFilter.active.min;
           _right  = this.scatterAttrib.summaryFilter.active.max;
-          _top    = this.sortingOpt_Active.summaryFilter.active.max;
-          _bottom = this.sortingOpt_Active.summaryFilter.active.min;
+          _top    = this.sortAttrib.summaryFilter.active.max;
+          _bottom = this.sortAttrib.summaryFilter.active.min;
 
           if(!this.scatterAttrib.isFiltered()){
             _left  = this.scatterAttrib.intervalRange.total.min;
@@ -2373,15 +2375,15 @@ kshf.RecordDisplay.prototype = {
               _right-=0.5;
             }
           }
-          if(!this.sortingOpt_Active.isFiltered()){
-            _top    = this.sortingOpt_Active.intervalRange.total.max;
+          if(!this.sortAttrib.isFiltered()){
+            _top    = this.sortAttrib.intervalRange.total.max;
             if(_top===0) _top=1000;
             _top = (_top>0) ? _top*100 : -_top*100;
-            _bottom = this.sortingOpt_Active.intervalRange.total.min;
+            _bottom = this.sortAttrib.intervalRange.total.min;
             if(_bottom===0) _bottom=-1000;
             _bottom = (_bottom>0) ? -_bottom*100 : _bottom*100;
           } else {
-            if(this.sortingOpt_Active.stepTicks){
+            if(this.sortAttrib.stepTicks){
               _top-=0.5;
               _bottom-=0.5;
             }
@@ -2423,7 +2425,7 @@ kshf.RecordDisplay.prototype = {
         .attr("active", (
             bounds || 
             (this.scatterAttrib && this.scatterAttrib.isFiltered()) || 
-            (this.sortingOpt_Active && this.sortingOpt_Active.isFiltered()) ||
+            (this.sortAttrib && this.sortAttrib.isFiltered()) ||
             (this.spatialFilter && this.spatialFilter.isFiltered)
           ) ? true: null )
         .style("left",  _left+"px")
@@ -2517,8 +2519,7 @@ kshf.RecordDisplay.prototype = {
               me.scatterAxisScale_X.invert(mousePos[0]), me.scatterAxisScale_Y.invert(mousePos[1])
             ];
             if(curMousePos[1]!==me.drawingStartPoint[1] && me.drawingStartPoint[0] !== curMousePos[0]){
-              // enable filtering on both axis
-              me.sortingOpt_Active.setRangeFilter(me.drawingStartPoint[1], curMousePos[1]);
+              me.sortAttrib   .setRangeFilter(me.drawingStartPoint[1], curMousePos[1]);
               me.scatterAttrib.setRangeFilter(me.drawingStartPoint[0], curMousePos[0]);
             }
           } else if(me.drawSelect==="Highlight"){
@@ -2578,7 +2579,7 @@ kshf.RecordDisplay.prototype = {
               if(this.tempTimer) clearTimeout(this.tempTimer);
               this.tempTimer = setTimeout(function(){
                 var records = [];
-                var yID = me.sortingOpt_Active.summaryID;
+                var yID = me.sortAttrib   .summaryID;
                 var xID = me.scatterAttrib.summaryID;
                 me.browser.records.forEach(function(record){ 
                   if(!record.isWanted) return;
@@ -2637,8 +2638,8 @@ kshf.RecordDisplay.prototype = {
           var bounds = {
             left:   me.scatterAttrib.summaryFilter.active.min,
             right:  me.scatterAttrib.summaryFilter.active.max,
-            top:    me.sortingOpt_Active.summaryFilter.active.max,
-            bottom: me.sortingOpt_Active.summaryFilter.active.min
+            top:    me.sortAttrib.summaryFilter.active.max,
+            bottom: me.sortAttrib.summaryFilter.active.min
           };
           d3.select("body").on("mousemove", function(e){
             var mousePos = d3.mouse(me.DOM.recordGroupHolder.node())
@@ -2655,11 +2656,11 @@ kshf.RecordDisplay.prototype = {
               bounds.right = targetPos[0];
             }
             if(t==='t'){
-              me.sortingOpt_Active.setRangeFilter(me.sortingOpt_Active.summaryFilter.active.min, targetPos[1], true);
+              me.sortAttrib.setRangeFilter(me.sortAttrib.summaryFilter.active.min, targetPos[1], true);
               bounds.top = targetPos[1];
             }
             if(t==='b'){
-              me.sortingOpt_Active.setRangeFilter(targetPos[1], me.sortingOpt_Active.summaryFilter.active.max, true);
+              me.sortAttrib.setRangeFilter(targetPos[1], me.sortAttrib.summaryFilter.active.max, true);
               bounds.bottom = targetPos[1];
             }
             me.refreshQueryBox_Filter(bounds);
@@ -2676,26 +2677,26 @@ kshf.RecordDisplay.prototype = {
           me.DOM.recordDisplayWrapper.attr("dragging",true);
           var mousePos = d3.mouse(me.DOM.recordGroupHolder.node())
           var initPos = [
-            me.scatterAttrib    .valueScale( me.scatterAxisScale_X.invert(mousePos[0]) ), 
-            me.sortingOpt_Active.valueScale( me.scatterAxisScale_Y.invert(mousePos[1]) )
+            me.scatterAttrib.valueScale( me.scatterAxisScale_X.invert(mousePos[0]) ), 
+            me.sortAttrib   .valueScale( me.scatterAxisScale_Y.invert(mousePos[1]) )
           ];
           var initMin_X = me.scatterAttrib.summaryFilter.active.min;
           var initMax_X = me.scatterAttrib.summaryFilter.active.max;
-          var initMin_Y = me.sortingOpt_Active.summaryFilter.active.min;
-          var initMax_Y = me.sortingOpt_Active.summaryFilter.active.max;
+          var initMin_Y = me.sortAttrib   .summaryFilter.active.min;
+          var initMax_Y = me.sortAttrib   .summaryFilter.active.max;
           d3.select("body").on("mousemove", function(e){
             var mousePos = d3.mouse(me.DOM.recordGroupHolder.node())
             var curPos = [
-              me.scatterAttrib    .valueScale( me.scatterAxisScale_X.invert(mousePos[0]) ), 
-              me.sortingOpt_Active.valueScale( me.scatterAxisScale_Y.invert(mousePos[1]) )
+              me.scatterAttrib.valueScale( me.scatterAxisScale_X.invert(mousePos[0]) ), 
+              me.sortAttrib   .valueScale( me.scatterAxisScale_Y.invert(mousePos[1]) )
             ];
             me.scatterAttrib.dragRange(initPos[0],curPos[0], initMin_X, initMax_X);
-            me.sortingOpt_Active.dragRange(initPos[1],curPos[1], initMin_Y, initMax_Y);
+            me.sortAttrib   .dragRange(initPos[1],curPos[1], initMin_Y, initMax_Y);
             var bounds = {
               left:   me.scatterAttrib.summaryFilter.active.min,
               right:  me.scatterAttrib.summaryFilter.active.max,
-              top:    me.sortingOpt_Active.summaryFilter.active.max,
-              bottom: me.sortingOpt_Active.summaryFilter.active.min
+              top:    me.sortAttrib   .summaryFilter.active.max,
+              bottom: me.sortAttrib   .summaryFilter.active.min
             };
             me.refreshQueryBox_Filter(bounds);
           }).on("mouseup", function(){
@@ -2708,7 +2709,7 @@ kshf.RecordDisplay.prototype = {
         function(d){
           if(d==="Filter"){
             me.scatterAttrib.summaryFilter.clearFilter();
-            me.sortingOpt_Active.summaryFilter.clearFilter();
+            me.sortAttrib   .summaryFilter.clearFilter();
           } else if(d!=="Highlight"){ // Compare_X
             me.browser.clearSelect_Compare(d.substr(8));
           }
@@ -2937,10 +2938,10 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     getSortingLabel: function(record){
-      var s = this.sortingOpt_Active.sortLabel.call(record.data,record);
-      if(s===null || s===undefined) return "";
+      var s = this.sortAttrib.sortLabel.call(record.data,record);
+      if(s===null || s===undefined || s==="") return "";
       if(typeof s!=="string") s = this.sortColFormat(s);
-      return this.sortingOpt_Active.printWithUnitName(s);
+      return this.sortAttrib.printWithUnitName(s);
     },
     /** -- */
     refreshRecordSortLabels: function(d3_selection){
@@ -2948,7 +2949,10 @@ kshf.RecordDisplay.prototype = {
       if(d3_selection===undefined) d3_selection = this.DOM.recordSortValue;
 
       var me=this;
-      d3_selection.html(function(record){ return me.getSortingLabel(record); });
+      d3_selection.html(function(record){
+        var v= me.getSortingLabel(record); 
+        return (v==="") ? "-" : v;
+      });
     },
     /** -- */
     addSortingOption: function(summary){
@@ -2994,7 +2998,7 @@ kshf.RecordDisplay.prototype = {
       this.sortingOpts.forEach(function(sortOpt,i){
         if(sortOpt.summaryName) return; // It already points to a summary
         if(typeof(sortOpt)==="string"){
-          sortOpt = { title: sortOpt };
+          sortOpt = { name: sortOpt };
         }
         // Old API
         if(sortOpt.title) sortOpt.name = sortOpt.title;
@@ -3033,42 +3037,45 @@ kshf.RecordDisplay.prototype = {
       }
       this.scatterAttrib = attrib;
       this.scatterAttrib.setEncodesRecordsBy("scatter");
+
+      if(this.recordViewSummary===null) return;
+      if(this.DOM.root===undefined) return;
+
       this.refreshScatterVis(true);
       this.refreshSortingOptions();
     },
     /** -- */
-    setSortingOpt_Active: function(index){
-      if(this.sortingOpt_Active){
-        var curHeight = this.sortingOpt_Active.getHeight();
-        this.sortingOpt_Active.clearEncodesRecordsBy();
-        this.sortingOpt_Active.setHeight(curHeight);
+    setSortAttrib: function(index){
+      if(this.sortAttrib){
+        var curHeight = this.sortAttrib.getHeight();
+        this.sortAttrib.clearEncodesRecordsBy();
+        this.sortAttrib.setHeight(curHeight);
       }
       
       if(typeof index === "number"){
         if(index<0 || index>=this.sortingOpts.length) return;
-        this.sortingOpt_Active = this.sortingOpts[index];
+        this.sortAttrib = this.sortingOpts[index];
       } else if(index instanceof kshf.Summary_Base){
-        this.sortingOpt_Active = index;
+        this.sortAttrib = index;
       }
 
       if(this.config.onSort) this.config.onSort.call(this);
 
       {
-        var curHeight = this.sortingOpt_Active.getHeight();
-        this.sortingOpt_Active.setEncodesRecordsBy("sort");
-        this.sortingOpt_Active.setHeight(curHeight);
+        var curHeight = this.sortAttrib.getHeight();
+        this.sortAttrib.setEncodesRecordsBy("sort");
+        this.sortAttrib.setHeight(curHeight);
       }
 
       // Sort column format function
       this.sortColFormat = function(a){ return a.toLocaleString(); };
-      if(this.sortingOpt_Active.isTimeStamp()){
-        this.sortColFormat = this.sortingOpt_Active.timeTyped.print;
+      if(this.sortAttrib.isTimeStamp()){
+        this.sortColFormat = this.sortAttrib.timeTyped.print;
       }
 
-      // If the record view summary is not set, no need to proceed with sorting or visual
       if(this.recordViewSummary===null) return;
-
       if(this.DOM.root===undefined) return;
+
       switch(this.viewRecAs){
         case 'map':
         case 'nodelink':
@@ -3121,7 +3128,7 @@ kshf.RecordDisplay.prototype = {
       var scale = "scale("+(1/this.scatterTransform.z)+")";
 
       var sX = this.scatterAttrib;
-      var sY = this.sortingOpt_Active;
+      var sY = this.sortAttrib;
 
       var accX = sX.summaryID;
       var accY = sY.summaryID;
@@ -3197,7 +3204,7 @@ kshf.RecordDisplay.prototype = {
       }
 
       ticks.Y = this.scatterAxisScale_Y.ticks(Math.floor((this.curHeight-50)/30) );
-      if(!this.sortingOpt_Active.hasFloat){
+      if(!this.sortAttrib.hasFloat){
         ticks.Y = ticks.Y.filter(function(t){ return t%1===0; });
       }
 
@@ -3226,11 +3233,9 @@ kshf.RecordDisplay.prototype = {
       addTicks("Y","translateY(");
 
       this.DOM.scatterAxis_X.selectAll(".tickText")
-        .html(function(tick){ 
-          return me.scatterAttrib.printWithUnitName(me.browser.getTickLabel(tick));
-        })
+        .html(function(tick){ return me.scatterAttrib.printWithUnitName(me.browser.getTickLabel(tick)); });
       this.DOM.scatterAxis_Y.selectAll(".tickText")
-        .html(function(tick){ return me.sortingOpt_Active.printWithUnitName(me.browser.getTickLabel(tick)); })
+        .html(function(tick){ return me.sortAttrib   .printWithUnitName(me.browser.getTickLabel(tick)); });
 
       this.refreshQueryBox_Filter();
     },
@@ -3379,24 +3384,24 @@ kshf.RecordDisplay.prototype = {
     refreshRecordColors: function(){
       if(!this.recordViewSummary) return;
       if(this.viewRecAs!=='map' && this.viewRecAs!=='nodelink') return;
-      if(!this.sortingOpt_Active) return;
+      if(!this.sortAttrib) return;
 
       var me=this;
-      var s_f  = this.sortingOpt_Active.summaryFunc;
+      var s_f  = this.sortAttrib.summaryFunc;
       var s_log;
 
-      if(this.sortingOpt_Active.scaleType==='log'){
+      if(this.sortAttrib.scaleType==='log'){
         this.recordColorScale = d3.scaleLog();
         s_log = true;
       } else {
         this.recordColorScale = d3.scaleLinear();
         s_log = false;
       }
-      var min_v = this.sortingOpt_Active.intervalRange.total.min;
-      var max_v = this.sortingOpt_Active.intervalRange.total.max;
-      if(this.sortingOpt_Active.intervalRange.active){
-        min_v = this.sortingOpt_Active.intervalRange.active.min;
-        max_v = this.sortingOpt_Active.intervalRange.active.max;
+      var min_v = this.sortAttrib.intervalRange.total.min;
+      var max_v = this.sortAttrib.intervalRange.total.max;
+      if(this.sortAttrib.intervalRange.active){
+        min_v = this.sortAttrib.intervalRange.active.min;
+        max_v = this.sortAttrib.intervalRange.active.max;
       }
       if(min_v===undefined) min_v = d3.min(this.browser.records, function(d){ return s_f.call(d.data); });
       if(max_v===undefined) max_v = d3.max(this.browser.records, function(d){ return s_f.call(d.data); });
@@ -3415,7 +3420,7 @@ kshf.RecordDisplay.prototype = {
         if(s_log && v<=0) v=undefined;
         if(v===undefined) return undefinedFill;
         var vv = me.recordColorScale(v);
-        if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
+        if(me.sortAttrib.invertColorScale) vv = 9 - vv;
         return me.colorQuantize(vv); 
       };
 
@@ -3429,7 +3434,7 @@ kshf.RecordDisplay.prototype = {
             return;
           }
           var vv = me.recordColorScale(v);
-          if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
+          if(me.sortAttrib.invertColorScale) vv = 9 - vv;
           this.style.fill = me.colorQuantize(vv); 
           this.style.stroke = me.colorQuantize(vv>=5?0:9);
         });
@@ -3440,7 +3445,7 @@ kshf.RecordDisplay.prototype = {
           if(s_log && v<=0) v=undefined;
           if(v===undefined) return undefinedFill;
           var vv = me.recordColorScale(v);
-          if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
+          if(me.sortAttrib.invertColorScale) vv = 9 - vv;
           return me.colorQuantize(vv); 
         });
       }
@@ -3489,17 +3494,17 @@ kshf.RecordDisplay.prototype = {
       if(this.viewRecAs==='scatter'){
         this.DOM.root.selectAll(".onRecordLine").style('opacity',1);
         var accX = this.scatterAttrib.summaryID;
-        var accY = this.sortingOpt_Active.summaryID;
+        var accY = this.sortAttrib.summaryID;
 
         var recX = this.scatterAxisScale_X(record._valueCache[accX]);
         var recY = this.scatterAxisScale_Y(record._valueCache[accY]);
         this.DOM.scatterAxis_X.select(".onRecordLine").style("transform","translate(  "+recX+"px,0px)");
         this.DOM.scatterAxis_Y.select(".onRecordLine").style("transform","translate(0px,"+recY+"px)");
 
-        this.DOM.scatterAxis_X.select(".onRecordLine > .tickText").html(
-          this.scatterAttrib.printWithUnitName(record._valueCache[accX] ));
-        this.DOM.scatterAxis_Y.select(".onRecordLine > .tickText").html(
-          this.sortingOpt_Active.printWithUnitName(record._valueCache[accY] ));
+        this.DOM.scatterAxis_X.select(".onRecordLine > .tickText")
+          .html(this.scatterAttrib.printWithUnitName(record._valueCache[accX] ));
+        this.DOM.scatterAxis_Y.select(".onRecordLine > .tickText")
+          .html(this.sortAttrib   .printWithUnitName(record._valueCache[accY] ));
       }
       if(this.viewRecAs==='map' || this.viewRecAs==='nodelink' || this.viewRecAs==='scatter'){
         // reorder dom so it appears on top.
@@ -3552,23 +3557,21 @@ kshf.RecordDisplay.prototype = {
         .attr("rec_compared",function(record){ return record.selectCompared_str?record.selectCompared_str:null;})
         .each(function(record){
           record.DOM.record = this;
-          if(me.viewRecAs==='map'){
-            this.tipsy = new Tipsy(this, {
-              gravity: 'e',
-              title: function(){ 
-                var v = me.sortingOpt_Active.summaryFunc.call(record.data,record);
-                return ""+
-                  "<span class='mapItemName'>"+record._valueCache[mainSummaryID]+"</span>"+
-                  "<span class='mapTooltipLabel'>"+me.sortingOpt_Active.summaryName+"</span>: "+
-                  "<span class='mapTooltipValue'>"+me.sortingOpt_Active.printWithUnitName(v)+"</span>";
-              }
-            });
-          }
-          if(me.viewRecAs==='scatter' || me.viewRecAs==='nodelink'){
+          if(me.viewRecAs==='map' || me.viewRecAs==='scatter' || me.viewRecAs==='nodelink'){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
               className: 'recordTip',
-              title: function(){ return record._valueCache[mainSummaryID]; }
+              title: (me.viewRecAs==='scatter' || me.viewRecAs==='nodelink') ?
+                // scatter, nodelink
+                function(){ return record._valueCache[mainSummaryID]; } :
+                // map
+                function(){ 
+                  var v = me.sortAttrib.summaryFunc.call(record.data,record);
+                  return ""+
+                    "<span class='mapItemName'>"+record._valueCache[mainSummaryID]+"</span>"+
+                    "<span class='mapTooltipLabel'>"+me.sortAttrib.summaryName+"</span>: "+
+                    "<span class='mapTooltipValue'>"+me.sortAttrib.printWithUnitName(v)+"</span>";
+                }
             });
           }
         })
@@ -3710,9 +3713,9 @@ kshf.RecordDisplay.prototype = {
      *  They are not resorted on filtering. ** Filtering does not affect record sorting.
      */
     sortRecords: function(){
-      var sortValueFunc = this.sortingOpt_Active.summaryFunc;
-      var sortFunc = this.sortingOpt_Active.sortFunc;
-      var inverse = this.sortingOpt_Active.sortInverse;
+      var sortValueFunc = this.sortAttrib.summaryFunc;
+      var sortFunc = this.sortAttrib.sortFunc;
+      var inverse = this.sortAttrib.sortInverse;
 
       this.browser.records.sort(
         function(record_A,record_B){
@@ -3849,10 +3852,10 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     getScatterAttributes: function(){
-      if(this.sortingOpt_Active.scaleType==='time') return [];
+      if(this.sortAttrib.scaleType==='time') return [];
       var me=this;
       return this.sortingOpts.filter(function(s){ 
-        return s.scaleType!=='time' && s.summaryID!==me.sortingOpt_Active.summaryID;
+        return s.scaleType!=='time' && s.summaryID!==me.sortAttrib.summaryID;
       });
     },
     /** -- */
@@ -3907,7 +3910,7 @@ kshf.RecordDisplay.prototype = {
           this.nodelink_restart();
           break;
         case 'scatter':
-          if(this.scatterAttrib===undefined){
+          if(this.scatterAttrib===null){
             this.setScatterAttrib(viewAsOptions.Scatter[0]);
           }
           this.initDOM_Scatter();
@@ -3934,7 +3937,6 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     exportConfig: function(){
       var c={};
-      c.displayType = this.viewRecAs;
       if(this.textSearchSummary){
         c.textSearch = this.textSearchSummary.summaryName;
       }
@@ -3943,11 +3945,11 @@ kshf.RecordDisplay.prototype = {
       } else {
         c.recordView = this.recordViewSummary.summaryFunc.toString(); // converts function to string
       }
-      c.sortBy = [];
-      browser.recordDisplay.sortingOpts.forEach(function(summary){
-        c.sortBy.push(summary.summaryName);
-      });
-      if(c.sortBy.length===1) c.sortBy = c.sortBy[0];
+
+      c.displayType = this.viewRecAs;
+      if(this.sortAttrib)    c.sortBy    = this.sortAttrib   .summaryName;
+      if(this.scatterAttrib) c.scatterBy = this.scatterAttrib.summaryName;
+      if(this.colorAttrib)   c.colorBy   = this.colorAttrib  .summaryName;
       c.sortColWidth = this.sortColWidth;
       c.detailsToggle = this.detailsToggle;
       return c;
@@ -5102,42 +5104,38 @@ kshf.Browser.prototype = {
     /** -- */
     showCredits: function(){
       if(this.creditsInserted) return;
-      var creditString="";
-      creditString += "<div class='infobox-header'><a target='_blank' href='http://www.keshif.me' class='libName'>";
-      creditString += kshf.kshfLogo;
+      this.DOM.overlay_infobox.append("div").html(
+        "<div class='infobox-header'>"+
+          kshf.kshfLogo +
+          "<a href='https://www.facebook.com/keshifme' target='_blank' class='fa fa-facebook socialMedia' style='color: #4c66a4;'></a>"+
+          "<a href='https://www.twitter.com/keshifme' target='_blank' class='fa fa-twitter socialMedia' style='color: #00aced;'></a>"+
+          "<a href='https://www.github.com/adilyalcin/keshif' target='_blank' class='fa fa-github socialMedia' style='color: black;'></a>"+
 
-      creditString += " Keshif</a> - Data Made Explorable</div>";
+          "<a target='_blank' href='http://www.keshif.me' class='libName'>" +
+            " Keshif</a><br><span style='font-weight:300; font-size: 0.9em;'>Data Made Explorable</span>"+
+          "</div>" +
 
-      creditString += "<div class='boxinbox' style='padding: 0px 15px'>";
-      creditString += " <a href='http://hcil.umd.edu/' target='_blank'>"+
-        "<img src='http://www.keshif.me/demo/img/index/logo_hcil.gif' style='height:50px; float: left'></a>";
-      creditString += " <a href='http://www.umd.edu' target='_blank'>"+
-        "<img src='http://www.keshif.me/demo/img/index/logo_umd.png' style='height:50px; float: right'></a>";
-      creditString += "Designed &amp; developed by ";
-      creditString += " <a class='myName' href='http://www.adilyalcin.me' target='_blank'>M. Adil Yalçın</a><br><br>";
-      creditString += "Advised by";
-      creditString += " <a class='advName' href='https://sites.umiacs.umd.edu/elm/' target='_blank'>Niklas Elmqvist</a> &amp; ";
-      creditString += " <a class='advName' href='http://www.cs.umd.edu/~bederson/' target='_blank'>Ben Bederson</a> <br>";
-      creditString += "</div>";
+        "<div class='boxinbox' style='padding: 0px 15px'>" +
+        "Contact: <b> info <i class='fa fa-at'></i> keshif.me </b> <br>" +
+        " <div style='font-weight: 300; font-size: 0.9em;'>( Press, custom development and deployments, new features, training )</div>" +
+        "</div>" +
 
-      creditString += "<div class='boxinbox'>";
-          creditString += "<div style='float:right;'>"
-          creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=watch&count=true' "+
-            "allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe><br/>";
-          creditString += "</div>";
-          creditString += "<div style='float:left; padding-left: 10px'>"
-          creditString += "<iframe src='http://ghbtns.com/github-btn.html?user=adilyalcin&repo=Keshif&type=fork&count=true' "+
-            "allowtransparency='true' frameborder='0' scrolling='0' width='90px' height='20px'></iframe>";
-          creditString += "</div>";
-      creditString += " <span style='font-size: 0.7em'> 3rd party libraries:";
-      creditString += " <a style='color:black;' href='http://d3js.org/' target='_blank'>D3</a>, ";
-      creditString += " <a style='color:black;' href='http://leafletjs.com/' target='_blank'>Leaflet</a>, ";
-//      creditString += " <a style='color:black;' href='http://jquery.com' target='_blank'>JQuery</a>, ";
-//      creditString += " <a style='color:black;' href='https://developers.google.com/chart/' target='_blank'>GoogleDocs</a></span>";
-      creditString += "</div>";
+        "<div class='boxinbox' style='margin: 10px 25px'>" +
+        "<a href='https://groups.google.com/forum/#!forum/keshif' target='_blank'>Users Group Maillist</a>" +
+        "</div>" +
 
-      //creditString += "<div class='project_fund'><b>Keşif</b> (Turkish): Discovery &amp; exploration</div>";
-      this.DOM.overlay_infobox.append("div").attr("class","tempClass").html(creditString);
+        "<div style='font-weight: 300; font-size: 0.8em; margin: 5px;'><b>License:</b> "+
+          "<a href='https://github.com/adilyalcin/Keshif/blob/master/LICENSE' target='_blank'>"+
+            "BSD 3 clause (c) Uni. of Maryland</a></div>" + 
+
+      "<div class='boxinbox' style='font-size: 0.8em; font-weight: 200'>" +
+        " 3rd party libraries used: " +
+        " <a style='color:black;' href='http://d3js.org/' target='_blank'>D3</a>, " +
+        " <a style='color:black;' href='http://leafletjs.com/' target='_blank'>Leaflet</a>, " +
+        " <a style='color:black;' href='http://github.com/dbushell/Pikaday' target='_blank'>Pikaday</a> " +
+        //" <a style='color:black;' href='https://developers.google.com/chart/' target='_blank'>Google JS APIs</a>"+
+      "</div>"
+      );
       this.creditsInserted = true;
     },
     /** -- */
@@ -7578,7 +7576,7 @@ kshf.Summary_Base.prototype = {
         if(t==='scatter'){
           recDisplay.setScatterAttrib(me);
         } else {
-          recDisplay.setSortingOpt_Active(me);
+          recDisplay.setSortAttrib(me);
           recDisplay.refreshSortingOptions();
         }
       });
@@ -8824,7 +8822,6 @@ var Summary_Categorical_functions = {
             }
             var vv = me.mapColorScale(v);
             if(ratioMode) vv=0;
-            //if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
             return me.mapColorQuantize(vv); 
           })
           .attr("stroke", function(_cat){ 
@@ -8834,7 +8831,6 @@ var Summary_Categorical_functions = {
             }
             var vv = 9-me.mapColorScale(v);
             if(ratioMode) vv=8;
-            //if(me.sortingOpt_Active.invertColorScale) vv = 9 - vv;
             return me.mapColorQuantize(vv); 
           });
         return;

@@ -1520,18 +1520,47 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         }
         > .overlay_infobox{
           display:none;
-          width: 330px;
-          height: 167px;
+          width: 300px;
+          height: 200px;
           position: absolute;
           top: 0; left: 0; bottom: 0; right: 0;
           cursor: default;
+
+/*
+          background: linear-gradient(150deg, #3f8e7a, #86d774);
+          background-size: 400% 400%;
+          -webkit-animation: CreditsBackgroundAnim 4s ease infinite;
+          -moz-animation: CreditsBackgroundAnim 4s ease infinite;
+          -o-animation: CreditsBackgroundAnim 4s ease infinite;
+          animation: CreditsBackgroundAnim 4s ease infinite;
+          */
+
+          > .overlay_Close{ display: none;}
+
+          .socialMedia{
+            float: right;
+            font-size: 1.6em;
+            margin: 8px 3px;
+            position: relative;
+            text-decoration: none !important;
+            text-shadow: 0px 0px 3px white;
+            &:hover{
+              text-decoration: underline !important;
+              top: -5px;
+            }
+          }
+         
           .infobox-header{
-            background-color:rgb(216, 221, 212);
-            width:100%;
+            background-color: rgba(210, 218, 204, 0.63);
+            width: 100%;
             padding-top: 5px;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
-            border-bottom: solid 2px rgb(60, 94, 67);
+            box-shadow: 0px 0px 10px gray;
+            text-align: left;
+          }
+          a{
+            color: black;
           }
           .boxinbox{ 
             margin-top: 10px;
@@ -1539,16 +1568,20 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             a.myName{
               display: inline-block;
               font-size: 1.1em;
-              margin: 5px 10px;
-              color: black;
               font-weight: 600;
               font-style: normal;
             }
             a.advName{
-              color: black;
               font-size: 0.9em;
               padding-top: 2px;
             }
+          }
+          .kshfLogo{
+            float: left;
+            height: 42px;
+            vertical-align: top;
+            margin-right: 5px;
+            margin-left: 10px;
           }
           .libName{
             font-size: 1.3em;
@@ -1556,10 +1589,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             color: black;
             text-decoration: none;
             &:hover{ color: orangered; }
-            > .kshfLogo{
-              height: 1em;
-              vertical-align: top;
-            }
           }
           .project_fund {
             clear: both;
@@ -4618,7 +4647,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     }
     .mapItemName{
       display: block;
-      border-bottom: solid 1px white;
+      border-bottom: solid 1px gray;
       font-weight: 600;
     }
     .mapTooltipValue{
@@ -4649,6 +4678,27 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 @-ms-keyframes stretchdelay {.stretchdelay_do;}
 @-o-keyframes stretchdelay {.stretchdelay_do;}
 @keyframes stretchdelay {.stretchdelay_do;}
+
+@-webkit-keyframes CreditsBackgroundAnim {
+    0%{background-position:0% 49%}
+    50%{background-position:100% 52%}
+    100%{background-position:0% 49%}
+}
+@-moz-keyframes CreditsBackgroundAnim {
+    0%{background-position:0% 49%}
+    50%{background-position:100% 52%}
+    100%{background-position:0% 49%}
+}
+@-o-keyframes CreditsBackgroundAnim {
+    0%{background-position:0% 49%}
+    50%{background-position:100% 52%}
+    100%{background-position:0% 49%}
+}
+@keyframes CreditsBackgroundAnim {
+    0%{background-position:0% 49%}
+    50%{background-position:100% 52%}
+    100%{background-position:0% 49%}
+}
 
 .stretchdelay_do () {
   0%, 40%, 100% { .transform(scaleY(0.4)); }
