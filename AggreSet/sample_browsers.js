@@ -84,7 +84,7 @@ var browser_configs = {
       recordDisplay: {
         sortColWidth: 50,
         detailsToggle: "off",
-        sortBy: ["Rating", "Watched"],
+        sortBy: "Rating",
         textSearch: "Name",
         recordView: function(d){ 
           var genres=[];
@@ -487,7 +487,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 65,
-        sortBy: {title: '#samples', value: function(){ return this[0].length; } },
+        sortBy: {name: '#samples', value: function(){ return this[0].length; } },
         displayType: 'grid',
         maxVisibleItems_Default: 2000,
         detailsToggle: "off",
@@ -561,7 +561,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 60,
-        sortBy: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
+        sortBy: {name: 'Joined', value: "JoinYear"},
         recordView: "Name"
       }
     }
@@ -598,7 +598,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 60,
-        sortBy: [ {title: 'Joined', value: function(){return this.JoinYear;}} ],
+        sortBy: {name: 'Joined', value: 'JoinYear'},
         recordView: "Name"
       }
     }
@@ -690,7 +690,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 65,
-        sortBy: {title: '# Votes', value: function(){ return this.Votes.length; }},
+        sortBy: {name: '# Votes', value: function(){ return this.Votes.length; }},
         recordView: "Name"
       }
     }
@@ -828,7 +828,7 @@ var browser_configs = {
       ],
       recordDisplay: {
         sortColWidth: 45,
-        sortBy: {title: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
+        sortBy: {name: 'Year', value: function(){ return this.Date.getFullYear();}, inverse:true },
         textSearch: 'title',
         detailsToggle: "One",
         recordView: "title"
@@ -865,7 +865,7 @@ var browser_configs = {
       recordDisplay: {
         sortColWidth: 50,
         detailsToggle: 'off',
-        sortBy: ['Rating', 'Watched'],
+        sortBy: 'Rating',
         recordView: function(){ return "<i class='fa fa-film'></i> "+this.Name; }
       }
     }

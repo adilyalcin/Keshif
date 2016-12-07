@@ -76,7 +76,7 @@ var columns = [
 
 var likertSort = [ "Strongly agree", "Somewhat agree", "Neutral", "Somewhat disagree", "Strongly disagree", ];
 
-document.addEventListener("DOMContentLoaded", function(){
+google.charts.setOnLoadCallback(function(){
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     recordName: "Participants",
@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", function(){
         if(this[columns[11]]===null) return "-";
         return this[columns[11]];
       },
-      onDOM: function(browser){
+      onDOM: function(d){
         d3.select(d.DOM.record).select(".content").on("click",function(){
           this.parentNode.__data__.setRecordDetails(true);
         });

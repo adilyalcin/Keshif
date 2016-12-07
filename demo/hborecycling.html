@@ -331,7 +331,7 @@ document.addEventListener("DOMContentLoaded", function(){
     summaries: ["HBO_Shows"],
     recordDisplay: {
       sortColWidth: 65,
-      sortBy: { title: '# of Shows', value: function(){ return this.HBO_Shows.length; } },
+      sortBy: { name: '# of Shows', value: function(){ return this.HBO_Shows.length; } },
       textSearch: "Name",
       recordView: function(d){
         // resize d based on # of shows!

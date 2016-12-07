@@ -28,15 +28,15 @@ google.charts.setOnLoadCallback(function(){
       tables: {name:"Oldurulen kadin", id:"ASIN"}
     },
     summaries: [
-      { name: "Yıl", panel: 'middle'},
+      { name: "Yıl", panel: 'middle', timeFormat: "%Y"},
       { name: "Kim tarafından" },
       { name: "Neden" },
       { name: "Nasıl", panel: 'right' },
       { name: "Korunma talebi", panel: 'right' }
     ],
     recordDisplay: {
-      sortBy: {name: 'Yıl.', value: function(){ return 1*this.Yıl;} },
-      sortColWidth: 60,
+      sortBy: 'Yıl',
+      sortColWidth: 50,
       textSearch: "İsim",
       recordView: function(){
         var str=this['İsim'];

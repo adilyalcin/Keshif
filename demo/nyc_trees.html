@@ -48,15 +48,15 @@ $(document).ready( function(){
       callback: loadData
     },
     summaries: [
-      { name: "Total Number of <span class='fa fa-tree'></span>'s", value: "Total", intervalScale: "log" },
+      { name: "Total Number of Trees", value: "Total", intervalScale: "log" },
       { name: "Number of <span class='fa fa-tree'></span>s in Bronx", value: "Bronx", intervalScale: "log" },
       { name: "Number of <span class='fa fa-tree'></span>s in Brooklyn", value: "Brooklyn", intervalScale: "log" },
       { name: "Number of <span class='fa fa-tree'></span>s in Queens", value: "Queens", intervalScale: "log" },
-      { name: "Number of <span class='fa fa-tree'></span>s in Manhattan", value: "Manhattan", intervalScale: "log" },
-      { name: "Number of <span class='fa fa-tree'></span>s in Staten Island", value: "Staten Island", intervalScale: "log" }
+      { name: "Number of <span class='fa fa-tree'></span>s in Manhattan", value: "Manhattan", intervalScale: "log", collapsed: true },
+      { name: "Number of <span class='fa fa-tree'></span>s in Staten Island", value: "Staten Island", intervalScale: "log", collapsed: true }
     ],
     recordDisplay: {
-      sortBy: {title: '# of Total Trees', value: "Total" },
+      sortBy: 'Total Number of Trees',
       detailsToggle: "off",
       displayType: 'grid',
       textSearch: {title: 'Tree Name', value: "Common"},

@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function(){
       { name: "<i class='fa fa-clock-o'></i> Years on the List", value: 'yrs_on_list', panel: "right", collapsed: true},
     ],
     recordDisplay: {
-      sortBy: {title: 'growth', label: function(){ return simpleFormat(this.growth); }},
+      sortBy: {name: 'growth', label: function(){ return simpleFormat(this.growth); }},
       textSearch: "company",
       showRank: true,
       recordView: function(){

@@ -39,11 +39,13 @@ google.charts.setOnLoadCallback(function(){
       { name: "Fat", value: "Fat (gr)", panel: 'right', unitName: "gr", showPercentile: true,collapsed: true, },
       { name: "Sodium", value: "Sodium (mg)", unitName: "gr", showPercentile: true },
       { name: "Fiber", value: "Fiber (gr)", unitName: "gr", showPercentile: true, collapsed: true, },
-      { name: "Potasium", value: "Potassium (mg)", unitName: "mg", showPercentile: true },
+      { name: "Potassium", value: "Potassium (mg)", unitName: "mg", showPercentile: true },
       { name: "Vitamins", panel: 'middle', showPercentile: true,  collapsed: true, }
     ],
     recordDisplay: {
-      sortBy: { title: 'Rating', label: function(){ return this.Rating.toPrecision(4)} },
+      sortBy: 'Rating',
+      scatterBy: 'Potassium',
+      displayType: 'scatter',
       textSearch: "Name",
       recordView: "Name"
     }

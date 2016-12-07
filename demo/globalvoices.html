@@ -68,7 +68,7 @@ $(document).ready( function(){
     ],
     recordDisplay: {
       sortColWidth: 92,
-      sortingOpts: {
+      sortBy: {
         name:'Recent first', value: function(){ return this[7]}, inverse: false, 
         label: function(){ return moment(this[7]).fromNow(); }
       },

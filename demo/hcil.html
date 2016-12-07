@@ -111,8 +111,8 @@ google.charts.setOnLoadCallback( function() {
         },{ name: "Date", panel: "middle", timeFormat: "%Y-%m" }
     ],
     recordDisplay: {
-        sortColWidth: 50,
-        sortBy: { title: 'Year', value: function(){ return parseInt(this.Date.slice(0,4)); } },
+        sortColWidth: 60,
+        sortBy: "Date",
         textSearch: "title",
         recordView: function(){
             var j;

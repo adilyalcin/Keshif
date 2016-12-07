@@ -160,8 +160,13 @@ google.charts.setOnLoadCallback(function(){
     },
     summaries: [
         { name: "Groups", collapsed: false },
-        { name: "Undergraduate enrollment", value: "DRVEF2013.Undergraduate enrollment" },
-        { name: "Graduate enrollment", value: "DRVEF2013.Graduate enrollment" },
+        { name: "Undergraduate enrollment", value: "DRVEF2013.Undergraduate enrollment", skipZero: true },
+        { name:'Total Enrollment', 
+          value: function(){ 
+            return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"]; 
+          },
+          panel: 'none' },
+        { name: "Graduate enrollment", value: "DRVEF2013.Graduate enrollment", skipZero: true },
         { name: "% Transfers",
           value: function(){
               var transfer = this["DRVEF2013.Transfer-in degree/certificate-seeking undergraduate enrollment"];
@@ -245,9 +250,7 @@ google.charts.setOnLoadCallback(function(){
         }
     ],
     recordDisplay: {
-      sortBy:
-        { title:'Total Enrollment', 
-          value: function(){ return this["DRVEF2013.Undergraduate enrollment"]+this["DRVEF2013.Graduate enrollment"]; } },
+      sortBy: "Total Enrollment",
       showRank: true,
       textSearch: "Name",
       recordView: function(){

@@ -121,8 +121,7 @@ document.addEventListener("DOMContentLoaded", function(){
         name: "Length of comment", 
         value: function(){ 
           var v=this['Question_ouverte q_41_commentaires_généraux_questionnaire'];
-          if(v===null) return 0;
-          return v.length; 
+          if(v) return v.length; 
         }
       },
       sortColWidth: 45,

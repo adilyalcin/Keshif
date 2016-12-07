@@ -97,7 +97,7 @@ google.charts.setOnLoadCallback(function(){
       { name: "Nomination Year", timeFormat: "%Y", value: "Year", panel: "middle" },
     ],
     recordDisplay: {
-      sortBy: [ 'Nomination Year', 'Birth Year', 'Qualification', '← Conservative vs. Liberal →'],
+      sortBy: 'Nomination Year',
       textSearch: "Name",
       recordView: function(){
         return "<a class='wikiLink' href='"+this.URL+"' target='_blank'>"+this.Name+"</a>";

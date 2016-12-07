@@ -15,8 +15,6 @@
 
     <script type="text/javascript">
 google.charts.setOnLoadCallback(function(){
-  var weightFormat = d3.format("s");
-
   browser = new kshf.Browser({
     domID: "#demo_Browser",
     leftPanelLabelWidth: 160,
@@ -36,7 +34,7 @@ google.charts.setOnLoadCallback(function(){
       // The number of the Meteoritical Bulletin in which the name was published. 
     ],
     recordDisplay: {
-      sortBy: { name: 'Mass', label: function(){ return weightFormat(this.Mass); } },
+      sortBy: { name: 'Mass', label: function(){ return d3.format("s")(this.Mass); } },
       sortColWidth: 70,
       textSearch: "Name",
       recordView: function(){ 

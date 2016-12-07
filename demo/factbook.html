@@ -239,15 +239,16 @@ $(document).ready( function(){
       }
     ],
     recordDisplay: {
-      sortColWidth: 50,
-      sortBy: { 
+      sortColWidth: 90,
+      sortBy: 'Population',
+      /*{ 
         title: 'Population',
         label: function(){
           var p=this.Population;
           if(p===undefined) return "-";
           return d3.format(".4s")(p);
         }
-      },
+      },*/
       showRank: true,
       textSearch: "Name",
       recordView : function(){

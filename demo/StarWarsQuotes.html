@@ -25,7 +25,6 @@ var episodeID = {
   "Empire Strikes Back": 5,
   "Return of The Jedi": 6,
 };
-var numFormat = d3.format(".2r");
 
 google.charts.setOnLoadCallback(function(){
   browser = new kshf.Browser({
@@ -50,11 +49,11 @@ google.charts.setOnLoadCallback(function(){
       { name: "Side", catLabel: function(){ return this.id+" "+getIcon(this.id); } },
       "Character",
       { name: "Word Count", panel: "left", collapsed: true },
-      { name: "% of Film", panel: "bottom", unitName: "%" },
+      { name: "% of Film Time", panel: "bottom", unitName: "%" },
     ],
     recordDisplay: {
-      sortColWidth: 55,
-      sortBy: { name: "% of Film", inverse: true,  label: function(){ return numFormat(this["% of Film"]);} },
+      sortColWidth: 60,
+      sortBy: { name: "% of Film Time", inverse: true },
       detailsToggle: 'off',
       textSearch: "Line",
       recordView: function(){

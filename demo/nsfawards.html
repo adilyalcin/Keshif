@@ -49,14 +49,8 @@ document.addEventListener("DOMContentLoaded", function(){
         catLabel: function(){ return getStateName(this.id); } }
     ],
     recordDisplay: {
-      sortColWidth: 70,
-      sortBy:
-        { name: 'Awarded Amount',
-          label: function(){
-            var v=this.AwardedAmountToDate;
-            return (v===undefined) ? "-" : d3.format(".2s")(v);
-          }
-        },
+      sortColWidth: 80,
+      sortBy: 'Awarded Amount',
       textSearch: 'Title',
       showRank: true,
       recordView: function(){

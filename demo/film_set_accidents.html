@@ -44,7 +44,7 @@ google.charts.setOnLoadCallback(function(){
     ],
     recordDisplay: {
       sortColWidth: 70,
-      sortBy: [ 'Date', 'Injuries', 'Fatalities' ],
+      sortBy: 'Date',
       recordView: function(){
         return "<span style='color: red'>"+printPeopleIcons(this.Fatalities) +"</span>"+
           "<span>"+printPeopleIcons(this.Injuries)+"</span>"+  

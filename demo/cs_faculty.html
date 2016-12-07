@@ -56,12 +56,12 @@ document.addEventListener("DOMContentLoaded", function(){
           r.push(a[a.length-1].trim());
           return r;
         } },
-      { name: "<span class='fa fa-calendar'></span> Joined Year", value: "JoinYear", timeFormat: "%Y", panel: "bottom",
+      { name: "Joined Year", value: "JoinYear", timeFormat: "%Y", panel: "bottom",
         description: "When they joined that department of Computer Science as faculty" }
     ],
     recordDisplay: {
       sortColWidth: 60,
-      sortBy: {name: "Year", value: "JoinYear"},
+      sortBy: "Joined Year",
       textSearch: "Name",
       detailsToggle: "one",
       recordView: function(){
