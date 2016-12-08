@@ -2971,6 +2971,7 @@ kshf.RecordDisplay.prototype = {
     /** -- */
     refreshScatterOptions: function(){
       if(this.DOM.root===undefined) return;
+      if(this.viewRecAs!=="scatter") return;
       this.DOM.root.selectAll(".ScatterControl-ScatterAttrib > select > option").remove();
       this.DOM.root.selectAll(".ScatterControl-ScatterAttrib > select").selectAll("option")
         .data(this.getScatterAttributes()).enter()
@@ -3852,6 +3853,7 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     getScatterAttributes: function(){
+      if(this.viewRecAs!=="scatter") return [];
       if(this.sortAttrib.scaleType==='time') return [];
       var me=this;
       return this.sortingOpts.filter(function(s){ 
