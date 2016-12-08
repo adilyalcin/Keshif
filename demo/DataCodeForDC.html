@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Data.Gov Datasets</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../js/papaparse.min.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript" src="../js/pikaday.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../js/pikaday.css" type="text/css">
+
+    <script type="text/javascript">
+
+document.addEventListener("DOMContentLoaded", function(){
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 110,
+    leftPanelLabelWidth: 250,
+    recordName: "CodeForDC Datasets",
+    source: {
+      url: "http://data.codefordc.org",
+      dirPath: 'https://storage.googleapis.com/keshif-data/',
+      fileType: 'json',
+      tables: "data.codefordc"
+    },
+    onLoad: function(){
+      this.records.forEach(function(r,i){r.data.id = i});
+    },
+    summaries: [
+      { name: "Tags", 
+        value: function(){
+          var r=[];
+          if(this.tags) this.tags.forEach(function(t){ r.push(t.name); });
+          return r;
+        }},
+      { name: "Groups", 
+        value: function(){
+          var r=[];
+          if(this.groups) this.groups.forEach(function(t){ r.push(t.name); });
+          return r;
+        }},
+      { name: "Resource Formats", 
+        value: function(){
+          var r=[];
+          if(this.resources) this.resources.forEach(function(resource){ 
+            r.push(resource.format);
+          });
+          return r;
+        }},
+      { name: "License", value: "license_title" },
+      { name: "Maintainer", value: "maintainer", collapsed: true},
+      { name: "Date Created", value: function(){ return new Date(this.metadata_created); }, panel: 'middle' },
+    ],
+    recordDisplay: {
+      sortColWidth: 70,
+      sortBy: "Date Created",
+      recordView: function(){
+        return "<a href='http://data.codefordc.org/dataset/"+this.name+"' target='_blank' class='datasetName'>"+
+          this.title+"</a>";
+      }
+    }
+  });
+});
+    </script>
+<style id="kshfStyle">
+.datasetName{
+  color: black;
+}
+.datasetName:hover{
+  color: orangered;
+}
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_PageTitle">CodeForDC Datasets</div>
+      <div id="demo_Browser"></div>
+      </div>
+
+    <div id="demo_Infobox">
+      Data from <a href='http://data.codefordc.org/' target='_blank'>data.codefordc.org</a>
+      </div>
+  </body>
+</html>
