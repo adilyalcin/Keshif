@@ -1709,16 +1709,14 @@ kshf.RecordDisplay.prototype = {
       x.append("span").text("View ").attr("class","recordView_HeaderSet");
       x = x.append("span").attr("class","pofffffff");
       x.selectAll("span.fa").data([
-        {v:'Map', i:"globe"},
         {v:'List', i:"list-ul"},
+        {v:'Map', i:"globe"},
         {v:'NodeLink', i:"share-alt"}]
       ).enter()
         .append("span").attr("class", function(d){ return "recordDisplay_ViewAs"+d.v; })
-        .each(function(d){ 
-          this.tipsy = new Tipsy(this, {gravity: 'ne', title: function(){ return d.v; } }); 
-        })
-        .on("mouseenter", function(){ this.tipsy.show(); })
-        .on("mouseleave", function(){ this.tipsy.hide(); })
+        .each(function(d){ this.tipsy = new Tipsy(this, {gravity: 'n', title: function(){ return d.v; } }); })
+        .on("mouseenter", function( ){ this.tipsy.show(); })
+        .on("mouseleave", function( ){ this.tipsy.hide(); })
         .on("click",      function(d){ this.tipsy.hide(); me.viewAs(d.v); })
         .append("span").attr("class", function(d){ return " fa fa-"+d.i; });
       x.append("span").attr("class","recordDisplay_ViewAsScatter")
@@ -3851,16 +3849,14 @@ kshf.RecordDisplay.prototype = {
     },
     /** -- */
     getScatterAttributes: function(){
-      if(this.viewRecAs!=="scatter") return [];
-      if(this.sortAttrib.scaleType==='time') return [];
       var me=this;
       return this.sortingOpts.filter(function(s){ 
         return s.scaleType!=='time' && s.summaryID!==me.sortAttrib.summaryID;
       });
     },
     /** -- */
-    viewAs: function(d){
-      this.viewRecAs = d.toLowerCase();
+    viewAs: function(_type){
+      this.viewRecAs = _type.toLowerCase();
       this.DOM.root.attr("displayType", this.viewRecAs);
 
       if(this.recordViewSummary===null) return;
