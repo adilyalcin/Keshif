@@ -38,8 +38,8 @@ google.charts.setOnLoadCallback(function(){
           if(x) return x.geo;
         } },
       { name: "Month", value: function(){ return this.Month-1; }, catLabel: _demo.Month, catSortBy: "id", panel: 'right' },
-      { name: "Contaminated Ingredient", panel: 'left', catSplit: ";" },
       { name: "Location of Preparation", panel: 'left', catSplit: ";" },
+      { name: "Contaminated Ingredient", panel: 'left', catSplit: ";" },
       { name: "Food Vehicle", panel: 'left', minAggrValue: 5 },
       { name: "Illnesses", panel: 'middle', intervalScale: 'log', unitName: "ppl", showPercentile: true, skipZero: true },
       { name: "Hospitalizations", panel: 'middle', collapsed: true, unitName: "ppl", skipZero: true },
