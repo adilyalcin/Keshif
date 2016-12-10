@@ -2366,21 +2366,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .kshf .headerGroup > .summaryIcons > .summaryDescription:hover {
   color: black;
 }
-.kshf .headerGroup > .summaryIcons > .summaryViewAs {
+.kshf .headerGroup > .summaryIcons > .summaryViewAs_List {
   width: 15px;
   text-align: center;
 }
-.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:before {
-  content: "\f0ca";
-}
-.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="map"]:hover:before {
-  content: "\f0ac";
-}
-.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:before {
-  content: "\f0ac";
-}
-.kshf .headerGroup > .summaryIcons > .summaryViewAs[viewAs="list"]:hover:before {
-  content: "\f0ca";
+.kshf .headerGroup > .summaryIcons > .summaryViewAs_Map {
+  width: 15px;
+  text-align: center;
 }
 .kshf .headerGroup > .summaryIcons > .setMatrixButton {
   opacity: 0;
@@ -4080,7 +4072,10 @@ height:calc(100% - 10px);
 .kshf .kshfSummary:hover .missingValueAggr {
   color: #808080;
 }
-.kshf .kshfSummary[hasMap="true"]:not([collapsed]) .summaryViewAs {
+.kshf .kshfSummary[hasMap="true"]:not([collapsed]) .summaryViewAs_Map {
+  display: inline-block;
+}
+.kshf .kshfSummary[hasMap="true"]:not([collapsed]) .summaryViewAs_List {
   display: inline-block;
 }
 .kshf .kshfSummary:not([viewType="map"]) .visViewControl > span[class^='MapControl'] {
@@ -4091,6 +4086,11 @@ height:calc(100% - 10px);
 }
 .kshf .kshfSummary[viewType="map"] .visViewControl {
   display: block;
+  bottom: 24px;
+}
+.kshf .kshfSummary[viewType="map"] .summaryViewAs_Map {
+  pointer-events: none;
+  color: black;
 }
 .kshf .kshfSummary[viewType="map"] .summaryCategorical > .summaryControls .sortOptionSelectGroup {
   display: none;
@@ -4119,6 +4119,10 @@ height:calc(100% - 10px);
 }
 .kshf .kshfSummary[viewType="list"] .catMap_Base {
   display: none;
+}
+.kshf .kshfSummary[viewType="list"] .summaryViewAs_List {
+  pointer-events: none;
+  color: black;
 }
 .kshf .kshfSummary[viewType="line"] .summaryConfig_UnitName {
   display: none;
@@ -4172,6 +4176,7 @@ height:calc(100% - 10px);
   display: none;
   position: absolute;
   top: 0px;
+  height: 100%;
   background-color: white;
 }
 .kshf .kshfSummary.setPairSummary[popupSide="left"] .sizeLegend {
@@ -5668,6 +5673,7 @@ height:calc(100% - 50px);
   font-weight: 600;
   pointer-events: none;
   cursor: default;
+  margin: 0px 3px;
 }
 .kshf .recordDisplayHeader > .buttonRecordViewCollapse {
   display: block;

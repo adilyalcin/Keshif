@@ -2166,8 +2166,6 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordGroup = this.DOM.recordMap_SVG.append("g").attr("class", "leaflet-zoom-hide recordGroup");
 
-      var DOM_control = d3.select(this.leafletRecordMap.getContainer()).select(".leaflet-control-container");
-
       this.initDOM_CustomControls();
     },
     /** -- */
@@ -7393,6 +7391,7 @@ kshf.Summary_Base.prototype = {
             d3.event.preventDefault();
           })
           .on("mouseup", function(){
+            d3.select("body").style('cursor',null);
             // Mouse up on the body
             me.browser.clearDropZones();
             if(me.panel!==undefined || true) {
@@ -7583,20 +7582,25 @@ kshf.Summary_Base.prototype = {
         }
       });
 
-    this.DOM.summaryViewAs = this.DOM.summaryIcons.append("span")
-      .attr("class","summaryViewAs fa")
+    this.DOM.summaryIcons.append("span")
+      .attr("class","summaryViewAs_Map fa fa-globe")
       .attr("viewAs",'map')
       .each(function(d){ 
-        this.tipsy = new Tipsy(this, { gravity: 'ne', 
-          title: function(){ return "View as "+(me.viewType==='list'?'Map':'List'); }
-        });
+        this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return "View as Map"; } });
       })
       .on("mouseenter", function(){ this.tipsy.show(); })
       .on("mouseleave", function(){ this.tipsy.hide(); })
-      .on("click",      function(){ this.tipsy.hide();
-        this.setAttribute("viewAs",me.viewType);
-        me.viewAs( (me.viewType==='list') ? 'map' : 'list' );
-      });
+      .on("click",      function(){ this.tipsy.hide(); me.viewAs('map'); });
+
+    this.DOM.summaryIcons.append("span")
+      .attr("class","summaryViewAs_List fa fa-list-ul")
+      .attr("viewAs",'map')
+      .each(function(d){ 
+        this.tipsy = new Tipsy(this, { gravity: 'ne', title: function(){ return "View as List"; } });
+      })
+      .on("mouseenter", function(){ this.tipsy.show(); })
+      .on("mouseleave", function(){ this.tipsy.hide(); })
+      .on("click",      function(){ this.tipsy.hide(); me.viewAs('list'); });
 
     this.DOM.summaryDescription = this.DOM.summaryIcons.append("span")
       .attr("class","summaryDescription fa fa-info")
@@ -8047,7 +8051,7 @@ var Summary_Categorical_functions = {
     this.refreshConfigRowCount();
 
     this.DOM.optionSelect.style("display", (this.catSortBy.length>1)?"block":"none" );
-    this.DOM.optionSelect.selectAll(".sort_label").data([]).exit().remove(); // remove all existing options
+    this.DOM.optionSelect.selectAll(".sort_label").remove(); // remove all existing options
 
     this.DOM.optionSelect.selectAll(".sort_label").data(this.catSortBy)
       .enter().append("option").attr("class", "sort_label").text(function(d){ return d.name; });
@@ -8103,9 +8107,12 @@ var Summary_Categorical_functions = {
     this._aggrs.sort(theSortFunc);
 
     var lastRank = 0;
-    this._aggrs.forEach(function(cat,i){
-      cat.orderIndex_old = cat.orderIndex;
-      if(cat.measure('Active')!==0 || cat.isVisible) cat.orderIndex = lastRank++;
+    this._aggrs.forEach(function(_cat,i){
+      if(_cat.recCnt.Active || _cat.isVisible) {
+        _cat.orderIndex = lastRank++;
+      } else {
+        _cat.orderIndex = -lastRank-1;
+      }
     });
   },
 
@@ -9567,24 +9574,16 @@ var Summary_Categorical_functions = {
 
         this._aggrs.forEach(function(_cat){
           _cat.isVisibleBefore = _cat.isVisible;
-          if(!_cat.isActive){
-            _cat.isVisible = false;
-          } else if(_cat.orderIndex<this.firstCatIndexInView) {
-            _cat.isVisible = false;
-          } else if(_cat.orderIndex>=maxVisible) {
-            _cat.isVisible = false;
-          } else {
-            _cat.isVisible = true;
-          }
+          _cat.isVisible = _cat.isActive &&
+            (_cat.orderIndex>=this.firstCatIndexInView) && 
+            (_cat.orderIndex<maxVisible);
         },this);
       }
     },
     /** -- */
     cullAttribs: function(){
       if(this.viewType==='map') return; // no culling on maps, for now.  
-      this.DOM.aggrGlyphs.styles({
-        visibility: function(_cat){ return _cat.isVisible?"visible":"hidden"; },
-        display   : function(_cat){ return _cat.isVisible?"block"  :"none"  ; }} );
+      this.DOM.aggrGlyphs.style("display", function(_cat){ if(!_cat.isVisible) return "none"; });
       if(this.onCatCull) this.onCatCull.call(this);
     },
     /** -- */
@@ -9618,19 +9617,14 @@ var Summary_Categorical_functions = {
       this.refreshScrollDisplayMore(this.firstCatIndexInView+this.catCount_InDisplay);
 
       if(noAnim){
-        this.DOM.aggrGlyphs
-          .styles({
-            opacity: 1,
-            visibility: 'visible',
-            display: 'block',
-            transform: function(_cat){
-              var x = 0;
-              var y = me.heightCat * _cat.orderIndex;
-              _cat.posX = x;
-              _cat.posY = y;
-              return "translate("+x+"px,"+y+"px)";
-            }
-          });
+        this.DOM.aggrGlyphs.styles({
+          opacity: 1,
+          transform: function(_cat){
+            _cat.posX = 0;
+            _cat.posY = me.heightCat * _cat.orderIndex;
+            return "translate("+_cat.posX+"px,"+_cat.posY+"px)";
+          }
+        });
         this.cullAttribs();
         return;
       }
@@ -9638,8 +9632,12 @@ var Summary_Categorical_functions = {
       if(sortDelay===undefined) sortDelay = 1000;
       var perCatDelay = 30;
 
+      this.DOM.aggrGlyphs
+        .filter(function(_cat){ return !_cat.isActiveBefore && !_cat.isActive; })
+        .style("display","none");
+
       // Disappear animation
-      me.DOM.aggrGlyphs
+      this.DOM.aggrGlyphs
         .filter(function(_cat){ return _cat.isActiveBefore && !_cat.isActive; })
         .transition()
           .duration(1)
@@ -9649,44 +9647,49 @@ var Summary_Categorical_functions = {
             _cat.posX = xRemoveOffset;
             _cat.posY = _cat.posY;
             this.style.transform = "translate("+_cat.posX+"px,"+_cat.posY+"px)";
-          });
+          })
+          .transition().duration(1000)
+            .on("end",function(_cat){
+              this.style.display = "none";
+            });
 
       // Appear animation (initial position)
-      me.DOM.aggrGlyphs
-        .filter(function(ctgry){ return !ctgry.isActiveBefore && ctgry.isActive; })
+      this.DOM.aggrGlyphs
+        .filter(function(_cat){ return !_cat.isActiveBefore && _cat.isActive; })
         .transition()
           .duration(1)
           .delay(sortDelay)
-          .on("end",function(ctgry){
+          .on("end",function(_cat){
             this.style.opacity = 0;
-            ctgry.posX = xRemoveOffset;
-            ctgry.posY = ctgry.posY;
-            this.style.transform = "translate("+ctgry.posX+"px,"+ctgry.posY+"px)";
+            this.style.display = "block";
+            _cat.posX = xRemoveOffset;
+            _cat.posY = me.heightCat * _cat.orderIndex;
+            this.style.transform = "translate("+_cat.posX+"px,"+_cat.posY+"px)";
           });
 
       // Sort animation
-      me.DOM.aggrGlyphs
-        .filter(function(ctgry){ return ctgry.isActive; })
+      this.DOM.aggrGlyphs
+        .filter(function(_cat){ return _cat.isActive; })
+        .style("display","block")
         .transition()
           .duration(1)
-          .delay(function(ctgry){
-            if(ctgry.isVisibleBefore && !ctgry.isVisible) return sortDelay;
-            var x = ctgry.isActiveBefore ? 0:(me.catCount_InDisplay-5)*perCatDelay; // appear animation is further delayed
-            return 100 + sortDelay + x + Math.min(ctgry.orderIndex,me.catCount_InDisplay+2) * perCatDelay; 
+          .delay(function(_cat){
+            if(_cat.isVisibleBefore && !_cat.isVisible) return sortDelay;
+            var x = _cat.isActiveBefore ? 0:(me.catCount_InDisplay-5)*perCatDelay; // appear animation is further delayed
+            return 100 + sortDelay + x + Math.min(_cat.orderIndex,me.catCount_InDisplay+2) * perCatDelay; 
           })
-          .on("end",function(ctgry){
-            if(ctgry.isVisible || ctgry.isVisibleBefore){
-              this.style.visibility = "visible";
-              this.style.display = "block";
-            } else {
-              this.style.visibility = "hidden";
-              this.style.display = "none";
-            }
+          .on("end",function(_cat){
             this.style.opacity = 1;
-            ctgry.posX = 0;
-            ctgry.posY = me.heightCat*ctgry.orderIndex;
-            this.style.transform = "translate("+ctgry.posX+"px,"+ctgry.posY+"px)";
-          });
+            _cat.posX = 0;
+            _cat.posY = me.heightCat*_cat.orderIndex;
+            this.style.transform = "translate("+_cat.posX+"px,"+_cat.posY+"px)";
+          })
+          .transition().duration(250)
+            .on("end",function(_cat){
+              if(!(_cat.isVisible || _cat.isVisibleBefore)){
+                this.style.display = "none";
+              }
+            });
     },
     /** -- */
     chartAxis_Measure_TickSkip: function(){
@@ -9866,9 +9869,7 @@ var Summary_Categorical_functions = {
 
       // Add custom controls
 
-      var DOM_control = d3.select(this.leafletAttrMap.getContainer()).select(".leaflet-control-container");
-
-      var X = DOM_control.append("div").attr("class","visViewControl");
+      var X = this.DOM.summaryCategorical.append("div").attr("class","visViewControl");
 
       X.append("div")
         .attr("class","visViewControlButton fa fa-plus")
@@ -12654,7 +12655,7 @@ var Summary_Clique_functions = {
   },
   /** -- */
   checkWidth: function(){
-    var minv=210;
+    var minv=160;
     var maxv=Math.max(minv,this.getHeight())+160;
     this.summaryWidth = Math.min(maxv,Math.max(minv,this.summaryWidth));
   },
@@ -12791,6 +12792,10 @@ var Summary_Clique_functions = {
   printAggrSelection: function(aggr){
     return this.setListSummary.printAggrSelection(aggr.set_1)+ " and "+
       this.setListSummary.printAggrSelection(aggr.set_2);
+  },
+  /** -- */
+  initializeAggregates: function(){
+    // aggregates are initialized when the set summary is initialized.
   },
   /** -- */
   refreshLabel_Vert_Show: function(){
@@ -13034,6 +13039,7 @@ var Summary_Clique_functions = {
       .attr("height",h*50);
     this.DOM.root
       .style(this.popupSide,(-w)+"px")
+      .style("width",w+"px")
       .style(this.popupSide==="left"?"right":"left","initial");
     if(!this.pausePanning) this.refreshSVGViewBox();
   },

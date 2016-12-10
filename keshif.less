@@ -1873,13 +1873,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           width: 10px;
           &:hover{ color: black; }
         }
-        > .summaryViewAs{
+        > .summaryViewAs_List{
           width: 15px;
           text-align: center;
-          &[viewAs="map"]:before{ content: "\f0ca"; } // globe
-          &[viewAs="map"]:hover:before{ content: "\f0ac"; } // list-ul
-          &[viewAs="list"]:before{ content: "\f0ac"; } // list-ul
-          &[viewAs="list"]:hover:before{ content: "\f0ca"; } // globe
+        }
+        > .summaryViewAs_Map{
+          width: 15px;
+          text-align: center;
         }
         > .setMatrixButton{
           opacity: 0;
@@ -3203,12 +3203,18 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
 
       &[hasMap="true"]:not([collapsed]){
-        .summaryViewAs{ display: inline-block; }
+        .summaryViewAs_Map{ display: inline-block; }
+        .summaryViewAs_List{ display: inline-block; }
       }
       &:not([viewType="map"]) .visViewControl > span[class^='MapControl']    { display: none; }
       &[viewType="map"]{
         z-index: 1;
-        .visViewControl{ display: block; }
+        .visViewControl{ 
+          display: block;
+          bottom: 24px;
+        }
+
+        .summaryViewAs_Map{ pointer-events: none; color: black; }
 
         .summaryCategorical{
           > .summaryControls > {
@@ -3226,6 +3232,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
       }
       &[viewType="list"]{
         .catMap_Base{ display: none; }
+        .summaryViewAs_List{ pointer-events: none; color: black; }
       }
       &[viewType="line"]{
         .summaryConfig_UnitName{ display: none;}
@@ -3282,6 +3289,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         display: none;
         position: absolute;
         top: 0px;
+        height: 100%;
         background-color: white;
         &[popupSide="left"]{
           .sizeLegend{ left: 10px; }
@@ -4414,6 +4422,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
           font-weight: 600;
           pointer-events: none;
           cursor: default;
+          margin: 0px 3px;
         }
         > .buttonRecordViewCollapse{
           display: block;
