@@ -41,10 +41,10 @@ google.charts.setOnLoadCallback(function(){
       { name: "Contaminated Ingredient", panel: 'left', catSplit: ";" },
       { name: "Location of Preparation", panel: 'left', catSplit: ";" },
       { name: "Food Vehicle", panel: 'left', minAggrValue: 5 },
-      { name: "Illnesses", panel: 'middle', intervalScale: 'log', unitName: "ppl", showPercentile: true },
-      { name: "Hospitalizations", panel: 'middle', collapsed: true, unitName: "ppl" },
-      { name: "Deaths", panel: 'middle', collapsed: true, unitName: "ppl" },
-      { name: "Genus Species", panel: 'right' },
+      { name: "Illnesses", panel: 'middle', intervalScale: 'log', unitName: "ppl", showPercentile: true, skipZero: true },
+      { name: "Hospitalizations", panel: 'middle', collapsed: true, unitName: "ppl", skipZero: true },
+      { name: "Deaths", panel: 'middle', collapsed: true, unitName: "ppl", skipZero: true },
+      { name: "Genus Species", panel: 'right', catSplit: "; " },
       { name: "Etiology Status", catSplit: "; ", panel: 'right', collapsed: true }
     ]
   });
