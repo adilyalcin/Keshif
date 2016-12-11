@@ -1083,7 +1083,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -ms-flex: 1;
   flex: 1;
   display: block;
-  vertical-align: top;
   cursor: default;
   font-weight: 600;
   padding-left: 4px;
@@ -3307,7 +3306,6 @@ top:calc(50% - 5px);
 }
 .kshf .kshfSummary > .wrapper > .summaryCategorical > .summaryControls > .sortOptionSelectGroup {
   display: block;
-  vertical-align: top;
   white-space: nowrap;
   position: relative;
   font-weight: 300;
@@ -3319,7 +3317,6 @@ top:calc(50% - 5px);
   -webkit-appearance: none;
   -moz-appearance: none;
   background: transparent;
-  appearance: none;
   font-weight: 300;
   border-width: 0px;
   cursor: pointer;

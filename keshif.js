@@ -9115,7 +9115,6 @@ var Summary_Categorical_functions = {
 
       if(this.viewType==='map'){
         this.DOM.catMap_Base.style("height",h+"px");
-        if(this.DOM.catMap_SVG) this.DOM.catMap_SVG.style("height",h+"px");
         if(this.leafletAttrMap) this.leafletAttrMap.invalidateSize();
       }
     },
@@ -9490,13 +9489,16 @@ var Summary_Categorical_functions = {
           .each(function(_cat){
             this.tipsy = new Tipsy(this, {
               gravity: 'e',
+              className: 'recordTip',
               title: function(){ 
                 var str="";
                 str += "<span class='mapItemName'>"+me.catLabel_Func.call(_cat.data)+"</span>";
+                str += "<span style='font-weight: 300'>";
                 str += me.browser.getMeasureLabel(_cat)+" "+me.browser.getMeasureFuncTypeText_Brief();
                 if(me.browser.measureFunc!=="Count"){
                   str+="<br>in "+(_cat.recCnt.Active)+" "+me.browser.recordName;
                 }
+                str += "</span>";
                 return str;
               }
             });

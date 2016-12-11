@@ -806,7 +806,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         > .measureSelectBox_Content_RecordName{
           .flex(1);
           display: block;
-          vertical-align: top;
           cursor: default;
           font-weight: 600;
           padding-left: 4px;
@@ -2596,7 +2595,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
                   > .sortOptionSelectGroup{
                     display: block;
-                    vertical-align: top;
                     white-space:nowrap;
                     position: relative;
                     font-weight: 300;
@@ -2607,7 +2605,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                       -webkit-appearance: none;
                       -moz-appearance: none;
                       background: transparent;
-                      appearance: none;
                       font-weight: 300;
                       border-width: 0px;
                       cursor: pointer;
@@ -2826,7 +2823,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     > .timeSVG{
                       .calc(height, ~"100% - 12px");
                       width: 100%;
-                      .transition(opacity 500ms linear, height 700ms ease-in-out,);
+                      .transition(opacity 500ms linear, height 700ms ease-in-out);
                       //overflow: visible;
                       > [class^="measure_Highlight_"]{
                         .transition(opacity 200ms linear);
@@ -4682,11 +4679,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 
-@-webkit-keyframes stretchdelay {.stretchdelay_do;}
-@-moz-keyframes stretchdelay {.stretchdelay_do;}
-@-ms-keyframes stretchdelay {.stretchdelay_do;}
-@-o-keyframes stretchdelay {.stretchdelay_do;}
-@keyframes stretchdelay {.stretchdelay_do;}
+@-webkit-keyframes stretchdelay {.stretchdelay_do};
+@-moz-keyframes stretchdelay {.stretchdelay_do};
+@-ms-keyframes stretchdelay {.stretchdelay_do};
+@-o-keyframes stretchdelay {.stretchdelay_do};
+@keyframes stretchdelay {.stretchdelay_do};
 
 @-webkit-keyframes CreditsBackgroundAnim {
     0%{background-position:0% 49%}
