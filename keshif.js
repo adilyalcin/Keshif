@@ -2430,7 +2430,7 @@ kshf.RecordDisplay.prototype = {
         .style("height",Math.abs(_bottom-_top)+"px");
     },
     /** -- */
-    initDOM_Scatter: function(){
+    initDOM_ScatterView: function(){
       var me = this;
 
       if(this.DOM.recordBase_Scatter) {
@@ -2781,11 +2781,18 @@ kshf.RecordDisplay.prototype = {
 
       this.DOM.recordBase_NodeLink = this.DOM.recordDisplayWrapper
         .append("svg").attr("xmlns","http://www.w3.org/2000/svg").attr("class","recordBase_NodeLink")
+        
         .call(this.nodeZoomBehavior);
 
       var gggg = this.DOM.recordBase_NodeLink.append("g");
       this.DOM.linkGroup   = gggg.append("g").attr("class","linkGroup");
       this.DOM.recordGroup = gggg.append("g").attr("class","recordGroup");
+
+      var x = this.DOM.recordDisplayWrapper.node();
+      this.DOM.recordBase_NodeLink.call(
+        this.nodeZoomBehavior.transform,
+        d3.zoomIdentity.translate( x.offsetWidth/2, x.offsetHeight/2).scale(1)
+      );
 
       this.initDOM_CustomControls();
     },
@@ -3783,7 +3790,7 @@ kshf.RecordDisplay.prototype = {
           this.style.pointerEvents = record.isWanted?"":"none";
           this.style.display = "block"; // Have this bc switching views can invalidate display
         });
-      } else {
+      } else { // list or grid
         var visibleItemCount=0;
         this.DOM.kshfRecords.each(function(record){
           var recordIsVisible = (record.recordRank>=0) && (record.recordRank<me.maxVisibleItems);
@@ -3909,7 +3916,7 @@ kshf.RecordDisplay.prototype = {
           if(this.scatterAttrib===null){
             this.setScatterAttrib(viewAsOptions.Scatter[0]);
           }
-          this.initDOM_Scatter();
+          this.initDOM_ScatterView();
           this.refreshRecordDOM();
           this.refreshScatterVis();
           this.resetScatterZoom();
@@ -6042,9 +6049,6 @@ kshf.Browser.prototype = {
           if(facetDescr.timeFormat){
             summary.setTimeFormat(facetDescr.timeFormat);
           }
-          if(facetDescr.skipZero){
-            summary.skipZero = true;
-          }
 
           summary.initializeAggregates();
 
@@ -6109,6 +6113,10 @@ kshf.Browser.prototype = {
 
             if(facetDescr.scaleType) {
               summary.setScaleType(facetDescr.scaleType,true);
+            }
+
+            if(facetDescr.skipZero){
+              summary.setSkipZero();
             }
           }
         },this);
@@ -8280,6 +8288,7 @@ var Summary_Categorical_functions = {
     }
 
     this.isMultiValued = maxDegree>1;
+    if(this.DOM.root) this.DOM.root.attr('isMultiValued',this.isMultiValued?true:null);
 
     this.updateCats();
 
@@ -10181,9 +10190,43 @@ var Summary_Interval_functions = {
       return this.summary_sub_hour;
     },
     /** -- */
+    setSkipZero: function(){
+      if(!this.aggr_initialized) return;
+      if(this.skipZero) return;
+      if(this.timeTyped.base===true) return; // not time
+      if(this.intervalRange.total.min>0) return;
+      var me = this;
+
+      this.skipZero = true;
+
+      this.records.forEach(function(record){
+        var v=record._valueCache[me.summaryID];
+        if(v!==null && v<=0) {
+          record._valueCache[this.summaryID] = null;
+          this.missingValueAggr.addRecord(record);
+        }
+      },this);
+
+      this.filteredRecords = this.records.filter(function(record){
+        var v = me.getRecordValue(record);
+        return (v!==undefined && v!==null);
+      });
+
+      this.updateIntervalRange_Total();
+
+      this.refreshScaleType();
+      this.resetFilterRangeToTotal();
+
+      this.aggr_initialized = true;
+      this.refreshViz_Nugget();
+      this.refreshViz_EmptyRecords();
+    },
+    /** -- */
     initializeAggregates: function(){
       if(this.aggr_initialized) return;
       var me = this;
+
+      // not part of the object, used by d3 min array calculation.
       this.getRecordValue = function(record){ return record._valueCache[me.summaryID]; };
 
       if(this.missingValueAggr.records.length>0){
@@ -10195,7 +10238,9 @@ var Summary_Interval_functions = {
         var v=this.summaryFunc.call(record.data,record);
         if(v===undefined) v=null;
         if(isNaN(v)) v=null;
-        if(v===0 && me.skipZero) v = null;
+        if(v===0 && me.skipZero) {
+          v = null;
+        }
         if(v!==null){
           if(v instanceof Date){
             this.timeTyped.base = true;
