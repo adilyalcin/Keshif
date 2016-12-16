@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>District Ninja Metro Weather</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="../js/d3.4.2.6.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../keshif.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="../keshif.css"/ type="text/css">
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+
+    <script type="text/javascript" src="./js/demo.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="./css/demo.css" type="text/css">
+
+    <script type="text/javascript">
+google.charts.setOnLoadCallback(function(){
+  var timeParse = d3.timeParse("%Y%m%d");
+
+  browser = new kshf.Browser({
+    domID: "#demo_Browser",
+    barChartWidth: 90,
+    leftPanelLabelWidth: 300,
+    rightPanelLabelWidth: 250,
+    recordName: "Days",
+    source: {
+      gdocId: '1IvuzEpOHiqlTeXwuTjyI39hIun0Dce9zBkZooWv51bo',
+      tables: [ {name:"Daily Weather", id:"DATE"}, "Disruptions" ],
+    },
+    onLoad: function(){
+      var timeFormat = d3.timeFormat("%Y%m%d");
+      // initialize: No disruptions for each day
+      kshf.dt["Daily Weather"].forEach(function(w){
+        w.data.disruptions = [];
+      });
+      var weathers = kshf.dt_id["Daily Weather"];
+      kshf.dt.Disruptions.forEach(function(ds){
+        var index = 1*timeFormat(ds.data.Date);
+        var o = weathers[index];
+        if(o){ o.data.disruptions.push(ds.data); }
+      });
+    },
+    summaries: [
+      { name: "Precipitation", 
+        value: function(){ if(this.PRCP && this.PRCP>0) return this.PRCP; },
+        panel: "middle"},
+      { name: "Snow", 
+        value: function(){ if(this.SNOW && this.SNOW>0) return this.SNOW; },
+        panel: "middle"},
+      { name: "Weather Type",
+        value: function(){
+          var r=[];
+          if(this.SNOW && this.SNOW>0) r.push("Snow");
+          if(this.PRCP && this.PRCP>0) r.push("Rain");
+          if(this.TMAX && this.TMAX<32) r.push("Freezing");
+          return r;
+        },
+        panel: 'right'
+        },
+      { name: "Min Temperature", 
+        value: function(){ if(this.TMIN && this.TMIN>0) return this.TMIN; }, unitName: "F",
+        panel: "right"},
+      { name: "Max Temperature", 
+        value: function(){ if(this.TMAX && this.TMAX>0) return this.TMAX; }, unitName: "F",
+        panel: "right"},
+      { name: "Date",
+        value: function(){ return timeParse(this.DATE); },
+        panel: 'middle'
+      },
+      { name: "Number of disruptions",
+        value: function(){ return this.disruptions.length; },
+        panel: 'left'
+      },
+      { name: "Effected lines",
+        value: function(){
+          var r=[];
+          this.disruptions.forEach(function(x){ r.push(x.Line); });
+          return r;
+        },
+        panel: 'left' },
+      { name: "Causes",
+        value: function(){
+          var r=[];
+          this.disruptions.forEach(function(x){ r.push(x.Cause); });
+          return r;
+        },
+        panel: 'left' },
+      { name: "Daily average delay",
+        unitName: "min",
+        value: function(){
+          var r=0;
+          var p=0;
+          this.disruptions.forEach(function(x){ if(x.Delay) { r += x.Delay; p++} });
+          if(p!==0) return r / p; // avoid division by zero
+        },
+        panel: 'left' },
+    ],
+  });
+});
+    </script>
+<style id="kshfStyle">
+</style>
+  </head>
+  <body>
+    <div class="contents">
+      <div id="demo_Browser"></div>
+      </div>
+  </body>
+</html>
