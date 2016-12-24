@@ -91,7 +91,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -o-transition: none;
   transition: none;
 }
-.kshf[noanim=true] .aggrGlyph[class^="measure_"] {
+.kshf[noanim=true] .aggrGlyph > [class^="measure_"] {
   -webkit-transition: none;
   -moz-transition: none;
   -o-transition: none;

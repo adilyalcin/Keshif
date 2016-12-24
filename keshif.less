@@ -101,7 +101,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     &[noanim=true]{
       .aggrGlyph{ 
         .transition(none);
-        &[class^="measure_"]{ .transition(none); }
+        > [class^="measure_"]{ .transition(none); }
       }
     }
     &[noanim=false]{
@@ -1952,7 +1952,6 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         &[class^="measure_"]{
           .transform-origin(0% 0%);
           .transition(@bar_animation);
-          //pointer-events: none;
         }
         &[class^="measure_Active"]{
           background-color: @color_bars;
@@ -4679,11 +4678,11 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 
-@-webkit-keyframes stretchdelay {.stretchdelay_do};
-@-moz-keyframes stretchdelay {.stretchdelay_do};
-@-ms-keyframes stretchdelay {.stretchdelay_do};
-@-o-keyframes stretchdelay {.stretchdelay_do};
-@keyframes stretchdelay {.stretchdelay_do};
+@-webkit-keyframes stretchdelay { .stretchdelay_do }
+@-moz-keyframes stretchdelay    { .stretchdelay_do };
+@-ms-keyframes stretchdelay     { .stretchdelay_do };
+@-o-keyframes stretchdelay      { .stretchdelay_do };
+@keyframes stretchdelay         { .stretchdelay_do };
 
 @-webkit-keyframes CreditsBackgroundAnim {
     0%{background-position:0% 49%}
