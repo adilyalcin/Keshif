@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function(){
     recordName: "Movies",
     source: {
       url: "http://women-in-film.silk.co/",
-      dirPath: 'https://storage.googleapis.com/keshif-data/',
+      dirPath: 'http://asset.keshif.me/data/',
       fileType: 'csv',
       tables: "women_in_film"
     },
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function(){
       sortBy: "IMDb Popularity",
       recordView: function(){
         return "<a target='_blank' href='"+this['IMDB Link']+"' class='thumbnail'>"+
-          "<img class='thumbImg' src='https://storage.googleapis.com/keshif-data/img/imdbPosters/"+
+          "<img class='thumbImg' src='http://asset.keshif.me/img/imdbPosters/"+
             this['IMDB Link'].substr(26,9)+".jpg'></a>";
       }
     }

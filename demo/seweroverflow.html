@@ -20,7 +20,7 @@ function loadData(browser){
   $.ajax( {
 //      To use dynamic data loaded from maryland.gov, use the following link instead
 //        url: "https://data.maryland.gov/api/views/3rgd-zjxx/rows.json?accessType=DOWNLOAD",
-    url: "https://storage.googleapis.com/keshif-data/seweroverflows.json",
+    url: "http://asset.keshif.me/data/seweroverflows.json",
     dataType: "json",
     success: function(data){
       browser.primaryTableName = "Overflow";

@@ -17,7 +17,7 @@
 function loadData(browser){
   $.ajax({
     //url: "http://www.cloudred.com/labprojects/nyctrees/data/common.json",
-    url: "./data/nyc_trees.json",
+    url: "http://asset.keshif.me/data/nyc_trees.json",
     success: function(data){
       browser.primaryTableName = "TreeTypes";
       kshf.dt.TreeTypes = [];

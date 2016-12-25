@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function(){
     recordName: "Flags",
     categoryTextWidth: 135,
     source: {
-      dirPath: 'data/',
+      dirPath: 'http://asset.keshif.me/data/',
       fileType: 'csv',
       tables: "flags"
 //      gdocId: '0Ai6LdDWgaqgNdHRpMDlwUTlZc0NqNHJjc1VEeXV3MEE',
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function(){
       displayType: 'grid',
       textSearch: "Country",
       recordView: function(){
-        return "<img src='https://storage.googleapis.com/keshif-data/img/"+this.Flag+"'><span class='title'>"+this.Country+"</span>";
+        return "<img src='http://asset.keshif.me/img/"+this.Flag+"'><span class='title'>"+this.Country+"</span>";
       }
     }
   });

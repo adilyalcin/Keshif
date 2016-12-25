@@ -15,20 +15,20 @@
 
     <script type="text/javascript">
 function getSurveyIcon(cat){
-    switch(cat){
-        case "abstract": return "ils";
-        case "spatial": return "arrows";
-        case "univariate": return "align-justify";
-        case "multivariate": return "th";
-        case "linear": return "arrow-right";
-        case "cyclic": return "repeat";
-        case "static": return "spinner";
-        case "dynamic": return "spinner fa-spin";
-        case "instant": return "caret-right";
-        case "interval": return "arrows-h";
-        case "2D": return "square-o";
-        case "3D": return "cube";
-    };
+  switch(cat){
+    case "abstract": return "ils";
+    case "spatial": return "arrows";
+    case "univariate": return "align-justify";
+    case "multivariate": return "th";
+    case "linear": return "arrow-right";
+    case "cyclic": return "repeat";
+    case "static": return "spinner";
+    case "dynamic": return "spinner fa-spin";
+    case "instant": return "caret-right";
+    case "interval": return "arrows-h";
+    case "2D": return "square-o";
+    case "3D": return "cube";
+  };
 };
 
 function getIt(cat){
@@ -37,7 +37,7 @@ function getIt(cat){
 
 function loadData(browser){
     $.ajax( {
-        url: "./data/timevis.html",
+        url: "http://asset.keshif.me/data/timevis.html",
         contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
         async: false,
         success: function(doc){

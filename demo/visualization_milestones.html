@@ -40,7 +40,7 @@ function loadData(browser){
         ];
 
     $.ajax({
-        url:"./data/visualization_milestones.xml",
+        url:"http://asset.keshif.me/data/visualization_milestones.xml",
         dataType:"xml",
         async: false,
         success: function(collection){
@@ -85,7 +85,7 @@ function loadData(browser){
     });
 
     $.ajax({
-      url:"./data/visualization_milestones_references.html",
+      url:"http://asset.keshif.me/data/visualization_milestones_references.html",
       dataType:"xml",
       async: false,
       success: function(collection){
@@ -105,7 +105,7 @@ function loadData(browser){
 
     // add more data! - images, links, references, etc
     $.ajax({
-        url:"./data/visualization_milestones.html",
+        url:"http://asset.keshif.me/data/visualization_milestones.html",
         dataType:"xml",
         async: false,
         success: function(collection){
@@ -163,7 +163,7 @@ function loadData(browser){
 
     // add categories
     $.ajax({
-        url:"./data/visualization_milestones_categories.txt",
+        url:"http://asset.keshif.me/data/visualization_milestones_categories.txt",
         dataType:"text",
         async: false,
         success: function(collection){

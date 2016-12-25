@@ -176,7 +176,7 @@ function loadData(browser){
     kshf.dt_id.Publications = {};
 
     $.ajax( {
-        url: "./data/dyngraphviz.bib",
+        url: "http://asset.keshif.me/data/dyngraphviz.bib",
         async: false,
         success: function(bibdata){
             var entries = BibtexParser(bibdata);

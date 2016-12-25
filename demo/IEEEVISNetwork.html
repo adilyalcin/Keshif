@@ -18,7 +18,7 @@
 function dataLoad(){
   var browser = this;
   $.ajax({
-    url: "./data/ieeevisNetwork.json",
+    url: "http://asset.keshif.me/data/ieeevisNetwork.json",
     success: function(data){
       browser.primaryTableName = "Accounts";
       kshf.dt.Accounts = [];

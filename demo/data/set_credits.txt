@@ -1,3 +1,0 @@
-Data from UpSet project
-
-http://vcg.github.io/upset/data/simpsons/simpsons.json

@@ -39,7 +39,7 @@ function distanceKmGreatCircle (lat1, long1, lat2, long2) {
 var moviesByTitle = {};
 function loadMovies(browser){
     $.ajax( {
-        url: "./data/dc_summer_movies_2015.json",
+        url: "http://asset.keshif.me/data/dc_summer_movies_2015.json",
         success: function(data){
             kshf.dt.Movies = [];
             kshf.dt_id.Movies = {};
@@ -185,7 +185,7 @@ google.charts.setOnLoadCallback(function(){
         if(movieData){
           str+="<span class='item_details'><a target='_blank' href='http://www.imdb.com/title/"+
             movieData.imdbID+"'>"+
-            "<img class='moviePoster' src='https://storage.googleapis.com/keshif-data/img/imdbPosters/"+movieData.imdbID+".jpg'></a></span>";
+            "<img class='moviePoster' src='http://asset.keshif.me/img/imdbPosters/"+movieData.imdbID+".jpg'></a></span>";
         }
         // movie name
         str+="<div class='movieName'>"+this.Movie+"</div>";

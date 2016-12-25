@@ -20,7 +20,7 @@ var loadData = function(browser){
   kshf.dt.Visualizations = [];
 
   $.ajax( {
-    url: "./data/multivis.xml",
+    url: "http://asset.keshif.me/data/multivis.xml",
     async: false,
     success: function(doc){
       $(doc).find("list > item").each(function(i){

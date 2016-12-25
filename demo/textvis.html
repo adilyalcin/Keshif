@@ -24,7 +24,7 @@ function loadData(browser){
     kshf.dt_id.Categories = {};
 
     $.ajax( {
-        url: "./data/textvis_content.json",
+        url: "http://asset.keshif.me/data/textvis_content.json",
         async: false,
         success: function(data){
             data.forEach(function(v){
@@ -35,7 +35,7 @@ function loadData(browser){
         }
     });
     $.ajax( {
-        url: "./data/textvis_categories.json",
+        url: "http://asset.keshif.me/data/textvis_categories.json",
         async: false,
         success: function(data){
             data.forEach(function(c){
@@ -141,7 +141,7 @@ $(document).ready( function(){
       textSearch: "title",
       recordView: function(){
         return "<a target='_blank' href='"+this.url+"' class='thumbnail'>"+
-          "<img class='thumbImg' src='https://storage.googleapis.com/keshif-data/img/textvis/"+this.id+".png'></a>"+
+          "<img class='thumbImg' src='http://asset.keshif.me/img/textvis/"+this.id+".png'></a>"+
           "<span class='title'>"+this.title+"</span>";
       }
     }

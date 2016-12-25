@@ -27,7 +27,7 @@ $(document).ready( function(){
       callback: function(){
         var browser = this;
         $.ajax({
-          url: "https://storage.googleapis.com/keshif-data/blocks_graph.json",
+          url: "http://asset.keshif.me/data/blocks_graph.json",
           success: function(data){
             browser.primaryTableName = "examples";
             kshf.dt.examples = [];

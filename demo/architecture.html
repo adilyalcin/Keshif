@@ -17,7 +17,7 @@
 function dataLoad(){
   var browser=this;
   $.ajax({
-    url: "https://storage.googleapis.com/keshif-data/freebase_architecture.json",
+    url: "http://asset.keshif.me/data/freebase_architecture.json",
     async: false,
     success: function(data){
       browser.primaryTableName = "Architectures";

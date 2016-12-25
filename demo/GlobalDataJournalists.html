@@ -25,7 +25,7 @@ $(document).ready( function(){
       url: "http://jplusplus.github.io/global-directory/",
       callback: function(browser){
         $.ajax({
-          url: "https://storage.googleapis.com/keshif-data/globaljournalists.json",
+          url: "http://asset.keshif.me/data/globaljournalists.json",
           async: false,
           success: function(data){
             browser.primaryTableName = "Journalists";

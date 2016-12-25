@@ -26,7 +26,7 @@ function dataLoad(){
   var browser = this;
   $.ajax({
     //url: "http://apps.washingtonpost.com/investigative/homicides/api/v1/victim/?limit=0&offset=0&format=json",
-    url: "./data/dc_homicides.json",
+    url: "http://asset.keshif.me/data/dc_homicides.json",
     success: function(data){
       browser.primaryTableName = "Victims";
       kshf.dt.Victims = [];

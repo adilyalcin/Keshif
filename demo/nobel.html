@@ -56,7 +56,7 @@ google.charts.setOnLoadCallback(function(){
         var fullname = laureate.data.firstname + " " + (laureate.data.surname||"");
         var imgUrl="";
         if(laureate.data.gender!==3){
-          imgUrl = "https://storage.googleapis.com/keshif-data/img/nobel_photo/"+surname_short+".jpg";
+          imgUrl = "http://asset.keshif.me/img/nobel_photo/"+surname_short+".jpg";
         }
         return "<span class='thumbnail'><img class='thumbImg' src='"+imgUrl+"'></span>"+
             "<b>"+fullname+"</b>"+

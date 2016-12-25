@@ -21,7 +21,7 @@ function loadData(browser){
   kshf.dt.Visualizations = [];
 
   $.ajax( {
-    url: "./data/perfviz.bib",
+    url: "http://asset.keshif.me/data/perfviz.bib",
     async: false,
     success: function(bibdata){
       BibtexParser(bibdata).entries.forEach(function(entry){

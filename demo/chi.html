@@ -51,7 +51,7 @@ function loadData(){
     ];
     fileList.forEach(function(fileName){
         $.ajax( {
-            url: 'https://storage.googleapis.com/keshif-data/chi/'+fileName+".xml",
+            url: 'http://asset.keshif.me/data/chi/'+fileName+".xml",
             type:"GET",
             dataType:"xml",
             async: false,

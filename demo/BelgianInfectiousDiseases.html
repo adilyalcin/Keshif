@@ -168,14 +168,14 @@ $(document).ready( function(){
     recordName: "Cases",
     source: {
       url: "https://epistat.wiv-isp.be/",
-      dirPath: 'https://storage.googleapis.com/keshif-data/',
+      dirPath: 'http://asset.keshif.me/data/',
       fileType: 'csv',
       tables: "epistat_public_cases",
       callback: function(){
         var browser=this;
         $.ajax({
           // Load state geometries
-          url: 'https://storage.googleapis.com/keshif-data/GeoJSONs/Belgium-provinces-unk.geo.json',
+          url: 'http://asset.keshif.me/data/GeoJSONs/Belgium-provinces-unk.geo.json',
           success: function(topojsonData){
             topojsonData.features.forEach(function(feature){
               ProvinceFeatures[feature.properties.name] = feature;

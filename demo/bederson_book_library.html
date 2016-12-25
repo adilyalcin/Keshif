@@ -35,7 +35,7 @@ var loadData = function(){
     });
 
     $.ajax( {
-        url: "./data/bederson_book_library.xml",
+        url: "http://asset.keshif.me/data/bederson_book_library.xml",
         async: false,
         success: function(doc){
             $(doc).find("GoodreadsResponse > reviews > review").each(function(i) {

@@ -18,7 +18,7 @@
     <script type="text/javascript">
 function loadData(browser){
   $.ajax( {
-    url: "./data/papervis.bib",
+    url: "http://asset.keshif.me/data/papervis.bib",
     async: false,
     success: function(bibdata){
       browser.primaryTableName = "Visualizations";
@@ -71,7 +71,7 @@ $(document).ready( function(){
       displayType: 'grid',
       recordView: function(){
           return "<a target='_blank' href='http://scholar.google.com/scholar?hl=en&q="+this.Title+"' class='thumbnail'>"+
-            "<img class='thumbImg' src='https://storage.googleapis.com/keshif-data/img/papervis/"+this.Key+".png'></a>"+
+            "<img class='thumbImg' src='http://asset.keshif.me/img/papervis/"+this.Key+".png'></a>"+
             "<span class='title'>"+this.Title+"</span>";
       }
     }
