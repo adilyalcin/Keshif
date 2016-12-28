@@ -1,6 +1,8 @@
 Keshif
 ======
 
+[![Join the chat at https://gitter.im/adilyalcin/Keshif](https://badges.gitter.im/adilyalcin/Keshif.svg)](https://gitter.im/adilyalcin/Keshif?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **Keshif** is a web-based tool that lets you browse and understand datasets easily.
 
 To start using Keshif:
