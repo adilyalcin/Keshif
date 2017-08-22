@@ -1,9 +1,11 @@
 Keshif
 ======
 
-**This repostory is not actively maintained. You can use updated Keshif versions at www.keshif.me**
+**This repostory is not actively maintained.**
 
-**Keshif** is a web-based tool that lets you browse and understand datasets easily.
+**To access the most recent version and the online platform, visit www.keshif.me**
+
+**Keshif** is a web-based visualization and analytics tool that lets you explore datasets quickly.
 
 ### License
 
